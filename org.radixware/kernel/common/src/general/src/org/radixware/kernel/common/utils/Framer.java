@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -12,13 +12,14 @@ package org.radixware.kernel.common.utils;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import org.radixware.kernel.common.enums.EHttpParameter;
-import org.radixware.kernel.common.exceptions.RadixError;
+import org.radixware.kernel.common.exceptions.FrameTooLargeException;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 
 //////////////////////////////////////////////////Format ///////////////////////////////////////////////////////
@@ -39,12 +40,19 @@ import org.radixware.kernel.common.exceptions.WrongFormatError;
 //L:ASCII[6] <###>                             "%[6]D%P"
 //                                             "%[R]H" "%[S]H"
 //0xFF <###> 0xFF with 2s timeout              "[RTO_MS=2000]\xFF%P\xFF"
+//0xFF <###> 0xFF with 2KB payload data limit  "[MAX_LEN=2048]\xFF%P\xFF"
+// combination of both previous formats        "[RTO_MS=2000,MAX_LEN=2048]\xFF%P\xFF"
 /**
  * Framer.
  */
 public final class Framer {
 
+    //
+    private static final String DEFAULT_HOST_PARAM = SystemPropUtils.getStringSystemProp("rdx.framer.default.host.header", "unknown");
+    //
+
     public static final String FRAME_RECEIVE_TIMEOUT_MILLIS_PARAM = "RTO_MS";
+    public static final String FRAME_PAYLOAD_DATA_MAX_LENGTH_BYTES_PARAM = "MAX_LEN";
     public static final String CLEAR_DATA_FRAME_FORMAT = "%P";
     private static final String HTTP_OK = "200";
     private static final int PAR_STX = 'S';
@@ -207,6 +215,7 @@ public final class Framer {
         private final String format;
         final List<FormatParameter> params;
         private int receiveTimeoutMillis = -1;
+        private int maxLengthBytes = 128 * 1024 * 1024;
         int paramsIndex;
 
         Frame(final String format) {
@@ -232,11 +241,7 @@ public final class Framer {
             while (index[0] < format.length()) {
                 final FormatParameter param = new FormatParameter();
                 tmpStr = ByteBuffer.allocate(format.length());
-                try {
-                    parseFormatBytes(format.getBytes("US-ASCII"), tmpParam, tmpAttr, tmpStr, index);
-                } catch (UnsupportedEncodingException e) {
-                    throw new RadixError("Encoding US-ASCII is unsupported by server", e);
-                }
+                parseFormatBytes(format.getBytes(StandardCharsets.US_ASCII), tmpParam, tmpAttr, tmpStr, index);
                 param.param = tmpParam[0];
                 param.attr = tmpAttr.toString();
                 param.str = tmpStr;
@@ -247,6 +252,10 @@ public final class Framer {
 
         public int getReceiveTimeoutMillis() {
             return receiveTimeoutMillis;
+        }
+        
+        public int getMaxLengthBytes() {
+            return maxLengthBytes;
         }
 
         boolean isHTTP() {
@@ -275,10 +284,19 @@ public final class Framer {
                     try {
                         receiveTimeoutMillis = Integer.parseInt(nameAndVal[1]);
                         if (receiveTimeoutMillis <= 0) {
-                            throw new WrongFormatError("'" + FRAME_RECEIVE_TIMEOUT_MILLIS_PARAM + "' should be >= 0");
+                            throw new WrongFormatError("'" + FRAME_RECEIVE_TIMEOUT_MILLIS_PARAM + "' should be > 0");
                         }
                     } catch (NumberFormatException ex) {
                         throw new WrongFormatError("Invalid value of '" + FRAME_RECEIVE_TIMEOUT_MILLIS_PARAM + "'", ex);
+                    }
+                } else if (FRAME_PAYLOAD_DATA_MAX_LENGTH_BYTES_PARAM.equals(name)) {
+                    try {
+                        maxLengthBytes = Integer.parseInt(nameAndVal[1]);
+                        if (maxLengthBytes <= 0) {
+                            throw new WrongFormatError("'" + FRAME_PAYLOAD_DATA_MAX_LENGTH_BYTES_PARAM + "' should be > 0");
+                        }
+                    } catch (NumberFormatException ex) {
+                        throw new WrongFormatError("Invalid value of '" + FRAME_PAYLOAD_DATA_MAX_LENGTH_BYTES_PARAM + "'", ex);
                     }
                 } else {
                     throw new WrongFormatError("Unexpected overall param: '" + name + "'");
@@ -341,11 +359,7 @@ public final class Framer {
                         //int i1 = ParseHexChar(format[++index]);
                         //int i2 = ParseHexChar(format[++index]);
                         //str += ((i1 << 4) | i2);
-                        try {
-                            str.put(Hex.decode(new String(new byte[]{format[++index[0]], format[++index[0]]}, "US-ASCII")));
-                        } catch (UnsupportedEncodingException e) {
-                            throw new RadixError("Encoding US-ASCII is unsupported by server", e);
-                        }
+                        str.put(Hex.decode(new String(new byte[]{format[++index[0]], format[++index[0]]}, StandardCharsets.US_ASCII)));
                     } else {
                         str.put(format[index[0]]);
                     }
@@ -588,6 +602,7 @@ public final class Framer {
                                             in.unread((byte) ch);
                                             break;
                                         }
+                                        Framer.assertFrameLength(pck.position(), inFrame.getMaxLengthBytes());
                                     }
                                     params.add(pck);
                                 } else {
@@ -660,6 +675,7 @@ public final class Framer {
                                 } else {
                                     inFrame.len = len;
                                 }
+                                Framer.assertFrameLength(inFrame.len, inFrame.getMaxLengthBytes());
                             }
                             break;
                         }
@@ -697,7 +713,7 @@ public final class Framer {
                             break;
                         }
                         case PAR_HTTP: {
-                            final byte[] header = HttpFormatter.readMessage(in.getStream(), headerInfo);
+                            final byte[] header = HttpFormatter.readMessage(in.getStream(), headerInfo, inFrame.getMaxLengthBytes());
                             pck = ByteBuffer.wrap(header);
                             pck.position(header.length);
                             break;
@@ -797,7 +813,7 @@ public final class Framer {
                         fullLenAsStr.append(lenAsStr);
                         lenAsStr = fullLenAsStr.toString();
                     }
-                    byte[] len = lenAsStr.getBytes("US-ASCII");
+                    byte[] len = lenAsStr.getBytes(StandardCharsets.US_ASCII);
                     outFrame.block = len;
                     break;
                 }
@@ -814,7 +830,7 @@ public final class Framer {
                         fullLenAsStr.append(lenAsStr);
                         lenAsStr = fullLenAsStr.toString();
                     }
-                    byte[] len = lenAsStr.getBytes("US-ASCII");
+                    byte[] len = lenAsStr.getBytes(StandardCharsets.US_ASCII);
                     outFrame.block = len;
                     break;
                 }
@@ -861,16 +877,16 @@ public final class Framer {
                     if (param.attrRequest) {
                         final String method = getAndRemoveHeaderParam(headerInfo, EHttpParameter.HTTP_REQ_METHOD_PARAM.getValue(), EHttpParameter.HTTP_METHOD_POST.getValue());
                         final String path = getAndRemoveHeaderParam(headerInfo, EHttpParameter.HTTP_REQ_PATH_PARAM.getValue(), "/");
-                        final String host = getHeaderParam(headerInfo, EHttpParameter.HTTP_HOST_ATTR.getValue(), "");
+                        final String host = getHeaderParam(headerInfo, EHttpParameter.HTTP_HOST_ATTR.getValue(), DEFAULT_HOST_PARAM);
                         final boolean closeByCloseAttr = Boolean.parseBoolean(getAndRemoveHeaderParam(headerInfo, EHttpParameter.HTTP_CLOSE_PARAM.getValue(), "false"));//deprecated
                         final boolean closeByConnectionAttr = getHeaderParam(headerInfo, EHttpParameter.HTTP_CONNECTION_ATTR.getValue(), "close").equalsIgnoreCase("close");
-                        header = HttpFormatter.prepareRequestHeader(method, path, host, !(closeByCloseAttr || closeByConnectionAttr), headerInfo, pck.length).getBytes("US-ASCII");
+                        header = HttpFormatter.prepareRequestHeader(method, path, host, !(closeByCloseAttr || closeByConnectionAttr), headerInfo, pck.length).getBytes(StandardCharsets.US_ASCII);
                     } else {
                         final String stat_code = getAndRemoveHeaderParam(headerInfo, EHttpParameter.HTTP_RESP_STATUS_PARAM.getValue(), String.valueOf(HTTP_OK));
                         final String reason_phrase = getAndRemoveHeaderParam(headerInfo, EHttpParameter.HTTP_RESP_REASON_PARAM.getValue(), "OK");
                         final boolean closeByCloseAttr = Boolean.parseBoolean(getAndRemoveHeaderParam(headerInfo, EHttpParameter.HTTP_CLOSE_PARAM.getValue(), "false"));//deprecated
                         final boolean closeByConnectionAttr = getHeaderParam(headerInfo, EHttpParameter.HTTP_CONNECTION_ATTR.getValue(), "close").equalsIgnoreCase("close");
-                        header = HttpFormatter.prepareResponseHeader(stat_code + " " + reason_phrase, !(closeByCloseAttr || closeByConnectionAttr), headerInfo, pck.length).getBytes("US-ASCII");
+                        header = HttpFormatter.prepareResponseHeader(stat_code + " " + reason_phrase, !(closeByCloseAttr || closeByConnectionAttr), headerInfo, pck.length).getBytes(StandardCharsets.US_ASCII);
                     }
                     out.write(header, 0, header.length);
                     for (int i = 0; i < pck.length; i++) {
@@ -947,6 +963,12 @@ public final class Framer {
             return '0' + hexValue;
         } else {
             return 'A' + hexValue - 10;
+        }
+    }
+    
+    public static void assertFrameLength(int length, int maximum) throws FrameTooLargeException {
+        if (length > maximum) {
+            throw new FrameTooLargeException(length, maximum);
         }
     }
 

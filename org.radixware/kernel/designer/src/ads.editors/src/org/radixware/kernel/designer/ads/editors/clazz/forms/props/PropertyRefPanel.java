@@ -157,11 +157,7 @@ public class PropertyRefPanel extends JPanel implements PropertyChangeListener {
             prop.setPropertyId(def != null ? def.getId() : null);
 
             editor.setValue(prop);
-            try {
-                ((UIPropertySupport) editor.getSource()).setValue(prop);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            ((UIPropertySupport) editor.getSource()).setValue(prop);
 
             if (def == null) {
                 return;

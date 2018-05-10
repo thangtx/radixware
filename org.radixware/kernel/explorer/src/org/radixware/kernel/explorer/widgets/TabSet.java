@@ -26,16 +26,18 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.editorpages.RadContainerEditorPageDef;
-import org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef;
 import org.radixware.kernel.common.client.meta.editorpages.RadStandardEditorPageDef;
 import org.radixware.kernel.common.client.models.items.EditorPageModelItem;
 import org.radixware.kernel.common.client.models.items.ModelItem;
+import org.radixware.kernel.common.client.models.items.PropertiesGroupModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.ArrId;
 import org.radixware.kernel.common.client.views.ITabSetWidget;
@@ -45,7 +47,6 @@ import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
 import org.radixware.kernel.explorer.types.RdxIcon;
@@ -53,15 +54,21 @@ import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 import org.radixware.kernel.explorer.views.IExplorerView;
 
-public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerModelWidget {
+public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerModelWidget {        
     
     private static final class CurrentTabChangeEvent extends QEvent{
         
         public CurrentTabChangeEvent(){
-            super(QEvent.Type.User);            
+            super(QEvent.Type.User);
         }
     }
-
+    
+    private static final class RefreshPageEvent extends QEvent{        
+        public RefreshPageEvent(){
+            super(QEvent.Type.User);
+        }        
+    }
+    
     private final static String PAGE_ACTIVATED_KEY = "pageActivated";//legacy setting key
     private final static String RECENTLY_OPENED_PAGES_KEY = "recentlyOpenedPages";
             
@@ -73,11 +80,15 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
     private final List<Id> openedPages = new ArrayList<>();
     private final List<Id> needForReread = new ArrayList<>();
     private ArrId recentlyOpenedPages;
-    private String settingsKey;    
+    private String settingsKey;
     private boolean closed = false;
     private boolean inited = false;
+    private boolean wasBinded = false;
+    private boolean autoHide = false;
     private int scheduledCurrentTabChange = -1;
     private final IClientEnvironment environment;
+    private boolean changingCurrentPage;
+    private Set<Id> postponedRefresh;
     
     public TabSet(final IClientEnvironment environment, final QWidget parent) {
         super(parent);
@@ -99,7 +110,7 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
         settingsKey = parentView.getModel().getConfigStoreGroupName() + "/" + SettingNames.SYSTEM + "/" + RECENTLY_OPENED_PAGES_KEY + "/" + name;
         final String legacySettingsKey = parentView.getModel().getConfigStoreGroupName() + "/" + SettingNames.SYSTEM + "/" + PAGE_ACTIVATED_KEY + "/" + name;
         applySettings();	//Применение настроек шрифта и размеров значков
-
+        setObjectName("rx_tab_set_#"+name);
         final ClientSettings settings = environment.getConfigStore();
         final boolean needToRestoreActiveTab;
         settings.beginGroup(SettingNames.SYSTEM);
@@ -166,7 +177,7 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
             editorPage.setParent(this);
             if (editorPageModelItem.isVisible()) {
                 final int tabIndex =
-                        addTab(editorPage, (RdxIcon) editorPageModelItem.getIcon(), editorPageModelItem.getTitle());
+                        addTab(editorPage, (RdxIcon) editorPageModelItem.getIcon(), calcEffectiveTitle(editorPageModelItem));
                 final boolean isEnabled = editorPageModelItem.isEnabled();
                 setTabEnabled(tabIndex, isEnabled);
                 setTabTextColor(tabIndex, editorPageModelItem.getTitleColor());
@@ -179,7 +190,7 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
                 }
                 visiblePages.add(editorPageModelItem.getId());
             }
-            editorPages.add(editorPage);
+            editorPages.add(editorPage);            
         }
 
         if (index > 0) {
@@ -204,6 +215,8 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
             onCurrentChanged(currentIndex());
         }        
         Application.getInstance().getActions().settingsChanged.connect(this, "applySettings()");
+        wasBinded = true;
+        updateVisibility();
     }
 
     public void updateSubscribedProperties(final EditorPageModelItem pageItem) {
@@ -216,19 +229,6 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
         }
     }
 
-    private boolean hasTitledPage() {
-        if (visiblePages.size() == 1) {
-            final Id pageId = visiblePages.get(0);
-            final EditorPageModelItem editorPage = getEditorPageById(pageId).getEditorPageModelItem();
-            if (editorPage.getTitle()!=null && !editorPage.getTitle().isEmpty()){
-                return false;
-            }            
-            final RadEditorPageDef def = editorPage.getDefinition();
-            return def.hasTitle() || !Utils.equals(def.getTitle(), editorPage.getTitle());
-        }
-        return visiblePages.size() > 1;
-    }
-
     private void onCurrentChanged(final int index) {
         if (environment.getEasSession().isBusy()){
             if (scheduledCurrentTabChange<0){
@@ -236,48 +236,96 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
             }
             scheduledCurrentTabChange = index;
         }else{
-            processCurrentTabChanged(index);
+            changingCurrentPage = true;
+            try{
+                processCurrentTabChanged(index);
+            }finally{
+                changingCurrentPage = false;
+            }
         }
     }
     
     private void processCurrentTabChanged(final int index){
-        if (index >= 0 && index < visiblePages.size()) {
-            final Id pageId = visiblePages.get(index);
+        final EditorPage page = preparePage(index);
+        if (page!=null){
+            if (wasBinded){
+                page.setFocus();
+            }
+            page.getEditorPageModelItem().getOwner().afterActivateEditorPage(page.getPageId());
+        }
+    }
+
+    @Override
+    protected void beforeUserChangeCurrentIndex(final int newIndex) {
+        changingCurrentPage = true;
+        try{
+            preparePage(newIndex);
+        }finally{
+            changingCurrentPage = false;
+        }
+    }
+    
+    private void processPostponedRefresh(){
+        if (postponedRefresh!=null){
+            try{
+                for (Id pageId : postponedRefresh){
+                    final EditorPage page = getEditorPageById(pageId);
+                    refresh(page.getEditorPageModelItem());
+                }
+            }finally{
+                postponedRefresh = null;
+            }
+        }
+    }
+    
+    private EditorPage preparePage(final int pageIndex){
+        if (pageIndex >=0 && pageIndex < visiblePages.size()) {
+            final Id pageId = visiblePages.get(pageIndex);
             final EditorPage page = getEditorPageById(pageId);
-            if (!openedPages.contains(pageId)) {
+            if (!openedPages.contains(pageId)){
                 page.bind();
                 openedPages.add(pageId);
-            } else if (needForReread.contains(pageId)) {
+            }else if (needForReread.contains(pageId)) {
                 page.reread();
                 needForReread.remove(pageId);
             }
-            page.setFocus();            
-            page.getEditorPageModelItem().getOwner().afterActivateEditorPage(pageId);
-        }        
+            return page;
+        }else{
+            return null;
+        }
     }
 
     @Override
     public void refresh(final ModelItem changedItem) {
         if (changedItem instanceof EditorPageModelItem) {
             final EditorPageModelItem modelItem = (EditorPageModelItem) changedItem;
+            if (changingCurrentPage){
+                if (postponedRefresh==null){
+                    postponedRefresh = new HashSet<>(3);
+                    Application.processEventWhenEasSessionReady(this, new RefreshPageEvent());
+                }
+                postponedRefresh.add(modelItem.getId());
+                return;
+            }
             final EditorPage page = getEditorPageById(modelItem.getId());
-            int idx = visiblePages.indexOf(modelItem.getId());
+            int idx = visiblePages.indexOf(modelItem.getId());            
             if (!modelItem.isVisible() && idx >= 0) {
-                removeTab(idx);
                 visiblePages.remove(idx);
+                removeTab(idx);
             } else if (modelItem.isVisible() && idx < 0) {
                 idx = pageIndex(page);
                 visiblePages.add(idx, modelItem.getId());
-                insertTab(idx, page, (QIcon) modelItem.getIcon(), modelItem.getTitle());
+                insertTab(idx, page, (QIcon) modelItem.getIcon(), calcEffectiveTitle(modelItem));
                 setTabEnabled(idx, modelItem.isEnabled());                
                 setTabTextColor(idx, modelItem.getTitleColor());                
             } else if (idx >= 0) {
                 setTabIcon(idx, (QIcon) modelItem.getIcon());
-                setTabText(idx, modelItem.getTitle());
+                setTabText(idx, calcEffectiveTitle(modelItem));
                 setTabEnabled(idx, modelItem.isEnabled());
                 setTabTextColor(idx, modelItem.getTitleColor());
             }
             updateSubscribedProperties(modelItem);
+            updateVisibility();
         }
         refreshTabBar();
     }
@@ -303,7 +351,54 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
     }
 
     private void refreshTabBar() {
-        setTabBarVisible(hasTitledPage());
+        setTabBarVisible(visiblePages.size() > 1);
+    }
+    
+    private String calcEffectiveTitle(final EditorPageModelItem page){
+        if (page.getDefinition() instanceof RadStandardEditorPageDef && !pageHasVisibleItem(page)){
+            final List<EditorPageModelItem> childPages = page.getChildPages();
+            EditorPageModelItem visiblePage = null;
+            for (EditorPageModelItem childPage: childPages){
+                if (childPage.isVisible()){
+                    if (visiblePage==null){
+                        visiblePage = childPage;
+                    }else{
+                        return page.getTitle();
+                    }
+                }
+            }
+            if (visiblePage==null){
+                return page.getTitle();
+            }else{
+                final String pageTitle = page.getTitle();
+                final String innerPageTitle = calcEffectiveTitle(visiblePage);
+                if (pageTitle==null || pageTitle.isEmpty()){
+                    return innerPageTitle;
+                }else if (innerPageTitle==null || innerPageTitle.isEmpty()){
+                    return pageTitle;
+                }else{
+                    return pageTitle+". "+innerPageTitle;
+                }
+            }
+        }else{
+            return page.getTitle();
+        }
+    }
+    
+    private static boolean pageHasVisibleItem(final EditorPageModelItem page){
+        final Collection<Property> properties = page.getProperties();
+        for (Property property: properties){
+            if (property.isVisible()){
+                return true;
+            }
+        }
+        final Collection<PropertiesGroupModelItem> groups = page.getPropertyGroups();
+        for (PropertiesGroupModelItem group: groups){
+            if (group.isVisible()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private EditorPage getEditorPageById(final Id pageId) {
@@ -363,9 +458,20 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
         }
         return false;
     }
+    
+    @Override
+    protected boolean onFirstFocusIn(){
+        if (closed  || !wasBinded || currentIndex() < 0) {
+            return false;
+        }else{
+            final Id currentPageId = visiblePages.get(currentIndex());
+            getEditorPageById(currentPageId).setFocus();
+            return true;
+        }
+    }
 
     @Override
-    protected void focusInEvent(QFocusEvent event) {
+    protected void focusInEvent(final QFocusEvent event) {
         super.focusInEvent(event);
         if (!closed && currentIndex() > -1) {
             final Id currentPageId = visiblePages.get(currentIndex());
@@ -403,6 +509,7 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
     protected void closeEvent(final QCloseEvent event) {
         closed = true;
         inited = false;
+        postponedRefresh = null;
         scheduledCurrentTabChange = -1;
         final ClientSettings settings = environment.getConfigStore();
         final int currentIndex = currentIndex();
@@ -479,11 +586,33 @@ public class TabSet extends QExtTabWidget implements ITabSetWidget, IExplorerMod
                 }catch(RuntimeException exception){
                     environment.getTracer().error(exception);
                 }
+            }        
+        }else if (event instanceof RefreshPageEvent){
+            event.accept();
+            if (changingCurrentPage){
+                Application.processEventWhenEasSessionReady(this, new RefreshPageEvent());
+            }else{
+                processPostponedRefresh();
             }
-        }else{
+        } else{
             super.customEvent(event);
         }
     }
     
+    private void updateVisibility(){
+        if (isAutoHide() && wasBinded){
+            setVisible(!visiblePages.isEmpty());
+        }
+    }
     
+    public boolean isAutoHide(){
+        return autoHide;
+    }
+    
+    public void setAutoHide(final boolean isAutoHide){
+        if (this.autoHide!=isAutoHide){
+            this.autoHide = isAutoHide;
+            updateVisibility();
+        }
+    }
 }

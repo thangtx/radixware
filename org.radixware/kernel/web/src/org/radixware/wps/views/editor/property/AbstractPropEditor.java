@@ -16,9 +16,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.common.client.dialogs.IFileDialogSettings;
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
 import org.radixware.kernel.common.client.editors.property.PropEditorController;
 import org.radixware.kernel.common.client.editors.property.PropEditorOptions;
 import org.radixware.kernel.common.client.editors.property.PropertyProxy;
@@ -89,9 +92,23 @@ public abstract class AbstractPropEditor extends UIObject implements IPropEditor
                     SimpleProperty pr = (SimpleProperty) prop;
                     pr.saveToStream(output, value);//save file to starter temporary directory
                     if (f.exists() && f.isFile()) {
-                        EMimeType type = pr.getFileDialogSettings(IFileDialogSettings.EFileDialogOpenMode.LOAD).getMimeType();
-                        String mimeType = type != null ? "." + type.getExt() : null;
-                        ((WpsEnvironment) getEnvironment()).sendFileToTerminal(f.getName(), f, mimeType, false, false);//send file to terminal
+                        final EnumSet<EMimeType> types = pr.getFileDialogSettings(EFileDialogOpenMode.LOAD).getMimeTypes();
+                        final String mimeTypes;
+                        if (types==null || types.isEmpty()){
+                            mimeTypes = null;
+                        }else{
+                            final StringBuilder typesBuilder = new StringBuilder();
+                            for (EMimeType type: types){
+                                if (type!=EMimeType.ALL_FILES && type!=EMimeType.ALL_SUPPORTED){
+                                    if (typesBuilder.length()>0){
+                                        typesBuilder.append(',');                                    
+                                    }
+                                    typesBuilder.append(type.getValue());
+                                }
+                            }
+                            mimeTypes = typesBuilder.toString();
+                        }                        
+                        ((WpsEnvironment) getEnvironment()).sendFileToTerminal(f.getName(), f, mimeTypes, false, false);//send file to terminal
                     } else {
                         throw new FileNotFoundException("Could not create file for property value storing.");
                     }
@@ -153,6 +170,7 @@ public abstract class AbstractPropEditor extends UIObject implements IPropEditor
         this.env = property.getEnvironment();
         this.controller = new Controller(this, property);
         setPropertyStorePossibilityImpl(property);
+        setObjectName("propEditor #"+property.getId().toString());
     }
 
     private void setPropertyStorePossibilityImpl(Property property) {
@@ -166,12 +184,18 @@ public abstract class AbstractPropEditor extends UIObject implements IPropEditor
         return controller.getProperty();
     }
 
-    protected void setEditorWidget(UIObject widget) {
-        this.editorWidget = widget;
-        this.html.add(widget.getHtml());
-        widget.setParent(this);
-        widget.setHCoverage(100);
-        widget.setVCoverage(100);
+    protected void setEditorWidget(final UIObject widget) {
+        if (editorWidget!=null){
+            this.html.remove(editorWidget.getHtml());
+            editorWidget.setParent(null);            
+        }
+        if (widget!=null){
+            this.editorWidget = widget;
+            this.html.add(widget.getHtml());
+            widget.setParent(this);
+            widget.setHCoverage(100);
+            widget.setVCoverage(100);
+        }
     }
 
     @Override
@@ -221,11 +245,15 @@ public abstract class AbstractPropEditor extends UIObject implements IPropEditor
         if (customDlgBtn != null) {
             addButton(customDlgBtn);
         }
-        final List<ICommandToolButton> commandButtons = controller.getCommandToolButtons();
+        addCommandButtons(controller.getCommandToolButtons());
+    }
+    
+    protected void addCommandButtons(final List<ICommandToolButton> commandButtons ){
+        final List<ICommandToolButton> buttons = new ArrayList<>(commandButtons);
+        Collections.reverse(buttons);        
         for (ICommandToolButton commandButton : commandButtons) {
             addButton(commandButton);
-        }
-
+        }        
     }
 
     @Override

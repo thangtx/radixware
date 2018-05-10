@@ -8,14 +8,12 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.dds;
 
 import java.util.EnumSet;
 import org.radixware.kernel.common.enums.EDdsConstraintDbOption;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.utils.Utils;
-
 
 public abstract class DdsConstraintDef extends DdsDefinition implements IDdsAutoDbNamedDefinition {
 
@@ -99,7 +97,7 @@ public abstract class DdsConstraintDef extends DdsDefinition implements IDdsAuto
     }
     private final EnumSet<EDdsConstraintDbOption> dbOptions = EnumSet.noneOf(EDdsConstraintDbOption.class);
 
-    /** 
+    /**
      * Получить опции в базе данных.
      */
     public EnumSet<EDdsConstraintDbOption> getDbOptions() {

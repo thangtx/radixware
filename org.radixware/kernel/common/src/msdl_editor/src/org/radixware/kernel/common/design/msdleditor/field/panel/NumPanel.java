@@ -68,9 +68,10 @@ public class NumPanel extends AbstractEditItem implements ActionListener {
         smodel.addElement(EEncoding.CP1251);
         smodel.addElement(EEncoding.CP1252);
         smodel.addElement(EEncoding.EBCDIC);
+        smodel.addElement(EEncoding.EBCDIC_CP1047);
         smodel.addElement(EEncoding.UTF8);
         simpleFieldPanel1.setEncodingComboBoxModel(smodel);
-        simpleFieldPanel1.open(fieldModel, EEncoding.getInstance(fieldModel.getEncoding()));
+        simpleFieldPanel1.open(fieldModel, EEncoding.getInstance(fieldModel.calcEncoding(false)));
         update();
         DocumentListener dl = new DocumentListener() {
 

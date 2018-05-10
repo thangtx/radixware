@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcDJ5VKJWCXNBGXFHTZ3Q3BICPX4" Name="NotificationSenderRecipient" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcDJ5VKJWCXNBGXFHTZ3Q3BICPX4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcDJ5VKJWCXNBGXFHTZ3Q3BICPX4"/>
+    </Bodies>
+    <MethodGroup Id="cmgBXB25ERBR5AQXM2B3NG5DNRKFY" Name="Root"/>
+    <PropertyGroup Id="cpgC3BEEZKJM5GRNMZNEYR4LJ5O5Y" Name="Root"/>
+    <Properties>
+      <Property Id="prdGTVUP6THPBHMBNAHF6U6UIJNFQ" Name="channelKind" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21" Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM"/>
+      </Property>
+      <Property Id="prd3YKAM6HEMJFT7N7T5QCDH5TXXA" Name="address" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prd74G7KFBJWZGHREJBKE34HQS5UE" Name="user" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="411" Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthQM3E2BPKJ5H2XME7TAHMMF2TTM" Name="NotificationSenderRecipient" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="channelKind" Id="mpr2S2U74JJMFGPHEXJNNVFMUU4JQ">
+            <Type TypeId="21" Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="address" Id="mprSWIYR56YFJA7JHPOAUVXR46X2A">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="user" Id="mprYPZTJOP3NZGE5CN3TZIWWG3TNU">
+            <Type TypeId="411" Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJ5VKJWCXNBGXFHTZ3Q3BICPX4 prdGTVUP6THPBHMBNAHF6U6UIJNFQ" Invoke="true">
+                <xsc:Presentation>channelKind</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = channelKind;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJ5VKJWCXNBGXFHTZ3Q3BICPX4 prd3YKAM6HEMJFT7N7T5QCDH5TXXA" Invoke="true">
+                <xsc:Presentation>address</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = address;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJ5VKJWCXNBGXFHTZ3Q3BICPX4 prd74G7KFBJWZGHREJBKE34HQS5UE" Invoke="true">
+                <xsc:Presentation>user</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = user;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

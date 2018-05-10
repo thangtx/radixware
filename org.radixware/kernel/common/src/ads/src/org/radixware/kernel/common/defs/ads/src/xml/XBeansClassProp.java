@@ -45,6 +45,9 @@ public class XBeansClassProp {
     private boolean hasSeveralPropNewElementAddition;
     private boolean hasSeveralPropElementRemove;
     private boolean hasSeveralPropListAssignment;
+    private boolean hasSingletonSetterDateTimeWithTimezone;
+    private boolean hasSingletonGetterDateTimeWithTimezone;
+    private boolean hasListGetter15GetListDateTimeWithTimezone;
 
     public XBeansClassProp(String name, String type, String xtype, boolean isAttr) {
         this.name = name;
@@ -267,6 +270,30 @@ public class XBeansClassProp {
 
     public void setHasSingletonPropXmlSetter(boolean hasSingletonPropXmlSetter) {
         this.hasSingletonPropXmlSetter = hasSingletonPropXmlSetter;
+    }
+    
+    public boolean hasSingletonGetterDateTimeWithTimezone() {
+        return hasSingletonGetterDateTimeWithTimezone;
+    }
+
+    public void setHasSingletonGetterDateTimeWithTimezone(boolean hasSingletonDateTimeWithTimezoneGetter) {
+        this.hasSingletonGetterDateTimeWithTimezone = hasSingletonDateTimeWithTimezoneGetter;
+    }
+
+    public boolean hasSingletonSetterDateTimeWithTimezone() {
+        return hasSingletonSetterDateTimeWithTimezone;
+    }
+
+    public void setHasSingletonSetterDateTimeWithTimezone(boolean hasSingletonDateTimeWithTimezoneSetter) {
+        this.hasSingletonSetterDateTimeWithTimezone = hasSingletonDateTimeWithTimezoneSetter;
+    }
+
+    public boolean hasListGetter15GetListDateTimeWithTimezone() {
+        return this.hasListGetter15GetListDateTimeWithTimezone;
+    }
+    
+    public void setHasListGetter15GetListDateTimeWithTimezone(boolean hasListGetter15GetListDateTimeWithTimezone) {
+        this.hasListGetter15GetListDateTimeWithTimezone = hasListGetter15GetListDateTimeWithTimezone;
     }
 
     public String getName() {

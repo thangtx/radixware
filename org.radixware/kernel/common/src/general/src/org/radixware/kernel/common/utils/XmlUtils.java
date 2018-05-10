@@ -29,6 +29,7 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.impl.xb.xsdschema.ImportDocument.Import;
+import org.apache.xmlbeans.impl.xb.xsdschema.IncludeDocument;
 import org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument;
 import org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument.Schema;
 import org.radixware.kernel.common.build.xbeans.XmlEscapeStr;
@@ -46,7 +47,17 @@ import org.xmlsoap.schemas.wsdl.TTypes;
 public class XmlUtils {
 
     public static final String RDX_TYPES_XMLNS = "http://schemas.radixware.org/types.xsd";
+    public static final String XMLNS = "xmlns";
 
+    private static void addSchemaIncludeLocation(Schema s, List<String> list) {
+        IncludeDocument.Include[] includes = s.getIncludeArray();
+        if (includes != null) {
+            for (IncludeDocument.Include include : includes) {
+                list.add(include.getSchemaLocation());
+            }
+        }
+    }
+    
     private static void addSchemaImportNs(Schema s, List<String> list, boolean ignoreSpecialRefs) {
         Import[] imports = s.getImportArray();
         if (imports != null) {
@@ -143,6 +154,29 @@ public class XmlUtils {
         }
     }
 
+    public static List<String> getIncludedLocations(XmlObject object) {
+        if (object instanceof Schema) {
+            ArrayList<String> list = new ArrayList<>();
+            addSchemaIncludeLocation((Schema) object, list);
+            return list;
+        } else if (object instanceof TDefinitions) {
+            ArrayList<String> list = new ArrayList<>();            
+            for (TTypes type : ((TDefinitions) object).getTypesList()) {                
+                XmlObject obj = XmlObjectProcessor.getXmlObjectFirstChild(type);
+                if (obj != null && obj instanceof Schema) {
+                    addSchemaIncludeLocation((Schema) obj, list);
+                }
+            }
+            return list;
+        } else if (object instanceof SchemaDocument) {
+            return getIncludedLocations(((SchemaDocument) object).getSchema());
+        } else if (object instanceof DefinitionsDocument) {
+            return getIncludedLocations(((DefinitionsDocument) object).getDefinitions());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
     public static List<Namespace2Location> getImportedNamespaces2Loc(XmlObject object, boolean ignoreSpecialRefs) {
         if (object instanceof Schema) {
             ArrayList<Namespace2Location> list = new ArrayList<>();
@@ -518,5 +552,32 @@ public class XmlUtils {
             }
         }
         return result;
+    }
+    
+    public static List<org.w3c.dom.Element> getChildElements(Node element) {
+        List<org.w3c.dom.Element> childElements = new ArrayList<>();
+        NodeList nodeList = element.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                childElements.add((org.w3c.dom.Element) nodeList.item(i));
+            }
+        }
+        return childElements;
+    }
+    
+    public static Map<String, String> getNamespacePrefixes(XmlObject obj) {
+        Map<String, String> result = new HashMap<>();
+        org.w3c.dom.Element schemaElement = findChildByLocalName(obj.getDomNode(), "schema");
+        if (schemaElement != null) {
+            NamedNodeMap attributes = schemaElement.getAttributes();
+            for (int i = 0; i < attributes.getLength(); i++) {
+                Node attribute = attributes.item(i);
+                if (attribute.getNodeName().contains(XMLNS)) {
+                    result.put(attribute.getLocalName(), attribute.getNodeValue());
+                }
+            }
+        }
+        
+        return result;        
     }
 }

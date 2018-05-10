@@ -44,7 +44,7 @@ import org.radixware.kernel.common.sqml.translate.SqmlPreprocessor;
 import org.radixware.kernel.common.types.Bin;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.arte.Arte;
-import org.radixware.kernel.server.dbq.sqml.PreprocessorConfigByDbConfiguration;
+import org.radixware.kernel.server.dbq.sqml.ServerPreprocessorConfig;
 import org.radixware.kernel.server.exceptions.DatabaseError;
 import org.radixware.kernel.server.meta.clazzes.IRadPropReadAccessor;
 import org.radixware.kernel.server.meta.clazzes.IRadPropWriteAccessor;
@@ -113,7 +113,7 @@ public abstract class Cursor extends SqlClass implements java.lang.AutoCloseable
             final List<DbOptionValue> options,
             final String layerUri,
             final Arte arte) {
-        return SqmlPreprocessor.checkCondition(dbType, checkVersion, op, version, checkOptions, options, new PreprocessorConfigByDbConfiguration(arte == null ? null : arte.getDbConfiguration()));
+        return SqmlPreprocessor.checkCondition(dbType, checkVersion, op, version, checkOptions, options, new ServerPreprocessorConfig(arte == null ? null : arte.getDbConfiguration()));
     }
 
     public boolean isBeforeFirst() {

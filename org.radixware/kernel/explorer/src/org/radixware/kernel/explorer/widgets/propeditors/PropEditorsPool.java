@@ -23,7 +23,7 @@ import org.radixware.kernel.common.enums.EValType;
 public final class PropEditorsPool {
 
     private static final PropEditorsPool INSTANCE = new PropEditorsPool();
-    private static final int MAX_CACHE_SIZE = 16;
+    private static final int MAX_CACHE_SIZE = 50;
     private final Map<String, Stack<PropEditor>> propEditorsCache = new HashMap<>();
 
     private PropEditorsPool() {
@@ -34,9 +34,9 @@ public final class PropEditorsPool {
     }
 
     public boolean cachePropEditor(final PropEditor propEditor) {
-        if (propEditor.getClass().getName().startsWith(this.getClass().getPackage().getName())) {
-            final Stack<PropEditor> propEditors =
-                    getPropEditorsCache(propEditor.getProperty());
+        if (propEditor.getClass().getName().startsWith(this.getClass().getPackage().getName())
+            && propEditor instanceof ProxyPropEditor==false) {
+            final Stack<PropEditor> propEditors = getPropEditorsCache(propEditor);
             if (propEditors.size() < MAX_CACHE_SIZE) {
                 propEditor.clear();
                 propEditors.push(propEditor);
@@ -68,12 +68,28 @@ public final class PropEditorsPool {
         }
         return propEditors;
     }
+    
+    private Stack<PropEditor> getPropEditorsCache(final PropEditor propEditor) {
+        final String cacheKey = getCacheKey(propEditor);
+        Stack<PropEditor> propEditors = propEditorsCache.get(cacheKey);
+        if (propEditors == null) {
+            propEditors = new Stack<>();
+            propEditorsCache.put(cacheKey, propEditors);
+        }
+        return propEditors;
+    }    
 
     private static String getCacheKey(final Property property) {
         final EValType valType = ValueConverter.serverValType2ClientValType(property.getType());
         final EEditMaskType editMaskType = property.getEditMask().getType();
         return valType.name() + (editMaskType == null ? "" : "/" + editMaskType.name());
     }
+    
+    private static String getCacheKey(final PropEditor propEditor) {
+        final EValType valType = ValueConverter.serverValType2ClientValType(propEditor.getProperty().getType());
+        final EEditMaskType editMaskType = propEditor.getEditMaskType();
+        return valType.name() + (editMaskType == null ? "" : "/" + editMaskType.name());
+    }    
 
     public PropEditor getPropArrEditor(final Property property) {
         final PropEditor propEditor = getCachedPropEditor(property);
@@ -123,16 +139,6 @@ public final class PropEditorsPool {
     public PropEditor getPropRefEditor(final PropertyRef property) {
         final PropEditor propEditor = getCachedPropEditor(property);
         return propEditor == null ? new PropRefEditor(property) : propEditor;
-    }
-
-    public AbstractPropEditor getPropTextStrEditor(final PropertyStr property) {
-        final PropEditor propEditor = getCachedPropEditor(property);
-        return propEditor == null ? new PropTextEditor(property) : propEditor;
-    }
-
-    public AbstractPropEditor getPropTextClobEditor(final PropertyClob property) {
-        final PropEditor propEditor = getCachedPropEditor(property);
-        return propEditor == null ? new PropTextEditor(property) : propEditor;
     }
 
     public PropEditor getPropStrEditor(final Property property) {

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" Name="TaskExportXsd" TargetNamespace="http://schemas.radixware.org/task-impExp.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/task-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:rcmn="http://schemas.radixware.org/common.xsd" xmlns:this="http://schemas.radixware.org/task-impExp.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:schd="http://schemas.tranzaxis.com/scheduling-impExp.xsd">
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" Name="TaskExportXsd" TargetNamespace="http://schemas.radixware.org/task-impExp.xsd" NeedsDoc="false" Environment="common"><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdY5AELJNM7FG77FZD4ATT7SFMXA" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/task-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:rcmn="http://schemas.radixware.org/common.xsd" xmlns:this="http://schemas.radixware.org/task-impExp.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:schd="http://schemas.tranzaxis.com/scheduling-impExp.xsd">
 	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
 	<xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
 	<xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
@@ -12,6 +17,7 @@
 					<xs:element name="Priority" type="xs:integer"/>
 					<xs:element name="PriorityBoostingSpeed" type="xs:integer"/>
 					<xs:element name="Title" type="types:Str" minOccurs="0"/>
+                                        <xs:element name="Rid" type="types:Str" minOccurs="0"/>
 					<xs:element name="IsActive" type="types:Bool" minOccurs="0"/>
 					<xs:element name="ExecRoleGuids" type="types:Str" minOccurs="0"/>
 					<xs:element name="SchedulerUnitId" type="types:Int" minOccurs="0"/>

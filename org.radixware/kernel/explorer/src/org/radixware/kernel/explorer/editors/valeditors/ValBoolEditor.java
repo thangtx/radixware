@@ -182,7 +182,7 @@ public class ValBoolEditor extends ValEditor<Boolean> {
         final QFont font = button.font();
         font.setPointSize(font.pointSize() - 1);
         button.setFont(font);
-        ((QBoxLayout) layout()).insertWidget(0, button, 0, new Alignment(AlignmentFlag.AlignVCenter, AlignmentFlag.AlignLeft));
+        insertWidgetToFront(button);
         button.setSizePolicy(Policy.Maximum, Policy.Fixed);
         button.setFixedHeight(8);
         button.resize(button.sizeHint().width(), 8);
@@ -297,7 +297,7 @@ public class ValBoolEditor extends ValEditor<Boolean> {
 
     @Override
     public QSize sizeHint() {
-        return isInGrid() ? layout().sizeHint() : super.sizeHint();
+        return isAdjustWidthByContentModeEnabled() ? layout().sizeHint() : super.sizeHint();
     }    
     
     @Override    

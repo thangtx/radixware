@@ -40,6 +40,7 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends Panel {
 
         public DropDownSettingsListDelegate(final String noItemText, final GroupSettings<T> addons) {
             nullItem = new DropDownListItem<>(noItemText, null);
+            nullItem.setObjectName("rx_dd_list_item_"+noItemText);
             this.addons = addons;
             setDisplayCurrentItemInDropDownList(true);
         }
@@ -81,7 +82,9 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends Panel {
             for (GroupSettings.SettingItem item : items) {
                 T setting = addons.findById(item.settingId);
                 if (setting != null && ChooseGroupSetting.this.isSettingVisible(setting)) {
-                    result.add(new DropDownListItem<>(setting.getTitle(), setting, setting.getIcon()));
+                    final DropDownListItem<T> ddItem = new DropDownListItem<>(setting.getTitle(), setting, setting.getIcon());
+                    ddItem.setObjectName("rx_dd_list_item_#"+setting.getId().toString());
+                    result.add(ddItem);
                 }
             }
             return result;
@@ -90,6 +93,7 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends Panel {
         private DropDownListItem<T> createRecentlyUsedItem(final T addon){
             final DropDownListItem<T> item = new DropDownListItem<>(addon.getTitle(),addon);            
             item.setForeground(RESENTLY_USED_ITEM_FOREGROUND);
+            item.setObjectName("rx_dd_list_recently_used_item_#"+addon.getId().toString());
             return item;
         }
         
@@ -101,6 +105,7 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends Panel {
             item.setBorderColor(Color.GRAY);
             item.getHtml().setCss("border-bottom-width", "1px");
             item.getHtml().setCss("border-bottom-style", "solid");
+            item.setObjectName("rx_dd_list_item_sep_"+title);
             return item;
         }
     }
@@ -165,7 +170,7 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends Panel {
     }
 
     protected boolean isSettingVisible(final T setting) {
-        return true;
+        return setting.isVisible();
     }
 
     protected boolean canOpenSettingsManager() {

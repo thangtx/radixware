@@ -184,6 +184,11 @@ public class AdsSqlClassExecuteMethod extends AdsSqlMethodDef implements ILocali
         public boolean isDescriptionIdChanged(){
             return (!isDescriptionIdCalculated() && super.isDescriptionIdChanged()) || (isDescriptionIdCalculated()&& getDescriptionLocation().findLocalizedString(getDescriptionCalculatedId()) != null);
         }
+
+        @Override
+        public boolean isDescriptionInheritable() {
+            return false;
+        }
     }
 
     private class AdsSqlClassExecuteMethodReturnValue extends MethodReturnValue implements ILocalizedDescribable.ILocalizedCalculatedDef{
@@ -233,6 +238,12 @@ public class AdsSqlClassExecuteMethod extends AdsSqlMethodDef implements ILocali
         public boolean isDescriptionIdChanged(){
             return (!isDescriptionIdCalculated() && super.isDescriptionIdChanged()) || (isDescriptionIdCalculated()&& getDescriptionLocation().findLocalizedString(getDescriptionCalculatedId()) != null);
         }
+
+        @Override
+        public boolean isDescriptionInheritable() {
+            return false;
+        }
+        
     }
     
     private class AdsSqlClassExecuteMethodProfile extends AdsMethodDef.Profile {
@@ -316,7 +327,7 @@ public class AdsSqlClassExecuteMethod extends AdsSqlMethodDef implements ILocali
     @Override
     public Profile getProfile() {
         final AdsSqlClassDef sqlClass = getOwnerClass();
-        if (sqlClass != null && !sqlClass.getSource().getItems().isEmpty()) {
+        if (sqlClass != null && !sqlClass.getSqml().getItems().isEmpty()) {
             return profile;
         } else {
             return super.getProfile(); // RADIX-3889

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import javax.net.ssl.SSLSocket;
 import org.apache.xmlbeans.XmlObject;
+import org.radixware.kernel.common.enums.EAadcMember;
 import org.radixware.kernel.common.enums.EClientAuthentication;
 import org.radixware.kernel.common.enums.EEventContextType;
 import org.radixware.kernel.common.enums.EEventSeverity;
@@ -44,6 +45,7 @@ import org.radixware.kernel.common.soap.IServerMessageProcessorFactory;
 import org.radixware.kernel.common.soap.IServerSoapMessageProcessor;
 import org.radixware.kernel.common.soap.ProcessException;
 import org.radixware.kernel.common.soap.RadixSoapHelper;
+import org.radixware.kernel.common.soap.RadixSoapMessage;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.trace.TraceItem;
 import org.radixware.kernel.common.types.ArrStr;
@@ -51,6 +53,7 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.HttpFormatter;
 import org.radixware.kernel.common.utils.SoapFormatter;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.common.utils.io.pipe.PipeAddress;
 import org.radixware.kernel.common.utils.net.RequestChannel;
 import org.radixware.kernel.common.utils.net.SapAddress;
@@ -62,6 +65,8 @@ import org.radixware.kernel.server.arte.ArteSocket;
 import org.radixware.kernel.server.arte.services.aas.ArteAccessService;
 import org.radixware.kernel.server.exceptions.ArteSocketException;
 import org.radixware.kernel.server.exceptions.ArteSocketTimeout;
+import org.radixware.kernel.server.jdbc.RadixConnection;
+import org.radixware.kernel.server.monitoring.ArteWaitStats;
 import org.radixware.kernel.server.sap.SapOptions;
 import org.radixware.kernel.server.sc.ServerServicesClient;
 import org.radixware.kernel.server.soap.DefaultServerMessageProcessorFactory;
@@ -71,10 +76,12 @@ import org.radixware.kernel.server.trace.TraceBuffer;
 import org.radixware.kernel.server.trace.TraceProfiles;
 import org.radixware.kernel.server.units.ServerItemView;
 import org.radixware.kernel.server.units.arte.ArteUnit;
-import org.radixware.kernel.server.utils.PriorityResourceManager;
+import org.radixware.kernel.server.utils.IPriorityResourceManager;
 import org.radixware.schemas.aasWsdl.InvokeDocument;
 
 public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider {
+
+    private static final String FORCE_FILE_DEBUG_ARTE = SystemPropUtils.getStringSystemProp("rdx.arte.force.file.debug.for", "");
 
     private static final String REASON_THREAD_WAS_INTERRUPTED = "thread was interrupted";
     private static final String REASON_UNEXPECTED_EXCEPTION = "unexpected exception";
@@ -141,7 +148,9 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
             {
                 arte.getTrace().changeTargetProfile(guiTraceTargetHandler, traceProfiles.getGuiTraceProfile());
             }
-            arte.getTrace().changeTargetProfile(fileTraceTargetHandler, traceProfiles.getFileTraceProfile());
+            if (!String.valueOf(arteInstance.getSeqNumber()).equals(FORCE_FILE_DEBUG_ARTE)) {
+                arte.getTrace().changeTargetProfile(fileTraceTargetHandler, traceProfiles.getFileTraceProfile());
+            }
         }
     }
 
@@ -163,12 +172,13 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
      */
     private void initArte() {
         try {
+            arte.getProfiler().onEndIdle();
             arteInstance.setDbConnection(arteInstance.getInstance().openNewArteDbConnection(arteInstance));
             arte.init(arteInstance.getDbConnection(), this, arteInstance.getSeqNumber());
             arteInstance.setDbLog(arte.getTrace().getDbLog());
             arteInstance.applyNewFileLogOptions();
             fileTraceTargetHandler = arte.getTrace().addTargetBuffer(
-                    traceProfiles.getFileTraceProfile(),
+                    String.valueOf(arteInstance.getSeqNumber()).equals(FORCE_FILE_DEBUG_ARTE) ? "Debug" : traceProfiles.getFileTraceProfile(),
                     new TraceBuffer() {
                         @Override
                         public void put(final TraceItem item) {
@@ -177,7 +187,7 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                                 log.log(item);
                             }
                         }
-                    });
+                    }, "System[1]:File");
             actualizeGuiAndFileTraceProfiles();
             arteCommunicatorTracer = new LocalTracer() {
                 private final EEventSource source = EEventSource.ARTE_COMMUNICATOR;
@@ -227,8 +237,12 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
             arteInited = true;
         } catch (Throwable e) {
             final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
-            arte.getTrace().put(ArteMessages.MLS_ID_CANT_INIT_ARTE, new ArrStr(arteInstance.getTitle(), exStack));
             arteInstance.getInstance().getTrace().put(EEventSeverity.ERROR, ArteMessages.CANT_INIT_ARTE + " \"" + arteInstance.getTitle() + "\": \n" + exStack, ArteMessages.MLS_ID_CANT_INIT_ARTE, new ArrStr(arteInstance.getTitle(), exStack), EEventSource.ARTE, false);
+            try {
+                arte.getTrace().put(ArteMessages.MLS_ID_CANT_INIT_ARTE, new ArrStr(arteInstance.getTitle(), exStack));
+            } catch (Throwable e1) {
+                arteInstance.getInstance().getTrace().put(EEventSeverity.ERROR, "Unable to write message to database trace:" + ExceptionTextFormatter.throwableToString(e1), ArteMessages.MLS_ID_CANT_INIT_ARTE, new ArrStr(arteInstance.getTitle(), exStack), EEventSource.ARTE, false);
+            }
         }
     }
 
@@ -236,7 +250,7 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
     public void run() {
         final long kernelStartMillis = System.currentTimeMillis();
         String stopReason = null;
-        PriorityResourceManager.Ticket lastCountTicket = null;
+        IPriorityResourceManager.Ticket lastCountTicket = null;
         try {
             arte = new Arte(arteInstance.getInstance());
             if (SrvRunParams.getIsGuiOn()) {
@@ -246,6 +260,9 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
             if (!arteInited) {
                 return;
             }
+
+            arteInstance.arteInited(arte);
+
             socketWatcher = new SocketsDisconnectWatcher();
             if (Thread.currentThread().isInterrupted()) {
                 stopReason = REASON_THREAD_WAS_INTERRUPTED;
@@ -254,7 +271,7 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
 
             boolean adsInitCompleted = false;
             final String initialThreadName = Thread.currentThread().getName();
-            final SimpleDateFormat rqStartProcessDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+            final SimpleDateFormat rqStartProcessDateFormat = new SimpleDateFormat("MMdd_HH:mm:ss.SSS");
 
             NEXT_RQ:
             for (;;) {
@@ -269,13 +286,15 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                         }
                         arteInstance.setCachedVersions(arte.getDefManager().getCachedVersions());
                         Thread.currentThread().setName(initialThreadName);
-                        while (arteInstance.getState() == ArteInstance.EState.FREE) {
+                        arte.getProfiler().onBeginIdle();
+                        while (arteInstance.getState() == ArteInstance.EState.FREE && !arteInstance.isStopping()) {
                             getNextRqSemaphore().wait();
                         }
                         request = arteInstance.getRequest();
+                        final String rqStartTime = rqStartProcessDateFormat.format(new Date(System.currentTimeMillis()));
                         final String rqUnit = request == null || request.getUnit() == null ? "null" : request.getUnit().getId() + ") " + request.getUnit().getTitle();
                         final String rqRemote = request == null || request.getRequestChannel() == null ? "null" : request.getRequestChannel().getRemoteAddress();
-                        Thread.currentThread().setName(initialThreadName + "; rqStartTime=" + rqStartProcessDateFormat.format(new Date(System.currentTimeMillis())) + "; rqUnit='" + rqUnit + "'" + "; rqRemote='" + rqRemote + "'");
+                        Thread.currentThread().setName(initialThreadName + "; rqStartTime=" + rqStartTime + "; rqUnit='" + rqUnit + "'" + "; rqRemote='" + rqRemote + "'");
                         if (request == null) {//maintenance or update
                             if (arte.getDefManager().getCachedVersions().get(0) < arteInstance.getInstance().getLatestVersion()) {
                                 request = createAdsInitRequest(arteInstance.getInstance().getLatestVersion());
@@ -292,7 +311,7 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                     }
                     arte.beforeRequestProcessing(request);
                     try {
-                        arteInstance.getStatistic().onStartWork();
+                        arteInstance.getStatistic().onStartWork(arte.getProfiler().getWaitStatsSnapshot());
                         if (request != null) {
                             lastCountTicket = request.getCountTicket();
                         }
@@ -321,14 +340,18 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                             }
                             if (threadPriority != Thread.currentThread().getPriority()) {
                                 Thread.currentThread().setPriority(threadPriority);
+                                if (requestKind == ERequestKind.NORMAL) {//client request
+                                    arte.getTrace().put(EEventSeverity.DEBUG, "Setting system thread priority for '" + arteInstance.getTitle() + "' to " + threadPriority, EEventSource.ARTE);
+                                }
                             }
 
                             if (request != null && requestChannel != null) { // client request should be processed
                                 if (requestKind == ERequestKind.NORMAL && arte.getInstance().isUseActiveArteLimits()) {
                                     arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_WAIT_ACTIVE);
                                     try {
-                                        final PriorityResourceManager.Ticket activeTicket = arte.getInstance().getActiveArteResourceManager().requestTicket(request.getRadixPriority(), -1, PriorityResourceManager.EQueuePriority.FIRST);
+                                        final IPriorityResourceManager.Ticket activeTicket = arte.getInstance().getActiveArteResourceManager().requestTicket(request.getRadixPriority(), -1);
                                         request.setActiveTicket(activeTicket);
+                                        arte.getInstance().getInstanceMonitor().arteActivated(arte);
                                     } finally {
                                         arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_WAIT_ACTIVE);
                                     }
@@ -389,13 +412,13 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                             messageProcessor = null;
                             requestSapOptions = null;
 
-                            arteInstance.getStatistic().onFinishWork(System.currentTimeMillis());
-                            arteInstance.getInstance().getInstanceMonitor().arteSessionFinished(request);
                         }
                     } finally {
                         if (request != null) {
                             if (request.getActiveTicket() != null) {
-                                arteInstance.getInstance().getActiveArteResourceManager().releaseTicket(request.getActiveTicket());
+                                if (arteInstance.getInstance().getActiveArteResourceManager().releaseTicket(request.getActiveTicket())) {
+                                    arteInstance.getInstance().getInstanceMonitor().arteDeactivated(arte);
+                                }
                             }
                             try {//invoking untrusted code, should defend from exception
                                 if (request.getCallback() != null) {
@@ -404,6 +427,12 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                             } catch (Throwable t) {
                                 arteInstance.getTrace().put(EEventSeverity.ERROR, ArteMessages.ERR_ON_SESS_END_NOTIFICATION + ExceptionTextFormatter.exceptionStackToString(t), null, null, EEventSource.ARTE, false);
                             }
+                        }
+                        try {
+                            final ArteWaitStats stats = arteInstance.getStatistic().onFinishWork(arte.getProfiler().getWaitStatsSnapshot());
+                            arteInstance.getInstance().getInstanceMonitor().arteSessionFinished(request, stats);
+                        } catch (Throwable t) {
+                            arteInstance.getTrace().put(EEventSeverity.ERROR, ArteMessages.ERR_ON_SESS_END_NOTIFICATION + ExceptionTextFormatter.exceptionStackToString(t), null, null, EEventSource.ARTE, false);
                         }
                     }
                     final long curTimeMillis = System.currentTimeMillis();
@@ -434,7 +463,7 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                         return;
                     }
 
-                    arte.getDbConnection().getRadixConnection().closeSchedulledStatements();
+                    ((RadixConnection) arte.getDbConnection().get()).closeSchedulledStatements();
                     getServiceClient().maintenance();
                 }
             }
@@ -618,22 +647,22 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
             }
 
             @Override
-            public PriorityResourceManager.Ticket getCountTicket() {
+            public IPriorityResourceManager.Ticket getCountTicket() {
                 return null;
             }
 
             @Override
-            public void setCountTicket(PriorityResourceManager.Ticket ticket) {
+            public void setCountTicket(IPriorityResourceManager.Ticket ticket) {
                 //do nothing
             }
 
             @Override
-            public PriorityResourceManager.Ticket getActiveTicket() {
+            public IPriorityResourceManager.Ticket getActiveTicket() {
                 return null;
             }
 
             @Override
-            public void setActiveTicket(PriorityResourceManager.Ticket ticket) {
+            public void setActiveTicket(IPriorityResourceManager.Ticket ticket) {
                 //do nothing
             }
 
@@ -708,7 +737,7 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                     public void put(final TraceItem item) {
                         arteInstance.getTrace().put(item, Collections.singleton(ServerTrace.ETraceDestination.GUI), null);
                     }
-                });
+                }, "System[1]:GUI");
     }
 
     private void disposeView() {//вызывается только с нити инстанции арте
@@ -799,7 +828,7 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
                 if (keepConnectionAlive || keepConnect) {
                     attrs.put(EHttpParameter.HTTP_CONNECTION_ATTR.getValue(), HttpFormatter.KEEP_ALIVE);
                 }
-
+                HttpFormatter.appendRadixLoadHeaderAttr(attrs, getArte().getInstance().getArtePoolLoadPercent(arte.getRequest() == null ? -1 : arte.getRequest().getRadixPriority()));
                 SoapFormatter.sendResponse(socketOutputStream, data, attrs);
                 if (arte.getTrace().getMinSeverity(EEventSource.ARTE_COMMUNICATOR) <= EEventSeverity.DEBUG.getValue().longValue()) {
                     if (logDirtyData) {
@@ -890,34 +919,81 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
     }
 
     @Override
+    public XmlObject invokeInternalService(final XmlObject obj, final Class resultClass, final String serviceUri, final int keepConnectTime, final int timeout, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeInternalService(obj, resultClass, serviceUri, keepConnectTime, timeout, -1, targetAadcMember);
+    }
+
+    @Override
+    public XmlObject invokeInternalService(final XmlObject obj, final Class resultClass, final String serviceUri, final int keepConnectTime, final int timeout, final int connectTimeout, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(obj, null, resultClass, THIS_SYSTEM_ID, serviceUri, arteInstance.getInstance().getScpName(), null, keepConnectTime, timeout, connectTimeout, targetAadcMember);
+    }
+
+    @Override
+    public XmlObject invokeService(final XmlObject obj, final Class resultClass, final Long systemId, final String serviceUri, final String scpName, final int keepConnectTime, final int timeout, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(obj, null, resultClass, systemId, serviceUri, scpName, keepConnectTime, timeout, targetAadcMember);
+    }
+
+    @Override
+    public XmlObject invokeService(final XmlObject obj, final Map<String, String> soapRequestParams, final Class resultClass, final Long systemId, final String serviceUri, final String scpName, final int keepConnectTime, final int timeout, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(obj, soapRequestParams, resultClass, systemId, serviceUri, scpName, null, keepConnectTime, timeout, targetAadcMember);
+    }
+
+    @Override
+    public XmlObject invokeService(final XmlObject obj, final Map<String, String> soapRequestParams, final Class resultClass, final Long systemId, final String serviceUri, final String scpName, final List<SapClientOptions> additionalSaps, final int keepConnectTime, final int timeout, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(obj, soapRequestParams, resultClass, systemId, serviceUri, scpName, additionalSaps, keepConnectTime, timeout, -1, targetAadcMember);
+    }
+
+    @Override
+    public XmlObject invokeService(final RadixSoapMessage soapMess, final String scpName, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        if (soapMess == null) {
+            throw new NullPointerException("Soap message is null.");
+        }
+        return invokeService(soapMess.isEnvelopeMess() ? soapMess.getEnvDocument() : soapMess.getBodyDocument(), soapMess.getAttrs(), soapMess.getResultClass(), soapMess.getSystemId(), soapMess.getServiceUri(), scpName, soapMess.getAdditionalSaps(), soapMess.getKeepConnectTimeSec(), soapMess.getReceiveTimeoutSec(), soapMess.getConnectTimeoutSec(), targetAadcMember);
+    }
+
+    @Override
+    public XmlObject invokeService(final XmlObject obj, final Map<String, String> soapRequestParams, final Class resultClass, final Long systemId, final String serviceUri, final String scpName, final List<SapClientOptions> additionalSaps, final int keepConnectTime, final int timeout, final int connectTimeout, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        getServiceClient().setScpName(scpName);
+        return getServiceClient().invokeService(obj, soapRequestParams, resultClass, systemId, Long.valueOf(arteInstance.getInstance().getId()), serviceUri, additionalSaps, keepConnectTime, timeout, connectTimeout, targetAadcMember);
+    }
+
+    @Override
     public XmlObject invokeInternalService(final XmlObject obj, final Class resultClass, final String serviceUri, final int keepConnectTime, final int timeout) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
-        return invokeInternalService(obj, resultClass, serviceUri, keepConnectTime, timeout, -1);
+        return invokeInternalService(obj, resultClass, serviceUri, keepConnectTime, timeout, -1, null);
     }
 
     @Override
     public XmlObject invokeInternalService(final XmlObject obj, final Class resultClass, final String serviceUri, final int keepConnectTime, final int timeout, final int connectTimeout) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
-        return invokeService(obj, null, resultClass, THIS_SYSTEM_ID, serviceUri, arteInstance.getInstance().getScpName(), null, keepConnectTime, timeout, connectTimeout);
+        return invokeService(obj, null, resultClass, THIS_SYSTEM_ID, serviceUri, arteInstance.getInstance().getScpName(), null, keepConnectTime, timeout, connectTimeout, null);
     }
 
     @Override
     public XmlObject invokeService(final XmlObject obj, final Class resultClass, final Long systemId, final String serviceUri, final String scpName, final int keepConnectTime, final int timeout) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
-        return invokeService(obj, null, resultClass, systemId, serviceUri, scpName, keepConnectTime, timeout);
+        return invokeService(obj, null, resultClass, systemId, serviceUri, scpName, keepConnectTime, timeout, null);
     }
 
     @Override
     public XmlObject invokeService(final XmlObject obj, final Map<String, String> soapRequestParams, final Class resultClass, final Long systemId, final String serviceUri, final String scpName, final int keepConnectTime, final int timeout) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
-        return invokeService(obj, soapRequestParams, resultClass, systemId, serviceUri, scpName, null, keepConnectTime, timeout);
+        return invokeService(obj, soapRequestParams, resultClass, systemId, serviceUri, scpName, null, keepConnectTime, timeout, null);
     }
 
     @Override
     public XmlObject invokeService(final XmlObject obj, final Map<String, String> soapRequestParams, final Class resultClass, final Long systemId, final String serviceUri, final String scpName, final List<SapClientOptions> additionalSaps, final int keepConnectTime, final int timeout) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
-        return invokeService(obj, soapRequestParams, resultClass, systemId, serviceUri, scpName, additionalSaps, keepConnectTime, timeout, -1);
+        return invokeService(obj, soapRequestParams, resultClass, systemId, serviceUri, scpName, additionalSaps, keepConnectTime, timeout, -1, null);
+    }
+
+    @Override
+    public XmlObject invokeService(final RadixSoapMessage soapMess, final String scpName) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        if (soapMess == null) {
+            throw new NullPointerException("Soap message is null.");
+        }
+        return invokeService(soapMess.isEnvelopeMess() ? soapMess.getEnvDocument() : soapMess.getBodyDocument(), soapMess.getAttrs(), soapMess.getResultClass(), soapMess.getSystemId(), soapMess.getServiceUri(), scpName, soapMess.getAdditionalSaps(), soapMess.getKeepConnectTimeSec(), soapMess.getReceiveTimeoutSec(), soapMess.getConnectTimeoutSec(), null);
     }
 
     @Override
     public XmlObject invokeService(final XmlObject obj, final Map<String, String> soapRequestParams, final Class resultClass, final Long systemId, final String serviceUri, final String scpName, final List<SapClientOptions> additionalSaps, final int keepConnectTime, final int timeout, final int connectTimeout) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         getServiceClient().setScpName(scpName);
-        return getServiceClient().invokeService(obj, soapRequestParams, resultClass, systemId, Long.valueOf(arteInstance.getInstance().getId()), serviceUri, additionalSaps, keepConnectTime, timeout, connectTimeout);
+        return getServiceClient().invokeService(obj, soapRequestParams, resultClass, systemId, Long.valueOf(arteInstance.getInstance().getId()), serviceUri, additionalSaps, keepConnectTime, timeout, connectTimeout, null);
     }
 
     @Override
@@ -1018,5 +1094,9 @@ public class ArteProcessor extends ArteSocket implements Runnable, IArteProvider
     @Override
     public ArteUnit getUnit() {
         return request == null ? null : request.getUnit();
+    }
+
+    public ArteInstance getArteInstance() {
+        return arteInstance;
     }
 }

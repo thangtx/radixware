@@ -19,6 +19,8 @@ import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.constants.FileNames;
 import org.radixware.kernel.common.defs.dds.DdsModelManager;
 import org.radixware.kernel.common.defs.dds.DdsModule;
+import org.radixware.kernel.common.repository.Branch;
+import org.radixware.kernel.common.utils.Reference;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.tree.actions.dds.DdsModuleCaptureAction;
 import org.radixware.schemas.ddsdef.ModelDocument;
@@ -30,6 +32,7 @@ public class DdsMergeChangesOptions extends AbstractMergeChangesOptions {
         try {
             final StringBuilder message = new StringBuilder();
             boolean isFirst = true;
+            Reference<Branch> cacheBranch = new Reference<>();
             for (DdsMergeChangesItemWrapper wrapper : wrappers) {
                 if (!wrapper.isCaptured() && wrapper.isDone() && !wrapper.isMlb()) {
 
@@ -41,15 +44,13 @@ public class DdsMergeChangesOptions extends AbstractMergeChangesOptions {
                     message.append(wrapper.getWrapperName());
                     wrapper.setCaptured();
 
-                    if (wrapper.isNewModel()) {//added model.xml by coping
-                        File fixedModelFile = wrapper.getDestFile();
-                        final DdsModuleCaptureAction.Cookie Cookie = new DdsModuleCaptureAction.Cookie(DdsModelManager.Support.loadAndGetDdsModule(fixedModelFile));
-                        Cookie.run();
-                    } else {
-                        File fixedModelFile = wrapper.getDestFile();
-                        final DdsModuleCaptureAction.Cookie Cookie = new DdsModuleCaptureAction.Cookie(DdsModelManager.Support.loadAndGetDdsModule(fixedModelFile));
-                        Cookie.run();
-
+                    File fixedModelFile = wrapper.getDestFile();
+                    
+                    final DdsModuleCaptureAction.Cookie Cookie = new DdsModuleCaptureAction.Cookie(DdsModelManager.Support.loadAndGetDdsModule(fixedModelFile, cacheBranch));
+                    Cookie.run();
+                    
+                    if (!wrapper.isNewModel()) {//added model.xml by coping
+                        
                         final File modifyFile = new File(fixedModelFile.getParentFile().getAbsolutePath() + "/" + FileNames.DDS_MODEL_MODIFIED_XML);
                         final ModelDocument modelDocument = ModelDocument.Factory.parse(modifyFile);
                         final ModelDocument.Model model = modelDocument.getModel();
@@ -60,13 +61,16 @@ public class DdsMergeChangesOptions extends AbstractMergeChangesOptions {
                         byte[] oldBytes = wrapper.getNewModelXmlVersion();
                         //final ModelDocument.Model newModel = 
 
-                        ModelDocument doc = ModelDocument.Factory.parse(new ByteArrayInputStream(oldBytes));
-                        final ModelDocument.Model model2 = doc.getModel();
-                        model2.setEditor(oldEditor);
-                        model2.setStation(oldStation);
-                        model2.setFilePath(oldFilePath);
+                        if (oldBytes!=null){ //new module - RADIX-11623
+                            final ModelDocument doc = ModelDocument.Factory.parse(new ByteArrayInputStream(oldBytes));
+                            final ModelDocument.Model model2 = doc.getModel();
+                            model2.setEditor(oldEditor);
+                            model2.setStation(oldStation);
+                            model2.setFilePath(oldFilePath);
+                            doc.save(modifyFile);
+                        }
 
-                        doc.save(modifyFile);
+                        
                     }
                 }
             }

@@ -11,104 +11,139 @@
 
 package org.radixware.kernel.explorer.dialogs.trace;
 
-import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QGroupBox;
-import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QHBoxLayout;
-import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QRadioButton;
 import com.trolltech.qt.gui.QWidget;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
-import org.radixware.kernel.explorer.env.Application;
+import org.radixware.kernel.common.client.env.ClientSettings;
+import org.radixware.kernel.common.client.env.SettingNames;
+import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.widgets.IButton;
+import org.radixware.kernel.common.client.widgets.IPushButton;
+import org.radixware.kernel.common.enums.EDialogButtonType;
+import org.radixware.kernel.explorer.dialogs.ExplorerDialog;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
-import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
-public class SearchDialog extends QDialog {
-
-    public final Signal0 find = new Signal0();
+final class SearchDialog extends ExplorerDialog {
     
-    private SearchComboBox searchComboBox = new SearchComboBox();
-    private QRadioButton forwardRadioButton = new QRadioButton();
-    private QRadioButton backwardRadioButton = new QRadioButton();
-    private QRadioButton caseSensetiveRadioButton = new QRadioButton();
+    private final static String SEARCH_SETTINGS_KEY = SettingNames.SYSTEM+"/TraceDialog/SearchSettings";
+    private final static String DIRECTION_KEY = SEARCH_SETTINGS_KEY+"/direction";
+    private final static String FORWARD_DIRECTION_VALUE = "forward";
+    private final static String BACKWARD_DIRECTION_VALUE = "backward";
+    private final static String CASE_SENSITIVE_KEY = SEARCH_SETTINGS_KEY+"/case_sensitive";  
     
-    public SearchDialog(QWidget parent) {
-        super(parent);
-        setWindowFlags(WidgetUtils.WINDOW_FLAGS_FOR_DIALOG);
-        this.setWindowTitle(Application.translate("TraceDialog", "Find"));
-        this.setWindowIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FIND));
-        this.setMaximumSize(360, 217);
-        this.setMinimumSize(240, 217);
+    private final SearchComboBox searchComboBox;
+    private final QRadioButton forwardRadioButton = new QRadioButton(this);
+    private final QRadioButton backwardRadioButton = new QRadioButton(this);
+    private final QRadioButton caseSensitiveRadioButton = new QRadioButton(this);
+    
+    private boolean isForward = true;
+    private boolean isCaseSensitive;
+    private String searchString;
+    
+    public SearchDialog(final IClientEnvironment environment, final QWidget parent) {
+        super(environment, parent, false);
+        searchComboBox = new SearchComboBox(parent, environment, SEARCH_SETTINGS_KEY);
         setupUi();
+        loadSettings();
+    }
+        
+    private void setupUi() {
+        final MessageProvider messageProvider = getEnvironment().getMessageProvider();        
+        setWindowTitle(messageProvider.translate("TraceDialog", "Find"));
+        setWindowIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FIND));
+        setMaximumSize(360, 217);
+        setMinimumSize(240, 217);
+         
+        dialogLayout().addWidget(searchComboBox);
+        searchComboBox.editTextChanged.connect(this, "updateFindButton()");
+        {
+            final QGroupBox gbDirection = new QGroupBox(this);
+            gbDirection.setObjectName("rx_gbDirection");
+            gbDirection.setTitle(messageProvider.translate("TraceDialog", "Direction"));
+            dialogLayout().addWidget(gbDirection);        
+        
+            final QHBoxLayout layout = new QHBoxLayout();
+            gbDirection.setLayout(layout);
+        
+            layout.addWidget(forwardRadioButton);
+            layout.addStretch();
+            layout.addWidget(backwardRadioButton);
+        
+            forwardRadioButton.setText(messageProvider.translate("TraceDialog", "F&orward"));
+            forwardRadioButton.setObjectName("rx_rbForward");
+            backwardRadioButton.setText(messageProvider.translate("TraceDialog", "&Backward"));
+            backwardRadioButton.setObjectName("rx_rbBackward");
+        
+            forwardRadioButton.setChecked(true);
+        }
+        {
+            final QGroupBox gbOptions = new QGroupBox(this);
+            gbOptions.setObjectName("rx_gbOptions");
+            gbOptions.setTitle(messageProvider.translate("TraceDialog", "Options"));
+            dialogLayout().addWidget(gbOptions);
+        
+            final QHBoxLayout layout = new QHBoxLayout();
+            gbOptions.setLayout(layout);
+        
+            layout.addWidget(caseSensitiveRadioButton);
+            layout.addStretch();
+        
+            caseSensitiveRadioButton.setText(messageProvider.translate("TraceDialog", "&Case Sensitive"));
+            caseSensitiveRadioButton.setObjectName("rx_rbCaseSensitive");
+        }
+        final IPushButton button = addButton(EDialogButtonType.OK);
+        button.setTitle(messageProvider.translate("TraceDialog", "&Find"));
+        button.setIcon(getEnvironment().getApplication().getImageManager().getIcon(ClientIcon.CommonOperations.FIND));
+        button.setObjectName("rx_btnFind");
+        button.addClickHandler(new IButton.ClickHandler() {
+            @Override
+            public void onClick(final IButton source) {
+                isForward = forwardRadioButton.isChecked();
+                isCaseSensitive = caseSensitiveRadioButton.isChecked();        
+                searchString = searchComboBox.currentText();
+                saveSettings();
+                accept();
+            }
+        });
+        updateFindButton();
+        searchComboBox.setFocus();
+        setDisposeAfterClose(true);        
+    }
+    
+    private void loadSettings(){
+        final ClientSettings settings = getEnvironment().getConfigStore();
+        final String directionValue = settings.readString(DIRECTION_KEY, FORWARD_DIRECTION_VALUE);            
+        if (BACKWARD_DIRECTION_VALUE.equals(directionValue)){
+            forwardRadioButton.setChecked(false);
+            backwardRadioButton.setChecked(true);            
+        }
+        caseSensitiveRadioButton.setChecked(settings.readBoolean(CASE_SENSITIVE_KEY, false));
     }
     
     public boolean isForward() {
-        return forwardRadioButton.isChecked();
+        return isForward;
     }
     
-    public boolean isCaseSensetive() {
-        return caseSensetiveRadioButton.isChecked();
+    public boolean isCaseSensitive() {
+        return isCaseSensitive;
     }
     
     public String getSearchString() {
-        return searchComboBox.currentText();
+        return searchString;
     }
     
-    private void setupUi() {
-        QVBoxLayout vBoxLayout = new QVBoxLayout();
-        this.setLayout(vBoxLayout);
-         
-        vBoxLayout.addWidget(searchComboBox);
-        
-        QGroupBox directionGroupBox = new QGroupBox();
-        directionGroupBox.setTitle(Application.translate("TraceDialog", "Direction"));
-        vBoxLayout.addWidget(directionGroupBox);
-        
-        QHBoxLayout directionLayout = new QHBoxLayout();
-        directionGroupBox.setLayout(directionLayout);
-        
-        directionLayout.addWidget(forwardRadioButton);
-        directionLayout.addStretch();
-        directionLayout.addWidget(backwardRadioButton);
-        
-        forwardRadioButton.setText(Application.translate("TraceDialog", "F&orward"));
-        backwardRadioButton.setText(Application.translate("TraceDialog", "&Backward"));
-        
-        forwardRadioButton.setChecked(true);
-        
-        QGroupBox optionsGroupBox = new QGroupBox();
-        optionsGroupBox.setTitle(Application.translate("TraceDialog", "Options"));
-        vBoxLayout.addWidget(optionsGroupBox);
-        
-        QHBoxLayout optionsLayout = new QHBoxLayout();
-        optionsGroupBox.setLayout(optionsLayout);
-        
-        optionsLayout.addWidget(caseSensetiveRadioButton);
-        optionsLayout.addStretch();
-        
-        caseSensetiveRadioButton.setText(Application.translate("TraceDialog", "&Case Sensitive"));
-        
-        QHBoxLayout buttonLayout = new QHBoxLayout();
-        vBoxLayout.addLayout(buttonLayout);
-            
-        QPushButton findButton = new QPushButton();
-        findButton.setText(Application.translate("TraceDialog", "&Find"));
-        findButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FIND));
-        findButton.clicked.connect(this, "runSearch()");
-        
-        buttonLayout.addStretch();
-        buttonLayout.addWidget(findButton);
-        setWindowIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FIND));
+    private void updateFindButton(){
+        getButton(EDialogButtonType.OK).setEnabled(!searchComboBox.currentText().isEmpty());
     }
     
-    private void runSearch() {
-        if (searchComboBox.currentText().equals(""))
-            return;
-        searchComboBox.setTopString(searchComboBox.currentText());
-        find.emit();
+    private void saveSettings(){
+        final ClientSettings settings = getEnvironment().getConfigStore();
+        settings.writeString(DIRECTION_KEY, isForward ? FORWARD_DIRECTION_VALUE : BACKWARD_DIRECTION_VALUE);
+        settings.writeBoolean(CASE_SENSITIVE_KEY, isCaseSensitive);
+        searchComboBox.saveHistory();
     }
-            
 }
-
-

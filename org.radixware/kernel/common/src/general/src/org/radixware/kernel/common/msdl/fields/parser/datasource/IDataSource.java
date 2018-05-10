@@ -12,7 +12,6 @@
 package org.radixware.kernel.common.msdl.fields.parser.datasource;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 
@@ -20,11 +19,10 @@ public interface IDataSource {
     byte[] get(int len) throws IOException;
     byte get() throws IOException;
     byte[] getAll() throws IOException;
-    int available() throws IOException;
-    ByteBuffer getByteBuffer() throws IOException;
     void setShield(byte b);
     void setShieldedList(ArrayList<Byte> list);
     void setShieldIsHex(boolean isHex);
-    void prepend(IDataSource other) throws IOException;
-    int getPosition();
+    boolean hasAvailable() throws IOException;
+    boolean hasAvailable(int len) throws IOException;
+    void prepend(IDataSourceArray other) throws IOException;
 }

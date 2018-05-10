@@ -283,7 +283,7 @@ public class SvnSaslAuthenticator extends SvnAuthenticator {
                     String realmName = getFullRealmName(location, realm);
                     authentication = getNextAuthentication(realmName, location);
                     if (authentication == null) {
-                        throw new RadixSvnException("Unable to authenticate");
+                        throw new RadixSvnException("Unable to authenticate", RadixSvnException.Type.REJECT_AUTH, 0);
                     }
                     auth = authentication;
                 }

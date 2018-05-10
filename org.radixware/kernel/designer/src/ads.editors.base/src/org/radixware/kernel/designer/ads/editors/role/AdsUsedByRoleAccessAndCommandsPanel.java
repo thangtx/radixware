@@ -1434,6 +1434,18 @@ private class BooleanRendererForChilds extends JCheckBox
                 switch (row) {
                     case 0:
                         newBitMask = ERestriction.ACCESS.getValue();
+                        //RADIX-12382
+                        if (!isSet){
+                            newBitMask |= 
+                                ERestriction.CREATE.getValue() |
+                                ERestriction.DELETE.getValue() |
+                                ERestriction.UPDATE.getValue() |
+                                ERestriction.VIEW.getValue() |
+                                ERestriction.ANY_COMMAND.getValue() |
+                                ERestriction.ANY_CHILD.getValue() |
+                                ERestriction.ANY_PAGES.getValue();
+                        }
+                        //end RADIX-12382
                         break;
                     case 1:
                         newBitMask = ERestriction.CREATE.getValue();
@@ -1446,6 +1458,12 @@ private class BooleanRendererForChilds extends JCheckBox
                         break;
                     case 4:
                         newBitMask = ERestriction.VIEW.getValue();
+                        
+                        //RADIX-12382
+                        if (!isSet){
+                            newBitMask |= ERestriction.ANY_PAGES.getValue(); 
+                        }
+                        //end RADIX-12382
                         break;
                     case 5:
                         newBitMask = ERestriction.ANY_COMMAND.getValue();
@@ -1475,6 +1493,16 @@ private class BooleanRendererForChilds extends JCheckBox
                 switch (row) {
                     case 0:
                         newBitMask = ERestriction.ACCESS.getValue();
+                        
+                        //RADIX-12382
+                        if (!isSet){
+                            newBitMask |=  
+                            ERestriction.CREATE.getValue() |
+                            ERestriction.DELETE_ALL.getValue() |
+                            ERestriction.ANY_COMMAND.getValue();
+                        }
+                        //end RADIX-12382
+                        
                         break;
                     case 1:
                         newBitMask = ERestriction.CREATE.getValue();

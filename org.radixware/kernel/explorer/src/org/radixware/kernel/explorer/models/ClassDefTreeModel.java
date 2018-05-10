@@ -221,7 +221,7 @@ public class ClassDefTreeModel extends QTreeModel {
         } else if (item instanceof RadPropertyDef) {
             RadPropertyDef propertyDef = (RadPropertyDef) item;
             final String name = propertyDef.getName() != null ? propertyDef.getName() : "#" + propertyDef.getId();
-            return getDisplaiedName(name, propertyDef.getTitle(), propertyDef.hasTitle());
+            return getDisplaiedName(name, propertyDef.getTitle(environment), propertyDef.hasTitle());
         } else if (item instanceof RadEnumPresentationDef.Item) {
             RadEnumPresentationDef.Item constSetItem = (RadEnumPresentationDef.Item) item;
             boolean hasTitle = constSetItem.getTitle() != null && !constSetItem.getTitle().equals("<No Title>");

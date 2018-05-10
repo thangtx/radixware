@@ -16,10 +16,12 @@ import static org.eclipse.jdt.internal.compiler.ast.ASTNode.DisableUnnecessaryCa
 import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.CastExpression;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
+import org.eclipse.jdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.jdt.internal.compiler.ast.TypeReference;
+import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.jdt.internal.compiler.impl.Constant;
 import org.eclipse.jdt.internal.compiler.lookup.Binding;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
@@ -59,7 +61,12 @@ public class JMLAllocationExpression extends AllocationExpression implements IJM
         if (substitution != null) {
             return substitution.resolveType(scope);
         }
-        return super.resolveType(scope); //To change body of generated methods, choose Tools | Templates.
+        if (this.type instanceof ParameterizedQualifiedTypeReference && 
+                (this.type.bits & ASTNode.IsDiamond) != 0 && 
+                !(this.type.resolvedType instanceof ParameterizedTypeBinding)) {
+            return null;
+        }
+        return super.resolveType(scope);
     }
 
     @Override
@@ -195,6 +202,30 @@ public class JMLAllocationExpression extends AllocationExpression implements IJM
                 }
             } else {
                 allocType = alloc.type.resolveType(scope, true);
+                checkParameterizedAllocation: {
+                    if (alloc.type instanceof ParameterizedQualifiedTypeReference) { // disallow new X<String>.Y<Integer>()
+                        ReferenceBinding currentType = (ReferenceBinding) alloc.resolvedType;
+                        if (currentType == null) {
+                            return currentType;
+                        }
+                        do {
+                            // isStatic() is answering true for toplevel types
+                            if ((currentType.modifiers & ClassFileConstants.AccStatic) != 0) {
+                                break checkParameterizedAllocation;
+                            }
+                            if (currentType.isRawType()) {
+                                break checkParameterizedAllocation;
+                            }
+                        } while ((currentType = currentType.enclosingType()) != null);
+                        ParameterizedQualifiedTypeReference qRef = (ParameterizedQualifiedTypeReference) alloc.type;
+                        for (int i = qRef.typeArguments.length - 2; i >= 0; i--) {
+                            if (qRef.typeArguments[i] != null) {
+                                scope.problemReporter().illegalQualifiedParameterizedTypeAllocation(alloc.type, alloc.resolvedType);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
 

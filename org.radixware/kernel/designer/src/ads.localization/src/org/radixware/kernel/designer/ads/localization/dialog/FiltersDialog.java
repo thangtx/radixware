@@ -115,31 +115,14 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
         showEmpty.setSelected(filterSettings.isShowEmpty());
         showNotEmpty.setSelected(filterSettings.isShowNotEmpty());
         showComment.setSelected(filterSettings.isShowCommentedSrc());
+        showOnlyDifferentVersions.setSelected(filterSettings.isShowOnlyDifferentVersions());
         
-        stringTypeList.setCellRenderer(new StringTypeCellRender());
-        stringTypeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        stringTypeList.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-              int index = stringTypeList.getSelectedIndex();
-              if (index != -1) {
-                JCheckBox checkbox = (JCheckBox) stringTypeList.getModel().getElementAt(index);
-                checkbox.setSelected(!checkbox.isSelected());
-                repaint();
-              }
-            }
-        });
-        DefaultListModel listModel = new DefaultListModel();
-        List<EMultilingualStringKind> types = filterSettings.getStringTypes();
-        for (EMultilingualStringKind value : EMultilingualStringKind.values()) {
-            listModel.addElement(new StringTypeCheckBox(value, types != null ? types.contains(value) : false));
-        }
-        stringTypeList.setBackground(getBackground());
-        stringTypeList.setModel(listModel);
+        stringTypePanel.open(filterSettings.getStringTypes());
         notCheckedSrc.setSelected(filterSettings.isShowNotChecked());
         
         EIsoLanguage language = filterSettings.getNotTranslatedOn();
         ShowModeComboboxItem selectedItem = null;
-        cbTranslilter.addItem("All multilingual strings");
+        cbTranslilter.addItem("All multilanguage strings");
         if (transLangs != null){
             for (EIsoLanguage lang : transLangs) {
                 ShowModeComboboxItem currentItem = new ShowModeComboboxItem(lang);
@@ -182,18 +165,7 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
         filterSettings.setShowNotEmpty(showNotEmpty.isSelected());
         filterSettings.setShowCommentedSrc(showComment.isSelected());
         
-        List<EMultilingualStringKind> types = new ArrayList<>();
-        ListModel model = stringTypeList.getModel();
-        for (int i = 0; i < model.getSize(); i++){
-            Object value = model.getElementAt(i);
-            if (value instanceof StringTypeCheckBox){
-                StringTypeCheckBox stringTypeCheckBox = (StringTypeCheckBox)value;
-                if (stringTypeCheckBox.isSelected()){
-                    types.add(stringTypeCheckBox.getValue());
-                }
-            }
-        }
-        filterSettings.setStringTypes(types);
+        filterSettings.setStringTypes(stringTypePanel.getTypes());
         
         filterSettings.setShowNotChecked(notCheckedSrc.isSelected());
         Object selectedItem = cbTranslilter.getSelectedItem();
@@ -204,6 +176,8 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
             filterSettings.setNotTranslatedOnAll(cbTranslilter.getSelectedIndex()!=0);
             filterSettings.setNotTranslatedOn(null);
         }
+        
+        filterSettings.setShowOnlyUnversion(showOnlyDifferentVersions.isSelected());
         
         return filterSettings;
     }
@@ -280,13 +254,12 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
         showPublished = new javax.swing.JCheckBox();
         showEmpty = new javax.swing.JCheckBox();
         showComment = new javax.swing.JCheckBox();
+        showOnlyDifferentVersions = new javax.swing.JCheckBox();
         showNotEmpty = new javax.swing.JCheckBox();
         changeStatusPanel = new javax.swing.JPanel();
         changeStatusTimePanel = new org.radixware.kernel.designer.ads.localization.dialog.TimeFilterPanel();
         changeStatusPanelLanguagePanel = new org.radixware.kernel.designer.ads.localization.dialog.LanguagePanel();
-        stringTypePanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        stringTypeList = new javax.swing.JList();
+        stringTypePanel = new org.radixware.kernel.designer.ads.localization.dialog.StringTypePanel();
         showModePanel = new javax.swing.JPanel();
         notCheckedSrc = new javax.swing.JCheckBox();
         cbTranslilter = new javax.swing.JComboBox();
@@ -338,7 +311,7 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
         updatedPanel.setLayout(updatedPanelLayout);
         updatedPanelLayout.setHorizontalGroup(
             updatedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(modifiedLanguagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
+            .addComponent(modifiedLanguagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
             .addComponent(modifiedTimePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         updatedPanelLayout.setVerticalGroup(
@@ -368,12 +341,12 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
                 .addGap(5, 5, 5)
                 .addComponent(modifiedAuthorComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(5, 5, 5))
-            .addComponent(modifiedAuthorLanguagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
+            .addComponent(modifiedAuthorLanguagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
         );
         lastUpdatedAuthorPanelLayout.setVerticalGroup(
             lastUpdatedAuthorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lastUpdatedAuthorPanelLayout.createSequentialGroup()
-                .addContainerGap(12, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(modifiedAuthorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(modifiedAuthorLanguagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -399,7 +372,7 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
         additionalFiltresPanel.add(jPanel1);
         additionalFiltresPanel.add(filler4);
 
-        chekboxPanel.setLayout(new java.awt.GridLayout(2, 2));
+        chekboxPanel.setLayout(new java.awt.GridLayout(2, 3));
 
         org.openide.awt.Mnemonics.setLocalizedText(showPublished, org.openide.util.NbBundle.getMessage(FiltersDialog.class, "FiltersDialog.showPublished.text")); // NOI18N
         showPublished.setActionCommand(org.openide.util.NbBundle.getMessage(FiltersDialog.class, "FiltersDialog.showPublished.actionCommand")); // NOI18N
@@ -411,6 +384,9 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(showComment, org.openide.util.NbBundle.getMessage(FiltersDialog.class, "FiltersDialog.showComment.text")); // NOI18N
         chekboxPanel.add(showComment);
+
+        org.openide.awt.Mnemonics.setLocalizedText(showOnlyDifferentVersions, org.openide.util.NbBundle.getMessage(FiltersDialog.class, "FiltersDialog.showOnlyDifferentVersions.text_1")); // NOI18N
+        chekboxPanel.add(showOnlyDifferentVersions);
 
         org.openide.awt.Mnemonics.setLocalizedText(showNotEmpty, org.openide.util.NbBundle.getMessage(FiltersDialog.class, "FiltersDialog.showNotEmpty.text")); // NOI18N
         chekboxPanel.add(showNotEmpty);
@@ -450,21 +426,10 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.5;
         add(changeStatusPanel, gridBagConstraints);
-
-        stringTypePanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(FiltersDialog.class, "FiltersDialog.stringTypePanel.border.outsideBorder.title")), javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5))); // NOI18N
-        stringTypePanel.setLayout(new javax.swing.BoxLayout(stringTypePanel, javax.swing.BoxLayout.LINE_AXIS));
-
-        jScrollPane1.setBorder(null);
-        jScrollPane1.setViewportView(stringTypeList);
-
-        stringTypePanel.add(jScrollPane1);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.weighty = 1.0;
         add(stringTypePanel, gridBagConstraints);
 
         showModePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(FiltersDialog.class, "FiltersDialog.showModePanel.border.title"))); // NOI18N
@@ -491,7 +456,7 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
                 .addGroup(showModePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(showModePanelLayout.createSequentialGroup()
                         .addComponent(notCheckedSrc)
-                        .addGap(0, 298, Short.MAX_VALUE))
+                        .addGap(0, 299, Short.MAX_VALUE))
                     .addComponent(cbTranslilter, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -501,7 +466,7 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
                 .addComponent(notCheckedSrc)
                 .addGap(10, 10, 10)
                 .addComponent(cbTranslilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -537,7 +502,6 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel lastUpdatedAuthorPanel;
     private org.radixware.kernel.designer.ads.localization.dialog.LayerPanel layerPanel;
     private javax.swing.JComboBox modifiedAuthorComboBox;
@@ -549,9 +513,9 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
     private javax.swing.JCheckBox showEmpty;
     private javax.swing.JPanel showModePanel;
     private javax.swing.JCheckBox showNotEmpty;
+    private javax.swing.JCheckBox showOnlyDifferentVersions;
     private javax.swing.JCheckBox showPublished;
-    private javax.swing.JList stringTypeList;
-    private javax.swing.JPanel stringTypePanel;
+    private org.radixware.kernel.designer.ads.localization.dialog.StringTypePanel stringTypePanel;
     private javax.swing.JPanel updatedPanel;
     // End of variables declaration//GEN-END:variables
 
@@ -590,33 +554,5 @@ public class FiltersDialog extends StateAbstractDialog.StateAbstractPanel {
         }
     }
     
-    private class StringTypeCheckBox extends JCheckBox{
-        final EMultilingualStringKind kind;
 
-        public StringTypeCheckBox(EMultilingualStringKind kind, boolean selected) {
-            super(kind == null ? "" : "" + kind.toString(), selected);
-            this.kind = kind;
-        }
-        
-        public EMultilingualStringKind getValue() {
-            return kind;
-        }
-
-    }
-    
-    private class StringTypeCellRender extends DefaultListCellRenderer{
-
-        public StringTypeCellRender() {
-        }
-        
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            if (value instanceof JCheckBox) {
-                JCheckBox checkBox = (JCheckBox)value;
-                return checkBox;
-            } else {
-                return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus); 
-            }
-        }
-    }
 }

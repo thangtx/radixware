@@ -10,7 +10,8 @@
  */
 package org.radixware.kernel.explorer.editors.jmleditor.dialogs;
 
-import com.trolltech.qt.QThread;
+import com.trolltech.qt.core.QCoreApplication;
+import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.gui.QShowEvent;
 import java.util.*;
 import java.util.logging.Level;
@@ -31,12 +32,20 @@ import static org.radixware.kernel.explorer.editors.jmleditor.dialogs.BaseChoose
 import org.radixware.kernel.explorer.env.Application;
 
 public class ChooseDefinitionPanel extends BaseChoosePanel {
+    
+    private static class SearchFinishedEvent extends QEvent{
+        
+        public SearchFinishedEvent(){
+            super(QEvent.Type.User);
+        }
+        
+    }
 
     private Collection<DefInfo> allowedDefinitions;
     protected AdsUserFuncDef userFunc;
     private Set<EDefType> templList;
-    private MyRunnable task;
-    private QThread thread;
+    private SearchDefinitionsTask task;
+    private Thread searchDefnitionsThread;
     private boolean complete = false;
     private boolean wasShown = false;
     private String findedText = null;
@@ -55,12 +64,12 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
         super(parent);
         this.allowedDefinitions = allowedDefinitions;
         this.userFunc = userFunc;
-        this.templList = templList;
+        this.templList = templList != null ? templList : EnumSet.noneOf(EDefType.class);
         this.defFilter = defFilter;
         createListUi();
         this.setEnabled(false);
-        task = new MyRunnable(false, isDbEntity, isForParamBinding, isParentRef, filter, defFilter);
-        thread = new QThread(task);
+        task = new SearchDefinitionsTask(false, isDbEntity, isForParamBinding, isParentRef, filter, defFilter);
+        searchDefnitionsThread = new Thread(task);
     }
 
     @Override
@@ -69,8 +78,7 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
         if ((!wasShown) && (e.type() == QShowEvent.Type.Show)) {
             wasShown = true;
             if (allowedDefinitions == null) {
-                thread.finished.connect(this, "onDataReady()");
-                thread.start();
+                searchDefnitionsThread.start();
             } else {
                 fillList(allowedDefinitions);
             }
@@ -81,13 +89,11 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
 
     public void closeTread() {
         setVisibleForList(false);
-        if (thread.isAlive()) {
-            thread.finished.disconnect();
-            thread.interrupt();
+        if (searchDefnitionsThread.isAlive()) {
+            searchDefnitionsThread.interrupt();
         }
     }
-
-    @SuppressWarnings("unused")
+    
     private void onDataReady() {
         fillList(task.getDefList());
         complete = true;
@@ -103,7 +109,7 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
         doFilterDefList(true, findedText);
     }
 
-    private class MyRunnable implements Runnable {
+    private final class SearchDefinitionsTask implements Runnable {
 
         private boolean needExplorerClass;
         private boolean isDbEntity;
@@ -113,7 +119,7 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
         private IFilter<AdsDefinition> filter;
         private Lookup.IDefInfoFilter defFilter;
 
-        MyRunnable(final boolean needExplorerClass, final boolean isDbEntity, final boolean isForParamBinding, final boolean isParentRef, final IFilter<AdsDefinition> filter, final Lookup.IDefInfoFilter defFilter) {
+        SearchDefinitionsTask(final boolean needExplorerClass, final boolean isDbEntity, final boolean isForParamBinding, final boolean isParentRef, final IFilter<AdsDefinition> filter, final Lookup.IDefInfoFilter defFilter) {
             this.needExplorerClass = needExplorerClass;
             this.isDbEntity = isDbEntity;
             this.isForParamBinding = isForParamBinding;
@@ -171,10 +177,11 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
                     defTypes.add(EDefinitionIdPrefix.ADS_APPLICATION_CLASS);
                 }
                 final Id[] path = info.getPath();
-                if (defTypes.contains(path[0].getPrefix())) {
-                    final AdsDefinition def = Lookup.findTopLevelDefinition(userFunc, path[0]);
+                final Id defId = path[path.length - 1];
+                if (defTypes.contains(defId.getPrefix())) {
+                    final AdsDefinition def = Lookup.findTopLevelDefinition(userFunc, defId);
                     if (def != null) {
-                        final RadClassPresentationDef classDef = Application.getInstance().getDefManager().getClassPresentationDef(path[0]);
+                        final RadClassPresentationDef classDef = Application.getInstance().getDefManager().getClassPresentationDef(defId);
                         final RadSelectorPresentationDef selPresDef = classDef.getDefaultSelectorPresentation();
                         if (selPresDef != null) {
                             final Restrictions selectorRestrictions = selPresDef.getRestrictions();
@@ -187,7 +194,8 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
                 return false;
             } else if (isParentRef) {
                 final Id[] path = info.getPath();
-                return path[0].getPrefix() == EDefinitionIdPrefix.ADS_ENTITY_CLASS || path[0].getPrefix() == EDefinitionIdPrefix.ADS_APPLICATION_CLASS;
+                final Id defId = path[path.length - 1];
+                return defId.getPrefix() == EDefinitionIdPrefix.ADS_ENTITY_CLASS || defId.getPrefix() == EDefinitionIdPrefix.ADS_APPLICATION_CLASS;
             }
             return true;
         }
@@ -200,6 +208,8 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
                 }
             } catch (Exception ex) {
                 Logger.getLogger(ChooseObjectDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                QCoreApplication.postEvent(ChooseDefinitionPanel.this, new SearchFinishedEvent());
             }
         }
 
@@ -273,4 +283,29 @@ public class ChooseDefinitionPanel extends BaseChoosePanel {
         dm.setDefList(defList);
         return dm;
     }
+
+    @Override
+    protected boolean checkName(String pattern, String name) {
+        if (templList.contains(EDefType.USER_FUNC)) {
+            //lib user function choose.
+            int parentIndex = name.indexOf('(');
+            if (parentIndex > 0) {
+                int spaceIndex = name.indexOf(' ');
+                if (spaceIndex > 0 && parentIndex > spaceIndex) {
+                    name = name.substring(spaceIndex + 1, parentIndex);
+                }
+            }
+        }
+        return super.checkName(pattern, name);
+    }
+    
+    @Override
+    protected void customEvent(final QEvent qevent) {        
+        super.customEvent(qevent);
+        if (qevent instanceof SearchFinishedEvent){
+            onDataReady();
+        }
+    }
+    
+    
 }

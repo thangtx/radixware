@@ -19,6 +19,7 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNone;
 
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlParameterPersistentValue;
 import org.radixware.kernel.explorer.editors.valeditors.ValBoolEditor;
 
 
@@ -31,7 +32,7 @@ final class PersistentValDefinedAttributeEditor extends AbstractAttributeEditor<
 
     protected PersistentValDefinedAttributeEditor(IClientEnvironment environment, final boolean isReadonly, final QWidget parent) {
         super(environment);
-        lbDefined = new QLabel(getAttribute().getTitle(), parent);
+        lbDefined = new QLabel(getAttribute().getTitle(environment), parent);
         lbDefined.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         lbDefined.setObjectName("lbDefined");
         valDefined = new ValBoolEditor(environment, parent, new EditMaskNone(), true, false);
@@ -49,17 +50,19 @@ final class PersistentValDefinedAttributeEditor extends AbstractAttributeEditor<
     }
 
     @Override
-    public boolean updateParameter(ISqmlParameter parameter) {
+    public boolean updateParameter(final ISqmlParameter parameter) {
         return true;
     }
 
     @Override
-    public void updateEditor(ISqmlParameter parameter) {
-        if (!parameter.canHavePersistentValue()) {
+    public void updateEditor(final ISqmlParameter parameter) {
+        final ISqmlParameterPersistentValue value = parameter.getPersistentValue();
+        if (!parameter.canHavePersistentValue() || (value!=null && value.isReadOnly())) {
             valDefined.setReadOnly(true);
             setupLabelTextOptions(lbDefined, true);
+            valDefined.setValue(value != null);
         } else {
-            valDefined.setValue(parameter.getPersistentValue() != null);
+            valDefined.setValue(value != null);
         }
     }
 

@@ -15,10 +15,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.eas.EntityObjectTitles;
+import org.radixware.kernel.common.client.eas.EntityObjectTitlesProvider;
+import org.radixware.kernel.common.client.enums.EKeyboardModifier;
 import org.radixware.kernel.common.client.env.ClientIcon;
-import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
 import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMaskRef;
@@ -29,15 +30,16 @@ import org.radixware.kernel.common.client.models.IEntitySelectionController;
 import org.radixware.kernel.common.client.models.IPresentationChangedHandler;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.RawEntityModelData;
-import org.radixware.kernel.common.client.models.groupsettings.Sortings;
 import org.radixware.kernel.common.client.types.EditingHistoryException;
 import org.radixware.kernel.common.client.types.IEditingHistory;
+import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.RefEditingHistory;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.IButton.ClickHandler;
+import org.radixware.kernel.common.enums.EKeyEvent;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
@@ -46,8 +48,15 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.rwt.DropDownEditHistoryDelegate;
+import org.radixware.wps.rwt.DropDownListDelegate;
+import org.radixware.wps.rwt.EntitiesDropDownListDelegate;
+import org.radixware.wps.rwt.InputBox;
 import org.radixware.wps.rwt.InputBox.ValueController;
+import org.radixware.wps.rwt.ListBox;
 import org.radixware.wps.rwt.ToolButton;
+import org.radixware.wps.rwt.events.ClickHtmlEvent;
+import org.radixware.wps.rwt.events.HtmlEvent;
+import org.radixware.wps.rwt.events.MouseClickEventFilter;
 import org.radixware.wps.utils.UIObjectUtils;
 import org.radixware.wps.views.dialog.EntityEditorDialog;
 import org.radixware.wps.views.dialog.SelectEntityDialog;
@@ -63,9 +72,14 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     private GroupModel group;
     private DropDownEditHistoryDelegate<Reference> dropDownHistoryDelegate;
     private EValType valType;
-
+    private EntitiesDropDownListDelegate dropDownList;
+   
     public ValReferenceEditorController(IClientEnvironment env) {
-        super(env);
+        this(env, null);
+    }
+    
+    public ValReferenceEditorController(final IClientEnvironment env, final LabelFactory factory) {
+        super(env, factory);
         selectButton = new ToolButton();
         selectButton.addClickHandler(new ClickHandler() {
             @Override
@@ -73,6 +87,7 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
                 select();
             }
         });
+        selectButton.setObjectName("tbSelect");
 
         editButton = new ToolButton();
         editButton.addClickHandler(new ClickHandler() {
@@ -88,6 +103,7 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
         addButton(selectButton);
         addButton(editButton);
         setEditMask(new EditMaskRef());
+        getInputBox().subscribeToEvent(new MouseClickEventFilter(EKeyEvent.VK_LBUTTON, EKeyboardModifier.CTRL));
     }
 
     protected String getSelectButtonToolTip() {
@@ -98,6 +114,29 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
         return ClientIcon.Definitions.SELECTOR;
     }
 
+    @Override
+    protected List<DropDownListDelegate.DropDownListItem<Reference>> createPredefinedValueItems(InputBox<Reference> box, List<Reference> predefinedValuesList) {
+        List<DropDownListDelegate.DropDownListItem<Reference>> listBoxItems = new LinkedList<>(); 
+          final RadSelectorPresentationDef presentationDef = getSelectorPresentation();
+            final EntityObjectTitlesProvider titlesProvider =
+                    new EntityObjectTitlesProvider(getEnvironment(), presentationDef.getTableId(), presentationDef.getId());
+            for (Reference r : predefinedValues) {
+                titlesProvider.addEntityObjectReference(r);
+            }
+            try {
+                final EntityObjectTitles titles = titlesProvider.getTitles();
+                for (Reference value :  predefinedValues) {
+                    final Pid objPid = value.getPid();
+                    if (titles.isEntityObjectAccessible(objPid)) {
+                        listBoxItems.add(new DropDownListDelegate.DropDownListItem<>(titles.getEntityObjectTitle(objPid), value));
+                    } 
+                }
+            } catch (InterruptedException ex) {
+            } catch (ServiceClientException ex) {
+            }
+        return listBoxItems;
+    }
+       
     @Override
     protected ValueController<Reference> createValueController() {
         return null;
@@ -144,14 +183,14 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     public void setEditorPresentations(final Id classId, final List<Id> presentationIds) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMask();
         copyMask.setEditorPresentationIds(presentationIds);
         setEditMask(copyMask);
         updateButtons();
     }
 
     public void setEditorPresentations(final List<RadEditorPresentationDef> presentations) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMask();
         List<Id> presentationIds = new LinkedList<>();
         if (presentations!=null){
             for (RadEditorPresentationDef presentation : presentations) {
@@ -167,27 +206,27 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     public void setSelectorPresentation(final Id classId, final Id presentationId) {
-        final EditMaskRef copyMask = (EditMaskRef) EditMaskRef.newCopy(getEditMask());
+        final EditMaskRef copyMask = getEditMask();
         copyMask.setSelectorPresentationId(presentationId);
         copyMask.setCondition((SqmlExpression) null);
         setEditMask(copyMask);
-        group = null;
+        invalidateGroupModel();
         setValue(null);//updateButtons called from setValue
         updateButtons();
     }
 
     public void setSelectorPresentation(final RadSelectorPresentationDef presentation) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMask();
         copyMask.setSelectorPresentationId(presentation==null ? null : presentation.getId());
         copyMask.setCondition((SqmlExpression) null);
         setEditMask(copyMask);
-        group = null;
+        invalidateGroupModel();
         setValue(null);
         updateButtons();
     }
 
     public void setEditorPresentation(final Id classId, final Id presentationId) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMask();
         copyMask.setEditorPresentationId(presentationId);
         setEditMask(copyMask);        
         updateButtons();
@@ -234,7 +273,7 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     public void setEditorPresentation(final RadEditorPresentationDef presentation) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMask();
         copyMask.setEditorPresentationId(presentation==null ? null : presentation.getId());
         setEditMask(copyMask);
         entity = null;
@@ -248,7 +287,7 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     public void setCondition(org.radixware.schemas.xscml.Sqml condition) {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
+        EditMaskRef copyMask = getEditMask();
         copyMask.setCondition(condition == null ? null : (org.radixware.schemas.xscml.Sqml) condition.copy());
         setEditMask(copyMask);
         if (group != null) {
@@ -262,7 +301,7 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     public void setCondition(SqmlExpression condition) {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
+        EditMaskRef copyMask = getEditMask();
         copyMask.setCondition(condition == null ? null : condition.asXsqml());
         setEditMask(copyMask);
 
@@ -336,6 +375,13 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
 
     public void select() {
         final GroupModel groupModel = getGroupModel();
+        if (groupModel==null){
+            if (getSelectorPresentation()==null){
+                throw new IllegalStateException("selector presentation is not defined");
+            }
+            //TODO trace message
+            return;
+        }        
         try {
             final SelectEntityDialog dialog = new SelectEntityDialog(((WpsEnvironment) getEnvironment()).getDialogDisplayer(), groupModel, !isMandatory());
             beforeSelectorOpened();
@@ -359,7 +405,8 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     public GroupModel getGroupModel() {
         if (group == null) {
             if (getSelectorPresentation() == null) {
-                throw new IllegalStateException("selector presentation is not defined");
+                return null;
+                //throw new IllegalStateException("selector presentation is not defined");
             }
             final Model holderModel = UIObjectUtils.findNearestModel(this.getInputBox());
             if (holderModel==null){
@@ -377,32 +424,15 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
         }
         return group;
     }
+    
+    private void invalidateGroupModel(){
+        group = null;
+    }    
 
     private boolean setupGroupModel(final GroupModel group) throws InterruptedException {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
-        org.radixware.schemas.xscml.Sqml condition = copyMask.getCondition();
-        if (condition != null) {
-            try {
-                group.setCondition(condition);
-            } catch (ObjectNotFoundError err) {
-                getEnvironment().processException(err);
-                return false;
-            } catch (ServiceClientException ex) {
-                group.showException(ex);
-                return false;
-            }
-        }
-        boolean customInitialFilter = copyMask.isDefinedDefaultFilter();
-        if (customInitialFilter) {
-            group.getFilters().setDefaultFilterId(copyMask.getDefaultFilterId());
-        }
-        Map<Id, Id> defaultSortingIdByFilterId = copyMask.getDefaultSortingIdByFilterId();
-        if (defaultSortingIdByFilterId != null && !defaultSortingIdByFilterId.isEmpty()) {
-            final Sortings sortings = group.getSortings();
-            for (Map.Entry<Id, Id> entry : copyMask.getDefaultSortingIdByFilterId().entrySet()) {
-                sortings.setDefaultSortingId(entry.getValue(), entry.getKey());
-            }
-        }
+        EditMaskRef copyMask = getEditMask();
+        group.applyEditMaskSettings(copyMask);
+        
         if (selectionController != null) {
             group.setEntitySelectionController(selectionController);
         }
@@ -429,7 +459,7 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
         }
         try {
             Id ownerClassId = null;
-            EditMaskRef copyMask = getCurrentEditMaskCopy();
+            EditMaskRef copyMask = getEditMask();
             for (Id editorPresentationId : copyMask.getEditorPresentationIds()) {
                 if (editorPresentationId != null) {
                     RadEditorPresentationDef presentation = getEnvironment().getApplication().getDefManager().getEditorPresentationDef(editorPresentationId);
@@ -451,11 +481,12 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
         return null;
     }
 
-    private void updateButtons() {
+    private void updateButtons() {     
         selectButton.setToolTip(getSelectButtonToolTip());
         selectButton.setIcon(getEnvironment().getApplication().getImageManager().getIcon(getSelectButtonIcon()));
         selectButton.setVisible(isSelectButtonVisible());
-        editButton.setVisible(isEditButtonVisible());
+        updateDropDownListDelegate();
+        editButton.setVisible(isEditButtonVisible());        
         if (isViewOnlyOnEdit()) {
             editButton.setToolTip(getEnvironment().getMessageProvider().translate("ValRefEditor", "View Object"));
             editButton.setIcon(getEnvironment().getApplication().getImageManager().getIcon(ClientIcon.CommonOperations.VIEW));
@@ -464,6 +495,14 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
             editButton.setIcon(getEnvironment().getApplication().getImageManager().getIcon(ClientIcon.Definitions.EDITOR));
         }
     }
+    
+    private boolean canSelectEntityObject() {
+        return !isReadOnly() && isGroupModelAccessible();
+    }
+    
+    protected boolean isGroupModelAccessible(){
+        return getGroupModel()!=null;
+    }    
 
     protected boolean isEditButtonVisible() {
         boolean validEnvironment = false;
@@ -481,7 +520,7 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     private Collection<Id> getEditorPresentationIds() {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
+        EditMaskRef copyMask = getEditMask();
         List<Id> editorPresentatonIds = copyMask.getEditorPresentationIds();
         if (editorPresentatonIds == null || editorPresentatonIds.isEmpty()) {
             return Collections.emptyList();
@@ -496,11 +535,11 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     protected boolean isSelectButtonVisible() {
-        return getSelectorPresentation() != null && !isReadOnly();
+        return canSelectEntityObject() && !getEditMask().isUseDropDownList();
     }
 
     private RadSelectorPresentationDef getSelectorPresentation() {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
+        EditMaskRef copyMask = getEditMask();
         if (copyMask!=null && copyMask.getSelectorPresentationId() != null) {
             RadSelectorPresentationDef selectorPresentation = getEnvironment().getApplication().getDefManager().getSelectorPresentationDef(copyMask.getSelectorPresentationId());
             return selectorPresentation;
@@ -523,7 +562,7 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     public void reread() {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
+        EditMaskRef copyMask = getEditMask();
         if (copyMask!=null && copyMask.getEditorPresentationIds() != null && !copyMask.getEditorPresentationIds().isEmpty() && getValue() != null) {
             final EntityModel model = getEntityModel();
             try {
@@ -537,26 +576,82 @@ public class ValReferenceEditorController extends InputBoxController<Reference, 
     }
 
     @Override
-    public final void setEditMask(EditMaskRef editMask) {
-        EditMaskRef currentMask = getCurrentEditMaskCopy();
-        EditMaskRef newMask = (EditMaskRef) EditMaskRef.newCopy(editMask);
-        if(currentMask!=null)
-        if (!Utils.equals(currentMask.getSelectorPresentationId(), newMask.getSelectorPresentationId())) {
-            newMask.setCondition((SqmlExpression) null);
-            group = null;
-            setValue(null);
+    public final void setEditMask(final EditMaskRef editMask) {    
+        if (editMask!=null){
+            EditMaskRef currentMask = getEditMask();
+            EditMaskRef newMask = (EditMaskRef) EditMaskRef.newCopy(editMask);
+            final boolean presentationChanged;
+            if (currentMask == null) {
+                presentationChanged = true;
+            }else{
+                presentationChanged = 
+                    !Utils.equals(currentMask.getSelectorPresentationId(), newMask.getSelectorPresentationId());
+            }
+            if (presentationChanged) {
+                setValue(null);
+            }
+            super.setEditMask(newMask);
+            if (!newMask.sameSelection(currentMask)){
+                invalidateGroupModel();
+            }
+            updateButtons();
         }
-        super.setEditMask(newMask);
-        updateButtons();
     }
+
+    @Override
+    public final EditMaskRef getEditMask() {
+        final EditMaskRef mask = super.getEditMask();
+        return mask == null ? new EditMaskRef() : mask;
+    }        
 
     @Override
     public void refresh() {
         super.refresh();
         updateButtons();
     }
+    
+    private void updateDropDownListDelegate(){
+        final boolean canUseDropDownList = canSelectEntityObject() && getEditMask().isUseDropDownList();
+        if (canUseDropDownList && dropDownList==null){
+            dropDownList = new EntitiesDropDownListDelegate(){
+                @Override
+                protected ListBox createUIObject(InputBox box, InputBox.DisplayController displayController) {
+                    setGroupModel(ValReferenceEditorController.this.getGroupModel());
+                    return super.createUIObject(box, displayController);
+                }
 
-    private EditMaskRef getCurrentEditMaskCopy() {
-        return getEditMask();
+                @Override
+                protected boolean updateInputBox(final DropDownListDelegate.DropDownListItem<Reference> currentItem, final InputBox inputBox) {
+                    ValReferenceEditorController.this.onSelectValueFromDropDownList(currentItem.getValue());
+                    return true;
+                }
+            };
+            getInputBox().addDropDownDelegate(dropDownList);
+        }else if (!canUseDropDownList && dropDownList!=null){
+            getInputBox().removeDropDownDelegate(dropDownList);
+            dropDownList = null;
+        }
     }
+    
+    protected void onSelectValueFromDropDownList(final Reference value){
+        getInputBox().setValue(value);
+    }
+
+    @Override
+    protected boolean processHtmlEvent(final HtmlEvent event) {
+        if (event instanceof ClickHtmlEvent){
+            final ClickHtmlEvent clickEvent = (ClickHtmlEvent)event;
+            if (clickEvent.getButton()==EKeyEvent.VK_LBUTTON.getValue().intValue()
+                && clickEvent.getKeyboardModifiers().size()==1
+                && clickEvent.getKeyboardModifiers().iterator().next()==EKeyboardModifier.CTRL
+                && isEditButtonVisible()
+                && isButtonsVisible()){
+                editEntity();
+                return true;
+            }
+        }
+        return super.processHtmlEvent(event);
+    }
+    
+    
 }

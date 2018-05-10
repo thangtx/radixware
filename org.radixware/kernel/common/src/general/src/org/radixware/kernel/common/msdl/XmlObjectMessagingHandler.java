@@ -20,9 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,15 +27,13 @@ import org.apache.xmlbeans.SchemaAnnotation;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
-import org.radixware.kernel.common.defs.IVisitor;
-import org.radixware.kernel.common.defs.RadixObject;
-import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.environment.IRadixClassLoader;
 import org.radixware.kernel.common.environment.IRadixEnvironment;
-import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 
 import org.radixware.kernel.common.exceptions.SmioError;
 import org.radixware.kernel.common.exceptions.SmioException;
+import org.radixware.kernel.common.msdl.MsdlUtils.SchemeInternalVisitor;
+import org.radixware.kernel.common.msdl.MsdlUtils.SchemeInternalVisitorProvider;
 import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
 import org.radixware.kernel.common.msdl.fields.ISchemeSearcher;
 import org.radixware.kernel.common.msdl.fields.parser.ParseUtil;
@@ -93,6 +88,10 @@ public final class XmlObjectMessagingHandler {
     static public void readStructuredMessageFromInput(XmlObject obj, InputStream inp) throws IOException, SmioException, SmioError {
         RootMsdlScheme def = getRootMsdlScheme(obj);
         def.setFictiveParentStructure(null);
+        readStructuredMessageFromInput(obj, inp, def);
+    }
+    
+    static public void readStructuredMessageFromInput(XmlObject obj, InputStream inp, RootMsdlScheme def) throws IOException, SmioException, SmioError {
         SmioField sf = def.getFieldModel().getParser();
         IDataSource ds = new DataSourceInputStream(inp);
         sf.parse(obj, ds);
@@ -106,6 +105,10 @@ public final class XmlObjectMessagingHandler {
     static public void readStructuredMessage(XmlObject obj, final byte[] inp) throws SmioException, SmioError {
         RootMsdlScheme def = getRootMsdlScheme(obj);
         def.setFictiveParentStructure(null);
+        readStructuredMessage(obj, inp, def);
+    }
+    
+    static public void readStructuredMessage(XmlObject obj, final byte[] inp, RootMsdlScheme def) throws SmioException, SmioError {
         SmioField sf = def.getFieldModel().getParser();
         IDataSource ds = new DataSourceByteBuffer(inp);
         try {
@@ -123,6 +126,10 @@ public final class XmlObjectMessagingHandler {
     static public void writeStructuredMessageToOutput(XmlObject obj, OutputStream out) throws IOException, SmioError, SmioException {
         RootMsdlScheme def = getRootMsdlScheme(obj);
         def.setFictiveParentStructure(null);
+        writeStructuredMessageToOutput(obj, out, def);
+    }
+    
+    static public void writeStructuredMessageToOutput(XmlObject obj, OutputStream out, RootMsdlScheme def) throws IOException, SmioError, SmioException {
         SmioField sf = def.getFieldModel().getParser();
         ByteBuffer res = sf.merge(obj);
         out.write(ParseUtil.extractByteBufferContent(res));
@@ -130,84 +137,7 @@ public final class XmlObjectMessagingHandler {
     
     private static final class TemplateSchemeSearcher implements ISchemeSearcher {
         
-        public static class SchemeInternalVisitor implements IVisitor {
-            
-            public AbstractFieldModel target = null;
-            
-            @Override
-            public void accept(RadixObject radixObject) {
-                if (radixObject instanceof MsdlField) {
-                    target = ((MsdlField) radixObject).getFieldModel();
-                } else if (radixObject instanceof AbstractFieldModel) {
-                    target = (AbstractFieldModel) radixObject;
-                }
-            }
-        }
-        
-        public static class SchemeInternalVisitorProvider extends VisitorProvider {
-            
-            String path = "/";
-            RootMsdlScheme context = null;
-            EFieldType type = EFieldType.STRUCTURE;
-            
-            public SchemeInternalVisitorProvider(String path, RootMsdlScheme context, EFieldType type) {
-                this.path = path;
-                this.context = context;
-                this.type = type;
-            }
-            
-            @Override
-            public boolean isTarget(RadixObject radixObject) {
-                boolean res = false;
-                if (path == null) {
-                    return false;
-                }
-                String[] componentsArr = path.split("/");
-                List<String> components = new LinkedList<>();
-                for (String s : componentsArr) {
-                    if (!s.isEmpty()) {
-                        components.add(s);
-                    }
-                }
-                
-                ListIterator<String> it = components.listIterator(components.size());
-                RadixObject cur = radixObject;
-                boolean fail = false;
-                while (it.hasPrevious()) {
-                    String component = it.previous();
-                    if (component.equals(cur.getName())) {
-                        cur = cur.getContainer();
-                    } else {
-                        fail = true;
-                        break;
-                    }
-                }
-                res = !fail;
-                return res;
-            }
-            
-            @Override
-            public boolean isContainer(RadixObject object) {
-                boolean isMsdlField = object instanceof MsdlField;
-                boolean isFieldModel = object instanceof AbstractFieldModel;
-                boolean isFieldContainer = object instanceof MsdlStructureFields || object instanceof MsdlVariantFields;
-                
-                if (isMsdlField) {
-                    MsdlField f = (MsdlField) object;
-                    return f.getFieldModel().getType() == type;
-                }
-                if (isFieldModel) {
-                    return ((AbstractFieldModel) object).getType() == type;
-                }
-                if (isFieldContainer) {
-                    return true;
-                }
-                
-                return false;
-            }
-        }
         private final RootMsdlScheme context;
-        
         private final Id contextId;
         private final ClassLoader cl;
         
@@ -245,6 +175,10 @@ public final class XmlObjectMessagingHandler {
     static public byte[] writeStructuredMessage(XmlObject obj) throws SmioError, SmioException {
         RootMsdlScheme def = getRootMsdlScheme(obj);
         def.setFictiveParentStructure(null);
+        return writeStructuredMessage(obj, def);
+    }
+    
+    static public byte[] writeStructuredMessage(XmlObject obj, RootMsdlScheme def) throws SmioError, SmioException {
         SmioField sf = def.getFieldModel().getParser();
         ByteBuffer res = sf.merge(obj);
         return ParseUtil.extractByteBufferContent(res);
@@ -368,8 +302,10 @@ public final class XmlObjectMessagingHandler {
         Method m = null;
         try {
             m = obj.getClass().getMethod("getMessageInstance", new Class[]{});
-        } catch (SecurityException | NoSuchMethodException e) {
+        } catch (SecurityException e) {
             Logger.getLogger(XmlObjectMessagingHandler.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+        } catch (NoSuchMethodException e) {
+            //ignore
         }
         XmlObject me = null;
         try {
@@ -403,5 +339,10 @@ public final class XmlObjectMessagingHandler {
         } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
             Logger.getLogger(XmlObjectMessagingHandler.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         }
+    }
+    
+    public static MsdlStreamReader openMsdlStreamReader(XmlObject obj, InputStream stream) throws SmioException {
+        RootMsdlScheme def = getRootMsdlScheme(obj);
+        return new MsdlStreamReader(stream, def);
     }
 }

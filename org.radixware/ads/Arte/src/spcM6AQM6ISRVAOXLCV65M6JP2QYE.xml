@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcM6AQM6ISRVAOXLCV65M6JP2QYE" Name="AadcStateStmt" Type="10">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderspcM6AQM6ISRVAOXLCV65M6JP2QYE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyspcM6AQM6ISRVAOXLCV65M6JP2QYE"/>
+    </Bodies>
+    <MethodGroup Id="cmg4SZCQBSNO5EYLNWSD35DYQ4KT4" Name="Root"/>
+    <PropertyGroup Id="cpgWOWUDREMWVCDRG2JLEO4R7WVEM" Name="Root"/>
+    <Properties>
+      <Property Id="prmHI46LZA5KBB3DBBBMXT7BERP7M" Name="theirScn" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmKKLHFNV42FHIVCGFRUGF7BDOKQ" Name="myMemberId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmUFLDAEA3T5DMXGK3TPCTCPLHFU" Name="xid" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="myMemberId" Id="mprKKLHFNV42FHIVCGFRUGF7BDOKQ">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcM6AQM6ISRVAOXLCV65M6JP2QYE"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>begin
+    select max(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E" PropId="colYOS4XWY6OJAUPDBVXC7EOFBZ7M" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)
+    into </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmHI46LZA5KBB3DBBBMXT7BERP7M" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+    from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>   
+    where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E" PropId="colP5PSVWUEQBHPTA6CXUPA2UVOWI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> &lt;> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmKKLHFNV42FHIVCGFRUGF7BDOKQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmUFLDAEA3T5DMXGK3TPCTCPLHFU" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := DBMS_TRANSACTION.LOCAL_TRANSACTION_ID(TRUE);
+end;</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -45,10 +45,13 @@ import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.CharOperations;
 
 public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends AbstractDefinitionWriter<T> {
+    
+    public static final String PROPERTY_ACCESSOR_WARNING = "/**Property accessor for metainformation. Do not use this class directly*/";
 
     protected static final char[] TEXT_GET = "get".toCharArray();
     protected static final char[] TEXT_SET = "set".toCharArray();
@@ -308,6 +311,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
     }
 
     protected static void writePropertyIdRef(CodePrinter printer, Id propId) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.println("@SuppressWarnings(\"unused\")");
         printer.print("private static final ");
         printer.print(WriterUtils.RADIX_ID_CLASS_NAME);
@@ -316,6 +320,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
         printer.print(" = ");
         WriterUtils.writeIdUsage(printer, propId);
         printer.printlnSemicolon();
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 
     @Override
@@ -342,8 +347,10 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
             }
 
             if (isWriteHidden()) {
+                WriterUtils.enterHumanUnreadableBlock(printer);
                 writeHiddenStdGetter(printer);
                 writeHiddenStdSetter(printer);
+                WriterUtils.leaveHumanUnreadableBlock(printer);
             }
 
             writeGetter(printer);
@@ -406,7 +413,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
         printer.print("final ");
         printer.printSpace();
         printer.print(TEXT_SETTER_PREFIX);
-        writePropertyName(printer);
+        writePropertyName(printer, true);
         printer.print('(');
 
         getCodeWriter(prop.getValue().getType(), def).writeCode(printer);
@@ -422,7 +429,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
         printer.println("}");
 
         printer.print("set");
-        writePropertyName(printer);
+        writePropertyName(printer, true);
         printer.print("((");
         getTypeWriter().writeCode(printer);
         printer.println(")val);");
@@ -477,7 +484,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
         getTypeWriter().writeCode(printer);
         printer.printSpace();
         printer.print(TEXT_GET);
-        writePropertyName(printer);
+        writePropertyName(printer, true);
         printer.enterBlock(1);
         printer.println(TEXT_GETTER_SUFFIX);
         if (marker != null) {
@@ -526,7 +533,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
 
         printer.printSpace();
         printer.print(TEXT_SETTER_PREFIX);
-        writePropertyName(printer);
+        writePropertyName(printer, true);
         printer.print('(');
         getTypeWriter().writeCode(printer);
         printer.enterBlock(1);
@@ -604,8 +611,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
                 printer.print("super.");
                 writePropertyName(printer);
             } else {
-                writePropertyName(printer);
-                printer.print(TEXT_BAKS);
+                writeInternalInvocation(printer);
             }
             printer.printlnSemicolon();
         }
@@ -637,8 +643,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
                 printer.print("super.");
                 writePropertyName(printer);
             } else {
-                writePropertyName(printer);
-                printer.print(TEXT_BAKS);
+                writeInternalInvocation(printer);
             }
 
             printer.println(" = val;");
@@ -665,7 +670,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
         getTypeWriter().writeCode(printer);
         printer.printSpace();
         printer.print(TEXT_GET);
-        writePropertyName(printer);
+        writePropertyName(printer, true);
         printer.print(TEXT_BAKS);
         printer.println(TEXT_GETTER_SUFFIX);
         printer.enterBlock();
@@ -696,7 +701,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
             printer.print(TEXT_HIDDEN_ACC_PREFIX);
         }
         printer.print(TEXT_SETTER_PREFIX);
-        writePropertyName(printer);
+        writePropertyName(printer, true);
         printer.print(TEXT_BAKS);
         printer.print('(');
         if (!getTypeWriter().writeCode(printer)) {
@@ -953,8 +958,13 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
     protected abstract void writeAccessMethodName(CodePrinter printer);
 
     protected void writePropertyName(final CodePrinter printer) {
-        printer.print(propId);
+        writePropertyName(printer, false);
     }
+    
+    protected void writePropertyName(final CodePrinter printer, boolean capitalize) {
+        printer.print(JavaSourceSupport.getName(getProperty(), printer instanceof IHumanReadablePrinter, capitalize));
+    }
+    
     public static final String READ_ACCESSOR_CLASS_NAME = "org.radixware.kernel.server.meta.clazzes.IRadPropReadAccessor";
     public static final String WRITE_ACCESSOR_CLASS_NAME = "org.radixware.kernel.server.meta.clazzes.IRadPropWriteAccessor";
     public static final String READ_WRITE_ACCESSOR_CLASS_NAME = "org.radixware.kernel.server.meta.clazzes.IRadPropReadWriteAccessor";
@@ -1053,7 +1063,8 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
             return true;
         }
 
-        printer.println("/**Poperty accessor for metainformation. Do not use this class directly*/");
+        WriterUtils.enterHumanUnreadableBlock(printer);
+        printer.println(PROPERTY_ACCESSOR_WARNING);
         printer.print("public static final class Access_");
         printer.print(def.getId());
         printer.print(" implements ");
@@ -1128,6 +1139,7 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
 
         }
         printer.println('}');
+        WriterUtils.leaveHumanUnreadableBlock(printer);
         return true;
     }
 
@@ -1649,7 +1661,9 @@ public abstract class AdsPropertyWriter<T extends AdsPropertyDef> extends Abstra
 //
     public void writeInternalInvocation(final CodePrinter printer) {
         writePropertyName(printer);
-        printer.print(TEXT_BAKS);
+        if (!(printer instanceof IHumanReadablePrinter)) {
+            printer.print(TEXT_BAKS);
+        }
     }
 
     @Override

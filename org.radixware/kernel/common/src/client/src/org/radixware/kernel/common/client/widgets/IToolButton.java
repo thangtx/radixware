@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.widgets;
 
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 
 public interface IToolButton extends IButton {
 
@@ -26,4 +27,8 @@ public interface IToolButton extends IButton {
     public ToolButtonPopupMode getPopupMode();
 
     public void setPopupMode(ToolButtonPopupMode mode);
+    
+    public void setMenu(IMenu menu);
+    
+    public IMenu getMenu();
 }

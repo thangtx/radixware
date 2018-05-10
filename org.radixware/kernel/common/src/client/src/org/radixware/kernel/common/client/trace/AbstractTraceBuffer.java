@@ -173,11 +173,12 @@ public abstract class AbstractTraceBuffer<T extends IClientTraceItem> {
             if (mergeWith!=null){
                 synchronized (mergeWith.semaphore){
                     if (!mergeWith.items.isEmpty()) {
-                        for (int i = mergeWith.items.size() - 2; i<mergeWith.items.size(); i++){
+                        final int itemsCount = mergeWith.items.size();
+                        for (int i = Math.max(itemsCount-2, 0); i<itemsCount; i++){
                             final T item = mergeWith.items.get(i);
                             put(copyTraceItem(item));
                         }
-                    }                
+                    }
                 }
                 mergeWith = null;
             }

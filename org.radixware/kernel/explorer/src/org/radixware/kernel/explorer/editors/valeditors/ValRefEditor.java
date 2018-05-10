@@ -13,25 +13,29 @@ package org.radixware.kernel.explorer.editors.valeditors;
 
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.core.QAbstractItemModel;
+import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAbstractButton;
 import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QCompleter;
 import com.trolltech.qt.gui.QDialog.DialogCode;
 import com.trolltech.qt.gui.QStringListModel;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.EntityObjectTitles;
 import org.radixware.kernel.common.client.eas.EntityObjectTitlesProvider;
+import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
-import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
 import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
@@ -44,12 +48,10 @@ import org.radixware.kernel.common.client.models.IEntitySelectionController;
 import org.radixware.kernel.common.client.models.IPresentationChangedHandler;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.RawEntityModelData;
-import org.radixware.kernel.common.client.models.groupsettings.Sortings;
 import org.radixware.kernel.common.client.types.IEditingHistory;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.RefEditingHistory;
 import org.radixware.kernel.common.client.types.Reference;
-import org.radixware.kernel.common.client.views.IView;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
@@ -59,71 +61,46 @@ import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.explorer.dialogs.EntityEditorDialog;
 import org.radixware.kernel.explorer.dialogs.SelectEntityDialog;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.kernel.explorer.models.EntitiesListModel;
+import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
-public class ValRefEditor extends ValEditor<Reference> implements IPresentationChangedHandler {
+public class ValRefEditor extends AbstractListEditor<Reference> implements IPresentationChangedHandler {
+    
+    private final static List<String> DUMMY_ITEMS = Arrays.<String>asList("item1", "item2");
 
     private IEntitySelectionController selectionController;
     private GroupModel.SelectionListener selectionListener;
     private GroupModel group = null;
     private EntityModel entity = null;
+    private EntitiesListModel listModel;
     private final QToolButton selectBtn, editBtn;
+    private boolean showSelectBtn;
+    private boolean showEditBtn;
+    private boolean dropDownBtnVisible;
     private boolean predefinedValuesAreValid = false;
-    private boolean showSelectBtn = true;
-    private boolean showEditBtn = true;
     private final List<String> predefinedValuesTitles = new ArrayList<>();
     private final QStringListModel completionModelHistory = new QStringListModel();
     public final QSignalEmitter.Signal0 beforeEditorOpened = new QSignalEmitter.Signal0();
     public final QSignalEmitter.Signal0 editorClosed = new QSignalEmitter.Signal0();
     public final QSignalEmitter.Signal0 beforeSelectorOpened = new QSignalEmitter.Signal0();
     public final QSignalEmitter.Signal0 selectorClosed = new QSignalEmitter.Signal0();
-
-    @SuppressWarnings("LeakingThisInConstructor")
+    
     public ValRefEditor(IClientEnvironment environment, QWidget parent, final boolean mandatory, final boolean readonly, final boolean showSelectObjectBtn, final boolean showEditObjectBtn) {
-        super(environment, parent, new EditMaskRef(), mandatory, readonly);
-        {
-            final QAction action = new QAction(this);
-            action.triggered.connect(this, "select()");
-            action.setToolTip(environment.getMessageProvider().translate("ValRefEditor", "Select Object"));
-            action.setIcon(ExplorerIcon.getQIcon(ClientIcon.Definitions.SELECTOR));
-            selectBtn = addButton(null, action);
-        }
-        {
-            final QAction action = new QAction(this);
-            action.triggered.connect(this, "edit()");
-            editBtn = addButton(null, action);
-        }
-        showSelectBtn = showSelectObjectBtn;
-        showEditBtn = showEditObjectBtn;
-        getLineEdit().setReadOnly(true);//NOPMD this method is final
-        updateButtons();
+        this(environment, parent, new EditMaskRef(), mandatory, readonly, showSelectObjectBtn, showEditObjectBtn);
     }
 
     public ValRefEditor(IClientEnvironment environment, QWidget parent, final boolean mandatory, final boolean readonly) {
-        this(environment, parent, mandatory, readonly, true, true);
+        this(environment, parent, new EditMaskRef(), mandatory, readonly, true, true);
     }
 
     public ValRefEditor(IClientEnvironment environment, QWidget parent) {
-        this(environment, parent, true, false);
+        this(environment, parent, new EditMaskRef(), true, false, true, true);
     }
 
     public ValRefEditor(IClientEnvironment environment, QWidget parent, EditMaskRef mask, final boolean mandatory, final boolean readonly) {
-        super(environment, parent, mask==null ? new EditMaskRef() : mask , mandatory, readonly);
-        {
-            final QAction action = new QAction(ValRefEditor.this);
-            action.triggered.connect(ValRefEditor.this, "select()");
-            action.setToolTip(environment.getMessageProvider().translate("ValRefEditor", "Select Object"));
-            action.setIcon(ExplorerIcon.getQIcon(ClientIcon.Definitions.SELECTOR));
-            selectBtn = addButton(null, action);
-        }
-        {
-            final QAction action = new QAction(ValRefEditor.this);
-            action.triggered.connect(ValRefEditor.this, "edit()");
-            editBtn = addButton(null, action);
-        }
-        getLineEdit().setReadOnly(true);
-        updateButtons();
+        this(environment, parent, mask, mandatory, readonly, true, true);
     }
 
     public ValRefEditor(IClientEnvironment environment, QWidget parent, EditMaskRef mask, final boolean mandatory, final boolean readonly, final boolean showSelectObjectBtn, final boolean showEditObjectBtn) {
@@ -133,42 +110,44 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
             action.triggered.connect(ValRefEditor.this, "select()");
             action.setToolTip(environment.getMessageProvider().translate("ValRefEditor", "Select Object"));
             action.setIcon(ExplorerIcon.getQIcon(ClientIcon.Definitions.SELECTOR));
+            action.setObjectName("select_object");
             selectBtn = addButton(null, action);
         }
         {
             final QAction action = new QAction(ValRefEditor.this);
             action.triggered.connect(ValRefEditor.this, "edit()");
+            action.setObjectName("edit_object");
             editBtn = addButton(null, action);
         }
         this.showSelectBtn = showSelectObjectBtn;
         this.showEditBtn = showEditObjectBtn;
-        getLineEdit().setReadOnly(true);
         updateButtons();
+        invalidateGroupModel();
+        updateComboBoxLook();
     }
 
     public void setSelectorPresentation(final Id classId, final Id presentationId) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setSelectorPresentationId(presentationId);
         copyMask.setCondition((SqmlExpression) null);
         setEditMask(copyMask);
-        group = null;
+        invalidateGroupModel();
         setValue(null);
         updateButtons();
     }
 
     public void setSelectorPresentation(final RadSelectorPresentationDef presentation) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setSelectorPresentationId(presentation==null ? null : presentation.getId());
-        copyMask.setCondition((SqmlExpression) null);        
-        
+        copyMask.setCondition((SqmlExpression) null);                
         setEditMask(copyMask);
-        group = null;
+        invalidateGroupModel();
         setValue(null);
         updateButtons();
     }
 
     public void setCondition(final org.radixware.schemas.xscml.Sqml condition) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setCondition(condition == null ? null : (org.radixware.schemas.xscml.Sqml) condition.copy());
         setEditMask(copyMask);
         if (group != null) {
@@ -182,7 +161,7 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
     }
 
     public void setCondition(final SqmlExpression condition) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setCondition(condition == null ? null : condition.asXsqml());
         setEditMask(copyMask);
         if (group != null) {
@@ -196,35 +175,35 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
     }
 
     public final void setDefaultFilterId(final Id filterId) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setDefaultFilterId(filterId);
         setEditMask(copyMask);
     }
 
     public final void setDefaultSortingId(final Id sortingId, final Id filterId) {
-        final EditMaskRef copyMask = (EditMaskRef) EditMaskRef.newCopy(getEditMask());
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setDefaultSortingId(sortingId, filterId);
         setEditMask(copyMask);
 
     }
 
     public final boolean isDefinedDefaultFilterId() {
-        final EditMaskRef copyMask = (EditMaskRef) getEditMask();
+        final EditMaskRef copyMask = getEditMaskRef();
         return copyMask.isDefinedDefaultFilter();
     }
 
     public final Id getDefaultFilterId() {
-        final EditMaskRef copyMask = (EditMaskRef) getEditMask();
+        final EditMaskRef copyMask = getEditMaskRef();
         return copyMask.getDefaultFilterId();
     }
 
     public final boolean isDefinedDefaultSortingId(final Id filterId) {
-        final EditMaskRef copyMask = (EditMaskRef) getEditMask();
+        final EditMaskRef copyMask = getEditMaskRef();
         return copyMask.isDefinedDefaultSorting(filterId);
     }
 
     public final Id getDefaultSortingId(final Id filterId) {
-        final EditMaskRef copyMask = (EditMaskRef) getEditMask();
+        final EditMaskRef copyMask = getEditMaskRef();
         return copyMask.getDefaultSortingId(filterId);
     }
 
@@ -250,14 +229,14 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
     }
 
     public void setEditorPresentations(final Id classId, final List<Id> presentationIds) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setEditorPresentationIds(presentationIds);
         setEditMask(copyMask);
         updateButtons();
     }
 
     public void setEditorPresentations(final List<RadEditorPresentationDef> presentations) {
-        final EditMaskRef copyMask = getCurrentEditMaskCopy();
+        final EditMaskRef copyMask = getEditMaskRef();
         List<Id> presentationIds = new LinkedList<>();
         if (presentations!=null){
             for (RadEditorPresentationDef presentation : presentations) {
@@ -273,17 +252,35 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
     }
 
     public void setEditorPresentation(final Id classId, final Id presentationId) {
-        final EditMaskRef copyMask = (EditMaskRef) EditMaskRef.newCopy(getEditMask());
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setEditorPresentationId(presentationId);
         setEditMask(copyMask);
         updateButtons();
     }
 
     public void setEditorPresentation(RadEditorPresentationDef presentation) {
-        final EditMaskRef copyMask = (EditMaskRef) EditMaskRef.newCopy(getEditMask());
+        final EditMaskRef copyMask = getEditMaskRef();
         copyMask.setEditorPresentationId(presentation==null ? null : presentation.getId());
         setEditMask(copyMask);
         entity = null;
+        updateButtons();
+    }
+
+    public final boolean isSelectButtonHidden() {
+        return !showSelectBtn;
+    }
+
+    public final void setSelectButtonHidden(boolean hidden) {
+        this.showSelectBtn = !hidden;
+        updateButtons();
+    }
+
+    public final boolean isEditButtonHidden() {
+        return !showEditBtn;
+    }
+
+    public final void setEditButtonHidden(boolean hidden) {
+        this.showEditBtn = !hidden;
         updateButtons();
     }
 
@@ -301,6 +298,13 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
 
     public void select() {
         final GroupModel groupModel = getGroupModel();
+        if (groupModel==null){
+            if (getSelectorPresentation()==null){
+                throw new IllegalStateException("selector presentation is not defined");
+            }
+            //TODO trace message
+            return;
+        }
         try {
             final SelectEntityDialog dialog = new SelectEntityDialog(groupModel, !isMandatory());
             beforeSelectorOpened.emit();
@@ -312,9 +316,7 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
             }
             selectorClosed.emit();
         } finally {
-            if (groupModel != null) {
-                groupModel.clean();
-            }
+            groupModel.clean();
         }
     }
 
@@ -365,7 +367,7 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
         }
         try {
             Id ownerClassId = null;
-            EditMaskRef copyMask = (EditMaskRef) EditMaskRef.newCopy(getEditMask());
+            EditMaskRef copyMask = getEditMaskRef();
             for (Id editorPresentationId : copyMask.getEditorPresentationIds()) {
                 if (editorPresentationId != null) {
                     RadEditorPresentationDef presentation = getEnvironment().getApplication().getDefManager().getEditorPresentationDef(editorPresentationId);
@@ -388,12 +390,12 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
         return null;
     }
 
-    private EditMaskRef getCurrentEditMaskCopy() {
+    private EditMaskRef getEditMaskRef() {
         return (EditMaskRef) getEditMask();
     }
 
     private RadSelectorPresentationDef getSelectorPresentation() {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
+        EditMaskRef copyMask = getEditMaskRef();
         if (copyMask == null) {
             return null;
         }
@@ -413,7 +415,7 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
     public GroupModel getGroupModel() {
         if (group == null) {
             if (getSelectorPresentation() == null) {
-                throw new IllegalStateException("selector presentation is not defined");
+                return null;
             }
             final Model holderModel = WidgetUtils.findNearestModel(this);
             if (holderModel==null){
@@ -422,43 +424,20 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
                 group = GroupModel.openTableContextlessSelectorModel(holderModel, getSelectorPresentation());
             }      
         }
-        try {
-            if (!setupGroupModel(group)) {
-                return null;
-            }
-        } catch (InterruptedException ex) {
+        if (!setupGroupModel(group)) {
             return null;
         }
         return group;
     }
+    
+    private void invalidateGroupModel(){
+        group = null;
+    }
 
-    private boolean setupGroupModel(final GroupModel group) throws InterruptedException {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
-        org.radixware.schemas.xscml.Sqml condition = copyMask.getCondition();
-        if (condition != null) {
-            try {
-                group.setCondition(condition);
-            } catch (ObjectNotFoundError err) {
-                getEnvironment().processException(err);
-                return false;
-            } catch (ServiceClientException ex) {
-                group.showException(ex);
-                return false;
-            }
-        }
-        boolean customInitialFilter = copyMask.isDefinedDefaultFilter();
-        if (customInitialFilter) {
-            group.getFilters().setDefaultFilterId(copyMask.getDefaultFilterId());
-        }
-
-        Map<Id, Id> defaultSortingIdByFilterId = copyMask.getDefaultSortingIdByFilterId();
-        if (defaultSortingIdByFilterId != null && !defaultSortingIdByFilterId.isEmpty()) {
-            final Sortings sortings = group.getSortings();
-            for (Map.Entry<Id, Id> entry : copyMask.getDefaultSortingIdByFilterId().entrySet()) {
-                sortings.setDefaultSortingId(entry.getValue(), entry.getKey());
-            }
-        }
-
+    private boolean setupGroupModel(final GroupModel group){
+        EditMaskRef copyMask = getEditMaskRef();
+        group.applyEditMaskSettings(copyMask);
+        
         if (selectionController != null) {
             group.setEntitySelectionController(selectionController);
         }
@@ -471,24 +450,40 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
 
     @Override
     public void setValue(final Reference value) {
+        final boolean sameValue = Reference.exactlyMatch(getValue(), value);
         super.setValue(value);
         if (entity != null && (value == null || !entity.getPid().equals(value.getPid()))) {
             entity = null;
         }
-        updateButtons();
-        refreshTextOptions();
+        if (!sameValue){
+            updateButtons();
+            refreshTextOptions();
+            updateComboBoxLook();
+        }
     }
 
     @Override
+    protected void customEvent(QEvent event) {
+        super.customEvent(event); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void applyTextOptions(ExplorerTextOptions options) {
+        super.applyTextOptions(options); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    
+    @Override
     protected ValidationResult calcValidationResult(final Reference value) {
         if (getEditMask() != null) {
-            return getCurrentEditMaskCopy().validate(getEnvironment(), value);
+            return getEditMaskRef().validate(getEnvironment(), value);
         }
         return value == null || !value.isBroken() ? ValidationResult.ACCEPTABLE : ValidationResult.INVALID;
     }
 
     public void reread() {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
+        EditMaskRef copyMask = getEditMaskRef();
         if (copyMask.getEditorPresentationIds() != null && !copyMask.getEditorPresentationIds().isEmpty() && value != null) {
             final EntityModel model = getEntityModel();
             try {
@@ -518,9 +513,22 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
         }
     }
 
-    //Ð¾Ð±Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ Ñ�Ð¾Ñ�Ñ‚Ð¾Ñ�Ð½Ð¸Ðµ ÐºÐ½Ð¾Ð¿Ð¾Ðº
     private void updateButtons() {
-        selectBtn.setVisible(canSelectEntityObject());
+        if (canSelectEntityObject()){
+            if (getEditMaskRef().isUseDropDownList()){
+                selectBtn.setVisible(false);
+            }else{
+                selectBtn.setVisible(true);
+            }            
+        }else{
+            selectBtn.setVisible(false);
+        }
+        if (listModel!=null){
+            setListModel(null);//clear items in combobox and hide drop down button
+            dropDownBtnVisible = false;
+            listModel = null;
+        }
+        updateComboItems(false);
         if (canOpenEntityObjectView()){
             editBtn.setVisible(true);
             if (isReadOnly() || getValue().isModificationRestricted()) {
@@ -536,8 +544,23 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
         editingHistoryBtn.setVisible(!isReadOnly() && editingHistory != null && !editingHistory.isEmpty());
     }
 
+    @Override
+    protected void onMouseClick() {        
+        if (QApplication.keyboardModifiers().value()==Qt.KeyboardModifier.ControlModifier.value()
+            && isEnabled() && isEmbeddedWidgetsVisible()
+            && editBtn.isVisible() && editBtn.isEnabled() && canOpenEntityObjectView()){
+            edit();
+        }else{
+            super.onMouseClick();
+        }
+    }        
+
     private boolean canSelectEntityObject() {
-        return showSelectBtn && getSelectorPresentation() != null && !isReadOnly();
+        return showSelectBtn && !isReadOnly() && isGroupModelAccessible();
+    }
+    
+    protected boolean isGroupModelAccessible(){
+        return getGroupModel()!=null;
     }
 
     private boolean canOpenEntityObjectView() {
@@ -557,7 +580,7 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
     }
 
     private List<Id> getEditorPresentationIds() {
-        EditMaskRef copyMask = getCurrentEditMaskCopy();
+        EditMaskRef copyMask = getEditMaskRef();
         List<Id> editorPresentatonIds = copyMask.getEditorPresentationIds();
         if (editorPresentatonIds == null || editorPresentatonIds.isEmpty()) {
             return Collections.emptyList();
@@ -635,8 +658,13 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
         final List<Reference> predefValues = new ArrayList<>(getPredefinedValues());
 
         if (!predefinedValuesAreValid) {
+            final RadSelectorPresentationDef presentationDef = getSelectorPresentation();
+            if (presentationDef==null){
+                //TODO trace message
+                return Collections.<String>emptyList();
+            }
             final EntityObjectTitlesProvider titlesProvider =
-                    new EntityObjectTitlesProvider(getEnvironment(), getSelectorPresentation().getTableId(), getSelectorPresentation().getId());
+                    new EntityObjectTitlesProvider(getEnvironment(), presentationDef.getTableId(), presentationDef.getId());
 
             for (Reference r : predefValues) {
                 titlesProvider.addEntityObjectReference(r);
@@ -682,17 +710,105 @@ public class ValRefEditor extends ValEditor<Reference> implements IPresentationC
     }
 
     @Override
-    public void setEditMask(EditMask editMask) {
-        EditMaskRef currentMask = getCurrentEditMaskCopy();
-        EditMaskRef newMask = (EditMaskRef) EditMaskRef.newCopy(editMask);
-        if (currentMask != null) {
-            if (!Utils.equals(currentMask.getSelectorPresentationId(), newMask.getSelectorPresentationId())) {
-                newMask.setCondition((SqmlExpression) null);
-                group = null;
+    public void setEditMask(final EditMask editMask) {
+        if (editMask!=null){
+            final EditMaskRef currentMask = getEditMaskRef();
+            final EditMaskRef newMask = (EditMaskRef) EditMaskRef.newCopy(editMask);
+            final boolean presentationChanged;
+            if (currentMask == null) {
+                presentationChanged = true;
+            }else{
+                presentationChanged = 
+                    !Utils.equals(currentMask.getSelectorPresentationId(), newMask.getSelectorPresentationId());
+            }
+            if (presentationChanged) {
                 setValue(null);
             }
+            super.setEditMask(newMask);
+            if (!newMask.sameSelection(currentMask)){
+                invalidateGroupModel();
+            }
+            updateButtons();
+   
         }
-        super.setEditMask(newMask);
-        updateButtons();
     }
+
+    @Override
+    protected final void updateComboItems(final boolean updateStyleSheet) {
+        final boolean canUseDropDownList = getEditMaskRef().isUseDropDownList() && canSelectEntityObject();
+        if (dropDownBtnVisible!=canUseDropDownList){
+            if (canUseDropDownList){
+                addItems(DUMMY_ITEMS);
+            }else{
+                clearItems();                
+            }
+            updateComboBoxLook();
+            dropDownBtnVisible = canUseDropDownList;
+        }
+    }        
+    
+    private void updateComboBoxLook(){
+        updateComboBoxLook(-1, true, true);
+    }
+
+    @Override
+    protected final int getMaxItemsInPopup() {
+        return -1;
+    }
+    
+    @Override
+    protected final void onActivatedIndex(final int index) {
+        if (listModel !=null && index>=0 && index<listModel.rowCount(null)){
+            final EntityModel entityModel = listModel.getEntityModel(index);
+            if (entityModel!=null){
+                onSelectValueFromDropDownList(new Reference(entityModel));
+            }
+        }
+    }
+    
+    protected void onSelectValueFromDropDownList(final Reference value){
+        setValue(value);
+    }
+
+    @Override
+    protected boolean beforeShowPopup() {
+        final GroupModel groupModel = getGroupModel();
+        if (groupModel==null){
+            return false;
+        }
+        listModel = new EntitiesListModel(groupModel,this,true);            
+        updateListModelTextOptions(listModel);
+        setListModel(listModel);
+        return super.beforeShowPopup();
+    }
+    
+    @Override
+    protected void afterShowPopup() {
+        getLineEdit().setText(getStringToShow(getValue()));
+        getLineEdit().home(false);
+        super.afterShowPopup();
+    }    
+    
+    @Override
+    protected void afterHidePopup() {
+        if (listModel!=null){
+            listModel.cancelAsyncDataLoading();
+            listModel.setDataLoadingBlocked(true);            
+        }        
+        updateComboBoxLook();
+        super.afterHidePopup();
+    }    
+    
+    private void updateListModelTextOptions(final EntitiesListModel listModel){
+        final EnumSet<ETextOptionsMarker> markers = getTextOptionsMarkers();
+        markers.remove(ETextOptionsMarker.UNDEFINED_VALUE);
+        markers.remove(ETextOptionsMarker.MANDATORY_VALUE);
+        markers.remove(ETextOptionsMarker.READONLY_VALUE);
+        markers.remove(ETextOptionsMarker.OVERRIDDEN_VALUE);
+        markers.remove(ETextOptionsMarker.INHERITED_VALUE);
+        final ExplorerTextOptions listOptions = calculateTextOptions(markers);
+        listModel.setTextOptions(listOptions);        
+    }
+ 
+    
 }

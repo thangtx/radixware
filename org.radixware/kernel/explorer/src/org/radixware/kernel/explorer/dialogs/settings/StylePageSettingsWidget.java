@@ -19,11 +19,11 @@ import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.explorer.env.Application;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 
-public class StylePageSettingsWidget extends SettingsWidget {
+final class StylePageSettingsWidget extends SettingsWidget {
 
-    private final ArrayList<SettingsWidget> settingsArrayList = new ArrayList<SettingsWidget>();
+    private final ArrayList<SettingsWidget> settingsArrayList = new ArrayList<>();
 
     public StylePageSettingsWidget(final IClientEnvironment environment, final QWidget parent, final String group, final String subgroup, final String name) {
         super(environment, parent, group, subgroup, name);
@@ -54,14 +54,14 @@ public class StylePageSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
         for (SettingsWidget w : settingsArrayList) {
             w.readSettings(src);
         }
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         for (SettingsWidget w : settingsArrayList) {
             w.writeSettings(dst);
         }

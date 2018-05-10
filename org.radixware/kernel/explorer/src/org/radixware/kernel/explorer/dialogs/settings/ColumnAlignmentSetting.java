@@ -23,7 +23,7 @@ import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.enums.ESelectorColumnAlign;
 import org.radixware.kernel.common.enums.EValType;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 
 /**
  * Class represents combo-box of alignment options.
@@ -38,18 +38,17 @@ class ColumnAlignmentSetting extends SettingsWidget {
     public ColumnAlignmentSetting(final IClientEnvironment env, final QWidget parent, EValType valType) {
         super(env, parent, SettingNames.SELECTOR_GROUP, SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.BODY_ALIGNMENT, valType.getName());
         this.valType = valType;
-        setLayout(createView());
-        
+        setLayout(createView());        
     }
     
     @Override
-    public void readSettings(ExplorerSettings src) {
-        final int alignInt = src.readInteger(getSettingCfgName(), ESelectorColumnAlign.DEFAULT.getValue().intValue());
+    public void readSettings(final IExplorerSettings src) {        
+        final int alignInt = src.readInteger(getSettingCfgName(), defaultValue(valType).getValue().intValue());        
         setAlignment(ESelectorColumnAlign.getForValue((long)alignInt));
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(final IExplorerSettings dst) {
         dst.writeInteger(getSettingCfgName(), alignment.getValue().intValue());
     }
 
@@ -75,8 +74,7 @@ class ColumnAlignmentSetting extends SettingsWidget {
                 return ESelectorColumnAlign.LEFT;
             default:
                 return ESelectorColumnAlign.DEFAULT;
-        }
-        
+        }        
     }
 
     private QLayout createView() {
@@ -112,7 +110,7 @@ class ColumnAlignmentSetting extends SettingsWidget {
     }
     
     @SuppressWarnings("unused")
-    private void onChangeAlignment(Integer index) {
+    private void onChangeAlignment(final Integer index) {
         setAlignment(ESelectorColumnAlign.getForValue((Long) combo.itemData(index, Qt.ItemDataRole.UserRole)));
     }
 }

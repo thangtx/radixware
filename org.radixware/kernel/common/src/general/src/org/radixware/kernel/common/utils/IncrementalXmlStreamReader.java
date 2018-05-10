@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.utils;
 
 import java.util.List;
@@ -29,13 +28,13 @@ import javax.xml.stream.XMLStreamReader;
  *
  * <code>
  * <Root>
- *    <Child>
- *    	  <GrandChild1/>
- *    </Child>
+ * <Child>
+ * <GrandChild1/>
+ * </Child>
  *
- *    <Child>
- *    	  <GrandChild2/>
- *    </Child>
+ * <Child>
+ * <GrandChild2/>
+ * </Child>
  * </Root>
  * </code>
  *
@@ -45,85 +44,21 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class IncrementalXmlStreamReader implements XMLStreamReader {
 
-    private XMLStreamReader parent;
-    private QName[] branch;
-
-    private class NodeCache {
-
-        private class Attribute {
-
-            QName name;
-            String type;
-            String value;
-
-            public Attribute(QName name, String type, String value) {
-                super();
-                this.name = name;
-                this.type = type;
-                this.value = value;
-            }
-        }
-        private Attribute[] attributes;
-
-        private class Namespace {
-
-            String prefix;
-            String uri;
-
-            public Namespace(String prefix, String uri) {
-                super();
-                this.prefix = prefix;
-                this.uri = uri;
-            }
-        }
-        private Namespace[] namespaces;
-    }
-    private NodeCache[] nodeCache;
-
-    /**
-     * States our parser can be in
-     *
-     */
-    private enum State {
-
-        /**
-         * Generate fake START_DOCUMENT events
-         */
-        AtTop,
-        /**
-         * Generate fake START_ELEMENT events
-         */
-        Descent,
-        /**
-         * Return real nodes below the branch
-         */
-        AtBottom,
-        /**
-         * Generate fake END_ELEMENT events
-         */
-        Pop,
-        /**
-         * Generate fake END_DOCUMENT event
-         */
-        End
-    }
     private State state;
-//    private Logger logger = Logger.getLogger(IncrementalXmlStreamReader.class.getName());
     private int currentDepth = -1;
     private int lastMatch = -1;
-    private int currentPos = -1;
     private int currentType = -1;
     private int virtualDepth = -1;
     boolean process = false;
+    private XMLStreamReader parent;
+    private QName[] branch;
+    private long parentEventNumber = -1;
+    private long acceptedEventNumber = -1;
 
     private boolean accept(XMLStreamReader r) {
-//        logger.finest("accept: eventType = " + r.getEventType());
-        int pos = r.getLocation().getCharacterOffset();
-        int type = r.getEventType();
-        if (currentPos != pos || currentType != type) {
-            currentPos = pos;
-            currentType = type;
-            switch (type) {
+        if (acceptedEventNumber != parentEventNumber || acceptedEventNumber == -1) {
+            acceptedEventNumber = parentEventNumber;
+            switch (r.getEventType()) {
                 case XMLStreamReader.START_ELEMENT:
                     ++currentDepth;
 
@@ -184,8 +119,7 @@ public class IncrementalXmlStreamReader implements XMLStreamReader {
 
     /**
      * Construct branch filtered stream using original XML stream and any number
-     * of
-     * {@link QName}'s as branch path
+     * of {@link QName}'s as branch path
      *
      * @param parent original stream
      * @param branch A branch path as any number of {@link QName} arguments.
@@ -197,15 +131,20 @@ public class IncrementalXmlStreamReader implements XMLStreamReader {
         this.branch = branch;
         init(parent);
     }
-    
+
     public IncrementalXmlStreamReader(XMLStreamReader parent, String branchAsXPath) {
         this(parent, XmlUtils.xPathToQNames(branchAsXPath));
     }
+    
+    private int parentNext() throws XMLStreamException {
+        parentEventNumber++;
+        return parent.next();
+    }
 
     private int filteredNext() throws XMLStreamException {
-        int ret = parent.next();
+        int ret = parentNext();
         while (ret != XMLStreamReader.END_DOCUMENT && !accept(parent)) {
-            ret = parent.next();
+            ret = parentNext();
         }
         return ret;
     }
@@ -221,7 +160,7 @@ public class IncrementalXmlStreamReader implements XMLStreamReader {
         }
         //skip all whitespaces, comments and processing instructions from current position
         while (isWhiteSpace() || parent.getEventType() == XMLStreamConstants.COMMENT || parent.getEventType() == XMLStreamConstants.SPACE || parent.getEventType() == XMLStreamConstants.PROCESSING_INSTRUCTION) {
-            parent.next();
+            parentNext();
         }
         //update internal state of the IncrementalXmlStreamReader
         hasNext();
@@ -240,7 +179,7 @@ public class IncrementalXmlStreamReader implements XMLStreamReader {
                 if (accept(parent)) {
                     return true;
                 }
-                parent.next();
+                parentNext();
             }
         }
         return false;
@@ -595,5 +534,65 @@ public class IncrementalXmlStreamReader implements XMLStreamReader {
     @Override
     public boolean standaloneSet() {
         return parent.standaloneSet();
+    }
+
+    private class NodeCache {
+
+        private class Attribute {
+
+            QName name;
+            String type;
+            String value;
+
+            public Attribute(QName name, String type, String value) {
+                super();
+                this.name = name;
+                this.type = type;
+                this.value = value;
+            }
+        }
+        private Attribute[] attributes;
+
+        private class Namespace {
+
+            String prefix;
+            String uri;
+
+            public Namespace(String prefix, String uri) {
+                super();
+                this.prefix = prefix;
+                this.uri = uri;
+            }
+        }
+        private Namespace[] namespaces;
+    }
+    private NodeCache[] nodeCache;
+
+    /**
+     * States our parser can be in
+     *
+     */
+    private enum State {
+
+        /**
+         * Generate fake START_DOCUMENT events
+         */
+        AtTop,
+        /**
+         * Generate fake START_ELEMENT events
+         */
+        Descent,
+        /**
+         * Return real nodes below the branch
+         */
+        AtBottom,
+        /**
+         * Generate fake END_ELEMENT events
+         */
+        Pop,
+        /**
+         * Generate fake END_DOCUMENT event
+         */
+        End
     }
 }

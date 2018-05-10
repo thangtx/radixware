@@ -12,28 +12,18 @@
 package org.radixware.kernel.explorer.widgets;
 
 import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.core.Qt.Key;
-import com.trolltech.qt.core.Qt.KeyboardModifier;
 import com.trolltech.qt.gui.QHeaderView;
-import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QTableView;
 import com.trolltech.qt.gui.QWidget;
 import com.trolltech.qt.gui.QAbstractItemDelegate.EndEditHint;
 import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QStyle;
 import com.trolltech.qt.gui.QStyleOptionHeader;
-import org.radixware.kernel.common.client.errors.SettingPropertyValueError;
-import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.IWidget;
-import org.radixware.kernel.common.enums.EEditPossibility;
-import org.radixware.kernel.common.enums.EValType;
-import org.radixware.kernel.common.utils.SystemTools;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.text.ExplorerFont;
 import org.radixware.kernel.explorer.widgets.propeditors.PropEditor;
@@ -152,66 +142,7 @@ public abstract class AbstractGrid extends QTableView implements IModelWidget {
             propEditor.finishEdit();
             closeEditor(propEditor, EndEditHint.SubmitModelCache);
         }
-    }
-
-    @Override
-    protected void keyPressEvent(final QKeyEvent keyEvent) {
-        //Copy to clipboard real property value DBP-1658
-        if (keyEvent.matches(QKeySequence.StandardKey.Copy) && model() != null) {
-            final Object obj = model().data(currentIndex(), Qt.ItemDataRole.UserRole);
-            if (obj instanceof Property) {
-                QApplication.clipboard().setText(((Property) obj).getValueAsString());
-            }
-            keyEvent.accept();
-            return;
-        }
-        final boolean isNoMod = (keyEvent.modifiers().value() == KeyboardModifier.NoModifier.value() || keyEvent.modifiers().value() == KeyboardModifier.KeypadModifier.value());
-        final boolean isEnter = keyEvent.key() == Key.Key_Enter.value() || keyEvent.key() == Key.Key_Return.value();        
-        if (isNoMod && isEnter && currentIndex() != null) {
-            openEditor(currentIndex());
-        }else{
-            super.keyPressEvent(keyEvent);
-            //Ctrl+Space
-            final boolean isControl = keyEvent.modifiers().value() == KeyboardModifier.ControlModifier.value()
-                    || (keyEvent.modifiers().value() == KeyboardModifier.MetaModifier.value() && SystemTools.isOSX);
-            final boolean isSpace = keyEvent.key() == Key.Key_Space.value();
-            if (isControl && isSpace) {
-                final QModelIndex index = this.currentIndex();
-                if (index == null) {
-                    return;
-                }
-                final Property property = (Property) this.model().data(index, Qt.ItemDataRole.UserRole);
-                if (property != null
-                        && property.getDefinition().getType() == EValType.BOOL
-                        && canEditPropertyValue(property) && !property.isMandatory()) {
-                    try {
-                        property.setValueObject(null);
-                    } catch (Exception ex) {
-                        property.getEnvironment().processException(new SettingPropertyValueError(property, ex));
-                    }
-                }
-            }
-        }
-    }
-
-    private static boolean canEditPropertyValue(final Property property) {
-        return !property.isReadonly()
-                && (property.hasOwnValue() || !property.isValueDefined())
-                && !property.isCustomEditOnly()
-                && property.getEditPossibility() != EEditPossibility.PROGRAMMATICALLY;
-    }
-
-    protected void openEditor(final QModelIndex index) {
-        if (index == null || model() == null || !model().flags(index).isSet(Qt.ItemFlag.ItemIsEditable)) {
-            return;
-        }
-        final Property property = (Property) model().data(index, Qt.ItemDataRole.UserRole);
-        if (property != null && property.getDefinition().getType() != EValType.BOOL) {
-            edit(index);
-        }
-    }
-    
-    
+    }   
 
     public void applySettings() {
         ((GridHeader)verticalHeader).updateSectionsGeometry();

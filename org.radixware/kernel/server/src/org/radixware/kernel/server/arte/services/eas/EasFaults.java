@@ -123,7 +123,11 @@ final class EasFaults {
             return new ServiceProcessClientFault(clientFaultReason.toString(), mess, e, preprocessedExStack);
         }
         if (srvFaultReason != null) {
-            arte.getTrace().put(EEventSeverity.WARNING, "Server fault caused by: " + arte.getTrace().exceptionStackToString(e), EEventSource.EAS);
+            EEventSeverity severity = EEventSeverity.WARNING;
+            if (Arte.get() != null && Arte.get().suppressDbForciblyCloseErrors()) {
+                severity = EEventSeverity.DEBUG;
+            }
+            arte.getTrace().put(severity, "Server fault caused by: " + arte.getTrace().exceptionStackToString(e), EEventSource.EAS);
             return new ServiceProcessServerFault(srvFaultReason.toString(), mess, e, preprocessedExStack);
         } else {//Others
             arte.getTrace().put(EEventSeverity.WARNING, "Can't find corresponding faultstring for " + arte.getTrace().exceptionStackToString(e), EEventSource.EAS);
@@ -183,6 +187,10 @@ final class EasFaults {
     static ServiceProcessClientFault newLogonTimeRestrictionViolationFault(){
         return new ServiceProcessClientFault(ExceptionEnum.LOGON_TIME_RESTRICTION_VIOLATION.toString(), null, null, null);
     }
+    
+    static ServiceProcessClientFault newTemporaryPasswordExpiredFault(){
+        return new ServiceProcessClientFault(ExceptionEnum.TEMPORARY_PASSWORD_EXPIRED.toString(), null, null, null);
+    }    
 
     static ServiceProcessClientFault newInvalidPassword() {
         return new ServiceProcessClientFault(ExceptionEnum.INVALID_PASSWORD.toString(), "Invalid password", null, null);

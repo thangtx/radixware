@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,13 +47,21 @@ public final class RunParams {
         COUNTRY("-country"),
         APP_DATA("-configPath"),
         CON_ENCODING("-consoleEncoding"),
+		/**
+		 * 20180130 Котрачев. Адрес и порт (например 127.0.0.1:8088), который должен слушать драйвер selenium, встроенный в эксплорер. Если не указан, драйвер не запускать.
+		 */
+		WEBDRV_SERVER_ADDRESS("-webDrvServerAddress"),
+		WEBDRV_CLIENTS("-webDrvClients"),
         TRACE_FILE("-traceFile"),
         TRACE_PROFILE("-traceProfile"),
+        TRACE_MIN_SEVERITY("-traceMinSeverity"),
+        DETAILED_3RD_PARTY_LOGGING ("-detailed3rdPartyLogging", true),
         DEVELOPMENT_MODE("-development", true),
         MARK_UNCHECKED_STRINGS("-markUncheckedStrings", "org.radixware.kernel.client.markUncheckedStrings", true),
         CONNECTION_NAME("-connection"),
         USER_EXT_DESIGNER_HEAP_SIZE("-extDesignerMaxHeapSize"),
         USER_EXT_DESIGNER_PERM_SIZE("-extDesignerMaxPermSize"),
+        USER_EXT_DESIGNER_AWAIT_STARTER_MILLIS("-extDesignerAwaitStarterMillis", "rdx.report.designer.wait.for.starter.actualize.millis", false),
         USER_NAME("-user"),
         PASSWORD("-pwd"),
         AUTO_TEST("-autoTest"),
@@ -64,11 +73,16 @@ public final class RunParams {
         RESTORE_CONTEXT("-restoreContext", true),
         CONFIG_FILE("-configFile"),
         UDS_BUILD_PATH("-udsBuildPath", "org.radixware.kernel.uds.buildPath", false),
+        ALTERNATE_UDF_COMPLETION_SHORTCUT("-alternateUdfCompletionShortcut", false),
         INSPECTOR_AGENT_ADDRESS("-inspectorAgentAddress"),
         FORCE_DIALOG_WINDOW_TYPE("-forceDialogWindowType"),
         NO_EXT_META_INFO("-noExtMetaInfo",true),
+        NO_SQML("-noSqml",true),
+        NO_SQML_PRELOAD("-noSqmlPreload",true),
+        EXT_META_INF_PRELOAD("-extMetaInfoPreload",true),
         NO_UDS("-noUDS",true),
-        QT_STYLE("-style");
+        QT_STYLE("-style"),
+        APP_ICON("-appIcon");
         private final String argument;
         private final boolean logical;
         private final String systemProperty;
@@ -152,7 +166,7 @@ public final class RunParams {
     }
 
     private static class UnableToLoadOptionsFromFile extends Exception {
-        
+
         private static final long serialVersionUID = -5558318489200908503L;
 
         public UnableToLoadOptionsFromFile(final Throwable cause) {
@@ -196,6 +210,13 @@ public final class RunParams {
                         setConsoleEncoding(encoding);
                         value = encoding;
                         break;
+                    case WEBDRV_SERVER_ADDRESS:
+                        String addr = readValue(args, ++i, param);
+                        InetSocketAddress webDrvServerAddress
+                                = org.radixware.kernel.common.utils.ValueFormatter.parseInetSocketAddress(addr);
+                        setWebDrvServerAddress(webDrvServerAddress);
+                        value=webDrvServerAddress;
+                        break;
                     case ROOT_ID:
                         value = Id.Factory.loadFrom(readValue(args, ++i, param));
                         break;
@@ -205,6 +226,12 @@ public final class RunParams {
                     case USER_EXT_DESIGNER_HEAP_SIZE:
                     case USER_EXT_DESIGNER_PERM_SIZE:
                         value = parseMemoryUsage(param, readValue(args, ++i, param));
+                        break;
+                    case USER_EXT_DESIGNER_AWAIT_STARTER_MILLIS:
+                        value = readValue(args, ++i, param);
+                        break;
+                    case ALTERNATE_UDF_COMPLETION_SHORTCUT:
+                        value = readValue(args, ++i, param);
                         break;
                     case UDS_BUILD_PATH:
                         value = readValue(args, ++i, param);
@@ -356,6 +383,14 @@ public final class RunParams {
         return (String) PARAM_VALUES.get(EParam.TRACE_FILE);
     }
 
+    public static String getTraceMinSeverity() {
+        return (String) PARAM_VALUES.get(EParam.TRACE_MIN_SEVERITY);
+    }
+    
+    public static boolean isDetailed3rdPartyLoggingEnabled(){
+        return PARAM_VALUES.containsKey(EParam.DETAILED_3RD_PARTY_LOGGING);
+    }
+
     public static String getTestOptionsFile() {
         return (String) PARAM_VALUES.get(EParam.AUTO_TEST);
     }
@@ -371,6 +406,19 @@ public final class RunParams {
     public static Id getExplorerRootId() {
         return (Id) PARAM_VALUES.get(EParam.ROOT_ID);
     }
+	
+	/**
+	 * Вовзращает прописанный в конфиге -webDrvServerAddress или 0.
+	 */
+	public static InetSocketAddress getWebDrvServerAddress() {
+		if(PARAM_VALUES.containsKey(EParam.WEBDRV_SERVER_ADDRESS))
+            return (InetSocketAddress)(PARAM_VALUES.get(EParam.WEBDRV_SERVER_ADDRESS));
+		return null;
+	}
+	
+	public static String getWebDrvClients () {
+		return (String) PARAM_VALUES.get(EParam.WEBDRV_CLIENTS);
+	}
 
     public static Id getTestExplorerItemId() {
         return (Id) PARAM_VALUES.get(EParam.TEST_EXPLORER_ITEM_ID);
@@ -391,15 +439,27 @@ public final class RunParams {
     public static boolean isDevelopmentMode() {
         return PARAM_VALUES.containsKey(EParam.DEVELOPMENT_MODE);
     }
-    
+
     public static boolean isExtendedMetaInformationAccessible(){
         return !PARAM_VALUES.containsKey(EParam.NO_EXT_META_INFO);
     }
-    
+
+    public static boolean isSqmlAccessible(){
+        return !PARAM_VALUES.containsKey(EParam.NO_SQML);
+    }
+
+    public static boolean isSqmlPreloadEnabled(){
+        return !PARAM_VALUES.containsKey(EParam.NO_SQML_PRELOAD);
+    }
+
+    public static boolean isExtendedMetaInformationPreloadEnabled(){
+        return PARAM_VALUES.containsKey(EParam.EXT_META_INF_PRELOAD);
+    }
+
     public static String getInspectorAgentAddress() {
         return (String) PARAM_VALUES.get(EParam.INSPECTOR_AGENT_ADDRESS);
     }
-    
+
     public static String getForceDialogWindowType(){
         return (String) PARAM_VALUES.get(EParam.FORCE_DIALOG_WINDOW_TYPE);
     }
@@ -416,29 +476,25 @@ public final class RunParams {
         return (String) PARAM_VALUES.get(EParam.USER_EXT_DESIGNER_PERM_SIZE);
     }
     
+    public static String getAlternateUdfCompletionShortcut() {
+        return (String) PARAM_VALUES.get(EParam.ALTERNATE_UDF_COMPLETION_SHORTCUT);
+    }        
+
     public static boolean isUDSAccessible(){
         return !PARAM_VALUES.containsKey(EParam.NO_UDS);
     }
-    
+
     public static String getQtStyle(){
         return (String) PARAM_VALUES.get(EParam.QT_STYLE);
     }
-
-    public static void setConnectionParams(final String connection, final String user) {
-        PARAM_VALUES.put(EParam.CONNECTION_NAME, connection);
-        if (user==null || user.isEmpty()){
-            //Using of PKCS#11
-            PARAM_VALUES.remove(EParam.USER_NAME);
-        }else{
-            PARAM_VALUES.put(EParam.USER_NAME, user);
-        }
-        clearPassword();
-        PARAM_VALUES.remove(EParam.RESTORE_CONNECTION);
+    
+    public static String getApplicationIconPath(){
+        return (String) PARAM_VALUES.get(EParam.APP_ICON);
     }
     
     public static void clearPassword(){
         PARAM_VALUES.remove(EParam.PASSWORD);
-        PARAM_VALUES.remove(EParam.PWD_HASH);        
+        PARAM_VALUES.remove(EParam.PWD_HASH);
     }
 
     public static void clearConnectionParams() {
@@ -452,6 +508,10 @@ public final class RunParams {
 
     public static void setRootId(final Id rootId) {
         PARAM_VALUES.put(EParam.ROOT_ID, rootId);
+    }
+
+    private static void setWebDrvServerAddress(InetSocketAddress addr) {
+        PARAM_VALUES.put(EParam.WEBDRV_SERVER_ADDRESS, addr);
     }
 
     public static String[] getArgs() {
@@ -474,16 +534,6 @@ public final class RunParams {
             }
         }
         return params.toArray(new String[]{});
-    }
-
-    public static void addRestartParams() {
-        PARAM_VALUES.put(EParam.RESTORE_CONNECTION, Boolean.TRUE);
-        PARAM_VALUES.put(EParam.RESTORE_CONTEXT, Boolean.TRUE);
-    }
-
-    public static void clearRestartParams() {
-        PARAM_VALUES.put(EParam.RESTORE_CONNECTION, Boolean.FALSE);
-        PARAM_VALUES.put(EParam.RESTORE_CONTEXT, Boolean.FALSE);
     }
 
     public static boolean needToRestoreConnection() {

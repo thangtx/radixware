@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.design.msdleditor.enums.EDateTimeFormat;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
@@ -33,7 +33,7 @@ import org.radixware.schemas.msdl.DateTimeField;
 
 
 
-public class DateTimePanel extends AbstractEditItem implements ActionListener {
+public class DateTimePanel extends AbstractMsdlPanel implements ActionListener {
 
     private DateTimeField field;
     private AbstractFieldModel fieldModel;
@@ -43,16 +43,20 @@ public class DateTimePanel extends AbstractEditItem implements ActionListener {
     public DateTimePanel() {
         initComponents();
         ArrayList<JLabel> l = new ArrayList<JLabel>();
-        l.add(jLabel1);
-        l.add(jLabel2);
+        l.add(lbFormat);
+        l.add(lbPattern);
+        l.add(lbUtc);
+        l.add(lbLenient);
         ArrayList<JComponent> e = new ArrayList<JComponent>();
         e.add(dateTimeFormatPanel1);
         e.add(dateTimePatternPanel1);
+        e.add(timeZonePanel);
+        e.add(lenientPanel);
         DefaultLayout.doLayout(jPanel1, l, e,true);
     }
 
     public void open(DateTimeFieldModel fieldModel) {
-        super.open(fieldModel.getMsdlField());
+        super.open(fieldModel, fieldModel.getMsdlField());
         opened = false;
         this.field = (DateTimeField)fieldModel.getField();
         this.fieldModel = fieldModel;
@@ -65,14 +69,20 @@ public class DateTimePanel extends AbstractEditItem implements ActionListener {
         model.addElement(EEncoding.CP1252);
         model.addElement(EEncoding.CP866);
         model.addElement(EEncoding.EBCDIC);
+        model.addElement(EEncoding.EBCDIC_CP1047);
         model.addElement(EEncoding.UTF8);
         simpleFieldPanel1.setEncodingComboBoxModel(model);
-        simpleFieldPanel1.open(fieldModel, EEncoding.getInstance(fieldModel.getEncoding()));
+        simpleFieldPanel1.open(fieldModel, EEncoding.getInstance(fieldModel.calcEncoding(false)));
 
         dateTimeFormatPanel1.addActionListener(this);
         dateTimeFormatPanel1.getSetParentPanel().addActionListener(this);
         dateTimePatternPanel1.addActionListener(this);
         dateTimePatternPanel1.getSetParentPanel().addActionListener(this);
+        timeZonePanel.addActionListener(this);
+        timeZonePanel.getSetParentPanel().addActionListener(this);
+        lenientPanel.addActionListener(this);
+        lenientPanel.getSetParentPanel().addActionListener(this);
+        
         update();
         opened = true;
     }
@@ -85,17 +95,24 @@ public class DateTimePanel extends AbstractEditItem implements ActionListener {
                                        EDateTimeFormat.getInstance(fieldModel.getDateTimeFormat(false)));
         dateTimePatternPanel1.setPattern(field.getPattern(), fieldModel.getDateTimePattern(false));
         dateTimePatternPanel1.setVisible(dateTimeFormatPanel1.getComboBoxValue() == EDateTimeFormat.STR);
-        jLabel2.setVisible(dateTimeFormatPanel1.getComboBoxValue() == EDateTimeFormat.STR);
+        lbPattern.setVisible(dateTimeFormatPanel1.getComboBoxValue() == EDateTimeFormat.STR);
+        
+        timeZonePanel.setValue(field.getTimeZoneType(), fieldModel.getTimeZoneType(false));
+        lenientPanel.setValue(field.getLenientParse(), fieldModel.getDateTimeLenientParse(false));
+        
         opened = true;
         super.update();
     }
     
-    private void save() {
+    @Override
+    protected void doSave() {
         field.setFormat(dateTimeFormatPanel1.getFormat().getValue());
         field.setPattern(dateTimePatternPanel1.getString());
         dateTimePatternPanel1.setVisible(dateTimeFormatPanel1.getComboBoxValue() == EDateTimeFormat.STR);
-        jLabel2.setVisible(dateTimeFormatPanel1.getComboBoxValue() == EDateTimeFormat.STR);
-        fieldModel.setModified();
+        lbPattern.setVisible(dateTimeFormatPanel1.getComboBoxValue() == EDateTimeFormat.STR);
+        
+        field.setTimeZoneType(timeZonePanel.getValue());
+        field.setLenientParse(lenientPanel.getValue());
     }
 
     /** This method is called from within the constructor to
@@ -108,46 +125,73 @@ public class DateTimePanel extends AbstractEditItem implements ActionListener {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lbFormat = new javax.swing.JLabel();
         dateTimeFormatPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimeFormatPanel();
         dateTimePatternPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimePatternPanel();
-        jLabel2 = new javax.swing.JLabel();
+        lbPattern = new javax.swing.JLabel();
+        lbUtc = new javax.swing.JLabel();
+        lbLenient = new javax.swing.JLabel();
+        lenientPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtBoolPanel();
+        timeZonePanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimeZonePanel();
         simpleFieldPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.SimpleFieldPanel();
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbFormat.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/Bundle"); // NOI18N
-        jLabel1.setText(bundle.getString("FORMAT")); // NOI18N
+        lbFormat.setText(bundle.getString("FORMAT")); // NOI18N
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbPattern.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/field/panel/Bundle"); // NOI18N
-        jLabel2.setText(bundle1.getString("DateTimePanel.jLabel2.text")); // NOI18N
+        lbPattern.setText(bundle1.getString("DateTimePanel.lbPattern.text")); // NOI18N
+
+        lbUtc.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lbUtc.setText(bundle1.getString("DateTimePanel.lbUtc.text")); // NOI18N
+
+        lbLenient.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lbLenient.setText(bundle1.getString("DateTimePanel.lbLenient.text")); // NOI18N
+
+        lenientPanel.setDefaultParentValue(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(dateTimeFormatPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
-                    .addComponent(dateTimePatternPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(lbLenient, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbFormat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbPattern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbUtc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(290, 290, 290)
+                        .addComponent(lenientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(dateTimeFormatPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(dateTimePatternPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                            .addComponent(timeZonePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
+                    .addComponent(lbFormat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(dateTimeFormatPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
-                    .addComponent(dateTimePatternPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lbPattern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dateTimePatternPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbUtc, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(timeZonePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lenientPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbLenient, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -155,7 +199,7 @@ public class DateTimePanel extends AbstractEditItem implements ActionListener {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(simpleFieldPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+            .addComponent(simpleFieldPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -171,10 +215,14 @@ public class DateTimePanel extends AbstractEditItem implements ActionListener {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimeFormatPanel dateTimeFormatPanel1;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimePatternPanel dateTimePatternPanel1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lbFormat;
+    private javax.swing.JLabel lbLenient;
+    private javax.swing.JLabel lbPattern;
+    private javax.swing.JLabel lbUtc;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtBoolPanel lenientPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.SimpleFieldPanel simpleFieldPanel1;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimeZonePanel timeZonePanel;
     // End of variables declaration//GEN-END:variables
 
     @Override

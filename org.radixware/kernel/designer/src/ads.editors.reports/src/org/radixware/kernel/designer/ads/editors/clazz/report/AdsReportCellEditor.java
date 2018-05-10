@@ -8,9 +8,11 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.clazz.report;
 
+import java.awt.BorderLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import org.openide.util.NbBundle;
@@ -25,9 +27,11 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSpecialCel
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSummaryCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportTextCell;
 import org.radixware.kernel.common.enums.EReportCellType;
+import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.designer.ads.editors.clazz.report.chart.AdsReportChartAppearance;
 import org.radixware.kernel.designer.ads.editors.clazz.report.chart.AdsReportChartCellEditor;
+import org.radixware.kernel.designer.ads.reports.AdsReportDialogsUtils;
 import org.radixware.kernel.designer.common.annotations.registrators.EditorFactoryRegistration;
 import org.radixware.kernel.designer.common.editors.RadixObjectEditor;
 import org.radixware.kernel.designer.common.editors.RadixObjectModalEditor;
@@ -36,7 +40,6 @@ import org.radixware.kernel.designer.common.general.editors.EditorsManager;
 import org.radixware.kernel.designer.common.general.editors.IEditorFactory;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
 
-
 class AdsReportCellEditor extends RadixObjectModalEditor<AdsReportCell> {
 
     private enum ETab {
@@ -44,18 +47,22 @@ class AdsReportCellEditor extends RadixObjectModalEditor<AdsReportCell> {
         CELL, CHART_APPEARANCE, APPEARANCE, ADDING
     };
     private final AdsReportCellAppearanceEditor appearanceEditor;
-    private AdsReportChartAppearance chartAppearancePanel=null;
+    private AdsReportChartAppearance chartAppearancePanel = null;
     private final JmlEditor jmlEditor;
+    private final JPanel generalTab = new JPanel();
+    private final AdsReportCellGeneralSettingPanel generalSettingsPanel;
     private final JPanel cellEditor;
     private static ETab tab = ETab.CELL;
     private volatile boolean init = false;
 
-    /** Creates new form AdsReportCellEditor */
+    /**
+     * Creates new form AdsReportCellEditor
+     */
     protected AdsReportCellEditor(final AdsReportCell cell) {
         super(cell);
         init = true;
         initComponents();
-        
+
         appearanceEditor = new AdsReportCellAppearanceEditor(cell);
         jmlEditor = new JmlEditor();
         switch (cell.getCellType()) {
@@ -85,28 +92,38 @@ class AdsReportCellEditor extends RadixObjectModalEditor<AdsReportCell> {
                 //if(chartCell.getChartType()==EReportChartCellType.PIE){
                 //    cellEditor = new AdsReportPieChartPanel((AdsReportChartCell)cell);
                 //}else{
-                    cellEditor = new AdsReportChartCellEditor((AdsReportChartCell)cell);
+                cellEditor = new AdsReportChartCellEditor((AdsReportChartCell) cell);
                 //}
                 break;
             default:
                 cellEditor = new JPanel();
                 break;
         }
+        generalSettingsPanel = new AdsReportCellGeneralSettingPanel(cell);
+        cellEditor.addPropertyChangeListener(AdsReportWidgetNamePanel.CHANGE_NAME, new PropertyChangeListener() {
 
-        if (cell.getCellType() == EReportCellType.EXPRESSION) {
-            tabbedPane.addTab(NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_EXPRESSION"),
-                    RadixWareIcons.JAVA.JAVA.getIcon(), cellEditor);
-        } else if(cell.getCellType() == EReportCellType.CHART/* && ((AdsReportChartCell)cell).getChartType()!=EReportChartCellType.PIE*/){
-            tabbedPane.addTab("Chart Dataset"/*NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_GENERAL")*/,
-                    RadixWareIcons.DATABASE.DB_NAME.getIcon(), cellEditor);
-            chartAppearancePanel= new AdsReportChartAppearance();
-            chartAppearancePanel.open((AdsReportChartCell)cell,null,cell.getOwnerReport(),null);
-            chartAppearancePanel.setBorder(new EmptyBorder(10,10,10,10));
-            tabbedPane.addTab("Chart Appearance"/*NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_GENERAL")*/,                    
-                    RadixWareIcons.EDIT.PROPERTIES.getIcon(),chartAppearancePanel);
-        }else {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                AdsReportDialogsUtils.setNewCellName(cell.getOwnerForm(), cell);
+                generalSettingsPanel.updateNameEditor();
+            }
+        });
+        
+        generalTab.setLayout(new BorderLayout());
+        generalTab.add(generalSettingsPanel, BorderLayout.NORTH);
+        if (cell.getCellType() == EReportCellType.CHART) {
             tabbedPane.addTab(NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_GENERAL"),
-                    RadixWareIcons.EDIT.PROPERTIES.getIcon(), cellEditor);
+                    RadixWareIcons.EDIT.PROPERTIES.getIcon(), generalTab);
+            
+            tabbedPane.addTab("Chart Dataset", RadixWareIcons.DATABASE.DB_NAME.getIcon(), cellEditor);
+            chartAppearancePanel = new AdsReportChartAppearance();
+            chartAppearancePanel.open((AdsReportChartCell) cell, null, cell.getOwnerReport(), null);
+            chartAppearancePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            tabbedPane.addTab("Chart Appearance", RadixWareIcons.EDIT.PROPERTIES.getIcon(), chartAppearancePanel);
+        } else {            
+            generalTab.add(cellEditor);            
+            tabbedPane.addTab(NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_GENERAL"),
+                    RadixWareIcons.EDIT.PROPERTIES.getIcon(), generalTab);
         }
         tabbedPane.addTab(NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_APPEARANCE"),
                 AdsDefinitionIcon.COLOR_SCHEME.getIcon(), appearanceEditor);
@@ -114,17 +131,16 @@ class AdsReportCellEditor extends RadixObjectModalEditor<AdsReportCell> {
                 RadixWareIcons.JAVA.JAVA.getIcon(), jmlEditor);
 
         //jmlEditor.open(cell.getOnAdding());
-
         switch (tab) {
             case CELL:
-                tabbedPane.setSelectedComponent(cellEditor);
+                tabbedPane.setSelectedComponent(generalTab);
                 break;
             case CHART_APPEARANCE:
-                if(chartAppearancePanel==null){
-                    tabbedPane.setSelectedComponent(appearanceEditor);                                    
-                }else{
-                    tabbedPane.setSelectedComponent(chartAppearancePanel);    
-                }  
+                if (chartAppearancePanel == null) {
+                    tabbedPane.setSelectedComponent(appearanceEditor);
+                } else {
+                    tabbedPane.setSelectedComponent(chartAppearancePanel);
+                }
                 break;
             case APPEARANCE:
                 tabbedPane.setSelectedComponent(appearanceEditor);
@@ -145,9 +161,17 @@ class AdsReportCellEditor extends RadixObjectModalEditor<AdsReportCell> {
 
     @Override
     public boolean open(final OpenInfo openInfo) {
-        jmlEditor.open(getRadixObject().getOnAdding(), openInfo);
+        Jml jmlOnEdit = getRadixObject().getOnAdding();
+        if (openInfo.getTarget() == jmlOnEdit) {
+            jmlEditor.open(getRadixObject().getOnAdding(), openInfo);
+            tabbedPane.setSelectedComponent(jmlEditor);
+        } else {
+            jmlEditor.open(jmlOnEdit);
+        }
         if (cellEditor instanceof AdsReportExpressionCellEditor) {
-            ((AdsReportExpressionCellEditor) cellEditor).open(openInfo);
+            if (((AdsReportExpressionCellEditor) cellEditor).open(openInfo)) {
+                tabbedPane.setSelectedComponent(generalTab);
+            }
         }
         return super.open(openInfo);
     }
@@ -157,10 +181,10 @@ class AdsReportCellEditor extends RadixObjectModalEditor<AdsReportCell> {
         return getRadixObject().getTypeTitle() + " Editor";
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -190,12 +214,12 @@ class AdsReportCellEditor extends RadixObjectModalEditor<AdsReportCell> {
         if (init) {
             return;
         }
-        if (tabbedPane.getSelectedComponent() == cellEditor) {
+        if (tabbedPane.getSelectedComponent() == generalTab) {
             tab = ETab.CELL;
-        }else if(tabbedPane.getSelectedComponent() == chartAppearancePanel){
+        } else if (tabbedPane.getSelectedComponent() == chartAppearancePanel) {
             tab = ETab.CHART_APPEARANCE;
             chartAppearancePanel.updateFonts(null);
-        }else if (tabbedPane.getSelectedComponent() == appearanceEditor) {
+        } else if (tabbedPane.getSelectedComponent() == appearanceEditor) {
             tab = ETab.APPEARANCE;
         } else if (tabbedPane.getSelectedComponent() == jmlEditor) {
             tab = ETab.ADDING;

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcN3UE6S7WQNHDFCVO2FVIUBACJY" Name="PropObjectEmbeddedEditor" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcN3UE6S7WQNHDFCVO2FVIUBACJY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcN3UE6S7WQNHDFCVO2FVIUBACJY"/>
+    </Bodies>
+    <MethodGroup Id="cmgRCVZF55HZNBQ5IE7M6H4KJEGV4" Name="Root">
+      <Group Id="cmg2PWDIR43ZVA3JHCSSY5FXWYLUU" Name="AbstractPropEditor Implementation" Members="mthCQTSMYWWLJE7RGTLXMSL3MC3U4 mthL4GUFWIYOVEZNHFH23CQWAKSBI mth44SJGORNEVDCVBDA4P57GN3J5E mthM53H5PPDQNC7FCGHLYQP72ICQU"/>
+      <Group Id="cmgO2QNCVIBXFDQRLPK3GE537Y2AQ" Name="IModelWidget Implementation" Members="mth5WIXNQ3TZZEWPIUYRPETIIO5IA mth3B7TBENHGNCUBE7KBK75KHSC6Q mthHSOIMFSTLVFQTGWP67D7DY6CQQ"/>
+      <Group Id="cmgMNMQO3WKT5CPJABPF5QGNQRKVE" Name="IPropEditor Implementation" Members="mthA5VI2TFHMRA4BO237WTZZEYDWQ"/>
+      <Group Id="cmgAYOLPXMWL5EEDGLDUJPHACLOQU" Name="EmbeddedPropObjectEditor API" Members="mthGGEIILBSQRBCNITE67NUM7HYSY mthYTIWEWIK4NA27BOHWGMPN7PPAI"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgBP6BPJNZLRF3JPOMLGQ7TMP7NI" Name="Root"/>
+    <Properties>
+      <Property Id="prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Name="editor" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="adcSQSUGWDTDZCMDNNQEOR2ST6H4Q"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthCQTSMYWWLJE7RGTLXMSL3MC3U4" Name="closeEditor" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcA6YJ4O5BRBCNBKXXLMKZE7IZZU mthZKHWXKICQZE6REQWVQJZ2QXD34" Invoke="true">
+                <xsc:Presentation>close</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthL4GUFWIYOVEZNHFH23CQWAKSBI" Name="getCurrentValueInEditor" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.finishEdit();
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcSQSUGWDTDZCMDNNQEOR2ST6H4Q mthQA6UM4PDQZHFRBRWXK22BD7E2Q" Invoke="true">
+                <xsc:Presentation>getProperty</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc6ETGBMLMAFGSXNZSFNCACNNOYQ mth3N4HPBFVQBCO7HB7Q3B53ZC3AU" Invoke="true">
+                <xsc:Presentation>getVal</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth44SJGORNEVDCVBDA4P57GN3J5E" Name="updateEditor" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="value" Id="mprE3J63AHC7FENPOUC4HXRBGSKVE">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="options" Id="mprQJSFRIC3GRE3PI4WYVSZZBJZCI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.editors.property.PropEditorOptions"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthM53H5PPDQNC7FCGHLYQP72ICQU" Name="updateSettings" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mth5WIXNQ3TZZEWPIUYRPETIIO5IA" Name="bind" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcA6YJ4O5BRBCNBKXXLMKZE7IZZU mthXJP3S7X7TRHVJHCBKEJJCWWTCQ" Invoke="true">
+                <xsc:Presentation>bind</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3B7TBENHGNCUBE7KBK75KHSC6Q" Name="refresh" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="modelItem" Id="mprIWTFNQ6ZCBGPLEETH4S4NMCQIA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.ModelItem"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcA6YJ4O5BRBCNBKXXLMKZE7IZZU mthWZDL6O2T6NCJVO7WKUN2GZ3KLE" Invoke="true">
+                <xsc:Presentation>refresh</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(modelItem);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHSOIMFSTLVFQTGWP67D7DY6CQQ" Name="setFocus" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="property" Id="mprXGLGCIMQVZGCHA3SFPCVAMRXDU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (property==null){
+    return false;
+}
+if (property.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true">
+                <xsc:Presentation>getId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().equals(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcI5LQYSJ2LREM5DBZIGFBAPXNSA mthTM6MWKPVHVCLNGKTOVYKAJR6TY" Invoke="true">
+                <xsc:Presentation>getProperty</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true">
+                <xsc:Presentation>getId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())){
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthHSHZCZBXZFCUZAJGJ7MSCA4QPE" Invoke="true">
+                <xsc:Presentation>setFocus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    return true;
+}else{
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.setFocus(property);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthS2VN23TXIFFA5BVJL2TX22DPWI" Name="PropObjectEmbeddedEditor" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="property" Id="mprZHWXMCW56FERTFIYYKAAGRFFQM">
+            <Type TypeId="411" Path="adcYRXRCZN7HZBIDHSE3QR6EW3APY"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(property,null);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthA5VI2TFHMRA4BO237WTZZEYDWQ" Name="addButton" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="button" Id="mprZKXQRA7KQZGJTGEVEYTZXASEE4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthGGEIILBSQRBCNITE67NUM7HYSY" Name="canSafelyClean" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="cleanController" Id="mprOXVZXWLPTNHZRHFDWF3PIQSJXY">
+            <Type TypeId="411" Path="adcVIDB2VX35RCD3E2PSFPSS67O2M"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcSQSUGWDTDZCMDNNQEOR2ST6H4Q mthJG5B4FZHWBDKPK7BS4EFHOVG7Y" Invoke="true">
+                <xsc:Presentation>canSafelyClean</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cleanController);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7BBM2M3TH5CHPOLFIFTAQLMGJM" Name="PropObjectEmbeddedEditor" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="property" Id="mprZ32NX2DU7JF3VG5RWZ7AU4B3YM">
+            <Type TypeId="411" Path="adcYRXRCZN7HZBIDHSE3QR6EW3APY"/>
+          </Parameter>
+          <Parameter Name="editor" Id="mprU766MSYCIZAWROZMGZME3VOY6E">
+            <Type TypeId="411" Path="adcSQSUGWDTDZCMDNNQEOR2ST6H4Q"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(property);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = editor==null ? new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcSQSUGWDTDZCMDNNQEOR2ST6H4Q mthMXQ7UXZXHBGI5BBCJUWP2SR6I4" Invoke="true">
+                <xsc:Presentation>EmbeddedPropObjectEditor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(property) : editor;
+final com.trolltech.qt.gui.QVBoxLayout layout = new com.trolltech.qt.gui.QVBoxLayout(this);
+layout.setContentsMargins(0,0,0,0);
+layout.addWidget(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYTIWEWIK4NA27BOHWGMPN7PPAI" Name="getEmbeddedEditor" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="adcSQSUGWDTDZCMDNNQEOR2ST6H4Q"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN3UE6S7WQNHDFCVO2FVIUBACJY prdHMYOQ4KNLRCZPPYUY3UZLCMTCQ" Invoke="true">
+                <xsc:Presentation>editor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcI5LQYSJ2LREM5DBZIGFBAPXNSA"/>
+  </AdsClassDefinition>
+</AdsDefinition>

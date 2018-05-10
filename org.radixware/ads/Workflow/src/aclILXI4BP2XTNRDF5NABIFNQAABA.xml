@@ -48,6 +48,8 @@
                 <Property Id="colKNQKUZ4PXLNRDF5JABIFNQAABA" Row="21" Column="0"/>
                 <Property Id="col5IUWY4UPXLNRDF5JABIFNQAABA" Row="22" Column="0"/>
                 <Property Id="prdJDHN6CTRLNBCPDDTKROQADTLSE" Row="19" Column="0"/>
+                <Property Id="colOIPTT7ZYYRAWHJ7PPXNVS3GW5M" Row="23" Column="0"/>
+                <Property Id="colRLTHTDATCFEZPELZRCNXILBD34" Row="24" Column="0"/>
               </Properties>
             </Page>
             <PageOrder>
@@ -72,7 +74,7 @@ import java.util.StringTokenizer;</xsc:Java>
             </Bodies>
             <MethodGroup Id="cmgLSHETUF5NFA5FOFKLAIFBXCDTU" Name="Root">
               <Group Id="cmgFQZBFC7X5ZCW5ALKX7JJNJ7FJ4" Name="EventsWeb" Members="mthHK5PTLRULRAEHJCV2YJ266P53A mth46OVL2GCHVGXHCKAHCL5LJD4QM"/>
-              <Group Id="cmgQLBXYRQGABAGBBOZXBVADOQVQ4" Name="Override" Members="mthEJ3RZVFYJBGWHLCY7DYMCJODXU"/>
+              <Group Id="cmgQLBXYRQGABAGBBOZXBVADOQVQ4" Name="Override" Members="mthEJ3RZVFYJBGWHLCY7DYMCJODXU mthGLMZYJ7LA5CRFGSPI45HIZM3KQ mthO2HXBP5FT5GYFGUWK3DAHBIRWY"/>
               <Group Id="cmgN3PKJ22ODFF3PCQTC4UWLVHNOQ" Name="Methods" Members="mthIHQT2YG56JDWLAE6EEAYLERVFY mth7WOEBWRFUVBS7OSABF3RUFXQBI mthNZKQTQ3G7VBATFTPBYO3TIU5FI"/>
               <Group Id="cmgWAY4LOGETRE45BBMCJLSUS45ZM" Name="Events" Members="mth5SP7NFYZJDORDBKYABIFNQAABA_closed mth5SP7NFYZJDORDBKYABIFNQAABA_opened"/>
             </MethodGroup>
@@ -85,25 +87,35 @@ import java.util.StringTokenizer;</xsc:Java>
                 <Sources>
                   <Src>
                     <xsc:Item>
+                      <xsc:Java>// --------------------- explorer --------------------- 
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
                       <xsc:Java>boolean fOk = true;
 
 final </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="aicNDYYVML3BJCOLJFV2J6UW7X6TY"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="aicNDYYVML3BJCOLJFV2J6UW7X6TY">
+                        <xsc:Presentation>Client.Views::IEmbeddedEditor</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> editor = </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aclILXI4BP2XTNRDF5NABIFNQAABA eprXXAGKZE2FPOBDGAEABIFNQAABA aemXXAGKZE2FPOBDGAEABIFNQAABA mth7WOEBWRFUVBS7OSABF3RUFXQBI" Invoke="true"/>
+                      <xsc:IdReference Path="aclILXI4BP2XTNRDF5NABIFNQAABA eprXXAGKZE2FPOBDGAEABIFNQAABA aemXXAGKZE2FPOBDGAEABIFNQAABA mth7WOEBWRFUVBS7OSABF3RUFXQBI" Invoke="true">
+                        <xsc:Presentation>getEmbeddedEditor</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();
 final </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA">
+                        <xsc:Presentation>Explorer.Models::EntityModel</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> innerModel = editor.getModel();
@@ -113,147 +125,100 @@ if (innerModel != null) {
             fOk = innerModel.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthQUYEAJAM2JA3RAOSBPHBXX6N5Q" Invoke="true"/>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthQUYEAJAM2JA3RAOSBPHBXX6N5Q" Invoke="true">
+                        <xsc:Presentation>isNew</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>() ? (innerModel.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthDY4UZPWTCJCR5G4HNL4X25XJD4" Invoke="true"/>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthDY4UZPWTCJCR5G4HNL4X25XJD4" Invoke="true">
+                        <xsc:Presentation>create</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>() == </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="acsQHMC3CCDYNFHBPATTUC7Y5PD5U aciGFE2XDE2CRCG5NNDFRWJEFQT5Y" Invoke="true"/>
+                      <xsc:IdReference Path="acsQHMC3CCDYNFHBPATTUC7Y5PD5U aciGFE2XDE2CRCG5NNDFRWJEFQT5Y" Invoke="true">
+                        <xsc:Presentation>Explorer.Models::EntityCreationResult:SUCCESS</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>) : innerModel.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthEJ3RZVFYJBGWHLCY7DYMCJODXU" Invoke="true"/>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthEJ3RZVFYJBGWHLCY7DYMCJODXU" Invoke="true">
+                        <xsc:Presentation>update</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();
         } catch (</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="axcVJ2GJCJE2BC6ZMPAVTRQ7GT5AI"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcVJ2GJCJE2BC6ZMPAVTRQ7GT5AI">
+                        <xsc:Presentation>Explorer.Exceptions::PropertyIsMandatoryException</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> | </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcUWY6XY3N6FEZPFPK6V3PE5BCWM">
+                        <xsc:Presentation>Explorer.Exceptions::InvalidPropertyValueException</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> e) {
+            final String exMsg = e instanceof </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcUWY6XY3N6FEZPFPK6V3PE5BCWM">
+                        <xsc:Presentation>Explorer.Exceptions::InvalidPropertyValueException</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> ? 
             </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                      <xsc:LocalizedString StringId="mlsFTZPKYAN55FGJDFGGANHNINXKA"/>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:Java> propId = e.getPropertyId();
+                      <xsc:Java> : </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:LocalizedString StringId="mls6FH3BQH5CBBMXI742MBENUADEY"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
             </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="apcMGIV674XJHORDAGMABIFNQAABA"/>
+                      <xsc:IdReference Path="aclILXI4BP2XTNRDF5NABIFNQAABA eprXXAGKZE2FPOBDGAEABIFNQAABA aemXXAGKZE2FPOBDGAEABIFNQAABA mthO2HXBP5FT5GYFGUWK3DAHBIRWY" Invoke="true">
+                        <xsc:Presentation>handleException</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:Java>.</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="apcMGIV674XJHORDAGMABIFNQAABA mth75HUJ3FCL7ORDI2YABIFNQAABA" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>(</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>(),
-                    </xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:LocalizedString StringId="mlsPY6YUVPLM3PBDBS3ABIFNQAABA"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java> + ": " + innerModel.getProperty(propId).getTitle());
-            innerModel.</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>(propId).</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth5JGI3YTHWBFEVOVN43E3Z2XXEA" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>();
+                      <xsc:Java>(innerModel, e, exMsg);
             fOk = false;
         } catch (</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="axcUWY6XY3N6FEZPFPK6V3PE5BCWM"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                        <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> e) {
             </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java> propId = e.getPropertyId();
-            </xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="apcMGIV674XJHORDAGMABIFNQAABA"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>.</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="apcMGIV674XJHORDAGMABIFNQAABA mth75HUJ3FCL7ORDI2YABIFNQAABA" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>(</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>(),
-                    </xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:LocalizedString StringId="mlsDEPIPHBKSBAO7LHOZN5OIANWLM"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java> + ": " + innerModel.getProperty(propId).getTitle());
-            innerModel.</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>(propId).</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth5JGI3YTHWBFEVOVN43E3Z2XXEA" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>();
-            fOk = false;
-        } catch (</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java> e) {
-            </xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true"/>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true">
+                        <xsc:Presentation>showException</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>(e);
@@ -267,21 +232,27 @@ if (fOk) {
         fOk = super.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthEJ3RZVFYJBGWHLCY7DYMCJODXU" Invoke="true"/>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthEJ3RZVFYJBGWHLCY7DYMCJODXU" Invoke="true">
+                        <xsc:Presentation>update</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();
     } catch (</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                        <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> e) {
         </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true"/>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true">
+                        <xsc:Presentation>showException</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>(e);
@@ -290,6 +261,10 @@ if (fOk) {
 }
 
 return fOk;</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>// --------------------- web --------------------- 
+</xsc:Java>
                     </xsc:Item>
                   </Src>
                 </Sources>
@@ -657,7 +632,9 @@ if (editor.isOpened()) {
                       <xsc:Java>return </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aclILXI4BP2XTNRDF5NABIFNQAABA eprXXAGKZE2FPOBDGAEABIFNQAABA ceeXXAGKZE2FPOBDGAEABIFNQAABA wdg3ZG5AOROLLORDBLLABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="aclILXI4BP2XTNRDF5NABIFNQAABA eprXXAGKZE2FPOBDGAEABIFNQAABA ceeXXAGKZE2FPOBDGAEABIFNQAABA wdg3ZG5AOROLLORDBLLABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>EditorForm:PageMain:View:editor:innerEditor</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>;</xsc:Java>
@@ -668,7 +645,9 @@ if (editor.isOpened()) {
                       <xsc:Java>return  </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aclILXI4BP2XTNRDF5NABIFNQAABA eprXXAGKZE2FPOBDGAEABIFNQAABA ceeYUFRWKM5CFDZVASI2OCFMSEGPQ wdgNTAYLC7YMNHR5DTUQFOB2LG22Q" Invoke="true"/>
+                      <xsc:IdReference Path="aclILXI4BP2XTNRDF5NABIFNQAABA eprXXAGKZE2FPOBDGAEABIFNQAABA ceeYUFRWKM5CFDZVASI2OCFMSEGPQ wdgNTAYLC7YMNHR5DTUQFOB2LG22Q" Invoke="true">
+                        <xsc:Presentation>EditorForm:PageMain:WebView:webEditor:innerEditor</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>;</xsc:Java>
@@ -722,6 +701,196 @@ if (editor.isOpened()) {
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+              <Method Id="mthGLMZYJ7LA5CRFGSPI45HIZM3KQ" Name="searchModelForProcessException" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+                <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+                <Parameters>
+                  <Parameter Name="innerModel" Id="mpr5GQDZDQ7NFFW5A2W32RU4RCVDY">
+                    <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+                  </Parameter>
+                  <Parameter Name="exception" Id="mprLLNORVD5BVHOVBS6TK2ZYYDZX4">
+                    <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelPropertyException"/>
+                  </Parameter>
+                </Parameters>
+                <ReturnType TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>final org.radixware.kernel.common.client.exceptions.ModelPropertyException ex = exception;
+final </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU">
+                        <xsc:Presentation>Explorer.Models::Model</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> srcModel;
+if (ex.isSourceModel(innerModel)) {
+    srcModel = innerModel;
+} else {
+    final </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU">
+                        <xsc:Presentation>Explorer.Models::Model</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>[] result = new </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU">
+                        <xsc:Presentation>Explorer.Models::Model</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>[1];
+    final boolean[] cancelled = new boolean[]{false};
+    </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthTTUQQ3QNAVENTCMAW45HZ7Q4UE" Invoke="true">
+                        <xsc:Presentation>getView</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aicFFQ5CBH335G3LJF4GQIWJITBCE mthRFFMF3XKRVH77FI7YVYPLMXRSU" Invoke="true">
+                        <xsc:Presentation>visitChildren</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(new </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="aic23CQPQB6J5FOBBGPRJIXIJGUGI">
+                        <xsc:Presentation>Client.Views::IView.Visitor</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>() {
+        @Override
+        public boolean cancelled() {
+            return cancelled[0];
+        }
+
+        @Override
+        public void visit(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="aic43TDBHKHRJAYFOFCWO53RXLU3M">
+                        <xsc:Presentation>Client.Views::IEmbeddedView</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> view) {
+            if (ex.isSourceModel(view.getModel())) {
+                result[0] = view.getModel();
+                cancelled[0] = true;
+            }
+        }
+
+    }, true);
+    srcModel = result[0];
+}
+return srcModel;</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+              <Method Id="mthO2HXBP5FT5GYFGUWK3DAHBIRWY" Name="handleException" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+                <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+                <Parameters>
+                  <Parameter Name="innerModel" Id="mprM53RS7BF25C75LBWPGE3AZQEAM">
+                    <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
+                  </Parameter>
+                  <Parameter Name="ex" Id="mprTEJR5KTMABDYJBOX7BOV3TPAFI">
+                    <Type TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelPropertyException"/>
+                  </Parameter>
+                  <Parameter Name="msg" Id="mprLNGDQ3RQGJCUTN3OJ276KR5JFM">
+                    <Type TypeId="21"/>
+                  </Parameter>
+                </Parameters>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>final </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU">
+                        <xsc:Presentation>Explorer.Models::Model</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> srcModel = </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclILXI4BP2XTNRDF5NABIFNQAABA eprXXAGKZE2FPOBDGAEABIFNQAABA aemXXAGKZE2FPOBDGAEABIFNQAABA mthGLMZYJ7LA5CRFGSPI45HIZM3KQ" Invoke="true">
+                        <xsc:Presentation>searchModelForProcessException</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(innerModel, ex);
+final </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                        <xsc:Presentation>Types::Id</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> propId = ex.getPropertyId();
+final String propTitle = srcModel != null ? srcModel.getProperty(propId).getTitle() : "#" + propId;
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="apcMGIV674XJHORDAGMABIFNQAABA">
+                        <xsc:Presentation>Explorer.Dialogs::SimpleDlg</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="apcMGIV674XJHORDAGMABIFNQAABA mth75HUJ3FCL7ORDI2YABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>messageError</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                        <xsc:Presentation>getEnvironment</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(), msg + ": " + propTitle);
+if (srcModel != null) {
+    srcModel.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true">
+                        <xsc:Presentation>getProperty</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(propId).</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth5JGI3YTHWBFEVOVN43E3Z2XXEA" Invoke="true">
+                        <xsc:Presentation>setFocused</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+}</xsc:Java>
                     </xsc:Item>
                   </Src>
                 </Sources>

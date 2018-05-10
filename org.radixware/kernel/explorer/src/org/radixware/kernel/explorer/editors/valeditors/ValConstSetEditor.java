@@ -11,17 +11,26 @@
 
 package org.radixware.kernel.explorer.editors.valeditors;
 
-import com.trolltech.qt.gui.QComboBox;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.dialogs.IListDialog;
 import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
+import org.radixware.kernel.common.client.types.IEditingHistory;
+import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.client.utils.ValueConverter;
+import org.radixware.kernel.common.client.widgets.IListWidget;
+import org.radixware.kernel.common.client.widgets.ListWidgetItem;
 import org.radixware.kernel.common.defs.value.ValAsStr;
+import org.radixware.kernel.common.enums.EEditMaskEnumOrder;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.IKernelEnum;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
@@ -32,7 +41,7 @@ import org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;
  * ValConstSetEditor - редактор для значений типа Char, Long, BigDecimal, String.
  * 
  */
-public class ValConstSetEditor extends AbstractListEditor {
+public class ValConstSetEditor extends AbstractListEditor<Object> {
 
     private EditMaskConstSet.DisplayMode displayMode = EditMaskConstSet.DisplayMode.SHOW_TITLE;
     private RadEnumPresentationDef.Items currentItems;
@@ -67,40 +76,48 @@ public class ValConstSetEditor extends AbstractListEditor {
             || currentDisplayStringProvider!=getDisplayStringProvider()
             || isMandatory()!=isMandatory
             || isReadOnly()!=isReadOnly){
-            final List<String> titles = new ArrayList<>();
-            final List<QIcon> icons = new ArrayList<>();
+            final List<ListWidgetItem> listItems = new LinkedList<>();
+            //final List<String> titles = new ArrayList<>();
+            //final List<QIcon> icons = new ArrayList<>();
             isMandatory = isMandatory();
             isReadOnly = isReadOnly();
             currentDisplayStringProvider = getDisplayStringProvider();
             currentValAsStr = valAsStr;
             currentItems = items.copy();
             final RadEnumPresentationDef.Item currentItem = editMaskConstSet.getRadEnumPresentationDef(getEnvironment().getApplication()).getItems().findItemByValue(valAsStr);
+            RadEnumPresentationDef.Item enumItem;
             nullItemIsPresent = false;
             currentItemIndex = -1;            
             for (int i = 0; i < currentItems.size(); ++i) {
-                final Comparable itemValue = currentItems.getItem(i).getValue();
-                final String title = getStringToShow(currentItems.getItem(i).getConstant());//it can be optimized
+                enumItem = currentItems.getItem(i);
+                final Comparable itemValue = enumItem.getValue();
                 if (itemValue == null) {
                     nullItemIsPresent = true;
                 }
-                final QIcon icon = (RdxIcon) currentItems.getItem(i).getIcon();
 
                 if (!isReadOnly) {
                     if (currentItem != null && Utils.equals(itemValue, currentItem.getValue())) {
                         currentItemIndex = i;
                     }
-                    titles.add(title);
-                    icons.add(icon);
+                    listItems.add(createListWidgetItem(enumItem));
                 } else if (currentItem != null && Utils.equals(itemValue, currentItem.getValue())) {
-                    titles.add(title);
-                    icons.add(icon);
+                    listItems.add(createListWidgetItem(enumItem));
                     currentItemIndex = 0;
                     break;
                 }
             }            
-            setItems(icons, titles);
+            setListWidgetItems(listItems);
         }
         updateComboBoxLook(currentItemIndex, nullItemIsPresent, updateStyleSheet);
+    }
+    
+    private ListWidgetItem createListWidgetItem(RadEnumPresentationDef.Item enumItem){
+        final String title = getStringToShow(enumItem.getConstant());//it can be optimized        
+        final ValAsStr valAsStr = enumItem.getValAsStr();        
+        final ListWidgetItem listItem = 
+            new ListWidgetItem(title, valAsStr==null ? null : valAsStr.toString(), enumItem.getIcon());
+        listItem.setName("rx_enum_item_"+enumItem.getId().toString());
+        return listItem;
     }
 
     @Override
@@ -176,4 +193,40 @@ public class ValConstSetEditor extends AbstractListEditor {
             refresh();
         }
     }
+
+    @Override
+    protected String getSelectValueDialogConfigPrefix() {
+        return getEnumDef().getId().toString();
+    }
+
+    @Override
+    protected int getMaxItemsInPopup() {
+        final EditMaskConstSet mask = (EditMaskConstSet) getEditMask();
+        final int itemsLimit = mask.getMaxIntemsNumberInDropDownList();
+        return itemsLimit>=0 ? itemsLimit : super.getMaxItemsInPopup();
+    }
+
+    @Override
+    protected void beforeShowSelectValueDialog(final IListDialog dialog) {
+        final EditMaskConstSet mask = (EditMaskConstSet) getEditMask();
+        if (mask.getOrder()==EEditMaskEnumOrder.BY_TITLE){
+            dialog.setFeatures(EnumSet.of(IListWidget.EFeatures.FILTERING, IListWidget.EFeatures.AUTO_SORTING));
+        }else{
+            dialog.setFeatures(EnumSet.of(IListWidget.EFeatures.FILTERING, IListWidget.EFeatures.MANUAL_SORTING));
+        }
+    }
+    
+    @Override
+    public void setPredefinedValues(final List<Object> predefValues) {
+        throw new UnsupportedOperationException("Unsupported operation.");
+    }
+
+    @Override
+    public List<Object> getPredefinedValues() {
+        throw new UnsupportedOperationException("Unsupported operation.");
+    }
+
+    @Override
+    public void setEditingHistory(final IEditingHistory history) {
+    }    
 }

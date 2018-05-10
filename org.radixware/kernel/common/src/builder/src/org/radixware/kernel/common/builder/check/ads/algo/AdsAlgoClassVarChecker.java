@@ -32,6 +32,6 @@ public class AdsAlgoClassVarChecker extends AdsDefinitionChecker<AdsAlgoClassDef
     @Override
     public void check(AdsAlgoClassDef.Var var, IProblemHandler problemHandler) {
         super.check(var, problemHandler);
-        var.getType().check(var, problemHandler);
+        var.getType().check(var, problemHandler, getHistory().getMap());
     }
 }

@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.builder.check.common;
 
 import java.util.Collection;
@@ -23,8 +22,10 @@ import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.SearchEngine;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
+import org.radixware.kernel.common.defs.ads.AdsDefinitionProblems;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter;
 import org.radixware.kernel.common.repository.Layer;
-
 
 public class Checker {
 
@@ -33,6 +34,7 @@ public class Checker {
     private static final CheckersManager checkersManager = new CheckersManager();
     private final CheckHistory checkHistory = new CheckHistory();
     private final CheckOptions checkOptions = new CheckOptions();
+//    private final CheckCache checkCache = new CheckCache();
     private final IProblemHandler proxy;
     private final Object lock = new Object();
     private final Set<RadixObject> suppressWarnings = new HashSet<>();
@@ -67,7 +69,7 @@ public class Checker {
                             if (suppressWarnings.contains(problem.getSource())) {
                                 return;
                             }
-                            if (isRadixObjectWithinDeprecatedDefinition(problem.getSource())) {
+                            if (AdsDefinitionProblems.EXPIRED_DEPRECATED_DEFINITION != problem.getCode() && isRadixObjectWithinDeprecatedDefinition(problem.getSource())) {
                                 return;
                             }
                         }
@@ -91,6 +93,7 @@ public class Checker {
         wasErrors = false;
 
         RadixProblemRegistry.getDefault().clear(contexts);
+//        checkCache.clear();
 //        
 
         for (RadixObject context : contexts) {
@@ -101,7 +104,6 @@ public class Checker {
                 }
             }, VisitorProviderFactory.createCheckVisitorProvider());
         }
-
 
         return !wasErrors;
     }
@@ -115,6 +117,7 @@ public class Checker {
         if (checker != null) {
             checker.setHistory(checkHistory);
             checker.setCheckOptions(checkOptions);
+//            checker.setCheckCache(checkCache);
             boolean as = false;
             try {
                 //RADIX-4967
@@ -151,9 +154,7 @@ public class Checker {
     public CheckHistory getCheckHistory() {
         return checkHistory;
     }
-    
-    
-    
+
     public void checkRadixObjectDoc(final RadixObject radixObject) {
 
         final RadixObjectChecker checker = checkersManager.find(radixObject);
@@ -176,6 +177,15 @@ public class Checker {
                         SearchEngine.disableMultipleResolution();
                     }
                     checker.checkDocumentation(radixObject, proxy);
+                    if (radixObject instanceof AdsMethodDef) {
+                        AdsMethodDef mthDef = (AdsMethodDef) radixObject;
+                        if (mthDef.getProfile().getReturnValue() != null) {
+                            checker.checkDocumentation(mthDef.getProfile().getReturnValue(), problemHandler);
+                        }
+                        for (MethodParameter p : mthDef.getProfile().getParametersList()) {
+                            checker.checkDocumentation(p, problemHandler);
+                        }
+                    }
                 } finally {
                     SearchEngine.enableMultipleResolution();
                 }
@@ -192,7 +202,7 @@ public class Checker {
             proxy.accept(problem);
         }
     }
-    
+
     public boolean checkDoc(final Collection<? extends RadixObject> contexts) {
         wasErrors = false;
 
@@ -207,7 +217,6 @@ public class Checker {
                 }
             }, VisitorProviderFactory.createCheckVisitorProvider());
         }
-
 
         return !wasErrors;
     }

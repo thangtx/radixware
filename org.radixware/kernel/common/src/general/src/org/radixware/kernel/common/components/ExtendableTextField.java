@@ -65,7 +65,7 @@ public class ExtendableTextField extends javax.swing.JPanel {
     public ExtendableTextField(boolean readonly) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         fieldType = EDITOR_TEXTFIELD;
-        field = new JTextField();
+        field = new PlaceholderTextField();
         
         addTextMouseListener();
         ((JTextField) field).setEditable(!readonly);
@@ -147,7 +147,7 @@ public class ExtendableTextField extends javax.swing.JPanel {
                     text.setToolTipText(field.getToolTipText());
                     changeEditor(text);
                 } else {
-                    JTextField text = new JTextField();
+                    PlaceholderTextField text = new PlaceholderTextField();
                     text.setToolTipText(field.getToolTipText());
                     changeEditor(text);
                 }
@@ -532,6 +532,12 @@ public class ExtendableTextField extends javax.swing.JPanel {
             ((JTextComponent) field).isEditable();
         }
         return false;
+    }
+    
+    public void setPlaceholder(String placeholder){
+        if (fieldType == EDITOR_TEXTFIELD && (field instanceof PlaceholderTextField)) {
+            ((PlaceholderTextField) field).setPlaceholder(placeholder);
+        }
     }
 
     public void setEditable(boolean editable) {

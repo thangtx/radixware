@@ -12,6 +12,8 @@
 package org.radixware.kernel.explorer.widgets.selector;
 
 import com.trolltech.qt.core.QModelIndex;
+import java.util.EnumSet;
+import org.radixware.kernel.common.client.enums.EHierarchicalSelectionMode;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
@@ -76,4 +78,15 @@ public class SelectorGridModel extends SelectorModel {
             }
         }
     }
+
+    @Override
+    protected EnumSet<EHierarchicalSelectionMode> getPrimarySelectionMode(final SelectorNode node) {
+        if (node==null){
+            return EnumSet.of(EHierarchicalSelectionMode.EXPLICIT_NESTED_OBJECTS);
+        }else{
+            return super.getPrimarySelectionMode(node);
+        }
+    }
+    
+    
 }

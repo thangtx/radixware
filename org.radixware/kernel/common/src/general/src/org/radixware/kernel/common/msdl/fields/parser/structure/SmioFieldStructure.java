@@ -14,6 +14,7 @@ import com.linuxense.javadbf.DBFReader;
 import com.linuxense.javadbf.DBFWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -39,7 +40,7 @@ import org.radixware.kernel.common.msdl.fields.parser.datasource.DataSourceByteB
 import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSource;
 import org.radixware.kernel.common.msdl.fields.parser.fieldlist.IFieldList;
 import org.radixware.kernel.common.msdl.fields.parser.fieldlist.PlainFieldList;
-import org.radixware.kernel.common.msdl.fields.parser.fieldlist.SeparatedFieldList;
+import org.radixware.kernel.common.msdl.fields.parser.fieldlist.SeparatedFieldListEnd;
 import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPiece;
 import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPieceSeparated;
 import org.radixware.kernel.common.msdl.MsdlStructureFields;
@@ -48,7 +49,6 @@ import org.radixware.kernel.common.msdl.fields.extras.MsdlFieldDescriptorsList;
 import org.radixware.kernel.common.msdl.fields.parser.ParseUtil;
 import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
 import org.radixware.schemas.msdl.SeparatedDef;
-import org.radixware.schemas.msdl.Structure;
 import org.radixware.schemas.msdl.Structure.FieldNaming;
 import org.radixware.schemas.msdl.StructureField;
 import org.radixware.kernel.common.msdl.fields.parser.SmioFieldSimple;
@@ -59,13 +59,20 @@ import org.radixware.schemas.msdl.*;
 import org.radixware.schemas.types.Int;
 import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPieceFixedLen;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.xml.namespace.QName;
-import org.radixware.schemas.types.Str;
+import org.radixware.kernel.common.msdl.fields.parser.SmioFieldDateTime;
+import org.radixware.kernel.common.msdl.fields.parser.fieldlist.ISeparatedFieldList;
+import org.radixware.kernel.common.msdl.fields.parser.fieldlist.SeparatedFieldListStart;
+import org.radixware.kernel.common.msdl.fields.parser.fieldlist.SeparatedFieldListStartEnd;
 
 public final class SmioFieldStructure extends SmioField {
-
+    
     private void doMerge(SmioField f, XmlObject obj, ExtByteBuffer out, boolean force) throws SmioException {
         SmioFieldStructure ss = null;
         if (f.getField().isSetAbstract() && f.getField().getAbstract().booleanValue()) {
@@ -90,22 +97,27 @@ public final class SmioFieldStructure extends SmioField {
         }
         f.used = true;
     }
-
-    private boolean mustBeMerged(XmlObject obj, SmioField f) {
-        return fieldExists(obj, f) || f.getField().getIsRequired() || mergeForcedly;
+    
+    private boolean mustBeMerged(final XmlObject obj, final SmioField f, final boolean canSkipEmptyStructure) {
+        if (f.getField().getIsRequired() || mergeForcedly) {
+            return true;
+        }
+        return fieldExists(obj, f, canSkipEmptyStructure);
     }
 
-    private boolean sequnentialFieldCanBeMerged(MsdlField cur) {
+    private boolean mustBeMerged(final XmlObject obj, final SmioField f) {
+        return f.getField().getIsRequired() || mergeForcedly || fieldExists(obj, f);
+    }
+    
+    private boolean sequnentialFieldCanBeMerged(MsdlField cur, boolean isRuntimeCheck) {
         SmioField f = cur.getFieldModel().getParser();
         if (f instanceof SmioFieldSimple) {
             SmioFieldSimple sf = (SmioFieldSimple) f;
             XmlObject dv = sf.getDefaultVal();
-            byte[] zeroIndicator = sf.getNullIndicator();
+            final byte[] zeroIndicator = sf.getNullIndicator();
 
-            boolean hasPad = cur.getFieldModel().getPadBin() != null || cur.getFieldModel().getPadChar() != null;
-            if (zeroIndicator == null) {
-                zeroIndicator = cur.getFieldModel().getNullIndicator(true);
-            }
+            final boolean weShouldCheckIsPadUsedButWeCanBrokeBwdCompatibility = isRuntimeCheck;
+            boolean hasPad = (weShouldCheckIsPadUsedButWeCanBrokeBwdCompatibility || f.isPadUsed()) && (cur.getFieldModel().getPadBin() != null || cur.getFieldModel().getPadChar() != null);
             if ((dv == null && zeroIndicator == null && !hasPad)
                     && !f.getField().getIsRequired()) {
                 return false;
@@ -114,9 +126,10 @@ public final class SmioFieldStructure extends SmioField {
         return true;
     }
 
-    private void mergeBerField(Structure.Field sf, BERManipulator manip, SmioField f, XmlObject obj, ExtByteBuffer out) throws SmioException {
+    private void mergeBerField(BERManipulator manip, SmioField f, XmlObject obj, ExtByteBuffer out) throws SmioException {
         ExtByteBuffer content = new ExtByteBuffer();
-        if (sf.isSetExtId()) {
+        MsdlStructureField sf = (MsdlStructureField) f.getModel().getMsdlField();
+        if (sf.getExtId() != null) {
             manip.setFieldName(content, sf.getExtId());
         } else {
             manip.setFieldName(content, f.getModel().getName());
@@ -143,12 +156,8 @@ public final class SmioFieldStructure extends SmioField {
         fieldList.mergeField(out, content.flip());
     }
 
-    private void mergeNamedField(ExtByteBuffer fieldBuf, SmioField f, XmlObject obj) throws SmioException {
-        if (getModel().isTemplateInstance()) {
-            fieldBuf.extPut(pieceNaming.merge(ByteBuffer.wrap(getModel().getFieldDescriptorList().getIdByField(f))));
-        } else {
-            fieldBuf.extPut(pieceNaming.merge(ByteBuffer.wrap(fieldNamesContainer.getExtId(f))));
-        }
+    private void mergeNamedField(ExtByteBuffer fieldBuf, SmioField f, XmlObject obj, byte[] fieldId) throws SmioException {
+        fieldBuf.extPut(pieceNaming.merge(ByteBuffer.wrap(fieldId)));
         if (pieceNaming instanceof SmioPieceSeparated) {
             SmioPieceSeparated sp = (SmioPieceSeparated) pieceNaming;
             Byte ch = sp.getShield();
@@ -172,41 +181,36 @@ public final class SmioFieldStructure extends SmioField {
      * @param obj - object to extract mergeable information from
      * @throws SmioException
      */
-    private void mergeEntireNamedField(ExtByteBuffer fieldBuf, ExtByteBuffer out, SmioField f, XmlObject obj) throws SmioException {
-        mergeNamedField(fieldBuf, f, obj);
+    private void mergeEntireNamedField(ExtByteBuffer out, SmioField f, XmlObject obj, byte[] fieldId) throws SmioException {
+        final ExtByteBuffer fieldBuf = new ExtByteBuffer();
+        mergeNamedField(fieldBuf, f, obj, fieldId);
         fieldList.mergeField(out, fieldBuf.flip());
     }
 
     private boolean bothHaveSeparatedFieldList(SmioField f) {
         SmioFieldStructure sf = (SmioFieldStructure) f;
-        return (sf.fieldList instanceof SeparatedFieldList) && (fieldList instanceof SeparatedFieldList);
-    }
-
-    private boolean bothHaveSameShield(SeparatedFieldList currentSFL, SeparatedFieldList childFieldSFL) {
-        return (currentSFL.getShield() == null && childFieldSFL.getShield() == null)
-                || (currentSFL.getShield() != null && childFieldSFL.getShield() != null
-                && currentSFL.getShield().equals(childFieldSFL.getShield()));
+        return (sf.fieldList instanceof ISeparatedFieldList) && (fieldList instanceof ISeparatedFieldList);
     }
 
     private boolean bothHaveSameSepparatorAndShield(SmioField f) {
         SmioFieldStructure sf = (SmioFieldStructure) f;
-        SeparatedFieldList childFieldSFL = (SeparatedFieldList) sf.fieldList;
-        SeparatedFieldList currentSFL = (SeparatedFieldList) fieldList;
-        return childFieldSFL.getSeparator() == currentSFL.getSeparator()
-                && bothHaveSameShield(currentSFL, childFieldSFL);
+        ISeparatedFieldList childFieldSFL = (ISeparatedFieldList) sf.fieldList;
+        ISeparatedFieldList currentSFL = (ISeparatedFieldList) fieldList;
+        return currentSFL.hasSameShield(childFieldSFL) &&
+                currentSFL.hasSameSeparators(childFieldSFL);
     }
 
     private void parseSequentialField(SmioField f, IDataSource ids, XmlObject obj) throws SmioException, IOException {
         if (f instanceof SmioFieldStructure
                 && bothHaveSeparatedFieldList(f)
                 && bothHaveSameSepparatorAndShield(f)) {
-            f.parse(obj, ids, false);
+            f.parse(obj, ids);
             f.used = true;
         }
         if (!f.used) {
             IDataSource idsField = fieldList.parseField(ids);
             f.parse(obj, idsField);
-            if (fieldList instanceof SeparatedFieldList && idsField.available() > 0) {
+            if (fieldList instanceof ISeparatedFieldList && idsField.hasAvailable()) {
                 throw new SmioException("Incorrect length", f.getModel().getName());
             }
             f.used = true;
@@ -261,7 +265,7 @@ public final class SmioFieldStructure extends SmioField {
         }
 
         if (bitmap[idx]) {
-            if (ids.available() <= 0) {
+            if (!ids.hasAvailable()) {
                 String fn = cur.getModel().getMsdlField().getQualifiedName();
                 throw new SmioException("Not enough data for field: '" + fn + "'");
             }
@@ -271,14 +275,14 @@ public final class SmioFieldStructure extends SmioField {
         return bitmapPortion;
     }
 
-    private void mergeSeqentialField(MsdlField cur, XmlObject obj, Queue<SmioField> passed, ExtByteBuffer out) throws SmioException {
+    private void mergeSeqentialField(MsdlField cur, XmlObject obj, Queue<SmioField> passed, ExtByteBuffer out, boolean needCheckField) throws SmioException {
         if (cur.getFieldModel().getField().isSetAbstract() && (cur.getFieldModel().getField().getAbstract().booleanValue())) {
             SmioField f = cur.getFieldModel().getParser();
             f.used = true;
             passed.add(f);
             return;
         }
-        if (!sequnentialFieldCanBeMerged(cur) && !fieldExists(obj, cur.getFieldModel().getParser())) {
+        if (needCheckField && !sequnentialFieldCanBeMerged(cur, true) && !fieldExists(obj, cur.getFieldModel().getParser())) {
             throw new SmioException("No value, default value and null indicator specified for optional field", cur.getName());
         }
 
@@ -322,12 +326,12 @@ public final class SmioFieldStructure extends SmioField {
         return appendBitmapPortion(byteBitmap, portion);
     }
 
-    private class UnionContainer {
+    private class FieldInfoContainer {
 
         public XmlObject container = null;
         public XmlCursor containerCursor = null;
 
-        public UnionContainer(String Namespace, String elementName) {
+        public FieldInfoContainer(String Namespace, String elementName) {
             container = XmlObject.Factory.newInstance();
             containerCursor = container.newCursor();
             containerCursor.toStartDoc();
@@ -336,40 +340,50 @@ public final class SmioFieldStructure extends SmioField {
         }
     }
 
-    private void mergeSingleNamedField(XmlObject obj, SmioField f, ExtByteBuffer out) throws SmioException {
-        if (mustBeMerged(obj, f)) {
-            ExtByteBuffer fieldBuf = new ExtByteBuffer();
-            if (f.getField().getIsFieldUnion() != null && f.getField().getIsFieldUnion().booleanValue()) {
+    private void mergeSingleNamedField(XmlObject obj, SmioField f, ExtByteBuffer out, byte[] fieldId) throws SmioException {
+        if (mustBeMerged(obj, f, true)) {
+            if (Objects.equals(f.getField().getIsFieldArray1(), true) || Objects.equals(f.getField().getIsFieldUnion(), true)) {
                 XmlObject[] needed = obj.selectChildren(namespace, f.getField().getName());
-
                 for (XmlObject n : needed) {
-                    UnionContainer uc = new UnionContainer(namespace, f.getField().getName());
-
+                    final List<FieldInfoContainer> fieldContainers = new ArrayList<>();
+                    FieldInfoContainer uc = new FieldInfoContainer(namespace, f.getField().getName());
+                    fieldContainers.add(uc);
+                    
                     XmlCursor contentsCursor = n.newCursor();
                     contentsCursor.toFirstChild();
                     contentsCursor.copyXml(uc.containerCursor);
-                    mergeEntireNamedField(fieldBuf, out, f, uc.container);
 
                     while (contentsCursor.toNextSibling()) {
-                        fieldBuf = new ExtByteBuffer();
-                        uc = new UnionContainer(namespace, f.getField().getName());
+                        if (Objects.equals(f.getField().getIsFieldUnion(), true)) {
+                            uc = new FieldInfoContainer(namespace, f.getField().getName());
+                            fieldContainers.add(uc);
+                        }
                         contentsCursor.copyXml(uc.containerCursor);
-                        mergeEntireNamedField(fieldBuf, out, f, uc.container);
+                    }
+                    
+                    for (FieldInfoContainer fieldCont : fieldContainers) {
+                        mergeEntireNamedField(out, f, fieldCont.container, fieldId);
                     }
                 }
             } else {
-                mergeNamedField(fieldBuf, f, obj);
-                fieldList.mergeField(out, fieldBuf.flip());
+                mergeEntireNamedField(out, f, obj, fieldId);
             }
             f.used = true;
         }
     }
     private SmioPiece pieceNaming;
-    private FieldNamesContainer fieldNamesContainer = new FieldNamesContainer();
     private BitmapBlocks bitmapBlocks;
     private IFieldList fieldList;
     private EFieldsFormat structureType;
     private boolean mergeForcedly = false;
+    private SmioCoder coder;
+    
+    public SmioCoder getCoder() {
+        if (coder == null) {
+            coder = new SmioCoder(getModel().getEncoding(true));
+        }
+        return coder;
+    }
 
     public EFieldsFormat getStructureType() {
         return structureType;
@@ -393,10 +407,7 @@ public final class SmioFieldStructure extends SmioField {
                     structureType = EFieldsFormat.BERTLV;
                 } else {
                     structureType = EFieldsFormat.FIELD_NAMING;
-                    pieceNaming = SmioPiece.Factory.newInstance(this, fn.getPiece());
-                    for (MsdlStructureField cur : getModel().getFields()) {
-                        fieldNamesContainer.add(cur);
-                    }
+                    pieceNaming = model.getRootMsdlScheme().getParserFactory().createParser(this, fn.getPiece());
                 }
             }
             Byte shield = null;
@@ -404,25 +415,40 @@ public final class SmioFieldStructure extends SmioField {
             if (shieldArr != null && shieldArr.length > 0) {
                 shield = shieldArr[0];
             }
-            Byte fieldSeparator = null;
-            if (((StructureField) getModel().getField()).getStructure().isSetFieldSeparator() && ((StructureField) getModel().getField()).getStructure().getFieldSeparator().length > 0) {
-                fieldSeparator = ((StructureField) getModel().getField()).getStructure().getFieldSeparator()[0];
+            
+            Byte endSeparator;
+            try {
+                endSeparator = model.getEndSeparator(getCoder());
+            } catch (SmioException ex) {
+                endSeparator = null;
             }
+            
+            Byte startSeparator;
+            try {
+                startSeparator= model.getStartSeparator(getCoder());
+            } catch (SmioException ex) {
+                startSeparator = null;
+            }
+            
             String format = getModel().getShieldedFormat(true);
             boolean ff = false;
             if (format != null) {
                 ff = SeparatedDef.ShieldedFormat.Enum.forString(format) == SeparatedDef.ShieldedFormat.HEX;
             }
-            if (fieldSeparator == null) {
+            if (endSeparator == null && startSeparator == null) {
                 fieldList = new PlainFieldList();
+            } else if (endSeparator != null && startSeparator != null) {
+                fieldList = new SeparatedFieldListStartEnd(startSeparator, endSeparator, shield);
+            } else if (endSeparator != null) {
+                fieldList = new SeparatedFieldListEnd(endSeparator, shield);
             } else {
-                fieldList = new SeparatedFieldList(fieldSeparator, shield);
+                fieldList = new SeparatedFieldListStart(startSeparator, shield);
             }
         } catch (SmioError e) {
             throw new SmioError(initError, e, getModel().getName());
         }
     }
-
+    
     @Override
     public StructureFieldModel getModel() {
         return (StructureFieldModel) super.getModel();
@@ -437,6 +463,19 @@ public final class SmioFieldStructure extends SmioField {
         //boolean res = obj.selectPath("declare namespace s='" + namespace + "' s:" + field.getModel().getName()).length > 0;
         final QName qname = new QName(namespace, field.getModel().getName());
         boolean res = obj.selectChildren(qname).length > 0;
+        return res;
+    }
+    
+    private boolean fieldExists(XmlObject obj, SmioField field, final boolean canSkipEmptyStructure) {
+        final QName qname = new QName(namespace, field.getModel().getName());
+        XmlObject[] xObj = obj.selectChildren(qname);
+        boolean res = xObj.length > 0;
+        if (res && field instanceof SmioFieldStructure && canSkipEmptyStructure) {
+            res = xObj[0].getDomNode().hasChildNodes();
+            if (!res) {
+                res = thereIsRequiredFields((SmioFieldStructure) field);
+            }
+        }
         return res;
     }
 
@@ -486,7 +525,11 @@ public final class SmioFieldStructure extends SmioField {
                     b = obj.selectAttribute(namespace, "Bitmap");
                 }
 
+                final int numberOfBitsInBlock = bitmapBlocks.getBitmapBlockLength() * Byte.SIZE;
                 for (int i = bitmapBlocks.hasBitmapIsContinue() ? 1 : 0; i < bitmap.length; i++) {
+                    if (bitmapBlocks.hasBitmapIsContinue() && i % numberOfBitsInBlock == 0) {
+                        continue;
+                    }
                     final int idx = i + 1;
                     final String name = "F" + idx;
                     final MsdlField cur = getModel().isTemplateInstance()
@@ -538,7 +581,7 @@ public final class SmioFieldStructure extends SmioField {
                     if (!fields.isEmpty()) {
                         for (MsdlField cur : getModel().getFields()) {
                             SmioField f = cur.getFieldModel().getParser();
-                            if (ids.available() <= 0 && !f.getField().getIsRequired()) {
+                            if (!ids.hasAvailable() && !f.getField().getIsRequired()) {
                                 break;
                             }
                             parseSequentialField(f, ids, obj);
@@ -551,9 +594,9 @@ public final class SmioFieldStructure extends SmioField {
             case DBF:
                 break;
             case BERTLV:
-                while (ids.available() > 0) {
+                while (ids.hasAvailable()) {
                     BERManipulator manip = new BERManipulator();
-                    DataSourceByteBuffer rIds = new DataSourceByteBuffer(ids.getByteBuffer());
+                    IDataSource rIds = ids;
                     if (getField().getStructure().getFieldNaming().getBerTLV().isSetEncoding()) {
                         String encoding = getField().getStructure().getFieldNaming().getBerTLV().getEncoding();
                         if (encoding != null) {
@@ -568,9 +611,13 @@ public final class SmioFieldStructure extends SmioField {
                             }
                         }
                     }
-                    while (rIds.available() > 0) {
+                    while (rIds.hasAvailable()) {
                         String fieldName = manip.getIdentifier(rIds).toUpperCase();
                         SmioField f = findFieldByName(fieldName);
+                        //if HEX in fieldName without leading '0', ex: T1 insteadof T01
+                        if (f == null && fieldName.length() % 2 == 0) {
+                            f = findFieldByName("T0" + fieldName.substring(1));
+                        }
                         int len = (int) manip.getLength(rIds);
                         DataSourceByteBuffer dsbf = new DataSourceByteBuffer(rIds.get(len));
                         if (f == null) {
@@ -582,20 +629,14 @@ public final class SmioFieldStructure extends SmioField {
                 }
                 break;
             case FIELD_NAMING:
-                while (ids.available() > 0) {
+                MsdlFieldDescriptorsList list = getModel().getFieldDescriptorList();
+                while (ids.hasAvailable()) {
                     IDataSource ff = fieldList.parseField(ids);
                     IDataSource d = pieceNaming.parse(ff);
                     BinArr arr = new BinArr(d.getAll());
-                    SmioField f = fieldNamesContainer.getField(arr);
+                    SmioField f = list.getFieldById(arr);
                     if (f != null) {
                         parseSingleNamedField(ff, f, obj);
-                    } else if (getModel().isTemplateInstance()) {
-                        SmioField tf = getModel().getFieldDescriptorList().getFieldById(arr);
-                        if (tf != null) {
-                            parseSingleNamedField(ff, tf, obj);
-                        } else {
-                            omitUnknownNamedField(ff, arr);
-                        }
                     } else {
                         omitUnknownNamedField(ff, arr);
                     }
@@ -609,8 +650,8 @@ public final class SmioFieldStructure extends SmioField {
     private boolean wasFieldUser(MsdlField cur) {
         return cur.getFieldModel().getParser().used;
     }
-
-    @Override
+    
+     @Override
     public ByteBuffer mergeField(XmlObject obj) throws SmioException {
         clearFieldUsed();
         ExtByteBuffer out = new ExtByteBuffer();
@@ -631,7 +672,8 @@ public final class SmioFieldStructure extends SmioField {
                             continue;
                         }
                     }
-                    bitmap[bitmapBlocks.getIdxByName(cur.getName())] = fieldExists(obj, cur.getFieldModel().getParser());
+                    
+                    bitmap[bitmapBlocks.getIdxByName(cur.getName())] = mustBeMerged(obj,  cur.getFieldModel().getParser(), true);
                 }
                 bitmapBlocks.reset();
 
@@ -658,30 +700,28 @@ public final class SmioFieldStructure extends SmioField {
                         }
                     }
 
-                    if (mustBeMerged(obj, f)) {
+                    if (mustBeMerged(obj, f, true)) {
                         doMerge(f, obj, out, false);
                     }
                 }
                 break;
             case SEQUENTALL_ORDER:
                 Queue<SmioField> passed = new LinkedList<>();
-                if (getModel().isTemplateInstance()) {
-                    for (MsdlFieldDescriptor d : getModel().getFieldDescriptorList()) {
-                        mergeSeqentialField(d.getMsdlField(), obj, passed, out);
-                    }
-                } else {
-                    for (MsdlField cur : getModel().getFields()) {
-                        mergeSeqentialField(cur, obj, passed, out);
-                    }
+                final Iterator<? extends MsdlField> iter = getModel().iteratorWithTemplates();
+                final boolean needCheckField = !getField().getStructure().isSetFieldSeparator();
+                while (iter.hasNext()) {
+                    MsdlField cur = iter.next();
+                    final boolean isLastField = !iter.hasNext();
+                    mergeSeqentialField(cur, obj, passed, out, needCheckField && !isLastField);
                 }
 
                 break;
             case BERTLV:
                 BERManipulator manip = new BERManipulator();
-                for (MsdlField cur : getModel().getFields()) {
-                    SmioField f = cur.getFieldModel().getParser();
-                    if (mustBeMerged(obj, f)) {
-                        Structure.Field sf = ((MsdlStructureField) (f.getModel()).getMsdlField()).getField();
+                MsdlFieldDescriptorsList fields = getModel().getFieldDescriptorList();
+                for (MsdlFieldDescriptor cur : fields) {
+                    SmioField f = cur.getMsdlField().getModel().getParser();
+                    if (mustBeMerged(obj, f, true)) {
                         if (f.getField().isSetIsFieldArray1()) {
                             XmlObject arr[] = obj.selectChildren(namespace, f.getField().getName());
                             if (arr.length > 1) {
@@ -694,38 +734,32 @@ public final class SmioFieldStructure extends SmioField {
                                     XmlCursor cCur = child.newCursor();
                                     cCur.toNextToken();
                                     cursor.insertChars(cCur.getTextValue());
-                                    mergeBerField(sf, manip, f, wrapper, out);
+                                    mergeBerField(manip, f, wrapper, out);
                                     cCur.dispose();
                                     cursor.dispose();
                                 }
                             } else {
-                                mergeBerField(sf, manip, f, obj, out);
+                                mergeBerField(manip, f, obj, out);
                             }
                         } else {
-                            mergeBerField(sf, manip, f, obj, out);
+                            mergeBerField(manip, f, obj, out);
                         }
                     }
                 }
                 break;
             case FIELD_NAMING:
-                if (getModel().isTemplateInstance()) {
-                    for (MsdlFieldDescriptor d : getModel().getFieldDescriptorList()) {
-                        SmioField f = d.getMsdlField().getFieldModel().getParser();
-                        mergeSingleNamedField(obj, f, out);
-                    }
-                } else {
-                    for (MsdlField cur : getModel().getFields()) {
-                        SmioField f = cur.getFieldModel().getParser();
-                        mergeSingleNamedField(obj, f, out);
-                    }
+                MsdlFieldDescriptorsList fieldsList = getModel().getFieldDescriptorList();
+                for (MsdlFieldDescriptor d : fieldsList) {
+                    SmioField f = d.getMsdlField().getFieldModel().getParser();
+                    mergeSingleNamedField(obj, f, out, fieldsList.getIdByField(f));
                 }
                 break;
         }
 
-        if (fieldList instanceof SeparatedFieldList) {
-            boolean fUsed = checkFieldsUsed();
+        if (fieldList instanceof SeparatedFieldListEnd || fieldList instanceof SeparatedFieldListStartEnd) {
+            final boolean needTrimLastEndSeparator = checkFieldsUsed();
 
-            if (fUsed) {
+            if (needTrimLastEndSeparator) {
                 ByteBuffer bf = out.getByteBuffer();
                 bf.position(bf.position() - 1);
             }
@@ -745,7 +779,25 @@ public final class SmioFieldStructure extends SmioField {
             }
         }
     }
-
+    
+    private static boolean thereIsRequiredFields(SmioFieldStructure struct) {
+        if (struct.getModel().isTemplateInstance()) {
+            for (MsdlFieldDescriptor d : struct.getModel().getFieldDescriptorList()) {
+                if (d.getMsdlField().getModel().getField().getIsRequired()) {
+                    return true;
+                }
+            }
+        } else {
+            for (MsdlField cur : struct.getModel().getFields()) {
+                if (cur.getModel().getField().getIsRequired()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    
     public void checkRequired() throws SmioException {
         if (getModel().isTemplateInstance()) {
             for (MsdlFieldDescriptor d : getModel().getFieldDescriptorList()) {
@@ -791,9 +843,19 @@ public final class SmioFieldStructure extends SmioField {
 
     @Override
     public void check(RadixObject source, IProblemHandler handler) {
-        super.check(source, handler);
+        super.check(source, handler);        
         try {
+            final Set<String> uniqueNames = new HashSet<>();
+            for (MsdlField cur : getModel().getFields()) {
+                if (!uniqueNames.contains(cur.getName())) {
+                    uniqueNames.add(cur.getName());
+                } else {
+                    handler.accept(RadixProblem.Factory.newError(cur, "MSDL Field '" + source.getQualifiedName() + "' error: Found duplicated field name: " + cur.getName()));
+                }
+            }
+
             if (this.getStructureType() == EFieldsFormat.BITMAP) {
+                bitmapBlocks.check(source, handler);
                 for (MsdlField cur : getModel().getFields()) {
                     String fn = cur.getName();
                     if (fn.charAt(0) == 'F' && fn.length() >= 2) {
@@ -804,21 +866,44 @@ public final class SmioFieldStructure extends SmioField {
                         }
                     }
                 }
-            }
-            if (structureType == EFieldsFormat.SEQUENTALL_ORDER) {
-                for (MsdlField cur : getModel().getFields()) {
-                    if (!sequnentialFieldCanBeMerged(cur)) {
-                        handler.accept(RadixProblem.Factory.newWarning(source, "No default value and null indicator specified for optional field: " + cur.getName()));
+            } else if (getStructureType() == EFieldsFormat.SEQUENTALL_ORDER && !getField().getStructure().isSetFieldSeparator()) {
+                Iterator<? extends MsdlField> iter = getModel().iteratorWithTemplates();
+                while (iter.hasNext()) {
+                    MsdlField cur = iter.next();
+                    final boolean isLastField = !iter.hasNext();
+                    if (!isLastField && !sequnentialFieldCanBeMerged(cur, false)) {
+                        handler.accept(RadixProblem.Factory.newWarning(cur, "No default value and null indicator specified for optional field: " + cur.getQualifiedName()));
                     }
                 }
-            }
-            if (getStructureType() == EFieldsFormat.FIELD_NAMING && pieceNaming instanceof SmioPieceFixedLen) {
-                int namingLen = ((SmioPieceFixedLen) pieceNaming).getLen();
+            } else if (getStructureType() == EFieldsFormat.FIELD_NAMING) {
+                final Map<String, MsdlStructureField> uniqueExtIds = new HashMap<>();
                 for (MsdlStructureField cur : getModel().getFields()) {
-                    Structure.Field sf = (Structure.Field) cur.getField();
-                    if (!sf.isSetExtId()) {
-                        if (cur.getModel().getField().getName().length() != namingLen) {
-                            handler.accept(RadixProblem.Factory.newWarning(source, "Implicit field tag cannot have length different, than specified explicit length of naming field: " + cur.getName()));
+                    if (cur.isSetExtId()) {
+                        final String extIdAsStr;
+                        if (cur.getExtId() != null) {
+                            extIdAsStr = Hex.encode(cur.getExtId());
+                        } else {
+                            extIdAsStr = cur.getExtIdChar();
+                        }
+                        if (!uniqueExtIds.containsKey(extIdAsStr)) {
+                            uniqueExtIds.put(extIdAsStr, cur);
+                        } else {
+                            handler.accept(RadixProblem.Factory.newError(cur,
+                                    "MSDL Field '" + source.getQualifiedName()
+                                    + "' error: Found duplicated tag names. Fields: '"
+                                    + cur.getName() + "' and '" + uniqueExtIds.get(extIdAsStr).getName()
+                                    + "' have same tag name"));
+                        }
+                    }
+                }
+
+                if (pieceNaming instanceof SmioPieceFixedLen) {
+                    final int namingLen = ((SmioPieceFixedLen) pieceNaming).getLen();
+                    for (MsdlStructureField cur : getModel().getFields()) {
+                        if (!cur.isSetExtId()) {
+                            if (cur.getModel().getField().getName().length() != namingLen) {
+                                handler.accept(RadixProblem.Factory.newWarning(source, "Implicit field tag cannot have length different, than specified explicit length of naming field: " + cur.getName()));
+                            }
                         }
                     }
                 }
@@ -827,6 +912,14 @@ public final class SmioFieldStructure extends SmioField {
             byte[] separator = getField().getStructure().getFieldSeparator();
             if (separator != null && separator.length > 1) {
                 handler.accept(RadixProblem.Factory.newWarning(source, "Field separator, specified in MSDL schema is more than one byte. Only first byte will be used."));
+            }
+            
+            getModel().getEndSeparator(getCoder());
+            getModel().getStartSeparator(getCoder());
+            
+            if (getField().getStructure().isSetSpecifiedTimeZoneId() && 
+                    !SmioFieldDateTime.isCorrectTimeZoneId(getField().getStructure().getSpecifiedTimeZoneId())) {
+                handler.accept(RadixProblem.Factory.newError(source, "Specified unknown time zone id: '" + getField().getStructure().getSpecifiedTimeZoneId() + "'"));
             }
         } catch (Throwable ex) {
             handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "error: '" + ex.getMessage() + "'"));

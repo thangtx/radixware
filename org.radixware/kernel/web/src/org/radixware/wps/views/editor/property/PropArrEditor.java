@@ -27,12 +27,12 @@ import org.radixware.wps.rwt.Label;
 import org.radixware.wps.rwt.ValueEditor;
 import org.radixware.wps.views.editors.valeditors.IValEditor;
 import org.radixware.wps.views.editors.valeditors.ValArrEditorController;
-import org.radixware.wps.views.editors.valeditors.ValEditorController;
+import org.radixware.wps.views.editors.valeditors.ValEditorFactory;
 
 
 public class PropArrEditor<T extends Arr> extends PropEditor {
     
-    private static class ValEditorFactoryImpl<T extends Arr> extends AbstractValEditorFactoryImpl<T>{
+    protected static class ValEditorFactoryImpl<T extends Arr> extends AbstractValEditorFactoryImpl<T>{
         
         private final PropertyArr property;
         
@@ -54,19 +54,23 @@ public class PropArrEditor<T extends Arr> extends PropEditor {
                     }
                     if (dialog.execDialog() != DialogResult.REJECTED) {
                         final Arr newValue = dialog.getCurrentValue();
-                        if (property.isOwnValueAcceptable(newValue)){
-                            try {
-                                property.setValueObject(newValue);
-                            } catch (Exception ex) {
-                                getEnvironment().processException(new SettingPropertyValueError(property, ex));
-                            }
-                            //getValEditor().getLineEdit().setText(property.getValueAsString());
+                        setPropertyValue(newValue);
+                    }
+
+                }
+                
+                private void setPropertyValue(final Arr newValue){
+                    if (property.isOwnValueAcceptable(newValue)){
+                        try {
+                            property.setValueObject(newValue);
+                        } catch (Exception ex) {
+                            getEnvironment().processException(new SettingPropertyValueError(property, ex));
+                        }
+                        //getValEditor().getLineEdit().setText(property.getValueAsString());
 //                            if (!Utils.equals(controller.getPropertyValue(), getCurrentValueInEditor())) { //case when bind method was not called (ex. org.radixware.kernel.explorer.widgets.selector.WrapModelDelegate).
 //                                PropArrEditor.this.refresh(property);
 //                            }
-                        }
-                    }
-
+                    }                   
                 }
 
                 @Override
@@ -77,6 +81,21 @@ public class PropArrEditor<T extends Arr> extends PropEditor {
                 @Override
                 protected Label createLabel() {
                     return ValEditorFactoryImpl.this.createLabel();
+                }
+                                                
+                @Override
+                protected void setupValEditor(InputBox inputBox) {
+                    if (!isMandatory()) {
+                        inputBox.setClearController(new InputBox.ClearController<T>() {
+                            @Override
+                            public T clear() {
+                                setPropertyValue(null);
+                                return null;
+                            }
+                        });
+                    } else {
+                        inputBox.setClearController(null);
+                    }                
                 }
                 
             };
@@ -89,7 +108,12 @@ public class PropArrEditor<T extends Arr> extends PropEditor {
 
     @SuppressWarnings("unchecked")
     public PropArrEditor(final PropertyArr property) {
-        super(property, new ValEditorFactoryImpl<T>(property));
+        this(property, new ValEditorFactoryImpl<T>(property));
+    }
+        
+    @SuppressWarnings("unchecked")
+    public PropArrEditor(final PropertyArr property, ValEditorFactory valEditorFactory) {
+        super(property, valEditorFactory);
         getValEditor().addValueChangeListener(new ValueEditor.ValueChangeListener() {
             @Override
             public void onValueChanged(final Object oldValue, final Object newValue) {
@@ -98,7 +122,6 @@ public class PropArrEditor<T extends Arr> extends PropEditor {
                 }
             }
         });
-
     }
 
     public final void setEditButtonVisible(final boolean isVisible) {
@@ -116,7 +139,7 @@ public class PropArrEditor<T extends Arr> extends PropEditor {
                     && isEditButtonVisible
                     && !getProperty().isCustomEditOnly());
         } else {
-            editorController.setEditButtonVisible(isEditButtonVisible);
+            editorController.setEditButtonVisible(isEditButtonVisible && !controller.isInheritedValue());
         }
     }
 }

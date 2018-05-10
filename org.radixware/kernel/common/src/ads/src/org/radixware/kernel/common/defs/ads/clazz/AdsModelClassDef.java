@@ -278,13 +278,20 @@ public abstract class AdsModelClassDef extends AdsClassDef {
     }
 
     @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return getClientEnvironment();
+    }
+
+    @Override
     protected void appendAdditionalToolTip(StringBuilder sb) {
         super.appendAdditionalToolTip(sb);
         if (!getInheritance().getInerfaceRefList(ExtendableDefinitions.EScope.ALL).isEmpty()) {
             sb.append("<br>Implements: <br>&nbsp;");
             int countImplements = getInheritance().getInerfaceRefList(ExtendableDefinitions.EScope.ALL).size();
             for (AdsTypeDeclaration implementsRealised : getInheritance().getInerfaceRefList(ExtendableDefinitions.EScope.ALL)) {
-                sb.append(implementsRealised.getName(findServerSideClasDef()));
+                sb.append("<a href=\"\">");
+                sb.append(implementsRealised.getQualifiedName(this));
+                sb.append("</a>");
                 countImplements--;
                 if (countImplements > 0) {
                     sb.append(", ");

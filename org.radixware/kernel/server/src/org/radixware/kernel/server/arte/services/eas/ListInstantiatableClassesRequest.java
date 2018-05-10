@@ -44,7 +44,7 @@ final class ListInstantiatableClassesRequest extends ObjectRequest {
         final RadClassDef classDef = presOptions.context.getClassDef() != null ? presOptions.context.getClassDef() : getArte().getDefManager().getClassDef(RadClassDef.getEntityClassIdByTableId(tab.getId()));
         final RadClassPresentationDef classPresDef = classDef.getPresentation();
         final EntityGroup entGrp = getArte().getGroupHander(tab.getId());
-        presOptions.initEntGrp(entGrp, null, null, null, null);        
+        presOptions.initEntGrp(entGrp, null, null, null, null, null);        
         final ListInstantiatableClassesDocument res = ListInstantiatableClassesDocument.Factory.newInstance();
         final ListInstantiatableClassesRs rsStruct = res.addNewListInstantiatableClasses().addNewListInstantiatableClassesRs();
         final org.radixware.schemas.eas.InstantiatableClasses classesXml = rsStruct.addNewClasses();
@@ -54,13 +54,18 @@ final class ListInstantiatableClassesRequest extends ObjectRequest {
     
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((ListInstantiatableClassesMess) rqXml).getListInstantiatableClassesRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final ListInstantiatableClassesDocument doc = process((ListInstantiatableClassesMess) rq);
-        postProcess(rq, doc.getListInstantiatableClasses().getListInstantiatableClassesRs());
+        ListInstantiatableClassesDocument doc = null;
+        try{
+            doc = process((ListInstantiatableClassesMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getListInstantiatableClasses().getListInstantiatableClassesRs());
+        }
         return doc;
     }
 }

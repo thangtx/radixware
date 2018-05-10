@@ -37,7 +37,12 @@ public class DropDownButton {
         @Override
         public void actionPerformed(final ActionEvent e) {
             action.actionPerformed(e);
-            button.setAction(action);
+            Icon icon = (Icon) action.getValue(Action.SMALL_ICON);
+            if (icon == null){
+                button.setActionCommand((String)action.getValue(Action.ACTION_COMMAND_KEY));
+            } else {
+                button.setAction(action);
+            }
         }
         
     }
@@ -65,7 +70,12 @@ public class DropDownButton {
         popupMenu.add(a);
         actions.add(a);
         if (button.getAction() == null) {
-            button.setAction(action);
+            Icon icon = (Icon) action.getValue(Action.SMALL_ICON);
+            if (icon == null){
+                button.setActionCommand((String)a.getValue(Action.ACTION_COMMAND_KEY));
+            } else {
+                button.setAction(a);
+            }
         }
     }
     
@@ -82,4 +92,7 @@ public class DropDownButton {
         }
     }
     
+    public void setIcon(Icon icon){
+        button.setIcon(icon);
+    }
 }

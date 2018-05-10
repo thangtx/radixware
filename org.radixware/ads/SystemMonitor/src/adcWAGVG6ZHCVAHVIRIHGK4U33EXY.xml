@@ -14,8 +14,10 @@
 protected String[] clientScriptsRequired() {
     final String[] superResult = super.clientScriptsRequired();
     final String[] thisResult = new String[]{
-        //"org/radixware/wps/views/dashboard/flot.js",
-        "org/radixware/wps/views/dashboard/chartist.js"
+//      "org/radixware/wps/views/dashboard/flot.js",
+//      "org/radixware/wps/views/dashboard/metricsgraphics.js" loaded in dashChartist.js
+//      "org/radixware/wps/views/dashboard/chartist.js"
+        "org/radixware/wps/views/dashboard/d3andMetricsgraphics.js", 
     };
     if (superResult == null) {
         return thisResult;
@@ -34,7 +36,7 @@ protected String[] clientScriptsRequired() {
 protected String[] clientCssRequired() {
     final String[] superResult = super.clientCssRequired();
     final String[] thisResult = new String[]{
-        "org/radixware/wps/views/dashboard/chartist.min.css"
+        "org/radixware/wps/views/dashboard/chartist.min.css", "org/radixware/wps/views/dashboard/metricsgraphics.css"
     };
     if (superResult == null) {
         return thisResult;
@@ -56,11 +58,11 @@ protected String[] clientCssRequired() {
     <PropertyGroup Id="cpgGCIMAIV7KBEZLD27NQDYVPSDVY" Name="Root"/>
     <Properties>
       <Property Id="prdKYS7TIXCIJFGHFFMNZXP22CXTA" Name="highValue" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="11"/>
       </Property>
       <Property Id="prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Name="lowValue" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="11"/>
       </Property>
     </Properties>
@@ -79,7 +81,9 @@ protected String[] clientCssRequired() {
 Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true">
+                <xsc:Presentation>addClass</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("rwt-dash-diagram-container");
@@ -89,34 +93,44 @@ if (!isHistorical) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY">
+                <xsc:Presentation>Web.Widgets::Container</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> diagramContainer = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY mthPJ25IVAC25BFBDICYZYAH6QTEY" Invoke="true"/>
+              <xsc:IdReference Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY mthPJ25IVAC25BFBDICYZYAH6QTEY" Invoke="true">
+                <xsc:Presentation>Container</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
     diagramContainer.Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true">
+                <xsc:Presentation>addClass</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("rwt-dash-corr-diagram-container");
     diagramContainer.Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("height", "100%");
     diagramContainer.Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("width", "100%");
@@ -125,27 +139,35 @@ if (!isHistorical) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY">
+                <xsc:Presentation>Web.Widgets::Container</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> legendContainer = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY mthPJ25IVAC25BFBDICYZYAH6QTEY" Invoke="true"/>
+              <xsc:IdReference Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY mthPJ25IVAC25BFBDICYZYAH6QTEY" Invoke="true">
+                <xsc:Presentation>Container</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
     legendContainer.Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth2EMZ3DOCPZF4HCW2K7ZRQ7ZFV4" Invoke="true">
+                <xsc:Presentation>addClass</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("rwt-dash-diagram-legend");
     legendContainer.Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("width", "100%");
@@ -169,37 +191,12 @@ if (!isHistorical) {
           <Src>
             <xsc:Item>
               <xsc:Java>if (diagRs != null) {
-    </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> = 1;
-    </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> = 0;
     Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>("DiagRs", </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mth5FN25OEZ35BKLIBTLIBYRB4WY4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(diagRs, diagSettings));
-    Html.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("X-AxisTitle", </xsc:Java>
@@ -212,7 +209,9 @@ if (!isHistorical) {
     Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("Y-AxisTitle", </xsc:Java>
@@ -222,6 +221,16 @@ if (!isHistorical) {
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE">
+                <xsc:Presentation>MetricValueType</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> metricType = null;
     if (diagRs.isSetHistoryRs()) {
         String kind = diagRs.HistoryRs.MetricKind;
         String diagramType = "None";
@@ -229,53 +238,132 @@ if (!isHistorical) {
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+              <xsc:TypeDeclaration TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE">
+                <xsc:Presentation>MetricKind</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> kindItem = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+              <xsc:TypeDeclaration TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE">
+                <xsc:Presentation>MetricKind</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getForValue(kind);
             if (kindItem.isInDomain(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnQQWPNSU3FBH7ZPNRFXWJKZE7MQ"/>
+              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnQQWPNSU3FBH7ZPNRFXWJKZE7MQ">
+                <xsc:Presentation>MetricValueTypeDomain:Statistic</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)) {
                 diagramType = "Stat";
+                metricType = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciDVG6HS76WNHNBKDPWNNTRSCMSU" Invoke="true">
+                <xsc:Presentation>MetricValueType:Statistic</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
             } else if (kindItem.isInDomain(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnZ6D3VJ3HZFCQBCWV2RN2AIRG34 dmnSJT5QPAID5DVFCJ5IH3WCMOKJM"/>
+              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnZ6D3VJ3HZFCQBCWV2RN2AIRG34 dmnSJT5QPAID5DVFCJ5IH3WCMOKJM">
+                <xsc:Presentation>MetricValueTypeDomain:Event:Point</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)) {
                 diagramType = "Point";
+                metricType = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciE2VEVSQY2VBSLP7AEKW5AWFJUI" Invoke="true">
+                <xsc:Presentation>MetricValueType:Point</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
             } else if (kindItem.isInDomain(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnZ6D3VJ3HZFCQBCWV2RN2AIRG34"/>
+              <xsc:IdReference Path="dmnHEII2X2EBJDKRCLMY7OZ7Q4U24 dmnZ6D3VJ3HZFCQBCWV2RN2AIRG34">
+                <xsc:Presentation>MetricValueTypeDomain:Event</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)) {
                 diagramType = "Event";
+                metricType = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciL47VGDVATZDLBORQBGLS37I77Y" Invoke="true">
+                <xsc:Presentation>MetricValueType:Event</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
             }
         }
         Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("DiagramType", diagramType);
+    }
+    
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true">
+                <xsc:Presentation>highValue</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = Long.MIN_VALUE;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true">
+                <xsc:Presentation>lowValue</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = Long.MAX_VALUE;
+    Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("DiagRs", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mth5FN25OEZ35BKLIBTLIBYRB4WY4" Invoke="true">
+                <xsc:Presentation>diagRsToJSONStringAndCalcHighAndLowVals</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(diagRs, diagSettings, metricType));
+    if (diagRs.isSetHistoryRs()) {
         Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("IsAutoRange", diagSettings.HistSettings.isAutoValueRange());
@@ -283,51 +371,82 @@ if (!isHistorical) {
             Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("MinValue", Double.toString(diagSettings.HistSettings.ValueScale[0]));
             Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("MaxValue", Double.toString(diagSettings.HistSettings.ValueScale[1]));
+
         } else {
             Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>("MinValue", Double.toString(1.1 * </xsc:Java>
+              <xsc:Java>("MinValue", Double.toString(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true">
+                <xsc:Presentation>lowValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.doubleValue()));
+              <xsc:Java>.doubleValue() - 0.1 * Math.abs(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true">
+                <xsc:Presentation>lowValue</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.doubleValue())));
             Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>("MaxValue", Double.toString(1.1 * </xsc:Java>
+              <xsc:Java>("MaxValue", Double.toString(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true">
+                <xsc:Presentation>highValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.doubleValue()));
+              <xsc:Java>.doubleValue() + 0.1 * Math.abs(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true">
+                <xsc:Presentation>highValue</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.doubleValue())));
         }
     }
 
     Html.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true"/>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("LastUpdateTime", Long.toString(System.currentTimeMillis() * 1000));
@@ -337,7 +456,7 @@ if (!isHistorical) {
         </Sources>
       </Method>
       <Method Id="mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Name="calcHighLowValueAndReturnJSONString" Nature="0" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Parameters>
           <Parameter Name="val" Id="mprWRB32NKJNVG5TDPPUC3W64FCJY">
             <Type TypeId="400" extStr="java.math.BigDecimal"/>
@@ -351,28 +470,37 @@ if (!isHistorical) {
     if (val > </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true">
+                <xsc:Presentation>highValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdKYS7TIXCIJFGHFFMNZXP22CXTA" Invoke="true">
+                <xsc:Presentation>highValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = val;
-    } else if (val &lt; </xsc:Java>
+    } 
+    if (val &lt; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true">
+                <xsc:Presentation>lowValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY prdMMIIBRNHHZDELLGCHKCYPZFZ5E" Invoke="true">
+                <xsc:Presentation>lowValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = val;
@@ -381,7 +509,9 @@ if (!isHistorical) {
 return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(val);</xsc:Java>
@@ -389,14 +519,17 @@ return </xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mth5FN25OEZ35BKLIBTLIBYRB4WY4" Name="xmlToJSONString" Nature="0" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+      <Method Id="mth5FN25OEZ35BKLIBTLIBYRB4WY4" Name="diagRsToJSONStringAndCalcHighAndLowVals" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Parameters>
           <Parameter Name="xDiagRs" Id="mprR5FVUESBZFGYTFCQHPOAED6AUU">
             <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="DiagramRs"/>
           </Parameter>
           <Parameter Name="diagSettings" Id="mpr5RLH76ZLQFFLPMB6BHZT7CSVJY">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.dashboard.DiagramSettings"/>
+          </Parameter>
+          <Parameter Name="metricType" Id="mprYDNLAD3B7JCXZOI4QOAWTP5UV4">
+            <Type TypeId="21" Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE"/>
           </Parameter>
         </Parameters>
         <ReturnType TypeId="21"/>
@@ -405,23 +538,60 @@ return </xsc:Java>
             <xsc:Item>
               <xsc:Java>StringBuilder sb = new StringBuilder();
 if (xDiagRs.isSetHistoryRs()) {
+    final boolean isStat = metricType == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsJW5X3HYYBFFT3LECMFTSPIZYQE aciDVG6HS76WNHNBKDPWNNTRSCMSU" Invoke="true">
+                <xsc:Presentation>MetricValueType:Statistic</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
     sb.append("{\"HistoryRs\" : ");
     sb.append("{\"TimeFrom\" : \"" + xDiagRs.HistoryRs.TimeFrom.Time + "\", ");
     sb.append("\"TimeTo\" : \"" + xDiagRs.HistoryRs.TimeTo.Time + "\", ");
     sb.append("\"Records\" : [");
 
-    org.radixware.schemas.monitoringcommand.MetricRecord rec;
     //Iteration in reverse order. Result ordered by BegTime ASC.
-    for (int index = xDiagRs.HistoryRs.Records.RecordList.size() - 1; index >= 0; index--) {
-        rec = xDiagRs.HistoryRs.Records.RecordList.get(index);
-        sb.append(</xsc:Java>
+    try (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthIANJRCVHOJB5TIW75VKFEYD7HQ" Invoke="true"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcXYFLLRYT2VEJLNKGGP2D6NSJ2M">
+                <xsc:Presentation>FastMetricRecordIterator</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec, true)).append(",");
+              <xsc:Java> iter = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcXYFLLRYT2VEJLNKGGP2D6NSJ2M mthHM7VVZYYZVGAZBW67S6D2IMENM" Invoke="true">
+                <xsc:Presentation>FastMetricRecordIterator</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xDiagRs.HistoryRs.Records, true)) {
+        while (iter.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcXYFLLRYT2VEJLNKGGP2D6NSJ2M mthB4WM7FFIPFBNDCU6WPFQ5D7RR4" Invoke="true">
+                <xsc:Presentation>hasNext</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthIANJRCVHOJB5TIW75VKFEYD7HQ" Invoke="true">
+                <xsc:Presentation>appendMetricRecordJSONString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(sb, iter.next(), true, isStat);
+            sb.append(",");
+        }
     }
+
     if (!xDiagRs.HistoryRs.Records.RecordList.isEmpty()) {
         sb.deleteCharAt(sb.length() - 1);
     }
@@ -429,20 +599,24 @@ if (xDiagRs.isSetHistoryRs()) {
     if (xDiagRs.HistoryRs.PrevRecord != null) {
         sb.append(", \"PrevRecord\" : ");
         org.radixware.schemas.monitoringcommand.MetricRecord prevRec = xDiagRs.HistoryRs.PrevRecord;
-        sb.append(</xsc:Java>
+        </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthIANJRCVHOJB5TIW75VKFEYD7HQ" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthIANJRCVHOJB5TIW75VKFEYD7HQ" Invoke="true">
+                <xsc:Presentation>appendMetricRecordJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(prevRec, xDiagRs.HistoryRs.Records.RecordList.isEmpty()));
+              <xsc:Java>(sb, prevRec, xDiagRs.HistoryRs.Records.RecordList.isEmpty(), isStat);
     }
     if (xDiagRs.HistoryRs.ValueRanges != null) {
         org.radixware.schemas.monitoringcommand.MetricValueRanges ranges = xDiagRs.HistoryRs.ValueRanges;
         sb.append(", \"ValueRanges\" : " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthBNKOOGLZBJCWJEPJPSCDVLP2WU" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthBNKOOGLZBJCWJEPJPSCDVLP2WU" Invoke="true">
+                <xsc:Presentation>metricValueRangesToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ranges));
@@ -454,27 +628,31 @@ if (xDiagRs.isSetHistoryRs()) {
     sb.append("{\"Records\" : [");
     boolean isRecordsEmpty = true;
     for (org.radixware.kernel.common.client.dashboard.DiagramSettings ds : diagSettings.CorrSettings.MetricSettingsList) {
-        for(</xsc:Java>
+        for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="DiagramRs.CorrellationRs.CorrRecord"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="DiagramRs.CorrellationRs.CorrRecord">
+                <xsc:Presentation>SysMonitoringCommand:DiagramRs.CorrellationRs.CorrRecord</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> corrRec : xDiagRs.CorrellationRs.CorrRecordList) {
-            if(corrRec.StateId == ds.StateId) {
+            if (corrRec.StateId == ds.StateId) {
                 isRecordsEmpty = false;
                 sb.append("{");
-                if(corrRec.isSetValueRanges()) {
+                if (corrRec.isSetValueRanges()) {
                     sb.append("\"ValueRange\" : " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthBNKOOGLZBJCWJEPJPSCDVLP2WU" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthBNKOOGLZBJCWJEPJPSCDVLP2WU" Invoke="true">
+                <xsc:Presentation>metricValueRangesToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(corrRec.ValueRanges) + ", ");
                 }
                 sb.append("\"Record\" : {\"Title\" : \"" + ds.Title + "\", \"Value\" : ");
-                if(ds.diagramType.equals(org.radixware.kernel.common.client.dashboard.DiagramSettings.EDiagramType.STATISTIC)) {
+                if (ds.diagramType.equals(org.radixware.kernel.common.client.dashboard.DiagramSettings.EDiagramType.STATISTIC)) {
                     sb.append("\"" + corrRec.CurrentState.AvgVal + "\"");
                 } else {
                     sb.append("\"" + corrRec.CurrentState.EndVal + "\"");
@@ -497,7 +675,7 @@ return sb.toString();</xsc:Java>
         </Sources>
       </Method>
       <Method Id="mthBNKOOGLZBJCWJEPJPSCDVLP2WU" Name="metricValueRangesToJSONString" Nature="0" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Parameters>
           <Parameter Name="ranges" Id="mprBTBEA4N5TZHLHP224ZO55RVWSY">
             <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="MetricValueRanges"/>
@@ -511,26 +689,34 @@ return sb.toString();</xsc:Java>
 sb.append(" {\"LowErrorVal\" : " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ranges.LowErrorVal) + ", \"HighErrorVal\" : " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ranges.HighErrorVal) + ", ");
 sb.append("\"LowWarnVal\" : " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ranges.LowWarnVal) + ", \"HighWarnVal\" : " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ranges.HighWarnVal) + "}");
@@ -539,97 +725,134 @@ return sb.toString();</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthIANJRCVHOJB5TIW75VKFEYD7HQ" Name="metricRecordToJSONString" Nature="0" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+      <Method Id="mthIANJRCVHOJB5TIW75VKFEYD7HQ" Name="appendMetricRecordJSONString" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Parameters>
+          <Parameter Name="sb" Id="mprOKGHFEK53FD7LJ37UQSCJRHXTU">
+            <Type TypeId="400" extStr="java.lang.StringBuilder"/>
+          </Parameter>
           <Parameter Name="rec" Id="mprMEWHYQ4J5BFS7HRPE76YMO4KSQ">
             <Type TypeId="451" Path="xsdZ242CEQ3T5EOVEOYOJV7JITNKQ" extStr="MetricRecord"/>
           </Parameter>
           <Parameter Name="calcHighLowVal" Id="mprHW6YBYGYGBHTVK6TJ5OBE3GLIE">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
+          <Parameter Name="isStatistic" Id="mprHGVHSIW2W5AGPBX5VSDQ5TRO7A">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
         </Parameters>
-        <ReturnType TypeId="21"/>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>java.lang.StringBuilder sb = new java.lang.StringBuilder();
-if (calcHighLowVal) {
-    sb.append(" {\"MinVal\" : " + </xsc:Java>
+              <xsc:Java>if (calcHighLowVal) {
+    sb.append("{");
+    if (isStatistic) {
+        sb.append("\"MinVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true">
+                <xsc:Presentation>calcHighLowValueAndReturnJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.MinVal) + ", \"MaxVal\" : " + </xsc:Java>
+              <xsc:Java>(rec.MinVal)).append(",");
+        sb.append("\"MaxVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true">
+                <xsc:Presentation>calcHighLowValueAndReturnJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.MaxVal) + ", \"AvgVal\" : " + </xsc:Java>
+              <xsc:Java>(rec.MaxVal)).append(",");
+        sb.append("\"AvgVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true">
+                <xsc:Presentation>calcHighLowValueAndReturnJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.AvgVal) + ", ");
-    sb.append("\"BegVal\" : " + </xsc:Java>
+              <xsc:Java>(rec.AvgVal)).append(",");
+    } else {
+        sb.append("\"BegVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true">
+                <xsc:Presentation>calcHighLowValueAndReturnJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.BegVal) + ", \"EndVal\" : " + </xsc:Java>
+              <xsc:Java>(rec.BegVal)).append(",");
+        sb.append("\"EndVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthSCTOUUVKYFG5PLDMDX4A5H2TIQ" Invoke="true">
+                <xsc:Presentation>calcHighLowValueAndReturnJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.EndVal) + ", ");
-    sb.append("\"BegTime\" : " + rec.BegTime.Time + ", \"EndTime\" : " + rec.EndTime.Time + "}");
+              <xsc:Java>(rec.EndVal)).append(",");
+    }
+    sb.append("\"BegTime\":").append(rec.BegTime.Time).append(",\"EndTime\":").append(rec.EndTime.Time).append("}");
 } else {
-    sb.append(" {\"MinVal\" : " + </xsc:Java>
+    sb.append("{");
+    if (isStatistic) {
+        sb.append("\"MinVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.MinVal) + ", \"MaxVal\" : " + </xsc:Java>
+              <xsc:Java>(rec.MinVal)).append(",");
+        sb.append("\"MaxVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.MaxVal) + ", \"AvgVal\" : " + </xsc:Java>
+              <xsc:Java>(rec.MaxVal)).append(",");
+        sb.append("\"AvgVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.AvgVal) + ", ");
-    sb.append("\"BegVal\" : " + </xsc:Java>
+              <xsc:Java>(rec.AvgVal)).append(",");
+    } else {
+        sb.append("\"BegVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.BegVal) + ", \"EndVal\" : " + </xsc:Java>
+              <xsc:Java>(rec.BegVal)).append(",");
+        sb.append("\"EndVal\":").append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true"/>
+              <xsc:IdReference Path="adcWAGVG6ZHCVAHVIRIHGK4U33EXY mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Invoke="true">
+                <xsc:Presentation>bigDecimalToJSONString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rec.EndVal) + ", ");
-    sb.append("\"BegTime\" : " + rec.BegTime.Time + ", \"EndTime\" : " + rec.EndTime.Time + "}");
-}
-return sb.toString();</xsc:Java>
+              <xsc:Java>(rec.EndVal)).append(",");
+    }
+    sb.append("\"BegTime\":").append(rec.BegTime.Time).append(",\"EndTime\":").append(rec.EndTime.Time).append("}");
+}</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
       </Method>
       <Method Id="mthRZ3HIQFUE5H7VOQSP5YYQ5XGEY" Name="bigDecimalToJSONString" Nature="0" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Parameters>
           <Parameter Name="val" Id="mprN556FA7RXRA3RB7C2JT3GDMPTA">
             <Type TypeId="400" extStr="java.math.BigDecimal"/>
@@ -639,7 +862,7 @@ return sb.toString();</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>return val == null ? "null" : String.valueOf(val.doubleValue());</xsc:Java>
+              <xsc:Java>return val == null ? "null" : val.toString();</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

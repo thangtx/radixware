@@ -20,14 +20,13 @@ import org.radixware.wps.rwt.tree.Node;
 
 class DefaultChildren extends Node.Children {
 
-    private IExplorerTreeNode paragraphNode;
-    private WpsTree tree;
+    private final IExplorerTreeNode paragraphNode;
+    private final WpsTree tree;
     private List<Node> nodes = null;
 
-    public DefaultChildren(WpsTree tree, IExplorerTreeNode paragraphNode) {
+    public DefaultChildren(final WpsTree tree, final IExplorerTreeNode paragraphNode) {
         this.tree = tree;
         this.paragraphNode = paragraphNode;
-
     }
 
     @Override

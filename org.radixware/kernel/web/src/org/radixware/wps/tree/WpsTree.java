@@ -13,6 +13,7 @@ package org.radixware.wps.tree;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -20,17 +21,13 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
-import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.explorerItems.RadExplorerItemDef;
 import org.radixware.kernel.common.client.meta.explorerItems.RadParagraphDef;
-import org.radixware.kernel.common.client.models.CleanModelController;
 import org.radixware.kernel.common.client.models.EntityModel;
-import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.IContext;
 
-import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.trace.ClientTracer;
 import org.radixware.kernel.common.client.tree.ExplorerItemView;
 import org.radixware.kernel.common.client.tree.ExplorerTreeController;
@@ -43,20 +40,18 @@ import org.radixware.kernel.common.client.tree.nodes.ExplorerTreeNode;
 import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
 import org.radixware.kernel.common.client.tree.nodes.RootParagraphNode;
 import org.radixware.kernel.common.client.types.ExplorerRoot;
+import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.views.IProgressHandle;
-import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.client.widgets.actions.Action;
-import org.radixware.kernel.common.client.widgets.actions.Action.ActionListener;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.common.utils.Utils;
 import org.radixware.wps.WebServerRunParams;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.WpsSettings;
-//import org.radixware.wps.dialogs.TraceDialog;
 import org.radixware.wps.rwt.IMainView;
 import org.radixware.wps.rwt.RootPanel;
 import org.radixware.wps.rwt.tree.Node;
@@ -78,162 +73,71 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
         public IExplorerTree getView() {
             return tree;
         }
-    }
 
-    private final static class Icons extends ClientIcon {
-
-        private Icons(final String fileName) {
-            super(fileName, true);
-        }
-        public final static Icons REMOVE_FROM_TREE = new Icons("classpath:images/remove_from_tree.svg");
-        public final static Icons REMOVE_ALL_FROM_TREE = new Icons("classpath:images/remove_all_from_tree.svg");
-        public final static Icons OPEN_PARENT = new Icons("classpath:images/go_to_parent.svg");
-        public final static Icons GO_TO_CURRENT = new Icons("classpath:images/go_to_current.svg");
-    }
-    
-    private final static class SilentlyCleanEntityModelController extends CleanModelController{
-        
-        private final Pid silentPid;
-        
-        public SilentlyCleanEntityModelController(final Pid pid){
-            this.silentPid = pid;
+        @Override
+        public void setFocus() {
+            tree.setFocused(true);
         }
 
         @Override
-        public boolean needToCheckMandatoryProperties(final Model model) {
-            if (model instanceof EntityModel && Objects.equals(silentPid, ((EntityModel)model).getPid())){
-                return false;
+        public void removeNode(final IExplorerTreeNode node) {
+            final Node treeNode = tree.findNodeByExplorerTreeNode(node);
+            if (treeNode!=null){
+                final IExplorerTreeNode parentNode = node.getParentNode();
+                final int index = parentNode==null ? -1 : parentNode.getChildNodes().indexOf(node);
+                treeNode.remove();
+                if (index>=0 && parentNode instanceof ExplorerTreeNode){
+                    ((ExplorerTreeNode)parentNode).removeNode(index);
+                }
             }
-            return true;
-        }                        
-    }    
+        }
 
-    public final class Actions implements IExplorerTree.Actions {
+        @Override
+        public boolean isNodeExists(final IExplorerTreeNode node) {
+            return tree.findNodeByExplorerTreeNode(node)!=null;
+        }
 
-        public final RwtAction remove;
-        public final RwtAction removeAll;
-        public final RwtAction goToOwner;
-        public final RwtAction goToCurrent;
-//        public final RwtAction showTrace;
+        @Override
+        public void setCurrent(IExplorerTreeNode node) {
+            final Node treeNode = tree.findNodeByExplorerTreeNode(node);
+            if (treeNode!=null){
+                tree.internalChangeCurrent = true;
+                try{
+                    tree.setSelectedNode(treeNode);
+                }finally{
+                    tree.internalChangeCurrent = false;
+                }
+            }
+        }
 
-        public Actions(WpsEnvironment env) {
-            super();
-            remove = new RwtAction(env, Icons.REMOVE_FROM_TREE);
-            remove.setToolTip(env.getMessageProvider().translate("ExplorerTree", "Close in Tree"));
-            remove.setToolTip(env.getMessageProvider().translate("ExplorerTree", "Close Object in Tree"));
-            remove.addActionListener(new ActionListener() {
-                @Override
-                public void triggered(Action action) {
-                    removeAction();
-                }
-            });
-            remove.setEnabled(false);
-            removeAll = new RwtAction(env, Icons.REMOVE_ALL_FROM_TREE);
-            removeAll.setText(env.getMessageProvider().translate("ExplorerTree", "Close All in Tree"));
-            removeAll.setToolTip(getEnvironment().getMessageProvider().translate("ExplorerTree", "Close All Objects in Tree"));
-            removeAll.addActionListener(new ActionListener() {
-                @Override
-                public void triggered(Action action) {
-                    removeAllAction();
-                }
-            });
-            removeAll.setEnabled(false);
-            goToOwner = new RwtAction(env, Icons.OPEN_PARENT);
-            goToOwner.setText(env.getMessageProvider().translate("ExplorerTree", "Go To Parent Branch"));
-            goToOwner.setToolTip(env.getMessageProvider().translate("ExplorerTree", "Go To Parent Branch"));
-            goToOwner.addActionListener(new ActionListener() {
-                @Override
-                public void triggered(Action action) {
-                    goToOwnerAction();
-                }
-            });
-            goToOwner.setEnabled(true);
-            goToCurrent = new RwtAction(env, Icons.GO_TO_CURRENT);
-            goToCurrent.setText(env.getMessageProvider().translate("ExplorerTree", "Go To Current Item"));
-            goToCurrent.setToolTip(env.getMessageProvider().translate("ExplorerTree", "Go To Current Item"));
-            goToCurrent.addActionListener(new ActionListener() {
-                @Override
-                public void triggered(Action action) {
-                    goToCurrentAction();
-                }
-            });
-            goToCurrent.setEnabled(true);
+        @Override
+        public void resizeToContents() {
             
         }
 
-        private void removeAction() {
-            removeCurrentNode();
-        }
-
-        private void removeAllAction() {
-            lock();
-            try {
-                if (canLeaveCurrentNode(false,null)) {
-                    getExplorerRoot().getView().removeChoosenEntities();
-                }
-
-            } finally {
-                unlock();
-            }
-            removeAll.setEnabled(false);
-        }
-
-        private void goToOwnerAction() {
-            if (getCurrent() != null && getCurrent().getParentNode() != null) {
-                setCurrent(getCurrent().getParentNode());
-            }
-        }
-        
-        private void goToCurrentAction(){
-            goToNode(getCurrent());
-        }
-
-        protected void disableAll() {
-            remove.setEnabled(false);
-            removeAll.setEnabled(false);
-            goToOwner.setEnabled(false);
-        }
-
-        public List<Action> getActions() {
-            List<Action> list = new LinkedList<>();
-            list.add(remove);
-            list.add(removeAll);
-            list.add(goToOwner);
-            list.add(goToCurrent);
-            return list;
+        @Override
+        public void scrollTo(final IExplorerTreeNode node) {
+            
         }
 
         @Override
-        public RwtAction getRemoveCurrentNodeAction() {
-            return remove;
-        }
-
-        @Override
-        public RwtAction getRemoveChildChoosenObjectsAction() {
-            return removeAll;
-        }
-
-        @Override
-        public RwtAction getGoToParentNodeAction() {
-            return goToOwner;
-        }
-
-        @Override
-        public Action getGoToCurrentNodeAction() {
-            return goToCurrent;
-        }
-                
+        public Action createAction(final Icon icon, final String title) {
+            return new RwtAction(icon, title);
+        }                
     }
-    List<Id> accessibleExplorerItems;
+    
+    private List<Id> accessibleExplorerItems;
     private ExplorerRoot explorerRoot;
     private final ViewManager viewManager;
     private final IClientEnvironment userSession;
     private final WpsEnvironment e;
     private final List<IExplorerTreeNode> invisibleNodes = new LinkedList<>();
-    private final Actions actions;
-    private final ExplorerTreeController controller = new ExplorerTreeController(new Presenter(this));
+    private final ExplorerTreeController controller;
     private final IMainView mainView;
+    private boolean internalChangeCurrent;
     private String initNodes = "";
+    private EnumMap<TreeNodeSettings.NodeType,TreeNodeSettings> currentNodeSettings;
+            
     private final ISettingsChangeListener l = new ISettingsChangeListener() {
         @Override
         public void onSettingsChanged() {
@@ -241,40 +145,40 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
         }
     };    
 
-    WpsTree(final WpsEnvironment userSession, IMainView mainView) {
+    WpsTree(final WpsEnvironment userSession, 
+                  final IMainView mainView, 
+                  final IMenu selectorMenu, 
+                  final IMenu editorMenu) {
         this.userSession = userSession;
-        this.actions = new Actions(userSession);
         this.e = userSession;
         html.setAttr("role", "wpsTree");
-        this.viewManager = new ViewManager(userSession, mainView);
+        viewManager = new ViewManager(userSession, selectorMenu, editorMenu, mainView);
+        controller = new ExplorerTreeController(new Presenter(this));
+        controller.setViewManager(viewManager);
         this.mainView = mainView;
         ((NavigationView) mainView.getNavigator()).add(WpsTree.this);
-        //((NavigationView) mainView.getNavigator()).updateToolBarState(actions.getActions());
         setSizePolicy(SizePolicy.EXPAND, SizePolicy.EXPAND);
         showHeader(false);
         addSelectionListener(new NodeListener() {
             @Override
             public void selectionChanged(Node oldSelection, Node newSelection) {
-
-                if (oldSelection != newSelection) {
-                    if (WebServerRunParams.restoreTreePosition()) {
-                        saveNode(newSelection);
-                    }
-                    viewManager.closeCurrentView();
-                    if (newSelection instanceof TreeNode) {
-                        final ExplorerTreeNode treeNode = ((TreeNode) newSelection).getExplorerTreeNode();
-                        if (userSession.getStatusBar()!=null){
-                            userSession.getStatusBar().setCurrentExplorerTreeNode(treeNode);
+                if (!internalChangeCurrent){
+                    if (oldSelection != newSelection) {
+                        if (WebServerRunParams.restoreTreePosition()) {
+                            saveNode(newSelection);
                         }
-                        viewManager.openView(treeNode, true);
-                    }
+                        if (newSelection instanceof TreeNode) {                        
+                            final ExplorerTreeNode treeNode = ((TreeNode) newSelection).getExplorerTreeNode();                                            
+                            controller.enterNode(treeNode, true);
+                        }
+                    }                
+                    controller.refreshActions();
                 }
-                controller.refreshActions();
             }
         });
-        applySettings();
+        applyBackgroundColorSettings();
+        currentNodeSettings = TreeNodeSettings.readSettings(getSettings());
         userSession.addSettingsChangeListener(l);
-
     }
 
     private void saveNode(final Node node) {
@@ -309,10 +213,11 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     boolean close(final boolean forced) {
-        if (canLeaveCurrentNode(forced,null) || forced) {
+        if (controller.canLeaveNode(forced,null) || forced) {
             ((NavigationView) mainView.getNavigator()).updateToolBarState(new LinkedList<Action>());
-            viewManager.closeAll();
+            viewManager.closeAll();            
             store();
+            controller.close();
             if (l != null) {
                 e.removeSettingsChangeListener(l);
             }
@@ -322,7 +227,12 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     public void removeCurrentNode() {
-        controller.removeCurrentNode();
+        internalChangeCurrent = true;
+        try{
+            controller.removeCurrentNode();
+        }finally{
+            internalChangeCurrent  = false;
+        }
     }
     
     public final void goToNode(final IExplorerTreeNode node){
@@ -334,26 +244,26 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     void open(final ExplorerRoot root, final List<Id> visibleExplorerItems, final ExplorerRoot explorerRoot) {
         this.accessibleExplorerItems = new ArrayList<>(visibleExplorerItems);
         this.explorerRoot = explorerRoot;
-        RadParagraphDef rootParagraph = userSession.getDefManager().getParagraphDef(root.getId());
-
-        TreeNode rootNode = new TreeNode(this, new RootParagraphNode(this, rootParagraph));
+        final RadParagraphDef rootParagraph = userSession.getDefManager().getParagraphDef(root.getId());
+        final IExplorerTreeNode rootNode =  new RootParagraphNode(this, rootParagraph);        
+        final TreeNode rootTreeNode = new TreeNode(this, rootNode);
         setRootVisible(true);
-        setRootNode(rootNode);
+        setRootNode(rootTreeNode);
         final List<IExplorerTreeNode> iterable = new ArrayList<>(invisibleNodes);
         for (IExplorerTreeNode node : iterable) {
             setNodeVisible(node, false);
         }
         invisibleNodes.clear();
-        TreeNode initialNode = rootNode;
+        TreeNode initialNode = rootTreeNode;
         if (WebServerRunParams.restoreTreePosition()) {
-            initialNode = restoreNode(rootParagraph.getId(), rootNode);
+            initialNode = restoreNode(rootParagraph.getId(), rootTreeNode);
         }
         setSelectedNode(initialNode);
-        rootNode.expand();
+        rootTreeNode.expand();
 
-        RootPanel rootWindow = findRoot();
+        final RootPanel rootWindow = findRoot();
         if (rootWindow != null) {
-            rootWindow.setIcon(rootNode.getIcon());
+            rootWindow.setIcon(rootTreeNode.getIcon());
         }
         restore();
     }
@@ -402,13 +312,13 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     @Override
-    public Actions getActions() {
-        return actions;
+    public IExplorerTree.Actions getActions() {
+        return controller.getActions();
     }
 
     @Override
-    public void setNodeVisible(IExplorerTreeNode node, boolean isVisible) {
-        Node treeNode = findNodeByExplorerTreeNode(node);
+    public void setNodeVisible(final IExplorerTreeNode node, boolean isVisible) {
+        final Node treeNode = findNodeByExplorerTreeNode(node);
         if (treeNode != null) {
             treeNode.setVisible(isVisible);
         } else if (!isVisible) {
@@ -417,8 +327,8 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     @Override
-    public boolean isNodeVisible(IExplorerTreeNode node) {
-        Node treeNode = findNodeByExplorerTreeNode(node);
+    public boolean isNodeVisible(final IExplorerTreeNode node) {
+        final Node treeNode = findNodeByExplorerTreeNode(node);
         if (treeNode != null) {
             return treeNode.isVisible();
         } else {
@@ -427,11 +337,15 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     @Override
-    public void update(IExplorerTreeNode node) {
+    public void update(final IExplorerTreeNode node) {
         Node treeNode = findNodeByExplorerTreeNode(node);
         if (treeNode != null) {
             treeNode.update();
         }
+    }
+    
+    TreeNodeSettings getNodeSettings(final TreeNodeSettings.NodeType nodeType){
+        return currentNodeSettings.get(nodeType);
     }
 
     private WpsSettings getSettings() {
@@ -439,7 +353,24 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     private void applySettings() {
-        applyColorSettings();
+        applyBackgroundColorSettings();
+        final EnumMap<TreeNodeSettings.NodeType,TreeNodeSettings> newSettings = 
+            TreeNodeSettings.readSettings(getSettings());
+        if (!Objects.equals(currentNodeSettings, newSettings)){
+            final Stack<Node> nodes = new Stack<>();
+            nodes.push(getRootNode());
+            Node currentNode;
+            TreeNodeSettings.NodeType nodeType;
+            while(!nodes.isEmpty()){
+                currentNode = nodes.pop();
+                if (currentNode instanceof TreeNode){
+                    nodeType = ((TreeNode)currentNode).getType();
+                    ((TreeNode)currentNode).applySettings(newSettings.get(nodeType));
+                }
+                nodes.addAll(currentNode.getChildNodes().getCreatedNodes());
+            }
+            currentNodeSettings = newSettings;
+        }        
     }
 
     private void restoreExpandedItems(final Collection<IExplorerTreeNode> rootNodes, final String settingsPath) {
@@ -481,16 +412,17 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
             final String msg = e.getMessageProvider().translate("ExplorerTree", "Cannot restore position in explorer tree: %s\n%s");
             tracer.warning(String.format(msg, message, ClientException.exceptionStackToString(error)));
         }
-    }
+    }        
 
-    private void applyColorSettings() {
+    private void applyBackgroundColorSettings() {
         WpsSettings treeSettings = getSettings();
         if (treeSettings != null) {
+            treeSettings.beginGroup(SettingNames.SYSTEM);
+            treeSettings.beginGroup(SettingNames.EXPLORER_TREE_GROUP);
+            treeSettings.beginGroup(SettingNames.ExplorerTree.COMMON_GROUP);            
             try {
-                treeSettings.beginGroup(SettingNames.SYSTEM);
-                treeSettings.beginGroup(SettingNames.EXPLORER_TREE_GROUP);
-                treeSettings.beginGroup(SettingNames.ExplorerTree.COMMON_GROUP);
-                String color = treeSettings.readString(SettingNames.ExplorerTree.Common.TREE_BACKGROUND);  //.value(SettingNames.ExplorerTree.Common.TREE_BACKGROUND, DefaultSettings.defaultTreeBackgroundColor);
+                final String color = 
+                    treeSettings.readString(SettingNames.ExplorerTree.Common.TREE_BACKGROUND);
                 if (color != null) {
                     this.setBackgroundColor(color);
                 }
@@ -536,31 +468,13 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     @Override
-    public void removeNode(IExplorerTreeNode node) {
-        Node treeNode = findNodeByExplorerTreeNode(node);
-        if (treeNode != null) {
-            if (isCurrentOrParentForCurrent(treeNode)) {
-                if (canLeaveCurrentNode(false,null)) {
-                    if (treeNode.getParentNode() != null) {
-                        setSelectedNode(treeNode.getParentNode());
-                        if (getSelectedNode() != treeNode) {
-                            // if (node instanceof ChoosenEntityNode) {
-                            ExplorerTreeNode parent = ((ExplorerTreeNode) node.getParentNode());
-                            parent.removeNode(parent.getChildNodes().indexOf(node));
-                            // }
-                            treeNode.remove();
-                        }
-                    }
-                }
-            } else {
-                if (node instanceof ChoosenEntityNode) {
-                    ExplorerTreeNode parent = ((ExplorerTreeNode) node.getParentNode());
-                    parent.removeNode(parent.getChildNodes().indexOf(node));
-                }
-                treeNode.remove();
-            }
+    public void removeNode(final IExplorerTreeNode node) {
+        internalChangeCurrent = true;
+        try{
+            controller.removeNode(node);
+        }finally{
+            internalChangeCurrent = false;
         }
-        controller.refreshActions();
     }
 
     @Override
@@ -582,7 +496,7 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     public IExplorerTreeNode addUserExplorerItem(final ExplorerTreeNode parentNode, final RadExplorerItemDef userItem, final int index) {
         final Node treeNode = findNodeByExplorerTreeNode(parentNode);
         if (treeNode != null) {
-            final ExplorerItemNode newNode = new ExplorerItemNode(this, parentNode, userItem.getId());
+            final ExplorerItemNode newNode = new ExplorerItemNode(this, parentNode, userItem.getId());            
             ((TreeNode) treeNode).add(index, newNode);
             return newNode;
         } else {
@@ -591,13 +505,12 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     @Override
-    public boolean setCurrent(IExplorerTreeNode node) {
-        Node treeNode = findNodeByExplorerTreeNode(node);
-        if (treeNode != null && canLeaveCurrentNode(false,node)) {
-            setSelectedNode(treeNode);
-            return true;
-        } else {
-            return false;
+    public boolean setCurrent(final IExplorerTreeNode node) {
+        internalChangeCurrent = true;
+        try{
+            return controller.setCurrent(node);
+        }finally{
+            internalChangeCurrent = false;
         }
     }
 
@@ -609,42 +522,7 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
         }
         return null;
     }
-
-    private boolean canLeaveCurrentNode(final boolean forced, final IExplorerTreeNode nextNode) {
-        final IExplorerTreeNode currentNode;
-        if (viewManager != null && Utils.equals(getCurrent(), viewManager.getCurrentNode())) {
-            currentNode = viewManager.getCurrentNode();
-        } else {
-            currentNode = null;
-        }
-
-        if (currentNode != null && currentNode.isValid()) {
-            final Model model = currentNode.getView().getModel();
-            if (model != null && !forced) {
-                if (sameNodes(currentNode,nextNode)){
-                    final Pid pid = ((EntityModel)nextNode.getView().getModel()).getPid();
-                    return model.canSafelyClean(new SilentlyCleanEntityModelController(pid));
-                }else{
-                    return model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE);
-                } 
-            }
-        }
-        return true;
-    }
     
-    private static boolean sameNodes(final IExplorerTreeNode currentNode, final IExplorerTreeNode nextNode){
-        if (currentNode==null || nextNode==null || !currentNode.isValid() || !nextNode.isValid()){
-            return false;
-        }
-        final Model currentModel = currentNode.getView()==null ? null : currentNode.getView().getModel();
-        final Model nextModel = nextNode.getView()==null ? null : nextNode.getView().getModel();
-        if (currentModel instanceof GroupModel && currentModel.getView()!=null && nextModel instanceof EntityModel){
-            final EntityModel currentEntityModel = ((ISelector)currentModel.getView()).getCurrentEntity();
-            return currentEntityModel!=null && Objects.equals(currentEntityModel.getPid(), ((EntityModel)nextModel).getPid());
-        }
-        return false;
-    }    
-
     @Override
     protected boolean onChangeSelection(Node oldSelection, Node newSelection) {  
         if (oldSelection==null){
@@ -656,7 +534,7 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
         }else{
             nextNode = null;
         }
-        return canLeaveCurrentNode(false,nextNode);
+        return controller.canLeaveNode(false,nextNode);
     }
 
     @Override
@@ -673,9 +551,8 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
     }
 
     @Override
-    public void expand(IExplorerTreeNode node) {
-        Node treeNode = findNodeByExplorerTreeNode(node);
-        if (treeNode != null) {
+    public void expand(final IExplorerTreeNode node) {
+        for (Node treeNode = findNodeByExplorerTreeNode(node); treeNode!=null; treeNode = treeNode.getParentNode()){
             treeNode.expand();
         }
     }
@@ -814,7 +691,7 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
         final ArrayList<Id[]> nodesToExpand = new ArrayList<>();
         Node selection = getSelectedNode();
         int[] currentNodePath = selection == null ? null : selection.getIndexPath();
-
+        controller.clearHistory();
         List<int[]> expandedPathes = new LinkedList<>();
         fillExpandedPathes(getRootNode(), expandedPathes);
         setVisible(false);
@@ -1113,4 +990,15 @@ class WpsTree extends org.radixware.wps.rwt.tree.Tree implements IExplorerTree {
             settings.endArray();
         }
     }
+
+    @Override
+    public org.radixware.schemas.clientstate.ExplorerTreeState writeStateToXml() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void restoreStateFromXml(org.radixware.schemas.clientstate.ExplorerTreeState state) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+        
 }

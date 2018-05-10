@@ -69,15 +69,7 @@ public class BoolValueEditor extends PropertyEditorSupport {
 
     @Override
     public void setValue(Object value) {
-        try {
-            getSource().setValue(value);
-        } catch (IllegalAccessException  ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IllegalArgumentException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        getSource().setValue(value);
     }
 
     @Override

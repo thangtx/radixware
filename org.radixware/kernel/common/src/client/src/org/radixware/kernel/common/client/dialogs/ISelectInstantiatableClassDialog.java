@@ -11,12 +11,14 @@
 
 package org.radixware.kernel.common.client.dialogs;
 
+import java.util.List;
 import org.radixware.kernel.common.client.types.InstantiatableClass;
 import org.radixware.kernel.common.client.views.IDialogWithStandardButtons;
-import org.radixware.kernel.common.types.Id;
 
 
 public interface ISelectInstantiatableClassDialog extends IDialogWithStandardButtons {
 
     public InstantiatableClass getCurrentClass();
+    
+    public List<InstantiatableClass> getSelectedClasses();
 }

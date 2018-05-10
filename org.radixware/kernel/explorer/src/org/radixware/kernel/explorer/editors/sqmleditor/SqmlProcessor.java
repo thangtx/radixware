@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.meta.RadClassPresentationDef;
@@ -47,6 +48,7 @@ import org.radixware.kernel.explorer.editors.xscmleditor.TagInfo;
 import org.radixware.kernel.explorer.editors.xscmleditor.TagProcessor;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.models.SqmlTreeModel;
+import org.radixware.schemas.xscml.Sqml;
 import org.radixware.schemas.xscml.Sqml.Item.ParentCondition.Operator;
 import org.radixware.schemas.xscml.Sqml.Item.PropSqlName.Owner;
 
@@ -107,7 +109,7 @@ public class SqmlProcessor extends TagProcessor {
             final ISqmlColumnDef prop = (ISqmlColumnDef) obj;
             final ISqmlTableDef owner = prop.getOwnerTable();
             if ((tableAlias == null) && (path == null)) {
-                if (owner.equals(contextClass)) {
+                if (owner.getTableId().equals(contextClass.getTableId())) {
                     tag = new SqmlTag_PropSqlName(environment, prop, pos, Owner.THIS, showMode, tableAlias);
                 } else {
                     tag = new SqmlTag_PropSqlName(environment, prop, pos, Owner.TABLE, showMode, tableAlias);
@@ -158,17 +160,33 @@ public class SqmlProcessor extends TagProcessor {
         return new SqmlTag_ThisTableRef(environment, classDef, pos, showMode);
     }
 
-    public SqmlTag_ParentCondition createParentCondition(final ISqmlColumnDef prop, final Operator.Enum operator,final Reference pid, final long pos, final String tableAlias) {
+    public SqmlTag_ParentCondition createParentCondition(final ISqmlColumnDef prop, final ESqlConditionOperator operator, final Reference pid, final long pos, final String tableAlias) {
         return new SqmlTag_ParentCondition(environment, prop, operator, pid, pos, showMode, tableAlias);
     }
 
     public SqmlTag_TypifiedValue createTypifiedValue(final ISqmlColumnDef prop, final Object value, final long pos) {
         return new SqmlTag_TypifiedValue(environment, prop, value, pos, showMode);
     }
+    
+    public SqmlTag_IfParam createIfParam(final Sqml.Item.IfParam ifParam, final long pos){
+        return new SqmlTag_IfParam(environment, ifParam, pos, parameters, showMode);
+    }
+    
+    public SqmlTag_ElseIf createElseIf(final long pos){
+        return new SqmlTag_ElseIf(environment, pos);
+    }
+    
+    public SqmlTag_EndIf createEndIf(final long pos){
+        return new SqmlTag_EndIf(environment, pos);
+    }    
 
     public SqmlTag_DbFuncCall createDbFuncCall(final ISqmlFunctionDef functionDef, final Map<Id, String> paramValues, final long pos) {
         return new SqmlTag_DbFuncCall(environment, functionDef, paramValues, pos, showMode);
-    }        
+    }
+    
+    public SqmlTag_ParamValCount createParamValCount(final ISqmlParameter parameter, final long pos){
+        return new SqmlTag_ParamValCount(environment, parameter, pos, parameters, showMode);
+    }
 
     @Override
     public void toHtml(final QTextCursor tc, final QTextCharFormat charFormat) {
@@ -235,10 +253,14 @@ public class SqmlProcessor extends TagProcessor {
                         tag = new SqmlTag_DbName(environment, tc.position() + 1, item.getDbName(), showMode);
                     } else if (item.isSetTargetDbPreprocessor()){
                         tag = new SqmlTag_TargetDbPreprocessorTag(environment, tc.position() + 1, item.getTargetDbPreprocessor());
+                    } else if (item.isSetIfParam()){
+                        tag = new SqmlTag_IfParam(environment, item.getIfParam(), tc.position() + 1, parameters, showMode);
                     } else if (item.isSetElseIf()){
                         tag = new SqmlTag_ElseIf(environment, tc.position() + 1);
                     } else if (item.isSetEndIf()){
                         tag = new SqmlTag_EndIf(environment, tc.position() + 1);
+                    } else if (item.isSetParamValCount()){
+                        tag = new SqmlTag_ParamValCount(environment, item.getParamValCount(), parameters, tc.position() + 1 , showMode);
                     } else{
                         tag = new SqmlTag_UnknownTag(environment, tc.position() + 1, item);
                     }
@@ -403,5 +425,28 @@ public class SqmlProcessor extends TagProcessor {
             }
         }
         return null;
+    }
+    
+    public final XmlObject exportParameters(){
+        return parameters==null || parameters.isReadonly() ? null : parameters.exportToXml();
+    }
+    
+    public final boolean canImportParametersFromXml(){
+        return parameters!=null;
+    }
+    
+    public final ISqmlParameters importParametersFromXml(final XmlObject xml){
+        if (canImportParametersFromXml()){
+            if (!parameters.isReadonly()){
+                parameters.importFromXml(xml, environment);
+            }
+            return parameters;
+        }else{
+            return null;
+        }
+    }
+    
+    public ISqmlParameters getParameters(){
+        return parameters;
     }
 }

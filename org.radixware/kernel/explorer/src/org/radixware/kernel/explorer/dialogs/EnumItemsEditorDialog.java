@@ -23,6 +23,7 @@ import org.radixware.kernel.common.client.models.items.properties.PropertyArr;
 import org.radixware.kernel.common.client.views.IArrayEditorDialog;
 import org.radixware.kernel.common.client.views.ArrayEditorEventListener;
 import org.radixware.kernel.common.client.widgets.IPushButton;
+import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EEditMaskEnumOrder;
 import org.radixware.kernel.common.types.Arr;
@@ -290,21 +291,45 @@ public final class EnumItemsEditorDialog extends ExplorerDialog implements IArra
         editor.removeEventListener(listener);
     }
     
+    @Override
     public int getMinArrayItemsCount(){
         return editor.getMinArrayItemsCount();
     }
     
+    @Override
     public void setMinArrayItemsCount(final int count){
         editor.setMinArrayItemsCount(count);
     }
     
+    @Override
     public int getMaxArrayItemsCount(){
         return editor.getMaxArrayItemsCount();
     }
     
+    @Override
     public void setMaxArrayItemsCount(final int count){
         editor.setMaxArrayItemsCount(count);
     }
+
+    @Override
+    public void addCustomAction(final Action action) {
+        throw new UnsupportedOperationException("Not supported in EnumItemsEditorDialog");
+    }
+
+    @Override
+    public void removeCustomAction(final Action action) {
+        throw new UnsupportedOperationException("Not supported in EnumItemsEditorDialog");
+    }        
+
+    @Override
+    public int getCurrentItemIndex() {
+        throw new UnsupportedOperationException("Not supported in EnumItemsEditorDialog");
+    }
+
+    @Override
+    public void setCurrentItemIndex(final int index) {
+        throw new UnsupportedOperationException("Not supported in EnumItemsEditorDialog");
+    }        
     
     public EEditMaskEnumOrder getSortingOrder(){
         return editor.getSortingOrder();
@@ -313,5 +338,15 @@ public final class EnumItemsEditorDialog extends ExplorerDialog implements IArra
     public void setSortingOrder(final EEditMaskEnumOrder order) {
         editor.setSortingOrder(order);
     }    
+
+    @Override
+    public void setFirstArrayItemIndex(int index) {   
+        //empty implementation
+    }
+
+    @Override
+    public int getFirstArrayItemIndex() {
+        return -1;
+    }        
     
 }

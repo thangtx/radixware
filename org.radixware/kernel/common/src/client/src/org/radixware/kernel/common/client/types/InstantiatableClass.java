@@ -70,9 +70,25 @@ public final class InstantiatableClass implements Cloneable{
     
     public InstantiatableClass(final Id classId, final String title, final Id itemId){
         this.classId = classId;
-        this.title = title;
         this.itemId = itemId;
-    }    
+        safetySetTitle(title);
+    }
+    
+    private void safetySetTitle(final String classTitle){
+        if (classTitle==null || classTitle.isEmpty()){
+            if (classId==null){
+                if (itemId==null){
+                    title = "";
+                }else{
+                    title = itemId.toString();
+                }
+            }else{
+                title = classId.toString();
+            }
+        }else{
+            title = classTitle;
+        }
+    }
 
     public Id getId() {
         return classId;
@@ -87,7 +103,7 @@ public final class InstantiatableClass implements Cloneable{
     }
 
     public void setTitle(final String title) {
-        this.title = title;
+        safetySetTitle(title);
     }
     
     private void setParentClass(final InstantiatableClass parentClass){

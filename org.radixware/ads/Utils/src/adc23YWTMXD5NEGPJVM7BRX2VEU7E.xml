@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc23YWTMXD5NEGPJVM7BRX2VEU7E" Name="HttpPacket" Type="3" Environment="common">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc23YWTMXD5NEGPJVM7BRX2VEU7E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc23YWTMXD5NEGPJVM7BRX2VEU7E"/>
+    </Bodies>
+    <MethodGroup Id="cmgLZPTZ5DH4NE2VIE7Z6RWK3ACNU" Name="Root"/>
+    <PropertyGroup Id="cpgX3NA4OJGRVAXLMYQBMEDO4ATVE" Name="Root"/>
+    <Properties>
+      <Property Id="prdHZQ76NX6HNFYXKMBS5IQTAAF6Y" Name="body" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="401" extStr="byte" Dimension="1"/>
+      </Property>
+      <Property Id="prdWMJ74IIYKBBL7GN7CFWOKUO2UI" Name="headers" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new java.util.LinkedHashMap&lt;String, String>()</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+      <Property Id="prdLLC6EVUH2RBB7P2Y2GSVLNQZNI" Name="url" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdXYIDXCOVTBCZLHRBHHP67QMFRU" Name="method" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdSWSA7CT3V5BEDIPQLWUYLROQY4" Name="responseCode" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="401" extStr="int"/>
+      </Property>
+      <Property Id="prd5MOA336EDBFBXA57X64FVJCVFQ" Name="responseReasonPhrase" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthXD6TP2XNUFCJFE7JD2H5WNEVEQ" Name="HttpPacket" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="method" Id="mpr4MEHSGWQKJEAXAS7I4PU26KABU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="url" Id="mprVZPHBEIHHZHQ7JOLPBRBNF2JJE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="body" Id="mpr2OBODTEQQBF3XE2ZJ3JBE4VIAQ">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="headers" Variable="true" Id="mpr3SZUKMRUDJCJPMNP2OQFKEA3CE">
+            <Type TypeId="21" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdXYIDXCOVTBCZLHRBHHP67QMFRU" Invoke="true">
+                <xsc:Presentation>method</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = method;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdLLC6EVUH2RBB7P2Y2GSVLNQZNI" Invoke="true">
+                <xsc:Presentation>url</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = url;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdHZQ76NX6HNFYXKMBS5IQTAAF6Y" Invoke="true">
+                <xsc:Presentation>body</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = body;
+if (headers != null &amp;&amp; headers.length % 2 > 0) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true">
+                <xsc:Presentation>IllegalArgumentException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Headers array length should be divisible by 2");
+}
+if (headers != null) {
+    for (int i = 0; i &lt; headers.length; i += 2) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdWMJ74IIYKBBL7GN7CFWOKUO2UI" Invoke="true">
+                <xsc:Presentation>headers</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(headers[i], headers[i + 1]);
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthK2DWKLIQXJDWLBCE47BVSONA6Y" Name="HttpPacket" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -14,10 +14,12 @@ package org.radixware.kernel.server.arte.services.eas;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Clob;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.xmlbeans.XmlException;
@@ -27,6 +29,10 @@ import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.arte.Arte;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.presentations.RadFilterDef;
 import org.radixware.kernel.server.sqml.Sqml;
@@ -35,25 +41,29 @@ import org.radixware.kernel.server.sqml.Sqml;
 final class CommonSelectorFilters extends CommonSelectorAddons<CommonSelectorFilter> {
 
     private static final String FILTER_CLASS_GUID = "aclLQBIKZWZABEIXKZOG4W3L6I5XI";
+    private static final String qryEasCommonFiltersStmtSQL = "select "
+                                                           + "addons.guid, addons.baseFilterGuid, addons.title, "
+                                                           + "addons.lastUpdateTime, addons.condition, addons.parameters "
+                                                           + "from "
+                                                           + "rdx_easselectoraddons addons "
+                                                           + "where "
+                                                           + "addons.isActive=1 and "
+                                                           + "addons.classGuid='" + FILTER_CLASS_GUID + "' and "
+                                                           + "addons.tableGuid=? and "
+                                                           + "(addons.selPresentations is null or addons.selPresentations like ?) "
+                                                           + "order by "
+                                                           + "addons.seq";
+    private static final Stmt qryEasCommonFiltersStmt = new Stmt(qryEasCommonFiltersStmtSQL,Types.VARCHAR,Types.VARCHAR);
     private final PreparedStatement qryEasCommonFilters;
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
 
+    private CommonSelectorFilters(){
+        qryEasCommonFilters = null;
+    }
+    
     public CommonSelectorFilters(final Arte arte) throws SQLException {
         super(arte);
-
-        qryEasCommonFilters = arte.getDbConnection().get().prepareStatement(
-                "select "
-                + "addons.guid, addons.baseFilterGuid, addons.title, "
-                + "addons.lastUpdateTime, addons.condition, addons.parameters "
-                + "from "
-                + "rdx_easselectoraddons addons "
-                + "where "
-                + "addons.isActive=1 and "
-                + "addons.classGuid='" + FILTER_CLASS_GUID + "' and "
-                + "addons.tableGuid=? and "
-                + "(addons.selPresentations is null or addons.selPresentations like ?) "
-                + "order by "
-                + "addons.seq");
-
+        qryEasCommonFilters = ((RadixConnection)arte.getDbConnection().get()).prepareStatement(qryEasCommonFiltersStmt);
     }
 
     @Override
@@ -125,17 +135,16 @@ final class CommonSelectorFilters extends CommonSelectorAddons<CommonSelectorFil
                             continue;
                         }
                         condition.getItems().add(Sqml.Text.Factory.newInstance("\n) and ("));
-//                          try
                         condition.appendFrom(xsqml);
-//                        } catch (XmlException ex) {
-//                            traceFilterLoadingError(arte, filterIdAsStr, title, ex);
-//                            continue;
-//                        }
                         condition.getItems().add(Sqml.Text.Factory.newInstance("\n)"));
                     }
 
                 } else {
-                    continue;//no condition - ignoring filter
+                    if (baseFilter==null){
+                        continue;//no condition - ignoring filter
+                    }else{
+                        condition = baseFilter.getCondition();
+                    }
                 }
 
                 final Clob parametersClob = rs.getClob("parameters");

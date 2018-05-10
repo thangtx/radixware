@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.designer.dds.script.defs;
 
+import java.util.Arrays;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import org.radixware.kernel.common.defs.dds.DdsViewDef;
 import org.radixware.kernel.common.enums.EDdsViewWithOption;
 import org.radixware.kernel.common.scml.CodePrinter;
@@ -35,13 +37,9 @@ public class DdsViewScriptGenerator implements IDdsDefinitionScriptGenerator<Dds
         if (oldView.getWithOption() != newView.getWithOption()) {
             return true;
         }
-        Sqml oldQuery = oldView.getQuery();
-        Sqml newQuery = newView.getQuery();
-        if (!DdsScriptGeneratorUtils.isTranslatedSqmlEquals(oldQuery, newQuery)) {
-            return true;
-        }
-
-        return false;
+        Sqml oldQuery = oldView.getSqml();
+        Sqml newQuery = newView.getSqml();
+        return !DdsScriptGeneratorUtils.isTranslatedSqmlEquals(oldQuery, newQuery);
     }
 
     @Override
@@ -54,7 +52,7 @@ public class DdsViewScriptGenerator implements IDdsDefinitionScriptGenerator<Dds
         cp.print(view.getDbName());
         cp.println(" as");
 
-        Sqml viewQuery = view.getQuery();
+        Sqml viewQuery = view.getSqml();
         DdsScriptGeneratorUtils.translateSqml(cp, viewQuery);
 
         switch (view.getWithOption()) {
@@ -76,10 +74,7 @@ public class DdsViewScriptGenerator implements IDdsDefinitionScriptGenerator<Dds
         if (view.getWithOption() != EDdsViewWithOption.READ_ONLY) {
             cp.print(", delete");
         }
-        cp.print(" on ");
-        cp.print(view.getDbName());
-        cp.print(" to &USER&_RUN_ROLE");
-        cp.printCommandSeparator();
+        cp.print(" on ").print(view.getDbName()).print(" to &USER&_RUN_ROLE").printCommandSeparator();
         // System.out.println("grant select on " + view.getDbName() + " to &USER&_RUN_ROLE\n/");
     }
 
@@ -88,13 +83,18 @@ public class DdsViewScriptGenerator implements IDdsDefinitionScriptGenerator<Dds
         String oldDbName = oldView.getDbName();
         String newDbName = newView.getDbName();
         if (!oldDbName.equals(newDbName)) {
-            cp.print("rename ");
-            cp.print(oldDbName);
-            cp.print(" to ");
-            cp.print(newDbName);
-            cp.printCommandSeparator();
+            cp.print("rename ").print(oldDbName).print(" to ").print(newDbName).printCommandSeparator();
             getRunRoleScript(cp, newView);
         }
+    }
+
+    @Override
+    public void getReCreateScript(CodePrinter printer, DdsViewDef definition, boolean storeData) {
+        
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, DdsViewDef definition, boolean enable) {
     }
 
     public static final class Factory {

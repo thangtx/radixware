@@ -21,7 +21,6 @@ import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.exceptions.ServiceProcessClientFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessServerFault;
-import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.clazzes.RadPropDef;
 import org.radixware.kernel.server.meta.presentations.RadClassPresentationDef;
@@ -31,7 +30,6 @@ import org.radixware.kernel.server.types.PresentationEntityAdapter;
 import org.radixware.kernel.server.types.Restrictions;
 import org.radixware.kernel.server.types.presctx.PresentationContext;
 import org.radixware.schemas.eas.Definition;
-import org.radixware.schemas.eas.EditorPages;
 import org.radixware.schemas.eas.ReadMess;
 import org.radixware.schemas.eas.ReadRq;
 import org.radixware.schemas.eas.ReadRs;
@@ -80,26 +78,12 @@ final class ReadRequest extends ObjectRequest {
         }
         final ReadDocument res = ReadDocument.Factory.newInstance();
         final ReadRs rsStruct = res.addNewRead().addNewReadRs();
-
-        Restrictions restr = pres.getTotalRestrictions(entity);
-        EditorPages enadledEditorPages = rsStruct.addNewEnabledEditorPages();
-        if (restr.getIsAccessRestricted() || restr.getIsViewRestricted()) {
-            enadledEditorPages.setAll(false);
-        } else if (!restr.getIsAllEditPagesRestricted()) {
-            enadledEditorPages.setAll(true);
-        } else {
-            enadledEditorPages.setAll(false);
-            Collection<Id> allowedEditPages = restr.getAllowedEditPages();
-            for (Id id : allowedEditPages) {
-                EditorPages.Item item = enadledEditorPages.addNewItem();
-                item.setId(id);
-            }
-        }
-        
-        writeReadResponse(rsStruct, presEntAdapter, presOptions, bWithLOBValues, pres, propDefs);
+        final org.radixware.schemas.eas.PresentableObject objectXml = rsStruct.addNewData();
+        writePresentableObject(objectXml, presEntAdapter, presOptions, bWithLOBValues, pres, propDefs, false);
         
         if (rqParams.getWithAccessibleExplorerItems()){
-            writeAccessibleExplorerItems(entity, pres, rsStruct.addNewAccessibleExplorerItems());
+            final Restrictions additionalRestrictions = presEntAdapter.getAdditionalRestrictions(pres);
+            writeAccessibleExplorerItems(entity, pres, additionalRestrictions, objectXml.addNewAccessibleExplorerItems());
         }
         
         return res;
@@ -107,13 +91,18 @@ final class ReadRequest extends ObjectRequest {
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((ReadMess) rqXml).getReadRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final ReadDocument doc = process((ReadMess) rq);
-        postProcess(rq, doc.getRead().getReadRs());
+        ReadDocument doc = null;
+        try{
+            doc = process((ReadMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getRead().getReadRs());
+        }
         return doc;
     }
 

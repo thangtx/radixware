@@ -19,12 +19,14 @@ import org.openide.util.NbBundle;
 import org.radixware.kernel.common.builder.BuildActionExecutor.EBuildActionType;
 import org.radixware.kernel.common.builder.DefinitionsDistributor;
 import org.radixware.kernel.common.builder.DirectoryFileChecker;
+import org.radixware.kernel.common.builder.SqmlDistributor;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.dds.DdsDefinitionIcon;
 import org.radixware.kernel.common.defs.dds.DdsModelManager;
 import org.radixware.kernel.common.defs.dds.DdsModule;
+import org.radixware.kernel.common.defs.uds.UdsDefinitionIcon;
 import org.radixware.kernel.common.defs.uds.module.UdsModule;
 import org.radixware.kernel.common.enums.ERepositorySegmentType;
 import org.radixware.kernel.common.repository.Segment;
@@ -70,6 +72,9 @@ public class ModuleCreature extends NamedRadixObjectCreature<Module> {
         if (overwrite) {
             final Module instance = context.getModules().overwrite(moduleForOverwrite);
             instance.setName(name);
+            if (instance instanceof DdsModule) {
+                afterAppend(instance);
+            }
             return instance;
         } else {
             if (context.getType() == ERepositorySegmentType.ADS) {
@@ -94,9 +99,10 @@ public class ModuleCreature extends NamedRadixObjectCreature<Module> {
     
     @Override
     public RadixIcon getIcon() {
-        if (context.getType() == ERepositorySegmentType.ADS) {
-            return AdsDefinitionIcon.MODULE;
-        } else {
+        switch (context.getType()) {
+            case ADS: return AdsDefinitionIcon.MODULE;
+            case UDS: return UdsDefinitionIcon.MODULE;
+            default:
             return DdsDefinitionIcon.MODULE;
         }
     }
@@ -148,8 +154,10 @@ public class ModuleCreature extends NamedRadixObjectCreature<Module> {
 
             // make definitions.xml
             AdsModule adsModule = (AdsModule) module;
-            DefinitionsDistributor.makeDefinitionsXml(adsModule, new DesignerBuildEnvironment(false, EBuildActionType.UPDATE_DIST), EBuildActionType.UPDATE_DIST);
-
+            final DesignerBuildEnvironment buildEnvironment = new DesignerBuildEnvironment(false, EBuildActionType.UPDATE_DIST);
+                    
+            DefinitionsDistributor.makeDefinitionsXml(adsModule, buildEnvironment, EBuildActionType.UPDATE_DIST);
+            SqmlDistributor.makeDefinitionsXml(adsModule, buildEnvironment, EBuildActionType.UPDATE_DIST);
             // add svn:ignore dirs
             final File dir = module.getDirectory();
             final FileObject dirFo = RadixFileUtil.toFileObject(dir);

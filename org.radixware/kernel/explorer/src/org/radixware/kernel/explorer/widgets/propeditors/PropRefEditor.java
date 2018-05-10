@@ -11,18 +11,24 @@
 
 package org.radixware.kernel.explorer.widgets.propeditors;
 
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.editors.property.PropEditorOptions;
-import org.radixware.kernel.common.client.env.ClientIcon;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
 import org.radixware.kernel.common.client.errors.ParentRefSetterError;
 import org.radixware.kernel.common.client.errors.SettingPropertyValueError;
+import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.filters.RadFilterParamDef;
 import org.radixware.kernel.common.client.meta.RadParentRefPropertyDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskRef;
+import org.radixware.kernel.common.client.models.GroupModel;
+import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyRef;
 import org.radixware.kernel.common.client.types.RefEditingHistory;
@@ -32,10 +38,116 @@ import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.explorer.editors.valeditors.ValEditor;
 import org.radixware.kernel.explorer.editors.valeditors.ValEditorFactory;
 import org.radixware.kernel.explorer.editors.valeditors.ValRefEditor;
-import org.radixware.kernel.explorer.env.ExplorerIcon;
 import static org.radixware.kernel.explorer.widgets.propeditors.PropRefEditor.getValEditorFactory;
 
 public class PropRefEditor extends PropReferenceEditor {
+    
+    private static interface IValRefEditorDelegate{
+        
+        GroupModel createGroupModel();
+        
+        void onChangeReference();
+        
+        void onClearReference();
+        
+        void afterSelectReferenceFromDropDownList(final Reference ref);
+        
+        void onCtrlClick();
+    }
+    
+    private class ValRefEditorDelegate implements IValRefEditorDelegate{
+        @Override
+        public GroupModel createGroupModel() {
+            return PropRefEditor.this.createGroupModel();
+        }
+
+        @Override
+        public void onChangeReference() {
+            PropRefEditor.this.onChangeReferenceButtonClick();
+        }
+        
+        @Override
+        public void afterSelectReferenceFromDropDownList(final Reference ref){
+            PropRefEditor.this.afterSelectReferenceFromDropDownList(ref);
+        }      
+
+        @Override
+        public void onClearReference() {
+            PropRefEditor.this.onClearReferenceButtonClick();
+        }              
+
+        @Override
+        public void onCtrlClick() {
+            PropRefEditor.this.onCtrlClick();
+        }                
+    }
+    
+    private static class InternalValRefEditor extends ValRefEditor{
+        
+        private IValRefEditorDelegate delegate;
+        
+        public InternalValRefEditor(final IClientEnvironment environment, final EditMaskRef mask, final QWidget parent){
+            super(environment, parent, mask, false, false, true, false);
+        }
+        
+        public void setDelegate(final IValRefEditorDelegate delegate){
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected void onMouseClick() {
+            if (delegate!=null 
+                && QApplication.keyboardModifiers().value()==Qt.KeyboardModifier.ControlModifier.value()
+                && isEnabled()
+                && isEmbeddedWidgetsVisible()){
+                delegate.onCtrlClick();
+            }else{
+                super.onMouseClick();
+            }
+        }                
+        
+        @Override
+        protected boolean eq(final Reference value1, final Reference value2) {
+            return Reference.exactlyMatch(value1, value2);
+        }        
+
+        @Override
+        protected boolean isGroupModelAccessible() {
+            return true;
+        }
+
+        @Override
+        protected void onSelectValueFromDropDownList(final Reference value) {
+            if (delegate==null){
+                super.onSelectValueFromDropDownList(value);
+            }else{
+                delegate.afterSelectReferenceFromDropDownList(value);
+            }
+        }                
+
+        @Override
+        public GroupModel getGroupModel() {
+            return delegate==null ? super.getGroupModel() : delegate.createGroupModel();
+        }
+
+        @Override
+        public void select() {
+            if (delegate==null){
+                super.select();
+            }else{
+                delegate.onChangeReference();
+            }
+        }
+
+        @Override
+        public void clear() {
+            if (delegate==null){
+                super.clear();
+            }else{
+                delegate.onClearReference();
+            }
+        }                
+    }
     
     private static class ValEditorFactoryImpl extends ValEditorFactory{
         
@@ -47,17 +159,13 @@ public class PropRefEditor extends PropReferenceEditor {
 
         @Override
         public ValEditor createValEditor(final EValType valType, final EditMask editMask, final IClientEnvironment environment, final QWidget parentWidget) {
-            return new ValRefEditor(environment, parentWidget, (EditMaskRef)editMask, false, false, false, false){
-                        @Override
-                        protected boolean eq(final Reference value1, final Reference value2) {
-                            return Reference.exactlyMatch(value1, value2);
-                        }
-                    };
+            return new InternalValRefEditor(environment, (EditMaskRef)editMask, parentWidget);
         }
         
     }    
     
     private boolean internalUpdate;
+    private boolean selectingParent;
 
     public PropRefEditor(final PropertyRef property) {
        this(property, getValEditorFactory());
@@ -66,8 +174,6 @@ public class PropRefEditor extends PropReferenceEditor {
     protected PropRefEditor(final PropertyRef property, final ValEditorFactory factory){
         super(property,factory);
         setup();
-        changeReferenceButton.setToolTip(getEnvironment().getMessageProvider().translate("PropRefEditor", "Select Object"));
-        changeReferenceButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.Definitions.SELECTOR));        
     }
     
     @Override
@@ -82,18 +188,47 @@ public class PropRefEditor extends PropReferenceEditor {
         final ValEditor editor = getValEditor();
         if (editor instanceof ValRefEditor){
             ((ValRefEditor)editor).setSelectorPresentation(getParentSelectorPresentation());
-        }        
+        }
+        if (editor instanceof InternalValRefEditor){
+            ((InternalValRefEditor)editor).setDelegate(new ValRefEditorDelegate());
+        }
         editor.valueChanged.connect(this,"updatePropertyValue(Object)");        
     }
 
     @Override
+    public void refresh(final ModelItem changedItem) {
+        super.refresh(changedItem);
+        changeReferenceButton.setVisible(false);
+    }    
+    
+    @Override
+    protected void closeEditor() {
+        if (selectingParent){
+            final String message = ClientException.exceptionStackToString(new IllegalStateException("Closing property editor when select parent was not finished"));
+            getEnvironment().getTracer().warning(message);
+        }
+        super.closeEditor();
+    }
+
+    @Override
+    protected void closeEvent(final QCloseEvent event) {
+        if (selectingParent){
+            final String message = ClientException.exceptionStackToString(new IllegalStateException("Closing property editor when select parent was not finished"));
+            getEnvironment().getTracer().warning(message);
+        }        
+        super.closeEvent(event);
+    }    
+
+    @Override
     void clear() {
+        if (selectingParent){
+            final String message = ClientException.exceptionStackToString(new IllegalStateException("Closing property editor when select parent was not finished"));
+            getEnvironment().getTracer().warning(message);
+        }        
         getValEditor().valueChanged.disconnect(this);
         super.clear();        
     }
-    
-    
-    
+            
     public static ValEditorFactory getValEditorFactory(){
         return PropRefEditor.ValEditorFactoryImpl.INSTANCE;
     }
@@ -117,6 +252,7 @@ public class PropRefEditor extends PropReferenceEditor {
         boolean tryAgain;
         Reference newValue = null;
         do{
+            selectingParent = true;
             try {
                 newValue = property.selectParent();
             } catch (InterruptedException e) {
@@ -127,6 +263,14 @@ public class PropRefEditor extends PropReferenceEditor {
                 processException(exception, getEnvironment().getMessageProvider().translate("ExplorerException", "Error on opening selector"), msg);
                 return;
             }
+            finally{
+                selectingParent = false;
+            }
+            if (getProperty()==null){
+                final String message = ClientException.exceptionStackToString(new IllegalStateException("Property is null after select parent"));
+                getEnvironment().getTracer().warning(message);
+                return;
+            }            
             try{
                 newValueAccepted = updatePropertyValue(newValue);
                 tryAgain = false;
@@ -141,13 +285,30 @@ public class PropRefEditor extends PropReferenceEditor {
             getValEditor().updateHistory();            
         }
         property.onFinishEditValue(newValueAccepted);
+    }        
+    
+    private void onClearReferenceButtonClick(){
+        final PropertyRef property = (PropertyRef) getProperty();
+        if (property!=null){
+            boolean newValueAccepted;
+            try{
+                newValueAccepted = updatePropertyValue(null);
+            }catch(ObjectNotFoundError error){
+                getEnvironment().processException(error); 
+                newValueAccepted = false;
+            }
+            if (newValueAccepted){
+                edited.emit(null);
+            }
+            property.onFinishEditValue(newValueAccepted);
+        }
     }
         
     private boolean updatePropertyValue(final Object newValue) throws ObjectNotFoundError{
         if (internalUpdate){
             return false;
         }
-        final PropertyRef property = (PropertyRef) getProperty();        
+        final PropertyRef property = (PropertyRef) getProperty();
         final Reference newReference = (Reference)newValue;
         if (!Utils.equals(getPropertyValue(), newReference)) {
             try {
@@ -165,6 +326,9 @@ public class PropRefEditor extends PropReferenceEditor {
                 getEnvironment().processException(new SettingPropertyValueError(property, exception));
                 return false;
             }
+            if (getProperty()==null){//editor may be closed in setValueObject method
+                return true;
+            }
             if (!Utils.equals(getPropertyValue(), getCurrentValueInEditor())) //case when bind method was not called (ex. org.radixware.kernel.explorer.widgets.selector.WrapModelDelegate).
             {
                 refresh(property);                
@@ -172,6 +336,23 @@ public class PropRefEditor extends PropReferenceEditor {
             return true;
         }
         return false;
+    }
+    
+    private void afterSelectReferenceFromDropDownList(final Reference newValue) {
+        final PropertyRef property = (PropertyRef) getProperty();
+        boolean valueAccepted;
+        try{            
+            valueAccepted = updatePropertyValue(newValue);
+        }catch(ObjectNotFoundError error){
+            final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Selected Object Does not Exist");
+            getEnvironment().processException(title,error);
+            valueAccepted = false;
+        }
+        if (valueAccepted){
+            edited.emit(newValue);
+            getValEditor().updateHistory();            
+        }
+        property.onFinishEditValue(valueAccepted);
     }
 
     @Override
@@ -187,7 +368,7 @@ public class PropRefEditor extends PropReferenceEditor {
 
     @Override
     protected void updateEditor(final Object value, final PropEditorOptions options) {
-        internalUpdate = true;        
+        internalUpdate = true;
         try{
             super.updateEditor(value, options);
         }
@@ -195,7 +376,16 @@ public class PropRefEditor extends PropReferenceEditor {
             internalUpdate = false;
         }
     }
+        
+    private GroupModel createGroupModel(){
+        final PropertyRef property = (PropertyRef) getProperty();
+        final GroupModel groupModel = property.openGroupModel();
+        property.getOwner().beforeSelectParent(property, groupModel);
+        return groupModel;
+    } 
     
-    
-    
+    @Override
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.PARENT_REF_PROP_EDITOR;
+    }    
 }

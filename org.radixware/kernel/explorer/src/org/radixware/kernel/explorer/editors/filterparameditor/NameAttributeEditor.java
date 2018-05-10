@@ -37,16 +37,16 @@ final class NameAttributeEditor extends AbstractAttributeEditor<String> {
         super(environment);
         this.restrictedNames = restrictedNames;
         setObjectName("attrEditor_" + getAttribute().name());
-        label = new QLabel(getAttribute().getTitle(), parent);
+        label = new QLabel(getAttribute().getTitle(environment), parent);
         label.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         label.setObjectName("label");
         editor = new ValStrEditor(environment, parent, new EditMaskStr(), true, isReadonly);
         editor.setObjectName("editor");
         label.setBuddy(editor);
+        editor.setMinimumWidth(200);
         editor.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed);
         editor.valueChanged.connect(this, "onValueChanged()");
-        updateLabelTextOptions();
-        
+        updateLabelTextOptions();        
     }
 
     @SuppressWarnings("unused")

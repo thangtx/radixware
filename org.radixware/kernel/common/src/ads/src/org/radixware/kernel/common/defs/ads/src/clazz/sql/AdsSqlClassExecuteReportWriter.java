@@ -59,6 +59,7 @@ public class AdsSqlClassExecuteReportWriter extends AdsMethodWriter<AdsMethodDef
         cp.leaveBlock();
         cp.println("} finally {");
         cp.println("\tclose();");
+        cp.println("\tafterExecute();");
         cp.println("}");
 
         cp.leaveBlock();

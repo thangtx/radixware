@@ -60,6 +60,15 @@ public class AdsReportSpecialCell extends AdsReportFormattedCell{
 
     @Override
     public String getName() {
+        String name = super.getName();
+        if (name == null || name.isEmpty()){
+            return specialType.getValue();
+        }
+        return name;
+    }
+
+    @Override
+    public String getDefaultName() {
         return specialType.getValue();
     }
 

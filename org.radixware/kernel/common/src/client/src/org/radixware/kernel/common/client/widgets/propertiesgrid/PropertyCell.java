@@ -14,75 +14,46 @@ package org.radixware.kernel.common.client.widgets.propertiesgrid;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.editorpages.RadStandardEditorPageDef;
 import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
-import org.radixware.kernel.common.client.widgets.propertiesgrid.IPropertiesGridCell.ELinkageDirection;
 
-
-final class PropertyCell<L extends IModelWidget, E extends IModelWidget> extends AbstractLinkableCell<L, E> {
-
-    private final Property property;
-    private final int column, row, colSpan;
-    private boolean stickToLeft, stickToRight;
-    private boolean isVisible;
+final class PropertyCell<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> extends EditorPageItemCell<L, E, G,Property> {
+    
     private final L label;
     private final E editor;
     private boolean binded,closed;
 
-    public PropertyCell(final IPropertiesGridPresenter<L, E> presenter,
+    public PropertyCell(final IPropertiesGridPresenter<L, E, G> presenter,
             final Property property,
             final int column,
             final int row,
             final int colspan,
             final boolean stickToLeft,
             final boolean stickToRight) {
-        super();
+        super(property, column, row, colspan, stickToLeft, stickToRight);
         label = presenter.createPropertyLabel(property);
         editor = presenter.createPropertyEditor(property);
-        this.property = property;
-        this.column = column;
-        this.row = row;
-        this.colSpan = colspan;
-        this.stickToLeft = stickToLeft;
-        this.stickToRight = stickToRight;
-        this.isVisible = property.isVisible();
+        setVisible(property.isVisible());
     }
 
-    public PropertyCell(final IPropertiesGridPresenter<L, E> presenter,
+    public PropertyCell(final IPropertiesGridPresenter<L, E, G> presenter,
             final RadStandardEditorPageDef.PageItem pageItem,
             final Property property) {
-        super();
+        super(pageItem,property);
         label = presenter.createPropertyLabel(property);
         editor = presenter.createPropertyEditor(property);
-        this.property = property;
-        isVisible = property.isVisible();
-        column = pageItem.getColumn();
-        row = pageItem.getRow();
-        colSpan = pageItem.getColumnSpan();
-        stickToLeft = pageItem.isGlueToLeftItem();
-        stickToRight = pageItem.isGlueToRightItem();
+        setVisible(property.isVisible());
     }
 
-    private PropertyCell(final PropertyCell<L, E> copy) {
+    private PropertyCell(final PropertyCell<L, E, G> copy) {
         super(copy);
         this.label = copy.label;
         this.editor = copy.editor;
-        this.property = copy.property;
-        this.column = copy.column;
-        this.row = copy.row;
-        this.colSpan = copy.colSpan;
-        this.isVisible = copy.isVisible;
-        this.stickToLeft = copy.stickToLeft;
-        this.stickToRight = copy.stickToRight;
     }
 
     @Override
-    public IPropertiesGridCell<L, E> createCopy() {
+    public IPropertiesGridCell<L, E, G> createCopy() {
         return new PropertyCell<>(this);
-    }
-
-    @Override
-    public boolean isLinked(final ELinkageDirection direction) {
-        return direction == ELinkageDirection.LEFT ? stickToLeft : stickToRight;
     }
 
     @Override
@@ -90,11 +61,11 @@ final class PropertyCell<L extends IModelWidget, E extends IModelWidget> extends
         if (mp == null) {
             final String message =
                     "cell for property \"%1$s\" #%2$s (column: %3$s; row: %4$s; span: %5$s)";
-            return String.format(message, property.getTitle(), property.getId().toString(), column, row, colSpan);
+            return String.format(message, getModelItem().getTitle(), getModelItem().getId().toString(), getColumn(), getRow(), getColumnSpan());
         }
         final String message =
                 mp.translate("TraceMessage", "cell for property \"%1$s\" #%2$s (column: %3$s; row: %4$s; span: %5$s)");
-        return String.format(message, property.getTitle(), property.getId().toString(), column, row, colSpan);
+        return String.format(message, getModelItem().getTitle(), getModelItem().getId().toString(), getColumn(), getRow(), getColumnSpan());
     }
 
     @Override
@@ -108,24 +79,14 @@ final class PropertyCell<L extends IModelWidget, E extends IModelWidget> extends
     }
 
     @Override
-    public Property getProperty() {
-        return property;
+    public G getPropertiesGroupWidget() {
+        return null;
     }
 
     @Override
-    public int getColumn() {
-        return column;
-    }
-
-    @Override
-    public int getRow() {
-        return row;
-    }
-
-    @Override
-    public int getColumnSpan() {
-        return colSpan;
-    }
+    public boolean isModelItemReadOnly() {
+        return getModelItem().isReadonly();
+    }        
 
     public boolean wasBinded() {
         return binded;
@@ -143,28 +104,24 @@ final class PropertyCell<L extends IModelWidget, E extends IModelWidget> extends
 
     private void unsubscribe() {
         if (label instanceof IModelWidget) {
-            property.unsubscribe((IModelWidget) label);
+            getModelItem().unsubscribe((IModelWidget) label);
         }
         if (editor instanceof IModelWidget) {
-            property.unsubscribe((IModelWidget) editor);
+            getModelItem().unsubscribe((IModelWidget) editor);
         }
     }
 
     @Override
-    public boolean isVisible() {
-        return isVisible;
-    }
-
-    @Override
-    public void close(final IPropertiesGridPresenter<L, E> presenter) {
+    public void close(final IPropertiesGridPresenter<L, E, G> presenter) {
         if (!closed){
             closed = true;
             unsubscribe();            
-            presenter.destroyWidgets(label, editor);
+            presenter.destroyWidgets(label, editor, null);
         }
     }
 
-    public void setVisible(final boolean flag) {
-        isVisible = flag;
-    }
+    @Override
+    public boolean isModelItemVisible() {
+        return getModelItem().isVisible();
+    }        
 }

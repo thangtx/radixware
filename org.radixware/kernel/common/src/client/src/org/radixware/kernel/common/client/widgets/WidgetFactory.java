@@ -16,6 +16,7 @@ import org.radixware.kernel.common.client.models.items.Command;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 
 
@@ -34,4 +35,6 @@ public interface WidgetFactory {
     IButton newToolButton();
     
     Action newAction(Icon icon, String title);
+    
+    IMenu newMenu();
 }

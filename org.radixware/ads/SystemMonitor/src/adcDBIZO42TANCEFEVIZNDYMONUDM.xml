@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcDBIZO42TANCEFEVIZNDYMONUDM" Name="ProgressBarWeb" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcDBIZO42TANCEFEVIZNDYMONUDM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcDBIZO42TANCEFEVIZNDYMONUDM"/>
+    </Bodies>
+    <MethodGroup Id="cmgKKHBNSJ7U5B75C4CXC7OZPD6FE" Name="Root"/>
+    <PropertyGroup Id="cpg2WRDMXKAYNG5PIWZ4SDALDH55I" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3VCW4N4FWFBCPP34MDREX4ILCA" Name="setValue" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="val" Id="mprVTEZHNWLZ5FBHIQEDPSQA74ZE4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="maxVal" Id="mprIY4KHXGR6FHDVBDXBAVNUJRRKI">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("PROGRESSBAR_VALUE", val.intValue());
+Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("PROGRESSBAR_MAX_VALUE", maxVal.intValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthV4ZK7L7WBRDKJNY7QDLYJ5QOUQ" Name="ProgressBarWeb" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super();
+Html.setCss("position", "relative");
+Html.setCss("height", "20px");
+Html.setCss("width", "102px");
+Html.setCss("display", "inline-block");
+Html.setCss("float", "left");
+Html.setCss("margin-left", "3px");
+Html.setCss("border", "1px solid black");
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY">
+                <xsc:Presentation>Web.Widgets::Container</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> progress = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY mthPJ25IVAC25BFBDICYZYAH6QTEY" Invoke="true">
+                <xsc:Presentation>Container</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("top", "1px");
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("left", "1px");
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("color", "#fff");
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("background-color", "#4CAF50");
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("height", "18px");
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("width", "100px");
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("position", "relative");
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("transition-property", "width");
+progress.Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthDPJJTLIX2RAIDGJKIUEJOV3FMA" Invoke="true">
+                <xsc:Presentation>setCss</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("transition-timing-function", "cubic-bezier(0, 0, 1, 1)");
+
+Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("PROGRESSBAR_VALUE", 0);
+Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("PROGRESSBAR_MAX_VALUE", 10);
+Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("STOP_UNCERTAIN_BEHAVIOR", 1);
+Html.layout("$RWT.dashboard.progressbar.layout");
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJUDLHGL5SFHMNLGE53R4I5O2AI mthWVIW2DLRBBAXBKTFGET2PMKYE4" Invoke="true">
+                <xsc:Presentation>add</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(progress);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBMUW75B34VHORI7JF6NBNWCTRA" Name="stopUncertainBehavior" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthBW375EI7ORG5PFWH2BHYWO2RNY" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("STOP_UNCERTAIN_BEHAVIOR", (Html.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mth5YYDWZNC6VAYLCG4CMHGHD22SU" Invoke="true">
+                <xsc:Presentation>getAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("STOP_UNCERTAIN_BEHAVIOR").equals("1")) ? 2 : 1);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adc5JBNBR6UFNB5RHQAAOP5JLL2AY"/>
+  </AdsClassDefinition>
+</AdsDefinition>

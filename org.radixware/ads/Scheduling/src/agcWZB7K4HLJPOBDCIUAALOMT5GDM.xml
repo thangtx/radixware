@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="agcWZB7K4HLJPOBDCIUAALOMT5GDM" Name="TaskGroup" Type="11">
-    <AccessRules IsPublished="false"/>
+    <AccessRules/>
     <Headers>
       <Src Name="HeaderagcFXVALNSBGVB6XP267FX7MI2GM4"/>
     </Headers>
@@ -10,7 +10,29 @@
     </Bodies>
     <MethodGroup Id="cmgBUD3PWKEDZEWHNEX7OF4EHFLCE" Name="Root"/>
     <PropertyGroup Id="cpgW2VLJY77PJF3RCQWQMPS2R4LQ4" Name="Root"/>
-    <Properties/>
+    <Properties>
+      <Property Id="pgpA4UVFEA7ABACRAXLSXMAUADMSA" Name="taskToMoveId" Nature="12" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="pgpJYY3VQQLENCTXN54C4BF4AXOYU" Name="taskToMoveDirId" Nature="12" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="pgpD3SFQIQMX5D3HADR4R5ASRTJS4" Name="contextUnitId" Nature="12" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
     <Methods>
       <Method Id="mthcmdDTHSRLKFNBCZZNQNYOOIVOXCGI" Name="onCommand_Import" Nature="1" IsOverride="false">
         <AccessRules IsPublished="false"/>
@@ -22,13 +44,17 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I">
+                <xsc:Presentation>TaskImpExpUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthQD73ZG7TCBBOVDYQ5PFE52ICJ4" Invoke="true"/>
+              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthQD73ZG7TCBBOVDYQ5PFE52ICJ4" Invoke="true">
+                <xsc:Presentation>importTasks</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(input);</xsc:Java>
@@ -59,40 +85,136 @@
 java.util.Iterator&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcW4RKNF5ZKVGAPIMFPPVN7L6UKQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcW4RKNF5ZKVGAPIMFPPVN7L6UKQ">
+                <xsc:Presentation>Types::EntityClassCatalogItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> iterator = list.iterator();
-while (iterator.hasNext()) {
-    try {
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U">
+                <xsc:Presentation>Task.AGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parentGroup = null; 
+if (this.Context instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntityGroup_______________">
+                <xsc:Presentation>Types::EntityGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.TreeContext) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parentPid = ((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntityGroup_______________">
+                <xsc:Presentation>Types::EntityGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.TreeContext) this.Context).getParentPid();
+    if (parentPid != null) {
         final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________">
+                <xsc:Presentation>Types::Entity</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> task = (</xsc:Java>
+              <xsc:Java> parent = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>) </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthTJMTUS3Y6HNRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>load</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(parentPid);
+        if (parent instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U">
+                <xsc:Presentation>Task.AGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            parentGroup = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U">
+                <xsc:Presentation>Task.AGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) parent;
+        }
+    }
+}
+
+while (iterator.hasNext()) {
+    try {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> task = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                <xsc:Presentation>getDefManager</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().newClassInstance(iterator.next().</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcW4RKNF5ZKVGAPIMFPPVN7L6UKQ mthWATQP3IDXJCUTP6MDVAIHK657Y" Invoke="true"/>
+              <xsc:IdReference Path="adcW4RKNF5ZKVGAPIMFPPVN7L6UKQ mthWATQP3IDXJCUTP6MDVAIHK657Y" Invoke="true">
+                <xsc:Presentation>getClassId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), emptyParameters);
@@ -100,26 +222,34 @@ while (iterator.hasNext()) {
             if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM sprWPGPSZ46FNHUHONW7QCHY5COZE"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM sprWPGPSZ46FNHUHONW7QCHY5COZE">
+                <xsc:Presentation>Task:TreeRootManual</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.equals(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntityGroup_______________ mthFM6UYLTBOZF4JIUU35HMR65M74" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntityGroup_______________ mthFM6UYLTBOZF4JIUU35HMR65M74" Invoke="true">
+                <xsc:Presentation>getPresentation</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().getId())) {
                 if (!task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthTMY4LSZKOVENHEHZ2G7FKDNXUU" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthTMY4LSZKOVENHEHZ2G7FKDNXUU" Invoke="true">
+                <xsc:Presentation>canBeManual</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>() || !task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthBOIFVDBJQVFIDKL2NUR5D6KA64" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthBOIFVDBJQVFIDKL2NUR5D6KA64" Invoke="true">
+                <xsc:Presentation>canBeRoot</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) {
@@ -128,20 +258,46 @@ while (iterator.hasNext()) {
             } else if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM sprCIQEXEK5GNCKNBTQGKVGWRXCNM"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM sprCIQEXEK5GNCKNBTQGKVGWRXCNM">
+                <xsc:Presentation>Task:TreeRootForScheduler</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.equals(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntityGroup_______________ mthFM6UYLTBOZF4JIUU35HMR65M74" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntityGroup_______________ mthFM6UYLTBOZF4JIUU35HMR65M74" Invoke="true">
+                <xsc:Presentation>getPresentation</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().getId())) {
                 if (!task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthBOIFVDBJQVFIDKL2NUR5D6KA64" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthBOIFVDBJQVFIDKL2NUR5D6KA64" Invoke="true">
+                <xsc:Presentation>canBeRoot</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+                    iterator.remove();
+                }
+            } else if (parentGroup != null &amp;&amp; task instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclM2T33M4WWZC2FKRJVHD4JMYREI">
+                <xsc:Presentation>Task.Dir</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                if (!parentGroup.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthA6H22KEZF5A33NV7PIU4A5JRFQ" Invoke="true">
+                <xsc:Presentation>canContainDirectory</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) {
@@ -152,7 +308,9 @@ while (iterator.hasNext()) {
             task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthBYOD4SHFVRFN5NST6R46OR4B7M" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthBYOD4SHFVRFN5NST6R46OR4B7M" Invoke="true">
+                <xsc:Presentation>discard</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -160,7 +318,9 @@ while (iterator.hasNext()) {
     } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI">
+                <xsc:Presentation>Exceptions::RuntimeException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> ex) {
@@ -185,16 +345,47 @@ while (iterator.hasNext()) {
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I">
+                <xsc:Presentation>TaskImpExpUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthMDIKRUCIXZHITKSBG5F4GCZFP4" Invoke="true"/>
+              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthMDIKRUCIXZHITKSBG5F4GCZFP4" Invoke="true">
+                <xsc:Presentation>exportTasks</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(input);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthcmd2UHAXVOFHFHOBHJHA3MTO6RG4I" Name="onCommand_MoveToDir" Nature="1" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afh4R5F3CVVYVDVVNL3QUIIULUIG4">
+                <xsc:Presentation>ChangeDirSettings</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null));</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -211,6 +402,10 @@ while (iterator.hasNext()) {
         <Command Id="cmdDTHSRLKFNBCZZNQNYOOIVOXCGI" Name="Import" TitleId="mls7IDNIBWQ2ZAWBLUQDRTBFH7T6A" Nature="2" IconId="imgEVEBHW62BFDDBLQVX2YPL7ZERM" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
           <AccessRules IsPublished="false"/>
           <InType TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskSetDocument"/>
+        </Command>
+        <Command Id="cmd2UHAXVOFHFHOBHJHA3MTO6RG4I" Name="MoveToDir" TitleId="mlsNFBGST65HRGTZIWDSMVAJY4SJQ" Nature="3" IconId="imgLVVSMDCLPJGPXHR75NNSZ3HR4I" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+          <AccessRules IsPublished="false"/>
+          <OutType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
         </Command>
       </Commands>
     </Presentations>

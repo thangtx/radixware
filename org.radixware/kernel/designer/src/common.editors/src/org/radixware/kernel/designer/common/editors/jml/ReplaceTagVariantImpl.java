@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.editors.jml;
 
 import org.radixware.kernel.designer.common.dialogs.scmlnb.ReplaceTagGenerator;
@@ -53,7 +52,6 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.ScmlEditorPane;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.tags.TagEditor;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
-
 
 @MimeRegistration(mimeType = "text/x-jml", service = ReplaceTagVariant.class)
 public class ReplaceTagVariantImpl implements ReplaceTagVariant {
@@ -329,18 +327,20 @@ public class ReplaceTagVariantImpl implements ReplaceTagVariant {
 
         @Override
         protected Scml.Item[] createNewTag() {
-            final AdsEventCodeDef eventCode = (AdsEventCodeDef) eventCodeTag.findLocalizedString(eventCodeTag.getStringId());
-            if (eventCode instanceof AdsEventCodeDef) {
-                final AdsMultilingualStringDef string = AdsMultilingualStringDef.Factory.convertToString(eventCode);
-                final AdsLocalizingBundleDef localizingBundle = eventCodeTag.getOwnerJml().getOwnerDef().findExistingLocalizingBundle();
-
+            AdsMultilingualStringDef oldString = eventCodeTag.findLocalizedString(eventCodeTag.getStringId());
+            if (oldString instanceof AdsEventCodeDef) {
+                AdsMultilingualStringDef newString = AdsMultilingualStringDef.Factory.convertToString((AdsEventCodeDef) oldString);
+                AdsLocalizingBundleDef localizingBundle = eventCodeTag.getOwnerJml().getOwnerDef().findExistingLocalizingBundle();
                 if (localizingBundle != null) {
-                    localizingBundle.getStrings().getLocal().remove(eventCode);
-                    localizingBundle.getStrings().getLocal().add(string);
-                    return new Item[]{JmlTagLocalizedString.Factory.newInstance(string)};
+                    localizingBundle.getStrings().getLocal().remove(oldString);
+                    localizingBundle.getStrings().getLocal().add(newString);
+                    return new Item[]{JmlTagLocalizedString.Factory.newInstance(newString)};
+                } else {
+                    return null;
                 }
+            } else {
+                return new Item[]{JmlTagLocalizedString.Factory.newInstance(oldString)};
             }
-            return null;
         }
 
         @Override

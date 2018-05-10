@@ -21,6 +21,7 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.windows.WindowManager;
 import org.radixware.kernel.common.repository.Branch;
+import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.general.upload.PostUploadAction;
 
 /**
@@ -133,7 +134,17 @@ public class BranchesUpdater extends Task {
                 PostUploadAction.getInstance().process();
                 TimeUnit.MILLISECONDS.sleep(PERIOD_MS);
             }
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {            
+        } catch (final Throwable ex) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    DialogUtils.messageError(ex);
+                    throw ex;
+                }
+            });
+            
         }
+        
     }
 }

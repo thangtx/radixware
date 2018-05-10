@@ -179,6 +179,12 @@ public final class PkSubQuery extends SubQuery {
             } else if (param instanceof InputTypifiedValParam) {
                 final InputTypifiedValParam p = (InputTypifiedValParam) param;
                 DbQuery.setParam(getArte(), stmt, i, p.valueType, p.valueType.getDefaultDbType(), p.value, null);
+            } else if (param instanceof GroupQuery.ValuesCountInFilterParam){
+                try {
+                    GroupQuery.setCountOfValuesInFilterParam(getArte(), stmt, i, (GroupQuery.ValuesCountInFilterParam)param, group.getFltParamValsById());
+                }catch(FilterParamNotDefinedException e){
+                    throw new DbQueryBuilderError("Invalid primary key select: filter parameter is requered but not defined", e);
+                }
             } else {
                 throw new DbQueryBuilderError("Invalid primary key select: unsupported parameter type \"" + param.getClass().getName() + "\"", null);
             }

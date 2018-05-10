@@ -1,60 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/acs-commands.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/acs-commands.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:acs="http://schemas.radixware.org/acs-commands.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xsd="http://schemas.radixware.org/acs-commands.xsd">
-  <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
-  <xs:element name="StrValue">
-    <xs:simpleType>
-      <xs:restriction base="types:Str"/>
-    </xs:simpleType>
-  </xs:element>
-  <xs:element name="IntValue">
-    <xs:simpleType>
-      <xs:restriction base="types:Int"/>
-    </xs:simpleType>
-  </xs:element>
-  <xs:element name="AcceptedRightsCheckValue">
-    <xs:complexType>
-      <xs:attribute name="AcceptedRoles" type="types:Int"/>
-      <xs:attribute name="UnacceptedRoles" type="types:Int"/>
-      <xs:attribute name="AcceptedUser2Group" type="types:Int"/>
-      <xs:attribute name="UnacceptedUser2Group" type="types:Int"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="BoolValue">
-    <xs:simpleType>
-      <xs:restriction base="types:Bool"/>
-    </xs:simpleType>
-  </xs:element>
-  <xs:element name="ReplaceOrRevokeRole">
-    <xs:complexType>
-      <xs:attribute name="Id" type="types:Int"/>
-      <xs:attribute name="UseUser2Role" type="types:Bool"/>
-      <xs:attribute name="Replace" type="types:Bool"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AcceptedRoles">
-    <xs:complexType>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/acs-commands.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsFinal="true"/><ads:Documentation><ads:XmlItemDocEntries>
+  <ads:XmlItemDocEntry LocalizedStringId="mls72HDIAMPSJDHPMDSFWJSOXHJCY" SinceVersion="">
+    <ads:NodeXPath>declare namespace ns0='http://www.w3.org/2001/XMLSchema';/ns0:schema/ns0:element[@name='StrValue']</ads:NodeXPath>
+  </ads:XmlItemDocEntry>
+</ads:XmlItemDocEntries></ads:Documentation><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/acs-commands.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:acs="http://schemas.radixware.org/acs-commands.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xsd="http://schemas.radixware.org/acs-commands.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:element name="StrValue">
+        <xs:simpleType>
+            <xs:restriction base="types:Str"/>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="IntValue">
+        <xs:simpleType>
+            <xs:restriction base="types:Int"/>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="AcceptedRightsCheckValue">
+        <xs:complexType>
+            <xs:attribute name="AcceptedRoles" type="types:Int"/>
+            <xs:attribute name="UnacceptedRoles" type="types:Int"/>
+            <xs:attribute name="AcceptedUser2Group" type="types:Int"/>
+            <xs:attribute name="UnacceptedUser2Group" type="types:Int"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="BoolValue">
+        <xs:simpleType>
+            <xs:restriction base="types:Bool"/>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="ReplaceOrRevokeRole">
+        <xs:complexType>
+            <xs:attribute name="Id" type="types:Int"/>
+            <xs:attribute name="UseUser2Role" type="types:Bool"/>
+            <xs:attribute name="Replace" type="types:Bool"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AcceptedRoles">
+        <xs:complexType>
       
-      <xs:attribute name="AddedRolesCount" type="types:Int"/>  
-      <xs:attribute name="ReplacedRolesCount" type="types:Int"/>
-      <xs:attribute name="RemovedRolesCount" type="types:Int"/>
+            <xs:attribute name="AddedRolesCount" type="types:Int"/>  
+            <xs:attribute name="ReplacedRolesCount" type="types:Int"/>
+            <xs:attribute name="RemovedRolesCount" type="types:Int"/>
       
-      <xs:attribute name="AddedUser2GroupCount" type="types:Int"/>
-      <xs:attribute name="RemovedUser2GroupCount" type="types:Int"/>
+            <xs:attribute name="AddedUser2GroupCount" type="types:Int"/>
+            <xs:attribute name="RemovedUser2GroupCount" type="types:Int"/>
       
-      <xs:attribute name="UnacceptedRoles" type="types:Str"/>
-      <xs:attribute name="UnacceptedUsersOrGroups" type="types:Str"/>
+            <xs:attribute name="UnacceptedRoles" type="types:Str"/>
+            <xs:attribute name="UnacceptedUsersOrGroups" type="types:Str"/>
       
-    </xs:complexType>
-  </xs:element>
-  
-    
-<!--
-    <xs:complexType name="IdValues">
-        <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="IdValue" type="types:Int"/>
-        </xs:sequence>
-    </xs:complexType>
--->
-  
-  
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="RoleGuidsArr">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="RoleGuid" type="types:Str" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>  
+    <xs:element name="RoleGuidsTitleArr">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="RoleTitleGuids" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="RoleGuid" type="types:Str" minOccurs="1" maxOccurs="1"/>
+                            <xs:element name="RoleTitle" type="types:Str" minOccurs="1" maxOccurs="1"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element> 
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>  
 </xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

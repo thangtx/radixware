@@ -232,7 +232,7 @@ public class RwtLabeledEditGridLayout implements Layout {
                         text = labelProvider.getLabel(prop);
                     }
                     if (text != null) {
-                        int width = DrawUtil.DEFAULT_FONT_METRICS.stringWidth(text);
+                        int width = DrawUtil.getFontMetrics().stringWidth(text);
                         if (width > maxWidth) {
                             maxWidth = width;
                         }

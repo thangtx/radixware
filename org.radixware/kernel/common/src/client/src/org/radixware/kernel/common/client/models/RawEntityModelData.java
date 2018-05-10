@@ -202,7 +202,7 @@ public final class RawEntityModelData {
                               final org.radixware.schemas.eas.EditorPages enabledEditorPages,
                               final ExplorerItemList accessibleExplorerItemList,
                               final ESelectorRowStyle selectorRowStyle){
-        data = object==null ? null : (org.radixware.schemas.eas.Object)object.copy();
+        data = object==null ? null : (org.radixware.schemas.eas.PresentableObject)object.copy();
         restrictions = serverRestrictions==null ? ServerRestrictions.EMPTY : new ServerRestrictions(serverRestrictions);
         editorPages = EnabledEditorPages.parse(enabledEditorPages);
         childExplorerItems = ChildExplorerItemInfo.parse(accessibleExplorerItemList);
@@ -211,23 +211,27 @@ public final class RawEntityModelData {
     
     public RawEntityModelData(final org.radixware.schemas.eas.Object object,
                               final List<org.radixware.schemas.eas.Actions.Item> serverRestrictions){
-        data = object==null ? null : (org.radixware.schemas.eas.Object)object.copy();
+        data = object==null ? null : (org.radixware.schemas.eas.PresentableObject)object.copy();
         restrictions = serverRestrictions==null ? ServerRestrictions.EMPTY : new ServerRestrictions(serverRestrictions);
         editorPages = null;
         childExplorerItems = null;
-        rowStyle = object.getRowStyle();        
+        rowStyle = object.getRowStyle();
     }
     
     public RawEntityModelData(final org.radixware.schemas.eas.ReadRs readRs){
-        data = readRs.getData()==null ? null : (org.radixware.schemas.eas.Object)readRs.getData().copy();
-        if (readRs.getDisabledActions()==null){
+        this(readRs.getData());
+    }
+    
+    public RawEntityModelData(final org.radixware.schemas.eas.PresentableObject xmlObject){
+        data = (org.radixware.schemas.eas.PresentableObject)xmlObject.copy();
+        if (xmlObject.getDisabledActions()==null || xmlObject.getDisabledActions().getItemList()==null){
             restrictions = ServerRestrictions.EMPTY;
         }else{
-            restrictions = new ServerRestrictions(readRs.getDisabledActions().getItemList());
+            restrictions = new ServerRestrictions(xmlObject.getDisabledActions().getItemList());
         }        
-        editorPages = EnabledEditorPages.parse(readRs.getEnabledEditorPages());
-        childExplorerItems = ChildExplorerItemInfo.parse(readRs.getAccessibleExplorerItems());
-        rowStyle = readRs.getData().getRowStyle();
+        editorPages = EnabledEditorPages.parse(xmlObject.getEnabledEditorPages());
+        childExplorerItems = ChildExplorerItemInfo.parse(xmlObject.getAccessibleExplorerItems());
+        rowStyle = xmlObject.getRowStyle();        
     }
 
     public Object getEntityObjectData() {

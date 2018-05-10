@@ -1,0 +1,24 @@
+
+class TestProperty3 {
+
+    public Boolean getProp() {
+	return true;
+    }
+
+    public void setProp(Boolean l) {
+	System.out.print("setProp invocked");
+    }
+}
+
+class Test {
+
+    public Test() {;}
+
+    public TestProperty3 getProp() {
+	return new TestProperty3();
+    }
+
+    public void main(String[] args) {
+	Prop.Prop = true;
+    }
+}

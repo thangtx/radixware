@@ -129,4 +129,24 @@ public class RadEditorPages {
         }
         return false;
     }
+    
+    public Collection<Id> findPagesWithProperty(final Id propertyId){
+        final List<Id> pages = new LinkedList<>();
+        RadStandardEditorPageDef stdPage;
+        RadCustomEditorPageDef cstPage;
+        for (RadEditorPageDef page : pagesById.values()) {
+            if (page instanceof RadStandardEditorPageDef) {
+                stdPage = (RadStandardEditorPageDef) page;
+                if (stdPage.isPropertyDefined(propertyId)) {
+                    pages.add(page.getId());
+                }
+            } else if (page instanceof RadCustomEditorPageDef) {
+                cstPage = (RadCustomEditorPageDef) page;
+                if (cstPage.getPropertyIds().contains(propertyId)) {
+                    pages.add(page.getId());
+                }
+            }
+        }
+        return pages;
+    }
 }

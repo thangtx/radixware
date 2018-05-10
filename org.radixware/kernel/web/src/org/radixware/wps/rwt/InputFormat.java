@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.mask.*;
 import org.radixware.kernel.common.client.meta.mask.validators.BigDecimalValidator;
 import org.radixware.kernel.common.client.meta.mask.validators.IInputValidator;
@@ -88,6 +89,7 @@ public interface InputFormat {
             return BOOL_INPUT_FORMAT;
         }        
         
+        @Deprecated
         public static InputFormat inputFormatFromEditMask(final EditMask editMask, final Locale locale){
             if (editMask.getType()!=null){
                 switch (editMask.getType()){                
@@ -161,8 +163,81 @@ public interface InputFormat {
                 return freeInputFormat();
             }
         }
+        
+        public static InputFormat inputFormatFromEditMask(final EditMask editMask, final IClientEnvironment environment){
+            if (editMask.getType()!=null){
+                switch (editMask.getType()){
+                    case INT:{
+                        final EditMaskInt maskInt = (EditMaskInt)editMask;
+                        return intInputFormat(maskInt.getMinValue(), 
+                                                maskInt.getMaxValue(), 
+                                                maskInt.getNumberBase(), 
+                                                maskInt.getTriadDelimeter(environment), 
+                                                DecimalFormatSymbols.getInstance(environment.getLocale()));
+                    }
+                    case NUM: {
+                        final EditMaskNum maskNum = (EditMaskNum)editMask;
+                        final NumberFormat format = maskNum.getNumberFormat(environment);
+                        if (format instanceof DecimalFormat){
+                            return numInputFormat(maskNum.getMinValue(),
+                                                    maskNum.getMaxValue(),
+                                                    maskNum.getPrecision(),
+                                                    ((DecimalFormat)format).getDecimalFormatSymbols(),
+                                                    format.isGroupingUsed());
+                        }else{
+                            return numInputFormat(maskNum.getMinValue(),
+                                                  maskNum.getMaxValue(),
+                                                  maskNum.getPrecision(),
+                                                  maskNum.getTriadDelimeter(environment),
+                                                  maskNum.getDecimalDelimeter(environment),                                                  
+                                                  new DecimalFormatSymbols(environment.getLocale()));
+                        }
+                    }
+                    case STR: {
+                        final EditMaskStr maskStr = (EditMaskStr)editMask;
+                        final IInputValidator validator = maskStr.getValidator();
+                        if (validator instanceof LongValidator){
+                            final LongValidator intValidator = (LongValidator)validator;
+                            final long minValue = 
+                                intValidator.getMinValue()==null ? Long.MIN_VALUE : intValidator.getMinValue().longValue();
+                            final long maxValue = 
+                                intValidator.getMaxValue()==null ? Long.MAX_VALUE : intValidator.getMaxValue().longValue();
+                            return intInputFormat(minValue, maxValue, (byte)10, null, DEFAULT_DECIMAL_SYMBOLS);
+                        }
+                        else if (validator instanceof BigDecimalValidator){
+                            final BigDecimalValidator numValidator = (BigDecimalValidator)validator;                            
+                            return numInputFormat(numValidator.getMinValue(), 
+                                                  numValidator.getMaxValue(),
+                                                  numValidator.getPrecision(),
+                                                  null,
+                                                  DEFAULT_DECIMAL_SEPARATOR,
+                                                  DEFAULT_DECIMAL_SYMBOLS);                            
+                        }
+                        else if (!maskStr.getInputMask().isEmpty()){
+                            return maskInputFormat(maskStr.getInputMask().getPattern());
+                        }
+                        else{
+                            return freeInputFormat();
+                        }
+                    }
+                    case DATE_TIME: {
+                        final EditMaskDateTime maskDateTime = (EditMaskDateTime)editMask;
+                        return maskInputFormat(maskDateTime.getInputMask(environment));
+                    }
+                    case TIME_INTERVAL: {
+                        final EditMaskTimeInterval maskDateTime = (EditMaskTimeInterval)editMask;
+                        return maskInputFormat(maskDateTime.getInputMask());
+                    }                        
+                    default:{
+                        return freeInputFormat();
+                    }                
+                }
+            }else{
+                return freeInputFormat();
+            }
+        }    
     }
-    
+        
     static enum EInputType{
         Text, Int, Num, Bin, Bool, Mask
     }    
@@ -335,7 +410,7 @@ public interface InputFormat {
         
         @Override
         public void writeToHtml(Html html) {
-            html.setAttr("inputType", EInputType.Text.name());
+            html.setAttr("inputtype", EInputType.Text.name());
         }        
     }
     
@@ -346,7 +421,7 @@ public interface InputFormat {
         
         @Override
         public void writeToHtml(Html html) {
-            html.setAttr("inputType", EInputType.Bin.name());
+            html.setAttr("inputtype", EInputType.Bin.name());
         }        
     }    
     
@@ -358,7 +433,7 @@ public interface InputFormat {
         
         @Override
         public void writeToHtml(Html html) {
-            html.setAttr("inputType", EInputType.Bool.name());
+            html.setAttr("inputtype", EInputType.Bool.name());
         }
     }    
     
@@ -372,7 +447,7 @@ public interface InputFormat {
 
         @Override
         public void writeToHtml(Html html) {
-            html.setAttr("inputType", EInputType.Mask.name());            
+            html.setAttr("inputtype", EInputType.Mask.name());            
             html.setAttr("pattern",pattern);            
         }
         

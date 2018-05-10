@@ -12,15 +12,12 @@
 package org.radixware.kernel.designer.eas.client;
 
 import java.util.Collection;
-import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.progress.ProgressUtils;
 import org.openide.awt.StatusLineElementProvider;
 import org.openide.util.Lookup;
 import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.AdsVersion;
-import org.radixware.kernel.common.client.exceptions.CantUpdateVersionException;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 
 
@@ -51,8 +48,8 @@ class DesignerAdsVersion extends AdsVersion {
     }
 
     @Override
-    public void setNewVersion(long version) {
-        super.setNewVersion(version);
+    public void setTargetVersion(long version) {
+        super.setTargetVersion(version);
         updateOldVersionButton(new UpdateVersionButton.Status() {
 
             @Override
@@ -70,7 +67,7 @@ class DesignerAdsVersion extends AdsVersion {
 
                             @Override
                             public void run() {
-                                updateToNewVersion();
+                                switchToTargetVersion();
                             }
                         }, "Update to New Version...");
 
@@ -85,8 +82,8 @@ class DesignerAdsVersion extends AdsVersion {
     }
 
     @Override
-    protected void afterUpdateToNewVersion(final Integer oldClassLoaderId) {
-        super.afterUpdateToNewVersion(oldClassLoaderId);
+    protected void afterSwitchVersion(final Integer oldClassLoaderId) {
+        super.afterSwitchVersion(oldClassLoaderId);
         updateOldVersionButton(new UpdateVersionButton.Status() {
 
             @Override

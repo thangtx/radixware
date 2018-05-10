@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.repository.fs.IJarDataProvider;
 import org.radixware.kernel.common.repository.fs.JarFileDataProvider;
 

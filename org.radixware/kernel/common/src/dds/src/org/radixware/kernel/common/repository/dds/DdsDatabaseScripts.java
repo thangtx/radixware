@@ -185,10 +185,61 @@ public abstract class DdsDatabaseScripts extends RadixObject implements IDirecto
         }
     }
 
-    static class Factory {
+    private static class PostgresEnterpriseScripts extends DdsDatabaseScripts {
 
+        protected PostgresEnterpriseScripts(final DdsScripts ownerScripts) {
+            super(ownerScripts);
+        }
+
+        @Override
+        public String getName() {
+            return "Scripts";
+        }
+
+        @Override
+        public String getDirectoryName() {
+            return "enterprisedb";
+        }
+
+        @Override
+        public RadixIcon getIcon() {
+            return DdsDefinitionIcon.POSTGRESENTERPRISE;
+        }
+    }
+
+    private static class PostgreSQLScripts extends DdsDatabaseScripts {
+
+        protected PostgreSQLScripts(final DdsScripts ownerScripts) {
+            super(ownerScripts);
+        }
+
+        @Override
+        public String getName() {
+            return "Scripts";
+        }
+
+        @Override
+        public String getDirectoryName() {
+            return "postgresql";
+        }
+
+        @Override
+        public RadixIcon getIcon() {
+            return DdsDefinitionIcon.POSTGRESQL;
+        }
+    }
+    
+    static class Factory {
         static DdsDatabaseScripts newOracleScripts(final DdsScripts ownerScripts) {
             return new OracleScripts(ownerScripts);
+        }
+        
+        static DdsDatabaseScripts newPostgresEnterpriseScripts(final DdsScripts ownerScripts) {
+            return new PostgresEnterpriseScripts(ownerScripts);
+        }
+        
+        static DdsDatabaseScripts newPostgreSQLScripts(final DdsScripts ownerScripts) {
+            return new PostgreSQLScripts(ownerScripts);
         }
     }
 }

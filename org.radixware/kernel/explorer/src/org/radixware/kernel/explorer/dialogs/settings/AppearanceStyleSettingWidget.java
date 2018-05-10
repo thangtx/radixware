@@ -23,11 +23,11 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.explorer.editors.valeditors.ValStrEditor;
 import org.radixware.kernel.explorer.env.Application;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 import org.radixware.kernel.explorer.utils.EQtStyle;
 
 
-public class AppearanceStyleSettingWidget extends SettingsWidget {
+final class AppearanceStyleSettingWidget extends SettingsWidget implements ISettingsPage{
     private QWidget tab = null;
     private final IClientEnvironment environment;
     private final QButtonGroup radios = new QButtonGroup(this);
@@ -36,10 +36,18 @@ public class AppearanceStyleSettingWidget extends SettingsWidget {
     
     public AppearanceStyleSettingWidget(final IClientEnvironment environment, final QWidget parent) {
         super(environment, parent, SettingNames.APP_STYLE, null, SettingNames.STYLENAME);
-        this.environment = environment;
+        this.environment = environment;        
+    }
+
+    @Override
+    public void open(final IClientEnvironment environment, 
+                             final ISettingsProvider settingsProvider,
+                             final List<SettingsWidget> settingWidgets) {
         this.setLayout(createStylesPreview());
         currentStyle = QStyleFactory.create(Application.getDefaultStyleName());
-    }
+        settingWidgets.add(this);
+        readSettings(settingsProvider.getSettings());
+    }        
     
     private QLayout createStylesPreview() {
         final QLayout ltPreview = new QHBoxLayout(this);
@@ -53,6 +61,7 @@ public class AppearanceStyleSettingWidget extends SettingsWidget {
         environment.getTracer().debug("Current application style is "+currentStyleName);
         for(EQtStyle style: EQtStyle.getSupported()) {
             final QRadioButton r = new QRadioButton(style.getTitle(), this);
+            r.setObjectName(style.getTitle());
             r.clicked.connect(this, "onRadioClick()");
             
             if(style.getTitle().equalsIgnoreCase(currentStyleName)) {
@@ -151,13 +160,9 @@ public class AppearanceStyleSettingWidget extends SettingsWidget {
     
     @SuppressWarnings("unused")
     private void onRadioClick() {
-        final String byDefaultSign = Application.translate("ExplorerSettings", "(default)");
         final QAbstractButton checkedButton = radios.checkedButton();
-        if(checkedButton != null) {
-            String styleName = checkedButton.text();
-            if(styleName.contains(byDefaultSign)) {
-                styleName = styleName.substring(0, styleName.indexOf(byDefaultSign) - 1);
-            }
+        if (checkedButton != null) {
+            final String styleName = checkedButton.objectName();
             currentStyle = QStyleFactory.create(styleName);
             final List<QObject> wdgts = tab.children();
             for(QObject o : wdgts) {
@@ -175,14 +180,13 @@ public class AppearanceStyleSettingWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(final ExplorerSettings src) {
-        currentStyle = QStyleFactory.create(src.readString(getSettingCfgName(),Application.getDefaultStyleName()));
-        onRadioClick();
+    public void readSettings(final IExplorerSettings src) {
+        final String styleName = src.readString(getSettingCfgName(),Application.getDefaultStyleName());
+        setStyle(styleName);
     }
 
     @Override
-    public void writeSettings(final ExplorerSettings dst) {
-        
+    public void writeSettings(final IExplorerSettings dst) {        
         if(currentStyle != null) {
             dst.writeString(getSettingCfgName(), currentStyle.objectName());
         }
@@ -190,7 +194,25 @@ public class AppearanceStyleSettingWidget extends SettingsWidget {
 
     @Override
     public void restoreDefaults() {
-        currentStyle = QStyleFactory.create(Application.getDefaultStyleName());
-        onRadioClick();
+        setStyle(Application.getDefaultStyleName());
     }
+    
+    private void setStyle(final String styleName){
+        final EQtStyle style = EQtStyle.getFromTitle(styleName);
+        if (style!=EQtStyle.Unknown){
+            final QStyle qstyle = QStyleFactory.create(styleName);
+            if (qstyle!=null){
+                final List<QAbstractButton> buttons = radios.buttons();
+                for (QAbstractButton button: buttons){
+                    if (!button.isChecked() && style.getTitle().equalsIgnoreCase(button.objectName())){
+                        button.setChecked(true);
+                        onRadioClick();
+                        break;
+                    }
+                }
+                currentStyle = qstyle;
+            }
+        }
+    }
+
 }

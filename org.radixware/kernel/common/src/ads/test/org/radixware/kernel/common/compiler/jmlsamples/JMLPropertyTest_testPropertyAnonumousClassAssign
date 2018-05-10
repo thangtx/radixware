@@ -1,0 +1,74 @@
+
+public class Test {
+
+    static class B {
+
+	public B(Object o) {
+	}
+
+	public B() {
+	}
+	String name;
+
+	void setName(String name) {
+	    this.name = name;
+	    System.out.println("setName = " + name);
+	}
+
+	String getName() {
+	    return name;
+	}
+
+	void setVal(Object obj) {
+	}
+
+	Object getVal() {
+	    return null;
+	}
+    }
+    Object val;
+
+    public void f() {
+	final String o = "ok";
+	this.Value = new B(o) {
+	    {
+		Name = o;
+		System.out.println("get = " + Name);
+		Val = new B(o) {
+		};
+	    }
+	};
+	this.Value = new B(null) {
+	    {
+		Name = o;
+		System.out.println("get = " + Name);
+		Val = new B(o) {
+		};
+	    }
+	};
+	this.Value = new B() {
+	    {
+		Name = o;
+		System.out.println("get = " + Name);
+		Val = new B(o) {
+		};
+	    }
+	};
+	this.Value = new B(new Object()) {
+	    {
+		Name = o;
+		System.out.println("get = " + Name);
+		Val = new B(o) {
+		};
+	    }
+	};
+    }
+
+    Object getValue() {
+	return val;
+    }
+
+    void setValue(Object val) {
+	this.val = val;
+    }
+}

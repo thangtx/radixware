@@ -28,6 +28,7 @@ import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.TypifiedValue_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.TagInfo;
@@ -43,7 +44,6 @@ public class SqmlTag_TypifiedValue extends SqmlTag {
     private Object val;
     private boolean isLiteral;
     private static final String PATH = "org.radixware.explorer/S_E/SYNTAX_SQML/SQML_TYPIFIED_VALUE";
-    //private EDefinitionDisplayMode showMode;
 
     public SqmlTag_TypifiedValue(final IClientEnvironment environment,final ISqmlColumnDef prop,final Object value,final long pos,final EDefinitionDisplayMode showMode) {
         super(environment, pos, false);
@@ -140,7 +140,7 @@ public class SqmlTag_TypifiedValue extends SqmlTag {
                 sbName.append(fullName);
                 s = enumDef.getTitle() + ":" + item.getTitle();
             }
-            setDisplayedInfo(s, sbName.toString());
+            setDisplayedInfo(Html.string2HtmlString(s), sbName.toString());
             return true;
         }
         throw new NoConstItemWithSuchValueError("Constant item with Value=\"" + val + "\" was not found", val);
@@ -153,7 +153,7 @@ public class SqmlTag_TypifiedValue extends SqmlTag {
     return name;
     }*/
     private void setNotValid() {
-        valid = false;
+        setValid(false);
         final String s = "???'<" + val + ">'???";
         setDisplayedInfo(s, s);
     }
@@ -183,21 +183,22 @@ public class SqmlTag_TypifiedValue extends SqmlTag {
 
     @Override
     public boolean showEditDialog(final XscmlEditor editText,final EDefinitionDisplayMode showMode) {
-        if (valid) {
+        if (isValid()) {
             try {
                 if (typifiedValue != null) {
                     isLiteral = typifiedValue.getLiteral();
                 }
                 final ISqmlTableDef presentationClassDef = prop.getOwnerTable();
-                TypifiedValue_Dialog dialog = new TypifiedValue_Dialog(environment, prop, editText, val, showMode, isLiteral);
+                final TypifiedValue_Dialog dialog = new TypifiedValue_Dialog(environment, 
+                                                                                                            prop, 
+                                                                                                            val, 
+                                                                                                            showMode,
+                                                                                                            editText.isReadOnly(),
+                                                                                                            editText);
                 if ((dialog.exec() == 1) && (dialog.getProperty() != null)) {
                     prop = dialog.getProperty();
-                    if (dialog.getValue() != null) {
-                        val = dialog.getValue().get(0);
-                    } else {
-                        val = null;
-                    }
-                    isLiteral = dialog.isLiteral();
+                    val = dialog.getValue();
+                    isLiteral = true;
                     setTypifiedValue(prop, presentationClassDef.getId(), isLiteral);
                     getPropInfo(showMode);
                     return true;

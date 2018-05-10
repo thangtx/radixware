@@ -17,6 +17,7 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.utils.CharOperations;
 
 
@@ -56,8 +57,7 @@ public class AdsRoleWriter extends AbstractDefinitionWriter<AdsRoleDef> {
                 printer.println();
                 printer.print("public final class ");
                 //writeUsage(printer);
-                printer.print(def.getRuntimeId());
-                printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+                printer.print(JavaSourceSupport.getMetaName(def, def.getRuntimeId(), printer instanceof IHumanReadablePrinter));
                 printer.enterBlock(1);
                 printer.println('{');
                 WriterUtils.writeServerArteAccessMethodDeclaration(def, JavaSourceSupport.CodeType.META, printer);
@@ -76,6 +76,9 @@ public class AdsRoleWriter extends AbstractDefinitionWriter<AdsRoleDef> {
                 printer.printComma();
                 printer.println();
                 printer.printStringLiteral(def.getDescription());
+                printer.printComma();
+                printer.println();
+                WriterUtils.writeIdUsage(printer, def.getDescriptionId());
                 printer.printComma();
                 printer.println();
                 WriterUtils.writeIdUsage(printer, def.getTitleId());

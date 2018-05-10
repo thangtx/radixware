@@ -12,7 +12,6 @@
 package org.radixware.kernel.explorer.env;
 
 import com.trolltech.qt.core.QBuffer;
-import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QIODevice;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
@@ -49,13 +48,13 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
         
         private final static List<ScalableIconEngine> INSTANCES = new LinkedList<>();
         
-        private final QByteArray content;
+        private final byte[] content;
         private final QColor background;
         private final Map<String,QPixmap> pixmapsByMode = new HashMap<>(4);
         private final boolean isKernelIcon;
                 
         @SuppressWarnings("LeakingThisInConstructor")
-        public ScalableIconEngine(final QByteArray content, final QColor background, final boolean kernelIcon){
+        public ScalableIconEngine(final byte[] content, final QColor background, final boolean kernelIcon){
             this.content = content;
             this.background = background;
             this.isKernelIcon = kernelIcon;
@@ -88,7 +87,8 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
             QPixmap pixmap = pixmapsByMode.get(cacheKey);
             if (pixmap==null){
                 if (mode==QIcon.Mode.Normal){
-                    final QBuffer buffer = new QBuffer(content);
+                    final QBuffer buffer = new QBuffer();
+                    buffer.setData(content);
                     buffer.open(QIODevice.OpenModeFlag.ReadOnly);                
                     final QImageReader reader = new QImageReader(buffer);                
                     try{
@@ -128,9 +128,6 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
             for (QPixmap pixmap: pixmapsByMode.values()){
                 pixmap.dispose();
             }
-            if (content!=null){
-                content.dispose();                
-            }
             pixmapsByMode.clear();
             dispose();
         }
@@ -166,9 +163,13 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
     private final static Map<String, QIcon> QICONS_CACHE = new HashMap<>(128);
     
     private final Application env;
+    private final QBuffer buffer;
+    private final QImageReader imageReader;
 
     public ImageManager(Application env) {
         this.env = env;
+        buffer = new QBuffer(env);
+        imageReader = new QImageReader();
     }
 
     @Override
@@ -224,7 +225,7 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
 
     }
 
-    private QByteArray readImage(final URL url) {
+    private byte[] readImage(final URL url) {
         final InputStream stream;
         try {
             stream = url.openStream();
@@ -246,7 +247,7 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
                 }
                 n += count;
             }
-            return new QByteArray(content);
+            return content;
         } catch (IOException ex) {
             final String message = env.getMessageProvider().translate("ExplorerError", "Can't read file \'%s\':\n%s\n%s");
             env.getTracer().error(String.format(message, url.toExternalForm(), ex.getMessage(), ClientException.exceptionStackToString(ex)));
@@ -266,21 +267,22 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
         if (isIconCached(isKernelImage, cacheKey)){
             return getCachedRdxIcon(isKernelImage, cacheKey);
         }
-        final QByteArray content = readImage(url);
+        final byte[] content = readImage(url);
         if (content == null) {
             return null;
         }
-        final QBuffer buffer = new QBuffer(content);
-        buffer.open(QIODevice.OpenModeFlag.ReadOnly);
-        final QImageReader reader = new QImageReader(buffer);
+        final QBuffer iconBuffer = Application.isInMainThread() ? buffer : new QBuffer();
+        iconBuffer.setData(content);
+        iconBuffer.open(QIODevice.OpenModeFlag.ReadOnly);
+        imageReader.setDevice(iconBuffer);
         try {
             final RdxIcon result;
-            if (reader.supportsOption(QImageIOHandler.ImageOption.ScaledSize)){
+            if (imageReader.supportsOption(QImageIOHandler.ImageOption.ScaledSize)){
                 final ScalableIconEngine engine = new ScalableIconEngine(content,QColor.transparent,isKernelImage);
                 result = new ScalableIcon(engine, cacheKey);
             }else{
-                reader.setQuality(100);
-                final QImage img = reader.read();
+                imageReader.setQuality(100);
+                final QImage img = imageReader.read();
                 if (img.isNull()) {
                     return null;
                 }else{
@@ -292,8 +294,10 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
             cacheRdxIcon(isKernelImage, cacheKey, result);
             return result;
         } finally {
-            buffer.close();
-            reader.dispose();
+            iconBuffer.close();
+            if (!Application.isInMainThread()){
+                iconBuffer.dispose();
+            }
         }
     }
 
@@ -304,7 +308,7 @@ public class ImageManager implements org.radixware.kernel.common.client.env.Imag
         if (isIconCached(isKernelImage, key)){
             return getCachedRdxIcon(isKernelImage, key);
         }
-        final QByteArray content = readImage(url);
+        final byte[] content = readImage(url);
         if (content == null) {
             return null;
         }

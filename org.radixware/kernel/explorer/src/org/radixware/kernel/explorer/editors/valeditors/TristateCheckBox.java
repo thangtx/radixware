@@ -67,12 +67,13 @@ final class TristateCheckBox extends QCheckBox{
         int width = style().subElementRect(QStyle.SubElement.SE_CheckBoxIndicator, option).width();
         width += 2;//bevel width
         return new QSize(width, super.sizeHint().height());
-    }    
+    } 
 
     @Override
-    protected void closeEvent(final QCloseEvent event) {
-        setStyle(null);
+    protected void disposed() {
         WidgetUtils.CustomStyle.release(style);
-        super.closeEvent(event);
+        super.disposed();        
     }
+    
+    
 }

@@ -8,13 +8,13 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.clazz.creation;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsDynamicPropertyDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.designer.common.dialogs.wizards.newobject.CreatureSetupStep;
-
 
 class PropertySetupStep1 extends CreatureSetupStep<PropertyCreature, PropertySetupStep1Visual> {
 

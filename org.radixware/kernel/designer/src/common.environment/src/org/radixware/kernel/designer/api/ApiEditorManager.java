@@ -280,4 +280,8 @@ public class ApiEditorManager {
 
         return editor;
     }
+    
+    public void refreshBrowser(){
+        defaultBrowser.updateEditor();
+    }
 }

@@ -12,13 +12,9 @@
 package org.radixware.kernel.common.msdl.fields.parser;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
 
 import org.apache.xmlbeans.XmlObject;
@@ -27,39 +23,26 @@ import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.msdl.MsdlVariantField;
 import org.radixware.kernel.common.msdl.fields.ChoiceFieldModel;
-import org.radixware.kernel.common.exceptions.SmioError;
 import org.radixware.kernel.common.exceptions.SmioException;
 import org.radixware.kernel.common.msdl.fields.extras.MsdlFieldDescriptor;
 import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSource;
+import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSourceArray;
 import org.radixware.kernel.common.msdl.fields.parser.fieldlist.ExtByteBuffer;
 import org.radixware.kernel.common.msdl.fields.parser.structure.FieldNamesContainer;
 import org.radixware.schemas.types.Str;
 
 public final class SmioFieldChoice extends SmioField {
 
-    private FieldNamesContainer fieldNamesContainer = new FieldNamesContainer();
-    private SmioFieldStr selector;
-    private Method selectorAdvisorMethod;
+    private final FieldNamesContainer fieldNamesContainer = new FieldNamesContainer();
+    private final SmioFieldStr selector;
 
-    public SmioFieldChoice(ChoiceFieldModel model) throws SmioError, SmioException {
+    public SmioFieldChoice(ChoiceFieldModel model) {
         super(model);
 
         for (MsdlVariantField cur : model.getFields()) {
             fieldNamesContainer.add(cur);
         }
         selector = (SmioFieldStr) getModel().getSelector().getParser();
-        Class preprocessorClass = getModel().getRootMsdlScheme().getPreprocessorClass();
-        if (preprocessorClass != null && getModel().getField().getSelectorAdvisorFunctionName() != null) {
-            try {
-                selectorAdvisorMethod = preprocessorClass.getMethod(getModel().getField().getSelectorAdvisorFunctionName(), new Class[]{byte[].class});
-            } catch (NoSuchMethodException e) {
-                LogFactory.getLog(ChoiceFieldModel.class).warn(String.format("Could not find appropriate method %s", getField().getName()));
-                selectorAdvisorMethod = null;
-            }
-            if (selectorAdvisorMethod != null) {
-                selectorAdvisorMethod.setAccessible(true);
-            }
-        }
     }
 
     @Override
@@ -97,29 +80,25 @@ public final class SmioFieldChoice extends SmioField {
         exbf.extPut(bff);
         return exbf.flip();
     }
+    
+    private String tryExecuteSelectFunction(IDataSource ids) throws IOException, SmioException {
+        if (ids instanceof IDataSourceArray && getModel().getRootMsdlScheme().getPreprocessorAccess() != null
+                && getModel().getField().getSelectorAdvisorFunctionName() != null) {
+            ByteBuffer bf = ((IDataSourceArray) ids).getByteBuffer();
+            byte arr[] = new byte[bf.remaining()];
+            int oldPosition = bf.position();
+            bf.get(arr);
+            bf.position(oldPosition);
+            return getModel().getRootMsdlScheme().getPreprocessorAccess().select(getModel().getField().getSelectorAdvisorFunctionName(), arr);
+        }
+        return null;
+    }
 
     @Override
     public void parseField(XmlObject obj, IDataSource ids, boolean containsOddEl) throws SmioException, IOException {
         Str sel = Str.Factory.newInstance();
 
-        String key = null;
-        if (selectorAdvisorMethod != null) {
-            ByteBuffer bf = ids.getByteBuffer();
-            byte arr[] = new byte[bf.limit() - bf.position()];
-            int oldPosition = bf.position();
-            bf.get(arr, bf.position(), bf.limit());
-            bf.position(oldPosition);
-            try {
-                key = (String) selectorAdvisorMethod.invoke(selectorAdvisorMethod, new Object[]{arr});
-            } catch (IllegalAccessException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            } catch (IllegalArgumentException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            } catch (InvocationTargetException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            }
-
-        }
+        String key = tryExecuteSelectFunction(ids);
         if (key == null) {
             IDataSource ds = selector.getPiece().parse(ids);
             selector.parseField(sel, ds, false);
@@ -139,15 +118,33 @@ public final class SmioFieldChoice extends SmioField {
     @Override
     public void check(RadixObject source, IProblemHandler handler) {
         super.check(source, handler);
-        for (MsdlVariantField cur : getModel().getFields()) {
-            fireNoSelectorProblem(cur, handler, source);
-        }
+        final Map<String, MsdlVariantField> uniqueSelectorVals = new HashMap<>();
         if (getModel().isTemplateInstance()) {
             for (MsdlFieldDescriptor d : getModel().getFieldDescriptorList()) {
                 if (d.getMsdlField() instanceof MsdlVariantField) {
-                    MsdlVariantField vf = (MsdlVariantField) d.getMsdlField();
-                    fireNoSelectorProblem(vf, handler, source);
+                    MsdlVariantField f = (MsdlVariantField) d.getMsdlField();
+                    checkField(f, uniqueSelectorVals, source, handler);
                 }
+            }
+        } else {
+            for (MsdlVariantField f : getModel().getFields()) {
+                checkField(f, uniqueSelectorVals, source, handler);
+            }
+        }
+        selector.check(source, handler);
+    }
+    
+    private void checkField(MsdlVariantField field,
+            Map<String, MsdlVariantField> uniqueSelectorVals,
+            RadixObject source, IProblemHandler handler) {
+
+        fireNoSelectorProblem(field, handler, source);
+        final String selectorVal = field.getVariant().getSelectorVal();
+        if (selectorVal != null && !selectorVal.isEmpty()) {
+            if (!uniqueSelectorVals.containsKey(selectorVal)) {
+                uniqueSelectorVals.put(selectorVal, field);
+            } else {
+                fireSameSelectorProblem(field, uniqueSelectorVals.get(selectorVal), handler, source);
             }
         }
     }
@@ -160,5 +157,10 @@ public final class SmioFieldChoice extends SmioField {
         if (!isSelectorValueSet(cur)) {
             handler.accept(RadixProblem.Factory.newError(source, "No selector value specified for field: " + cur.getName()));
         }
+    }
+
+    private void fireSameSelectorProblem(MsdlVariantField f1, MsdlVariantField f2, IProblemHandler handler, RadixObject source) {
+        handler.accept(RadixProblem.Factory.newError(source, "Same selector value specified for fields: '"
+                + f1.getName() + "' and '" + f2.getName() + "'"));
     }
 }

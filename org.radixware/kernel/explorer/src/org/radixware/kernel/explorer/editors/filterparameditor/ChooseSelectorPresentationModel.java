@@ -14,40 +14,47 @@ package org.radixware.kernel.explorer.editors.filterparameditor;
 import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QPalette;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
-import org.radixware.kernel.common.defs.IVisitor;
-import org.radixware.kernel.common.defs.RadixObject;
-import org.radixware.kernel.common.defs.ads.AdsDefinition;
-import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
-import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
-import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
-import org.radixware.kernel.common.enums.ERestriction;
-import org.radixware.kernel.common.repository.Branch;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.env.ITaskWaiter;
+import org.radixware.kernel.common.client.env.ReleaseRepository;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitions;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlSelectorPresentationDef;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
+import org.radixware.kernel.common.enums.EDefType;
+import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
-import org.radixware.kernel.explorer.env.KernelIcon;
 
 
 final class ChooseSelectorPresentationModel extends QAbstractItemModel {
+    
+    final public static int FILTER_ROLE = Qt.ItemDataRole.UserRole + 2;
 
-    private abstract static class Node {
+    private abstract static class Node<D extends ISqmlDefinition> {
 
-        private final AdsDefinition definition;
         private final Node parent;
+        private final D definition;        
         private final int internalId;
         private long indexInTree;
 
-        protected Node(final AdsDefinition adsDef, final Node parentNode) {
-            definition = adsDef;
+        protected Node(final D definition, final Node parentNode) {
+            this.definition = definition;
             parent = parentNode;
-            internalId = 7 + 67 * definition.getId().toString().hashCode()
+            internalId = 7 + 67 * definition.getId().hashCode()
                     + 67 * (parent == null ? 0 : parent.hashCode());
         }
 
@@ -55,23 +62,25 @@ final class ChooseSelectorPresentationModel extends QAbstractItemModel {
             return parent;
         }
 
-        public AdsDefinition definition() {
-            return definition;
-        }
-
         @Override
         public int hashCode() {
             return internalId;
         }
-
-        public String text() {
-            return definition.getName();
+        
+        public final D definition(){
+            return definition;
         }
-
-        public QIcon icon() {
-            return ExplorerIcon.getQIcon(KernelIcon.getInstance(definition.getIcon()));
+        
+        public final String title(){
+            return definition.getShortName();
         }
+        
+        public abstract String description();
 
+        public final QIcon icon(){
+            return ExplorerIcon.getQIcon(definition.getIcon());
+        }
+                
         public void setInternalIndex(final long index) {
             indexInTree = index;
         }
@@ -81,93 +90,98 @@ final class ChooseSelectorPresentationModel extends QAbstractItemModel {
         }
     }
 
-    private static class SelectorPresentationNode extends Node {
+    private final static class SelectorPresentationNode extends Node<ISqmlSelectorPresentationDef> {
+                
+        private final String description;
 
-        public SelectorPresentationNode(final AdsSelectorPresentationDef selectorPresentation, final Node parent) {
+        public SelectorPresentationNode(final ISqmlSelectorPresentationDef selectorPresentation, final ClassDefNode parent) {
             super(selectorPresentation, parent);
+            description = parent.definition().getFullName();                   
         }
 
-        public AdsSelectorPresentationDef selectorPresentationDef() {
-            return (AdsSelectorPresentationDef) definition();
+        @Override
+        public String description() {
+            return description;
         }
     }
 
-    private static class ClassDefNode extends Node {
+    private final static class ClassDefNode extends Node<ISqmlTableDef> {
 
-        private List<SelectorPresentationNode> childNodes = null;
+        private List<SelectorPresentationNode> childNodes = null;        
 
-        public ClassDefNode(final AdsEntityObjectClassDef classDef) {
-            super(classDef, null);
+        public ClassDefNode(final ISqmlTableDef sqmlTable) {
+            super(sqmlTable, null);
         }
-
-        public AdsEntityObjectClassDef entityClassDef() {
-            return (AdsEntityObjectClassDef) definition();
-        }
-
+        
         public List<SelectorPresentationNode> childNodes() {
             if (childNodes == null) {
-                childNodes = new LinkedList<SelectorPresentationNode>();
-                final AdsEntityObjectClassDef adsClass = entityClassDef();
-                final List<AdsSelectorPresentationDef> selectorPresentations =
-                        adsClass.getPresentations().getSelectorPresentations().get(EScope.ALL);
-                for (AdsSelectorPresentationDef selectorPresentation : selectorPresentations) {
-                    if (!selectorPresentation.getRestrictions().isDenied(ERestriction.CONTEXTLESS_USAGE)) {
-                        childNodes.add(new SelectorPresentationNode(selectorPresentation, this));
-                    }
+                childNodes = new LinkedList<>();
+                for (ISqmlSelectorPresentationDef presentation: definition().getSelectorPresentations()){
+                    childNodes.add(new SelectorPresentationNode(presentation, this));
                 }
             }
             return childNodes;
         }
-    }
-    final public static int FILTER_ROLE = Qt.ItemDataRole.UserRole + 2;
-    private final Branch branch;
-    private final List<ClassDefNode> classes = new ArrayList<ClassDefNode>();
-    private final List<Id> classIds = new ArrayList<Id>();
-    private final Map<Long, Node> data = new HashMap<Long, Node>(64);
-    private final Map<Long, QModelIndex> indexes = new HashMap<Long, QModelIndex>(64);
-
-    private static class AdsEntityClassesSearcher extends AdsVisitorProvider.AdsTopLevelDefVisitorProvider {
-
-        public AdsEntityClassesSearcher() {
-            super();
-        }
 
         @Override
-        public boolean isTarget(final RadixObject radixObject) {
-            return (radixObject instanceof AdsEntityObjectClassDef);
+        public String description() {
+            return definition().getModuleName();
         }
     }
-    private final IVisitor classesCollector = new IVisitor() {
+    
+    private final List<ClassDefNode> classes = new ArrayList<>();
+    private final List<Id> classIds = new ArrayList<>();
+    private final Map<Long, Node> data = new HashMap<>(64);
+    private final Map<Long, QModelIndex> indexes = new HashMap<>(64);    
 
-        @Override
-        public void accept(final RadixObject radixObject) {
-            if (radixObject instanceof AdsEntityObjectClassDef) {
-                final AdsEntityObjectClassDef adsClass = (AdsEntityObjectClassDef) radixObject;
-                final List<AdsSelectorPresentationDef> selectorPresentations =
-                        adsClass.getPresentations().getSelectorPresentations().get(EScope.LOCAL_AND_OVERWRITE);
-                if (!selectorPresentations.isEmpty() && !classIds.contains(adsClass.getId())) {
-                    for (AdsSelectorPresentationDef selectorPresentation : selectorPresentations) {
-                        if (!selectorPresentation.getRestrictions().isDenied(ERestriction.CONTEXTLESS_USAGE)) {
-                            classIds.add(adsClass.getId());
-                            classes.add(new ClassDefNode(adsClass));
-                            break;
-                        }
-                    }
+    public ChooseSelectorPresentationModel(final IClientEnvironment environment) {
+        super();
+        collectClasses(environment);
+    }
+    
+    private void collectClasses(final IClientEnvironment environment) {        
+        final ISqmlDefinitions sqmlDefs = environment.getSqmlDefinitions();
+        final ITaskWaiter taskWaiter = environment.getApplication().newTaskWaiter();
+        final List<ISqmlTableDef> sqmlClasses;
+        try {
+            final ISqmlTableDef[] classes = taskWaiter.runAndWait(new Callable<ISqmlTableDef[]>() {
+                @Override
+                public ISqmlTableDef[] call() throws Exception {
+                    final Collection<ReleaseRepository.DefinitionInfo> defs = 
+                            environment.getDefManager().getRepository().getDefinitions(EDefType.CLASS);
+                    return defInfosToSqmlDef(sqmlDefs,defs);
+                }
+            });
+            sqmlClasses = Arrays.asList(classes);
+        }catch (ExecutionException ex) {
+            environment.processException(environment.getMessageProvider().translate("SqmlEditor", "Failed to build classes list"), ex.getCause());
+            return;
+        }catch (InterruptedException ex){
+            return;
+            //Do nothing
+        }finally {
+            taskWaiter.close();
+        }                            
+        for (ISqmlTableDef classDef: sqmlClasses){
+            if (classDef.hasEntityClass() && classDef.getSelectorPresentations().size()>0){
+                classes.add(new ClassDefNode(classDef));
+            }
+        }
+    }
+    
+    private static ISqmlTableDef[] defInfosToSqmlDef(final ISqmlDefinitions sqmlDefs, final Collection<ReleaseRepository.DefinitionInfo> defs) {
+        final List<ISqmlTableDef> result = new LinkedList<>();        
+        for (ReleaseRepository.DefinitionInfo defInfo : defs) {
+            EDefinitionIdPrefix prefix = defInfo.id.getPrefix();
+            if (prefix == EDefinitionIdPrefix.ADS_ENTITY_CLASS || prefix == EDefinitionIdPrefix.ADS_APPLICATION_CLASS) {
+                final ISqmlTableDef foundDef = sqmlDefs.findTableById(defInfo.id);
+                if (foundDef != null) {
+                    result.add(foundDef);
                 }
             }
         }
-    };
-
-    private void collectClasses() {
-        final AdsEntityClassesSearcher entitySearcher = new AdsEntityClassesSearcher();
-        branch.visit(classesCollector, entitySearcher);
-    }
-
-    public ChooseSelectorPresentationModel(final Branch radixBranch) {
-        super();
-        branch = radixBranch;
-        collectClasses();
-    }
+        return result.<ISqmlTableDef>toArray(new ISqmlTableDef[0]);
+    }    
 
     private Node findNodeByIndex(final QModelIndex index) {
         return index != null ? data.get(index.internalId()) : null;
@@ -230,15 +244,9 @@ final class ChooseSelectorPresentationModel extends QAbstractItemModel {
         switch (role) {
             case Qt.ItemDataRole.DisplayRole:
                 if (index.column() == 0) {
-                    return node.text();
+                    return node.title();
                 } else {
-                    final ClassDefNode classNode;
-                    if (node instanceof ClassDefNode) {
-                        classNode = (ClassDefNode) node;
-                    } else {
-                        classNode = (ClassDefNode) node.parent();
-                    }
-                    return index.parent() == null ? classNode.definition().getModule().getQualifiedName() : classNode.definition().getQualifiedName();
+                    return node.description();
                 }
             case Qt.ItemDataRole.DecorationRole:
                 return index.column() == 0 ? node.icon() : null;
@@ -247,19 +255,19 @@ final class ChooseSelectorPresentationModel extends QAbstractItemModel {
             case Qt.ItemDataRole.TextAlignmentRole:
                 return index.column() == 0 ? Qt.AlignmentFlag.AlignLeft.value() : Qt.AlignmentFlag.AlignRight.value();
             case Qt.ItemDataRole.ForegroundRole:
-                return index.column() == 0 ? QColor.black : QColor.gray;
+                return index.column() == 0 ? QApplication.palette().color(QPalette.ColorRole.WindowText) : QColor.gray;
             case Qt.ItemDataRole.UserRole:
                 return node.definition();
         }
         return null;
     }
 
-    public AdsSelectorPresentationDef presentation(final QModelIndex index) {
+    public ISqmlSelectorPresentationDef presentation(final QModelIndex index) {
         final Node node = findNodeByIndex(index);
-        return node instanceof SelectorPresentationNode ? ((SelectorPresentationNode) node).selectorPresentationDef() : null;
+        return node instanceof SelectorPresentationNode ? ((SelectorPresentationNode) node).definition() : null;
     }
 
-    public AdsDefinition definition(final QModelIndex index) {
+    public ISqmlDefinition definition(final QModelIndex index) {
         final Node node = findNodeByIndex(index);
         return node == null ? null : node.definition();
     }

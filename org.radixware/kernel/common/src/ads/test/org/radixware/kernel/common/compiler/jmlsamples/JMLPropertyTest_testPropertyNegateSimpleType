@@ -1,0 +1,26 @@
+
+class ClassWithProperty {
+
+    public int getProperty() {
+	return 0;
+    }
+}
+
+class ClassWithProperty2 {
+
+    public int getProperty() {
+	return 0;
+    }
+
+    public void setProperty(int val) {
+    }
+}
+
+class Test {
+
+    void f() {
+	ClassWithProperty p = new ClassWithProperty();
+	ClassWithProperty2 p2 = new ClassWithProperty2();
+	p2.Property = -p.Property;
+    }
+}

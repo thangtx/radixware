@@ -1,0 +1,121 @@
+@CHARSET "UTF-8";
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+    padding-top: 25px;
+}
+.container {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+@media (min-width: 768px) {
+    .container {
+        width: 750px;
+    }
+}
+@media (min-width: 992px) {
+    .container {
+        width: 970px;
+    }
+}
+@media (min-width: 1200px) {
+    .container {
+        width: 1170px;
+    }
+}
+.navbar {
+    position: relative;
+    min-height: 50px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    -webkit-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);      
+    border-width: 0 0 1px;    
+    background-color: #222;
+    border-color: #080808;    
+}
+@media (min-width: 768px) {
+    .navbar-header {
+        float: left;
+    }
+}
+.navbar-brand {
+    float: left;
+    height: 50px;
+    padding: 15px;
+    font-size: 18px;
+    line-height: 26px;
+    color:white;
+}
+@media (min-width: 768px) {
+  .navbar > .container .navbar-brand,
+  .navbar > .container-fluid .navbar-brand {
+    margin-left: -15px;
+  }
+}
+input[type="button"]{
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;      
+    font: inherit;
+    color: inherit;    
+    -webkit-appearance: button;
+    cursor: pointer;
+}
+input[type="number"]{
+    margin-right: 15px;
+}
+.input-container{
+    padding-right: 30px;
+    min-width: 650px;
+}
+p {
+  margin: 0 0 10px;
+}
+label{
+    white-space: nowrap;
+}
+.table {
+    width: 100%;
+    max-width: 100%;
+    min-width: 650px;
+    margin-bottom: 20px;
+    border-spacing: 0;
+    border-collapse: collapse;
+    background-color: transparent;
+}
+.table > thead > tr > td,
+.table > tbody > tr > td{
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+.table > thead:first-child > tr:first-child > td {
+    border-top: 0;
+}
+td,
+th {
+    padding: 0;
+}
+.starter-template {
+    padding: 40px 15px;
+    text-align: center;
+}

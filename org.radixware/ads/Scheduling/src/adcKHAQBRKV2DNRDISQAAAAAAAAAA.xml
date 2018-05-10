@@ -15,7 +15,7 @@
     <Properties/>
     <Methods>
       <Method Id="mth3JUWKB7455HI3DSWPLLPEEL4S4" Name="scheduleRelative" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprBGNACFLOLBDHHMWIEQCT7VMCEI">
             <Type TypeId="21"/>
@@ -58,19 +58,25 @@
               <xsc:Java>return (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4">
+                <xsc:Presentation>JobQueueItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().JobQueue.scheduleRelative(
@@ -78,7 +84,9 @@
         creator == null ? null : creator.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(),
@@ -96,7 +104,7 @@
         </Sources>
       </Method>
       <Method Id="mthXLL22T2ZTJC5FF2QPNEDIICKIM" Name="scheduleRelative" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprMCI6ANHJGZCNRL2JRYNQOW5KRI">
             <Type TypeId="21"/>
@@ -136,7 +144,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mth3JUWKB7455HI3DSWPLLPEEL4S4" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mth3JUWKB7455HI3DSWPLLPEEL4S4" Invoke="true">
+                <xsc:Presentation>scheduleRelative</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
@@ -156,7 +166,7 @@
         </Sources>
       </Method>
       <Method Id="mthAHH2D735R3OBDCWOAAMPGXSZKU" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprB2BU24SINZC2VL2SZICNNI4V5E">
             <Type TypeId="21"/>
@@ -193,25 +203,33 @@
               <xsc:Java>return (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4">
+                <xsc:Presentation>JobQueueItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) org.radixware.kernel.server.arte.JobQueue.schedule(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), title, creator==null?null:creator.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), delay.doubleValue(), className, methodId, params, priority, boosting, allowRerun);</xsc:Java>
@@ -220,7 +238,7 @@
         </Sources>
       </Method>
       <Method Id="mthLPLRELMT25CL7KZWI2HNUFIYN4" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprLHGGT5RJAVAR3BUZSSAXODZTSU">
             <Type TypeId="21"/>
@@ -263,25 +281,33 @@
               <xsc:Java>return (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4">
+                <xsc:Presentation>JobQueueItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().JobQueue.schedule(title, creator == null ? null : creator.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), time, className, methodId, params, scpName, priority, boosting, taskId, allowRerun);</xsc:Java>
@@ -290,7 +316,7 @@
         </Sources>
       </Method>
       <Method Id="mthDMG5E6RRWNHFPEQFQ2PSVI7UWA" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprLHGGT5RJAVAR3BUZSSAXODZTSU">
             <Type TypeId="21"/>
@@ -330,25 +356,33 @@
               <xsc:Java>return (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4">
+                <xsc:Presentation>JobQueueItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().JobQueue.schedule(title, creator==null?null:creator.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), time, className, methodId, params, priority, boosting, taskId, allowRerun);</xsc:Java>
@@ -357,7 +391,7 @@
         </Sources>
       </Method>
       <Method Id="mthB3JTV3D5R3OBDCWOAAMPGXSZKU" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprMLPX2PHURBBVDOHNJE4SE5B4VE">
             <Type TypeId="21"/>
@@ -394,7 +428,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthDMG5E6RRWNHFPEQFQ2PSVI7UWA" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthDMG5E6RRWNHFPEQFQ2PSVI7UWA" Invoke="true">
+                <xsc:Presentation>schedule</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
@@ -414,7 +450,7 @@
         </Sources>
       </Method>
       <Method Id="mthOWIQPTL5R3OBDCWOAAMPGXSZKU" Name="post" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprKQ77OXRCLZH5NGWUDHEVY6FADY">
             <Type TypeId="21"/>
@@ -448,7 +484,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mth5B5JGMPWXRAXPPR6WUEB7KOV4I" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mth5B5JGMPWXRAXPPR6WUEB7KOV4I" Invoke="true">
+                <xsc:Presentation>post</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
@@ -467,7 +505,7 @@
         </Sources>
       </Method>
       <Method Id="mthPFBLT5TQKZBMNAOTLCEGOM6HXI" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprSUGTSJRCFNFRPLYN7KB5Z343DU">
             <Type TypeId="21"/>
@@ -504,25 +542,33 @@
               <xsc:Java>return (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4">
+                <xsc:Presentation>JobQueueItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().JobQueue.schedule(title, creator==null?null:creator.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), null, className, methodId, params, priority, boosting, taskId, allowRerun);</xsc:Java>
@@ -531,7 +577,7 @@
         </Sources>
       </Method>
       <Method Id="mthVHZAGDT6R3OBDCWOAAMPGXSZKU" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprQD5WCEU3FNDENAWG4PDUUOAMDA">
             <Type TypeId="21"/>
@@ -565,7 +611,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthPFBLT5TQKZBMNAOTLCEGOM6HXI" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthPFBLT5TQKZBMNAOTLCEGOM6HXI" Invoke="true">
+                <xsc:Presentation>schedule</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
@@ -593,13 +641,17 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().JobQueue.unsheduleJob(jobId);</xsc:Java>
@@ -608,7 +660,7 @@
         </Sources>
       </Method>
       <Method Id="mthEGRZNJ2YXNESHIUMDAGIGWEJYU" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mpr6OWYHNSUKJDWJGGRCSQL56SZ74">
             <Type TypeId="21"/>
@@ -645,7 +697,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthAHH2D735R3OBDCWOAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthAHH2D735R3OBDCWOAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>schedule</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(title, creator, delay, className, methodId, params, priority.getValue(), boosting, allowRerun);</xsc:Java>
@@ -654,7 +708,7 @@
         </Sources>
       </Method>
       <Method Id="mthGV24MJ2JPNCJRH4GESVXHKPZVM" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprEJGOC55NLRFCHM4KU2OBSNGKXQ">
             <Type TypeId="21"/>
@@ -691,7 +745,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthB3JTV3D5R3OBDCWOAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthB3JTV3D5R3OBDCWOAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>schedule</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(title, creator, time, className, methodId, params, priority.getValue(), boosting, allowRerun);</xsc:Java>
@@ -700,7 +756,7 @@
         </Sources>
       </Method>
       <Method Id="mthTSDWAFWY7RGDFIIHCUCNEEK3MQ" Name="schedule" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprA4C37ODIBRCIPEVJP2G4ICW7SQ">
             <Type TypeId="21"/>
@@ -734,7 +790,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthVHZAGDT6R3OBDCWOAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthVHZAGDT6R3OBDCWOAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>schedule</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(title, creator, className, methodId, params, priority.getValue(), boosting, allowRerun);</xsc:Java>
@@ -743,7 +801,7 @@
         </Sources>
       </Method>
       <Method Id="mth5B5JGMPWXRAXPPR6WUEB7KOV4I" Name="post" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprZHLQ7HJYYZGLFOJDCUK2CPW32E">
             <Type TypeId="21"/>
@@ -780,7 +838,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthLPLRELMT25CL7KZWI2HNUFIYN4" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthLPLRELMT25CL7KZWI2HNUFIYN4" Invoke="true">
+                <xsc:Presentation>schedule</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
@@ -801,7 +861,7 @@
         </Sources>
       </Method>
       <Method Id="mth5SWGWN667ZBPPIHSVRKYK3MGSU" Name="post" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true" IsStatic="true"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprZHLQ7HJYYZGLFOJDCUK2CPW32E">
             <Type TypeId="21"/>
@@ -835,7 +895,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthOWIQPTL5R3OBDCWOAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="adcKHAQBRKV2DNRDISQAAAAAAAAAA mthOWIQPTL5R3OBDCWOAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>post</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
@@ -847,6 +909,61 @@
         priority.getValue(),
         boosting,
         allowRerun);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCVYKRCGUH5CKTJEPRNB36YRHFQ" Name="getCurrentJob" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> jobId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getJobQueue().CurrentJobId;
+if (jobId != null) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4">
+                <xsc:Presentation>JobQueueItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHRWUWEEMIHNRDJIEACQMTAIZT4 mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(jobId, true);
+}
+return null;</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

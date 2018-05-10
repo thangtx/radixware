@@ -22,26 +22,10 @@ import javax.xml.validation.*;</xsc:Java>
       </Src>
     </Headers>
     <Bodies>
-      <Src Name="BodyadcTVQCLLWRNVG2DGYYL6ZEOKLP4M">
-        <xsc:Item>
-          <xsc:Java>private static Map&lt;</xsc:Java>
-        </xsc:Item>
-        <xsc:Item>
-          <xsc:TypeDeclaration TypeId="21"/>
-        </xsc:Item>
-        <xsc:Item>
-          <xsc:Java>, </xsc:Java>
-        </xsc:Item>
-        <xsc:Item>
-          <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-        </xsc:Item>
-        <xsc:Item>
-          <xsc:Java>> uri2Id = null;</xsc:Java>
-        </xsc:Item>
-      </Src>
+      <Src Name="BodyadcTVQCLLWRNVG2DGYYL6ZEOKLP4M"/>
     </Bodies>
     <MethodGroup Id="cmg7A4NJTAAAZABVPCFZQ7NM57CS4" Name="Root">
-      <Group Id="cmgAXXXHL6SGBGWBNCB7RPYQBBPWI" Name="Conversion" Members="mthNXIWSL5B4BBKLNMY3BRUF5FQDI mth3VU2OJNDR5EZPNAC642ZKFEKXY mthGW36STLCPBDGFEER2LEGASIYWQ mthCC5SLZIZPNBZNLIBV2YYBAOJGM mthOAPPJVWX4VBKNL2AJAI4YIUBNY"/>
+      <Group Id="cmgAXXXHL6SGBGWBNCB7RPYQBBPWI" Name="Conversion" Members="mthNXIWSL5B4BBKLNMY3BRUF5FQDI mth3VU2OJNDR5EZPNAC642ZKFEKXY mthGW36STLCPBDGFEER2LEGASIYWQ mthCC5SLZIZPNBZNLIBV2YYBAOJGM"/>
       <Group Id="cmgN6W5PFOUHRFENIHUFHFTJ2OP6U" Name="Db" Members="mthQPHPZLTZMFGMHOTF3VP52PKRFQ mth5YGL3TQUKNDK7OYNC4CANHEZXM mthDVY6PF34L5CGTKOG6PTKOXOZOE mthUX5IUDYHEBCM7ESD4RWJ67JENA mthQ33POBF2SBEYLIOVROB53GD2RI mth55MNB6XFCJDHRJ2ZD2D7LAHEYM mthNVELLVDLZNHMPDKB7IX5J5JD5A mth7IG24TEANBCI7OTQBBW6SFBEJ4 mthVOINW7574VAE5PXZXYGUKAVCRU"/>
       <Group Id="cmgK7OJOWWZGFHGBOTRG5AW5OSR44" Name="Process" Members="mthNQNNFFMCHBGLTHOD67MZIX4XJY mthL2ENLREVU5BLFBXCDY3F36CZJQ mthCNBAJHEAJBGKTFV2N6LU2JOKW4 mthIXZCH546F5CXLOEX2IE67UNNPM mth4LECBP6LEVFBJGQ2THZDYKJMWA mthECYHTOXFRFECRGUVMGSXZWYYD4"/>
       <Group Id="cmgOOOJV7I5MRHWFFXQN4JYZ2QZ4Q" Name="Common" Members="mth5S7QFT4WGNCQNMP5VFPMDO7X5Q mthRFN4T55E6RHUVJUKKPDVMVK6UY mthI4Y2N5DMQVGQNB2J7ZFQJAKXWM mthGNUGXTIA2JG53E76RFDTPGMZLY mthFXWYEJG33VADHHNNFMABMHLPAQ mthE7UJ3VAQFVEVJFFBIVNPGTTPLM mthF4KAIAW2C5ARPNQ2HKC3OLGBTE mth3PA5KC7P3NFQ5L7BQAF4WAVCDY mthRBRTYWWIBVCYLAYHLSYH5BYKNE mthJLJ3IOEQ7RGH3CSCGZHO2GYIHM"/>
@@ -358,7 +342,13 @@ for (</xsc:Java>
               <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.Value, </xsc:Java>
+              <xsc:Java>.Value, "Node " + (node instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ? "pid = " + pid + ", entity = " + pid.EntityId : "") + " error: " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
@@ -367,16 +357,10 @@ for (</xsc:Java>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthMSGJJYO4Z5EOLI4CTU2OLCDEF4" Invoke="true"/>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthPEFBTLSR3JAPDAACBUPT7QLKBU" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(e) + (node instanceof </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> ? ", pid = " + pid + ", entity = " + pid.EntityId : ""), </xsc:Java>
+              <xsc:Java>(e), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true"/>
@@ -423,7 +407,13 @@ for (</xsc:Java>
               <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.Value, "Error on autodeleting pipeline node: " + </xsc:Java>
+              <xsc:Java>.Value, "Error on autodeleting pipeline node " + (node instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ? "pid = " + pid + ", entity = " + pid.EntityId : "") + ": " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
@@ -432,16 +422,10 @@ for (</xsc:Java>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthMSGJJYO4Z5EOLI4CTU2OLCDEF4" Invoke="true"/>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthPEFBTLSR3JAPDAACBUPT7QLKBU" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(ex) + (node instanceof </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> ? ", pid = " + pid + ", entity = " + pid.EntityId : ""), </xsc:Java>
+              <xsc:Java>(ex) , </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true"/>
@@ -481,7 +465,13 @@ for (</xsc:Java>
               <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.Value, "Error on discard pipeline node: " + </xsc:Java>
+              <xsc:Java>.Value, "Error on discard pipeline node " + (node instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ? "pid = " + pid + ", entity = " + pid.EntityId : "") + ": " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
@@ -490,16 +480,10 @@ for (</xsc:Java>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthMSGJJYO4Z5EOLI4CTU2OLCDEF4" Invoke="true"/>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthPEFBTLSR3JAPDAACBUPT7QLKBU" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(ex1) + (node instanceof </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> ? ", pid = " + pid + ", entity = " + pid.EntityId : ""), </xsc:Java>
+              <xsc:Java>(ex1), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true"/>
@@ -1274,7 +1258,9 @@ return rq;</xsc:Java>
     rs = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs.Factory"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs.Factory">
+                <xsc:Presentation>SbXsd:PipelineMessageRs.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.newInstance();
@@ -1284,11 +1270,13 @@ return rq;</xsc:Java>
 }
 
 rs.PrevStage = null;
-if (rs.CurStage != null) {
-    rs.PrevStages.StageList.add((</xsc:Java>
+if (rs.CurStage != null) {    
+    rs.ensurePrevStages().StageList.add((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRs"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRs">
+                <xsc:Presentation>SbXsd:StageRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)rs.CurStage.copy());
@@ -1297,13 +1285,17 @@ if (rs.CurStage != null) {
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRs"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRs">
+                <xsc:Presentation>SbXsd:StageRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> curStage = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRs.Factory"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRs.Factory">
+                <xsc:Presentation>SbXsd:StageRs.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.newInstance();
@@ -1311,13 +1303,17 @@ curStage.Data = (data == null) ? null : data.copy();
 curStage.Timestamp = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthH5UTIPGXTPNRDISQABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthH5UTIPGXTPNRDISQABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getCurrentLocalTime</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -1325,7 +1321,9 @@ if (correspondentRq != null)
     curStage.CorrespondentRq = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRq"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRq">
+                <xsc:Presentation>SbXsd:StageRq</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)correspondentRq.copy();
@@ -1356,13 +1354,17 @@ return rs;</xsc:Java>
               <xsc:Java>final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> pid = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthI4Y2N5DMQVGQNB2J7ZFQJAKXWM" Invoke="true"/>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthI4Y2N5DMQVGQNB2J7ZFQJAKXWM" Invoke="true">
+                <xsc:Presentation>getConnectionPid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(connectionId);
@@ -1370,19 +1372,25 @@ return rs;</xsc:Java>
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4">
+                <xsc:Presentation>IPipelineNode</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> node = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4">
+                <xsc:Presentation>SbServerUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth3PA5KC7P3NFQ5L7BQAF4WAVCDY" Invoke="true"/>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth3PA5KC7P3NFQ5L7BQAF4WAVCDY" Invoke="true">
+                <xsc:Presentation>getPipelineNode</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(pid);
@@ -1391,19 +1399,25 @@ if (node == null)
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI mthCANKJUGVDNDPBEZM2AGBTYELRQ" Invoke="true"/>
+              <xsc:IdReference Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI mthCANKJUGVDNDPBEZM2AGBTYELRQ" Invoke="true">
+                <xsc:Presentation>PipelineException</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.format(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsIPGB6SPVZFCVFFWBNNVQ3NXHQM"/>
+              <xsc:LocalizedString StringId="mlsIPGB6SPVZFCVFFWBNNVQ3NXHQM">
+                <xsc:Presentation>Node %s does not exist</xsc:Presentation>
+              </xsc:LocalizedString>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, pid));
@@ -1411,47 +1425,61 @@ if (node == null)
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY">
+                <xsc:Presentation>IPipeline</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> pipeline = node.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mthYFZPW475EFFCLLXOYQHNVMU3UM" Invoke="true"/>
+              <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mthYFZPW475EFFCLLXOYQHNVMU3UM" Invoke="true">
+                <xsc:Presentation>getPipeline</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
 if (pipeline.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthVVLOKJK5QNFKBMQPK5SNY4FANY" Invoke="true"/>
+              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthVVLOKJK5QNFKBMQPK5SNY4FANY" Invoke="true">
+                <xsc:Presentation>isUniDirect</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) {
     if (pipeline.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mth7R4KOQOXMZCHXKNGB7EQRQXYDM" Invoke="true"/>
+              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mth7R4KOQOXMZCHXKNGB7EQRQXYDM" Invoke="true">
+                <xsc:Presentation>isTransformation</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA">
+                <xsc:Presentation>Pipeline.Transformer</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> transformer = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA">
+                <xsc:Presentation>Pipeline.Transformer</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) pipeline;
         if (transformer.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA pruB3PUHMTRARCEFFXHR2O7A6USIQ" Invoke="true"/>
+              <xsc:IdReference Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA pruB3PUHMTRARCEFFXHR2O7A6USIQ" Invoke="true">
+                <xsc:Presentation>drainPid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == pid.toString()) {
@@ -1459,7 +1487,9 @@ if (pipeline.</xsc:Java>
             transformer.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA pruSRSU7DVQYNAHTGTG2YUC67E23E" Invoke="true"/>
+              <xsc:IdReference Path="aclACFEFPIGQFEO3NJWMLWNQAM7KA pruSRSU7DVQYNAHTGTG2YUC67E23E" Invoke="true">
+                <xsc:Presentation>transformationResult</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = rq.CurStage.Data;            
@@ -1468,26 +1498,43 @@ if (pipeline.</xsc:Java>
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs">
+                <xsc:Presentation>SbXsd:PipelineMessageRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> rs = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs">
+                <xsc:Presentation>SbXsd:PipelineMessageRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Factory.newInstance();
+    node.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mth7MEKN6RYYBASBPAYYLM556VGPM" Invoke="true">
+                <xsc:Presentation>processRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rq);
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4">
+                <xsc:Presentation>SbServerUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth4LECBP6LEVFBJGQ2THZDYKJMWA" Invoke="true"/>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth4LECBP6LEVFBJGQ2THZDYKJMWA" Invoke="true">
+                <xsc:Presentation>prepareNextResponse</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(rs, rq.CurStage, null);
@@ -1496,7 +1543,9 @@ if (pipeline.</xsc:Java>
 return node.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mth7MEKN6RYYBASBPAYYLM556VGPM" Invoke="true"/>
+              <xsc:IdReference Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4 mth7MEKN6RYYBASBPAYYLM556VGPM" Invoke="true">
+                <xsc:Presentation>processRequest</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(rq);</xsc:Java>
@@ -1845,9 +1894,7 @@ if (format == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(bytes));
-        if (toValidate.booleanValue()) {
-            final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            
+        if (toValidate.booleanValue()) {            
             Schema schema = null;
             final </xsc:Java>
             </xsc:Item>
@@ -1889,6 +1936,7 @@ if (format == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null) {
+                    final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                     schema = factory.newSchema(new StreamSource(scheme.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
@@ -1898,93 +1946,19 @@ if (format == </xsc:Java>
               <xsc:Java>.getCharacterStream()));
                 }
             } else {
-                final </xsc:Java>
+                schema = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> id = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthOAPPJVWX4VBKNL2AJAI4YIUBNY" Invoke="true"/>
+              <xsc:IdReference Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA mthLESEVAUW5JGBPN5XPJM7Y5KYEY" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(namespaceUri);
-                if (id == null)
-                    throw new </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.format(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsXWDLF2A4VJDHXCAOV4C3K42GCI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, namespaceUri));
-        
-                final String fileName = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().DefManager.getXmlFileNameByMsdlSchemaDefId(id);
-                if (fileName == null)
-                    throw new </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.format(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsG74OIAH7ZJBZXHNBBSJUPE4VOI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, namespaceUri));
-                
-                schema = factory.newSchema(new StreamSource(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().DefManager.ClassLoader.getResourceAsStream(fileName)));
             }
             
             if (schema == null)
@@ -2248,13 +2222,13 @@ else {
               <xsc:Java> id = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthOAPPJVWX4VBKNL2AJAI4YIUBNY" Invoke="true"/>
+              <xsc:IdReference Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA mthY5OXRKMLRBG3ZOHRTW2IQQSXP4" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(namespaceUri);
@@ -2660,13 +2634,13 @@ if (format == </xsc:Java>
               <xsc:Java> id = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthOAPPJVWX4VBKNL2AJAI4YIUBNY" Invoke="true"/>
+              <xsc:IdReference Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA mthY5OXRKMLRBG3ZOHRTW2IQQSXP4" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(namespaceUri);
@@ -3294,7 +3268,7 @@ if (!(p instanceof </xsc:Java>
               <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>("Not pipeline type, pid = " + pid);
+              <xsc:Java>("Not pipeline type: " + p + ", pid = " + pid + ", entity: " + pid.EntityId);
 
 return (</xsc:Java>
             </xsc:Item>
@@ -3302,7 +3276,7 @@ return (</xsc:Java>
               <xsc:TypeDeclaration TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>)p;</xsc:Java>
+              <xsc:Java>) p;</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -4338,129 +4312,6 @@ return xDoc;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthOAPPJVWX4VBKNL2AJAI4YIUBNY" Name="getIdByUri" Nature="0" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
-        <Parameters>
-          <Parameter Name="uri" Id="mprK7EUWKCGZ5GXTBSRLEZTFVOO3A">
-            <Type TypeId="21"/>
-          </Parameter>
-        </Parameters>
-        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>if (uri2Id == null) {
-    uri2Id = new HashMap&lt;</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>>();
-    for (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> id : </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().DefManager.getDefIdsByType(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="acsBZO5RTQOG7NRDJH2ACQMTAIZT4 aciZR7EJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)) {
-        final </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> ns = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().DefManager.getTargetNamespaceUriBySchemaDefId(id);
-        uri2Id.put(ns, id);
-    }
-    for (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> id : </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().DefManager.getDefIdsByType(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="acsBZO5RTQOG7NRDJH2ACQMTAIZT4 aciZV7EJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)) {
-        final </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> ns = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().DefManager.getTargetNamespaceUriBySchemaDefId(id);
-        uri2Id.put(ns, id);
-    }
-}
-return uri2Id.get(uri);</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
-      </Method>
       <Method Id="mthECYHTOXFRFECRGUVMGSXZWYYD4" Name="prepareNextResponse" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
@@ -4481,26 +4332,34 @@ return uri2Id.get(uri);</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs">
+                <xsc:Presentation>SbXsd:PipelineMessageRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> nextRs = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4">
+                <xsc:Presentation>SbServerUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth4LECBP6LEVFBJGQ2THZDYKJMWA" Invoke="true"/>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth4LECBP6LEVFBJGQ2THZDYKJMWA" Invoke="true">
+                <xsc:Presentation>prepareNextResponse</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(rs, correspondentRq, data);
 nextRs.PrevStage = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRs"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRs">
+                <xsc:Presentation>SbXsd:StageRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)prevStage.copy();

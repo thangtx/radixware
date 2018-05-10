@@ -18,7 +18,11 @@ package org.radixware.kernel.designer.ads.localization;
 
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +35,12 @@ import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.openide.util.NbBundle;
@@ -50,6 +59,8 @@ import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils.SelectionInfo;
+import org.radixware.kernel.designer.ads.localization.actions.EditorAction;
 import org.radixware.kernel.designer.ads.localization.dialog.ChooseLanguagesDialog;
 import org.radixware.kernel.designer.ads.localization.phrase_book.PhraseBookProvider;
 import org.radixware.kernel.designer.ads.localization.prompt.ContextPanel;
@@ -85,26 +96,18 @@ public class MultilingualEditor extends TopComponent {
     private final static int PROMPT_TAB_INDEX = 1;
     //private final static int LAST_UPDATE_INFO_TAB_INDEX=2;
     private final static int WARNING_TAB_INDEX = 3;
-
-    //Events
-    public final static String LOADING_STRINGS = "LoadingStrings";
-    public final static String CLOSED = "MultilingualEditorClosed";
-    public final static String STRINGS_UP_TO_DATE = "StringsUpToDate";
-    public final static String PROGRESS_HANDLE = "ProgressHandleEvent";
-    public final static String FILTER_REFRESH = "FilterRefresh";
-    public final static String CLEAR_STRINGS = "ClearStrings";
-    public final static String GO_TO_NEXT = "GoToNext";
-    public final static String GO_TO_PREV = "GoToPrev";
-    public final static String GO_TO_NEXT_UNCHECKED = "GoToNextUnchecked";
-    public final static String GO_TO_PREV_UNCHECKED = "GoToPrevUnchecked";
+    private final PropertyChangeSupport propertyChangeSupport;
+    
 
     /**
      * Creates new form MainTranslationPanel
      */
     public MultilingualEditor() {
-        initComponents();
+        propertyChangeSupport = new PropertyChangeSupport(this);
         this.setName(editorName);
         this.setIcon(RadixWareIcons.MLSTRING_EDITOR.CHOOSE_LANGS.getImage());
+        addKeyMap();
+        initComponents();
 
         //this.setFocusable(true);
         AbstractAction actInsert = new AbstractAction(NbBundle.getMessage(MultilingualEditor.class, "INSERT_ACTION")) {
@@ -151,8 +154,8 @@ public class MultilingualEditor extends TopComponent {
         jTabbedPane1.addTab(NbBundle.getMessage(MultilingualEditor.class, "TAB_PHRASES"), phrases/*phrasesTable*/);
         jTabbedPane1.addTab(NbBundle.getMessage(MultilingualEditor.class, "TAB_TIME_AUTHER_INFO"), timeAuthorInfoPanel);
 
-        sourceLangs = getLangsFromCfg(SOURCE_LANGUAGE);
-        translLangs = getLangsFromCfg(TRANSLATE_LANGUAGE);
+        sourceLangs = getLangsFromCfg(MultilingualEditorUtils.SOURCE_LANGUAGE);
+        translLangs = getLangsFromCfg(MultilingualEditorUtils.TRANSLATE_LANGUAGE);
         if (sourceLangs == null) {
             sourceLangs = new ArrayList<>();
         }
@@ -185,7 +188,7 @@ public class MultilingualEditor extends TopComponent {
         topPanel.open();
         if (!reset || !resetSelectedDefinitions()) {
             if (!updateRows()) {
-                firePropertyChange(STRINGS_UP_TO_DATE, false, true);
+                fireChange(MultilingualEditorUtils.STRINGS_UP_TO_DATE);
             }
         }
     }
@@ -271,15 +274,8 @@ public class MultilingualEditor extends TopComponent {
         update();
     }
 
-    public static final String PREFERENCES_KEY = "RadixWareDesigner";
-    public static final String EDITOR_KEY = "MlStringEditor";
-    private static final String SOURCE_LANGUAGE = "SourceLangs";
-    private static final String TRANSLATE_LANGUAGE = "TranslateLangs";
-    private static final String SELECTED_LAYERS = "SelectedLayers";
-    private static final String OPENED_PHRASEBOOK = "OpenedPhraseBook";
-    public static final String OUTPUT_LOCATIONS = "ExportLocation";
-    public static final String EXPORT_AUTHOR = "ExportAuthor";
-
+    
+    
     /*private List<EIsoLanguage> getLangsFromCfg(String node) {///FOR TEST
      List<EIsoLanguage> langs = new ArrayList<EIsoLanguage>();
      Collection<Branch> openBranches = RadixFileUtil.getOpenedBranches();
@@ -298,10 +294,10 @@ public class MultilingualEditor extends TopComponent {
      }*/
     private List<EIsoLanguage> getLangsFromCfg(String node) {
         try {
-            if (Preferences.userRoot().nodeExists(PREFERENCES_KEY)) {
-                Preferences designerPreferences = Preferences.userRoot().node(PREFERENCES_KEY);
-                if (designerPreferences.nodeExists(EDITOR_KEY)) {
-                    Preferences editor = designerPreferences.node(EDITOR_KEY);
+            if (Preferences.userRoot().nodeExists(MultilingualEditorUtils.PREFERENCES_KEY)) {
+                Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditorUtils.PREFERENCES_KEY);
+                if (designerPreferences.nodeExists(MultilingualEditorUtils.EDITOR_KEY)) {
+                    Preferences editor = designerPreferences.node(MultilingualEditorUtils.EDITOR_KEY);
                     String sLang = editor.get(node, null);
                     if (sLang != null) {
                         List<EIsoLanguage> langs = new ArrayList<>();
@@ -322,11 +318,11 @@ public class MultilingualEditor extends TopComponent {
 
     public final Set<Layer> getLayersFromCfg() {
         try {
-            if (Preferences.userRoot().nodeExists(PREFERENCES_KEY)) {
-                Preferences designerPreferences = Preferences.userRoot().node(PREFERENCES_KEY);
-                if (designerPreferences.nodeExists(EDITOR_KEY)) {
-                    Preferences editor = designerPreferences.node(EDITOR_KEY);
-                    String sLayers = editor.get(SELECTED_LAYERS, null);
+            if (Preferences.userRoot().nodeExists(MultilingualEditorUtils.PREFERENCES_KEY)) {
+                Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditorUtils.PREFERENCES_KEY);
+                if (designerPreferences.nodeExists(MultilingualEditorUtils.EDITOR_KEY)) {
+                    Preferences editor = designerPreferences.node(MultilingualEditorUtils.EDITOR_KEY);
+                    String sLayers = editor.get(MultilingualEditorUtils.SELECTED_LAYERS, null);
                     if (sLayers != null) {
 //                        String[] split = sLayers.split(";");
 //                        for (String uri : split) {
@@ -353,11 +349,11 @@ public class MultilingualEditor extends TopComponent {
 
     public List<AdsPhraseBookDef> getPhraseBooksFromCfg() {
         try {
-            if (Preferences.userRoot().nodeExists(PREFERENCES_KEY)) {
-                Preferences designerPreferences = Preferences.userRoot().node(PREFERENCES_KEY);
-                if (designerPreferences.nodeExists(EDITOR_KEY)) {
-                    Preferences editor = designerPreferences.node(EDITOR_KEY);
-                    String sId = editor.get(OPENED_PHRASEBOOK, null);
+            if (Preferences.userRoot().nodeExists(MultilingualEditorUtils.PREFERENCES_KEY)) {
+                Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditorUtils.PREFERENCES_KEY);
+                if (designerPreferences.nodeExists(MultilingualEditorUtils.EDITOR_KEY)) {
+                    Preferences editor = designerPreferences.node(MultilingualEditorUtils.EDITOR_KEY);
+                    String sId = editor.get(MultilingualEditorUtils.OPENED_PHRASEBOOK, null);
                     if (sId != null) {
                         List<AdsPhraseBookDef> phraseBooks = new ArrayList<>();
                         String[] arrIds = sId.split(",");
@@ -392,9 +388,9 @@ public class MultilingualEditor extends TopComponent {
         }
         s = s.substring(0, s.length() - 1);
 
-        Preferences designerPreferences = Preferences.userRoot().node(PREFERENCES_KEY);
-        Preferences editor = designerPreferences.node(EDITOR_KEY);
-        editor.put(OPENED_PHRASEBOOK, s);
+        Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditorUtils.PREFERENCES_KEY);
+        Preferences editor = designerPreferences.node(MultilingualEditorUtils.EDITOR_KEY);
+        editor.put(MultilingualEditorUtils.OPENED_PHRASEBOOK, s);
         try {
             Preferences.userRoot().flush();
         } catch (BackingStoreException ex) {
@@ -414,8 +410,8 @@ public class MultilingualEditor extends TopComponent {
         }
         s = s.substring(0, s.length() - 1);
 
-        Preferences designerPreferences = Preferences.userRoot().node(PREFERENCES_KEY);
-        Preferences editor = designerPreferences.node(EDITOR_KEY);
+        Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditorUtils.PREFERENCES_KEY);
+        Preferences editor = designerPreferences.node(MultilingualEditorUtils.EDITOR_KEY);
         editor.put(node, s);
         try {
             Preferences.userRoot().flush();
@@ -433,9 +429,9 @@ public class MultilingualEditor extends TopComponent {
         String s = builder.toString();
         s = !s.isEmpty() ? s : null;
 
-        Preferences designerPreferences = Preferences.userRoot().node(PREFERENCES_KEY);
-        Preferences editor = designerPreferences.node(EDITOR_KEY);
-        editor.put(SELECTED_LAYERS, s);
+        Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditorUtils.PREFERENCES_KEY);
+        Preferences editor = designerPreferences.node(MultilingualEditorUtils.EDITOR_KEY);
+        editor.put(MultilingualEditorUtils.SELECTED_LAYERS, s);
         try {
             Preferences.userRoot().flush();
         } catch (BackingStoreException ex) {
@@ -523,19 +519,7 @@ public class MultilingualEditor extends TopComponent {
     }
 
     public Map<Layer, List<Module>> getLayersAndModules() {
-        if (selectedLayers == null) {
-            Map<Layer, List<Module>> allLayers = new HashMap<>();
-            Collection<Branch> openBranches = RadixFileUtil.getOpenedBranches();
-            for (Branch branch : openBranches) {
-                for (Layer layer : branch.getLayers().list()) {
-                    if (!layer.isLocalizing()) {
-                        allLayers.put(layer, null);//addAll(branch.getLayers().list());
-                    }
-                }
-            }
-            return allLayers;
-        }
-        return selectedLayers;
+        return MultilingualEditorUtils.getLayersAndModules(selectedLayers);
     }
     
     public Map<Layer, List<Module>> getSelectedLayers() {
@@ -546,12 +530,12 @@ public class MultilingualEditor extends TopComponent {
         if (translLangs == null) {
             translLangs = new ArrayList<>();
         } else {
-            setLangsToCfg(translLangs, TRANSLATE_LANGUAGE);
+            setLangsToCfg(translLangs, MultilingualEditorUtils.TRANSLATE_LANGUAGE);
         }
         if (sourceLangs == null) {
             sourceLangs = new ArrayList<>();
         } else {
-            setLangsToCfg(sourceLangs, SOURCE_LANGUAGE);
+            setLangsToCfg(sourceLangs, MultilingualEditorUtils.SOURCE_LANGUAGE);
         }
     }
 
@@ -561,12 +545,36 @@ public class MultilingualEditor extends TopComponent {
         }
     }
 
-    public void setRowString(final RowString rowString, final boolean setFocusOnTranslation, final int selectUncheckedTranslation) {
+    public void setRowString(final RowString rowString) {
+        setRowString(rowString, SelectionInfo.NONE);
+    }
+    
+    public void setRowString(final RowString rowString, final SelectionInfo selectUncheckedTranslation) {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                bottomPanel.setMlString(rowString, setFocusOnTranslation, selectUncheckedTranslation);
+                bottomPanel.setMlString(rowString);
+                switch (selectUncheckedTranslation){
+                    case FOCUS:
+                        fireChange(MultilingualEditorUtils.FOCUS_TEXT);
+                        break;
+                    case PREV:
+                        fireChange(MultilingualEditorUtils.SELECT_LAST_TEXT);
+                        break;
+                    case UNCHECK_PREV:
+                        fireChange(MultilingualEditorUtils.SELECT_LAST_UNCHECKED_TEXT);
+                        break;
+                    case UNCHECK_NEXT:
+                        fireChange(MultilingualEditorUtils.SELECT_FIRST_UNCHECKED_TEXT);
+                        break;
+                    case EDITABLE_PREV:
+                        fireChange(MultilingualEditorUtils.SELECT_LAST_EDITABLE_TEXT);
+                        break;
+                    case EDITABLE_NEXT:
+                        fireChange(MultilingualEditorUtils.SELECT_FIRST_EDITABLE_TEXT);
+                        break;    
+                }
                 context.setContext(rowString);
                 List<EIsoLanguage> langs = new LinkedList<>();
                 langs.addAll(translLangs);
@@ -631,11 +639,6 @@ public class MultilingualEditor extends TopComponent {
         return sourceLangs;
     }
 
-    @Override
-    public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-        super.firePropertyChange(propertyName, oldValue, newValue);
-    }
-
     public void setSelectedDefs(List<Definition> defs) {
         setTabName(defs);
         multiligualManager.setSelectedDefs(defs);
@@ -686,7 +689,7 @@ public class MultilingualEditor extends TopComponent {
     }
 
     public void reopen() {
-        firePropertyChange(FILTER_REFRESH, false, true);
+        fireChange(MultilingualEditorUtils.FILTER_REFRESH);
         if (cancellable != null){
             cancellable.cancel();
         }
@@ -721,22 +724,6 @@ public class MultilingualEditor extends TopComponent {
     public void translationWasEdited() {
         topPanel.updateStringRow();
         timeAuthorInfoPanel.update();
-    }
-
-    public void setNextString() {
-        topPanel.setNextString();
-    }
-
-    public void setPrevString() {
-        topPanel.setPrevString();
-    }
-
-    public void setNextUncheckedString() {
-        topPanel.setNextUncheckedString();
-    }
-
-    public void setPrevUncheckedString() {
-        topPanel.setPrevUncheckedString();
     }
 
     public void addEditedStringList(RowString s) {
@@ -839,4 +826,89 @@ public class MultilingualEditor extends TopComponent {
         return null;
     }
     
+    public void removeChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    public void addChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void fireChange(String propertyName) {
+        propertyChangeSupport.firePropertyChange(propertyName, false, true);
+    }
+
+    public void fireChange(String propertyName, Object oldValue, Object newValue) {
+        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    public void fireChange(String propertyName, boolean oldValue, boolean newValue) {
+        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    private void addKeyMap(){
+        InputMap inputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        
+        //Ctrl+< - GO_TO_PREV
+        Icon icon = RadixWareIcons.MLSTRING_EDITOR.LEFT.getIcon(20);
+        final EditorAction actGoToPrev = new EditorAction(this, MultilingualEditorUtils.GO_TO_PREV, icon);
+        getActionMap().put(actGoToPrev.getName(), actGoToPrev);
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.CTRL_DOWN_MASK, true);
+        inputMap.put(keyStroke, actGoToPrev.getName());
+        
+        //Ctrl+> - GO_TO_NEXT
+        icon = RadixWareIcons.MLSTRING_EDITOR.RIGHT.getIcon(20);
+        final EditorAction actGoToNext = new EditorAction(this, MultilingualEditorUtils.GO_TO_NEXT, icon);
+        getActionMap().put(actGoToNext.getName(), actGoToNext);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.CTRL_DOWN_MASK, true);
+        inputMap.put(keyStroke, actGoToNext.getName());
+        
+       //Ctrl+K - GO_TO_PREV_UNCHECKED
+       icon = RadixWareIcons.MLSTRING_EDITOR.PREV_CHECKED_STRING.getIcon(20);
+       final EditorAction actGoToPrevUnch = new EditorAction(this, MultilingualEditorUtils.GO_TO_PREV_UNCHECKED, icon);
+       getActionMap().put(actGoToPrevUnch.getName(), actGoToPrevUnch);
+       keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK, true); 
+       inputMap.put(keyStroke, actGoToPrevUnch.getName());
+        
+       //Ctrl+L - GO_TO_NEXT_UNCHECKED
+       icon = RadixWareIcons.MLSTRING_EDITOR.NEXT_CHECKED_STRING.getIcon(20);
+       final EditorAction actGoToNextUnch = new EditorAction(this, MultilingualEditorUtils.GO_TO_NEXT_UNCHECKED, icon);
+       getActionMap().put(actGoToNextUnch.getName(), actGoToNextUnch);
+       keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK, true);
+       inputMap.put(keyStroke, actGoToNextUnch.getName());
+       
+       
+       //Ctrl+: - GO_TO_PREV_EDITABLE
+        final EditorAction actGoToPrevEdit = new EditorAction(this, MultilingualEditorUtils.GO_TO_PREV_EDITABLE);
+        getActionMap().put(actGoToPrevEdit.getName(), actGoToPrevEdit);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_SEMICOLON, InputEvent.CTRL_DOWN_MASK, true);
+        inputMap.put(keyStroke, actGoToPrevEdit.getName());
+        
+        //Ctrl+' - GO_TO_NEXT_EDITABLE
+        final EditorAction actGoToNextEdit = new EditorAction(this, MultilingualEditorUtils.GO_TO_NEXT_EDITABLE);
+        getActionMap().put(actGoToNextEdit.getName(), actGoToNextEdit);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_QUOTE, InputEvent.CTRL_DOWN_MASK, true);
+        inputMap.put(keyStroke, actGoToNextEdit.getName());
+        
+        //Ctrl+Up - GO_TO_PREVIOUS_ROW
+        final EditorAction actGoToPrevRow = new EditorAction(this, MultilingualEditorUtils.GO_TO_PREVIOUS_ROW);
+        getActionMap().put(actGoToPrevRow.getName(), actGoToPrevRow);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK, true);
+        inputMap.put(keyStroke, actGoToPrevRow.getName());
+        
+        //Ctrl+Down - GO_TO_NEXT_ROW
+        final EditorAction actGoToNextRow = new EditorAction(this, MultilingualEditorUtils.GO_TO_NEXT_ROW);
+        getActionMap().put(actGoToNextRow.getName(), actGoToNextRow);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK, true);
+        inputMap.put(keyStroke, actGoToNextRow.getName());
+
+        //Shift+Enter - GO_TO_NEXT_ROW
+        final EditorAction actCheckAndGo = new EditorAction(this, MultilingualEditorUtils.CHECK_ALL_AND_GO);
+        getActionMap().put(actCheckAndGo.getName(), actCheckAndGo);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK, true);
+        inputMap.put(keyStroke, actCheckAndGo.getName());
+    }
+
+    public void setRowString(Object object, boolean b, MultilingualEditorUtils.SelectionInfo uncheckedSelection) {
+    }
 }

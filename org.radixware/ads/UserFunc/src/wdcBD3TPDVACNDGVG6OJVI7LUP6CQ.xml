@@ -88,210 +88,37 @@ import org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter;</xsc:
 private static final int PARAMETER_TITLE_COLUMN_IDX = 1;
 private static final int VALUE_COLUMN_IDX = 2;
 private java.util.List&lt;MethodParameter> targetParameters = new java.util.LinkedList&lt;MethodParameter>();
-</xsc:Java>
+private java.util.List&lt;MethodParameter> thisParameters = new java.util.LinkedList&lt;MethodParameter>();</xsc:Java>
           </xsc:Item>
         </Src>
       </Bodies>
       <MethodGroup Id="cmgWL2SKG4HJBG4HGBU3X3L6J7H7E" Name="Root">
         <Group Id="cmgX7DJYADH2JF2PK5BSGQCONVJ2A" Name="Table" Members="mthQ6TKV3AAF5DZNCMNTKF4LOC65M mth4PYPG6FD7FAUBOFOUAAPR2TGCA mthHQDTGHLSORBITN7B5THRD76AQQ mthSBVI35FR3VAR3CHR65INSDPIKE mthLASOA6PIQNH7PM7RE3252YHBGM mthMPIPEXVR45DBNGROKVEK4AJUFY"/>
-        <Group Id="cmgGWPHKASZI5BCHEWLGIIZEVMKDA" Name="API" Members="mth4YCADMO47JBLFFJQ5D7EMD2TW4"/>
+        <Group Id="cmgGWPHKASZI5BCHEWLGIIZEVMKDA" Name="API" Members="mth4YCADMO47JBLFFJQ5D7EMD2TW4 mthX4AJ5GLEKNCJJPLMKUFU6RYMBY mthZJRNV34XOJFUXNLLGQX2GGLCX4"/>
         <Group Id="cmg2ZUJZBCEHREKFD465VF7WZ6PSU" Name="Slots" Members="mthWGICF2YRWVH4DJRI37H73Z7O7U"/>
+        <Group Id="cmgB5TFASQSFNC5DEEHGDZOMMUJDU" Name="Events" Members="mthULTTDBUUKZHFBNXQNYAFBN3SLU mthYJXQ7ZHE2FGB5D2NE6CSGFKRUI"/>
+        <Group Id="cmgXKZHBNSJ65BG7LDNUBMG6J2YSM" Name="ParametersBinding" Members="mthSSN72DUICRESXAQVY3KQMVUENA mthZN25CDOYPNDI3DJ6NU7CJQVYJM"/>
       </MethodGroup>
-      <PropertyGroup Id="cpgDW7IRCSMB5ESLKXCAXBUYYILIA" Name="Root"/>
+      <PropertyGroup Id="cpgDW7IRCSMB5ESLKXCAXBUYYILIA" Name="Root">
+        <Group Id="cpgEFU4ZQF4PBAKNNA76ZOYVI7YSY" Name="Props" Members="prdAGLIP3ASYBAGLASSEC3ZPYN2EI prdJCZFMXLJXRDUDMHXVTSXLBDX5M prdFYUARKO5UFCS3EBKGGSNTXHUZQ"/>
+      </PropertyGroup>
       <Properties>
         <Property Id="prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Name="parametersBindingDoc" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
           <AccessRules/>
           <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument"/>
         </Property>
-        <Property Id="prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Name="userFunc" Nature="2" IsConst="false" IsOverride="false">
-          <AccessRules IsPublished="false"/>
-          <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef"/>
-        </Property>
         <Property Id="prdJCZFMXLJXRDUDMHXVTSXLBDX5M" Name="targetFunc" Nature="2" IsConst="false" IsOverride="false">
           <AccessRules IsPublished="false"/>
           <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
         </Property>
+        <Property Id="prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Name="userFunc" Nature="2" IsConst="false" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef"/>
+        </Property>
       </Properties>
       <Methods>
-        <Method Id="mthZJRNV34XOJFUXNLLGQX2GGLCX4" Name="init" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules/>
-          <Sources>
-            <Src>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthXILMFYHG3BCERAOBPMSQIDL2YU" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>(true);
-try {
-    final com.trolltech.qt.gui.QTableWidget table = </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>;
-    final java.util.ArrayList&lt;String> cols = new java.util.ArrayList&lt;String>();
-
-    cols.add(</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:LocalizedString StringId="mls4DREXV3TRZB4RPZGINBC4IJAYM"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>);
-    cols.add(</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:LocalizedString StringId="mlsHUA2YCXE6JAC3BN5JALYACJPZY"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>);
-    cols.add(</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:LocalizedString StringId="mlsMIMBFHVL5NHZPA4XPGHYZQNANU"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>);
-    targetParameters.clear();
-    if (</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdJCZFMXLJXRDUDMHXVTSXLBDX5M" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java> != null) {
-        AdsMethodDef.Profile profile = </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdJCZFMXLJXRDUDMHXVTSXLBDX5M" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.findProfile();
-        if (profile != null) {
-            for (MethodParameter p : profile.ParametersList) {
-                targetParameters.add(p);
-            }
-        }
-    }
-
-    table.setColumnCount(cols.size());
-    table.setRowCount(targetParameters.size());
-    table.setHorizontalHeaderLabels(cols);
-    table.setSortingEnabled(false);
-
-    </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthMPIPEXVR45DBNGROKVEK4AJUFY" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>();
-
-    table.horizontalHeader().setHighlightSections(false);
-    table.horizontalHeader().setResizeMode(PARAMETER_TITLE_COLUMN_IDX, com.trolltech.qt.gui.QHeaderView.ResizeMode.ResizeToContents);
-    table.horizontalHeader().setResizeMode(PARAMETER_TYPE_COLUMN_IDX, com.trolltech.qt.gui.QHeaderView.ResizeMode.ResizeToContents);
-    table.horizontalHeader().setResizeMode(VALUE_COLUMN_IDX, com.trolltech.qt.gui.QHeaderView.ResizeMode.Stretch);
-
-    table.setEditTriggers(
-            new com.trolltech.qt.gui.QAbstractItemView.EditTriggers(
-            com.trolltech.qt.gui.QAbstractItemView.EditTrigger.AnyKeyPressed,
-            com.trolltech.qt.gui.QAbstractItemView.EditTrigger.DoubleClicked,
-            com.trolltech.qt.gui.QAbstractItemView.EditTrigger.SelectedClicked));
-
-} finally {
-    </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthXILMFYHG3BCERAOBPMSQIDL2YU" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>(false);
-}</xsc:Java>
-              </xsc:Item>
-            </Src>
-          </Sources>
-        </Method>
-        <Method Id="mthYJXQ7ZHE2FGB5D2NE6CSGFKRUI" Name="canSafelyClean" Nature="0" IsOverride="true">
-          <AccessRules/>
-          <Parameters>
-            <Parameter Name="controller" Id="mprGTOR55SIC5G5BOHWPG455SINWE">
-              <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.CleanModelController"/>
-            </Parameter>
-          </Parameters>
-          <ReturnType TypeId="401" extStr="boolean"/>
-          <Sources>
-            <Src>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthULTTDBUUKZHFBNXQNYAFBN3SLU" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>();
-return super.</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthYJXQ7ZHE2FGB5D2NE6CSGFKRUI" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>(controller);
-
-</xsc:Java>
-              </xsc:Item>
-            </Src>
-          </Sources>
-        </Method>
-        <Method Id="mthULTTDBUUKZHFBNXQNYAFBN3SLU" Name="finishEdit" Nature="0" IsOverride="true">
-          <AccessRules/>
-          <Sources>
-            <Src>
-              <xsc:Item>
-                <xsc:Java>final QModelIndex currentIndex = </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.currentIndex();
-</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.setCurrentItem(null);
-</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.setCurrentIndex(currentIndex);
-super.</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthULTTDBUUKZHFBNXQNYAFBN3SLU" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>();
-</xsc:Java>
-              </xsc:Item>
-            </Src>
-          </Sources>
-        </Method>
         <Method Id="mthQ6TKV3AAF5DZNCMNTKF4LOC65M" Name="fillValueCell" Nature="0" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="row" Id="mprGXLVRCY23FHPLG6AGU44D2CXZY">
               <Type TypeId="401" extStr="int"/>
@@ -310,43 +137,85 @@ super.</xsc:Java>
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setItem(row, VALUE_COLUMN_IDX, valueItem);
-</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.setCellWidget(row, VALUE_COLUMN_IDX, </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthSBVI35FR3VAR3CHR65INSDPIKE" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>(row, param, xBinding));
-
 valueItem.setData(Qt.ItemDataRole.UserRole, param);
 
-if (xBinding != null) {
-    String strValue = </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthLASOA6PIQNH7PM7RE3252YHBGM" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>(xBinding, param);
-    valueItem.setData(Qt.ItemDataRole.DisplayRole, strValue);
-}
 </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcN4R32FFJGJBATPHMG5SHO2SUVI">
+                  <xsc:Presentation>Explorer.ValEditors::ValStrEditor</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> editor = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcN4R32FFJGJBATPHMG5SHO2SUVI">
+                  <xsc:Presentation>Explorer.ValEditors::ValStrEditor</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.cellWidget(row, VALUE_COLUMN_IDX);
+if (editor == null) {
+    editor = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthSBVI35FR3VAR3CHR65INSDPIKE" Invoke="true">
+                  <xsc:Presentation>createEditor</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(row, param, xBinding);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCellWidget(row, VALUE_COLUMN_IDX, editor);
+}
+
+final QTableWidgetItem typeItem = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.item(row, PARAMETER_TYPE_COLUMN_IDX);
+typeItem.setData(Qt.ItemDataRole.UserRole, xBinding);
+editor.Value = xBinding != null ? </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthLASOA6PIQNH7PM7RE3252YHBGM" Invoke="true">
+                  <xsc:Presentation>bindingXmlToStr</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(xBinding, param) : null;</xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>
         </Method>
         <Method Id="mth4PYPG6FD7FAUBOFOUAAPR2TGCA" Name="fillParamTitleCell" Nature="0" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="row" Id="mprGXLVRCY23FHPLG6AGU44D2CXZY">
               <Type TypeId="401" extStr="int"/>
@@ -364,7 +233,9 @@ parameterTitleItem.setFlags(new com.trolltech.qt.core.Qt.ItemFlags(com.trolltech
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setItem(row, PARAMETER_TITLE_COLUMN_IDX, parameterTitleItem);
@@ -375,7 +246,7 @@ parameterTitleItem.setText(param.Name);
           </Sources>
         </Method>
         <Method Id="mthHQDTGHLSORBITN7B5THRD76AQQ" Name="fillParamTypeCell" Nature="0" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="row" Id="mprGXLVRCY23FHPLG6AGU44D2CXZY">
               <Type TypeId="401" extStr="int"/>
@@ -396,7 +267,9 @@ parameterTypeItem.setFlags(new com.trolltech.qt.core.Qt.ItemFlags(com.trolltech.
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setItem(row, PARAMETER_TYPE_COLUMN_IDX, parameterTypeItem);
@@ -404,7 +277,9 @@ AdsTypeDeclaration type = param.Type;
 parameterTypeItem.setText(type.getQualifiedName(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Invoke="true">
+                  <xsc:Presentation>userFunc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>));
@@ -415,7 +290,7 @@ parameterTypeItem.setData(Qt.ItemDataRole.UserRole, xBinding);
           </Sources>
         </Method>
         <Method Id="mthSBVI35FR3VAR3CHR65INSDPIKE" Name="createEditor" Nature="0" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="row" Id="mprQIWFHTKGRFARXM6TPTFE6PUVDU">
               <Type TypeId="401" extStr="int"/>
@@ -431,24 +306,28 @@ parameterTypeItem.setData(Qt.ItemDataRole.UserRole, xBinding);
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:Java>final MethodParameter parameter = param;
-final AdsTypeDeclaration type = parameter.Type;
-final </xsc:Java>
+                <xsc:Java>final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcN4R32FFJGJBATPHMG5SHO2SUVI"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcN4R32FFJGJBATPHMG5SHO2SUVI">
+                  <xsc:Presentation>Explorer.ValEditors::ValStrEditor</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> editor = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcN4R32FFJGJBATPHMG5SHO2SUVI mthAAA7RY44UVC3PPQDOJ5I6K54Y4" Invoke="true"/>
+                <xsc:IdReference Path="adcN4R32FFJGJBATPHMG5SHO2SUVI mthAAA7RY44UVC3PPQDOJ5I6K54Y4" Invoke="true">
+                  <xsc:Presentation>ValStrEditor</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(Environment, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
@@ -457,43 +336,55 @@ final </xsc:Java>
         int row = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.itemAt(this.pos()).row();
-        final QTableWidgetItem valueItem = </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.item(row, VALUE_COLUMN_IDX);
         final QTableWidgetItem typeItem = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.item(row, PARAMETER_TYPE_COLUMN_IDX);
+        
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> xBinding1 = (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) typeItem.data(Qt.ItemDataRole.UserRole);
-        //final ParameterDeclaration parameter1=( ParameterDeclaration)valueItem.data(Qt.ItemDataRole.UserRole);
+        final MethodParameter parameter = (MethodParameter) </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.itemAt(this.pos()).data(Qt.ItemDataRole.UserRole);
         if (xBinding1 == null) {
             xBinding1 = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.Factory.newInstance();
@@ -503,39 +394,50 @@ final </xsc:Java>
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcWB7TTEJH4RGK3LDWT5NIRLB6CI"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcWB7TTEJH4RGK3LDWT5NIRLB6CI">
+                  <xsc:Presentation>LinkedFuncParamWizard</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> wizard = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcWB7TTEJH4RGK3LDWT5NIRLB6CI"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcWB7TTEJH4RGK3LDWT5NIRLB6CI">
+                  <xsc:Presentation>LinkedFuncParamWizard</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdgIDZ7USR5KVE7LB4QYZYTNZCY5E" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdgIDZ7USR5KVE7LB4QYZYTNZCY5E" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Invoke="true">
+                  <xsc:Presentation>userFunc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>, type, xBinding1, </xsc:Java>
+                <xsc:Java>, parameter, xBinding1, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>());
-
         if (wizard.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU mth2VIBKJCSUBANDEMJZ454NOG4FA" Invoke="true"/>
+                <xsc:IdReference Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU mth2VIBKJCSUBANDEMJZ454NOG4FA" Invoke="true">
+                  <xsc:Presentation>exec</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>() == 1) {
@@ -545,10 +447,12 @@ final </xsc:Java>
             Value = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthLASOA6PIQNH7PM7RE3252YHBGM" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthLASOA6PIQNH7PM7RE3252YHBGM" Invoke="true">
+                  <xsc:Presentation>bindingXmlToStr</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(xBinding1, parameter);            
+                <xsc:Java>(xBinding1, parameter);
         }
     }
 };
@@ -556,7 +460,9 @@ final </xsc:Java>
 editor.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthKG22PYUP5FCCNHMIGNJPEBDR7M" Invoke="true"/>
+                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthKG22PYUP5FCCNHMIGNJPEBDR7M" Invoke="true">
+                  <xsc:Presentation>setReadOnly</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(true);
@@ -567,29 +473,45 @@ toolButton.clicked.connect(editor, "infoButtonClicked()");
 editor.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthK4EPRRMH75HELI4TSLE5M5UVKM" Invoke="true"/>
+                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthK4EPRRMH75HELI4TSLE5M5UVKM" Invoke="true">
+                  <xsc:Presentation>addButton</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(toolButton);
-if (xBinding != null) {
-    String strValue = </xsc:Java>
+editor.setTextOptionsForMarker(org.radixware.kernel.common.client.enums.ETextOptionsMarker.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthLASOA6PIQNH7PM7RE3252YHBGM" Invoke="true"/>
+                <xsc:IdReference Path="adcYKGWVYN4IVC7VIAJCJ6R3YXTWU prdJNRFLSTRIZAG5M7QVFGGJGPAIU" Invoke="true">
+                  <xsc:Presentation>UNDEFINED_VALUE</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(xBinding, parameter);
-    editor.Value = strValue;
-}
-return editor;
+                <xsc:Java>, editor.getTextOptions().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcSLVKGTPV6VGDFMXOPLFHI42XTE mthE3DDXMLBZRF4TGUKA3SWT6BDN4" Invoke="true">
+                  <xsc:Presentation>changeForegroundColor</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M">
+                  <xsc:Presentation>Utils::Color</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.RED));
 
-</xsc:Java>
+return editor;</xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>
         </Method>
         <Method Id="mthLASOA6PIQNH7PM7RE3252YHBGM" Name="bindingXmlToStr" Nature="0" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="xBinding" Id="mprY2N6LM2OJNFBBGX2PUGEP63BI4">
               <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
@@ -606,7 +528,9 @@ return editor;
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(),
@@ -614,7 +538,9 @@ return editor;
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Invoke="true">
+                  <xsc:Presentation>userFunc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>,
@@ -629,7 +555,9 @@ return editor;
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true">
+                  <xsc:Presentation>parametersBindingDoc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = null;
@@ -638,27 +566,35 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
     if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true">
+                  <xsc:Presentation>parametersBindingDoc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == null) {
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true">
+                  <xsc:Presentation>parametersBindingDoc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument.Factory"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument.Factory">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingDocument.Factory</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.newInstance();
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true">
+                  <xsc:Presentation>parametersBindingDoc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.addNewParametersBinding();
@@ -667,13 +603,17 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
     final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> binding = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true">
+                  <xsc:Presentation>parametersBindingDoc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.ParametersBinding.addNewParameterBinding();
@@ -681,20 +621,26 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
     final QTableWidgetItem bindingTypeItem = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.item(y, PARAMETER_TYPE_COLUMN_IDX);
     final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> bindingData = (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) bindingTypeItem.data(Qt.ItemDataRole.UserRole);
@@ -708,7 +654,7 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
           </Sources>
         </Method>
         <Method Id="mthMPIPEXVR45DBNGROKVEK4AJUFY" Name="fill" Nature="0" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Sources>
             <Src>
               <xsc:Item>
@@ -724,13 +670,17 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
         final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcN4R32FFJGJBATPHMG5SHO2SUVI"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcN4R32FFJGJBATPHMG5SHO2SUVI">
+                  <xsc:Presentation>Explorer.ValEditors::ValStrEditor</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> editor = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcN4R32FFJGJBATPHMG5SHO2SUVI mthAAA7RY44UVC3PPQDOJ5I6K54Y4" Invoke="true"/>
+                <xsc:IdReference Path="adcN4R32FFJGJBATPHMG5SHO2SUVI mthAAA7RY44UVC3PPQDOJ5I6K54Y4" Invoke="true">
+                  <xsc:Presentation>ValStrEditor</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(Environment, parent) {
@@ -792,13 +742,17 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
                 sb.append(parameter.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true"/>
+                <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true">
+                  <xsc:Presentation>getId</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>().</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true"/>
+                <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true">
+                  <xsc:Presentation>toString</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>());
@@ -811,7 +765,9 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
                 Environment.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthZ7S4BY675BD6BHV4PD4UZFF6HA" Invoke="true"/>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthZ7S4BY675BD6BHV4PD4UZFF6HA" Invoke="true">
+                  <xsc:Presentation>messageInformation</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
@@ -827,7 +783,9 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
         editor.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthKG22PYUP5FCCNHMIGNJPEBDR7M" Invoke="true"/>
+                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthKG22PYUP5FCCNHMIGNJPEBDR7M" Invoke="true">
+                  <xsc:Presentation>setReadOnly</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(true);
@@ -837,7 +795,9 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
         toolButton.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthE5527BP44RG5BD6VVB72N7YX6Y" Invoke="true"/>
+                <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthE5527BP44RG5BD6VVB72N7YX6Y" Invoke="true">
+                  <xsc:Presentation>setProperty</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(toolButton.text(), parameter);
@@ -845,7 +805,9 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
         editor.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthK4EPRRMH75HELI4TSLE5M5UVKM" Invoke="true"/>
+                <xsc:IdReference Path="adc577BIS4VOZF6LHBG5OV7JJ5SVY mthK4EPRRMH75HELI4TSLE5M5UVKM" Invoke="true">
+                  <xsc:Presentation>addButton</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(toolButton);
@@ -860,7 +822,9 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
 final TitleItemDelegate titleDelegate = new TitleItemDelegate(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -868,7 +832,9 @@ final TitleItemDelegate titleDelegate = new TitleItemDelegate(</xsc:Java>
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setItemDelegateForColumn(PARAMETER_TITLE_COLUMN_IDX, titleDelegate);
@@ -877,64 +843,79 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> binding = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY">
+                  <xsc:Presentation>Reports::ReportsExplorerUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthH6QGKYQ4UNGSHNRUVFWCTH7JCA" Invoke="true"/>
+                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthH6QGKYQ4UNGSHNRUVFWCTH7JCA" Invoke="true">
+                  <xsc:Presentation>findParameterBindingById</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true">
+                  <xsc:Presentation>parametersBindingDoc</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, parameter.Id);
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthHQDTGHLSORBITN7B5THRD76AQQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthHQDTGHLSORBITN7B5THRD76AQQ" Invoke="true">
+                  <xsc:Presentation>fillParamTypeCell</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(y, parameter, binding);
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mth4PYPG6FD7FAUBOFOUAAPR2TGCA" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mth4PYPG6FD7FAUBOFOUAAPR2TGCA" Invoke="true">
+                  <xsc:Presentation>fillParamTitleCell</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(y, parameter);
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthQ6TKV3AAF5DZNCMNTKF4LOC65M" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthQ6TKV3AAF5DZNCMNTKF4LOC65M" Invoke="true">
+                  <xsc:Presentation>fillValueCell</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(y, parameter, binding);
-    </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.resizeColumnsToContents();
 }
 </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.resizeColumnsToContents();</xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>
         </Method>
         <Method Id="mthWGICF2YRWVH4DJRI37H73Z7O7U" Name="table_cellChanged" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="row" Id="mpr6D4HIZ337BGC5I3QUMVACPEDE4">
               <Type TypeId="400" extStr="java.lang.Integer"/>
@@ -946,17 +927,414 @@ for (int y = 0; y &lt; targetParameters.size(); y++) {
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mth4YCADMO47JBLFFJQ5D7EMD2TW4" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mth4YCADMO47JBLFFJQ5D7EMD2TW4" Invoke="true">
+                  <xsc:Presentation>save</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ sigODTPDZAGNFG5BBJ2SHHYQEJVCQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ sigODTPDZAGNFG5BBJ2SHHYQEJVCQ" Invoke="true">
+                  <xsc:Presentation>changed</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.emit();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthX4AJ5GLEKNCJJPLMKUFU6RYMBY" Name="autoParamBinding" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="221"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (targetParameters == null || targetParameters.isEmpty() || thisParameters == null || thisParameters.isEmpty()) {
+    return null;
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingDocument</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xDoc = null;
+final java.util.List&lt;MethodParameter> candidatesParams = new java.util.ArrayList&lt;>(thisParameters);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="221">
+                  <xsc:Presentation>ArrStr</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> bindedParametersNames = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="221">
+                  <xsc:Presentation>ArrStr</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+int index = 0;
+for (MethodParameter par : targetParameters) {
+    for (int candidateIdx = 0; candidateIdx &lt; candidatesParams.size(); candidateIdx++) {
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthSSN72DUICRESXAQVY3KQMVUENA" Invoke="true">
+                  <xsc:Presentation>isParametersEquals</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(par, candidatesParams.get(candidateIdx))) {
+            if (xDoc == null) {
+                xDoc = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingDocument.Factory">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingDocument.Factory</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.newInstance();
+                xDoc.addNewParametersBinding();
+            }
+            
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                  <xsc:Presentation>Reports::ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xParam = xDoc.ParametersBinding.addNewParameterBinding();
+            xParam.ParameterId = par.Id;
+            xParam.Parameter = candidatesParams.get(candidateIdx).Id;
+            
+            candidatesParams.remove(candidateIdx);
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthQ6TKV3AAF5DZNCMNTKF4LOC65M" Invoke="true">
+                  <xsc:Presentation>fillValueCell</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(index, par, xParam);
+            bindedParametersNames.add(par.Name);
+            break;
+        }
+    }
+    index++;
+}
+
+if (xDoc != null) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdAGLIP3ASYBAGLASSEC3ZPYN2EI" Invoke="true">
+                  <xsc:Presentation>parametersBindingDoc</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = xDoc;
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ sigODTPDZAGNFG5BBJ2SHHYQEJVCQ" Invoke="true">
+                  <xsc:Presentation>changed</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.emit();
+}
+
+return bindedParametersNames;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthULTTDBUUKZHFBNXQNYAFBN3SLU" Name="finishEdit" Nature="0" IsOverride="true">
+          <AccessRules/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>final QModelIndex currentIndex = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.currentIndex();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCurrentItem(null);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setCurrentIndex(currentIndex);
+super.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthULTTDBUUKZHFBNXQNYAFBN3SLU" Invoke="true">
+                  <xsc:Presentation>finishEdit</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthYJXQ7ZHE2FGB5D2NE6CSGFKRUI" Name="canSafelyClean" Nature="0" IsOverride="true">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="controller" Id="mprGTOR55SIC5G5BOHWPG455SINWE">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.CleanModelController"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthULTTDBUUKZHFBNXQNYAFBN3SLU" Invoke="true">
+                  <xsc:Presentation>finishEdit</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+return super.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthYJXQ7ZHE2FGB5D2NE6CSGFKRUI" Invoke="true">
+                  <xsc:Presentation>canSafelyClean</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(controller);
+
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthZJRNV34XOJFUXNLLGQX2GGLCX4" Name="init" Nature="0" Environment="explorer" IsOverride="false">
+          <AccessRules/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthXILMFYHG3BCERAOBPMSQIDL2YU" Invoke="true">
+                  <xsc:Presentation>blockSignals</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+try {
+    final com.trolltech.qt.gui.QTableWidget table = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    final java.util.ArrayList&lt;String> cols = new java.util.ArrayList&lt;String>();
+
+    cols.add(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsIVGYJ4PKNRGIZLIC7CJKVVWWB4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    cols.add(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls5TVJ6LORX5CYJFMAIR4X77NPX4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    cols.add(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsCEYVRMSJ4VAABEVLP3R6ARG6ZY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+    
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthZN25CDOYPNDI3DJ6NU7CJQVYJM" Invoke="true">
+                  <xsc:Presentation>initParamsList</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdJCZFMXLJXRDUDMHXVTSXLBDX5M" Invoke="true">
+                  <xsc:Presentation>targetFunc</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, targetParameters);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthZN25CDOYPNDI3DJ6NU7CJQVYJM" Invoke="true">
+                  <xsc:Presentation>initParamsList</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Invoke="true">
+                  <xsc:Presentation>userFunc</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, thisParameters);
+
+    table.setColumnCount(cols.size());
+    table.setRowCount(targetParameters.size());
+    table.setHorizontalHeaderLabels(cols);
+    table.setSortingEnabled(false);
+
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ mthMPIPEXVR45DBNGROKVEK4AJUFY" Invoke="true">
+                  <xsc:Presentation>fill</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+
+    table.horizontalHeader().setHighlightSections(false);
+    table.horizontalHeader().setResizeMode(PARAMETER_TITLE_COLUMN_IDX, com.trolltech.qt.gui.QHeaderView.ResizeMode.ResizeToContents);
+    table.horizontalHeader().setResizeMode(PARAMETER_TYPE_COLUMN_IDX, com.trolltech.qt.gui.QHeaderView.ResizeMode.ResizeToContents);
+    table.horizontalHeader().setResizeMode(VALUE_COLUMN_IDX, com.trolltech.qt.gui.QHeaderView.ResizeMode.Stretch);
+
+    table.setEditTriggers(
+            new com.trolltech.qt.gui.QAbstractItemView.EditTriggers(
+            com.trolltech.qt.gui.QAbstractItemView.EditTrigger.AnyKeyPressed,
+            com.trolltech.qt.gui.QAbstractItemView.EditTrigger.DoubleClicked,
+            com.trolltech.qt.gui.QAbstractItemView.EditTrigger.SelectedClicked));
+
+} finally {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ wdg4R7IQK5U5ZEAZFGKWBSA2MCXRQ" Invoke="true">
+                  <xsc:Presentation>UserFuncParametersBindingWidget:Widget:table</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthXILMFYHG3BCERAOBPMSQIDL2YU" Invoke="true">
+                  <xsc:Presentation>blockSignals</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(false);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthSSN72DUICRESXAQVY3KQMVUENA" Name="isParametersEquals" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="formalPar" Id="mprXGYAX3NXUJHDVNMO6DWRVR72PE">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter"/>
+            </Parameter>
+            <Parameter Name="candidatePar" Id="mpr44DYI2RUE5DXZBSHL6VS2KEPMM">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return formalPar.Id == candidatePar.Id
+        || (formalPar.Name.equals(candidatePar.Name)
+        &amp;&amp; AdsTypeDeclaration.isAssignable(formalPar.Type, candidatePar.Type, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcBD3TPDVACNDGVG6OJVI7LUP6CQ admBD3TPDVACNDGVG6OJVI7LUP6CQ prdFYUARKO5UFCS3EBKGGSNTXHUZQ" Invoke="true">
+                  <xsc:Presentation>userFunc</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>));</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthZN25CDOYPNDI3DJ6NU7CJQVYJM" Name="initParamsList" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+          <Parameters>
+            <Parameter Name="func" Id="mprCC4BMRGM3ZFUPOQ3N7HUV7XGN4">
+              <Type TypeId="411" Path="adcEWGZMSHL3BFCFFIJVRGAJSRPEY"/>
+            </Parameter>
+            <Parameter Name="params" Id="mprGS2BJJXKI5FIBAXMO7JHCCGR7E">
+              <Type TypeId="400" extStr="java.util.List">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </Type>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>params.clear();
+if (func != null) {
+    AdsMethodDef.Profile profile = func.findProfile();
+    if (profile != null) {
+        for (MethodParameter p : profile.ParametersList) {
+            params.add(p);
+        }
+    }
+}</xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>

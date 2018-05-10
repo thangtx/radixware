@@ -24,7 +24,12 @@ import org.radixware.kernel.starter.config.ConfigFileParseException;
 public class StarterCommandLineParser {
 
     public static StarterArguments parse(String[] args) throws ConfigFileParseException {
-        if (("-" + StarterArguments.CONFIG_FILE).equals(args[0])) {
+        if (args.length == 0) {
+            Starter.copyright();
+            Starter.use();
+            System.exit(0);
+        }
+        else if (("-" + StarterArguments.CONFIG_FILE).equals(args[0])) {
             StarterArguments argsFromFile = parseArgumentsFromFile(args[1]);
             if (args.length == 2) {
                 return argsFromFile;

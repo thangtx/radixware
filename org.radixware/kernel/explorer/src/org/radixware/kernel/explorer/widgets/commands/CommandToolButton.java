@@ -11,12 +11,18 @@
 
 package org.radixware.kernel.explorer.widgets.commands;
 
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QEventFilter;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QSizePolicy.Policy;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWidget;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.LinkedList;
 import org.radixware.kernel.common.client.models.items.Command;
@@ -24,30 +30,67 @@ import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.utils.ClientValueFormatter;
+import org.radixware.kernel.common.client.utils.ThreadDumper;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.ICommandToolButton;
 import org.radixware.kernel.common.client.widgets.IPeriodicalTask;
 import org.radixware.kernel.common.client.widgets.IToolButton;
 import org.radixware.kernel.common.client.widgets.TimerEventHandler;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.explorer.utils.LeakedWidgetsDetector;
 
 
 public class CommandToolButton extends QToolButton implements ICommandToolButton {
     
+    private final static class ChangeParentEventListener extends QEventFilter{
+        
+        private final StringBuilder logBuilder = new StringBuilder();
+        
+        public ChangeParentEventListener(final QObject parent){
+            super(parent);
+            setProcessableEventTypes(EnumSet.of(QEvent.Type.ParentChange));
+        }
+
+        @Override
+        public boolean eventFilter(final QObject targetObject, final QEvent event) {
+            if (targetObject!=null){
+                if (targetObject.parent()==null){
+                    logBuilder.append("Setting parent to null\n");                    
+                }else{
+                    logBuilder.append("Setting parent widget\n");
+                }
+                logBuilder.append(ThreadDumper.dumpSync());
+            }
+            return false;
+        }        
+        
+        public String getLog(){
+            return logBuilder.toString();
+        }
+        
+        public void addLogMessage(final String message){
+            logBuilder.append(message);
+        }
+    }
+    
     private CommandButton cmd;
     private boolean reenterBlock;
+    private final String creationStackTrace;
     private final Id propertyId;    
     private final List<ClickHandler> clickHandlers = new LinkedList<>();
     private final ClickHandler cmdExec = new ClickHandler() {
-
         @Override
         public void onClick(final IButton source) {
             if (cmd != null) {
                 cmd.onExecute();
             }
         }
-    };    
+    };
+    
+    
+    private final ChangeParentEventListener changeParentListener;
         
     public CommandToolButton(final QWidget parent) {
         super(parent);
@@ -55,24 +98,39 @@ public class CommandToolButton extends QToolButton implements ICommandToolButton
         propertyId = null;
         addClickHandler(cmdExec);
         clicked.connect(this, "clickSlot()");
+        if (LeakedWidgetsDetector.getInstance().isEnabled()){
+            creationStackTrace = ThreadDumper.dumpSync();
+            changeParentListener = new ChangeParentEventListener(this);
+            installEventFilter(changeParentListener);
+        }else{
+            changeParentListener = null;
+            creationStackTrace = null;
+        }
+        setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose);
     }
 
     public CommandToolButton(final Command command) {
-        cmd = new CommandButton(command);
-        setObjectName("command button #" + command.getId().toString());
-        propertyId = null;
-        this.setSizePolicy(Policy.Expanding, Policy.Expanding);
-        addClickHandler(cmdExec);
-        clicked.connect(this, "clickSlot()");
+        this(command,null);
     }
 
     public CommandToolButton(final Command command, final Property property) {
-        cmd = new CommandButton(command, property);
-        setObjectName("command button #" + command.getId().toString());
-        propertyId = property.getId();
+        cmd = command==null ? null : new CommandButton(command, property);
+        if (command!=null){
+            setObjectName("command button #" + command.getId().toString());
+        }
+        propertyId = property==null ? null : property.getId();
         setSizePolicy(Policy.Expanding, Policy.Expanding);
         addClickHandler(cmdExec);
         clicked.connect(this, "clickSlot()");
+        if (LeakedWidgetsDetector.getInstance().isEnabled()){
+            creationStackTrace = ThreadDumper.dumpSync();
+            changeParentListener = new ChangeParentEventListener(this);
+            installEventFilter(changeParentListener);
+        }else{
+            creationStackTrace = null;
+            changeParentListener = null;
+        }
+        setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose);
     }
 
     public void setIconId(final Id iconId) {
@@ -170,8 +228,9 @@ public class CommandToolButton extends QToolButton implements ICommandToolButton
     public void bind() {
         if (cmd == null) {
             throw new IllegalStateException("command was not defined");
-        }
+        }        
         cmd.subscribe(this);
+        setObjectName("rx_cmd_tbtn_#"+cmd.getCommand().getId().toString());
     }
 
     @Override
@@ -206,6 +265,10 @@ public class CommandToolButton extends QToolButton implements ICommandToolButton
         if (cmd != null) {
             cmd.unsubscribe(this);
         }
+        if (changeParentListener!=null){
+            changeParentListener.addLogMessage("\nClose event received\n");
+        }
+        disableGarbageCollection();//Qt.WidgetAttribute.WA_DeleteOnClose attribute is set so button will be deleted in dispose event
         super.closeEvent(event);
     }
 
@@ -280,5 +343,23 @@ public class CommandToolButton extends QToolButton implements ICommandToolButton
     @Override
     public void killTimer(final IPeriodicalTask task) {
         throw new UnsupportedOperationException("killTimer is not supported here.");
+    }    
+
+    @Override
+    public void setMenu(IMenu menu) {
+        super.setMenu((QMenu) menu);
+    }
+
+    @Override
+    public IMenu getMenu() {
+        return (IMenu) super.menu();
+    }        
+    
+    @Override
+    public String getCreationStackTrace(){
+        if (changeParentListener==null){
+            return null;
+        }
+        return creationStackTrace + "\n" + changeParentListener.getLog();
     }    
 }

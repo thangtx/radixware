@@ -170,7 +170,13 @@ public class RadParagraphExplorerItemDef extends RadExplorerItemDef {
     }
 
     @Override
+    @Deprecated
     public boolean isCommandEnabled(final Id cmdId) {
+        return false;
+    }
+    
+    @Override    
+    public boolean isCommandEnabled(final Id cmdId, final boolean isReadOnly) {
         return false;
     }
 

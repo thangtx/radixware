@@ -1,0 +1,900 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcDJAGZZGIBVC33OZIJ34GYX5WPI" Name="CfgUserFuncImportHelper" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcDJAGZZGIBVC33OZIJ34GYX5WPI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcDJAGZZGIBVC33OZIJ34GYX5WPI"/>
+    </Bodies>
+    <MethodGroup Id="cmgIWE3CDWCYBE5LFQNSP7OUF2NLE" Name="Root"/>
+    <PropertyGroup Id="cpg3Z5BTQXHEZD6RHFSAAF5LGWGQY" Name="Root"/>
+    <Properties>
+      <Property Id="prd2HW67HV2ORGYPKN53IU7QNVEDU" Name="funcsToDeferredCompile" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="231" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+      </Property>
+      <Property Id="prdRXZH2J3QDJD7ZIB7UC543KYAMU" Name="helper" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="aicKHRATBBJWBDMXKUCDE7IDPVFOM"/>
+      </Property>
+      <Property Id="prdDRWBD3UAIFFANJZATTFRWDVPOI" Name="isCompileDeferred" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="401" extStr="boolean"/>
+      </Property>
+      <Property Id="prdHQPOVS3OUVHCRCXW46EALU5Q2Y" Name="initialSize" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="401" extStr="int"/>
+      </Property>
+      <Property Id="prdXDHDRA4D5RAXNBBWOXBVNVABRA" Name="func2Title" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthN47TNEHC4FAHZNSCA3IGFJDZYI" Name="isCompileDeferred" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdDRWBD3UAIFFANJZATTFRWDVPOI" Invoke="true">
+                <xsc:Presentation>isCompileDeferred</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHMCQINZVHFEUXJQXWQKY3O3RGY" Name="compile" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="progressDlg" Id="mpr5GA2H6NIYNG73KKEIJW7XPITT4">
+            <Type TypeId="411" Path="pdcProgressDialogResourceProc"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdHQPOVS3OUVHCRCXW46EALU5Q2Y" Invoke="true">
+                <xsc:Presentation>initialSize</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size();
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcN75M56PCGVETRM4UD2SPS2ZXCQ">
+                <xsc:Presentation>UserFunc::UserFuncCompiler</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> compiler = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN75M56PCGVETRM4UD2SPS2ZXCQ mthBODVNFSER5H3FHWWXJWQ3Y72XY" Invoke="true">
+                <xsc:Presentation>UserFuncCompiler</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+compiler.useSharedWorkspace
+        = org.radixware.kernel.common.utils.SystemPropUtils.
+        getBooleanSystemProp(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN75M56PCGVETRM4UD2SPS2ZXCQ mthBODVNFSER5H3FHWWXJWQ3Y72XY" Invoke="true">
+                <xsc:Presentation>UserFuncCompiler</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.USE_SHARED_WORKSPACE_ON_CFG_IMPORT, true);
+
+try {
+    while (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isEmpty()) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM">
+                <xsc:Presentation>UserFunc::UserFunc</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> func = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.remove(0);
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI mthLOOG5AHYH5BWTLAJRV5MQJ23AI" Invoke="true">
+                <xsc:Presentation>checkIsValidState</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(func)) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI mth6VQWOBTGSJFGTEHGQAE3VH5NQU" Invoke="true">
+                <xsc:Presentation>compileFunc</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(func, progressDlg, compiler);
+        }
+    }
+} finally {
+    org.radixware.kernel.common.repository.Branch branch = null;
+    try {
+        branch = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                <xsc:Presentation>getDefManager</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().ReleaseCache.Release.Repository.getBranch();
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    }
+    compiler.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcN75M56PCGVETRM4UD2SPS2ZXCQ mthYIPHDNFUHZGKJCTCCSL7ELLBG4" Invoke="true">
+                <xsc:Presentation>close</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(branch);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLZMFPBWEQZCBLAB7OLZJYXJDTU" Name="CfgUserFuncImportHelper" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="helper" Id="mprGL6ZLI4IWVAKBJAA4TMQXV3P6E">
+            <Type TypeId="411" Path="aicKHRATBBJWBDMXKUCDE7IDPVFOM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="231">
+                <xsc:Presentation>ArrParentRef</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdXDHDRA4D5RAXNBBWOXBVNVABRA" Invoke="true">
+                <xsc:Presentation>func2Title</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new java.util.HashMap&lt;>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdDRWBD3UAIFFANJZATTFRWDVPOI" Invoke="true">
+                <xsc:Presentation>isCompileDeferred</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = false;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdRXZH2J3QDJD7ZIB7UC543KYAMU" Invoke="true">
+                <xsc:Presentation>helper</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = helper;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCXWZSHVP7ZCE7H6TO5FKQQIUNU" Name="scheduleDeferredCompile" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="userFunc" Id="mprPICSQ5GE25E53GDB7MWGYEJ4YQ">
+            <Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.contains(userFunc)) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(userFunc);
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdXDHDRA4D5RAXNBBWOXBVNVABRA" Invoke="true">
+                <xsc:Presentation>func2Title</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(userFunc, userFunc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdYLLJTXZ45NHMLOCQFZSHR4PHOQ" Invoke="true">
+                <xsc:Presentation>path</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6VQWOBTGSJFGTEHGQAE3VH5NQU" Name="compileFunc" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="func" Id="mprWIZLP6F4XVCE3PD7OBNXODWUEU">
+            <Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="progrProc" Id="mprASPASYMQPJDTDNS3ZZ6WNX6SDQ">
+            <Type TypeId="411" Path="pdcProgressDialogResourceProc"/>
+          </Parameter>
+          <Parameter Name="compiler" Id="mprJ7M3Y3KEIJEKDFIDT52RBNVH6E">
+            <Type TypeId="411" Path="adcN75M56PCGVETRM4UD2SPS2ZXCQ"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM colPNLNJ2WNRJCBPBR6JPI3RZ4TVE" Invoke="true">
+                <xsc:Presentation>isLinkUsed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null || !func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM colPNLNJ2WNRJCBPBR6JPI3RZ4TVE" Invoke="true">
+                <xsc:Presentation>isLinkUsed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue()) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM">
+                <xsc:Presentation>UserFunc::UserFunc</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> thisFunc = func;
+    org.radixware.kernel.common.check.IProblemHandler diagnoseHandler = new org.radixware.kernel.common.check.IProblemHandler() {
+        public void accept(org.radixware.kernel.common.check.RadixProblem p) {
+            if (p.Severity == org.radixware.kernel.common.check.RadixProblem.ESeverity.ERROR) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM">
+                <xsc:Presentation>UserFunc::UserFunc</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthN5W43F34FRGKNFS764PPDQF7WY" Invoke="true">
+                <xsc:Presentation>getCompilationErrorMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(thisFunc, p), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            }
+        }
+    };
+    if (progrProc != null) {
+        final float progress = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdHQPOVS3OUVHCRCXW46EALU5Q2Y" Invoke="true">
+                <xsc:Presentation>initialSize</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size()) / (float) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdHQPOVS3OUVHCRCXW46EALU5Q2Y" Invoke="true">
+                <xsc:Presentation>initialSize</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> * 100;
+        try {
+            progrProc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResourceProc mthAE7I7CG6LRCUTPDSXDSOB7YV2I" Invoke="true">
+                <xsc:Presentation>set</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls4IN4U7DRQRGK3FMN3RKG7MYSFA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdHQPOVS3OUVHCRCXW46EALU5Q2Y" Invoke="true">
+                <xsc:Presentation>initialSize</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdHQPOVS3OUVHCRCXW46EALU5Q2Y" Invoke="true">
+                <xsc:Presentation>initialSize</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdYLLJTXZ45NHMLOCQFZSHR4PHOQ" Invoke="true">
+                <xsc:Presentation>path</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>),
+                    progress, true);
+            if (progrProc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResourceProc mthOO36ZLGAUFACFAOZH2H5IPXNJM" Invoke="true">
+                <xsc:Presentation>checkIsCancelled</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())
+                throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc5LUISDZ63BEF7O6K6AOQJQLKSA mthUQWZDXH3VZAMTGF3W7T33X7CTE" Invoke="true">
+                <xsc:Presentation>InvalidEasRequestClientFault</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsAH22PVQLYFCF5M75535XSBCSY4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> | </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4">
+                <xsc:Presentation>Exceptions::ResourceUsageException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> | </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU">
+                <xsc:Presentation>Exceptions::ResourceUsageTimeout</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Error on user function compilation", ex);
+        }
+    }
+    try {
+        func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthW3C2BMJXMBFDVK5MO434UHDW5E" Invoke="true">
+                <xsc:Presentation>compile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(compiler, diagnoseHandler, true, false);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.format("Error on compile '%s':%n%s", func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdYLLJTXZ45NHMLOCQFZSHR4PHOQ" Invoke="true">
+                <xsc:Presentation>path</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex)),
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciCFUQ37CISJBKXJDFGRS6QDCUTQ" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:AppCfgPackage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+} else {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM">
+                <xsc:Presentation>UserFunc::LibUserFunc</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> linkedFunc = func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdXRTJJSPDT5F4ROOQGMN3K5MJDQ" Invoke="true">
+                <xsc:Presentation>linkedLibFunc</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    if (linkedFunc != null) {
+        int index = 0;
+        int fcnToCompileIdx = -1;
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> linkedFuncId = linkedFunc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM pruSVH5HTN7GNAR7MTQFFWAZRZ2YI" Invoke="true">
+                <xsc:Presentation>upUserFunc</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col6V3CVGAHT5GRXAQ6VRLN3YVQGQ" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM">
+                <xsc:Presentation>UserFunc::UserFunc</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fcn : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            if (fcn.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col6V3CVGAHT5GRXAQ6VRLN3YVQGQ" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.equals(linkedFuncId)) {
+                fcnToCompileIdx = index;
+                break;
+            }
+            index++;
+        }
+        if (fcnToCompileIdx != -1) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI mth6VQWOBTGSJFGTEHGQAE3VH5NQU" Invoke="true">
+                <xsc:Presentation>compileFunc</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prd2HW67HV2ORGYPKN53IU7QNVEDU" Invoke="true">
+                <xsc:Presentation>funcsToDeferredCompile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.remove(fcnToCompileIdx), progrProc, compiler);
+        }
+    }
+}
+
+func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthX7XPNMOB7ZH5HEM4SOGAGA4N7A" Invoke="true">
+                <xsc:Presentation>actualizeUsedDefinitions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdRXZH2J3QDJD7ZIB7UC543KYAMU" Invoke="true">
+                <xsc:Presentation>helper</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mth63BUKCYF3FA7LP4HZQMBCOS3FU" Invoke="true">
+                <xsc:Presentation>reportIsStateValid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdRXZH2J3QDJD7ZIB7UC543KYAMU" Invoke="true">
+                <xsc:Presentation>helper</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2BNW4O2S3ZE6RAQ2VCWDYP6V4Y" Name="setCompileDeferred" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="enable" Id="mpr4NABRJF2RFDSZEDTSRTXCD27FU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdDRWBD3UAIFFANJZATTFRWDVPOI" Invoke="true">
+                <xsc:Presentation>isCompileDeferred</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = enable;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLOOG5AHYH5BWTLAJRV5MQJ23AI" Name="checkIsValidState" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="func" Id="mprIWTHEAMGSRANNKVQAQH42QQVDE">
+            <Type TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthPOB2MIQLR5FBHODMKA2AWCPQQM" Invoke="true">
+                <xsc:Presentation>isDiscarded</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() || func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mth3ZCIEHV3MNDJHGQV64AG7HSIPE" Invoke="true">
+                <xsc:Presentation>isDeleted</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsGWRQMFSAFFFUTICI3EJJMM2VLE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDJAGZZGIBVC33OZIJ34GYX5WPI prdXDHDRA4D5RAXNBBWOXBVNVABRA" Invoke="true">
+                <xsc:Presentation>func2Title</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(func), func.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthPOB2MIQLR5FBHODMKA2AWCPQQM" Invoke="true">
+                <xsc:Presentation>isDiscarded</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() ? "DISCARDED" : "DELETED"),
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciCFUQ37CISJBKXJDFGRS6QDCUTQ" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:AppCfgPackage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return false;
+}
+return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aic2IBUQCCYOVEKTNYCLS4AL3LE44"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

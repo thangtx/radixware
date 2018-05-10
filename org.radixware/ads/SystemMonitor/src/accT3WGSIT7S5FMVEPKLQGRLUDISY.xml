@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accT3WGSIT7S5FMVEPKLQGRLUDISY" Name="MetricCalculationTasksCursor" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccT3WGSIT7S5FMVEPKLQGRLUDISY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccT3WGSIT7S5FMVEPKLQGRLUDISY"/>
+    </Bodies>
+    <MethodGroup Id="cmg5QNGTFMRCZBRNMQGZHHLQDXPLQ" Name="Root"/>
+    <PropertyGroup Id="cpgUTL3IINVYBEO5IIZAWLMUI2C3I" Name="Root"/>
+    <Properties>
+      <Property Id="prfNZUE322SIBFPFGAFZJY7644BRU" Name="tasksCount" Nature="3" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accT3WGSIT7S5FMVEPKLQGRLUDISY"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select 
+    count(*) as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accT3WGSIT7S5FMVEPKLQGRLUDISY" PropId="prfNZUE322SIBFPFGAFZJY7644BRU" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from (
+    select
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colP2PKJLPLJPOBDCIUAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as unitid
+    from        
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>            
+    start with
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colFDCRWKPMJPOBDCIUAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Id Path="aclHOZS3MGIAFAATAS5OIYFAC5NYY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colRMH5P2FSTNABBMBNUIXU3AINEQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = 1
+    connect by
+        prior </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colBHMUC3KGIJE3PA6RVXKLXFHP3U" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colPU65PF7LJPOBDCIUAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colRMH5P2FSTNABBMBNUIXU3AINEQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = 1
+) tasks
+where
+    tasks.unitid is not null and 
+    (select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colEVX5YH2SS5VDBN2IAAUMFADAIA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colEVLUYADHR5VDBNSIAAUMFADAIA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = tasks.unitid) > 0</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+        <UsedTable TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

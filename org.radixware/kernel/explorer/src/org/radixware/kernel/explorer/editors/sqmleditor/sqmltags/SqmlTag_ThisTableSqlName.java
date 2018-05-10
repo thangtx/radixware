@@ -15,6 +15,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.ThisTableSqmlId_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
 import org.radixware.schemas.xscml.Sqml;
@@ -32,7 +33,7 @@ public class SqmlTag_ThisTableSqlName extends SqmlTag {
         if (presentationClassDef != null) {
             setIsDeprecated(presentationClassDef.isDeprecated());
             final String tableName = presentationClassDef.getFullName();//==null ? ("#"+presentationClassDef.getId()) : presentationClassDef.getName();
-            final String tableTitle = presentationClassDef.getTitle().replaceAll("<", "&#60;");
+            final String tableTitle = Html.string2HtmlString(presentationClassDef.getTitle());
             final String title = "Table <b>" + tableName + "</b> with title " + tableTitle;
             setDisplayedInfo("This", title);
         } else {

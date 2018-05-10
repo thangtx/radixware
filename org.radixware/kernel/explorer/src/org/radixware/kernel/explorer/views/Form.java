@@ -42,6 +42,7 @@ import org.radixware.kernel.explorer.dialogs.DialogSizeManager;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.dialogs.QtDialog;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.progress.ExplorerProgressHandleManager;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.ExplorerDialogButtonBox;
 import org.radixware.kernel.explorer.widgets.QWidgetProxy;
@@ -143,6 +144,7 @@ public abstract class Form extends QtDialog implements IExplorerView, IFormView 
         opened.connect(this, "restoreGeometry()");
         setWindowTitle(model.getWindowTitle());
         setWindowIcon(model.getIcon());
+        setObjectName("rx_form_view_#"+model.getDefinition().getId().toString());
     }
 
     @SuppressWarnings("unused")
@@ -178,7 +180,9 @@ public abstract class Form extends QtDialog implements IExplorerView, IFormView 
 
     @Override
     protected void closeEvent(QCloseEvent event) {
-        if (environment.getProgressHandleManager().getActive() != null) {
+        final ExplorerProgressHandleManager manager = 
+            (ExplorerProgressHandleManager)environment.getProgressHandleManager();
+        if (manager.getActive()!=null && !manager.isProgressBlocked()) {
             event.ignore();
         } else {
             super.closeEvent(event);

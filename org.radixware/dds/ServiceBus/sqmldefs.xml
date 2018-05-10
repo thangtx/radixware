@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdl5N3LTDN4SBBL3PUGGBRPUACFHQ" QualifiedName="Radix::ServiceBus">
+  <TableDef Id="tbl6LBVOFKHB5DPNDOESAUHN6SLNY" Name="PipelineParam">
+    <Indexes>
+      <Index Id="idxNQAANLGPOJC7VJLM2SNL52AKM4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colE2NQBVE7HJDIPMEGIASR5N2EE4 col7J26VLCPQRBWBHRMATOWCLYE2I"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refLRQ6Q2GMEBHEJD3MPQWKFNFYX4" Name="PipelineParam=>Pipeline (pipelineId=>id)" ReferencedTableId="tblX6WI554KVVCZPGNLK7CSZLOMTY" ChildColumnNames="pipelineId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colE2NQBVE7HJDIPMEGIASR5N2EE4" Name="pipelineId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col7J26VLCPQRBWBHRMATOWCLYE2I" Name="name" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colDGXTZBCV4BF2NNYOTIEMSYNTTU" Name="val" ValType="21" Length="1000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblJYQWYL3FYJF4JABENJGEI4KJ6Y" Name="DataScheme">
+    <Indexes>
+      <Index Id="idxGQVG5KJ2OBFMTIM43MIQG6WBSI" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colR7TMX2J72ZDF7PJMLUDXHHWNV4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refZQUKRWNNQNAKDB65OZX5L5AYME" Name="DataScheme=>User (lastUpdateUserName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUserName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colR7TMX2J72ZDF7PJMLUDXHHWNV4" Name="uri" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colBQYGLCK26FB55JONW3UQQCL3IU" Name="type" ValType="21" Length="30" Precision="0" NotNull="true"/>
+      <Column Id="colGAU6BWQLNBEUXIFQONDJFEFYUY" Name="title" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colHG7MW2OSSZH2RBSTPLVOEKOQ2Q" Name="description" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colFDCJLG47J5G6FAJTBU6ML7FSKI" Name="scheme" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colDUMEG6G7C5GG7CS7ULGQ4LV2ZY" Name="lastUpdateTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colJT4X3PEPLJHSDL4EXCGTM3OW7I" Name="lastUpdateUserName" ValType="21" Length="250" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblLHHBNT3LOBHEBF7ZW5C43D5COM" Name="PipelineVer">
+    <Indexes>
+      <Index Id="idx2LA4FREDBRGL3KXFWEFV4TP5IE" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colCRZQNMXG75GMVC5ZLOQAHULD3U colNKWNF3GTMVGJ7LF2FVP3PI3PNE"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refLYP33RARYJCPDAJQAIFROUIFM4" Name="PipelineVer=>Pipeline (pipelineId=>id)" ReferencedTableId="tblX6WI554KVVCZPGNLK7CSZLOMTY" ChildColumnNames="pipelineId"/>
+      <Reference Id="refM2DBWKTJIVANHH4J7RKZMSQXDI" Name="PipelineVer=>User (creatorUserName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="creatorUserName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colCRZQNMXG75GMVC5ZLOQAHULD3U" Name="pipelineId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNKWNF3GTMVGJ7LF2FVP3PI3PNE" Name="createTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colXI62V5BNINBQVOSENZVQG6PHDQ" Name="creatorUserName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colQXC5LHXJKVEX3PY4SAZVFV2R5E" Name="notes" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colIREOYRR4QBE2TJLMSQUD4UGANY" Name="settings" ValType="27" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblPNJV5QTXIBGJPBHK64RO3LH73A" Name="PipelineNode">
+    <Indexes>
+      <Index Id="idxGAP3QFAW7ZB37KJQFVPQNOIGTQ" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colQ4QH3CFLQFH4ZENFIHVYOWNBVA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refFOYDY6LZLFDYJBV2TBADLXQDVE" Name="PipelineNode=>User (lastUpdateUserName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUserName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colQ4QH3CFLQFH4ZENFIHVYOWNBVA" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNTDD54Y7UZAB3NVSTGLNNOSN4Y" Name="extGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="col3P3IN2TZVFEGNLC2J5PB5NG5CE" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colN73KKVWQDVG6XJXW6NBQ3SJ4MQ" Name="pipelineEntityGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col42OIA6GTPNDYBOOTAJXXB5JAFY" Name="pipelineEntityPid" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colINHZQ7NTTVDYDATLRAMEPNM55U" Name="title" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colYMNM6EH6LVB4BOBROI66ZOVBCE" Name="description" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colXNDK3TLXSZC2TOKLUPN7Y2MU6Y" Name="lastUpdateTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col33JH36QBOZFNLFI5IIRQI4LQ2U" Name="lastUpdateUserName" ValType="21" Length="250" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblPRLADV4SK5HD5AXGJNL7NC5DIE" Name="PipelineConnector">
+    <Indexes>
+      <Index Id="idxYKEFA6VARNDXLLCO6TCZ2447II" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col6MYWN4YK25AZJADSKWAVE4YT3Q colZD5OA7UKC5BXVJQO5XA2ZOBNII"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refYZSYKGJUNRER3C2RG5Q4B6HPQM" Name="PipelineConnector=>PipelineNode (nodeId=>id)" ReferencedTableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" ChildColumnNames="nodeId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colZD5OA7UKC5BXVJQO5XA2ZOBNII" Name="nodeId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col6MYWN4YK25AZJADSKWAVE4YT3Q" Name="role" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colTSNTMOTE55BTRGMGJNMM3BI7T4" Name="title" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colTRIXHAXT3RBV3OSHN7YYKXNURQ" Name="rqType" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colFLIOQMWGFRFNJIOCJCGZQFLMN4" Name="rsType" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblPYSASPASJBD3BDXH3LHM7N3UJY" Name="PipelineNodeParam">
+    <Indexes>
+      <Index Id="idxFRYEACJCQRD4NLOKOTCEQSWVX4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colUYB6X37IQVERJFRMS3QOZEYC7Q colUH74BTCXD5BMRCUJ45L5WEKLME"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refNTXEXGQSIND53LNMA65SQD23NE" Name="PipelineNodeParam=>PipelineNode (nodeId=>id)" ReferencedTableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" ChildColumnNames="nodeId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colUYB6X37IQVERJFRMS3QOZEYC7Q" Name="nodeId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colUH74BTCXD5BMRCUJ45L5WEKLME" Name="name" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colFVO25IUI7NGUFGPBX2256X2A5Q" Name="val" ValType="21" Length="1000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblTDP5BP5ZXBEOTJX74NH43PEPJA" Name="TransformStage">
+    <Indexes>
+      <Index Id="idxQH7Z3LSU2JFJBIEI35FHQCJMKI" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colJWAYYLLONZGTRFXXTJQY2KEXMQ"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refBKB542Q7NBGFHK3ZY4GPQI5C2U" Name="TransformStage=>PipelineNode (nodeId=>id)" ReferencedTableId="tblPNJV5QTXIBGJPBHK64RO3LH73A" ChildColumnNames="nodeId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colJWAYYLLONZGTRFXXTJQY2KEXMQ" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colV7CXSBHFG5DGNDYQPB4K5HKU5A" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col6CTW3KWSH5AGFMCCXA6UG5CGBY" Name="nodeId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col6VRRNROUN5EPBGG2O4VMSKLCVQ" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colZ6M23IG4FBFQNNWLXZAFK3XBAU" Name="title" ValType="21" Length="1000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblX6WI554KVVCZPGNLK7CSZLOMTY" Name="Pipeline">
+    <Indexes>
+      <Index Id="idxNQUWDVSTCBC4FLFB6M6FSBSWK4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colNQ7ACV4LNVHNBGGPWFPOCPH2P4"/>
+      <Index Id="idxV3BNVEBUNFC7NAW7W7PFFXZPQE" Name="Pipeline" IndexColumns="colIT3FZJ6PFJC6FAK22RGG7PNYWQ colNFW3BHI6OJFUHJRXQHDJ77575M"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref3QADUGWZLNGYHNQ7SBIEACTOG4" Name="Pipeline=>User (lastUpdateUserName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUserName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colNQ7ACV4LNVHNBGGPWFPOCPH2P4" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colOE3X3Z3RC5ANFOCA72MDUTOIVQ" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colA4MWSYIO2JBZPGKY445BVZJZYM" Name="title" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colCGJULBTXSRAFDE2IKCVHFAXWZM" Name="description" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colOBH63TJRIBGKFL77Q4SKEU2SEE" Name="diagramm" ValType="27" Length="0" Precision="0"/>
+      <Column Id="col6R52LGN5LVDE7BXSJMDJIFJLRQ" Name="checked" ValType="1" Length="1" Precision="0"/>
+      <Column Id="colJN4CXGS7FVHNDIOXSQGB4FWKDM" Name="traceProfile" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="col74BRHCTUWJBWBNSLTZU6WRQLXM" Name="lastUpdateTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col75T5SOB6DRHXXJOJJO3MTTY3JE" Name="lastUpdateUserName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colIT3FZJ6PFJC6FAK22RGG7PNYWQ" Name="myEntityGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colNFW3BHI6OJFUHJRXQHDJ77575M" Name="myEntityPid" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colZIZFJNA77FEKRI4DGSX7CHPXWI" Name="extGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblXY3G2ORDXFB5RGSPZGZQFILZEY" Name="XPathTable">
+    <Indexes>
+      <Index Id="idxZQK2PELLRZHJZPWD45PFZ6WK3M" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col22NTN4PXXZDRZHGC5KLOAWCQ54"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref6OPHEDHOENHZ7EBY5XD3R3LFIU" Name="XPathTable=>TransformStage (stageId=>id)" ReferencedTableId="tblTDP5BP5ZXBEOTJX74NH43PEPJA" ChildColumnNames="stageId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="col22NTN4PXXZDRZHGC5KLOAWCQ54" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNZZOSHKGNRG5RB2OTA5BV7Z3FA" Name="stageId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colT7WLWVPNYJAPVL5UYDAXCCKP44" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col3QAXANRK6VBG7CX4WD4YNLQGAQ" Name="title" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colY2G4TGCINVGNPBTHJLMN4HWYSI" Name="srcXPath" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colV7IFUURJJVCOZKDAN4JTUKDA54" Name="dstXPath" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colBA5XFHVNOZES7O4M6DQ5FCLHVU" Name="isRequest" ValType="1" Length="1" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

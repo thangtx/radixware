@@ -27,20 +27,20 @@ import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.aio.Event;
 import org.radixware.kernel.server.aio.EventDispatcher;
 import org.radixware.kernel.server.aio.EventDispatcher.AcceptEvent;
-import org.radixware.kernel.server.units.Messages;
+import org.radixware.kernel.server.instance.ResourceRegistry;
+import org.radixware.kernel.server.instance.ServerSocketResourceRegistryItem;
+import org.radixware.kernel.server.instance.SocketResourceRegistryItem;
 
 final class NetListener extends NetChannel {
 
     private ServerSocketChannel serverSocketChannel = null;
+    private String lastBindAddress = null;
 
     public NetListener(
             final NetPortHandlerUnit unit,
             final long id,
-            final String title,
-            final ELinkLevelProtocolKind linkLevelProtocolKind,
-            final String inFrame,
-            final String outFrame) {
-        super(unit, id, title, linkLevelProtocolKind, inFrame, outFrame);
+            final String title) {
+        super(unit, id, title);
     }
 
     @Override
@@ -49,9 +49,18 @@ final class NetListener extends NetChannel {
     }
 
     @Override
+    protected String calcViewStatus() {
+        return String.format("Seances: %04d; Busy: %04d;",
+                getActiveSeancesCount(),
+                getBusySeancesCount());
+    }
+    
+
+
+    @Override
     protected boolean rereadOptions(final Map<Long, NetChannelOptions> preloadedOptions) throws SQLException, InterruptedException {
         if (!super.rereadOptions(preloadedOptions)) {
-            if (serverSocketChannel == null) {
+            if (serverSocketChannel == null && isStarted()) {
                 restartImpl();
             }
             return false;
@@ -67,6 +76,15 @@ final class NetListener extends NetChannel {
     }
 
     @Override
+    public void maintenance() {
+        super.maintenance();
+        if (serverSocketChannel != null && serverSocketChannel.socket() != null && serverSocketChannel.socket().isClosed()) {
+            getTrace().put(EEventSeverity.ERROR, "Server socket of channel " + getTitle() + " (" + lastBindAddress + ") was unexpectedly closed, restarting", null, null, unit.getEventSource(), false);
+            restartImpl();
+        }
+    }
+
+    @Override
     protected void closeImpl() {
         if (serverSocketChannel != null) {
             unit.getDispatcher().unsubscribe(new EventDispatcher.AcceptEvent(serverSocketChannel));
@@ -75,6 +93,8 @@ final class NetListener extends NetChannel {
             } catch (IOException ex) {
                 //do nothing
                 Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
+            } finally {
+                serverSocketChannel = null;
             }
         }
     }
@@ -83,8 +103,10 @@ final class NetListener extends NetChannel {
     protected boolean startImpl() {
         try {
             serverSocketChannel = ServerSocketChannel.open();
+            unit.getInstance().getResourceRegistry().register(new ServerSocketResourceRegistryItem(ResourceRegistry.buildServerSocketKey(getResourceKeyPrefix(), String.valueOf(options.bindAddress)), serverSocketChannel, null, unit.getThisRunAliveChecker()));
             serverSocketChannel.configureBlocking(false);
-            serverSocketChannel.socket().bind(options.address, 128);
+            serverSocketChannel.socket().bind(options.bindAddress, 128);
+            lastBindAddress = options.bindAddress.toString();
             waitAccept();
             return true;
         } catch (IOException e) {
@@ -108,6 +130,7 @@ final class NetListener extends NetChannel {
             try {
                 if (serverSocketChannel != null) {
                     acceptedSocketChannel = serverSocketChannel.accept();
+                    unit.getInstance().getResourceRegistry().register(new SocketResourceRegistryItem(ResourceRegistry.buildConnectedSocketChannelKey(getResourceKeyPrefix(), acceptedSocketChannel), acceptedSocketChannel, null, unit.getThisRunAliveChecker()));
                     acceptedSocketChannel.configureBlocking(true);
                     //if(options.recvTimeoutMillis != null)
                     //	acceptedSocketChannel.socket().setSoTimeout(options.recvTimeoutMillis.intValue());
@@ -118,7 +141,7 @@ final class NetListener extends NetChannel {
                         Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
                     }
                     try {
-                        acceptedSocketChannel.socket().setKeepAlive(true);
+                        acceptedSocketChannel.socket().setKeepAlive(options.useKeepAlive);
                     } catch (java.net.SocketException ex) {
                         //Vista bug
                         Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);

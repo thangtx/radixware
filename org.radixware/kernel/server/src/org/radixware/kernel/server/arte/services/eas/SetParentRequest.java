@@ -110,7 +110,7 @@ final class SetParentRequest extends ObjectRequest {
         }
 
         //presOptions.checkContextEditable(); //RADIX-2901: property can be readonly but its destination is editable
-        presOptions.assertEdPresIsAccessibile(entity);
+        presOptions.assertEdPresIsAccessible(entity);
         //RADIX-3157: setParent can be used for actualizing the parent properties of a readonly object (after parent has been edited)
         //if (presOptions.editorPresentation.getTotalRestrictions(entity).getIsUpdateRestricted()) {
         //	throw EasFaults.newAccessViolationFault("edit object");
@@ -146,17 +146,18 @@ final class SetParentRequest extends ObjectRequest {
         
         final PropValHandlersByIdMap receivedPropValsById = new PropValHandlersByIdMap();
         writeCurData2Map(entity.getRadMeta(), edPres, rqParams.getCurrentData(), receivedPropValsById, parentPropFilter);
-
-        if (!entity.isInDatabase(false)) {
+        final boolean isNewEntity = !entity.isInDatabase(false);
+        if (isNewEntity) {
             //making a copy of received propVals as initPropVals could be modified by init
             final PropValHandlersByIdMap initPropValsById = new PropValHandlersByIdMap(receivedPropValsById);
             initNewObject(entity, presOptions.context, edPres, initPropValsById, src, EEntityInitializationPhase.TEMPLATE_EDITING);
         }
 
         final RadSelectorPresentationDef selPres = (rqParams.isSetSelectorPresentation() ? getSelPres(rqParams.getSelectorPresentation(), entity.getRadMeta()) : null);        
-        final PresentationEntityAdapter presEntAdapter = getArte().getPresentationAdapter(entity);
+        final PresentationEntityAdapter presEntAdapter = getArte().getPresentationAdapter(entity);        
         final PresentationContext presCtx = getPresentationContext(getArte(), presOptions.context, null);
         presEntAdapter.setPresentationContext(presCtx);
+        presOptions.assertEdPresIsAccessible(presEntAdapter);
         final PropValLoadFilter parentRefFilter = new PropValLoadFilter() {
             @Override
             public boolean skip(final PropVal val) {
@@ -244,7 +245,10 @@ final class SetParentRequest extends ObjectRequest {
                 continue;
             }
             if (prop.getIsValInheritable()) {
-                final RadPropDef.ValInheritancePath path = entity.getPropValInheritancePath(prop.getId());
+                RadPropDef.ValInheritancePath path = entity.getPropValInheritancePath(prop.getId());
+                if (path==null){
+                    path = getFirstPossiblePropValInheritancePath(entity, prop.getId());
+                }
                 if (path != null) {
                     final List<Id> refPropIds = path.getRefPropIds();
                     if (!refPropIds.isEmpty() && propsToReturn.contains(entity.getRadMeta().getPropById(refPropIds.get(0)))) {
@@ -255,8 +259,8 @@ final class SetParentRequest extends ObjectRequest {
         }
 
         final boolean withBlobProps = rqParams.isSetRespWithLOBValues() ? rqParams.getRespWithLOBValues() : true;
-        writeProps(rsStruct.addNewProperties(), presEntAdapter, withBlobProps, edPres, presOptions.context, propsToReturn);
-        if (entity.isInDatabase(false)) {
+        writeProps(rsStruct.addNewProperties(), presEntAdapter, withBlobProps, edPres, presOptions.context, propsToReturn, isNewEntity);
+        if (!isNewEntity) {
             try {
                 rsStruct.setObjectTitle(entity.calcTitle(edPres.getObjectTitleFormat()));
             } catch (Throwable e) {
@@ -442,13 +446,18 @@ final class SetParentRequest extends ObjectRequest {
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((SetParentMess) rqXml).getSetParentRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final SetParentDocument doc = process((SetParentMess) rq);
-        postProcess(rq, doc.getSetParent().getSetParentRs());
+        SetParentDocument doc = null;
+        try{
+            doc = process((SetParentMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getSetParent().getSetParentRs());
+        }
         return doc;
     }
 

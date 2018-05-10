@@ -1,0 +1,22 @@
+alter table RDX_SYSTEM drop column THREADSTACKWRITEENABLED
+/
+
+alter table RDX_INSTANCE drop column THREADSTACKWRITEENABLED
+/
+
+alter table RDX_SM_INSTANCESTATEHISTORY drop column STACKPART3
+/
+
+alter table RDX_SM_INSTANCESTATEHISTORY drop column STACKPART2
+/
+
+alter table RDX_SM_INSTANCESTATEHISTORY drop column STACKPART1
+/
+
+alter table RDX_SM_INSTANCESTATEHISTORY drop column STACK
+/
+
+alter table RDX_SM_STACKDATA
+	modify (STACKTOP not null)
+/
+

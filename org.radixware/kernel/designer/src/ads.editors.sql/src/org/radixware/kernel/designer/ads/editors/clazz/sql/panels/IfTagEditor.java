@@ -11,94 +11,20 @@
 
 package org.radixware.kernel.designer.ads.editors.clazz.sql.panels;
 
-import java.awt.BorderLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import org.openide.util.NbBundle;
-import org.radixware.kernel.common.defs.IParameterDef;
-import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
-import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
-import org.radixware.kernel.common.enums.EIfParamTagOperator;
-import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.sqml.tags.IfParamTag;
 import org.radixware.kernel.designer.ads.common.sql.AdsSqlClassVisitorProviderFactory;
 import org.radixware.kernel.designer.ads.editors.clazz.sql.AdsSqlClassCodeEditor;
 import org.radixware.kernel.designer.common.dialogs.components.ValAsStrEditPanel;
-import org.radixware.kernel.designer.common.dialogs.scmlnb.tags.TagEditor;
+import org.radixware.kernel.designer.common.editors.sqml.SqmlEditorPanel;
 
 
-public class IfTagEditor<T extends IfParamTag> extends TagEditor<T> {
-
-    private ValAsStrEditPanel valPanel;
-
-    private static enum Operator {
-
-        EQUALS(true, false, "op-equals", EIfParamTagOperator.EQUAL),
-        NOT_EQUALS(true, false, "op-not-equals", EIfParamTagOperator.NOT_EQUAL),
-        CONTAINS(true, true, "op-contains", EIfParamTagOperator.EQUAL),
-        NOT_CONTAINS(true, true, "op-not-contains", EIfParamTagOperator.NOT_EQUAL),
-        EMPTY(false, true, "op-empty", EIfParamTagOperator.EMPTY),
-        NOT_EMPTY(false, true, "op-not-empty", EIfParamTagOperator.NOT_EMPTY),
-        NULL(false, false, "op-null", EIfParamTagOperator.NULL),
-        NOT_NULL(false, false, "op-not-null", EIfParamTagOperator.NOT_NULL),
-        ARR_NULL(false, true, "op-null", EIfParamTagOperator.NULL),
-        ARR_NOT_NULL(false, true, "op-not-null", EIfParamTagOperator.NOT_NULL);
-        private boolean needValue;
-        private boolean multy;
-        private String bundleKey;
-        private EIfParamTagOperator analog;
-
-        Operator(final boolean needValue, final boolean isMulty, final String bundleKey, final EIfParamTagOperator analog) {
-            this.needValue = needValue;
-            this.multy = isMulty;
-            this.bundleKey = bundleKey;
-            this.analog = analog;
-        }
-
-        public boolean isNeedValue() {
-            return needValue;
-        }
-
-        public boolean isMulty() {
-            return multy;
-        }
-
-        public EIfParamTagOperator getAnalog() {
-            return analog;
-        }
-
-        @Override
-        public String toString() {
-            return NbBundle.getMessage(IfTagEditor.class, bundleKey);
-        }
-    }
+public class IfTagEditor<T extends IfParamTag> extends org.radixware.kernel.designer.common.editors.sqml.editors.IfTagEditor<T> {
 
     /** Creates new form IfTagEditPanel */
     public IfTagEditor() {
-        initComponents();
-        pnValue.setLayout(new BorderLayout());
-        coOperator.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(final ItemEvent e) {
-                if (valPanel != null) {
-                    updateValPanel();
-                }
-            }
-        });
-        dlParam.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(final ChangeEvent e) {
-                updateOperators();
-                updateValPanel();
-            }
-        });
+        //initComponents();
     }
 
     /** This method is called from within the constructor to
@@ -110,202 +36,30 @@ public class IfTagEditor<T extends IfParamTag> extends TagEditor<T> {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lbParameter = new javax.swing.JLabel();
-        lbOperator = new javax.swing.JLabel();
-        coOperator = new javax.swing.JComboBox();
-        lbValue = new javax.swing.JLabel();
-        pnValue = new javax.swing.JPanel();
-        dlParam = new org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel();
-
         setPreferredSize(new java.awt.Dimension(420, 75));
-
-        lbParameter.setText(org.openide.util.NbBundle.getMessage(IfTagEditor.class, "IfTagEditor.lbParameter.text")); // NOI18N
-
-        lbOperator.setText(org.openide.util.NbBundle.getMessage(IfTagEditor.class, "IfTagEditor.lbOperator.text")); // NOI18N
-
-        coOperator.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        lbValue.setText(org.openide.util.NbBundle.getMessage(IfTagEditor.class, "IfTagEditor.lbValue.text")); // NOI18N
-
-        javax.swing.GroupLayout pnValueLayout = new javax.swing.GroupLayout(pnValue);
-        pnValue.setLayout(pnValueLayout);
-        pnValueLayout.setHorizontalGroup(
-            pnValueLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 114, Short.MAX_VALUE)
-        );
-        pnValueLayout.setVerticalGroup(
-            pnValueLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 26, Short.MAX_VALUE)
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbParameter)
-                    .addComponent(dlParam, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(coOperator, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbOperator))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbValue)
-                    .addComponent(pnValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .addGap(0, 420, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbParameter)
-                    .addComponent(lbOperator)
-                    .addComponent(lbValue))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(coOperator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(dlParam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(13, Short.MAX_VALUE))
+            .addGap(0, 75, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    @Override
-    protected boolean tagDefined() {
-        return true;
-    }
-
-    @Override
-    public void setReadOnly(final boolean readOnly) {
-        if (readOnly) {
-            coOperator.setEnabled(false);
-            dlParam.setEnabled(false);
-            valPanel.setEnabled(false);
-        } else {
-            updateOperators();
-            updateValPanel();
-        }
-    }
-
-    @Override
-    protected String getTitle() {
-        return NbBundle.getMessage(IfTagEditor.class, "msg-condition");
-    }
-
-    @Override
-    protected void applyChanges() {
-        final Operator op = getSelectedOperator();
-        getTag().setParameterId(dlParam.getDefinitionId());
-        getTag().setOperator(op.getAnalog());
-        if (op.isNeedValue()) {
-            getTag().setValue(valPanel.getValue());
-        }
-    }
-
-    private void updateValPanel() {
-        if (valPanel == null) {
-            return;
-        }
-        final AdsPropertyDef property = (AdsPropertyDef) dlParam.getDefinition();
-        if (property != null) {
-            final EValType valType = property.getValue().getType().getTypeId();
-            valPanel.setValue(valType, valPanel.getValue());
-        } else {
-            valPanel.setEnabled(false);
-            return;
-        }
-
-        if (!getOpenInfo().isReadOnly() && getSelectedOperator() != null && getSelectedOperator().isNeedValue()) {
-            valPanel.setEnabled(true);
-        } else {
-            valPanel.setEnabled(false);
-        }
-    }
-
-    private Operator getSelectedOperator() {
-        return (Operator) coOperator.getSelectedItem();
-    }
-
-    @Override
-    protected void afterOpen() {
-        final AdsPropertyDef property = getParameter();
-        final AdsSqlClassCodeEditor codeEditor = getOpenInfo().getLookup().lookup(AdsSqlClassCodeEditor.class);
-        if (codeEditor != null) {
-            dlParam.setComboMode();
-            dlParam.setComboBoxValues(codeEditor.getSqlClass().getProperties().getLocal().list(AdsSqlClassVisitorProviderFactory.newPropertyForPreprocessorTag()), false);
-        }
-        dlParam.open(property, getObject().getParameterId());
-
-        updateOperators();
-        for (int i = 0; i < coOperator.getItemCount(); i++) {
-            if (((Operator) coOperator.getItemAt(i)).getAnalog() == getObject().getOperator()) {
-                coOperator.setSelectedIndex(i);
-                break;
-            }
-        }
-        valPanel = new ValAsStrEditPanel();
-        pnValue.add(valPanel, BorderLayout.CENTER);
-
-        EValType valType = property == null ? EValType.STR : property.getValue().getType().getTypeId();
-        if (getObject().getValue() != null) {
-            valPanel.setValue(valType, getObject().getValue());
-        } else {
-            valPanel.setDefaultValue(valType);
-        }
-
-        updateValPanel();
-    }
-
-    private void updateOperators() {
-        Operator prevOperator = null;
-        if (coOperator.getSelectedItem() instanceof Operator) {
-            prevOperator = (Operator) coOperator.getSelectedItem();
-        }
-        final AdsPropertyDef property = (AdsPropertyDef) dlParam.getDefinition();
-        final List<Operator> operators = new ArrayList<Operator>();
-        int idx = -1;
-        if (property != null) {
-            for (Operator operator : Operator.values()) {
-                if (property.getValue().getType().getTypeId().isArrayType() == operator.isMulty()) {
-                    operators.add(operator);
-                    if (prevOperator != null && prevOperator.getAnalog() == operator.getAnalog()) {
-                        idx = operators.size() - 1;
-                    }
-                }
-            }
-        }
-
-        final DefaultComboBoxModel model = new DefaultComboBoxModel(operators.toArray());
-        coOperator.setModel(model);
-        if (idx != -1) {
-            coOperator.setSelectedIndex(idx);
-        }
-    }
-
-    private AdsParameterPropertyDef getParameter() {
-        final IParameterDef iParam = getObject().findParameter();
-        AdsParameterPropertyDef param = (iParam != null ? (AdsParameterPropertyDef) iParam.getDefinition() : null);
-        if (param == null) {
-            param = getOpenInfo().getLookup().lookup(AdsParameterPropertyDef.class);
-        }
-        return param;
-    }
-
-    @Override
-    public void requestFocus() {
-        valPanel.requestFocus();
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox coOperator;
-    private org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel dlParam;
-    private javax.swing.JLabel lbOperator;
-    private javax.swing.JLabel lbParameter;
-    private javax.swing.JLabel lbValue;
-    private javax.swing.JPanel pnValue;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    protected void installParams(SqmlEditorPanel codeEditor, Definition parameter) {
+        if (codeEditor instanceof AdsSqlClassCodeEditor){
+            if (((AdsSqlClassCodeEditor)codeEditor).getSqlClass() instanceof AdsSqlClassDef) {
+                AdsSqlClassDef adsSqlClassDef = (AdsSqlClassDef) ((AdsSqlClassCodeEditor)codeEditor).getSqlClass();
+                dlParam.setComboBoxValues(adsSqlClassDef.getProperties().getLocal().list(AdsSqlClassVisitorProviderFactory.newPropertyForPreprocessorTag()), false);
+            }
+        }
+    }
 }

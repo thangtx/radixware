@@ -55,6 +55,7 @@ import org.radixware.kernel.common.defs.ads.clazz.algo.AdsAlgoClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsAppObject;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsIncludeObject;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsVarObject;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.utils.Utils;
 
 public class RadixObjectsPanel extends javax.swing.JPanel {
@@ -176,7 +177,9 @@ public class RadixObjectsPanel extends javax.swing.JPanel {
             } else {
                 for (int i = this.currentStepNumber; i < stepCount; i++) {
                     RadixObject nextTop = topDefinition.getOwnerForQualifedName();
-
+                    if (nextTop == null && topDefinition instanceof Layer) { // кастыль для brach т.к. его нет в QualifedName
+                        nextTop = topDefinition.getBranch();
+                    }
                     topDefinition = nextTop;
                 }
             }

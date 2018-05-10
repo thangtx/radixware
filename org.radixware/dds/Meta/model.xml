@@ -62,6 +62,8 @@ The table is created by creation script (0.sql)</com:Description>
         <Column Id="colSNI763A7IVFETBC5CPQ2CKH2HM" Name="upgradeToVersion" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="UPGRADETOVERSION"/>
         <Column Id="colWMQ2ZBLU7ZD5RHQ4LMDRUG3UIA" Name="prevCompatibleVer" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="PREVCOMPATIBLEVER"/>
         <Column Id="colHKQ2NAZMBFCPHIJ24XOZCLFRKQ" Name="lastFileName" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="LASTFILENAME"/>
+        <Column Id="colLNU3YA3HB5DDRDRBMB543X3AP4" Name="revision" ValType="2" Length="12" DbType="NUMBER(12,0)" NotNull="false" DbName="REVISION"/>
+        <Column Id="colW6VA6CINVBFJXEBRAMM7OIAMJE" Name="upgradeToRevision" ValType="2" Length="12" DbType="NUMBER(12,0)" NotNull="false" DbName="UPGRADETOREVISION"/>
       </Columns>
       <PrimaryKey Id="idxKJS5LOQ6ZBCXNEWJC6DYO6ZEEI" Name="PrimaryKey" DbName="PK_RDX_DDSVERSION" GenerateInDb="false" Unique="true">
         <Columns>
@@ -96,8 +98,15 @@ The table is created by creation script (0.sql)</com:Description>
     <Table Id="tblHW4OSVMS27NRDISQAAAAAAAAAA" Name="TestCase" DbName="RDX_TESTCASE" UserExtMask="65568">
       <Columns>
         <Column Id="colN3UZ2Z4S27NRDISQAAAAAAAAAA" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnEWD7TIMT27NRDISQAAAAAAAAAA"/>
+        <Column Id="col3ZQVM54K5FEL7D7RH4HIYI62Y4" Name="seq" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="SEQ">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colJGTICYXJ35G5TJ26LFHQAX2QRY" Name="extGuid" DescriptionId="mlsAAQVNEQZP5H75K6VH7H6MZMMXA" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="EXTGUID"/>
         <Column Id="col3AN3AUHYHNHNFBQ3J4PRDXRRXE" Name="groupId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="GROUPID"/>
         <Column Id="colQQJY664T27NRDISQAAAAAAAAAA" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CLASSGUID"/>
+        <Column Id="colUSPDDDJLZ5AINICL3FIA4KD7GU" Name="notificationEmail" DescriptionId="mlsBZZBREXFPVCRJPCELVWZ7GUQ4I" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="NOTIFICATIONEMAIL"/>
         <Column Id="colEZ4SH34S27NRDISQAAAAAAAAAA" Name="parentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTID"/>
         <Column Id="colHWP3QCET27NRDISQAAAAAAAAAA" Name="notes" ValType="21" Length="2000" DbType="VARCHAR2(2000 char)" NotNull="false" DbName="NOTES"/>
         <Column Id="colPMEM3RSM3PNRDISQAAAAAAAAAA" Name="traceProfile" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" DbName="TRACEPROFILE">
@@ -106,8 +115,16 @@ The table is created by creation script (0.sql)</com:Description>
           </DefaultVal>
         </Column>
         <Column Id="colMWOGO4MS27NRDISQAAAAAAAAAA" Name="actor" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="ACTOR"/>
+        <Column Id="colCFZB5S5MFFAPJM2ENTFD66CEZI" Name="authorName" DescriptionId="mlsDQFYSPLDGJHLPFFDRAT43IR3NU" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="AUTHORNAME"/>
         <Column Id="colGBJZDIUS27NRDISQAAAAAAAAAA" Name="startTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="STARTTIME"/>
         <Column Id="colQKCERAMS27NRDISQAAAAAAAAAA" Name="finishTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="FINISHTIME"/>
+        <Column Id="colI5ELDBK7XVDQDA626NCPOMNAXM" Name="lastIsExecDate" DescriptionId="mlsQPCWZMCK5RG47KLWJAP4TVZSVA" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="LASTISEXECDATE"/>
+        <Column Id="colPI3FLY6XA5DV3LZKE3RO4PQFFQ" Name="lastIsSuccessDate" DescriptionId="mls7G5BG3W2OJCZNN42PMGTAV5LGY" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="LASTISSUCCESSDATE"/>
+        <Column Id="colKTWEBHYK2JGENOQY3SHZ27BQ6I" Name="seqIsFailCount" DescriptionId="mlsUTUGNNH5EJEOXMJHLFAAEREW6Y" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="SEQISFAILCOUNT">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
         <Column Id="colYWL4NXUS27NRDISQAAAAAAAAAA" Name="result" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="RESULT"/>
         <Column Id="colC46NAASN3PNRDISQAAAAAAAAAA" Name="resultComment" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="RESULTCOMMENT"/>
         <Column Id="colQP4LKSN3IFHITPAQXU7J72H6FA" Name="runOnIs" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="true" DbName="RUNONIS">
@@ -115,6 +132,10 @@ The table is created by creation script (0.sql)</com:Description>
             <com:Value>1</com:Value>
           </DefaultVal>
         </Column>
+        <Column Id="colLLFER2QMUFH5BME327Q4IPNJNM" Name="cpuNanos" DescriptionId="mlsGWDXIG2D2RGKFBXIJ3LHHWMJDU" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="false" DbName="CPUNANOS"/>
+        <Column Id="colYH7NIOG57JEHPD7QO4GMHI7K54" Name="dbNanos" DescriptionId="mlsCMCVCQJYLNDPDEOZB7J2FZLU2Y" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="false" DbName="DBNANOS"/>
+        <Column Id="colG4EPHGTTE5BM3DLJN55VNIVOBE" Name="extNanos" DescriptionId="mlsZIC7UIOIMZBN5P4DD6CRQCNG44" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="false" DbName="EXTNANOS"/>
+        <Column Id="colMDKXQBA6KZFHZH6FTKW7KHF4Z4" Name="queueNanos" DescriptionId="mlsCMN44LRKWVGVPPA7OU5ITIMG2M" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="false" DbName="QUEUENANOS"/>
       </Columns>
       <PrimaryKey Id="idxHW4OSVMS27NRDISQAAAAAAAAAA" Name="PrimaryKey" DbName="PK_RDX_TESTCASE" Unique="true">
         <Columns>
@@ -193,7 +214,7 @@ It is created by create script (0.sql), filled by manager and used by manager an
         <Column Id="col25NDZIS5PRBIHLD6CA5CZJ2YY4" Name="name" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="NAME"/>
         <Column Id="colXXD62SQYHJCFFFOZFDUG4FPFOY" Name="value" ValType="21" Length="500" DbType="VARCHAR2(500 char)" NotNull="false" DbName="VALUE"/>
       </Columns>
-      <PrimaryKey Id="idxSKLWMJD4KVCKJE7GCFWELJK4T4" Name="PrimaryKey" DbName="PK_RDX_DDSOPTION" GenerateInDb="false" Unique="true">
+      <PrimaryKey Id="idxSKLWMJD4KVCKJE7GCFWELJK4T4" Name="PrimaryKey" DbName="RDX_DDSOPTION_PK_LAYERURI_NAME" AutoDbName="false" GenerateInDb="false" Unique="true">
         <Columns>
           <Column ColumnId="colB6RMBQSV4ZFZ3M5JH57THZEC3Y" Order="Asc"/>
           <Column ColumnId="col25NDZIS5PRBIHLD6CA5CZJ2YY4" Order="Asc"/>
@@ -202,7 +223,31 @@ It is created by create script (0.sql), filled by manager and used by manager an
       </PrimaryKey>
       <Placement PosX="504" PosY="364"/>
     </Table>
+    <Table Id="tblZCKJR6I3T5DGTCTQHRX7IU5J54" Name="EventCodeMls" DbName="RDX_EVENTCODEMLS" GlobalTemporary="true" OnCommitPreserveRows="true">
+      <Columns>
+        <Column Id="colEM66PGZ2DBFVRCL7GJPJRGU6UI" Name="VersionNum" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="VERSIONNUM"/>
+        <Column Id="colQIRRT2XJVVAXVIKN3JXLACLT6Q" Name="BundleId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="BUNDLEID"/>
+        <Column Id="colTWL5RJ6H7FFUXKDOAN6OSKVBUQ" Name="StringId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="STRINGID"/>
+        <Column Id="colYYIO3CHWVZEZREURQ26UXUCUZM" Name="Language" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="LANGUAGE"/>
+        <Column Id="colYZGQGNZIQZC5NMSH52TQ2Q3EVE" Name="StringValue" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="true" DbName="STRINGVALUE"/>
+      </Columns>
+      <PrimaryKey Id="idxGCMP5JHUEVG3LP4RMDN7GFDU6M" Name="PrimaryKey" DbName="PK_RDX_EVENTCODEMLS" Unique="true">
+        <Columns>
+          <Column ColumnId="colEM66PGZ2DBFVRCL7GJPJRGU6UI" Order="Asc"/>
+          <Column ColumnId="colQIRRT2XJVVAXVIKN3JXLACLT6Q" Order="Asc"/>
+          <Column ColumnId="colTWL5RJ6H7FFUXKDOAN6OSKVBUQ" Order="Asc"/>
+          <Column ColumnId="colYYIO3CHWVZEZREURQ26UXUCUZM" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqCP2RUEY7IZHLXOO5C24OSCL2EE" DbName="PK_RDX_EVENTCODEMLS" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="1085" PosY="116"/>
+    </Table>
   </Tables>
+  <ExtTables>
+    <ExtTable Id="tbeGGJP4VZI2FFEFATKJWOEFOMCLY" TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Placement PosX="344" PosY="813"/>
+    </ExtTable>
+  </ExtTables>
   <References>
     <Reference Id="refZ3L7OMMT27NRDISQAAAAAAAAAA" AutoDbName="false" DbName="FK_RDX_TESTCASE_TESTCASE" Type="LINK" ChildTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ParentTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqHW4OSVMS27NRDISQAAAAAAAAAA">
       <Columns>
@@ -212,6 +257,11 @@ It is created by create script (0.sql), filled by manager and used by manager an
     <Reference Id="ref2VO3FCZ4RRBTZO2UKNRBRWALQY" AutoDbName="false" DbName="FK_RDX_TESTCASE_TESTCASE_GRP" Type="LINK" ChildTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ParentTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ConfirmDelete="true" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqHW4OSVMS27NRDISQAAAAAAAAAA">
       <Columns>
         <Item ChildColumnId="col3AN3AUHYHNHNFBQ3J4PRDXRRXE" ParentColumnId="colN3UZ2Z4S27NRDISQAAAAAAAAAA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref4INHMXMGB5HXDK4REZJPSRPH4I" DbName="FK_RDX_TESTCASE_USER" Type="LINK" ChildTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ParentTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ExtParentTableId="tbeGGJP4VZI2FFEFATKJWOEFOMCLY" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqSY4KIOLTGLNRDHRZABQAQH3XQ4">
+      <Columns>
+        <Item ChildColumnId="colCFZB5S5MFFAPJM2ENTFD66CEZI" ParentColumnId="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
       </Columns>
     </Reference>
   </References>
@@ -246,6 +296,15 @@ It is created by create script (0.sql), filled by manager and used by manager an
             <Body>
               <xsc:Item>
                 <xsc:Sql>is
+    version integer := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>();
 begin
     if pDefId = pDomainId then
         return 1;
@@ -274,15 +333,7 @@ begin
                 </xsc:PropSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> = </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
-                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> and </xsc:Sql>
+                <xsc:Sql> = version and </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" PropId="colQZEFZP35EVCNPKFSNGY6QGKPRQ" Owner="NONE">
@@ -314,10 +365,19 @@ end;</xsc:Sql>
           </Function>
         </Item>
         <Item>
-          <Function Id="dfn3OXAHT4FYLORDBBJABIFNQAABA" Name="isClassExtends" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+          <Function Id="dfn3OXAHT4FYLORDBBJABIFNQAABA" Name="isClassExtends" DescriptionId="mlsLHEW4TSSRNHD3JISMURSAIYQIU" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
             <Body>
               <xsc:Item>
                 <xsc:Sql>is
+    version integer := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>();
 begin
     if pClsId = pBaseClsId then
         return 1;
@@ -362,15 +422,7 @@ begin
                 </xsc:PropSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> = </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
-                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>() and </xsc:Sql>
+                <xsc:Sql> = version and </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" PropId="colABWYOLU76VBCNOSUJIBIOLAUT4" Owner="NONE">
@@ -524,10 +576,19 @@ end;
           </Function>
         </Item>
         <Item>
-          <Function Id="dfnW2OBNDN4IFGLFC5S4KDH6FPMBM" Name="isEnumValueInDomain" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+          <Function Id="dfnW2OBNDN4IFGLFC5S4KDH6FPMBM" Name="isEnumValueInDomain" DescriptionId="mlsUHS2UWXLGBABRN46NY5FPZJATU" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
             <Body>
               <xsc:Item>
                 <xsc:Sql>is
+    version integer := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>();
 begin
     for cur in (select </xsc:Sql>
               </xsc:Item>
@@ -554,15 +615,7 @@ begin
                 </xsc:PropSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> = </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnQEQKKJW4CTOBDCKFAAMPGXSZKU">
-                  <xsc:Sql>RDX_Arte.getVersion</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>() and </xsc:Sql>
+                <xsc:Sql> = version and </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" PropId="col6QKPE325G5H4RFZXQR5A3T64J4" Owner="NONE">

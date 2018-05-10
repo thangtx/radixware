@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdGVYAU63UXJD2FJUYRDFP5U32OU" Name="DashboardXsd" TargetNamespace="http://schemas.radixware.org/dashboard.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/dashboard.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/dashboard.xsd">
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdGVYAU63UXJD2FJUYRDFP5U32OU" Name="DashboardXsd" TargetNamespace="http://schemas.radixware.org/dashboard.xsd" NeedsDoc="false" Environment="common"><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/dashboard.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/dashboard.xsd">
     <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
     <xs:simpleType name="PropSource">
         <xs:restriction base="types:Str">
@@ -135,6 +137,7 @@
                     <xs:sequence>
                         <xs:element name="ExpandedItems" type="this:UnitsTreeExpandedItem" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
+                    <xs:attribute name="IsOnlyActiveInstances" type="types:Bool"/>
                 </xs:complexType>
             </xs:element>
             <xs:element name="EventLog">
@@ -204,4 +207,5 @@
     
     <xs:element name="Dashboard" type="this:Dashboard"/>
     <xs:element name="Dashboards" type="this:Dashboards"/>
+    <xs:element name="DashStatisticsInterval" type="types:Str"/>
 </xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

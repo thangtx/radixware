@@ -11,7 +11,6 @@
 
 package org.radixware.kernel.server.dbq;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -71,11 +70,11 @@ final class ObjectPkQuery extends DbQuery {
             if (rs != null) {
                 try {
                     if (rs.next()) {
-                        final HashMap<Id, Object> tmpRes = new HashMap<Id, Object>();
+                        final HashMap<Id, Object> tmpRes = new HashMap<>();
                         for (Field field : fields) {
-                            tmpRes.put(field.prop.getId(), field.getFieldVal(rs));
+                            tmpRes.put(field.id, field.getFieldVal(rs));
                         }
-                        final ArrayList<Object> res = new ArrayList<Object>(table.getPrimaryKey().getColumnsInfo().size());
+                        final ArrayList<Object> res = new ArrayList<>(table.getPrimaryKey().getColumnsInfo().size());
                         for (DdsIndexDef.ColumnInfo pkProp : table.getPrimaryKey().getColumnsInfo()) {
                             res.add(tmpRes.get(pkProp.getColumnId()));
                         }

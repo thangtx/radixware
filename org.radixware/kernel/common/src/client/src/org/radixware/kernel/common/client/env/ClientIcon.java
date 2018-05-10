@@ -47,6 +47,9 @@ public class ClientIcon {
         public static final ClientIcon FILTER_AND_SORTING = new ClientIcon("classpath:images/filter_and_sorting.svg");
         public static final ClientIcon AUDIT = new ClientIcon("classpath:images/audit.svg");
         public static final ClientIcon EXPORT = new ClientIcon("classpath:images/export_s.svg");
+        public static final ClientIcon EXPORTCSV = new ClientIcon("classpath:images/csv.svg");
+        public static final ClientIcon EXPORTXLSX = new ClientIcon("classpath:images/xlsx.svg");
+        public static final ClientIcon CALC_STATISTIC = new ClientIcon("classpath:images/calc_statistic.svg");
     }
 
     public final static class Definitions extends ClientIcon {
@@ -112,6 +115,8 @@ public class ClientIcon {
         public static final ClientIcon BUTTON_CANCEL = new ClientIcon("classpath:images/button_cancel.svg", true);
         public static final ClientIcon BUTTON_NEXT = new ClientIcon("classpath:images/next.svg", true);
         public static final ClientIcon BUTTON_PREV = new ClientIcon("classpath:images/prev.svg", true);
+        public static final ClientIcon BUTTON_YES_TO_ALL = new ClientIcon("classpath:images/all.svg", true);
+        public static final ClientIcon BUTTON_ABORT = new ClientIcon("classpath:images/exceptionClass.svg", true);
         public static final ClientIcon ABOUT = new ClientIcon("classpath:images/about.svg", true);
         public static final ClientIcon CONNECTIONS_MANAGER = new ClientIcon("classpath:images/connections_manager.svg", true);
         public static final ClientIcon TRACE = new ClientIcon("classpath:images/trace.svg", true);
@@ -169,6 +174,7 @@ public class ClientIcon {
         public static final ClientIcon VIEW = new ClientIcon("classpath:images/view.svg", true);
         public static final ClientIcon EDIT = new ClientIcon("classpath:images/edit.svg", true);
         public static final ClientIcon EDITING_HISTORY = new ClientIcon("classpath:images/editing_history.svg", true);
+        public static final ClientIcon FAVORITES_POPUP = new ClientIcon("classpath:images/favorites_popup.svg", true);
         public static final ClientIcon FAVORITES = new ClientIcon("classpath:images/favorites.svg", true);
         public static final ClientIcon FIND = new ClientIcon("classpath:images/find.svg", true);
         public static final ClientIcon FIND_NEXT = new ClientIcon("classpath:images/find_next.svg", true);

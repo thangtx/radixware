@@ -8,113 +8,111 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class BufferedPool<T> {
 
-	public static enum ERegistrationMode{
-		IMMEDIATELY, SHEDULE
-	}
-	public BufferedPool(final ERegistrationMode registrationMode){
-		super();
-		registered = new HashSet<T>(256);
-		sheduledForRegistration = new HashSet<T>(128);
-		sheduledForUnregistration = new HashSet<T>(128);
-		this.registrationMode = registrationMode;
-	}
-	
-	private ERegistrationMode registrationMode;
-	private final Set<T> registered;
-	private Set<T> sheduledForRegistration;
-	private final Set<T> sheduledForUnregistration;
-	
-	public final ERegistrationMode  getRegistrationMode(){
+    public static enum ERegistrationMode {
+
+        IMMEDIATELY, SHEDULE
+    }
+
+    public BufferedPool(final ERegistrationMode registrationMode) {
+        super();
+        registered = new LinkedHashMap<>(256);
+        scheduledForRegistration = new HashMap<>(128);
+        sheduledForUnregistration = new HashMap<>(128);
+        this.registrationMode = registrationMode;
+    }
+
+    private ERegistrationMode registrationMode;
+    private final Map<T, T> registered;
+    private Map<T, T> scheduledForRegistration;
+    private final Map<T, T> sheduledForUnregistration;
+
+    public final ERegistrationMode getRegistrationMode() {
         return registrationMode;
     }
 
-	public final void setRegistrationMode(final ERegistrationMode mode){
-		this.registrationMode = mode;
-		if (mode == ERegistrationMode.IMMEDIATELY)
-			flush();
-	}
-	
-	public void register(final T o){ 
-		if (registrationMode == ERegistrationMode.IMMEDIATELY) {
-			registered.add(o);
-        } else {
-			sheduledForRegistration.add(o);
+    public final void setRegistrationMode(final ERegistrationMode mode) {
+        this.registrationMode = mode;
+        if (mode == ERegistrationMode.IMMEDIATELY) {
+            flush();
         }
-	}
-
-	public T findRegistration(final T o){
-		if (registered.contains(o) && !sheduledForUnregistration.contains(o)){
-            return findObjInSet(registered, o);
-        }
-		if (sheduledForRegistration.contains(o)) {
-			return findObjInSet(sheduledForRegistration, o);
-        }
-		return null;
     }
 
-    private final T findObjInSet(final Set<T> set, final T o) {
-        for (T i : set) {
-            if (i.equals(o)) {
-                return i;
-            }
+    public void register(final T o) {
+        if (registrationMode == ERegistrationMode.IMMEDIATELY) {
+            registered.put(o, o);
+        } else {
+            scheduledForRegistration.put(o, o);
         }
-        return null;
     }
 
-	public boolean isRegistered(final T o){
-		return
-           (registered.contains(o) && !sheduledForUnregistration.contains(o)) ||
-           (sheduledForRegistration.contains(o));
-	}
-	
-	public void unregister(final T o){ 
-		if (registrationMode == ERegistrationMode.IMMEDIATELY){
-			registered.remove(o);
-        } else {
-			sheduledForUnregistration.add(o);
+    public T findRegistration(final T o) {
+        final T regObj = registered.get(o);
+        final T schedForUnregObj = sheduledForUnregistration.get(o);
+        if (regObj != null && schedForUnregObj == null) {
+            return regObj;
         }
-		sheduledForRegistration.remove(o);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Collection<T> getRegistered(){
-		return Collections.unmodifiableCollection(registered);
-	}
+        return scheduledForRegistration.get(o);
+    }
 
-	
-	/**
-	 * Do sheduled registration actions
-	 * @return collection of added objects  
-	 */
-	@SuppressWarnings("unchecked")
-	public final Collection<T> flush(){
-		registered.removeAll(sheduledForUnregistration);
-		sheduledForUnregistration.clear();
-		registered.addAll(sheduledForRegistration);
-		final Collection<T> newObjs = Collections.unmodifiableCollection(sheduledForRegistration); 
-		sheduledForRegistration = new HashSet<T>(128);
-		return newObjs;
-	}
+    public boolean isRegistered(final T o) {
+        return (registered.containsKey(o) && !sheduledForUnregistration.containsKey(o))
+                || (scheduledForRegistration.containsKey(o));
+    }
 
-	public void clear() {
-		registered.clear();
-		sheduledForRegistration.clear();
-		sheduledForUnregistration.clear();
-	}
+    public void unregister(final T o) {
+        if (registrationMode == ERegistrationMode.IMMEDIATELY) {
+            registered.remove(o);
+        } else {
+            sheduledForUnregistration.put(o, o);
+        }
+        scheduledForRegistration.remove(o);
+    }
 
-	public boolean isEmpty() {
-		return registered.isEmpty() && sheduledForRegistration.isEmpty();
-	}
+    @SuppressWarnings("unchecked")
+    public Collection<T> getRegistered() {
+        return Collections.unmodifiableCollection(registered.keySet());
+    }
+
+    /**
+     * Do scheduled registration actions
+     *
+     * @return collection of added objects
+     */
+    @SuppressWarnings("unchecked")
+    public Collection<T> flush() {
+        for (T obj : sheduledForUnregistration.keySet()) {
+            registered.remove(obj);
+        }
+        sheduledForUnregistration.clear();
+        registered.putAll(scheduledForRegistration);
+        final Collection<T> newObjs = Collections.unmodifiableCollection(scheduledForRegistration.keySet());
+        scheduledForRegistration = new HashMap<>(128);
+        return newObjs;
+    }
+
+    public void clear() {
+        registered.clear();
+        scheduledForRegistration.clear();
+        sheduledForUnregistration.clear();
+    }
+
+    public boolean isEmpty() {
+        return registered.isEmpty() && scheduledForRegistration.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return "BufferedPool[reg=" + registered.size() + ",+=" + scheduledForRegistration.size() + ",-=" + sheduledForUnregistration.size() + "]";
+    }
+
 }

@@ -51,14 +51,6 @@ public class SequenceFieldModel extends AbstractFieldModel {
     }
 
     @Override
-    public SmioField getParser() {
-        if (parser == null) {
-            parser = new SmioFieldSequence(this);
-        }
-        return parser;
-    }
-
-    @Override
     public void clearParser() {
         super.clearParser();
         getItem().getFieldModel().clearParser();

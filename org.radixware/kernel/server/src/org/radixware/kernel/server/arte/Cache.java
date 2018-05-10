@@ -10,19 +10,31 @@
  */
 package org.radixware.kernel.server.arte;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
 
-import oracle.sql.BLOB;
-import oracle.sql.CLOB;
-
+//import oracle.sql.BLOB;
+//import oracle.sql.CLOB;
 import org.radixware.kernel.server.types.Cursor;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.EntityGroup;
@@ -32,9 +44,7 @@ import org.radixware.kernel.server.types.PresentationEntityAdapter;
 import org.radixware.kernel.common.utils.BufferedPool;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.ws.Endpoint;
+import java.util.Objects;
 import org.radixware.kernel.common.defs.IDefinitionFactory;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
@@ -66,6 +76,9 @@ import org.radixware.kernel.server.types.EntityDetails;
 public class Cache {
 
     private static final boolean DISABLE_UPDATE_ORDERING = SystemPropUtils.getBooleanSystemProp("rdx.disable.update.ordering", false);
+    private static final String WRITE_CACHE_CONTENT_ON_OVERFLOW_WARNING_DIR = SystemPropUtils.getStringSystemProp("rdx.write.cache.content.on.overflow.warning.dir", null);
+    public static final boolean STORE_CACHE_OPERATION_STACKS = WRITE_CACHE_CONTENT_ON_OVERFLOW_WARNING_DIR != null || SystemPropUtils.getBooleanSystemProp("rdx.store.arte.cache.items.creation.stack", false);
+    private static final int DEFAULT_EXPECTED_CACHE_SIZE = SystemPropUtils.getIntSystemProp("rdx.arte.cache.expected.size", 5000);
 
     public static enum EMode {
 
@@ -88,9 +101,10 @@ public class Cache {
     private final BufferedPool<Item<Cursor>> cursors;   //содержит все открытые курсоры
     private final List<Item<Statement>> tmpStmts;
     private final Map<Entity, List<EntityModification>> entityModifications = new HashMap<>();
-    private List<Item<BLOB>> tmpBlobs;
-    private List<Item<CLOB>> tmpClobs;
+    private List<Item<Blob>> tmpBlobs;
+    private List<Item<Clob>> tmpClobs;
     private boolean isUpdatingDb = false;
+    private int expectedCacheSize = DEFAULT_EXPECTED_CACHE_SIZE;
 
     protected Cache(final Arte arte) {
         this.arte = arte;
@@ -128,6 +142,9 @@ public class Cache {
 
     private void markAsModified(final Entity entity, EntityModification.EModificationType type, long savepointLevel) {
         if (entity instanceof EntityDetails) {
+            return;
+        }
+        if (!EntityMethodAccessor.isAfterCommitRequired(entity)) {
             return;
         }
         List<EntityModification> modifications = entityModifications.get(entity);
@@ -215,7 +232,7 @@ public class Cache {
         return null;
     }
 
-    private Id getClassGuidColumnId(final Pid pid) {
+    Id getClassGuidColumnId(final Pid pid) {
         if (pid == null) {
             return null;
         }
@@ -231,6 +248,7 @@ public class Cache {
         if (!arte.isInTransaction()) {
             throw new IllegalUsageError(ERR_TRANSACTION_NOT_STARTED);
         }
+        arte.yeld();
         Entity obj = null;
         final ExistingObjectsPool.Item regItem = arte.getDefManager().releaseCache.getExistingObjects().getByPid(pid);
         if (regItem != null) {
@@ -272,17 +290,51 @@ public class Cache {
         return arte.getDefManager().newClassInstance(classId, EMPTY_OBJ_ARR);
     }
 
+    private void checkSize() {
+        int totalCount = newObjects.getRegistered().size() + arte.getDefManager().releaseCache.getExistingObjects().getSize();
+        if (expectedCacheSize > 0 && totalCount > expectedCacheSize) {
+            arte.getTrace().put(EEventSeverity.WARNING, "ARTE entity cache contains more then " + expectedCacheSize + " objects (" + totalCount + "), consider using caching sections or Arte.setExpectedCacheSize(int)", EEventSource.ARTE);
+            writeCacheContent();
+            expectedCacheSize = -1;
+        }
+    }
+
+    private void writeCacheContent() {
+        if (WRITE_CACHE_CONTENT_ON_OVERFLOW_WARNING_DIR != null) {
+            final String fileName = (WRITE_CACHE_CONTENT_ON_OVERFLOW_WARNING_DIR.isEmpty()
+                    ? "" : WRITE_CACHE_CONTENT_ON_OVERFLOW_WARNING_DIR + "/")
+                    + "CacheContent_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_Arte" + String.format("%03d", arte.getSeqNumber()) + ".txt";
+            try (Writer fw = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File(fileName))), StandardCharsets.UTF_8)) {
+                for (Item<Entity> item : newObjects.getRegistered()) {
+                    writeObject("new_object", item, fw);
+                }
+                for (EntityCacheItem item : arte.getDefManager().releaseCache.getExistingObjects().getRegistered()) {
+                    writeObject("existing_object", item, fw);
+                }
+            } catch (Exception ex) {
+                arte.getTrace().put(EEventSeverity.WARNING, "Unable to write cache content: " + ExceptionTextFormatter.throwableToString(ex), EEventSource.ARTE);
+            }
+        }
+    }
+
+    private void writeObject(final String comment, final Item<Entity> item, final Writer writer) throws IOException {
+        writer.append(comment + ": " + item.object.getRadMeta().getName() + "[" + (item.object.getPid() == null ? "null" : item.object.getPid().toString()) + "]" + "\n");
+        writer.append(item.creationStack);
+        writer.append("*****\n");
+    }
+
     //Регистрация объекта как существующего в базе, вызывается после create
     void registerExistingEntityObject(final Entity obj) {
         assert obj.isInDatabase(false);
-        Item<Entity> registration = new Item<Entity>(obj, curSection());
+        Item<Entity> registration = new Item<>(obj, curSection());
         final Item<Entity> oldRegistration = newObjects.findRegistration(registration);
         if (oldRegistration != null) //если объект уже был зарегистрнирован сохраняем его секцию, чтобы при create он не переходил в текущую
         {
             registration = oldRegistration;
         }
         newObjects.unregister(registration);
-        arte.getDefManager().releaseCache.getExistingObjects().register(registration);
+        arte.getDefManager().releaseCache.getExistingObjects().register(new EntityCacheItem(registration.object, registration.section));
+        checkSize();
     }
 
     void unregisterExistingEntityObject(final Entity obj) {
@@ -291,11 +343,16 @@ public class Cache {
 
     void registerNewEntityObject(final Entity obj) {
         assert !obj.isInDatabase(false);
-        newObjects.register(new Item<Entity>(obj, curSection()));
+        newObjects.register(new Item<>(obj, curSection()));
+        checkSize();
+    }
+
+    public void unregisterFromAfterCommit(final Entity entity) {
+        entityModifications.remove(entity);
     }
 
     void unregisterNewEntityObject(final Entity obj) {
-        newObjects.unregister(new Item<Entity>(obj, null));
+        newObjects.unregister(new Item<>(obj, null));
     }
 
     Entity findNewEntityObjectByPid(final Pid pid) {
@@ -462,7 +519,7 @@ public class Cache {
             final BufferedPool.ERegistrationMode oldMode = existingObjects.getRegistrationMode();
             try {
                 existingObjects.setRegistrationMode(BufferedPool.ERegistrationMode.SHEDULE);
-                List<Item<Entity>> schedulled = new ArrayList<>(existingObjects.getRegistered());
+                List<EntityCacheItem> schedulled = new ArrayList<>(existingObjects.getRegistered());
                 int i = 0;
                 while (!schedulled.isEmpty()) {
                     if (++i > MAX_POOL_PASSAGE_COUNT) {
@@ -517,7 +574,7 @@ public class Cache {
         return res;
     }
 
-    private void orderEntityItemsForUpdate(final List<Item<Entity>> items) {
+    private void orderEntityItemsForUpdate(final List<EntityCacheItem> items) {
         if (DISABLE_UPDATE_ORDERING) {
             return;
         }
@@ -605,7 +662,7 @@ public class Cache {
             final BufferedPool.ERegistrationMode oldMode = existingObjects.getRegistrationMode();
             try {
                 existingObjects.setRegistrationMode(BufferedPool.ERegistrationMode.SHEDULE);
-                Collection<Item<Entity>> shedulled = existingObjects.getRegistered();
+                Collection<EntityCacheItem> shedulled = existingObjects.getRegistered();
                 int i = 0;
                 while (!shedulled.isEmpty()) {
                     if (++i > MAX_POOL_PASSAGE_COUNT) {
@@ -634,18 +691,38 @@ public class Cache {
     public void prepareForTransaction() {
         clear(null);//DBP-1582 to clear all old keptInCached objects
         entityModifications.clear();
+        expectedCacheSize = DEFAULT_EXPECTED_CACHE_SIZE;
+    }
+
+    public void setExpectedCacheSize(int expectedCacheSize) {
+        this.expectedCacheSize = expectedCacheSize;
+    }
+
+    public int getExpectedCacheSize() {
+        return expectedCacheSize;
     }
 
     /**
      *
      * @param sectionId - if null then clear all sections
      */
-    void clear(final Long sectionId) {
+    public void clear(final Long sectionId) {
+        clear(sectionId, System.currentTimeMillis());
+    }
+
+    /**
+     *
+     * @param sectionId - if null then clear all sections
+     * @param timeMillis - all keptInCache objects with expiration time less
+     * then time millis will be removed
+     */
+    public void clear(final Long sectionId, final long timeMillis) {
         if (arte.isInTransaction()) {//in ARTE transaction
             visitAllUsedExistingEntities(sectionId, new EntityVisitor() {
+
                 @Override
                 public void visit(final Entity ent) {
-                    if (ent.getCanBeRemovedFromCache()) {
+                    if (ent.getCanBeRemovedFromCache(timeMillis)) {
                         ent.discard();
                     }
                 }
@@ -701,14 +778,14 @@ public class Cache {
         if (!tmpBlobs.isEmpty()) {
             getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_LOB_TMP_FREE);
             try {
-                final Iterator<Item<BLOB>> it = tmpBlobs.iterator();
+                final Iterator<Item<Blob>> it = tmpBlobs.iterator();
                 while (it.hasNext()) {
-                    final Item<BLOB> item = it.next();
+                    final Item<Blob> item = it.next();
                     if (sectionId == null || sectionId.equals(item.section)) {
                         it.remove();
                         try {
-                            if (item.object.isTemporary()) {
-                                item.object.freeTemporary();
+                            if (arte.getRadixConnection().isTemporaryBlob(item.object)) {
+                                arte.getRadixConnection().freeTemporaryBlob(item.object);
                             }
                         } catch (SQLException e) {
                             //isTemporary throws exception if BLOB already freed
@@ -723,18 +800,19 @@ public class Cache {
         if (!tmpClobs.isEmpty()) {
             getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_LOB_TMP_FREE);
             try {
-                final Iterator<Item<CLOB>> it = tmpClobs.iterator();
+                final Iterator<Item<Clob>> it = tmpClobs.iterator();
+
                 while (it.hasNext()) {
-                    final Item<CLOB> item = it.next();
+                    final Item<Clob> item = it.next();
                     if (sectionId == null || sectionId.equals(item.section)) {
                         it.remove();
                         try {
-                            if (item.object.isTemporary()) {
-                                item.object.freeTemporary();
+                            if (arte.getRadixConnection().isTemporaryClob(item.object)) {
+                                arte.getRadixConnection().freeTemporaryClob(item.object);
                             }
                         } catch (SQLException e) {
                             //isTemporary throws exception if BLOB already freed
-                            //arte.getTrace().put(EEventSeverity.WARNING, "Can't free temporary CLOB: " + arte.getTrace().exceptionStackToString(e), EEventSource.ARTE);
+//                            arte.getTrace().put(EEventSeverity.WARNING, "Can't free temporary CLOB: " + arte.getTrace().exceptionStackToString(e), EEventSource.ARTE);
                         }
                     }
                 }
@@ -747,21 +825,20 @@ public class Cache {
         }
     }
 
-    void registerTemporaryClob(CLOB clob) throws SQLException {
-        tmpClobs.add(new Item<CLOB>(clob, curSection()));
+    void registerTemporaryClob(Clob clob) throws SQLException {
+        tmpClobs.add(new Item<Clob>(clob, curSection()));
         if (arte.isInTransaction()) { //если мы не в транзакции, то не регистрируем (если не будет endTransaction, этот объект никогда не уберется ни нами, ни GC)
             if (tmpClobs.size() > LOBS_SUSPECTED_COUNT) {
-                final List<Item<CLOB>> oldTmpClobs = tmpClobs;
-                tmpClobs = new ArrayList<Item<CLOB>>(128);
-                for (Item<CLOB> it : oldTmpClobs) {
+                final List<Item<Clob>> oldTmpClobs = tmpClobs;
+                tmpClobs = new ArrayList<Item<Clob>>(128);
+                for (Item<Clob> it : oldTmpClobs) {
                     try {
-                        if (it.object.isTemporary()) {
+                        if (arte.getRadixConnection().isTemporaryClob(it.object)) {
                             tmpClobs.add(it);
                         }
-                    } catch (java.sql.SQLException exception) {
+                    } catch (SQLException exception) {
                         //Ignore CLOB object that was freed 
                     }
-
                 }
                 if (tmpClobs.size() > LOBS_SUSPECTED_COUNT) {
                     arte.getTrace().put(EEventSeverity.WARNING, "Temporary CLOB count is " + String.valueOf(tmpClobs.size()), EEventSource.ARTE);
@@ -770,18 +847,18 @@ public class Cache {
         }
     }
 
-    void registerTemporaryBlob(BLOB blob) throws SQLException {
+    void registerTemporaryBlob(Blob blob) throws SQLException {
         if (arte.isInTransaction()) { //если мы не в транзакции, то не регистрируем (если не будет endTransaction, этот объект никогда не уберется ни нами, ни GC)
-            tmpBlobs.add(new Item<BLOB>(blob, curSection()));
+            tmpBlobs.add(new Item<Blob>(blob, curSection()));
             if (tmpBlobs.size() > LOBS_SUSPECTED_COUNT) {
-                final List<Item<BLOB>> oldTmpBlobs = tmpBlobs;
-                tmpBlobs = new ArrayList<Item<BLOB>>(128);
-                for (Item<BLOB> it : oldTmpBlobs) {
+                final List<Item<Blob>> oldTmpBlobs = tmpBlobs;
+                tmpBlobs = new ArrayList<Item<Blob>>(128);
+                for (Item<Blob> it : oldTmpBlobs) {
                     try {
-                        if (it.object.isTemporary()) {
+                        if (arte.getRadixConnection().isTemporaryBlob(it.object)) {
                             tmpBlobs.add(it);
                         }
-                    } catch (java.sql.SQLException exception) {
+                    } catch (SQLException exception) {
                         //Ignore BLOB object that was freed 
                     }
                 }
@@ -796,16 +873,14 @@ public class Cache {
         if (blobs == null) {
             return;
         }
-        for (java.sql.Blob blob : blobs) {
-            if (blob instanceof BLOB) {
-                try {
-                    ((BLOB) blob).freeTemporary();
-                } catch (SQLException ex) {
-                    //ignore
-                }
+        for (Blob blob : blobs) {
+            try {
+                arte.getRadixConnection().freeTemporaryBlob(blob);
+            } catch (SQLException ex) {
+//                    //ignore
             }
         }
-        final Iterator<Item<BLOB>> it = tmpBlobs.iterator();
+        final Iterator<Item<Blob>> it = tmpBlobs.iterator();
         while (it.hasNext()) {
             if (blobs.contains(it.next().object)) {
                 it.remove();
@@ -818,15 +893,13 @@ public class Cache {
             return;
         }
         for (java.sql.Clob clob : clobs) {
-            if (clob instanceof CLOB) {
-                try {
-                    ((CLOB) clob).freeTemporary();
-                } catch (SQLException ex) {
-                    //ignore
-                }
+            try {
+                arte.getRadixConnection().freeTemporaryClob(clob);
+            } catch (SQLException ex) {
+//                    //ignore
             }
         }
-        final Iterator<Item<CLOB>> it = tmpClobs.iterator();
+        final Iterator<Item<Clob>> it = tmpClobs.iterator();
         while (it.hasNext()) {
             if (clobs.contains(it.next().object)) {
                 it.remove();
@@ -876,7 +949,7 @@ public class Cache {
             final BufferedPool.ERegistrationMode oldMode = existingObjects.getRegistrationMode();
             try {
                 existingObjects.setRegistrationMode(BufferedPool.ERegistrationMode.SHEDULE);
-                Collection<Item<Entity>> shedulled = existingObjects.getRegistered();
+                Collection<EntityCacheItem> shedulled = existingObjects.getRegistered();
                 int i = 0;
                 while (!shedulled.isEmpty()) {
                     if (++i > MAX_POOL_PASSAGE_COUNT) {
@@ -909,7 +982,7 @@ public class Cache {
         final BufferedPool.ERegistrationMode oldMode = existingObjects.getRegistrationMode();
         try {
             existingObjects.setRegistrationMode(BufferedPool.ERegistrationMode.SHEDULE);
-            Collection<Item<Entity>> shedulled = existingObjects.getRegistered();
+            Collection<EntityCacheItem> shedulled = existingObjects.getRegistered();
             int i = 0;
             while (!shedulled.isEmpty()) {
                 if (++i > MAX_POOL_PASSAGE_COUNT) {
@@ -1049,7 +1122,7 @@ public class Cache {
                 final BufferedPool.ERegistrationMode oldMode = existingObjects.getRegistrationMode();
                 try {
                     existingObjects.setRegistrationMode(BufferedPool.ERegistrationMode.SHEDULE);
-                    Collection<Item<Entity>> shedulled = existingObjects.getRegistered();
+                    Collection<EntityCacheItem> shedulled = existingObjects.getRegistered();
                     int i = 0;
                     while (!shedulled.isEmpty()) {
                         if (++i > MAX_POOL_PASSAGE_COUNT) {
@@ -1098,7 +1171,7 @@ public class Cache {
         if (ent.isInDatabase(false)) {
             return arte.getDefManager().releaseCache.getExistingObjects().isRegistered(ent);
         } else {
-            return newObjects.isRegistered(new Item<Entity>(ent, null));
+            return newObjects.isRegistered(new Item<>(ent, null));
         }
     }
 
@@ -1111,10 +1184,11 @@ public class Cache {
         return item == null ? null : item.getObject();
     }
 
-    static final class Item<T> extends Object {
+    static class Item<T> extends Object {
 
         final T object;
         final Long section;
+        final String creationStack = getCreationString();
 
         Item(
                 final T object,
@@ -1138,6 +1212,81 @@ public class Cache {
         public int hashCode() {
             return object.hashCode();
         }
+
+        @Override
+        public String toString() {
+            return "Item[" + object.toString() + "]";
+        }
+
+        private static String getCreationString() {
+            if (Cache.STORE_CACHE_OPERATION_STACKS) {
+                Arte arte = Arte.get();
+                return (arte != null ? "Trace contexts: " + arte.getTrace().getContextStackAsStr() + "\n" : "") + ExceptionTextFormatter.getCurrentStackAsStr();
+
+            }
+            return null;
+        }
+
+    }
+
+    public static class EntityCacheItem extends Item<Entity> {
+
+        private static final Entity FAKE_NULL_ENTITY = new Entity(null, true) {
+
+            @Override
+            public RadClassDef getRadMeta() {
+                return null;
+            }
+
+        };
+        final Pid pid;
+        final long arteTranSeq;
+
+        public EntityCacheItem(Entity object, Long section) {
+            super(object, section);
+            this.pid = object.getPid();
+            this.arteTranSeq = object.getArte().getTransactionSeqNumber();
+        }
+
+        /**
+         * Fictive constructor to perform search by pid in
+         * {@code HashMap<EntityCacheItem>}
+         *
+         * @param entityPid
+         */
+        public EntityCacheItem(Pid entityPid) {
+            super(FAKE_NULL_ENTITY, null);
+            this.pid = entityPid;
+            this.arteTranSeq = 0;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 79 * hash + Objects.hashCode(this.pid);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final EntityCacheItem other = (EntityCacheItem) obj;
+            if (!Objects.equals(this.pid, other.pid)) {
+                return Objects.equals(this.object, other.object);
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "EntityCacheItem[" + pid.getEntityId() + "~" + pid.toString() + "]";
+        }
+
     }
 
     private static class EntityModification {

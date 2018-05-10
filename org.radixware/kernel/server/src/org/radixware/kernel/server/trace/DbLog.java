@@ -12,6 +12,7 @@ package org.radixware.kernel.server.trace;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -19,16 +20,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import oracle.jdbc.OracleConnection;
-import oracle.jdbc.OraclePreparedStatement;
-import oracle.sql.*;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.trace.LocalTracer;
+import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.SrvRunParams;
 import org.radixware.kernel.server.arte.Arte;
+import org.radixware.kernel.server.instance.ArteWatchDog;
 import org.radixware.kernel.server.instance.arte.ArtesDbLogFlusher;
+import org.radixware.kernel.server.jdbc.RadixConnection;
+import org.radixware.kernel.server.jdbc.RadixConnection.EventLogItemWrapper;
+import org.radixware.kernel.server.jdbc.RadixPreparedStatement;
 
 /**
  * Лог в базе данных.
@@ -44,9 +47,10 @@ public class DbLog {
 
     private static final int MAX_BUFFER_SIZE = 200;
     private static final int MAX_VARCHAR2_SIZE = 4000;
+    private static final String FLOOD_CANT_PUT_PREFIX = "Exception/EvLogCantPut";
     private Arte arte;
 
-    public static final class Item {
+    public static final class Item implements RadixConnection.EventLogItem {
 
         public final Timestamp time;
         public final EEventSeverity severity;
@@ -58,6 +62,46 @@ public class DbLog {
         public final String userName;
         public final String stationName;
         public final boolean isSensitive;
+
+        public Timestamp getTime() {
+            return time;
+        }
+
+        public EEventSeverity getSeverity() {
+            return severity;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public List<String> getWords() {
+            return words;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        public String getContextTypes() {
+            return contextTypes;
+        }
+
+        public String getContextIds() {
+            return contextIds;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public String getStationName() {
+            return stationName;
+        }
+
+        public boolean isSensitive() {
+            return isSensitive;
+        }
 
         public Item(
                 final Timestamp time,
@@ -83,7 +127,7 @@ public class DbLog {
         }
     }
 
-    private static class ItemWrapper {
+    private static class ItemWrapper implements EventLogItemWrapper {
 
         private final Item item;
         private final String wordsStr;
@@ -101,15 +145,15 @@ public class DbLog {
             return wordsStr;
         }
     }
+
     private Connection dbConnection;
-    private OraclePreparedStatement qryPut = null;
-    private OraclePreparedStatement qryBulkPut = null;
+    private PreparedStatement qryPut = null;
+    private PreparedStatement qryBulkPut = null;
     private final LocalTracer tracer;
     private List<Item> buffer;
     private final Object bufSem;
     private final Object logSem;
-    private StructDescriptor eventRecordStructDesc;
-    private ArrayDescriptor evetRecordArrDesc;
+    volatile boolean isInCantRegisterEvInDbLog = false;
 
     public DbLog(final Connection dbConnection, final LocalTracer tracer, final Arte arte) {
         this.dbConnection = dbConnection;
@@ -153,14 +197,24 @@ public class DbLog {
                 arte == null ? null : arte.getUserName(),
                 arte == null ? null : arte.getStationName(),
                 isSensitive);
+        boolean wantFlush = false;
         synchronized (bufSem) {
             buffer.add(it);
-            if (buffer.size() == MAX_BUFFER_SIZE || flushNow) {
-                flush();
+            if (buffer.size() >= MAX_BUFFER_SIZE || flushNow) {
+                wantFlush = true;
             }
         }
+        if (wantFlush && canFlush()) {
+            flush();
+        }
     }
-    volatile boolean isInCantRegisterEvInDbLog = false;
+    
+    private boolean canFlush() {
+        //dirty
+        final String curThreadName = Thread.currentThread().getName();
+        return curThreadName != null ? !curThreadName.contains(ArteWatchDog.THREAD_NAME_MARKER) : true;
+    }
+    
 
     private void cantRegisterEvInDbLog(final SQLException e) {
         if (isInCantRegisterEvInDbLog) //for the case when tracer will call this.put()
@@ -189,39 +243,19 @@ public class DbLog {
         return lastEventId;
     }
 
-    private void flush(final ItemWrapper itemWrapper) {
-        if (dbConnection != null) {
-            try {
-                if (qryPut == null) {
-                    final String sql = "begin ?:=rdx_trace.put_internal(?,?,?,?,?,?,?,?,?,?); end;";
-                    qryPut = (OraclePreparedStatement) dbConnection.prepareCall(sql);
-                }
-                final Item item = itemWrapper.getItem();
-                ((CallableStatement) qryPut).registerOutParameter(1, java.sql.Types.INTEGER);
-                qryPut.setString(2, item.code);
-                qryPut.setStringForClob(3, itemWrapper.getWordsStr());//RADIX-4581
-                qryPut.setString(4, item.source);
-                qryPut.setLong(5, item.severity.getValue().longValue());
-                qryPut.setString(6, item.contextTypes);
-                qryPut.setString(7, item.contextIds);
-                qryPut.setTimestamp(8, item.time);
-                qryPut.setString(9, item.userName);
-                qryPut.setString(10, item.stationName);
-                qryPut.setLong(11, item.isSensitive ? 1 : 0);
-                qryPut.execute();
-                lastEventId = ((CallableStatement) qryPut).getLong(1);
-            } catch (SQLException e) {
-                cantRegisterEvInDbLog(e);
-            }
-        }
-    }
-
     public void setDbConnection(final Connection connection) {
         synchronized (logSem) {
             if (dbConnection == connection) {
                 return;
             }
-            flush();
+            try {
+                if (dbConnection != null && !dbConnection.isClosed()) {
+                    flush();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DbLog.class.getName()).log(Level.FINE, null, ex);
+            }
+
             if (qryPut != null) {
                 try {
                     qryPut.close();
@@ -238,8 +272,6 @@ public class DbLog {
                     //do nothing
                     Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
                 }
-                eventRecordStructDesc = null;
-                evetRecordArrDesc = null;
             }
             qryBulkPut = null;
             dbConnection = connection;
@@ -260,7 +292,7 @@ public class DbLog {
             Logger.getLogger(DbLog.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        final List<ItemWrapper> forBulkSend = new ArrayList<>(b.size());
+        final List<EventLogItemWrapper> forBulkSend = new ArrayList<>(b.size());
         if (arte != null) {
             arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
         }
@@ -270,13 +302,17 @@ public class DbLog {
                     return;
                 }
                 for (Item item : b) {
-                    final String wordsStr = item.words == null ? null : item.words.toString();
+                    final String wordsStr = item.words == null ? null : (item.words instanceof ArrStr ? item.words.toString() : new ArrStr(item.words).toString());
                     if (wordsStr != null && wordsStr.length() > MAX_VARCHAR2_SIZE) {
                         if (!forBulkSend.isEmpty()) {
                             bulkFlush(forBulkSend);
                             forBulkSend.clear();
                         }
-                        flush(new ItemWrapper(item, wordsStr));
+                        try {
+                            lastEventId = ((RadixConnection) dbConnection).writeEventLogItem(new ItemWrapper(item, wordsStr));
+                        } catch (SQLException ex) {
+                            cantRegisterEvInDbLog(ex);
+                        }
                     } else {
                         forBulkSend.add(new ItemWrapper(item, wordsStr));
                     }
@@ -293,48 +329,12 @@ public class DbLog {
         }
     }
 
-    private void bulkFlush(final List<ItemWrapper> items) {
+    private void bulkFlush(final List<EventLogItemWrapper> items) {
         try {
-            doBulkFlush(items);
+            lastEventId = ((RadixConnection) dbConnection).writeEventLogItems(items);
         } catch (SQLException ex) {
             cantRegisterEvInDbLog(ex);
         }
-    }
-
-    private void doBulkFlush(final List<ItemWrapper> items) throws SQLException {
-        if (items == null || items.isEmpty()) {
-            return;
-        }
-        if (qryBulkPut == null) {
-            qryBulkPut = (OraclePreparedStatement) dbConnection.prepareCall("begin ?:=rdx_trace.put_records(?); end;");
-            eventRecordStructDesc = StructDescriptor.createDescriptor(new SQLName(SrvRunParams.getDbSchema().toUpperCase(), "RDX_EVENT_LOG_RECORD", (OracleConnection) dbConnection), dbConnection);
-            evetRecordArrDesc = ArrayDescriptor.createDescriptor(new SQLName(SrvRunParams.getDbSchema().toUpperCase(), "RDX_EVENT_LOG_RECORDS", (OracleConnection) dbConnection), dbConnection);
-        }
-
-        final Object[] recordsArray = new Object[items.size()];
-        int idx = 0;
-        for (ItemWrapper itemWrapper : items) {
-            final Item item = itemWrapper.getItem();
-            final STRUCT recordStruct = new STRUCT(eventRecordStructDesc, dbConnection, new Object[]{
-                item.code,
-                itemWrapper.getWordsStr(),
-                item.source,
-                item.severity.getValue().longValue(),
-                item.contextTypes,
-                item.contextIds,
-                item.time,
-                item.userName,
-                item.stationName,
-                (item.isSensitive ? 1 : 0)
-            });
-            recordsArray[idx] = recordStruct;
-            idx++;
-        }
-        final ARRAY records = new ARRAY(evetRecordArrDesc, dbConnection, recordsArray);
-        qryBulkPut.setARRAY(2, records);
-        ((CallableStatement) qryBulkPut).registerOutParameter(1, java.sql.Types.INTEGER);
-        qryBulkPut.execute();
-        lastEventId = ((CallableStatement) qryBulkPut).getLong(1);
     }
 
     public final List<Item> popAllFromBuffer() {

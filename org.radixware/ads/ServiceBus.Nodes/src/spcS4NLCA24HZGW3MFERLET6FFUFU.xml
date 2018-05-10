@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcS4NLCA24HZGW3MFERLET6FFUFU" Name="OutMessageMoveToSentProc" Type="10">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderspcS4NLCA24HZGW3MFERLET6FFUFU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyspcS4NLCA24HZGW3MFERLET6FFUFU"/>
+    </Bodies>
+    <MethodGroup Id="cmgUJC56IRXKJENHKNQFY34X2OUDM" Name="Root"/>
+    <PropertyGroup Id="cpgCMCNCKL55RFKXAWZP5DHX24J7E" Name="Root"/>
+    <Properties>
+      <Property Id="prm5C4YLE7JA5HWZHXJ77QM7PAJFE" Name="messageId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmMFMVBDIADJCKVHP4FIHDURUDPY" Name="errorText" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="messageId" Id="mpr5C4YLE7JA5HWZHXJ77QM7PAJFE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="errorText" Id="mprMFMVBDIADJCKVHP4FIHDURUDPY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcS4NLCA24HZGW3MFERLET6FFUFU"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>begin
+    insert into </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+            (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colOI4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colOM4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colOQ4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colSMQR44I5N5AGHIJMQFF6TUO4RU" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colWRXU6KICKFCKBE5YNLT55VTE54" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colOU4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colOY4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colO44BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colPA4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colZMZAPRLLXBFCLH7VUIGVA7HOK4" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colPE4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colPI4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colPM4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colPQ4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colPU4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="col6HSMYFOSV5EWPD575PUINSYHEM" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colJP4VCQ3UPBA4PIHAITVYDWTEV4" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colPY4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colP44BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colQA4BGTURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="colIE2KOWURUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblOA4BGTURUTOBDANVABIFNQAABA" PropId="col7WEBG24RUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>sm</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)
+    select   </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col3YNY224PUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col5CKW454PUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colDUU5BZMPUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colSEJB3YF6WFEZHOX4HX24NF4H4A" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colWBAD4MPNUFFYZCHKSKE4LH6LHI" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colDYU5BZMPUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colMWTKV4MPUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colM2TKV4MPUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colBRWI77EPUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colGBH2JEACTVBTTOIGPJHGZIUROM" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col4RHX4A4QUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colPRIH4IEQUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col6STBOLMQUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colPDVAS7UQUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col6LCP3VS5MFBXFIXFRYSR3WJBGM" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colPIHVQDD6VZBQVMO5CNQ7SP33AU" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colHBZLONSMMRDLFPVLUPA36J4GDQ" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colLRRSUR4QUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col6R756U4QUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colQQY3SX4QUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,     SysDate,   </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmMFMVBDIADJCKVHP4FIHDURUDPY"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col3YNY224PUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm5C4YLE7JA5HWZHXJ77QM7PAJFE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+      and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colGBH2JEACTVBTTOIGPJHGZIUROM" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> != 0
+      and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colZKRADR2XH5AWHOSJVUP3XFJRLI" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = 1;
+      
+    delete from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="col3YNY224PUTOBDANVABIFNQAABA" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm5C4YLE7JA5HWZHXJ77QM7PAJFE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" PropId="colZKRADR2XH5AWHOSJVUP3XFJRLI" Owner="TABLE">
+            <xsc:TableAlias>om</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = 1;
+end;
+</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblGBOAYN4PUTOBDANVABIFNQAABA" Alias="om"/>
+        <UsedTable TableId="tblOA4BGTURUTOBDANVABIFNQAABA" Alias="sm"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

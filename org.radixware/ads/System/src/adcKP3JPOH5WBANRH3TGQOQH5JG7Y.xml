@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcKP3JPOH5WBANRH3TGQOQH5JG7Y" Name="EventContextParametersInfo" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcKP3JPOH5WBANRH3TGQOQH5JG7Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcKP3JPOH5WBANRH3TGQOQH5JG7Y"/>
+    </Bodies>
+    <MethodGroup Id="cmg3WGWJFIT55C3LHEUJZ5H44KOEM" Name="Root"/>
+    <PropertyGroup Id="cpgLPBK4X3435CN5J4KG32RMEVXGU" Name="Root"/>
+    <Properties>
+      <Property Id="prd74MQRCRJ3RDDVPGVFLAY47YG4I" Name="contextTitle" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdFNOYJY6RZFB75E5ONGYPWFU3X4" Name="contextType" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdYJAP7URVWJC7XDLQZQOYKADJM4" Name="editorPresentationIds" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU" Dimension="1"/>
+      </Property>
+      <Property Id="prdO3H62HMW3RBHRKEMW2BILK2KAY" Name="selectorPresentationId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </Property>
+      <Property Id="prdLY34UD4KQ5AOLNAEKZKYLM6MSA" Name="tableId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthMDSLY7MICVE3BAP5SC47Z7HP5Y" Name="EventContextParametersInfo" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="contextType" Id="mprD2X6K3FQFBC3XPF5QTKZXVK37M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="contextTitle" Id="mprVG5IZAFPYZFZJEL2NYY2BRJOKQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="tableId" Id="mprEAYE7CMD2ZG2ZPSKFGG66K7D54">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="selectorPresentationId" Id="mpr4BMVPE7YDNDWZNQ62KHGWGBA2I">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="editorPresentationIds" Variable="true" Id="mprLBW75A2W25HXPEKN32JLPHYL6I">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKP3JPOH5WBANRH3TGQOQH5JG7Y prdFNOYJY6RZFB75E5ONGYPWFU3X4" Invoke="true">
+                <xsc:Presentation>contextType</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = contextType;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKP3JPOH5WBANRH3TGQOQH5JG7Y prd74MQRCRJ3RDDVPGVFLAY47YG4I" Invoke="true">
+                <xsc:Presentation>contextTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = contextTitle;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKP3JPOH5WBANRH3TGQOQH5JG7Y prdLY34UD4KQ5AOLNAEKZKYLM6MSA" Invoke="true">
+                <xsc:Presentation>tableId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = tableId;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKP3JPOH5WBANRH3TGQOQH5JG7Y prdO3H62HMW3RBHRKEMW2BILK2KAY" Invoke="true">
+                <xsc:Presentation>selectorPresentationId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = selectorPresentationId;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKP3JPOH5WBANRH3TGQOQH5JG7Y prdYJAP7URVWJC7XDLQZQOYKADJM4" Invoke="true">
+                <xsc:Presentation>editorPresentationIds</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = editorPresentationIds;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthW3JRP7ZCSVG2XHJS3OIQ63JR74" Name="EventContextParametersInfo" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="contextType" Id="mprD2X6K3FQFBC3XPF5QTKZXVK37M">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="tableId" Id="mprEAYE7CMD2ZG2ZPSKFGG66K7D54">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="selectorPresentationId" Id="mpr4BMVPE7YDNDWZNQ62KHGWGBA2I">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="editorPresentationId" Variable="true" Id="mprLBW75A2W25HXPEKN32JLPHYL6I">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(contextType, contextType, tableId, selectorPresentationId, editorPresentationId);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVBY4D5BLWNFUNDPTPMG6P54C2Q" Name="EventContextParametersInfo" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="contextType" Id="mprGDKCVJK6NZAOLA45F4ZV5EGJCE">
+            <Type TypeId="21" Path="acsPVLIUELSKTNRDAQSABIFNQAAAE"/>
+          </Parameter>
+          <Parameter Name="tableId" Id="mprEAYE7CMD2ZG2ZPSKFGG66K7D54">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="selectorPresentationId" Id="mpr4BMVPE7YDNDWZNQ62KHGWGBA2I">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="editorPresentationIds" Variable="true" Id="mprLBW75A2W25HXPEKN32JLPHYL6I">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(contextType.Value, contextType.getTitle(), tableId, selectorPresentationId, editorPresentationIds);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

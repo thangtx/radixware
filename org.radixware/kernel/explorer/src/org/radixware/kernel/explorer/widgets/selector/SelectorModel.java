@@ -19,11 +19,6 @@ import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.core.Qt.AlignmentFlag;
-import com.trolltech.qt.core.Qt.ItemDataRole;
-import com.trolltech.qt.core.Qt.ItemFlag;
-import com.trolltech.qt.core.Qt.ItemFlags;
-import com.trolltech.qt.core.Qt.Orientation;
 
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QColor;
@@ -32,14 +27,21 @@ import com.trolltech.qt.gui.QFontMetrics;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QStyle;
 import com.trolltech.qt.gui.QStyleOptionViewItem;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.Stack;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EFontWeight;
+import org.radixware.kernel.common.client.enums.EHierarchicalSelectionMode;
 import org.radixware.kernel.common.client.enums.ESelectorColumnHeaderMode;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.env.SettingNames;
@@ -62,15 +64,16 @@ import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReaso
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.models.BrokenEntityModel;
 import org.radixware.kernel.common.client.models.EntityModel;
-import org.radixware.kernel.common.client.models.EntityObjectsSelection;
 import org.radixware.kernel.common.client.models.FilterModel;
 import org.radixware.kernel.common.client.models.GroupModel;
+import org.radixware.kernel.common.client.models.HierarchicalSelection;
 import org.radixware.kernel.common.client.models.IContext;
 import org.radixware.kernel.common.client.models.ProxyGroupModel;
 import org.radixware.kernel.common.client.models.items.SelectorColumnModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyBool;
 import org.radixware.kernel.common.client.models.items.properties.PropertyInt;
+import org.radixware.kernel.common.client.text.CachedTextOptionsProvider;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.Restrictions;
@@ -87,9 +90,9 @@ import org.radixware.kernel.common.scml.SqmlExpression;
 import org.radixware.kernel.common.types.IKernelEnum;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
-
-
 import org.radixware.kernel.common.client.utils.ClientValueFormatter;
+import org.radixware.kernel.common.client.utils.ValueConverter;
+import org.radixware.kernel.common.enums.ESelectorRowStyle;
 import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.explorer.env.ImageManager;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
@@ -98,34 +101,432 @@ import org.radixware.kernel.explorer.text.ExplorerFont;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
-public class SelectorModel extends QAbstractItemModel {    
+public class SelectorModel extends QAbstractItemModel {
     
-    public final static int SORT_INDICATOR_ITEM_ROLE = Qt.ItemDataRole.UserRole + 1;    
+    public final static int SORT_INDICATOR_ITEM_ROLE = Qt.ItemDataRole.UserRole + 1;
+    public final static int COLUMN_ITEM_ROLE = Qt.ItemDataRole.UserRole + 2;    
         
     private final static int STRING_MAX_LENGTH = 1000; //максимально допустимая длина строки в ячейке DBP-1658
     private final static EnumSet<ETextOptionsMarker> BROKEN_ENTITY_MARKERS = 
         EnumSet.of(ETextOptionsMarker.SELECTOR_ROW, ETextOptionsMarker.BROKEN_REFERENCE);
     private final static String ROWS_LIMIT_CONFIG_PATH = 
-        SettingNames.SYSTEM+"/"+SettingNames.SELECTOR_GROUP+"/"+SettingNames.Selector.COMMON_GROUP+"/"+SettingNames.Selector.Common.ROWS_LIMIT_FOR_NAVIGATION;
+        SettingNames.SYSTEM+"/"+SettingNames.SELECTOR_GROUP+"/"+SettingNames.Selector.COMMON_GROUP+"/"+SettingNames.Selector.Common.ROWS_LIMIT_FOR_NAVIGATION;        
+    private final static int ROWS_LOAD_LIMIT = 100;
+    
+    private final static Qt.ItemFlags GENERAL_FLAGS = 
+        new Qt.ItemFlags(Qt.ItemFlag.ItemIsSelectable, Qt.ItemFlag.ItemIsEnabled);
+    private final static Qt.ItemFlags ENABLED_PROPERTY_FLAGS = 
+        new Qt.ItemFlags(Qt.ItemFlag.ItemIsSelectable, Qt.ItemFlag.ItemIsEnabled, Qt.ItemFlag.ItemIsEditable);
+    private final static Qt.ItemFlags SELECTION_COLUMN_FLAGS = 
+        new Qt.ItemFlags(Qt.ItemFlag.ItemIsSelectable, Qt.ItemFlag.ItemIsEnabled, Qt.ItemFlag.ItemIsUserCheckable);
+    private final static Qt.ItemFlags TRISTATE_FLAGS = 
+        new Qt.ItemFlags(Qt.ItemFlag.ItemIsSelectable, Qt.ItemFlag.ItemIsEnabled, Qt.ItemFlag.ItemIsTristate);
+    private final static Qt.ItemFlags CHECKABLE_FLAGS = 
+        new Qt.ItemFlags(Qt.ItemFlag.ItemIsSelectable, Qt.ItemFlag.ItemIsEnabled, Qt.ItemFlag.ItemIsUserCheckable);    
+    private final static Qt.ItemFlags TRISTATE_AND_CHECKABLE_FLAGS = 
+        new Qt.ItemFlags(Qt.ItemFlag.ItemIsSelectable, Qt.ItemFlag.ItemIsEnabled, 
+                                   Qt.ItemFlag.ItemIsTristate, Qt.ItemFlag.ItemIsUserCheckable);    
+    
+            
+    private static class SelectorNodeInItemModel extends SelectorNode{
+                
+        public final long internalIndexId;
+        public final SelectorNodeInItemModel parentNode;        
+        
+        private int row;
+        private QModelIndex parentIndex;
+        private GroupModel childGroupModel;        
+        private int rows = -1 ;//number of rows loaded in view
+        private boolean wasErrorOnDataLoading;
+        private boolean wasErrorOnCheckChoosable;
+        private Set<Id> errorsOnGetPropVal;
+        private EntityModel brokenEntityModel;
+        private Collection<SelectorNodeInItemModel> children;//unsorted
+        
+        public SelectorNodeInItemModel(final long internalIndexId,
+                                                          final int row,
+                                                          final QModelIndex parentIndex, 
+                                                          final SelectorNodeInItemModel parentNode){
+            super(parentNode, parentNode==null ? 7 : calcChildNodeHashCode(parentNode, row));
+            this.parentIndex = parentIndex;
+            this.row = row;
+            this.internalIndexId = internalIndexId;
+            this.parentNode = parentNode;
+            if (parentNode!=null){
+                if (parentNode.children==null){
+                    parentNode.children = new LinkedList<>();
+                }
+                parentNode.children.add(this);
+            }
+        }
 
+        public QModelIndex getParentIndex() {
+            return parentIndex;
+        }
+
+        public void setParentIndex(final QModelIndex parentIndex) {
+            this.parentIndex = parentIndex;
+        }
+        
+        public void setRow(final int row){
+            this.row = row;
+        }
+        
+        public int getRow(){
+            return row;
+        }
+                
+        @Override
+        public EntityModel getEntityModel() {
+            if (brokenEntityModel==null){
+                final EntityModel entityModel = parentNode.getChildEntityModel(row);
+                if (entityModel instanceof BrokenEntityModel){
+                    brokenEntityModel = (BrokenEntityModel)entityModel;                    
+                    setHasChildren(false);
+                }
+                return entityModel;
+            }else{
+                return brokenEntityModel;
+            }
+        }
+                
+        private EntityModel getChildEntityModel(final int row){
+            final GroupModel group = getChildGroupModel();
+            try {
+                return group == null ? null : group.getEntity(row);
+            } catch (ServiceClientException | InterruptedException ex) {
+                group.getEnvironment().processException(ex);
+                return null;
+            } catch (BrokenEntityObjectException ex) {
+                return
+                    new BrokenEntityModel(group.getEnvironment(), group.getSelectorPresentationDef(), ex);
+            }
+        }
+        
+        public static int calcChildNodeHashCode(final SelectorNodeInItemModel node, final int row){
+            final EntityModel childEntityModel = node==null ? null : node.getChildEntityModel(row);            
+            if (childEntityModel==null || childEntityModel.getPid()==null){
+                return row;
+            }else{
+                return childEntityModel.getPid().toStr().hashCode();
+            }
+        }
+        
+        public GroupModel getChildGroupModel(){
+            return childGroupModel;
+        }
+        
+        public final void setChildGroupModel(final GroupModel group){
+            if (group.getEntitiesCount()>0){
+                setHasChildren(true);
+            }else if (!group.hasMoreRows()){
+                setHasChildren(false);
+            }
+            rows = -1;
+            childGroupModel = group;
+        }
+
+        @Override
+        public void addChildGroupModel(final GroupModel groupModel) {
+            setChildGroupModel(groupModel);
+        }
+
+        @Override
+        public List<GroupModel> getChildGroupModels() {
+            if (childGroupModel==null){
+                return Collections.emptyList();
+            }else{
+                return Collections.singletonList(childGroupModel);
+            }
+        }        
+                
+        public final int getNumberOfLoadedInnerNodes(){
+            return rows>-1 && hasChildren() ? rows : 0;
+        }
+        
+        public final void setNumberOfLoadedInnerNodes(final int number){
+            if (number>=0){
+                rows = number;
+                setHasChildren(number>0);
+            }
+        }
+        
+        public final boolean wasErrorOnDataLoading(){
+            return wasErrorOnDataLoading;
+        }
+        
+        public final void registerErrorOnDataLoading(){
+            wasErrorOnDataLoading = true;
+        }
+        
+        public final void registerErrorOnGetPropertyValue(final Id columnId){
+            if (errorsOnGetPropVal==null){
+                errorsOnGetPropVal = new HashSet<>();
+            }
+            errorsOnGetPropVal.add(columnId);
+        }
+        
+        public final boolean wasErrorOnGetPropVal(final Id columnId){
+            return errorsOnGetPropVal==null ? false : errorsOnGetPropVal.contains(columnId);
+        }
+        
+        public final void registerErrorOnCheckChoosable(){
+            wasErrorOnCheckChoosable = true;
+        }
+        
+        public final boolean wasErrorOnCheckChoosable(){
+            return wasErrorOnCheckChoosable;
+        }
+        
+        @Override
+        public final void invalidate(){
+            if (brokenEntityModel==null){
+                super.invalidate();
+                rows = -1 ;
+                wasErrorOnDataLoading = false;
+                wasErrorOnCheckChoosable = false;                
+                errorsOnGetPropVal = null;
+                children = null;
+            }            
+        }
+        
+        public final boolean canReadMore(){
+            final GroupModel group = getChildGroupModel();
+            return group!=null
+                       && !wasErrorOnDataLoading
+                       && (rows<group.getEntitiesCount() || group.hasMoreRows());
+        }
+        
+        public final Collection<SelectorNodeInItemModel> getChildren(final boolean recursive){
+            if (children==null || children.isEmpty()){
+                return Collections.emptyList();
+            }else if (recursive){
+                final Stack<SelectorNodeInItemModel> stack = new Stack<>();
+                final Collection<SelectorNodeInItemModel> result = new LinkedList<>();
+                stack.add(this);
+                SelectorNodeInItemModel node;
+                while(!stack.isEmpty()){
+                    node = stack.pop();
+                    if (node.children!=null){
+                        stack.addAll(node.children);
+                        result.addAll(node.children);
+                    }
+                }
+                return result;
+            }else{
+                return Collections.unmodifiableCollection(children);
+            }
+        }
+        
+        public final void removeChildNode(final SelectorNodeInItemModel node){
+            if (children!=null){
+                children.remove(node);
+                if (children.isEmpty()){
+                    children = null;
+                }
+            }
+        }
+    }
+    
+    private final static class RootSelectorNode extends SelectorNodeInItemModel{
+        
+        public final GroupModel groupModel;
+        
+        public RootSelectorNode(final GroupModel groupModel){
+            super(0,-1,null,null);
+            this.groupModel = groupModel;
+        }
+
+        @Override
+        public EntityModel getEntityModel() {
+            return null;
+        }                
+
+        @Override
+        public GroupModel getChildGroupModel() {
+            return groupModel;
+        }     
+    }
+    
+    private final static class EntityObjectNode extends SelectorNode{
+                
+        public final EntityModel entityModel;
+        
+        public EntityObjectNode(final SelectorNode parent, final EntityModel entityModel){
+            super(parent, entityModel.getPid().toStr().hashCode());
+            this.entityModel = entityModel;
+        }
+
+        @Override
+        public EntityModel getEntityModel() {
+            return entityModel;
+        }
+    }
+    
+    private final class Hierarchy implements HierarchicalSelection.IHierarchyDelegate<SelectorNode>{
+
+        @Override
+        public SelectorNode getParent(final SelectorNode child) {
+            final SelectorNode parent = child==null ? null : child.getParentNode();
+            return parent==SelectorModel.this.rootNode ? null : parent;
+        }
+
+        @Override
+        public List<GroupModel> getChildGroupModels(final SelectorNode parent) {
+            if (parent==null){
+                return Collections.singletonList(SelectorModel.this.getRootGroupModel());
+            }else if (parent instanceof SelectorNodeInItemModel){
+                final boolean childrenInited = parent.isChildrenInited();
+                try{
+                    final QModelIndex index = SelectorModel.this.getIndex(((SelectorNodeInItemModel)parent));
+                    if (index==null){
+                        return Collections.singletonList(SelectorModel.this.getRootGroupModel());
+                    }
+                    
+                    final GroupModel groupModel = SelectorModel.this.getChildGroup(index);
+                    if (groupModel==null){
+                        return Collections.emptyList();
+                    }else{
+                        return Collections.singletonList(groupModel);
+                    }
+                }finally{
+                    if (!childrenInited){
+                        parent.invalidate();                        
+                    }
+                }
+            }else {
+                final List<GroupModel> groupModels = parent.getChildGroupModels();
+                if (groupModels==null || groupModels.isEmpty()){
+                    final GroupModel groupModel = SelectorModel.this.getChildGroup(parent);                    
+                    if (groupModel==null){
+                        return Collections.emptyList();
+                    }else{
+                        parent.addChildGroupModel(groupModel);
+                        return Collections.singletonList(groupModel);
+                    }                  
+                }else{
+                    return groupModels;
+                }
+            }
+        }
+
+        @Override
+        public List<SelectorNode> getVirtualChildNodes(final SelectorNode parent) {
+            return Collections.<SelectorNode>emptyList();
+        }
+
+        @Override
+        public int getVirtualChildNodeIndex(final SelectorNode parent, final SelectorNode node) {
+            return -1;
+        }
+
+        @Override
+        public GroupModel getOwnerGroupModel(final SelectorNode node) {
+            final SelectorNode parent = node==null ? null : node.getParentNode();
+            if (parent==null){
+                return null;
+            }else{
+                final EntityModel entityModel = node.getEntityModel();
+                if (entityModel==null){
+                    return SelectorModel.getFirstChildGroup(parent);
+                }else{
+                    return SelectorModel.this.getOwnerGroupModel(entityModel);
+                }
+            }
+       }
+
+        @Override
+        public EntityModel getEntityModel(final SelectorNode node) {
+            return SelectorModel.this.getEntity(node);
+        }
+
+        @Override
+        public SelectorNode getEntityModelNode(final SelectorNode parent, final GroupModel childGroupModel, final EntityModel entityModel, final int rowInGroup) {
+            if (parent instanceof EntityObjectNode){
+                 return createNode(parent, childGroupModel, entityModel);
+            }
+            final SelectorNodeInItemModel parentNode;
+            if (parent == null){
+                parentNode = SelectorModel.this.rootNode;
+            }else if (parent instanceof SelectorNodeInItemModel){
+                parentNode = (SelectorNodeInItemModel)parent;
+            }else{
+                parentNode = null;
+            }
+            if (parentNode==null){
+                return null;
+            }
+            final QModelIndex parentIndex = SelectorModel.this.getIndex(parentNode);
+            if (rowInGroup<parentNode.getNumberOfLoadedInnerNodes()){
+                final QModelIndex index = SelectorModel.this.index(rowInGroup, 0, parentIndex);
+                return index==null ? null : SelectorModel.this.getNode(index);
+            }else{
+                return createNode(parent, childGroupModel, entityModel);
+            }
+        }        
+        
+        private EntityObjectNode createNode(final SelectorNode parent, 
+                                                                 final GroupModel groupModel,
+                                                                 final EntityModel entityModel){
+            final EntityModel resultModel = 
+                SelectorModel.this.replaceEntityModel(groupModel, entityModel, parent.getNestingLevel()+1);
+            return new EntityObjectNode(parent, resultModel);
+        }
+
+        @Override
+        public String nodeToString(final SelectorNode node) {
+            if (node==null){
+                return null;
+            }
+            final EntityModel entityModel = node.getEntityModel();
+            if (entityModel==null){
+                if (node instanceof SelectorNodeInItemModel){
+                    return String.valueOf( ((SelectorNodeInItemModel)node).getRow() );
+                }else{
+                    return String.valueOf( node.hashCode() );
+                }
+            }else{
+                return entityModel.getPid().toStr();
+            }
+        }
+
+        @Override
+        public boolean isEquals(final SelectorNode first, final SelectorNode second) {
+            return Objects.equals(first, second);
+        }         
+     }    
+    
     private final GroupModel root;    
-    private final Map<Long, GroupModel> childGroups = new HashMap<>();
-    private final Map<Long, QModelIndex> parentIndexes = new HashMap<>();    
-    private final Map<Long, Integer> rowsCount = new HashMap<>();
-    private final List<Long> errors = new ArrayList<>();
+    private final Map<Long, SelectorNodeInItemModel> nodes = new HashMap<>();
     private final List<SelectorColumnModelItem> columns = new ArrayList<>();    
     private final QStyleOptionViewItem styleOption = new QStyleOptionViewItem();
-    private final Map<String,ExplorerTextOptions> textOptionsCache = new HashMap<>(512);     
+    private final Map<String,ExplorerTextOptions> textOptionsCache = new HashMap<>(512);
+    private final Hierarchy hierarchy = new Hierarchy();
+    private final HierarchicalSelection<SelectorNode> selection = new HierarchicalSelection<>(hierarchy);
+    private final CachedTextOptionsProvider textOptionsProvider;
+    private final RootSelectorNode rootNode;    
+    private final Stack<SelectorNodeInItemModel> context = new Stack<>();
+    private final Qt.ItemFlags itemFlags = new Qt.ItemFlags(0);
+    private SelectorNodeInItemModel contextNode;
     private boolean textOptionsCacheEnabled;
     private int textMargin = QApplication.style().pixelMetric(QStyle.PixelMetric.PM_FocusFrameHMargin);
     private int rowsLimit = 0;
+    private boolean locked = false;
     private boolean selectionEnabled;
+    private final String errorValueStr;
+    private EnumSet<EHierarchicalSelectionMode> primarySelectionMode = EnumSet.of(EHierarchicalSelectionMode.SINGLE_OBJECT);
+    private List<EHierarchicalSelectionMode> additionalSelectionModes = 
+        Arrays.<EHierarchicalSelectionMode>asList(EHierarchicalSelectionMode.ALL_NESTED_OBJECTS_CASCADE, 
+                                                                          EHierarchicalSelectionMode.EXPLICIT_NESTED_OBJECTS);
+    
         
     public SelectorModel(final GroupModel rootModel) {
         super();
         if (rootModel == null) {
             throw new IllegalArgumentException("root group model must be not null");
         }
+        errorValueStr = rootModel.getEnvironment().getMessageProvider().translate("Value", "<!!!Error!!!>");
+        rootNode = new RootSelectorNode(rootModel);
         root = rootModel;
         final RadSelectorPresentationDef presentationDef = root.getSelectorPresentationDef();
         final RadSelectorPresentationDef.SelectorColumns selectorColumns = presentationDef.getSelectorColumns();
@@ -136,26 +537,34 @@ public class SelectorModel extends QAbstractItemModel {
             }
         }
 
-        final int count = root.getEntitiesCount();
-        if (count > 0) {
-            verifySelectorColumns(null, 0, count - 1);
+        final int count = Math.min(root.getEntitiesCount(), ROWS_LOAD_LIMIT);
+        rootNode.setNumberOfLoadedInnerNodes(count);//temporary change row count to make index method work with new rows
+        if (count>0){
+            final int lastValidRowIndex = verifyRows(null, 0, count - 1);
+            rootNode.setNumberOfLoadedInnerNodes(lastValidRowIndex+1);
         }
-        rowsCount.put(null, count);//no in WrapGroupModel
+        
         increaseRowsLimit();
         styleOption.setDecorationPosition(QStyleOptionViewItem.Position.Left);
         styleOption.setDecorationAlignment(Qt.AlignmentFlag.AlignCenter);
         styleOption.setDisplayAlignment(Qt.AlignmentFlag.AlignLeft, Qt.AlignmentFlag.AlignVCenter);
+        selection.subscribe(null, rootModel);
+        textOptionsProvider = new CachedTextOptionsProvider(getEnvironment().getTextOptionsProvider());
     }
     
     public void setIconSize(final QSize size){
         styleOption.setDecorationSize(size);
     }
     
-    public void setTextMargin(final int margin){
+    public final void setTextMargin(final int margin){
         textMargin = margin;
     }
+    
+    final void clearTextOptionsCache(){
+        textOptionsCache.clear();
+    }
 
-    protected IClientEnvironment getEnvironment() {
+    protected final IClientEnvironment getEnvironment() {
         return root.getEnvironment();
     }
 
@@ -164,126 +573,182 @@ public class SelectorModel extends QAbstractItemModel {
     }
         
     @Override
-    public ItemFlags flags(final QModelIndex index) {
-        final ItemFlags flags = new ItemFlags();
-        flags.set(ItemFlag.ItemIsSelectable);
-        flags.set(ItemFlag.ItemIsEnabled);
-        if (isSelectionEnabled() && index.column()==0 && !isBrokenEntity(index)){
-            final EntityModel entity = getEntity(index);
-            if (getGroupModel(entity).getEntitySelectionController().isEntityChoosable(entity)){
-                flags.set(ItemFlag.ItemIsUserCheckable);
+    public Qt.ItemFlags flags(final QModelIndex index) {
+        if (isBrokenEntity(index)){
+            return GENERAL_FLAGS;
+        }
+        if (isSelectionEnabled() && index.column()==0){
+            final SelectorNodeInItemModel node = getNode(index);
+            if (node==null || node.wasErrorOnCheckChoosable()){
+                return GENERAL_FLAGS;
+            }else{
+                final EntityModel entity = getEntity(node);
+                final GroupModel ownerGroup = entity==null ? null : getOwnerGroupModel(entity);
+                if (ownerGroup!=null && ownerGroup.getEntitySelectionController().isEntityChoosable(entity)){
+                    return SELECTION_COLUMN_FLAGS;
+                }else{
+                    return GENERAL_FLAGS;
+                }
             }
-            return flags;
         }
-        final Property property = (Property) index.data(ItemDataRole.UserRole);
-        if (property == null) {
-            return flags;
+        if (isBrokenPropertyValue(index)){
+            return GENERAL_FLAGS;
+        }else{
+            final Property property = getProperty(index);
+            return property==null ? GENERAL_FLAGS : getItemFlagsForProperty(property);
         }
-        // для bool свойств показывать флажок
+    }
+    
+    protected Qt.ItemFlags getItemFlagsForProperty(final Property property){
+        // для bool свойств показывать флажок        
         if (canUseStandardCheckBox(property)) {
-            if (!property.isMandatory()) {
-                flags.set(ItemFlag.ItemIsTristate);
-            }
-            if (canEditPropertyValue(property) && property.isEnabled()) {
-                flags.set(ItemFlag.ItemIsUserCheckable);
+            final boolean isMandatory = property.isMandatory();
+            final boolean isEditable = canEditPropertyValue(property) && property.isEnabled();
+            if (isEditable && !isMandatory){
+                itemFlags.setValue(TRISTATE_AND_CHECKABLE_FLAGS.value());
+            }else if (isEditable){
+                itemFlags.setValue(CHECKABLE_FLAGS.value());
+            }else if (!isMandatory){
+                itemFlags.setValue(TRISTATE_FLAGS.value());
             }
         } else if (property.isEnabled()) {
-            flags.set(ItemFlag.ItemIsEditable);
+            itemFlags.setValue(ENABLED_PROPERTY_FLAGS.value());
+        }else{
+            itemFlags.setValue(GENERAL_FLAGS.value());
         }
-        return flags;
+        return itemFlags;
     }
     
     @Override
     @SuppressWarnings("PMD.MissingBreakInSwitch")
-    public Object data(QModelIndex index, int role) {
+    public Object data(final QModelIndex index, int role) {
         if (index == null) {
             return null;
         }
-        switch (role) {
-            case ItemDataRole.CheckStateRole:
-                return getCheckState(index);
-            case ItemDataRole.DecorationRole:
-                return getDecoration(index);
-            case ItemDataRole.DisplayRole:
-                return getDisplay(index);
-            case ItemDataRole.FontRole:
-                return getFont(index);
-            case ItemDataRole.SizeHintRole:
-                return getSizeHint(index, false);
-            case ItemDataRole.TextAlignmentRole:
-                final Qt.AlignmentFlag alignmentFlag = getTextAlignment(index);
-                if (alignmentFlag != null) {
-                    final Qt.Alignment alignment = new Qt.Alignment(Qt.AlignmentFlag.AlignVCenter, alignmentFlag);
-                    return alignment.value();
+        final SelectorNodeInItemModel contextNode = getNode(index);
+        if (contextNode==null){
+            return null;
+        }
+        pushContextNode(contextNode);
+        try{
+            switch (role) {
+                case Qt.ItemDataRole.CheckStateRole:
+                    return getCheckState(index);
+                case Qt.ItemDataRole.DecorationRole:
+                    return getDecoration(index);
+                case Qt.ItemDataRole.DisplayRole:
+                    return getDisplay(index);
+                case Qt.ItemDataRole.FontRole:
+                    return getFont(index);
+                case Qt.ItemDataRole.SizeHintRole:
+                    return getSizeHint(index, false);
+                case Qt.ItemDataRole.TextAlignmentRole:
+                    final int alignmentFlags = getTextAlignment(index);
+                    return alignmentFlags<0 ? null : alignmentFlags;
+                case Qt.ItemDataRole.UserRole:
+                    return getProperty(index);
+                case Qt.ItemDataRole.BackgroundRole: {                
+                    return getBackground(index);
                 }
-                return null;
-            case ItemDataRole.UserRole:
-                return getProperty(index);
-            case ItemDataRole.BackgroundRole: {
-                return getBackground(index);
+                case Qt.ItemDataRole.ForegroundRole: {
+                    return getForeground(index);
+                }
+                case Qt.ItemDataRole.ToolTipRole:{
+                    return getToolTip(index);
+                }
+                case WidgetUtils.MODEL_ITEM_ROW_NAME_DATA_ROLE:{
+                    return getRowName(index);
+                }
+                case WidgetUtils.MODEL_ITEM_CELL_NAME_DATA_ROLE:{
+                    return getCellName(index);
+                }
+                case WidgetUtils.MODEL_ITEM_CELL_VALUE_DATA_ROLE:{
+                    return getCellValueAsStr(index);
+                }
+                case WidgetUtils.MODEL_ITEM_CELL_VALUE_IS_NULL_DATA_ROLE:{
+                    return isCellValueNull(index);
+                }
+                default:
+                    return null;
             }
-            case ItemDataRole.ForegroundRole: {
-                return getForeground(index);
-            }
-            case ItemDataRole.ToolTipRole:{
-                return getToolTip(index);
-            }
-            default:
-                return null;
+        }finally{
+            popContextNode();
         }
     }
     
-    public QSize getSizeHint(final QModelIndex index, final boolean approximately){
-        final Property property = getProperty(index);
+    public final QSize getSizeHint(final QModelIndex index, final boolean approximately){        
         final int widthMargin = 2*(textMargin+1);
-        if (property==null){
+        if (isBrokenPropertyValue(index)){
             final QFontMetrics fontMetrics = getTextOptions(index).getFont().getQFontMetrics();
-            final String text = getDisplay(index);
-            return new QSize(WidgetUtils.calcTextWidth(text, fontMetrics, approximately) + widthMargin, fontMetrics.height());
-        }else{
-            final boolean hasCheckBox = getCheckState(property)!=null;
-            final QFontMetrics fontMetrics = getTextOptions(property).getFont().getQFontMetrics();
-            if (hasCheckBox){
-                int width = TristateCheckBoxStyle.INDICATOR_SIZE + 2*widthMargin;
-                final int height = Math.max(TristateCheckBoxStyle.INDICATOR_SIZE, fontMetrics.height());
-                if (property.getValueObject()==null){
-                    final String text = getTextToDisplay(property);
-                    if (text!=null && !text.isEmpty()){
-                        width+=WidgetUtils.calcTextWidth(text, fontMetrics, approximately) + widthMargin;
-                    }
-                }
-                return new QSize(width, height);
-            }
-            final boolean hasIcon = getIconForProperty(property)!=null;            
+            final boolean hasIcon = getDecoration(index)!=null;
             int height = hasIcon ? styleOption.decorationSize().height() : 0;
             height = Math.max(height, fontMetrics.height());
             int width = hasIcon ? styleOption.decorationSize().width() + widthMargin : 0;
-            final String text = getTextToDisplay(property);
-            if (text!=null && !text.isEmpty()){
-                height = Math.max(height, fontMetrics.height());
-                width+=WidgetUtils.calcTextWidth(text, fontMetrics, approximately) + 2*widthMargin;
-            }
+            final String text = errorValueStr;
+            height = Math.max(height, fontMetrics.height());
+            width+=WidgetUtils.calcTextWidth(text, fontMetrics, approximately) + 2*widthMargin;
             return new QSize(width, height);
-        }     
-    }
-    
-    public int getHeightHint(final QModelIndex index){
-        final Property property = getProperty(index);
-        if (property==null){
-            return getTextOptions(index).getFont().getQFontMetrics().height();
         }else{
-            final boolean hasCheckBox = getCheckState(property)!=null;
-            final QFontMetrics fontMetrics = getTextOptions(property).getFont().getQFontMetrics();
-            if (hasCheckBox){
-                return Math.max(TristateCheckBoxStyle.INDICATOR_SIZE, fontMetrics.height());
-            }
-            final boolean hasIcon = getIconForProperty(property)!=null;            
-            if (hasIcon){
-                return Math.max(styleOption.decorationSize().height(), fontMetrics.height());
+            final Property property = getProperty(index);
+            if (property==null){
+                final QFontMetrics fontMetrics = getTextOptions(index).getFont().getQFontMetrics();
+                final String text = getDisplay(index);
+                return new QSize(WidgetUtils.calcTextWidth(text, fontMetrics, approximately) + widthMargin, fontMetrics.height());
             }else{
-                return fontMetrics.height();
+                return getSizeHint(property, approximately, widthMargin, getDecoration(index)!=null);
             }
         }
+    }
+    
+    protected QSize getSizeHint(final Property property, final boolean approximately, final int widthMargin, final boolean hasIcon){
+        final boolean hasCheckBox = getCheckState(property)!=null;
+        final QFontMetrics fontMetrics = getTextOptions(property).getFont().getQFontMetrics();
+        if (hasCheckBox){
+            int width = TristateCheckBoxStyle.INDICATOR_SIZE + 2*widthMargin;
+            final int height = Math.max(TristateCheckBoxStyle.INDICATOR_SIZE, fontMetrics.height());
+            if (property.getValueObject()==null){
+                final String text = getTextToDisplay(property);
+                if (text!=null && !text.isEmpty()){
+                    width+=WidgetUtils.calcTextWidth(text, fontMetrics, approximately) + widthMargin;
+                }
+            }
+            return new QSize(width, height);
+        }
+        int height = hasIcon ? styleOption.decorationSize().height() : 0;
+        height = Math.max(height, fontMetrics.height());
+        int width = hasIcon ? styleOption.decorationSize().width() + widthMargin : 0;
+        final String text = getTextToDisplay(property);
+        if (text!=null && !text.isEmpty()){
+            height = Math.max(height, fontMetrics.height());
+            width+=WidgetUtils.calcTextWidth(text, fontMetrics, approximately) + 2*widthMargin;
+        }
+        return new QSize(width, height);        
+    }
+    
+    public final int getHeightHint(final QModelIndex index){
+        if (isBrokenPropertyValue(index)){
+            return getTextOptions(index).getFont().getQFontMetrics().height();
+        }else{
+            final Property property = getProperty(index);
+            if (property==null){
+                return getTextOptions(index).getFont().getQFontMetrics().height();
+            }else{
+                return getHeightHint(property, getDecoration(index)!=null);
+            }
+        }
+    }
+    
+    protected int getHeightHint(final Property property, final boolean hasIcon){
+        final boolean hasCheckBox = getCheckState(property)!=null;
+        final QFontMetrics fontMetrics = getTextOptions(property).getFont().getQFontMetrics();
+        if (hasCheckBox){
+            return Math.max(TristateCheckBoxStyle.INDICATOR_SIZE, fontMetrics.height());
+        }
+        if (hasIcon){
+            return Math.max(styleOption.decorationSize().height(), fontMetrics.height());
+        }else{
+            return fontMetrics.height();
+        }        
     }
     
     private Object getCheckState(final QModelIndex index) {
@@ -292,15 +757,25 @@ public class SelectorModel extends QAbstractItemModel {
             if (entity == null || (entity instanceof BrokenEntityModel)) {
                 return null;
             }
-            final GroupModel groupModel = getGroupModel(entity);
-            if (groupModel.getSelection().isObjectSelected(entity)){
+            final SelectorNodeInItemModel node = getNode(index);
+            final EnumSet<EHierarchicalSelectionMode> modes = calcAllSelectionModes(node);
+            if (modes.isEmpty()){
+                return null;
+            }
+            if (selection.isSelected(node)){
                 return Qt.CheckState.Checked;
+            }else if (selection.isSomeChildNodeSelected(node, true)){
+                return Qt.CheckState.PartiallyChecked;
             }else{
-                return groupModel.getEntitySelectionController().isEntityChoosable(entity) ?  Qt.CheckState.Unchecked : null;
+                return Qt.CheckState.Unchecked;
             }
         }
-        final Property property = getProperty(index);
-        return getCheckState(property);
+        if (isBrokenPropertyValue(index)){
+            return null;
+        }else{
+            final Property property = getProperty(index);
+            return property==null ? null : getCheckState(property);
+        }
     }
     
     private Qt.CheckState getCheckState(final Property property){
@@ -317,13 +792,28 @@ public class SelectorModel extends QAbstractItemModel {
         }
         return null;        
     }
-
+    
     protected QIcon getDecoration(final QModelIndex index) {
-        final Property property = getProperty(index);
-        if (property == null) {
-            return null;
+        if (index.column()==(isSelectionEnabled() ? 1 : 0)){
+            final EntityModel entityModel = getEntity(index);
+            if (entityModel==null || entityModel instanceof BrokenEntityModel){
+                return null;
+            }
+            final QIcon icon = getIconForEntityModel(entityModel);
+            if (icon!=null){
+                return icon;
+            }
         }
-        return getIconForProperty(property);
+        if (isBrokenPropertyValue(index)){
+            return null;
+        }else{
+            final Property property = getProperty(index);
+            return property == null ? null : getIconForProperty(property);
+        }
+    }
+    
+    protected QIcon getIconForEntityModel(final EntityModel entityModel){
+        return null;
     }
 
     protected QIcon getIconForProperty(final Property property) {
@@ -362,6 +852,8 @@ public class SelectorModel extends QAbstractItemModel {
             else{
                 return "";
             }
+        }else if (isBrokenPropertyValue(index)){
+            return errorValueStr;
         }
 
         final Property property = getProperty(index);
@@ -380,42 +872,47 @@ public class SelectorModel extends QAbstractItemModel {
             return getTextToDisplay(property);
         } catch (ActivatingPropertyError error) {
             getEnvironment().getTracer().put(error);
-            return getEnvironment().getMessageProvider().translate("Value", "<!!!Error!!!>");
+            return errorValueStr;
         }
     }
 
     @Override
     public boolean setData(final QModelIndex index, final Object data, final int role) {
-        if (role == ItemDataRole.CheckStateRole) {
+        if (role == Qt.ItemDataRole.CheckStateRole) {
             if (isSelectionEnabled() && index.column()==0){
-                final EntityModel entity = getEntity(index);        
-                if (entity != null && entity instanceof BrokenEntityModel==false) {
-                    final GroupModel groupModel = getGroupModel(entity);
-                    if (groupModel.getEntitySelectionController().isEntityChoosable(entity)){
-                        groupModel.getSelection().invertSelection(entity.getPid());
-                        return true;
-                    }else{
-                        return false;
-                    }     
+                final SelectorNodeInItemModel node = getNode(index);
+                if (node!=null && !node.wasErrorOnCheckChoosable()){
+                    final EntityModel entity = getEntity(node);
+                    if (entity != null && entity instanceof BrokenEntityModel==false) {
+                        final GroupModel groupModel = getOwnerGroupModel(entity);
+                        if (groupModel.getEntitySelectionController().isEntityChoosable(entity)){
+                            selection.invertSelection(node);
+                            return true;
+                        }else{
+                            return false;
+                        }     
+                    }
                 }
             }
-            final Property property = getPropertyForChange(index);
-            if (property != null) {
-                Boolean propertyValue = (Boolean) property.getValueObject();
-                try {
-                    if (propertyValue == null) {
-                        property.setValueObject(true);
-                    } else if (propertyValue == false) {
-                        if (property.isMandatory()) {
+            if (!isBrokenPropertyValue(index)){
+                final Property property = getPropertyForChange(index);
+                if (property != null) {
+                    Boolean propertyValue = (Boolean) property.getValueObject();
+                    try {
+                        if (propertyValue == null) {
                             property.setValueObject(true);
+                        } else if (propertyValue == false) {
+                            if (property.isMandatory()) {
+                                property.setValueObject(true);
+                            } else {
+                                property.setValueObject(null);
+                            }
                         } else {
-                            property.setValueObject(null);
+                            property.setValueObject(false);
                         }
-                    } else {
-                        property.setValueObject(false);
+                    } catch (Exception ex) {
+                        getEnvironment().processException(new SettingPropertyValueError(property, ex));
                     }
-                } catch (Exception ex) {
-                    getEnvironment().processException(new SettingPropertyValueError(property, ex));
                 }
             }
         }
@@ -474,7 +971,7 @@ public class SelectorModel extends QAbstractItemModel {
                && property.getEnabledCommands().isEmpty();
     }        
     
-    public void setTextOptionsCacheEnabled(final boolean enabled){
+    public final void setTextOptionsCacheEnabled(final boolean enabled){
         textOptionsCacheEnabled = enabled;
         if (!enabled){
             textOptionsCache.clear();
@@ -485,7 +982,7 @@ public class SelectorModel extends QAbstractItemModel {
         return index.row()+"_"+index.column()+"_"+index.internalId();
     }
     
-    public ExplorerTextOptions getTextOptions(final QModelIndex index){
+    public final ExplorerTextOptions getTextOptions(final QModelIndex index){
         ExplorerTextOptions textOptions;
         if (textOptionsCacheEnabled){
             textOptions = textOptionsCache.get(indexCacheKey(index));
@@ -493,10 +990,17 @@ public class SelectorModel extends QAbstractItemModel {
             textOptions = null;
         }
         if (textOptions==null){
-            if (isBrokenEntity(index)){
+            if (isBrokenEntity(index) || isBrokenPropertyValue(index)){
                 textOptions = (ExplorerTextOptions)getEnvironment().getTextOptionsProvider().getOptions(BROKEN_ENTITY_MARKERS, null);
             }else{
-                textOptions = getTextOptions(getProperty(index));
+                final Property property = getProperty(index);
+                if (property==null){
+                    final EntityModel entity = getEntity(index);
+                    final ESelectorRowStyle rowStyle = entity==null ? ESelectorRowStyle.NORMAL : entity.getSelectorRowStyle();                    
+                    return (ExplorerTextOptions)textOptionsProvider.getOptions(EnumSet.of(ETextOptionsMarker.SELECTOR_ROW), rowStyle);
+                }else{
+                    textOptions = getTextOptions(property);
+                }
             }
             if (textOptionsCacheEnabled){
                 textOptionsCache.put(indexCacheKey(index), textOptions);
@@ -505,29 +1009,29 @@ public class SelectorModel extends QAbstractItemModel {
         return textOptions;
     }
     
-    private ExplorerTextOptions getTextOptions(final Property property){
-        if (property==null){
-            return ExplorerTextOptions.Factory.getOptions(ETextOptionsMarker.SELECTOR_ROW);
-        }else{
-            final EnumSet<ETextOptionsMarker> propertyMarkers =  property.getTextOptionsMarkers();
-            if (propertyMarkers.contains(ETextOptionsMarker.INVALID_VALUE) && !canEditPropertyValue(property)){
-                propertyMarkers.remove(ETextOptionsMarker.INVALID_VALUE);
-            }
-            return (ExplorerTextOptions)property.getValueTextOptions().getOptions(propertyMarkers);
-        }        
+    protected final ExplorerTextOptions getTextOptions(final Property property){
+        final EnumSet<ETextOptionsMarker> propertyMarkers =  property.getTextOptionsMarkers();
+        if (propertyMarkers.contains(ETextOptionsMarker.INVALID_VALUE) && !canEditPropertyValue(property)){
+            propertyMarkers.remove(ETextOptionsMarker.INVALID_VALUE);
+        }
+        return (ExplorerTextOptions)property.getValueTextOptions().getOptions(propertyMarkers);
     }
     
-    protected QFont getFont(final QModelIndex index) {
+    protected final QFont getFont(final QModelIndex index) {
         return getTextOptions(index).getQFont();
     }
 
-    protected QColor getForeground(QModelIndex index) {
+    protected final QColor getForeground(QModelIndex index) {
         return getTextOptions(index).getForeground();
     }
 
-    protected String getToolTip(final QModelIndex index){
-        final Property property = getProperty(index);
-        return property==null ? null : getToolTip(property);
+    protected final String getToolTip(final QModelIndex index){
+        if (isBrokenPropertyValue(index)){
+            return null;
+        }else{
+            final Property property = getProperty(index);
+            return property==null ? null : getToolTip(property);
+        }
     }
     
     protected String getToolTip(final Property property){
@@ -539,27 +1043,17 @@ public class SelectorModel extends QAbstractItemModel {
             }else{
                 ValidationResult state = property.getEditMask().validate(getEnvironment(),property.getValueObject());
                 if (state!=ValidationResult.ACCEPTABLE){
-                    return state.getInvalidValueReason().toString();
+                    return state.getInvalidValueReason().getMessage(getEnvironment().getMessageProvider(), InvalidValueReason.EMessageType.Value);
                 }
                 state = property.getOwner().getPropertyValueState(property.getId());
                 if (state!=ValidationResult.ACCEPTABLE){
-                    return state.getInvalidValueReason().toString();
+                    return state.getInvalidValueReason().getMessage(getEnvironment().getMessageProvider(), InvalidValueReason.EMessageType.Value);
                 }                
             }        
         }
         return property.getHint();
     }
     
-    protected String getHeaderToolTip(final SelectorColumnModelItem selectorColumn){
-        final String toolTip = selectorColumn.getHint();
-        if (selectorColumn.getHeaderMode()==ESelectorColumnHeaderMode.ONLY_ICON
-            && (toolTip==null || toolTip.isEmpty())
-           ){
-            return selectorColumn.getTitle();
-        }
-        return toolTip;
-    }
-
     private List<Property> subscribedProperties;
 
     public final void subscribeProperties(final EntityModel entity, final IModelWidget subscriber) {
@@ -580,7 +1074,7 @@ public class SelectorModel extends QAbstractItemModel {
 
     protected List<Property> getPropertiesToSubscribe(final EntityModel entity) {
         final List<Property> properties = new ArrayList<>();
-        final GroupModel groupModel = getGroupModel(entity);
+        final GroupModel groupModel = getOwnerGroupModel(entity);
         Id propertyId;
         Property property;
         SelectorColumnModelItem column;
@@ -647,22 +1141,15 @@ public class SelectorModel extends QAbstractItemModel {
     
     @Override
     @SuppressWarnings("PMD.MissingBreakInSwitch")
-    public Object headerData(final int section, final Qt.Orientation orientation, final int role) {
+    public final Object headerData(final int section, final Qt.Orientation orientation, final int role) {
         switch (role) {
             case Qt.ItemDataRole.DisplayRole:
                 if (orientation == Qt.Orientation.Horizontal) {
                     final SelectorColumnModelItem column = getSelectorColumn(section);
-                    if (column==null){
-                        return " ";
-                    }
-                    if (column.getHeaderMode()==ESelectorColumnHeaderMode.ONLY_ICON){
-                        return "";                        
-                    }else{
-                        return ClientValueFormatter.capitalizeIfNecessary(getEnvironment(), column.getTitle());
-                    }
+                    return column==null ? "" : getHeaderTitle(column);
                 } else {
                     return "  ";
-                }            
+                }
             case Qt.ItemDataRole.UserRole:                
                 if (orientation == Qt.Orientation.Horizontal) {
                     final SelectorColumnModelItem column = getSelectorColumn(section);
@@ -670,50 +1157,37 @@ public class SelectorModel extends QAbstractItemModel {
                 } else {
                     return super.headerData(section, orientation, role);
                 }
+            case COLUMN_ITEM_ROLE:
+                return orientation == Qt.Orientation.Horizontal ? getSelectorColumn(section) : null;
             case Qt.ItemDataRole.FontRole: {
                 if (orientation == Qt.Orientation.Horizontal) {
-                    final ExplorerSettings settings = (ExplorerSettings) getEnvironment().getConfigStore();
-
-                    settings.beginGroup(SettingNames.SYSTEM);
-                    settings.beginGroup(SettingNames.SELECTOR_GROUP);
-                    settings.beginGroup(SettingNames.Selector.COMMON_GROUP);
-
-                    final QFont font = settings.readQFont(SettingNames.Selector.Common.HEADER_FONT_IN_SELECTOR);
-
-                    settings.endGroup();
-                    settings.endGroup();
-                    settings.endGroup();
-
-                    final QFont actualFont = font != null ? font : QApplication.font();
-                    if (section == currentColumn && !root.isEmpty()) {
-                        return getBoldFont(actualFont);
+                    final SelectorColumnModelItem column = getSelectorColumn(section);
+                    final QFont font;
+                    if (column==null){
+                        font = getDefaultHeaderFont();                        
+                    }else{
+                        font = getHeaderFont(column, section==currentColumn);
                     }
-                    return actualFont;
+                    return font==null ? QApplication.font() : font;
                 } else {
                     return super.headerData(section, orientation, role);
                 }
             }
-
-            //
-            case ItemDataRole.TextAlignmentRole: {
-                if (orientation == Orientation.Horizontal) {
-                    final ExplorerSettings settings = (ExplorerSettings) getEnvironment().getConfigStore();
-                    final AlignmentFlag alignmentFlag;
-
-                    settings.beginGroup(SettingNames.SYSTEM);
-                    settings.beginGroup(SettingNames.SELECTOR_GROUP);
-                    settings.beginGroup(SettingNames.Selector.COMMON_GROUP);
-                    alignmentFlag = settings.readAlignmentFlag(SettingNames.Selector.Common.TITLES_ALIGNMENT);
-                    settings.endGroup();
-                    settings.endGroup();
-                    settings.endGroup();
-
-                    return alignmentFlag != null ? alignmentFlag.value() : AlignmentFlag.AlignLeft.value();
+            case Qt.ItemDataRole.TextAlignmentRole: {
+                if (orientation == Qt.Orientation.Horizontal) {
+                    final SelectorColumnModelItem column = getSelectorColumn(section);
+                    final Qt.AlignmentFlag alignment;
+                    if (column==null){
+                        alignment = getDefaultHeaderTextAlignment();
+                    }else{
+                        alignment = getHeaderTextAlignment(column);
+                    }
+                    return alignment==null ? Qt.AlignmentFlag.AlignLeft.value() : alignment;                    
                 } else {
                     return super.headerData(section, orientation, role);
                 }
             }
-            case ItemDataRole.BackgroundRole: {
+            case Qt.ItemDataRole.BackgroundRole: {
                 if (orientation == Qt.Orientation.Horizontal) {
                     if (section == currentColumn && !root.isEmpty()) {
                         return QApplication.palette().alternateBase().color();
@@ -723,11 +1197,10 @@ public class SelectorModel extends QAbstractItemModel {
                 }
                 return super.headerData(section, orientation, role);
             }
-            case ItemDataRole.ToolTipRole: {
+            case Qt.ItemDataRole.ToolTipRole: {
                 if (orientation == Qt.Orientation.Horizontal){
                     final SelectorColumnModelItem column = getSelectorColumn(section);
-                    if (column==null && isSelectionEnabled() && section==0){
-                        final EntityObjectsSelection selection = getRootGroupModel().getSelection();
+                    if (column==null && isSelectionEnabled() && section==0){                        
                         final MessageProvider mp = getEnvironment().getMessageProvider();
                         if (selection.isEmpty()){
                             if (getRootGroupModel().getRestrictions().getIsSelectAllRestricted()){
@@ -761,24 +1234,20 @@ public class SelectorModel extends QAbstractItemModel {
                 }
                 return super.headerData(section, orientation, role);
             }
-            case ItemDataRole.DecorationRole: {
+            case Qt.ItemDataRole.DecorationRole: {
                 if (orientation == Qt.Orientation.Horizontal) {
                     final SelectorColumnModelItem column = getSelectorColumn(section);
-                    if (column==null){
-                        return super.headerData(section, orientation, role);
-                    }
-                    if (column.getHeaderMode()==ESelectorColumnHeaderMode.ONLY_TEXT){
-                        return super.headerData(section, orientation, role);
-                    }else{
-                        final Icon headerIcon = column.getHeaderIcon();
-                        if (headerIcon==null){
-                            return super.headerData(section, orientation, role);
-                        }else{
-                            return ImageManager.getQIcon(headerIcon);
-                        }
-                    }
+                    return column==null ? null : getHeaderIcon(column);
                 }else{
                     return super.headerData(section, orientation, role);
+                }
+            }
+            case WidgetUtils.MODEL_ITEM_CELL_NAME_DATA_ROLE:{
+                if (orientation == Qt.Orientation.Horizontal){
+                    final SelectorColumnModelItem column = getSelectorColumn(section);
+                    return column==null ? null : column.getId().toString();
+                }else{
+                    return null;
                 }
             }
             default:
@@ -786,28 +1255,94 @@ public class SelectorModel extends QAbstractItemModel {
         }
     }
     
-    @Override
-    public final int rowCount(final QModelIndex index) {
-        final Long key = index == null ? null : index.internalId();
-        if (rowsCount.containsKey(key)) {
-            final Integer rowCount = rowsCount.get(key);
-            return rowCount != null && rowCount > 0 ? rowCount : 0;
-        } else {
-            return 0;
+    protected String getHeaderTitle(final SelectorColumnModelItem column){
+        if (column.getHeaderMode()==ESelectorColumnHeaderMode.ONLY_ICON){
+            return "";                        
+        }else{
+            return ClientValueFormatter.capitalizeIfNecessary(getEnvironment(), column.getTitle());
+        }        
+    }
+    
+    protected QFont getHeaderFont(final SelectorColumnModelItem column, final boolean isCurrentColumn){
+        final QFont actualFont = getDefaultHeaderFont();
+        if (isCurrentColumn && !root.isEmpty()) {
+            return getBoldFont(actualFont);
         }
+        return actualFont;        
+    }
+    
+    protected QFont getDefaultHeaderFont(){
+        final ExplorerSettings settings = (ExplorerSettings) getEnvironment().getConfigStore();
+
+        settings.beginGroup(SettingNames.SYSTEM);
+        settings.beginGroup(SettingNames.SELECTOR_GROUP);
+        settings.beginGroup(SettingNames.Selector.COMMON_GROUP);
+
+        final QFont font = settings.readQFont(SettingNames.Selector.Common.HEADER_FONT_IN_SELECTOR);
+
+        settings.endGroup();
+        settings.endGroup();
+        settings.endGroup();
+
+        return font != null ? font : QApplication.font();        
+    }
+    
+    protected Qt.AlignmentFlag getHeaderTextAlignment(final SelectorColumnModelItem column){
+        return getDefaultHeaderTextAlignment();
+    }
+    
+    protected Qt.AlignmentFlag getDefaultHeaderTextAlignment(){
+        final ExplorerSettings settings = (ExplorerSettings) getEnvironment().getConfigStore();
+        final Qt.AlignmentFlag alignmentFlag;
+
+        settings.beginGroup(SettingNames.SYSTEM);
+        settings.beginGroup(SettingNames.SELECTOR_GROUP);
+        settings.beginGroup(SettingNames.Selector.COMMON_GROUP);
+        alignmentFlag = settings.readAlignmentFlag(SettingNames.Selector.Common.TITLES_ALIGNMENT);
+        settings.endGroup();
+        settings.endGroup();
+        settings.endGroup();
+
+        return alignmentFlag == null ? Qt.AlignmentFlag.AlignLeft : alignmentFlag;
+    }
+    
+    protected String getHeaderToolTip(final SelectorColumnModelItem column){
+        final String toolTip = column.getHint();
+        if (column.getHeaderMode()==ESelectorColumnHeaderMode.ONLY_ICON
+            && (toolTip==null || toolTip.isEmpty())
+           ){
+            return column.getTitle();
+        }
+        return toolTip;
+    }    
+    
+    protected QIcon getHeaderIcon(final SelectorColumnModelItem column){
+        if (column.getHeaderMode()==ESelectorColumnHeaderMode.ONLY_TEXT){
+            return null;
+        }else{
+            final Icon headerIcon = column.getHeaderIcon();
+            if (headerIcon==null){
+                return null;
+            }else{
+                return ImageManager.getQIcon(headerIcon);
+            }
+        }        
     }
     
     @Override
-    public final boolean hasChildren(final QModelIndex index) {
-        final Long key = index == null ? null : index.internalId();
-        if (rowsCount.containsKey(key)) {
-            final Integer rowCount = rowsCount.get(key);
-            return rowCount != null ? rowCount > 0 : true;
-        } else if (key == null) {
+    public final int rowCount(final QModelIndex index) {
+        final SelectorNodeInItemModel node = getNode(index);
+        return node==null ? 0 : node.getNumberOfLoadedInnerNodes();
+    }
+    
+    private boolean hasChildren(final SelectorNode parentNode){
+        if (parentNode==null){
             return false;
-        } else {
-            final EntityModel parentEntity = getEntity(index);
-            if ((parentEntity instanceof BrokenEntityModel) || !tryLock()) {
+        } else if (parentNode.isChildrenInited()){
+            return parentNode.hasChildren();
+        }else{
+            final EntityModel parentEntity = getEntity(parentNode);
+            if (parentEntity==null || (parentEntity instanceof BrokenEntityModel) || !tryLock()) {
                 return false;
             }
             try {
@@ -817,10 +1352,10 @@ public class SelectorModel extends QAbstractItemModel {
                     final Property property = parentEntity.getProperty(propertyId);
                     if (!property.isActivated()){
                         final String message = getEnvironment().getMessageProvider().translate("ExplorerError", "Unable to get information about subobjects for \'%1$s\' object.\nProperty \'%2$s\' (#%3$s) was not activated.\nIt is necessary to add this property in selector columns set in #%4$s presentation");
-                        final GroupModel parentGroupModel = getGroupForParentIndex(index==null ? null : index.parent());
+                        final GroupModel parentGroupModel = getOwnerGroupModel(parentEntity);
                         final String formattedMessage = String.format(message, parentEntity.getTitle(), property.getDefinition().getName(), property.getId().toString(), parentGroupModel.getSelectorPresentationDef().getId().toString());
                         getEnvironment().getTracer().error(formattedMessage);
-                        rowsCount.put(index==null ? null : index.internalId(), 0);
+                        parentNode.setHasChildren(false);
                         return false;
                     }
                     if (property instanceof PropertyInt) {
@@ -835,26 +1370,26 @@ public class SelectorModel extends QAbstractItemModel {
                 } else {
                     hasChildren = hasChildren(parentEntity);
                 }
-
-                if (hasChildren) {
-                    rowsCount.put(index==null ? null : index.internalId(), null);
-                } else {
-                    rowsCount.put(index==null ? null : index.internalId(), 0);
-                }
+                parentNode.setHasChildren(hasChildren);
                 return hasChildren;
             } catch (Throwable ex) {
                 final String title = getEnvironment().getMessageProvider().translate("ExplorerException", "Can't get information about children of object \'%s\'");
                 getEnvironment().getTracer().error(String.format(title, parentEntity.getTitle()), ex);
                 getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format(title, parentEntity.getTitle(), ClientException.exceptionStackToString(ex)), EEventSource.EXPLORER);
-                rowsCount.put(index==null ? null : index.internalId(), 0);                
+                parentNode.setHasChildren(false);
                 return false;
             } finally {
                 unlock();
-            }
+            }                
         }
     }
     
-    private SelectorColumnModelItem getSelectorColumn(final int rawIndex){        
+    @Override
+    public final boolean hasChildren(final QModelIndex index) {
+        return hasChildren(getNode(index));
+    }
+    
+    public final SelectorColumnModelItem getSelectorColumn(final int rawIndex){
         final int logicalIndex = isSelectionEnabled() ? rawIndex-1 : rawIndex;
         if (logicalIndex>=0 && logicalIndex<columns.size()){
             return columns.get(logicalIndex);
@@ -864,7 +1399,7 @@ public class SelectorModel extends QAbstractItemModel {
     }
 
     @Override
-    public int columnCount(final QModelIndex index) {
+    public final int columnCount(final QModelIndex index) {
         return isSelectionEnabled() ? columns.size() + 1 : columns.size();
     }
 
@@ -872,11 +1407,30 @@ public class SelectorModel extends QAbstractItemModel {
         return Collections.unmodifiableList(columns);
     }
 
-    protected AlignmentFlag getTextAlignment(QModelIndex index) {
-        final SelectorColumnModelItem column = getSelectorColumn(index.column());        
+    protected final int getTextAlignment(final QModelIndex index) {
+        final SelectorColumnModelItem column = getSelectorColumn(index.column());
         if (column==null){
-            return AlignmentFlag.AlignLeft;
+            return WidgetUtils.getQtAlignmentValue(Qt.AlignmentFlag.AlignVCenter, Qt.AlignmentFlag.AlignLeft);
+        }else{
+            final EntityModel entityModel = getEntity(index);            
+            final Qt.Alignment alignment = getTextAlignmentFlags(column, entityModel);
+            if (alignment==null){
+                Qt.AlignmentFlag alignmentFlag = getTextAlignment(column, entityModel);
+                if (alignmentFlag==null){
+                    return -1;
+                }
+                return WidgetUtils.getQtAlignmentValue(Qt.AlignmentFlag.AlignVCenter, alignmentFlag);
+            }else{
+                return alignment.value();
+            }
         }
+    }
+    
+    protected Qt.Alignment getTextAlignmentFlags(final SelectorColumnModelItem column, final EntityModel entityModel) {
+        return null;
+    }
+    
+    protected Qt.AlignmentFlag getTextAlignment(final SelectorColumnModelItem column, final EntityModel entityModel) {
         final EValType valType = column.getPropertyDef().getType();
         ESelectorColumnAlign alignment = column.getAlignment();
                 
@@ -895,20 +1449,20 @@ public class SelectorModel extends QAbstractItemModel {
         }
         switch (alignment) {
             case CENTER:
-                return AlignmentFlag.AlignCenter;
+                return Qt.AlignmentFlag.AlignCenter;
             case LEFT:
-                return AlignmentFlag.AlignLeft;
+                return Qt.AlignmentFlag.AlignLeft;
             case RIGHT:
-                return AlignmentFlag.AlignRight;
+                return Qt.AlignmentFlag.AlignRight;
             default:
-                return AlignmentFlag.AlignLeft;
-        }
-    }        
+                return Qt.AlignmentFlag.AlignLeft;
+        }        
+    }
 
-    protected QColor getBackground(final QModelIndex index) {
+    protected final QColor getBackground(final QModelIndex index) {
         final boolean isSelected = isSelected(index);
         final ExplorerTextOptions options;
-        if (isSelected && index.column()==0){
+        if (isSelected && index.column()==0 && isSelectionEnabled()){
             options = 
                 ExplorerTextOptions.Factory.getOptions(ETextOptionsMarker.SELECTOR_ROW,ETextOptionsMarker.CHOOSEN_OBJECT);
         }else{
@@ -933,34 +1487,60 @@ public class SelectorModel extends QAbstractItemModel {
 
     @Override
     public boolean removeRows(final int row, final int count, final QModelIndex parent) {
-        if (row >= 0 && (row + count - 1) < rowCount(parent)) {            
-            beginRemoveRows(parent, row, row + count - 1);
-            final Integer rowCount = rowsCount.get(parent != null ? parent.internalId() : null);
-            if (rowCount == null || rowCount <= 0) {
-                return false;
-            }
-            final GroupModel group = getGroupForParentIndex(parent);
-            QModelIndex index;
-            for (int i = 0; i < count; i++) {
-                index = index(row + i, 0, parent);
-                group.removeRow(row);
-                clear(index);
-                parentIndexes.remove(index.internalId());
-                childGroups.remove(index.internalId());
-            }
-
-            //Нужно обновить индексы подъелементов, родительские
-            //элементы которых следуют за удаленными элементами
-            for (int i = row + count - 1; i < (rowCount - count); i++) {
-                //Цикл по элементам, которые следуют за удаленными элементами
-                index = index(i, 0, parent);
-                for (int j = rowCount(index) - 1; j >= 0; j--) {//Цикл по их дочерним элементам
-                    //Обновление закэшированных индексов
-                    parentIndexes.put(index(j, 0, index).internalId(), index);
+        final QModelIndex normalizedParent;
+        if (parent==null || parent.column()==0){
+            normalizedParent = parent;
+        }else{
+            normalizedParent = index(parent.row(),0,parent.parent());
+        };
+        final SelectorNodeInItemModel parentNode = getNode(normalizedParent);
+        if (parentNode==null){
+            return false;
+        }
+        final int rowCount = parentNode.getNumberOfLoadedInnerNodes();
+        if (row >= 0 && (row + count - 1) < rowCount) {       
+            beginRemoveRows(normalizedParent, row, row + count - 1);
+            try{
+                final GroupModel group = parentNode.getChildGroupModel();
+                {
+                    QModelIndex index;
+                    SelectorNodeInItemModel childNode;
+                    for (int i = 0; i < count; i++) {
+                        index = index(row + i, 0, normalizedParent);
+                        if (index!=null){
+                            group.removeRow(row);
+                            clear(index);
+                            childNode = nodes.remove(index.internalId());
+                            parentNode.removeChildNode(childNode);
+                        }
+                    }
                 }
+
+                //Нужно обновить индексы подъелементов, родительские
+                //элементы которых следуют за удаленными элементами
+                QModelIndex index, childIndex;
+                SelectorNodeInItemModel node, childNode;
+                for (int i = row; i < (rowCount - count); i++) {
+                    //Цикл по элементам, которые следуют за удаленными элементами
+                    index = index(i, 0, normalizedParent);
+                    for (int j = rowCount(index) - 1; j >= 0; j--) {//Цикл по их дочерним элементам
+                        //Обновление закэшированных родительских индексов
+                        childIndex = index(j, 0, index);
+                        childNode = nodes.get(childIndex.internalId());
+                        if (childNode!=null){
+                            childNode.setParentIndex(index);
+                        }
+                    }
+                    //Обновление номера строки
+                    node = nodes.get(index.internalId());
+                    if (node!=null){
+                        node.setRow(i);
+                    }
+                }
+                parentNode.setNumberOfLoadedInnerNodes(rowCount - count);
+            }finally{
+                endRemoveRows();
             }
-            rowsCount.put(parent != null ? parent.internalId() : null, rowCount - count);
-            endRemoveRows();
             return true;
         }
         return false;
@@ -972,21 +1552,31 @@ public class SelectorModel extends QAbstractItemModel {
     }
     
     public void reset(final QModelIndex parent){
-        final GroupModel group = getGroupForParentIndex(parent);
+        final SelectorNodeInItemModel parentNode = getNode(parent);
+        final GroupModel group = parentNode==null ? null : parentNode.getChildGroupModel();
         if (group != null) {
             lock();
             try {
                 if (parent == null) {
+                    selection.store(null);
                     reset();
                     group.reset();
-                    clear(null);
+                    clear((QModelIndex)null);
                 } else if (rowCount(parent) > 0) {
-                    beginRemoveRows(parent, 0, rowCount(parent) - 1);
+                    selection.store(parentNode);
+                    final QModelIndex normalizedParent;
+                    if (parent.column()==0){
+                        normalizedParent = parent;
+                    }else{
+                        normalizedParent = index(parent.row(),0,parent.parent());
+                    }
+                    beginRemoveRows(normalizedParent , 0, rowCount(parent) - 1);
                     group.reset();
                     clear(parent);
                     endRemoveRows();
                 } else {
                     group.reset();
+                    parentNode.invalidate();
                 }
             } finally {
                 unlock();
@@ -997,94 +1587,80 @@ public class SelectorModel extends QAbstractItemModel {
     public int findEntity(final QModelIndex parent, final Pid pid) throws InterruptedException, ServiceClientException{
         if (isLocked()) {
             return -1;
-        }        
-        if (!readMore(parent) || !tryLock()) {
-            return -1;
         }
-        final GroupModel group = getGroupForParentIndex(parent);
-        try {
-            final int idx;
-
-            if (errors.contains(parent != null ? parent.internalId() : null)) {
-                idx = group.findEntityByPid(pid);
-            } else {
-                idx = group.readToEntity(pid, getEnvironment().getMessageProvider().translate("Wait Dialog", "Restoring Position"));
+        final SelectorNodeInItemModel parentNode = getNode(parent);
+        pushContextNode(parentNode);
+        try{
+            final GroupModel group = getChildGroup(parent);
+            if (group==null || !tryLock()) {
+                return -1;
             }
-            updateRowsCount(parent, group);
-            return idx;
-        }catch(ServiceCallFault fault){
-            throw preprocessServiceCallFault(parent,fault);
-        }
-        finally {
-            unlock();
+            try {
+                final int idx;
+                if (parentNode.wasErrorOnDataLoading()) {
+                    idx = group.findEntityByPid(pid);
+                } else {
+                    idx = group.readToEntity(pid, getEnvironment().getMessageProvider().translate("Wait Dialog", "Restoring Position"));
+                }
+                updateRowsCount(parent, parentNode, idx+ROWS_LOAD_LIMIT);
+                return idx;
+            }catch(ServiceCallFault fault){
+                throw preprocessServiceCallFault(parentNode, fault);
+            }
+            finally {
+                unlock();
+            }
+        }finally{
+            popContextNode();
         }
     }
-
-    protected void clear(final QModelIndex parent) {
-        if (parent != null) {
-            final List<Long> itemsForRemove = new ArrayList<>();
-            final Stack<Long> stack = new Stack<>();
-            long currentId;
-
-            stack.push(parent.internalId());
-            while (!stack.isEmpty()) {
-                currentId = stack.pop();
-                for (Map.Entry<Long, QModelIndex> entry : parentIndexes.entrySet()) {
-                    if (entry.getValue().internalId() == currentId) {
-                        itemsForRemove.add(entry.getKey());
-                        stack.push(entry.getKey());
-                    }
-                }
-            }
-
+    
+    private void clear(final SelectorNodeInItemModel parentNode){
+        selection.clear(parentNode==rootNode ? null : parentNode, false, false, false);        
+        if (parentNode==rootNode){
+            nodes.clear();
+            rootNode.invalidate();
+        }else if (parentNode!=null){
+            final Collection<SelectorNodeInItemModel> nodesForRemove = parentNode.getChildren(true);
+            
             GroupModel childGroup;
-            for (Long internalId : itemsForRemove) {
-                errors.remove(internalId);
-                parentIndexes.remove(internalId);
-                childGroup = childGroups.get(internalId);
+            for (SelectorNodeInItemModel node: nodesForRemove) {
+                nodes.remove(node.internalIndexId);
+                childGroup = node.getChildGroupModel();
                 if (childGroup!=null){
                     changeChildGroupContext(childGroup, null);                    
                     if (childGroup.getView()!=null
                         && (childGroup.getView()==root.getView() || root.getView()==null)){                    
                         childGroup.setView(null);
                     }
-                }
-                childGroups.remove(internalId);
-                rowsCount.remove(internalId);
+                    selection.removeSubscription(childGroup);
+                }               
             }
+            parentNode.invalidate();
+        }        
+        rowsLimit = getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_CONFIG_PATH, 1000);
+    }
 
-            errors.remove(parent.internalId());
-            rowsCount.remove(parent.internalId());
-            rowsLimit = getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_CONFIG_PATH, 1000);
-        } else {
-            errors.clear();
-            parentIndexes.clear();
-            for (GroupModel childGroup: childGroups.values()){
-                if (childGroup!=null){
-                    changeChildGroupContext(childGroup, null);
-                    if (childGroup.getView()!=null
-                         && (childGroup.getView()==root.getView() || root.getView()==null)){
-                        childGroup.setView(null);
-                    }
-                }
-            }
-            childGroups.clear();
-            rowsCount.clear();
-            rowsLimit = getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_CONFIG_PATH, 1000);
-        }
-
+    protected void clear(final QModelIndex parent) {
+        clear(getNode(parent));
     }
 
     public void clear() {
         lock();
-        clear(null);
+        clear(rootNode);
         reset();
     }
 
     public boolean canReadMore(final QModelIndex parent) {
-        final GroupModel group;
+        final SelectorNodeInItemModel parentNode = getNode(parent);
+        if (parentNode==null){
+            return false;
+        }
+        pushContextNode(parentNode);
         try {
-            group = parent != null ? getChildGroup(parent) : root;
+            if (parentNode!=rootNode){
+                getChildGroup(parent);//init childGroup;
+            }            
         } catch (Throwable ex) {
             final EntityModel parentEntity = getEntity(parent);
             final String title = getEnvironment().getMessageProvider().translate("ExplorerException", "Error on creating child group model for parent object \'%s\'");
@@ -1094,16 +1670,12 @@ public class SelectorModel extends QAbstractItemModel {
                     ClientException.exceptionStackToString(ex)),
                     EEventSource.EXPLORER);
             return false;
+        }finally{
+            popContextNode();
         }
-
-        final int rowCount = rowCount(parent);
-
-        return (group != null)
-                && !isLocked()
-                && !errors.contains(parent == null ? null : parent.internalId())
-                && (rowCount < group.getEntitiesCount() || group.hasMoreRows());
-    }
-    private boolean locked = false;
+                
+        return !isLocked() && parentNode.canReadMore();
+    }    
 
     public final boolean isLocked() {
         return locked;
@@ -1126,11 +1698,15 @@ public class SelectorModel extends QAbstractItemModel {
     }
 
     public boolean readMore(final QModelIndex parent) throws ServiceClientException, InterruptedException {
+        final SelectorNodeInItemModel parentNode = getNode(parent);
+        if (parentNode==null){
+            return false;
+        }
         final GroupModel group;
         try {
-            group = parent != null ? getChildGroup(parent) : root;
-            if (group == null && parent != null && !isLocked()) {
-                rowsCount.put(parent.internalId(), 0);
+            group = parentNode == rootNode ? root : getChildGroup(parent);
+            if (group == null && parent != null && !isLocked()) {                
+                parentNode.setNumberOfLoadedInnerNodes(0);
             }
         } catch (Exception ex) {
             final EntityModel parentEntity = getEntity(parent);
@@ -1144,38 +1720,35 @@ public class SelectorModel extends QAbstractItemModel {
             return false;
         }
 
-        final int rowCount = rowCount(parent);
-
-        if (group != null
-                && !errors.contains(parent == null ? null : parent.internalId())
-                && (rowCount < group.getEntitiesCount() || group.hasMoreRows())
-                && tryLock()) {
+        if (parentNode.canReadMore() && tryLock()){
+            pushContextNode(parentNode);
             boolean wasException = true;
             try {                
-                if (!readMoreInternal(parent)) {
-                    wasException = false;
-                    if (parent != null
-                            && (!rowsCount.containsKey(parent.internalId()) || rowsCount.get(parent.internalId()) == null)) {
-                        rowsCount.put(parent.internalId(), 0);
+                if (readMoreInternal(parentNode)) {
+                    updateRowsCount(parent, parentNode, ROWS_LOAD_LIMIT);
+                }else{
+                    if (parent != null && parentNode.getChildGroupModel().isEmpty()){
+                        parentNode.setNumberOfLoadedInnerNodes(0);
                     }
                     return false;
                 }
                 wasException = false;
                 return true;
             } catch (ServiceCallFault fault) {
-                throw preprocessServiceCallFault(parent,fault);
+                throw preprocessServiceCallFault(parentNode, fault);
             } catch (InterruptedException exception){
                 wasException = false;//Если прерывание было инициировано пользователем, то можно читать дальше.
                 throw exception;
             }
             finally {
+                popContextNode();
                 if (wasException){
-                    errors.add(parent == null ? null : parent.internalId());
+                    parentNode.registerErrorOnDataLoading();
                 }
                 unlock();
             }
         }else if (group!=null && group.getEntitiesCount()==0 && !group.hasMoreRows()){
-            rowsCount.put(parent == null ? null : parent.internalId(), 0);
+            parentNode.setNumberOfLoadedInnerNodes(0);
         }
         return false;
     }
@@ -1186,7 +1759,7 @@ public class SelectorModel extends QAbstractItemModel {
         root.showException(title, exception);
     }
     
-    private ServiceCallFault preprocessServiceCallFault(final QModelIndex parent, final ServiceCallFault fault){
+    private ServiceCallFault preprocessServiceCallFault(final SelectorNodeInItemModel parentNode, final ServiceCallFault fault){
         ObjectNotFoundError objectNotFound = null;
         for (Throwable cause = fault; cause != null; cause = cause.getCause()) {
             if (cause instanceof ObjectNotFoundError) {
@@ -1196,20 +1769,25 @@ public class SelectorModel extends QAbstractItemModel {
                 
         if (objectNotFound != null) {
             EntityModel parentEntity;
-            for (QModelIndex index = parent; index != null; index = index.parent()) {
-                parentEntity = getEntity(index);
+            for (SelectorNodeInItemModel node = parentNode; node != null; node = node.parentNode) {
+                parentEntity = node.getEntityModel();
                 if (parentEntity != null && !(parentEntity instanceof BrokenEntityModel) && objectNotFound.inContextOf(parentEntity)) {
                     objectNotFound.setContextEntity(parentEntity);
                     return objectNotFound;
                 }
+                parentEntity = getEntity(node);
+                if (parentEntity != null && !(parentEntity instanceof BrokenEntityModel) && objectNotFound.inContextOf(parentEntity)) {
+                    objectNotFound.setContextEntity(parentEntity);
+                    return objectNotFound;
+                }                
             }
-        }                    
+        }
         return fault;
     }
 
-    private boolean readMoreInternal(final QModelIndex parent) throws ServiceClientException, InterruptedException {
-        int rowCount = rowCount(parent);
-        final GroupModel group = getGroupForParentIndex(parent);
+    private boolean readMoreInternal(final SelectorNodeInItemModel parent) throws ServiceClientException, InterruptedException {
+        int rowCount = parent.getNumberOfLoadedInnerNodes();
+        final GroupModel group = parent.getChildGroupModel();
         for(;;){
             try{
                 if ((rowCount >= group.getEntitiesCount()) && (group.getEntity(rowCount) == null)) {
@@ -1222,63 +1800,116 @@ public class SelectorModel extends QAbstractItemModel {
             catch(BrokenEntityObjectException exception){
                 rowCount++;
             }
-        }
-        updateRowsCount(parent, group);
+        }        
         return true;
     }
-
-    void updateRowsCount(final QModelIndex parent, final GroupModel group) {
-        final int oldCount = rowCount(parent),
+    
+    private void updateRowsCount(final QModelIndex parentIndex, 
+                                                   final SelectorNodeInItemModel parentNode,
+                                                   final int rowLimit){
+        final GroupModel group = parentNode==null ? null : parentNode.getChildGroupModel();        
+        final QModelIndex normalizedParentIndex;
+        if (parentIndex==null || parentIndex.column()==0){
+            normalizedParentIndex = parentIndex;
+        }else{
+            normalizedParentIndex = index(parentIndex.row(), 0, parentIndex.parent());
+        }
+        if (group!=null){
+            final int oldCount = parentNode.getNumberOfLoadedInnerNodes();            
+            final int newCount;
+            if (rowLimit>0){
+                newCount = Math.min(group.getEntitiesCount(), oldCount+rowLimit);
+            }else{
                 newCount = group.getEntitiesCount();
-        if (oldCount < newCount) {
-            rowsCount.put(parent != null ? parent.internalId() : null, newCount);
-            final int row = verifySelectorColumns(parent, oldCount, newCount - 1);
-            if (row>=oldCount){
-                setTextOptionsCacheEnabled(true);
-                beginInsertRows(parent, oldCount, row);
-                rowsCount.put(parent != null ? parent.internalId() : null, row + 1);
-                endInsertRows();
-                setTextOptionsCacheEnabled(false);
             }
-            else{
-                rowsCount.put(parent != null ? parent.internalId() : null, oldCount);
+            
+            if (oldCount<newCount){
+                parentNode.setNumberOfLoadedInnerNodes(newCount);//temporary change row count to make index method work with new rows
+                final int row;
+                try{
+                    row = verifyRows(normalizedParentIndex, oldCount, newCount - 1);
+                }finally{
+                    parentNode.setNumberOfLoadedInnerNodes(oldCount);
+                }
+                if (row>=oldCount){
+                    setTextOptionsCacheEnabled(true);                
+                    beginInsertRows(normalizedParentIndex, oldCount, row);
+                    try{
+                        parentNode.setNumberOfLoadedInnerNodes(row + 1);
+                        if (normalizedParentIndex==null && selection.isSomeSelectionStored()){
+                            selection.restoreSelection(null);
+                        }
+                    }finally{
+                        endInsertRows();
+                        setTextOptionsCacheEnabled(false);
+                    }
+                }
             }
+        }
+    }
+
+    void updateRowsCount(final QModelIndex parent) {
+        final SelectorNodeInItemModel node = getNode(parent);
+        if (node!=null){
+            updateRowsCount(parent, node, -1);
         }
     }
 
     /**
-     *Get values of selector columns to ensure all necessary data received
+     *Get values of selector columns and call isEntityChoosable to ensure that all necessary data was received
      *before data method  invoked
      * returns last verified row
      */
-    private int verifySelectorColumns(final QModelIndex parent, final int startWith, final int finishAt) {
+    private int verifyRows(final QModelIndex parentIndex, final int startWith, final int finishAt) {
         Id propertyId;
         SelectorColumnModelItem column;
+        SelectorNodeInItemModel node;
         EntityModel entity;
-        int row;        
+        int row;
+        boolean wasRead;
         for (row = startWith; row <= finishAt; row++) {
-            try {                
-                entity = getEntity(index(row, 0, parent));
+            try {
+                node = getNode(index(row, 0, parentIndex));
+                entity = getEntity(node);//need to call overridable method replaceEntityModel
                 if (entity==null || entity instanceof BrokenEntityModel){
                     continue;
                 }                
-                final GroupModel groupModel = getGroupModel(entity);
+                final GroupModel groupModel = getOwnerGroupModel(entity);
                 for (int i = 0; i < columns.size(); ++i) {
                     column = columns.get(i);
                     try {
                         propertyId = mapSelectorColumn(column, groupModel);
                         if (propertyId != null) {
-                            entity.getProperty(propertyId).getValueObject();
+                            final Property property = entity.getProperty(propertyId);
+                            property.getValueObject();
+                            property.getValueAsString();
                         }
                     } catch (Throwable ex) {
-                        errors.add(parent != null ? parent.internalId() : null);
                         final String title = getEnvironment().getMessageProvider().translate("ExplorerException", "Can't get property value corresponding to column #%s with title \'%s\'");
                         getEnvironment().getTracer().error(String.format(title, column.getId(), column.getTitle()), ex);
                         getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format(title, column.getId(), column.getTitle(), ClientException.exceptionStackToString(ex)), EEventSource.EXPLORER);
-                        throw ex;
+                        node.registerErrorOnGetPropertyValue(column.getId());
                     }
                 }
+                wasRead = entity.wasRead();
+                try{
+                    groupModel.getEntitySelectionController().isEntityChoosable(entity);
+                }catch (Throwable ex) {
+                    node.registerErrorOnCheckChoosable();
+                    getEnvironment().getTracer().error(ex);
+                    break;
+                }
+                if (!wasRead && entity.wasRead()){
+                    final String info = 
+                        getEnvironment().getMessageProvider().translate("ExplorerMessage", "Reading object while presenting in selector");
+                    getEnvironment().getTracer().put(EEventSeverity.WARNING, info, EEventSource.EXPLORER);
+                }                
             } catch (Throwable ex) {
+                final SelectorNodeInItemModel parentNode = getNode(parentIndex);
+                if (parentNode!=null){
+                    parentNode.registerErrorOnDataLoading();
+                }
+                getEnvironment().getTracer().error(ex);
                 break;
             }
         }
@@ -1286,51 +1917,67 @@ public class SelectorModel extends QAbstractItemModel {
     }
     
     private static GroupModel getGroupModel(final EntityModel entity){
-        return ((IContext.SelectorRow) entity.getContext()).parentGroupModel;
+        return entity==null ? null : ((IContext.SelectorRow) entity.getContext()).parentGroupModel;
     }
     
     public final GroupModel getCachedChildGroup(final QModelIndex parent){
-        return getGroupForParentIndex(parent);
+        final SelectorNodeInItemModel node = getNode(parent);
+        return node==null ? null : node.getChildGroupModel();
     }
     
     public final boolean errorWasDetected(final QModelIndex index){
-        return errors.contains(index==null ? null : index.internalId());
+        final SelectorNodeInItemModel node = getNode(index);
+        return node==null ? false : node.wasErrorOnDataLoading();
     }
 
-    public GroupModel getChildGroup(final QModelIndex parent) {
-        GroupModel group = getGroupForParentIndex(parent);
-        if (group == null) {
-            final EntityModel parentEntity = getEntity(parent);
-            if (parentEntity instanceof BrokenEntityModel){
-                childGroups.put(parent.internalId(), null);
-            }
-            else if ((hasChildren(parent) || canCreateChild(parentEntity))
-                    && !errors.contains(parent.internalId())
-                    && tryLock()) {
-                try {
-                    group = createChildGroupModel(parentEntity);
-                    if (group != null) {
-                        changeChildGroupContext(group, root.getGroupContext());
-                        group.getRestrictions().add(calcChildGroupRestrictions(parentEntity, group));
-                        final GroupModel parentGroup;
-                        if (parent.parent()==null){
-                            parentGroup = getRootGroupModel();
-                        }else{
-                            parentGroup = getGroupForParentIndex(parent.parent());
+    public final GroupModel getChildGroup(final QModelIndex parent) {
+        return getChildGroup(getNode(parent));
+    }
+    
+    private static GroupModel getFirstChildGroup(final SelectorNode node){
+        if (node instanceof SelectorNodeInItemModel){
+            return ((SelectorNodeInItemModel)node).getChildGroupModel();
+        }
+        final List<GroupModel> childGroups = node==null ? null : node.getChildGroupModels();
+        return childGroups==null || childGroups.isEmpty() ? null : childGroups.get(0);
+    }
+    
+    protected final GroupModel getChildGroup(final SelectorNode parentNode) {
+        if (parentNode==null){
+            return null;
+        }else{
+            GroupModel group = getFirstChildGroup(parentNode);
+            if (group==null) {
+                final EntityModel parentEntity = getEntity(parentNode);
+                if (parentEntity==null || parentEntity instanceof BrokenEntityModel){
+                    return null;
+                }
+                else if ((hasChildren(parentNode) || canCreateChild(parentEntity))
+                        && tryLock()) {
+                    try {
+                        group = createChildGroupModel(parentEntity);
+                        if (group == null) {
+                            getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format("Child group model was not created for parent entity \'%s\'", parentEntity.getTitle()), EEventSource.EXPLORER);
+                        } else {
+                            selection.subscribe(parentNode, group);
+                            changeChildGroupContext(group, root.getGroupContext());                        
+                            group.getRestrictions().add(calcChildGroupRestrictions(parentEntity, group));
+                            final GroupModel parentGroup = getFirstChildGroup(parentNode.getParentNode());
+                            prepareChildGroupFilter(parentGroup, group);
+                            prepareGroupCondition(parentEntity, group);
+                            group.setView(root.getView());
+                            parentNode.addChildGroupModel(group);
+                            if (selection.isSomeSelectionStored()){
+                                selection.restoreSelection(parentNode);
+                            }
                         }
-                        prepareChildGroupFilter(parentGroup, group);
-                        prepareGroupCondition(parentEntity, group);
-                        group.setView(root.getView());
-                    } else {
-                        getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format("Child group model was not created for parent entity \'%s\'", parentEntity.getTitle()), EEventSource.EXPLORER);
+                    } finally {
+                        unlock();
                     }
-                    childGroups.put(parent.internalId(), group);
-                } finally {
-                    unlock();
                 }
             }
-        }//if (group==null && mutex.tryLock())
-        return group;
+            return group;            
+        }
     }
     
     private static void changeChildGroupContext(final GroupModel childGroup, final IContext.Group rootGroupContext){
@@ -1382,72 +2029,144 @@ public class SelectorModel extends QAbstractItemModel {
     }    
 
     @Override
-    public QModelIndex parent(QModelIndex child) {
-        return parentIndexes.get(child.internalId());
+    public final QModelIndex parent(final QModelIndex child) {
+        final SelectorNodeInItemModel node = getNode(child);
+        return node==null ? null : node.getParentIndex();
     }
 
     @Override
-    public QModelIndex index(final int row, final int column, final QModelIndex parent) {
+    public final QModelIndex index(final int row, final int column, final QModelIndex parent) {
         if (row < 0 || row >= rowCount(parent)) {
             //throw new ArrayIndexOutOfBoundsException(row);
             return null;//for internal call on remove last row.
         }
-        if (column < 0 || column >= (isSelectionEnabled() ? columns.size()+1 : columns.size())){ //throw new ArrayIndexOutOfBoundsException(column);        
+        if (column < 0 || column >= (isSelectionEnabled() ? columns.size()+1 : columns.size())){ //throw new ArrayIndexOutOfBoundsException(column);
             return null;
         }
-        final int internalId = calcEntityHashCode(row, parent);
-        if (internalId == 0) {
+        final SelectorNodeInItemModel parentNode = getNode(parent);
+        if (parentNode==null){
             return null;//invalid parent index
         }
-        final QModelIndex result = createIndex(row, column, internalId);
-        if (parent != null && !parentIndexes.containsKey(result.internalId())) {
-            parentIndexes.put(result.internalId(), parent);
+        final int nodeHashCode = SelectorNodeInItemModel.calcChildNodeHashCode(parentNode, row);
+        if (nodeHashCode == 0) {
+            return null;//invalid parent index
+        }
+        final QModelIndex result = createIndex(row, column, parentNode.hashCode()*67+nodeHashCode);
+        final long nodeInternalId = result.internalId();
+        SelectorNodeInItemModel node = nodes.get(nodeInternalId);
+        if (node==null){
+            node = new SelectorNodeInItemModel(nodeInternalId, row, parent, parentNode);
+            nodes.put(nodeInternalId, node);
         }
         return result;
     }
-
-    private int calcEntityHashCode(final int row, final QModelIndex parent) {
-        int r = row, hash = 7;
-        EntityModel entity;
-        for (QModelIndex index = parent; index != null; index = index.parent()) {
-            entity = getEntity(r, index);            
-            hash = 67 * hash + (entity==null || entity.getPid()==null ? r : entity.getPid().toString().hashCode());
-            r = index.row();
-        }
-        entity = getEntity(r, null);        
-        return 67 * hash + (entity==null || entity.getPid()==null ? r : entity.getPid().toString().hashCode());
-    }
-
-    private GroupModel getGroupForParentIndex(final QModelIndex parent) {
-        return parent != null ? childGroups.get(parent.internalId()) : root;
-    }
-
-    private EntityModel getEntity(final int row, final QModelIndex parent) {
-        final GroupModel group = getGroupForParentIndex(parent);
-        try {
-            return group != null ? group.getEntity(row) : null;
-        } catch (ServiceClientException | InterruptedException ex) {
-            getEnvironment().processException(ex);
-        }
-        catch (BrokenEntityObjectException ex) {
-            return createBrokenEntityModel(group, ex);
-        }        
-        return null;
-    }
-
-    public EntityModel getEntity(QModelIndex index) {
-        return index != null ? getEntity(index.row(), index.parent()) : null;
+    
+    public final SelectorNode getSelectorNode(final QModelIndex index){
+        final SelectorNode node = getNode(index);
+        return node==rootNode ? null : node;
     }
     
-    public boolean isBrokenEntity(QModelIndex index){
+    final void pushContextNode(final SelectorNodeInItemModel node){
+        context.push(node);
+        contextNode = node;
+    }
+    
+    final SelectorNodeInItemModel popContextNode(){
+        context.pop();
+        contextNode = context.isEmpty() ? null : context.peek();
+        return contextNode;
+    }
+    
+    private SelectorNodeInItemModel getNode(final QModelIndex index){
+        if (index==null){
+            return rootNode;
+        }else{            
+            if (contextNode!=null && contextNode.internalIndexId == index.internalId()){
+                return contextNode;
+            }else{
+                return nodes.get(index.internalId());
+            }
+        }
+    }
+    
+    private QModelIndex getIndex(final SelectorNodeInItemModel node){
+        if (node==null || node==rootNode){
+            return null;
+        }else{
+            return index(node.getRow(), 0, node.getParentIndex());
+        }
+    }   
+
+    public EntityModel getEntity(final QModelIndex index) {
+        return getEntity(getNode(index));
+    }
+    
+    protected final EntityModel getEntity(final SelectorNode node){
+        final EntityModel result = node==null ? null : node.getEntityModel();
+        if (result==null){
+            return null;
+        }else{
+            final GroupModel groupModel = getFirstChildGroup(node.getParentNode());
+            return replaceEntityModel(groupModel, result, node.getNestingLevel());
+        }
+    }
+    
+    protected EntityModel replaceEntityModel(final GroupModel ownerGroupModel, 
+                                                                    final EntityModel originalEntityModel,
+                                                                    final int nestingLevel){
+        return originalEntityModel;
+    }
+    
+    private String getRowName(final QModelIndex index){
+        final EntityModel entity = getEntity(index);
+        final Pid pid = entity==null ? null : entity.getPid();
+        return pid==null ? null : pid.toStr();
+    }
+    
+    private String getCellName(final QModelIndex index){
+        if (isSelectionEnabled() && index.column()==0){
+            return "rx_selection_cell";
+        }else{
+            final Property property = getProperty(index);
+            return property==null ? null : property.getId().toString();
+        }
+    }
+    
+    private String getCellValueAsStr(final QModelIndex index){
+        final Property property = getProperty(index);
+        if (property==null){
+            return null;
+        }else{
+            final Object rawValue = property.getValueObject();
+            final ValAsStr valAsStr = ValueConverter.obj2ValAsStr(rawValue, property.getType());
+            return valAsStr==null ? null : valAsStr.toString();
+        }
+    }
+    
+    private boolean isCellValueNull(final QModelIndex index){
+        final Property property = getProperty(index);
+        return property==null || property.getValueObject()==null;
+    }
+    
+    public final boolean isBrokenEntity(QModelIndex index){
         return getEntity(index) instanceof BrokenEntityModel;
     }
+    
+    public final boolean isBrokenPropertyValue(final QModelIndex index){
+        final SelectorNodeInItemModel node = getNode(index);
+        final EntityModel entity = getEntity(node);        
+        if (entity == null || (entity instanceof BrokenEntityModel)) {
+            return false;
+        }
+        final SelectorColumnModelItem column = getSelectorColumn(index.column());
+        return column==null ? false : node.wasErrorOnGetPropVal(column.getId());
+    }    
     
     protected final EntityModel createBrokenEntityModel(final GroupModel ownerGroupModel, final BrokenEntityObjectException exception){
         return new BrokenEntityModel(getEnvironment(), ownerGroupModel.getSelectorPresentationDef(), exception);
     }
 
-    private Property getProperty(final QModelIndex index) {
+    public final Property getProperty(final QModelIndex index) {
         final EntityModel entity = getEntity(index);        
         if (entity == null || (entity instanceof BrokenEntityModel)) {
             return null;
@@ -1458,7 +2177,7 @@ public class SelectorModel extends QAbstractItemModel {
         }
         final Id propertyId;
         try {
-            propertyId = mapSelectorColumn(column, getGroupModel(entity));
+            propertyId = mapSelectorColumn(column, getOwnerGroupModel(entity));
             if (propertyId == null) {
                 return null;
             }
@@ -1469,7 +2188,7 @@ public class SelectorModel extends QAbstractItemModel {
             getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format(title, column.getId(), column.getTitle(), ClientException.exceptionStackToString(ex)), EEventSource.EXPLORER);
             return null;
         }
-    }
+    }    
 
     private void prepareGroupCondition(final EntityModel parentEntity, final GroupModel childGroup) {
         if (parentEntity instanceof BrokenEntityModel){
@@ -1537,11 +2256,16 @@ public class SelectorModel extends QAbstractItemModel {
         if (parentEntity instanceof BrokenEntityModel){
             return false;
         }
-        else if (parentEntity != null) {            
-            return !getGroupModel(parentEntity).getRestrictions().getIsCreateRestricted();
+        else if (parentEntity != null) {
+            return !getOwnerGroupModel(parentEntity).getRestrictions().getIsCreateRestricted();
         } else {
             return !root.getRestrictions().getIsCreateRestricted();
         }
+    }
+    
+    public final boolean canCreateChild(final QModelIndex index){
+        final EntityModel entityModel = getEntity(index);
+        return entityModel==null ? null : canCreateChild(entityModel);
     }
 
     /*Создать дочернюю группу для
@@ -1584,18 +2308,25 @@ public class SelectorModel extends QAbstractItemModel {
     public void updateAll() {
         lock();
         try {
-            clear(null);
+            selection.store(null);
+            clear((QModelIndex)null);
             reset();
         } finally {
             unlock();
         }
     }
-    
-    
+        
     protected final int calcNewRowsLimit(){
-        final Integer currentRows = rowsCount.get(null);        
         final int delta = getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_CONFIG_PATH, 1000);
-        return delta<0 ? -1 : (currentRows==null ? 0 : currentRows.intValue())+delta;
+        if (delta<0){
+            return -1;
+        }else{
+            if (rootNode.isChildrenInited()){
+                return rootNode.getNumberOfLoadedInnerNodes()+delta;
+            }else{
+                return 0;
+            }
+        }
     }
     
     public final void setRowsLimit(final int newLimit){
@@ -1616,11 +2347,9 @@ public class SelectorModel extends QAbstractItemModel {
     }
     
     public final long getTotalRowsCount(){
-        long count = 0;
-        for (Integer rowsCountInBranch: rowsCount.values()){
-            if (rowsCountInBranch!=null && rowsCountInBranch.intValue()>0){
-                count+=rowsCountInBranch.intValue();
-            }
+        long count = rootNode.getNumberOfLoadedInnerNodes();
+        for (SelectorNodeInItemModel node: nodes.values()){
+            count+=node.getNumberOfLoadedInnerNodes();
         }
         return count;
     }
@@ -1647,12 +2376,154 @@ public class SelectorModel extends QAbstractItemModel {
     
     public final boolean isSelected(final QModelIndex index){
         if (isSelectionEnabled()){
-            final EntityModel entity = getEntity(index);
+            final SelectorNode node = getSelectorNode(index);
+            final EntityModel entity = node==null ? null : getEntity(index);
             if (entity == null || (entity instanceof BrokenEntityModel)) {
                 return false;
             }
-            final GroupModel groupModel = getGroupModel(entity);            
-            return groupModel.getSelection().isObjectSelected(entity);
+            return selection.isSelected(node);
+        }else{
+            return false;
+        }
+    }
+    
+    protected GroupModel getOwnerGroupModel(final EntityModel entityModel){
+        return getGroupModel(entityModel);
+    }
+    
+    public final int getNestingLevelOfEntityModel(final EntityModel entityModel){
+        if (entityModel.getContext() instanceof IContext.SelectorRow==false){
+            throw new IllegalArgumentException("Unknown entity model");
+        }
+        final GroupModel groupModel = getOwnerGroupModel(entityModel);
+        try{
+            return getNestingLevelOfGroupModel(groupModel);
+        }catch(IllegalArgumentException ex){
+            throw new IllegalArgumentException("Unknown entity model",ex);
+        }
+    }
+    
+    public final int getNestingLevelOfGroupModel(final GroupModel groupModel){
+        if (groupModel==null){
+            throw new IllegalArgumentException("Group model must not be null");
+        }else if (groupModel==root){
+            return 0;
+        }else{
+            for (SelectorNodeInItemModel node: nodes.values()){
+                if (node.getChildGroupModel()==groupModel){
+                    return node.getNestingLevel();
+                }
+            }
+            throw new IllegalArgumentException("Unknown group model");
+        }
+    }
+    
+    public final HierarchicalSelection<SelectorNode> getSelection(){
+        return selection;
+    }
+    
+    public final void setDefaultAdditionalSelectionModes(final List<EHierarchicalSelectionMode> mode){
+        additionalSelectionModes = mode==null ? Collections.<EHierarchicalSelectionMode>emptyList() : new LinkedList<>(mode);
+    }
+    
+    public final List<EHierarchicalSelectionMode> getDefaultAdditionalSelectionModes(){
+        return Collections.unmodifiableList(additionalSelectionModes);
+    }
+    
+    protected List<EHierarchicalSelectionMode> getAdditionalSelectionModes(final SelectorNode node){
+        return getDefaultAdditionalSelectionModes();
+    }
+    
+    public final List<EHierarchicalSelectionMode> calcAdditionalSelectionModes(final SelectorNode node){
+        final List<EHierarchicalSelectionMode> additionalSelectionModes = getAdditionalSelectionModes(node);
+        if (additionalSelectionModes==null){
+            return Collections.<EHierarchicalSelectionMode>emptyList();
+        }else if (additionalSelectionModes.isEmpty()){
+            return additionalSelectionModes;
+        }else{
+            final List<EHierarchicalSelectionMode> modes = new LinkedList<>(additionalSelectionModes);
+            removeRestrictedSelectionModes(modes, node);
+            return modes;
+        }
+    }
+
+    public final void setDefaultPrimarySelectionMode(final EnumSet<EHierarchicalSelectionMode> mode){
+        if (mode==null){
+            primarySelectionMode = EnumSet.noneOf(EHierarchicalSelectionMode.class);
+        }else{
+            primarySelectionMode = mode.clone();            
+        }
+    }
+    
+    public final EnumSet<EHierarchicalSelectionMode> getDefaultPrimarySelectionMode(){
+        return primarySelectionMode.clone();
+    }
+    
+    protected EnumSet<EHierarchicalSelectionMode> getPrimarySelectionMode(final SelectorNode node){
+        return getDefaultPrimarySelectionMode();
+    }
+    
+    public final EnumSet<EHierarchicalSelectionMode> calcPrimarySelectionMode(final SelectorNode node){
+        final EnumSet<EHierarchicalSelectionMode> mode = getPrimarySelectionMode(node);
+        if (mode==null){
+            return EnumSet.noneOf(EHierarchicalSelectionMode.class);
+        }
+        if (!mode.isEmpty()){
+            removeRestrictedSelectionModes(mode, node);
+        }
+        return mode;
+    }
+    
+    final EnumSet<EHierarchicalSelectionMode> calcAllSelectionModes(final SelectorNode node){
+        EnumSet<EHierarchicalSelectionMode> mode = getPrimarySelectionMode(node);
+        if (mode==null){
+            mode = EnumSet.noneOf(EHierarchicalSelectionMode.class);
+        }
+        final List<EHierarchicalSelectionMode> additionalSelectionModes = getAdditionalSelectionModes(node);
+        if (additionalSelectionModes!=null){
+            mode.addAll(additionalSelectionModes);
+        }
+        removeRestrictedSelectionModes(mode, node);
+        return mode;
+    }
+    
+    private void removeRestrictedSelectionModes(final Collection<EHierarchicalSelectionMode> modes,
+                                                                          final SelectorNode node){
+        if (modes.contains(EHierarchicalSelectionMode.SINGLE_OBJECT)
+            && !canSelectNode(node)){
+            modes.remove(EHierarchicalSelectionMode.SINGLE_OBJECT);
+        }
+        if (modes.contains(EHierarchicalSelectionMode.ALL_NESTED_OBJECTS_CASCADE)
+            && !hasChildren(node)){
+            modes.remove(EHierarchicalSelectionMode.ALL_NESTED_OBJECTS_CASCADE);
+        }
+        if (modes.contains(EHierarchicalSelectionMode.EXPLICIT_NESTED_OBJECTS)
+            && !canSelectExplisitChildren(node)){
+            modes.remove(EHierarchicalSelectionMode.ALL_NESTED_OBJECTS_CASCADE);
+        }        
+    }
+    
+    private boolean canSelectNode(final SelectorNode node){
+        final EntityModel entityModel = getEntity(node);
+        if (entityModel==null){
+            return true;
+        }else{
+            final GroupModel groupModel = getGroupModel(entityModel);
+            return groupModel==null
+                      || (!groupModel.getRestrictions().getIsMultipleSelectionRestricted()                           
+                          && (node instanceof SelectorNodeInItemModel==false || !((SelectorNodeInItemModel)node).wasErrorOnCheckChoosable())
+                          && groupModel.getEntitySelectionController().isEntityChoosable(entityModel));            
+        }
+    }
+    
+    private boolean canSelectExplisitChildren(final SelectorNode node){
+        if (hasChildren(node)){
+            if (node instanceof SelectorNodeInItemModel){
+                final SelectorNodeInItemModel n = (SelectorNodeInItemModel)node;
+                final GroupModel groupModel = n.getChildGroupModel();
+                return groupModel==null ? true : !groupModel.getRestrictions().getIsMultipleSelectionRestricted();
+            }
+            return true;
         }else{
             return false;
         }

@@ -37,6 +37,10 @@ public class ProfileStatisticEntry {
         this.maxDurationNanos = maxDurationNanos;
         this.minDurationNanos = minDurationNanos;
     }
+    
+    public ProfileStatisticEntry(final long durationNanos) {
+        this(null, null, durationNanos, 1, durationNanos, durationNanos);
+    }
 
     public String getContext() {
         return context;

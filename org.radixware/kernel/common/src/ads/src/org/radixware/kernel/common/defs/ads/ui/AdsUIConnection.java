@@ -46,6 +46,12 @@ public class AdsUIConnection extends RadixObject implements Cloneable {
         public Parameter(String name, AdsTypeDeclaration decl) {
             super(decl, name, "", null);
         }
+
+        @Override
+        public boolean isDescriptionInheritable() {
+            return false;
+        }
+        
     }
 
     public AdsUIConnection(String name, String interfaceName, String registrator, String returnType) {

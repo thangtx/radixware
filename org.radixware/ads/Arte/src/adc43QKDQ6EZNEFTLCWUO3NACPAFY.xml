@@ -1,0 +1,1904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc43QKDQ6EZNEFTLCWUO3NACPAFY" Name="AadcManager" DescriptionId="mlsQBLYZTGGSZDC3LAWFVSIQPF6YE" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc43QKDQ6EZNEFTLCWUO3NACPAFY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc43QKDQ6EZNEFTLCWUO3NACPAFY"/>
+    </Bodies>
+    <MethodGroup Id="cmg2ZZI4NVWB5GSNHRROY456LD7VY" Name="Root"/>
+    <PropertyGroup Id="cpgRDM6WVJBKFHSDHRE2SVY44ZGU4" Name="Root"/>
+    <Properties>
+      <Property Id="prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Name="tranLocks" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="pdcPid_______________________"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+      <Property Id="prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Name="sessLocks" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="pdcPid_______________________"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="2"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+      <Property Id="prd3MHCBC3EGNEQRLFQ2XS6DF6HWE" Name="eventHandler" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adc2H5ONF6HSZHWPDZR4CBBEPWJP4"/>
+      </Property>
+      <Property Id="prdYGESL3YDYNDWHHBJKX2I6X334M" Name="evWait" Nature="14" IsConst="false" IsOverride="false" isDescriptionInherited="false" EventStringId="mlsHPHFNNG7MRADTAU3BDMKRQOKFI">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prd7FK6YSIJ3VF3RNFS2F5DXLWAVU" Name="suppressWaitWarning" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="401" extStr="boolean"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>false</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthOFV24DFZQBD47P7NOP6JVKG5XI" Name="commitTranLocks" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isEmpty())
+    return;
+long scn; 
+try (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accN5K5M3I64JF4HOUPXJGU2TQDT4">
+                <xsc:Presentation>CurScnCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> c = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accN5K5M3I64JF4HOUPXJGU2TQDT4">
+                <xsc:Presentation>CurScnCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accN5K5M3I64JF4HOUPXJGU2TQDT4 mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>open</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    c.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+                <xsc:Presentation>next</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    scn = c.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accN5K5M3I64JF4HOUPXJGU2TQDT4 prfGFVHX7L4UFGE7PXCEICKDOROBA" Invoke="true">
+                <xsc:Presentation>curScn</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue();
+}
+
+for (java.util.Map.Entry&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY">
+                <xsc:Presentation>AadcManager</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4">
+                <xsc:Presentation>TranLockInfo</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> e : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.entrySet()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().commitLock(e.getKey(), org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_TRAN, e.getValue().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4 prdYHAGTFUNQNG4BDWZHJ3KNGVVLQ" Invoke="true">
+                <xsc:Presentation>lockId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, scn);
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.clear();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBQGAS7MEJRCOJMJZGHM7PRM3CQ" Name="acquireTranLock" DescriptionId="mlsWZCTFNW4PJHCJIHZDFDRK2R6WM" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pid" DescriptionId="mlsVDYGPD63IRETZIIOMBITP7RUBA" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+          <Parameter Name="timeoutMs" DescriptionId="mls3ZLAUGNYC5BBJMTOWG2NFXXXVI" Id="mprCRIFEOQ775CLXLV3LR6QOYMMAM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> myMemberId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthQ6D343344ZADTBY4POLA3RA4YY" Invoke="true">
+                <xsc:Presentation>getMyMemberId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (myMemberId == null)
+    return;
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd3MHCBC3EGNEQRLFQ2XS6DF6HWE" Invoke="true">
+                <xsc:Presentation>eventHandler</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd3MHCBC3EGNEQRLFQ2XS6DF6HWE" Invoke="true">
+                <xsc:Presentation>eventHandler</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adc2H5ONF6HSZHWPDZR4CBBEPWJP4">
+                <xsc:Presentation>EventHandler</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJXSGG3WO5VB5PKC3INHXAQG7Y4" Invoke="true">
+                <xsc:Presentation>registerArteEventListener</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd3MHCBC3EGNEQRLFQ2XS6DF6HWE" Invoke="true">
+                <xsc:Presentation>eventHandler</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null)
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new java.util.HashMap&lt;>();
+else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.containsKey(pid))
+    return;
+    
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> lockId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthMW7RY7TVHRDGHCPJOBHNSHE5FU" Invoke="true">
+                <xsc:Presentation>acquireLock</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(myMemberId, pid, org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_TRAN, timeoutMs);
+if (lockId != null)
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(pid, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4 mth7D3IGFVM3NEOZFRE2U7NWAQ6ZU" Invoke="true">
+                <xsc:Presentation>TranLockInfo</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(lockId.longValue(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthZCQRLCQJQVH7FNOIUJAUSGRHSQ" Invoke="true">
+                <xsc:Presentation>getSavepointNesting</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()));</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3IK4HDAXIRDUXDMYKKIX76MX7Y" Name="rollbackTranLocks" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="spLevel" Id="mpr5XD6IKIZYFET7GGOK2VJTWQGIY">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.Iterator&lt;java.util.Map.Entry&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY">
+                <xsc:Presentation>AadcManager</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4">
+                <xsc:Presentation>TranLockInfo</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>> it = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdFD4TUNFT3ZGDLCPMOYN3VUYRGI" Invoke="true">
+                <xsc:Presentation>tranLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.entrySet().iterator();
+while (it.hasNext()) {
+    java.util.Map.Entry&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY">
+                <xsc:Presentation>AadcManager</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4">
+                <xsc:Presentation>TranLockInfo</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> e = it.next();
+    if (e.getValue().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4 prdDBT34EKGQNAVVCWV7CN6OC4GIQ" Invoke="true">
+                <xsc:Presentation>savePointLevel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> >= spLevel) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().rollbackLock(e.getKey(), org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_TRAN, e.getValue().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4 prdYHAGTFUNQNG4BDWZHJ3KNGVVLQ" Invoke="true">
+                <xsc:Presentation>lockId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        it.remove();
+    }
+}
+
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthI7IVQ2ZN5JETZLMWWMBM7CX3O4" Name="finishSessionLocks" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Invoke="true">
+                <xsc:Presentation>sessLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Invoke="true">
+                <xsc:Presentation>sessLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isEmpty())
+    return;
+long scn; 
+try (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accN5K5M3I64JF4HOUPXJGU2TQDT4">
+                <xsc:Presentation>CurScnCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> c = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accN5K5M3I64JF4HOUPXJGU2TQDT4">
+                <xsc:Presentation>CurScnCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accN5K5M3I64JF4HOUPXJGU2TQDT4 mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>open</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    c.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+                <xsc:Presentation>next</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    scn = c.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accN5K5M3I64JF4HOUPXJGU2TQDT4 prfGFVHX7L4UFGE7PXCEICKDOROBA" Invoke="true">
+                <xsc:Presentation>curScn</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue();
+}
+
+for (java.util.Map.Entry&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> e : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Invoke="true">
+                <xsc:Presentation>sessLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.entrySet()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().commitLock(e.getKey(), org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_SESS, e.getValue().longValue(), scn);
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Invoke="true">
+                <xsc:Presentation>sessLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.clear();
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3ECTAFGXPJHCDOPRCCV4FJP6EA" Name="acquireSessionLock" DescriptionId="mlsSTD6CGZ6JNDFJIJUC6AHLHNIHE" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pid" DescriptionId="mlsSP4BE5YPAZASFBLMPBROCCUA7M" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+          <Parameter Name="timeoutMs" DescriptionId="mls5R7NHCJXR5G6TFDC4RNUAYCENA" Id="mprCRIFEOQ775CLXLV3LR6QOYMMAM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> myMemberId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthQ6D343344ZADTBY4POLA3RA4YY" Invoke="true">
+                <xsc:Presentation>getMyMemberId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (myMemberId == null)
+    return;
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd3MHCBC3EGNEQRLFQ2XS6DF6HWE" Invoke="true">
+                <xsc:Presentation>eventHandler</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd3MHCBC3EGNEQRLFQ2XS6DF6HWE" Invoke="true">
+                <xsc:Presentation>eventHandler</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adc2H5ONF6HSZHWPDZR4CBBEPWJP4">
+                <xsc:Presentation>EventHandler</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJXSGG3WO5VB5PKC3INHXAQG7Y4" Invoke="true">
+                <xsc:Presentation>registerArteEventListener</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd3MHCBC3EGNEQRLFQ2XS6DF6HWE" Invoke="true">
+                <xsc:Presentation>eventHandler</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Invoke="true">
+                <xsc:Presentation>sessLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null)
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Invoke="true">
+                <xsc:Presentation>sessLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new java.util.HashMap&lt;>();
+else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Invoke="true">
+                <xsc:Presentation>sessLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.containsKey(pid))
+    return;
+    
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> lockId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthMW7RY7TVHRDGHCPJOBHNSHE5FU" Invoke="true">
+                <xsc:Presentation>acquireLock</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(myMemberId, pid, org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_SESS, timeoutMs);
+if (lockId != null)
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdJ67DBTDO4ZFSLL25VLWYPT6CP4" Invoke="true">
+                <xsc:Presentation>sessLocks</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(pid, lockId);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHZZZ6JTBXVHVFAVKRSHTWXRVFI" Name="acquireSessionLock" DescriptionId="mls6NAK5SKPTBE6DEDVFEDZ3G6QUI" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" DescriptionId="mls7L6SUZTCPZGH7OUCOXTY27VAII" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="timeoutMs" DescriptionId="mlsIXFS67XUOJA3TABECRK2UJNMDA" Id="mprCRIFEOQ775CLXLV3LR6QOYMMAM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mth3ECTAFGXPJHCDOPRCCV4FJP6EA" Invoke="true">
+                <xsc:Presentation>acquireSessionLock</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), timeoutMs);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDVLXQL47AVF7JHSWXWKSAM56C4" Name="acquireTranLock" DescriptionId="mlsT3HWNMK5URDPZJE3P37O4XHQHY" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" DescriptionId="mls4OKUYUDZA5ACXJDMCVIWDOMS3A" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="timeoutMs" DescriptionId="mls7HBGESRMWVGJTEZ6EK6ICPCC54" Id="mprCRIFEOQ775CLXLV3LR6QOYMMAM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthBQGAS7MEJRCOJMJZGHM7PRM3CQ" Invoke="true">
+                <xsc:Presentation>acquireTranLock</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), timeoutMs);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVR6EGK4PARFLLLWQZTCI6AAET4" Name="getCurrentLag" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="int" DescriptionId="mlsMU2KTVHQHZGQNCCX6OBJGUCPSY"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().getCurrentLag();
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA">
+                <xsc:Presentation>Exceptions::SQLException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcCOTAVB7C3ZBCZFMSPUVC3CZSDI mthHC4GKTKLY5FKHATTJ4SYDRTZ44" Invoke="true">
+                <xsc:Presentation>DatabaseError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQ6D343344ZADTBY4POLA3RA4YY" Name="getMyMemberId" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcInstMemberId();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMW7RY7TVHRDGHCPJOBHNSHE5FU" Name="acquireLock" DescriptionId="mls6TKBMHHWNFGCFCM27RIFEFGCXI" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="myMemberId" Id="mprDQ5KBMIY7NEWBOLKV2PN7J2YXA">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="pid" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprZDNGHT33SRFB3NLABEP6LJODLY">
+            <Type TypeId="401" extStr="byte"/>
+          </Parameter>
+          <Parameter Name="timeoutMs" Id="mprCRIFEOQ775CLXLV3LR6QOYMMAM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>long endTime = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA">
+                <xsc:Presentation>Utils::Timing</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZ3WRDW5DL7ORDI2YABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getCurrentMillis</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + timeoutMs;
+int waits = 0;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> lockId;
+try {
+    while (true) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spcM6AQM6ISRVAOXLCV65M6JP2QYE">
+                <xsc:Presentation>AadcStateStmt</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> state = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="spcM6AQM6ISRVAOXLCV65M6JP2QYE">
+                <xsc:Presentation>AadcStateStmt</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcM6AQM6ISRVAOXLCV65M6JP2QYE mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>execute</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(myMemberId);
+        final Str tranDbId;
+        switch (type) {
+            case org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_TRAN:
+                tranDbId = state.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcM6AQM6ISRVAOXLCV65M6JP2QYE prmUFLDAEA3T5DMXGK3TPCTCPLHFU" Invoke="true">
+                <xsc:Presentation>xid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                break;
+            case org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_SESS:
+                tranDbId = Str.valueOf(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbSid()) + "." + Str.valueOf(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getDbSerial());
+                break;
+            default:
+                tranDbId = null;
+        }
+        lockId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().acquireLock(pid, type, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU">
+                <xsc:Presentation>Utils::Nvl</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthF5TH2ZQEXLOBDA6IAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>get</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(state.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="spcM6AQM6ISRVAOXLCV65M6JP2QYE prmHI46LZA5KBB3DBBBMXT7BERP7M" Invoke="true">
+                <xsc:Presentation>theirScn</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, Int.MIN_VALUE).longValue(), tranDbId);
+        if (lockId != null)
+            break;
+        if (++waits == 1 &amp;&amp; !</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd7FK6YSIJ3VF3RNFS2F5DXLWAVU" Invoke="true">
+                <xsc:Presentation>suppressWaitWarning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthUVXH2WARWLOBDLJLAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prdYGESL3YDYNDWHHBJKX2I6X334M" Invoke="true">
+                <xsc:Presentation>evWait</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, pid.getTable().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDLXOOC7QVCEHNZTTHWDJH62BU mthXCIPTMRU7VBAZMIYH3BG3BIY4E" Invoke="true">
+                <xsc:Presentation>getName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "[" + pid.toString() + "]");
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA">
+                <xsc:Presentation>Utils::Timing</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZ3WRDW5DL7ORDI2YABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getCurrentMillis</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() > endTime)
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU mth5OEDPWMAJZES3ITDZEZV26KYRI" Invoke="true">
+                <xsc:Presentation>AadcLockTimeoutError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(pid);
+        try {
+            Thread.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Invoke="true">
+                <xsc:Presentation>sleep</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(1000);
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU mth5OEDPWMAJZES3ITDZEZV26KYRI" Invoke="true">
+                <xsc:Presentation>AadcLockTimeoutError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(pid);
+        }
+    };
+} finally {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd7FK6YSIJ3VF3RNFS2F5DXLWAVU" Invoke="true">
+                <xsc:Presentation>suppressWaitWarning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = false;
+}
+return lockId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthE2UOOKZ6FJFERIKKFDZLHGTWZM" Name="acquireAutonomousLock" DescriptionId="mlsDDBH6IC7CZHCHD3NZJW5MWFVI4" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pid" DescriptionId="mls6NP6ICDD3VBWDDPZJ5HPW5IIQY" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+          <Parameter Name="timeoutMs" DescriptionId="mlsRT53CN7U3VH63NVBQVGQTI5HWA" Id="mprCRIFEOQ775CLXLV3LR6QOYMMAM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> myMemberId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthQ6D343344ZADTBY4POLA3RA4YY" Invoke="true">
+                <xsc:Presentation>getMyMemberId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (myMemberId == null)
+    return null;
+
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthMW7RY7TVHRDGHCPJOBHNSHE5FU" Invoke="true">
+                <xsc:Presentation>acquireLock</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(myMemberId, pid, org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_TRAN, timeoutMs);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthN2FB4GGV2NGLVIVVAFQHVLOYSU" Name="commitAutonomousLock" DescriptionId="mlsLMELS2XIYVFMXPXV6FLUUV4BWM" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pid" DescriptionId="mlsB4XDJHMY7RG6FBOHPK25RTRVVY" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+          <Parameter Name="lockId" Id="mprA46RDALEXJHKJMAU4K2I2WHIVE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (lockId == null) 
+    return;
+
+long scn; 
+try (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accN5K5M3I64JF4HOUPXJGU2TQDT4">
+                <xsc:Presentation>CurScnCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> c = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accN5K5M3I64JF4HOUPXJGU2TQDT4">
+                <xsc:Presentation>CurScnCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accN5K5M3I64JF4HOUPXJGU2TQDT4 mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>open</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    c.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+                <xsc:Presentation>next</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    scn = c.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accN5K5M3I64JF4HOUPXJGU2TQDT4 prfGFVHX7L4UFGE7PXCEICKDOROBA" Invoke="true">
+                <xsc:Presentation>curScn</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue();
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().commitLock(pid, org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_TRAN, lockId.longValue(), scn);
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIGWGQFKEFFA5BGXV7C3CYZROIA" Name="acquireAutonomousLock" DescriptionId="mlsB5DRI63W4BAYNJZTXXJCSBHO7Q" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" DescriptionId="mlsICDKGDG2BZEONHD7ALALHJQZOU" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="timeoutMs" DescriptionId="mlsIQM3AZHBIREZ5JUDSGRKKD66BY" Id="mprCRIFEOQ775CLXLV3LR6QOYMMAM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthE2UOOKZ6FJFERIKKFDZLHGTWZM" Invoke="true">
+                <xsc:Presentation>acquireAutonomousLock</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), timeoutMs);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYJL7DWZ4VRGUTBL5DBFRDHSDPM" Name="commitAutonomousLock" DescriptionId="mlsAAXBH5NOJRG35LWVTNU6FHTS5I" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" DescriptionId="mlsLOD66NCJAJCMJFPH6SIMKQG4JQ" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="lockId" Id="mprA46RDALEXJHKJMAU4K2I2WHIVE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthN2FB4GGV2NGLVIVVAFQHVLOYSU" Invoke="true">
+                <xsc:Presentation>commitAutonomousLock</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), lockId);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHXY2DWFQAFCULJMEJFA6EBITWY" Name="isInAadc" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthQ6D343344ZADTBY4POLA3RA4YY" Invoke="true">
+                <xsc:Presentation>getMyMemberId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() != null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHUC5TIDPMVEHLBZCDNN346LKNU" Name="putTranLockPayload" DescriptionId="mlsTW2RZPUVDRDBRL6T7EIO663MOA" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pid" DescriptionId="mlsETUZN6C7NJBRJAYU5SZZEKUGNM" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+          <Parameter Name="payload" DescriptionId="mlsX5O6PFCMO5APFDE3IUG6QUUXI4" Id="mprV5V5WE2BM5CGNIGPTMA2HP55WM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthHXY2DWFQAFCULJMEJFA6EBITWY" Invoke="true">
+                <xsc:Presentation>isInAadc</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())
+    return;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().putLockPayload(pid, org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_TRAN, payload);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHCJ2WJZSIZBFBOB7IVNZXUOSXI" Name="readTranLockPayload" DescriptionId="mlsJ7W5RFFQKZBZDKH72YGSJTXIOM" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pid" DescriptionId="mlsEKD3J5BPKRANZKKWDZ33LK6HOE" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+          <Parameter Name="payload" DescriptionId="mlsYBZJPJX7YJEODGNNNXMY4FRV4U" Id="mprV5V5WE2BM5CGNIGPTMA2HP55WM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsNGS527ENFZBIJDQPCZQZ2LY424"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthHXY2DWFQAFCULJMEJFA6EBITWY" Invoke="true">
+                <xsc:Presentation>isInAadc</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>())
+    return false;
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().readLockPayload(pid, org.radixware.kernel.server.instance.aadc.AadcManager.LOCK_TYPE_TRAN, payload);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthIKNAFTD7ZFFMVPSLI7LHO57Y5M" Name="putTranLockPayload" DescriptionId="mlsLB2WS5TE3NBN7JYNUJ7CHARZKQ" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" DescriptionId="mlsPC5ANSU2CJE75HZYKBU6TB4HTE" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="payload" DescriptionId="mls67AA3O6HKZGDVM7MRF4UYGRAYI" Id="mprV5V5WE2BM5CGNIGPTMA2HP55WM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthHUC5TIDPMVEHLBZCDNN346LKNU" Invoke="true">
+                <xsc:Presentation>putTranLockPayload</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), payload);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3TK2X4TD5FGTXIJ7TWW2JAK2S4" Name="readTranLockPayload" DescriptionId="mlsBVIBWNEC45GBVE6ELHDKSNUWDY" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="obj" DescriptionId="mlsLE7LA6W4GRCVTLFDPK5PUDESC4" Id="mprGWWAFTHE7VHU7DQUBCIF7DXMIQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="payload" DescriptionId="mls4GAL3NZLFRE47NYXJS3RTHF5VM" Id="mprV5V5WE2BM5CGNIGPTMA2HP55WM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsOJG3YI4UA5APTFDN52J7NCOZMU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthHCJ2WJZSIZBFBOB7IVNZXUOSXI" Invoke="true">
+                <xsc:Presentation>readTranLockPayload</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(obj.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), payload);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthHDROLD2DVBBWZEHIQRFK37NDCA" Name="getMyMember" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <ReturnType TypeId="2" Path="acsDXM6JXTL5BF4RJFXHPSQVNY6PY"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> myId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthQ6D343344ZADTBY4POLA3RA4YY" Invoke="true">
+                <xsc:Presentation>getMyMemberId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (myId == null) {
+    return null;
+} else if (myId == 1) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsDXM6JXTL5BF4RJFXHPSQVNY6PY aciOEH3WVT5HRDSDCA4HAFQJFNAZ4" Invoke="true">
+                <xsc:Presentation>AadcMember:FIRST</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+} else {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsDXM6JXTL5BF4RJFXHPSQVNY6PY aciZYSRTVIX3JGCLFK7U4M4UTUQ6M" Invoke="true">
+                <xsc:Presentation>AadcMember:SECOND</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7VJ2AOVN7FDE3LFISYMHWZWYGI" Name="suppressWaitWarning" DescriptionId="mlsB77WGVGNO5HFVAMMC57BMKC7IE" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY prd7FK6YSIJ3VF3RNFS2F5DXLWAVU" Invoke="true">
+                <xsc:Presentation>suppressWaitWarning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = true;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <InnerClasses>
+      <Clazz Id="adc2H5ONF6HSZHWPDZR4CBBEPWJP4" Name="EventHandler" Type="3" Environment="server">
+        <AccessRules Access="4" IsPublished="false" IsStatic="true">
+          <Transparence Extendable="false"/>
+        </AccessRules>
+        <Headers>
+          <Src Name="Headeradc2H5ONF6HSZHWPDZR4CBBEPWJP4"/>
+        </Headers>
+        <Bodies>
+          <Src Name="Bodyadc2H5ONF6HSZHWPDZR4CBBEPWJP4"/>
+        </Bodies>
+        <MethodGroup Id="cmg3RPERSEJIVAWXD2Y3J6RI5ITOM" Name="Root"/>
+        <PropertyGroup Id="cpgA4DJ42X72FAVBFJMYQPPLHHYQ4" Name="Root"/>
+        <Properties/>
+        <Methods>
+          <Method Id="mth2TMBETETMVCFBJUETJX44DZTIE" Name="afterRequestProcessing" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthI7IVQ2ZN5JETZLMWWMBM7CX3O4" Invoke="true">
+                    <xsc:Presentation>finishSessionLocks</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>();
+</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mth3DAN4ARW65GLHH6G5FWXOZTAYI" Name="beforeReleaseUnload" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>;</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mthDTB2PNAWSRFTJKS3SDNT37RQR4" Name="beforeRequestProcessing" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>;</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mthK6TSB7MSJRCWPD2RUK556BVLPE" Name="afterDbCommit" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthOFV24DFZQBD47P7NOP6JVKG5XI" Invoke="true">
+                    <xsc:Presentation>commitTranLocks</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>();</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mthMFXZM6O2DZFNBBVP4GVQN5CJ7U" Name="afterDbRollback" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Parameters>
+              <Parameter Name="savepoint" Id="mprK5PTJXWA7VDXLAFZSXBMYFUSEI">
+                <Type TypeId="400" extStr="java.sql.Savepoint"/>
+              </Parameter>
+              <Parameter Name="savepointId" Id="mprWHO5OT35SZHI7MUZTOUAQZNQBA">
+                <Type TypeId="21"/>
+              </Parameter>
+              <Parameter Name="nesting" Id="mprKGA76GORUBFXBMGACBJCJN7JAA">
+                <Type TypeId="401" extStr="long"/>
+              </Parameter>
+            </Parameters>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mth3IK4HDAXIRDUXDMYKKIX76MX7Y" Invoke="true">
+                    <xsc:Presentation>rollbackTranLocks</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>(nesting);
+</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mthJYUTOOHWPNEAPAUGNEHPOJKZ4Q" Name="beforeDbCommit" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>;</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mthZV23TYTY5FGTROAERWUKVHZC3U" Name="beforeDbRollback" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Parameters>
+              <Parameter Name="savepoint" Id="mprZQD3WEFEVJG5DFUFV6ASQAYMII">
+                <Type TypeId="400" extStr="java.sql.Savepoint"/>
+              </Parameter>
+              <Parameter Name="savepointId" Id="mpr5EA3JL7ZTVBDTICSS25MOONOOU">
+                <Type TypeId="21"/>
+              </Parameter>
+              <Parameter Name="nesting" Id="mprBV2M6GMCGVABRO3FXSFBVCGX7Y">
+                <Type TypeId="401" extStr="long"/>
+              </Parameter>
+            </Parameters>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>;</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mthKFP5DBXCV5ANVL7NYGQP2DEYAA" Name="onDbCommitError" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Parameters>
+              <Parameter Name="ex" Id="mprYYMGA3QXWJC2LHKVZRIC5DPFXI">
+                <Type TypeId="400" extStr="java.sql.SQLException"/>
+              </Parameter>
+            </Parameters>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mth3IK4HDAXIRDUXDMYKKIX76MX7Y" Invoke="true">
+                    <xsc:Presentation>rollbackTranLocks</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>(-1);
+</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+          <Method Id="mthFBR6IGZX2VA2RHZABIOLGOG6MU" Name="onDbRollbackError" Nature="0" IsOverride="true" isDescriptionInherited="true">
+            <AccessRules/>
+            <Parameters>
+              <Parameter Name="savepoint" Id="mprFQPD27N54RH5NHLIGGO3BZTDPI">
+                <Type TypeId="400" extStr="java.sql.Savepoint"/>
+              </Parameter>
+              <Parameter Name="savepointId" Id="mpr5PVXYMJ74NAMTMND2NSZHH5IHI">
+                <Type TypeId="21"/>
+              </Parameter>
+              <Parameter Name="nesting" Id="mprB3HOYMK5GZHBXHXUUH7OP3AACY">
+                <Type TypeId="401" extStr="long"/>
+              </Parameter>
+              <Parameter Name="ex" Id="mprCMC7JEKCVFBEDBK3XE5M623PDE">
+                <Type TypeId="400" extStr="java.sql.SQLException"/>
+              </Parameter>
+            </Parameters>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:Java>;</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+        </Methods>
+        <Implements>
+          <Interface TypeId="411" Path="aic7E4FULBM2BHFFNR6USYKXTZDRE"/>
+        </Implements>
+      </Clazz>
+      <Clazz Id="adcK37YO3AN3FAMJMP23SXE4U2NP4" Name="TranLockInfo" Type="3" Environment="server">
+        <AccessRules Access="4" IsPublished="false" IsStatic="true">
+          <Transparence Extendable="false"/>
+        </AccessRules>
+        <Headers>
+          <Src Name="HeaderadcK37YO3AN3FAMJMP23SXE4U2NP4"/>
+        </Headers>
+        <Bodies>
+          <Src Name="BodyadcK37YO3AN3FAMJMP23SXE4U2NP4"/>
+        </Bodies>
+        <MethodGroup Id="cmgDLCWOGSRPJEK7KGO755IXSGP4Q" Name="Root"/>
+        <PropertyGroup Id="cpgOSNHG5FZABBN5OZNOXQ7EWISH4" Name="Root"/>
+        <Properties>
+          <Property Id="prdYHAGTFUNQNG4BDWZHJ3KNGVVLQ" Name="lockId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+            <AccessRules Access="4" IsPublished="false"/>
+            <Type TypeId="401" extStr="long"/>
+          </Property>
+          <Property Id="prdDBT34EKGQNAVVCWV7CN6OC4GIQ" Name="savePointLevel" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+            <AccessRules Access="4" IsPublished="false"/>
+            <Type TypeId="401" extStr="long"/>
+          </Property>
+        </Properties>
+        <Methods>
+          <Method Id="mth7D3IGFVM3NEOZFRE2U7NWAQ6ZU" Name="TranLockInfo" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+            <AccessRules Access="4" IsPublished="false"/>
+            <Parameters>
+              <Parameter Name="lockId" Id="mpr6CRX3RRATBBWNGUHBRILCIZLGM">
+                <Type TypeId="401" extStr="long"/>
+              </Parameter>
+              <Parameter Name="spLevel" Id="mpr7ZIIJJXQFBAGZC77BHEZQDUVYM">
+                <Type TypeId="401" extStr="long"/>
+              </Parameter>
+            </Parameters>
+            <Sources>
+              <Src>
+                <xsc:Item>
+                  <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4 prdYHAGTFUNQNG4BDWZHJ3KNGVVLQ" Invoke="true">
+                    <xsc:Presentation>lockId</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> = lockId;
+</xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY adcK37YO3AN3FAMJMP23SXE4U2NP4 prdDBT34EKGQNAVVCWV7CN6OC4GIQ" Invoke="true">
+                    <xsc:Presentation>savePointLevel</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java> = spLevel;
+</xsc:Java>
+                </xsc:Item>
+              </Src>
+            </Sources>
+          </Method>
+        </Methods>
+      </Clazz>
+    </InnerClasses>
+  </AdsClassDefinition>
+</AdsDefinition>

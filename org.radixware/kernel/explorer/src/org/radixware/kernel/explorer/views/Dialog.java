@@ -11,7 +11,6 @@
 
 package org.radixware.kernel.explorer.views;
 
-import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.Qt.WidgetAttribute;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -51,6 +50,8 @@ import org.radixware.kernel.explorer.dialogs.DialogSizeManager;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.dialogs.QtDialog;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.progress.ExplorerProgressHandleManager;
+import org.radixware.kernel.explorer.utils.LeakedWidgetsDetector;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.QWidgetProxy;
 
@@ -97,6 +98,7 @@ public abstract class Dialog extends QtDialog implements IModelDefinition, IExpl
         final String configPrefix = model.getConfigStoreGroupName()+"/"+ SettingNames.SYSTEM;
         sizeManager = new DialogSizeManager((ExplorerSettings)environment.getConfigStore(), this, configPrefix);
         sizeManager.setGeometryKey("dialogGeometry");
+        setObjectName("rx_dlg_view_#"+id.toString());
     }
 
     @Override
@@ -122,7 +124,12 @@ public abstract class Dialog extends QtDialog implements IModelDefinition, IExpl
             return result();
         }
         setModal(true);
-        return super.exec();
+        LeakedWidgetsDetector.getInstance().beforeExecDialog(environment, this);
+        try{
+            return super.exec();            
+        }finally{
+            LeakedWidgetsDetector.getInstance().afterExecDialog(environment);
+        }
     }    //   Реализация View
     private DialogModel model;
 
@@ -136,7 +143,7 @@ public abstract class Dialog extends QtDialog implements IModelDefinition, IExpl
         model.setView(this);
         opened.connect(this, "restoreGeometry()");
         setWindowTitle(model.getWindowTitle());
-        setWindowIcon(model.getIcon());
+        setWindowIcon(model.getIcon());        
         wasOpened = true;
     }
 
@@ -147,7 +154,9 @@ public abstract class Dialog extends QtDialog implements IModelDefinition, IExpl
 
     @Override
     protected void closeEvent(QCloseEvent event) {
-        if (environment.getProgressHandleManager().getActive() != null) {
+        final ExplorerProgressHandleManager manager = 
+            (ExplorerProgressHandleManager)environment.getProgressHandleManager();
+        if (manager.getActive()!=null && !manager.isProgressBlocked()) {
             event.ignore();
         } else {
             super.closeEvent(event);

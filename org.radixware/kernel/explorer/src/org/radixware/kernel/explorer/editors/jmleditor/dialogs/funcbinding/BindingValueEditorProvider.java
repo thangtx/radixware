@@ -106,26 +106,30 @@ class BindingValueEditorProvider extends QObject {
             } else if ("int".equals(typeName) || "java.lang.Integer".equals(typeName)) {
                 intEditor = new QSpinBox(parent);
                 intEditor.valueChanged.connect(this, "valueChanged(Integer)");
-                intEditor.setMaximum(Integer.MAX_VALUE);
+                intEditor.setRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
             } else if ("long".equals(typeName) || "java.lang.Long".equals(typeName)) {
                 doubleEditor = new QDoubleSpinBox(parent);
                 doubleEditor.valueChanged.connect(this, "valueChanged(Double)");
-                doubleEditor.setMaximum(Long.MAX_VALUE);
+                doubleEditor.setRange(Long.MIN_VALUE, Long.MAX_VALUE);
                 doubleEditor.setDecimals(0);
             } else if ("short".equals(typeName) || "java.lang.Short".equals(typeName)) {
                 intEditor = new QSpinBox(parent);
                 intEditor.valueChanged.connect(this, "valueChanged(Integer)");
-                intEditor.setMaximum(Short.MAX_VALUE);
-            } else if ("double".equals(typeName) || "java.lang.Double".equals(typeName)) {
-                doubleEditor = new QDoubleSpinBox(parent);
+                intEditor.setRange(Short.MIN_VALUE, Short.MAX_VALUE);
+            } else if ("double".equals(typeName) || "java.lang.Double".equals(typeName) || "float".equals(typeName) || "java.lang.Float".equals(typeName)) {
+                doubleEditor = new QDoubleSpinBox(parent) {
+                    @Override
+                    public String textFromValue(double val) {
+                        return Double.toString(val);
+                    }
+                };
+                if ("double".equals(typeName) || "java.lang.Double".equals(typeName)) {
+                    doubleEditor.setRange(-Double.MAX_VALUE, Double.MAX_VALUE);
+                } else {
+                    doubleEditor.setRange(-Float.MAX_VALUE, Float.MAX_VALUE);
+                }
+                doubleEditor.setDecimals(9);
                 doubleEditor.valueChanged.connect(this, "valueChanged(Double)");
-                doubleEditor.setMaximum(Double.MAX_VALUE);
-                doubleEditor.setDecimals(2);
-            } else if ("float".equals(typeName) || "java.lang.Float".equals(typeName)) {
-                doubleEditor = new QDoubleSpinBox(parent);
-                doubleEditor.valueChanged.connect(this, "valueChanged(Double)");
-                doubleEditor.setMaximum(Float.MAX_VALUE);
-                doubleEditor.setDecimals(2);
             }
         }
     }
@@ -144,17 +148,55 @@ class BindingValueEditorProvider extends QObject {
     }
 
     void valueChanged(final Integer value) {
-        final Object val = booleanEditor != null ? (value > 0) : Long.valueOf(value.longValue());
+        final Object val = getIntValue(value);
         valueChanged.emit(val);
     }
 
     void valueChanged(final Double value) {
-        final Object val = doubleEditor.decimals() == 0 ? Long.valueOf(value.longValue()) : BigDecimal.valueOf(value.doubleValue());
+        final Object val = getDoubleValue(value);
         valueChanged.emit(val);
+    }
+    
+    private Object getStrValue(final String value) {
+        if (value == null || value.isEmpty() && strEditor.maxLength() == 1) {
+            return Character.MIN_VALUE;
+        } else {
+            return value;
+        }
+    }
+    
+    private Object getIntValue(final Integer value) {
+        return booleanEditor != null ? (value > 0) : Long.valueOf(value.longValue());
+    }
+    
+    private Object getDoubleValue(final Double value) {
+        return doubleEditor.decimals() == 0 ? Long.valueOf(value.longValue()) : BigDecimal.valueOf(value.doubleValue());
     }
 
     boolean isSet() {
         return getEditor() != null;
+    }
+    
+    Object getValue() {
+        if (valEditor != null) {
+            return valEditor.getValue();
+        }
+        if (strEditor != null) {
+            return getStrValue(strEditor.text());
+        }
+        if (intEditor != null) {
+            return getIntValue(intEditor.value());
+        }
+        if (doubleEditor != null) {
+            return getDoubleValue(doubleEditor.value());
+        }
+        if (booleanEditor != null) {
+            return booleanEditor.isChecked();
+        }
+        if (comboBox != null) {
+            return comboBox.itemData(comboBox.currentIndex());
+        }
+        return null;
     }
 
     QWidget getEditor() {

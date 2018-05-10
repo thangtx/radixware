@@ -72,6 +72,18 @@ public interface Action {
     public boolean isChecked();
 
     public void setChecked(boolean isChecked);
+    
+    public void setObjectName(final String objectName);
+    
+    public IMenu getActionMenu();
+    
+    public void setActionMenu(final IMenu menu);
+    
+    public Object getUserObject();
+    
+    public void setUserObject(final Object object);
+    
+    public String getObjectName();
 
     public void close();
 }

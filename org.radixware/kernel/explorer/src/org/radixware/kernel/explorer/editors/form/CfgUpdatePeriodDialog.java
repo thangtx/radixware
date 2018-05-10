@@ -11,8 +11,11 @@
 
 package org.radixware.kernel.explorer.editors.form;
 
-import com.trolltech.qt.core.Qt.CheckState;
-import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QCheckBox;
+import com.trolltech.qt.gui.QHBoxLayout;
+import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QSpinBox;
+import com.trolltech.qt.gui.QWidget;
 import java.util.EnumSet;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.enums.EDialogButtonType;
@@ -23,7 +26,7 @@ import org.radixware.kernel.explorer.env.Application;
 public class CfgUpdatePeriodDialog extends ExplorerDialog {
     
     private final QSpinBox sbFormsPeriod;
-    private final QCheckBox cbIsUpdate, cbIsSound;
+    private final QCheckBox cbIsSound;
     private final QLabel lbPeriod, lbSound;
     
     public CfgUpdatePeriodDialog(final IClientEnvironment environment, final QWidget parent, final boolean isUpdate, final int period, final boolean isSound) {
@@ -32,7 +35,6 @@ public class CfgUpdatePeriodDialog extends ExplorerDialog {
         sbFormsPeriod = createSpinBox();
         lbPeriod = new QLabel(this);
         lbSound = new QLabel(this);
-        cbIsUpdate = new QCheckBox(this);
         cbIsSound = new QCheckBox(this);
         
         setWindowTitle(Application.translate("UpdateCfg", "Settings"));
@@ -43,7 +45,7 @@ public class CfgUpdatePeriodDialog extends ExplorerDialog {
         QSpinBox spinBox = new QSpinBox(this);
         spinBox.setMinimum(1);
         spinBox.setMaximum(86400); //24 часа
-        spinBox.setSuffix(" c");
+        spinBox.setSuffix(" " + Application.translate("UpdateCfg", "s"));
         return spinBox;
     }
 
@@ -51,12 +53,6 @@ public class CfgUpdatePeriodDialog extends ExplorerDialog {
         QHBoxLayout periodLayout = createPeriodLayout(Application.translate("UpdateCfg", "Refresh period"), period, sbFormsPeriod);
         QHBoxLayout soundLayout = createSoundLayout(Application.translate("UpdateCfg", "Sound signal"), isSound);
         
-        cbIsUpdate.setText(Application.translate("UpdateCfg", "Set refresh period"));
-        cbIsUpdate.stateChanged.connect(this, "autoRangeChange(Integer)");
-        cbIsUpdate.setCheckState(isUpdate ? CheckState.Checked : CheckState.Unchecked);
-        autoRangeChange(0);
-        
-        dialogLayout().addWidget(cbIsUpdate);
         dialogLayout().addLayout(periodLayout);
         dialogLayout().addLayout(soundLayout);
 
@@ -81,8 +77,7 @@ public class CfgUpdatePeriodDialog extends ExplorerDialog {
         return layout;
     }
 
-    private void autoRangeChange(Integer n) {
-        boolean isEnable = isUpdate();
+    private void autoRangeChange(boolean isEnable) {
         sbFormsPeriod.setEnabled(isEnable);
         lbPeriod.setEnabled(isEnable);
         lbSound.setEnabled(isEnable);
@@ -101,9 +96,5 @@ public class CfgUpdatePeriodDialog extends ExplorerDialog {
     
     public boolean isSound() {
         return cbIsSound.isChecked();
-    }
-    
-    public boolean isUpdate() {
-        return cbIsUpdate.isChecked();
     }
 }

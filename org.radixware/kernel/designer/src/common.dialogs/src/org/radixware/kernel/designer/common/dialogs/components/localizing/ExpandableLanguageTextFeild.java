@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.designer.common.dialogs.components.localizing;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
 import org.radixware.kernel.common.components.ExtendableTextField.ExtendableTextChangeEvent;
@@ -20,7 +22,7 @@ import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.designer.common.dialogs.components.MultilinedTextField;
 
 
-class ExpandableLanguageTextField extends MultilinedTextField implements ILocalizedEditor {
+class ExpandableLanguageTextField extends MultilinedTextField implements ILineLocalizedEditor {
 
     public ExpandableLanguageTextField(EIsoLanguage language, RadixObject context) {
         super(true, language, context);
@@ -37,6 +39,9 @@ class ExpandableLanguageTextField extends MultilinedTextField implements ILocali
 
     private EIsoLanguage language;
     private ChangeSupport changeSupport = new ChangeSupport(this);
+    private JLabel checkedInfoLable;
+    private JLabel agreedInfoLable;
+    private JButton openRichEditor;
 
     @Override
     public void setReadonly(boolean readonly) {
@@ -74,4 +79,32 @@ class ExpandableLanguageTextField extends MultilinedTextField implements ILocali
     protected void fireChangeEvent() {
         changeSupport.fireChange();
     }
+
+    @Override
+    public JLabel getCheckedInfoLable() {
+        return checkedInfoLable;
+    }
+
+    @Override
+    public void setCheckedInfoLable(JLabel checkedInfoLable) {
+        this.checkedInfoLable = checkedInfoLable;
+    }
+
+    public void setAgreedInfoLable(JLabel agreedInfoLable) {
+        this.agreedInfoLable = agreedInfoLable;
+    }
+
+    public JLabel getAgreedInfoLable() {
+        return agreedInfoLable;
+    }
+
+    public JButton getOpenRichEditor() {
+        return openRichEditor;
+    }
+
+    public void setOpenRichEditor(JButton openRichEditor) {
+        this.openRichEditor = openRichEditor;
+    }
+    
+    
 }

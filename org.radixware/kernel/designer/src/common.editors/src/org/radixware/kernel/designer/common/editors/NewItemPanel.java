@@ -71,6 +71,7 @@ public class NewItemPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox valueComboBox = new javax.swing.JComboBox();
     private AdsDefinitionIconPresentation iconEditor = new AdsDefinitionIconPresentation();
     private LocalizingEditorPanel titleEditor = new LocalizingEditorPanel();
+    private LocalizingEditorPanel descriptionEditor = new LocalizingEditorPanel("Description", true);
     private StateDisplayer stateDisplayer1 = new StateDisplayer();
     private javax.swing.JPanel content = new javax.swing.JPanel();
     private final StateManager stateManager;
@@ -173,11 +174,18 @@ public class NewItemPanel extends javax.swing.JPanel {
 
         final AdsLocalizingBundleDef bundle = enumDefinition.findLocalizingBundle();
         if (bundle != null) {
-            final AdsMultilingualStringDef src = bundle.findLocalizedString(source.getTitleId());
-            if (src != null) {
-                final AdsMultilingualStringDef string = AdsMultilingualStringDef.Factory.newInstance(src);
+            final AdsMultilingualStringDef titleSrc = bundle.findLocalizedString(source.getTitleId());
+            if (titleSrc != null) {
+                final AdsMultilingualStringDef string = AdsMultilingualStringDef.Factory.newInstance(titleSrc);
                 bundle.getStrings().getLocal().add(string);
                 target.setTitleId(string.getId());
+            }
+            
+            final AdsMultilingualStringDef descSrc = bundle.findLocalizedString(source.getDescriptionId());
+            if (descSrc != null) {
+                final AdsMultilingualStringDef string = AdsMultilingualStringDef.Factory.newInstance(descSrc);
+                bundle.getStrings().getLocal().add(string);
+                target.setDescriptionId(string.getId());
             }
         }
 
@@ -283,9 +291,16 @@ public class NewItemPanel extends javax.swing.JPanel {
         c.insets = new Insets(10, 0, 10, 10);
         c.fill = GridBagConstraints.HORIZONTAL;
         content.add(titleEditor, c);
-
+        
         c = new GridBagConstraints();
         c.gridy = 4;
+        c.gridx = 1;
+        c.insets = new Insets(10, 0, 10, 10);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        content.add(descriptionEditor, c);
+
+        c = new GridBagConstraints();
+        c.gridy = 5;
         c.gridx = 1;
         c.weightx = 0.0;
         c.fill = GridBagConstraints.NONE;
@@ -299,7 +314,7 @@ public class NewItemPanel extends javax.swing.JPanel {
         });
 
         c = new GridBagConstraints();
-        c.gridy = 5;
+        c.gridy = 6;
         c.gridx = 1;
         c.weightx = 1.0;
         c.anchor = GridBagConstraints.WEST;
@@ -326,6 +341,35 @@ public class NewItemPanel extends javax.swing.JPanel {
                     item.setTitleId(stringDef.getId());
                 } else {
                     item.setTitleId(null);
+                }
+            }
+
+            @Override
+            protected void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
+                IMultilingualStringDef stringDef = getAdsMultilingualStringDef();
+                if (stringDef != null) {
+                    stringDef.setValue(language, newStringValue);
+                }
+            }
+        });
+        
+        descriptionEditor.open(new HandleInfo() {
+            @Override
+            public AdsDefinition getAdsDefinition() {
+                return item;
+            }
+
+            @Override
+            public Id getTitleId() {
+                return item.getDescriptionId();
+            }
+
+            @Override
+            protected void onAdsMultilingualStringDefChange(IMultilingualStringDef stringDef) {
+                if (stringDef != null) {
+                    item.setDescriptionId(stringDef.getId());
+                } else {
+                    item.setDescriptionId(null);
                 }
             }
 

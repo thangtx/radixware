@@ -10,17 +10,26 @@
  */
 package org.radixware.kernel.starter.meta;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.xml.stream.XMLStreamException;
+import org.radixware.kernel.starter.filecache.CacheEntry;
+import org.radixware.kernel.starter.radixloader.ERevisionMetaType;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoaderAccessor;
 import org.radixware.kernel.starter.radixloader.RadixLoaderException;
+import org.radixware.kernel.starter.radixloader.RadixLoaderUtils;
 import org.radixware.kernel.starter.utils.ClassPackage;
 
 public class RevisionMeta {
 
+    public static final String ABOUT_XML = "about.xml";
     private static final String LOCALIZING_LAYER_MARK = "$locale-";
+    public static final String VERSIONS_STR_SEPARATOR = ",";
+    public static final String REVISIONS_SEPARATOR = ":";
     private final RadixLoaderAccessor loaderAccessor;
     private volatile long revisionNum;
     private volatile long timestampMillis = -1;
@@ -34,13 +43,62 @@ public class RevisionMeta {
     private final Map<String, FileMeta> tmpClassesMap = new HashMap<>();
     private final List<String> allLayersInRepo = new ArrayList<>();
     private final List<String> languages = new ArrayList<>();
+    private final String explicitAppLayersVersionString;
+    private final String explicitKernelLayersVersionString;
+    private final String compatibleKernelRevisionsString;
+    private final String kernelRevisionsString;
+    private final ERevisionMetaType type;
 
     public RevisionMeta(
             final RadixLoaderAccessor loaderAccessor,
             final long revisionNum,
             final RadixLoader.HowGetFile howGet) throws IOException, XMLStreamException {
+        this(loaderAccessor, revisionNum, howGet, ERevisionMetaType.FULL);
+    }
+
+    public RevisionMeta(
+            final RadixLoaderAccessor loaderAccessor,
+            final long revisionNum,
+            final RadixLoader.HowGetFile howGet,
+            final ERevisionMetaType type) throws IOException, XMLStreamException {
+        this(loaderAccessor, revisionNum, howGet, null, null, null, null, type);
+    }
+
+    public RevisionMeta(
+            final RadixLoaderAccessor loaderAccessor,
+            final long revisionNum,
+            final RadixLoader.HowGetFile howGet,
+            final String explicitKernelLayersVersionString,
+            final String explicitAppLayersVersionString,
+            final String kernelRevisionsString,
+            final String compatibleKernelRevisionsString) throws IOException, XMLStreamException {
+        this(loaderAccessor,
+                revisionNum,
+                howGet,
+                explicitKernelLayersVersionString,
+                explicitAppLayersVersionString,
+                kernelRevisionsString,
+                compatibleKernelRevisionsString,
+                ERevisionMetaType.FULL);
+    }
+
+    public RevisionMeta(
+            final RadixLoaderAccessor loaderAccessor,
+            final long revisionNum,
+            final RadixLoader.HowGetFile howGet,
+            final String explicitKernelLayersVersionString,
+            final String explicitAppLayersVersionString,
+            final String kernelRevisionsString,
+            final String compatibleKernelRevisionsString,
+            final ERevisionMetaType type) throws IOException, XMLStreamException {
         this.loaderAccessor = loaderAccessor;
         this.revisionNum = revisionNum;
+        this.type = type;
+        
+        if (type == ERevisionMetaType.FULL) {
+            scanLocalReplacementDir(revisionNum, explicitKernelLayersVersionString, explicitAppLayersVersionString);
+        }
+        
         final List<String> repoLayers = loaderAccessor.getLoader().listAllLayerUrisInRepository(revisionNum, howGet);
         if (repoLayers != null) {
             allLayersInRepo.addAll(repoLayers);
@@ -60,6 +118,125 @@ public class RevisionMeta {
             }
         });
         allLayersTopologicallySortedFromBottom = Collections.unmodifiableList(sortAllLayers());
+        if (explicitAppLayersVersionString != null) {
+            this.explicitAppLayersVersionString = explicitAppLayersVersionString;
+            this.explicitKernelLayersVersionString = explicitKernelLayersVersionString;
+            this.kernelRevisionsString = kernelRevisionsString == null ? "" : kernelRevisionsString;
+            this.compatibleKernelRevisionsString = compatibleKernelRevisionsString == null ? "" : compatibleKernelRevisionsString;
+        } else {
+            CacheEntry aboutEntry = null;
+            try {
+                aboutEntry = loaderAccessor.getFile(ABOUT_XML, revisionNum, howGet);
+            } catch (Exception ex) {
+                aboutEntry = null;
+            }
+            if (aboutEntry != null) {
+                final StringBuilder appVerBuilder = new StringBuilder();
+                final StringBuilder kernelVerBuilder = new StringBuilder();
+                final StringBuilder kernelRevsBuilder = new StringBuilder();
+                final StringBuilder compatibleKernelRevsBuilder = new StringBuilder();
+                try {
+                    RadixLoaderUtils.readVersions(new ByteArrayInputStream(aboutEntry.getData(null)), kernelVerBuilder, appVerBuilder, kernelRevsBuilder, compatibleKernelRevsBuilder, getAllLayerUrisSortedFromBotton());
+                    if (appVerBuilder.length() > 0 && kernelVerBuilder.length() > 0) {
+                        this.explicitAppLayersVersionString = appVerBuilder.toString();
+                        this.explicitKernelLayersVersionString = kernelVerBuilder.toString();
+                    } else {
+                        this.explicitAppLayersVersionString = null;
+                        this.explicitKernelLayersVersionString = null;
+                    }
+                    this.kernelRevisionsString = kernelRevsBuilder.toString();
+                    this.compatibleKernelRevisionsString = compatibleKernelRevsBuilder.toString();
+                } catch (Exception ex) {
+                    throw new RadixLoaderException("Unable to load " + ABOUT_XML, ex);
+                }
+            } else {
+                this.explicitAppLayersVersionString = null;
+                this.explicitKernelLayersVersionString = null;
+                this.kernelRevisionsString = "";
+                this.compatibleKernelRevisionsString = "";
+            }
+        }
+    }
+    
+    private void scanLocalReplacementDir(final long revisionNum, String explicitKernelLayersVersionString, String explicitAppLayersVersionString) throws RadixLoaderException {
+        String kernelVers = explicitKernelLayersVersionString;
+        String appVers = explicitAppLayersVersionString;
+        if (appVers == null) {
+            final RevisionMeta layersMeta = RadixLoader.getInstance().getRevisionMeta(revisionNum, ERevisionMetaType.LAYERS_ONLY);
+            kernelVers = layersMeta.getKernelLayerVersionsString();
+            appVers = layersMeta.getAppLayerVersionsString();
+        }
+        RadixLoader.getInstance().getLocalFiles().loadForVersion(revisionNum, kernelVers, appVers);
+    }
+
+    public ERevisionMetaType getType() {
+        return type;
+    }
+
+    public String getCompatibleKernelRevisionsString() {
+        return compatibleKernelRevisionsString;
+    }
+
+    public String getKernelRevisionsString() {
+        return kernelRevisionsString;
+    }
+
+    public Map<String, List<Long>> getCompatibleKernelRevisions() {
+        return parseUrisAndRevisionsListString(compatibleKernelRevisionsString);
+    }
+
+    public Map<String, Long> getKernelRevisions() {
+        final Map<String, List<Long>> tmp = parseUrisAndRevisionsListString(kernelRevisionsString);
+        final Map<String, Long> result = new LinkedHashMap<>();
+        for (Map.Entry<String, List<Long>> entry : tmp.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().isEmpty() ? null : entry.getValue().get(0));
+        }
+        return result;
+    }
+
+    private Map<String, List<Long>> parseUrisAndRevisionsListString(final String str) {
+        final Map<String, List<Long>> result = new LinkedHashMap<>();
+        if (str == null || str.isEmpty()) {
+            return result;
+        }
+        final String[] urisAndRevs = str.split(VERSIONS_STR_SEPARATOR);
+        for (String uriAndRevsStr : urisAndRevs) {
+            final String[] uriAndRevs = uriAndRevsStr.split("=");
+            final List<Long> revs = new ArrayList<>();
+            if (uriAndRevs.length > 1) {
+                final String[] revStrings = uriAndRevs[1].split(REVISIONS_SEPARATOR);
+                for (String revString : revStrings) {
+                    try {
+                        revs.add(Long.parseLong(revString));
+                    } catch (Exception ex) {
+                        ex.printStackTrace(System.out);
+                    }
+                }
+            }
+            result.put(uriAndRevs[0], revs);
+        }
+        return result;
+    }
+
+    public boolean isKernelCompatibleWhenUpgradingTo(final RevisionMeta target) {
+        final Map<String, Long> thisKernelRevs = getKernelRevisions();
+        final Map<String, List<Long>> targetCompatibleKernRevs = target.getCompatibleKernelRevisions();
+        if (thisKernelRevs.isEmpty() || targetCompatibleKernRevs.isEmpty()) {
+            return Objects.equals(getKernelLayerVersionsString(), target.getKernelLayerVersionsString());
+        }
+        if (getKernelRevisionsString().equals(target.getKernelRevisionsString())) {
+            return true;
+        }
+        if (thisKernelRevs.size() != targetCompatibleKernRevs.size()) {
+            return false;
+        }
+        for (Map.Entry<String, Long> thisKernRevEntry : thisKernelRevs.entrySet()) {
+            final List<Long> compatRevs = targetCompatibleKernRevs.get(thisKernRevEntry.getKey());
+            if (compatRevs == null || !compatRevs.contains(thisKernRevEntry.getValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void setTimestampMillis(final long millis) {
@@ -221,7 +398,9 @@ public class RevisionMeta {
             return Collections.emptyList();
         }
         final LayerMeta layer = new LayerMeta(uri, loaderAccessor, revisionNum, howGet);
-        loadDataFromLayer(layer);
+        if (type == ERevisionMetaType.FULL) {
+            loadDataFromLayer(layer);
+        }
         allLayers.put(uri, layer);
         String[] base = layer.getBaseLayerUris();
         if (base == null || base.length == 0) {
@@ -249,6 +428,7 @@ public class RevisionMeta {
             throw new RadixLoaderException("Revision number is already defined");
         }
         this.revisionNum = revisionNum;
+        RadixLoader.getInstance().getLocalFiles().setRevisionNum(revisionNum);
     }
 
     public List<LayerMeta> getTopLayers() {
@@ -259,10 +439,26 @@ public class RevisionMeta {
         return allLayersTopologicallySortedFromBottom;
     }
 
+    public final List<String> getAllLayerUrisSortedFromBotton() {
+        final List<String> result = new ArrayList<>();
+        for (LayerMeta layerMeta : allLayersTopologicallySortedFromBottom) {
+            result.add(layerMeta.getUri());
+        }
+        return result;
+    }
+
     public List<LayerMeta> getAllLayersSortedFromTop() {
         List<LayerMeta> layers = new ArrayList(allLayersTopologicallySortedFromBottom);
         Collections.reverse(layers);
         return layers;
+    }
+
+    public String getKernelLayerVersionsString() {
+        return explicitKernelLayersVersionString == null ? getLayerVersionsString() : explicitKernelLayersVersionString;
+    }
+
+    public String getAppLayerVersionsString() {
+        return explicitAppLayersVersionString == null ? getLayerVersionsString() : explicitAppLayersVersionString;
     }
 
     public String getLayerVersionsString() {
@@ -272,7 +468,7 @@ public class RevisionMeta {
             if (isFirst) {
                 isFirst = false;
             } else {
-                sb.append(",");
+                sb.append(VERSIONS_STR_SEPARATOR);
             }
             sb.append(layerMeta.getUri());
             sb.append('=');
@@ -349,7 +545,7 @@ public class RevisionMeta {
             result.put(fromLayer.getUri(), null);
         }
     }
-    
+
     public FileMeta findFile(final String fileName) {
         return filesMap.get(fileName);
     }
@@ -388,6 +584,74 @@ public class RevisionMeta {
         }
     }
 
+    public RevisionMetaDiff getDiff(final RevisionMeta another) throws IOException {
+        if (another == null) {
+            throw new NullPointerException("Another revision metadata can't ne null");
+        }
+        else {
+            final Set<String> logicallyUnchanged = new HashSet<>();
+            final Map<String,FileMeta> addedFiles = new HashMap<>();
+            final Map<String,FileMeta[]> modifiedFiles = new HashMap<>();
+            final Map<String,FileMeta> removedFiles = new HashMap<>();
+
+            final Set<String> cg = new HashSet<>(), mf = new HashSet<>(), rf = new HashSet<>();
+            
+            for (Map.Entry<String, LayerMeta> layerMeta : allLayers.entrySet()) {
+                final String layerUri = layerMeta.getValue().getUri();
+                
+                for (LayerMeta meta : another.getAllLayersSortedFromBottom()) {
+                    if (meta.getUri().equals(layerUri)) {
+                        if (layerMeta.getValue().isLogicallyEquals(meta)) {
+                            logicallyUnchanged.add(layerUri + "/" + LayerMeta.LAYER_XML_FILE);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            for (Map.Entry<String, FileMeta> file : filesMap.entrySet()) {
+                final FileMeta new_file = file.getValue();
+                final FileMeta old_file = another.filesMap.get(new_file.getName());
+                
+                if (old_file == null) {
+                    addedFiles.put(new_file.getName(),new_file);
+                } else if (!new_file.hasSameDigest(old_file) && !logicallyUnchanged.contains(new_file.getName())) {
+                    modifiedFiles.put(new_file.getName(),new FileMeta[]{old_file,new_file});
+                }
+            }
+            
+            for (Map.Entry<String, FileMeta> file : another.filesMap.entrySet()) {
+                if (filesMap.get(file.getValue().getName()) == null) {
+                    removedFiles.put(file.getValue().getName(),file.getValue());
+                }
+            }
+
+            final Set<String> addedClasses = new HashSet<>();
+            final Set<String> modifiedClasses = new HashSet<>();
+            final Set<String> removedClasses = new HashSet<>();
+            
+            for (Map.Entry<String, FileMeta> item : addedFiles.entrySet()) {  // Extract classes from new jars and mark them as "added"
+                scanClassesInJar(RadixLoader.getInstance().readFileData(item.getValue(),this),new ScanJarCallback() {
+                    @Override
+                    public void processClass(final ZipEntry item) {
+                        addedClasses.add(item.getName());
+                    }
+                });
+            }
+
+            for (Map.Entry<String, FileMeta> item : removedFiles.entrySet()) {  // Extract classes from old jars and mark them as "removed"
+                scanClassesInJar(RadixLoader.getInstance().readFileData(item.getValue(),another),new ScanJarCallback() {
+                    @Override
+                    public void processClass(final ZipEntry item) {
+                        removedClasses.add(item.getName());
+                    }
+                });
+            }
+
+            return new RevisionMetaDiff(addedClasses, removedClasses, modifiedFiles.keySet());
+        }
+    }
+    
     public void getChanges(
             final RevisionMeta oldRevision,
             final Set<String> changedGroups,
@@ -446,5 +710,24 @@ public class RevisionMeta {
 
     public Iterable<FileMeta> getFileMetas() {
         return Collections.unmodifiableCollection(filesMap.values());
+    }
+
+
+    private interface ScanJarCallback {
+        void processClass(final ZipEntry item);
+    }
+    
+    private static void scanClassesInJar(final byte[] content, final ScanJarCallback callback) throws IOException {
+        try(final ByteArrayInputStream is = new ByteArrayInputStream(content);
+            final ZipInputStream zis = new ZipInputStream(is)) {
+            ZipEntry ze;
+
+            while ((ze = zis.getNextEntry()) != null) {
+                if (ze.getName().endsWith(".class")) {
+                    callback.processClass(ze);
+                }
+                zis.closeEntry();
+            }
+        }
     }
 }

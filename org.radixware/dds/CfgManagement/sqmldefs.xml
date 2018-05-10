@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlMYJ6VIFA3BCMLFDDCZH36MAYBM" QualifiedName="Radix::CfgManagement">
+  <TableDef Id="tblFBB5BWCUZZHEDICOSYNTHZ3ZNE" Name="Revision">
+    <Indexes>
+      <Index Id="idxRLX52OEDFRDRFBUNCQ5X4IZHWY" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colHZU5LSFUFRC23MSA5WTUAAB2YE colZKMFHS6KSBDZFDQSL6XFKD5EZE colOJDV73QKYVG4PGCAC3UY2G6F74 colZQUNS4MKIBCGXE7CSG6PA7ROPU"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refHZB6WVXTNVB73FJVURPGTGNCJY" Name="Revision=>ChangeLog (upDefId=>upDefId, upOwnerEntityId=>upOwnerEntityId, upOwnerPid=>upOwnerPid)" ReferencedTableId="tblVHY5COSHWNA7PPJ65FW3OGJ4ZQ" ChildColumnNames="upDefId upOwnerEntityId upOwnerPid"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colZQUNS4MKIBCGXE7CSG6PA7ROPU" Name="Id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colHZU5LSFUFRC23MSA5WTUAAB2YE" Name="upDefId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colZKMFHS6KSBDZFDQSL6XFKD5EZE" Name="upOwnerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colOJDV73QKYVG4PGCAC3UY2G6F74" Name="upOwnerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colSGRNYKKFMZHS3JWOVWIAQUPNF4" Name="seq" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colTOVFRCOSNRELJK73KAENVCQPW4" Name="time" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colZGV3WOV765HFTIQY4ZA6PKRMWI" Name="description" ValType="21" Length="2000" Precision="0" NotNull="true"/>
+      <Column Id="colZ7I2LKY7R5F2TINIRJ4FASI53A" Name="kind" ValType="21" Length="20" Precision="0" NotNull="true"/>
+      <Column Id="colWDKSRUEFVJHQPGKLPTNSSBSMWI" Name="author" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colBXT3L65R7VDOXNVYQ2OIMRQTHU" Name="docRef" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colDONV65JHGFHXZKRSXXSEKMLG54" Name="appVer" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colJ6GHATEATRAIZOGDWKVGLNLSDQ" Name="localNotes" ValType="21" Length="2000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" Name="Item">
+    <Indexes>
+      <Index Id="idx62G6IIOXTVHIRG7FVPW446UKHE" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colIUQVQZZKPFBRLG7DTABUYGLYBQ"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refF34ZWBF4TBBCHIUDOFBRI67OVY" Name="Item=>Packet (packetId=>id)" ReferencedTableId="tblWMN3P5J5ONCFPLJVGBFAKZXZXU" ChildColumnNames="packetId"/>
+      <Reference Id="refSAINKHTF3ZBCZGDGBCAMV4P76E" Name="Item=>Item (parentId=>id)" ReferencedTableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" ChildColumnNames="parentId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colJQK7LYSZW5FS7NYEXFUKCIR4O4" Name="classGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colTUL7C3425VCCNC5ELKDFZBWJOY" Name="packetId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colJ5L5OI3X4BHYBPJFGAWUO4MKZM" Name="parentId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colKF2PFJVIG5FDZJLBPDQR2RN4GA" Name="extGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colIRYZTYXM2NBDNOQQ5XMAGM3H6Y" Name="srcAppVer" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="col3DNFCTYB3ZDJZCRY4OGG7I66YA" Name="srcObjectPid" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colHQUFLZVQBNDCHMCVIG7RQM7NDQ" Name="srcObjectRid" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colHUYIZ7QPTBE7FAGC4FA76QNHPY" Name="srcObjectTitle" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colJGXEDVUL4JA5JAKSJCAVSU2BSU" Name="skip" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colOY3R4QKX2NEEHMDIS6QV4FMDQE" Name="objState" ValType="21" Length="20" Precision="0"/>
+      <Column Id="colW3X3MBNTEBADJKAZZQ4QEOMSKY" Name="allRefsState" ValType="21" Length="20" Precision="0"/>
+      <Column Id="colJHVNNS3BSZCDHPM5MZET64JSGU" Name="data" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colM4MU5QWZUVHADCVXB2GL47BQXI" Name="settings" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colKLNALIUEZJGQHKSQ22KH6YAQAI" Name="notes" ValType="21" Length="4000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblVHY5COSHWNA7PPJ65FW3OGJ4ZQ" Name="ChangeLog">
+    <Indexes>
+      <Index Id="idxS6VJPC4RBBBQXKRM5S32VNYPM4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colYZPLJDVNTRBOZGTGEVP7OFHURE colDNQQV5SM4VAWTCKEOAEDTUXAMI colRGHQSIYJKJALXJACD42AGVY2VI"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refDSVLIJJASRC2JF2ITJB2ILWBUE" Name="ChangeLog=>UpValRef (upDefId=>defId, upOwnerEntityId=>ownerEntityId, upOwnerPid=>ownerPid)" ReferencedTableId="tblZVJUSFASRDNBDCBEABIFNQAABA" ChildColumnNames="upDefId upOwnerEntityId upOwnerPid"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colYZPLJDVNTRBOZGTGEVP7OFHURE" Name="upDefId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colDNQQV5SM4VAWTCKEOAEDTUXAMI" Name="upOwnerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colRGHQSIYJKJALXJACD42AGVY2VI" Name="upOwnerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colKVXCQA3IHRH5FGGABFJK3CS6FI" Name="comments" ValType="21" Length="2000" Precision="0"/>
+      <Column Id="colMR7O6HVK7VHNXK56NUE43I2MK4" Name="localNotes" ValType="21" Length="2000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblWMN3P5J5ONCFPLJVGBFAKZXZXU" Name="Packet">
+    <Indexes>
+      <Index Id="idx3CSJO5DQY5GWVGODOJXDQ2XSMA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colDZOPCTNIURBCBPLCP75JMZCFYM"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colDZOPCTNIURBCBPLCP75JMZCFYM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colKE4YQ3Y2LNEDBGUI6I3B4TBM7E" Name="classGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colT6AXXF6DBVAQDFOGFG4QARZYJU" Name="title" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colCQOZYZGSGZBLNNG6KX255SLN5Q" Name="notes" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colASBRWVXPMRCKJLI3ROP4Z6WBJQ" Name="localNotes" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colAJ6PVNFK3FBIVPACM2HG6NHSMU" Name="srcDbUrl" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colCY7ILVPBW5FCRBUUHJPC7LRBJY" Name="srcPacketId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colNLZ5BGYZ7BGVRCQYC6WJWZIBM4" Name="srcAppVer" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="col6GQBFOYQYFCABDAMANXVXFGU3Q" Name="srcExpUser" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colLQHEBRDALNHZHNCQB76A3BEP6U" Name="srcExpTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colDKBRCEEYTFDBBAQ3ZE5GOMIXR4" Name="pkgState" ValType="21" Length="20" Precision="0"/>
+      <Column Id="colMCRBKZP4GNADJJLP2J7ITEGELY" Name="lastModifyTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col4ESP7TDW4JGG7FZ4PMVZ4IUO74" Name="lastModifyUser" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colEF5WPJPV7JBATHO6TXOMAGWJEI" Name="acceptTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colLMJ5EPIAOVAPHJFUNG2BTNME6A" Name="acceptUser" ValType="21" Length="250" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblXWLPEIJAGRAXJG7SHDM4DH4X6I" Name="ItemRef">
+    <Indexes>
+      <Index Id="idxXWLPEIJAGRAXJG7SHDM4DH4X6I" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colV5EZXMQFDFDBLO7M53XCUCWJ4A colTHM4RNL4JNBMZMT33HAY33ZU5U colGNVHWA56DJBFXOLL7VL7I4THUY"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refBTXNQ3WNBRH65CF3ZPZBGEO56Q" Name="ItemRef=>Item (intRef=>id)" ReferencedTableId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4" ChildColumnNames="intRef"/>
+      <Reference Id="refCJQCEOCYFVHAFCQ2B3E6V3F4BM" Name="ItemRef=>UpValRef (upDefId=>defId, upOwnerEntityId=>ownerEntityId, upOwnerPid=>ownerPid)" ReferencedTableId="tblZVJUSFASRDNBDCBEABIFNQAABA" ChildColumnNames="upDefId upOwnerEntityId upOwnerPid"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colV5EZXMQFDFDBLO7M53XCUCWJ4A" Name="upDefId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colTHM4RNL4JNBMZMT33HAY33ZU5U" Name="upOwnerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colGNVHWA56DJBFXOLL7VL7I4THUY" Name="upOwnerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colYHOK2V3JZNGZVDAU2FSYF5VEBM" Name="classGuid" ValType="21" Length="29" Precision="0" NotNull="true"/>
+      <Column Id="colZIH6VRMCKRGOPLH3PC6KFWCQDE" Name="isNilable" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colIVUOAZCZTBFLBIGCFCP7XUTUWY" Name="isInheritable" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colMBDYSK4BYVCBHNDH537HYAYXRM" Name="extClassGuid" ValType="21" Length="29" Precision="0"/>
+      <Column Id="colUAKFIHEYFFDSLFY4FFSYQN747Y" Name="intClassGuid" ValType="21" Length="29" Precision="0"/>
+      <Column Id="colKOXIJGBJTJGYJAAVR2ASCGVMDI" Name="srcPid" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colNKM5TQLE5RHEZFGFLZYM7HRH3A" Name="srcInherited" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colOBNSAADYD5CKFFOIDSKQI7TGLQ" Name="type" ValType="21" Length="20" Precision="0"/>
+      <Column Id="colAP5NJI3EIRE6PEUIUEQF5SLZZI" Name="intRef" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colBISYSN4WJ5AKXBKVP34WGF5EE4" Name="extRef" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colBIPNKBLZUVATBPJTKZWEHGDGZE" Name="state" ValType="21" Length="20" Precision="0"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

@@ -275,7 +275,7 @@ public abstract class AdsTypeDeclaration extends TypeDeclaration {
     }
 
     char[][] getCompoundName() {
-        char[][] pkg = JavaSourceSupport.getPackageNameComponents((Definition) definition, JavaSourceSupport.UsagePurpose.getPurpose(env, JavaSourceSupport.CodeType.EXCUTABLE));
+        char[][] pkg = JavaSourceSupport.getPackageNameComponents((Definition) definition, false, JavaSourceSupport.UsagePurpose.getPurpose(env, JavaSourceSupport.CodeType.EXCUTABLE));
         char[][] result = new char[pkg.length + 1][];
         System.arraycopy(pkg, 0, result, 0, pkg.length);
         result[pkg.length] = name;

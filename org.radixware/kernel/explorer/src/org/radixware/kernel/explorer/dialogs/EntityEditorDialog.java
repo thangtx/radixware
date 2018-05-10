@@ -12,6 +12,7 @@
 package org.radixware.kernel.explorer.dialogs;
 
 import com.trolltech.qt.core.Qt.WidgetAttribute;
+import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QSizePolicy;
 import com.trolltech.qt.gui.QSizePolicy.Policy;
@@ -31,7 +32,9 @@ import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.ModifiedEntityModelFinder;
 import org.radixware.kernel.common.client.models.RawEntityModelData;
 import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.models.items.properties.PropertyObject;
 import org.radixware.kernel.common.client.views.IEntityEditorDialog;
+import org.radixware.kernel.common.client.views.IPropEditor;
 import org.radixware.kernel.common.client.views.IView;
 import org.radixware.kernel.common.client.views.ModificationsList;
 import org.radixware.kernel.common.client.widgets.actions.IMenu;
@@ -43,7 +46,9 @@ import org.radixware.kernel.explorer.env.ExplorerIcon;
 
 import org.radixware.kernel.explorer.views.Editor;
 import org.radixware.kernel.explorer.views.ErrorView;
+import org.radixware.kernel.explorer.views.StandardEditor;
 import org.radixware.kernel.explorer.widgets.ExplorerMenu;
+import org.radixware.kernel.explorer.widgets.propeditors.AbstractPropEditor;
 
 public final class EntityEditorDialog extends ExplorerDialog implements IPresentationChangedHandler, IEntityEditorDialog {
     
@@ -96,30 +101,35 @@ public final class EntityEditorDialog extends ExplorerDialog implements IPresent
     }
     
     public void openEditor() throws InterruptedException, ServiceClientException{
-        oldPCH = ((IContext.Entity) model.getContext()).getPresentationChangedHandler();
-        ((IContext.Entity) model.getContext()).setPresentationChangedHandler(this);
-        if (model.isExists() && !model.wasRead()) {
-            if (model.isEdited()){//TWRBS-2060
-                model.activateAllProperties();
-            }
-            else{
-                model.read();
-            }
+        final String modelTitle = model.getTitle();
+        final long time = System.currentTimeMillis();
+        {
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Start opening modal editor of \'%1$s\'");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle));
         }
-        if (model.isExists() && 
-            !model.getRestrictions().getIsUpdateRestricted() &&
-            detectReenterableModification()//RADIX-425
-           ){
-            model.getRestrictions().setUpdateRestricted(true);
-            allowUpdateOnClosing = true;
-        }else{
-            allowUpdateOnClosing = false;
+        try{
+            setupPCH();
+            if (model.isExists() && !model.wasRead()) {
+                if (model.isEdited()){//TWRBS-2060
+                    model.activateAllProperties();
+                }
+                else{
+                    model.read();
+                }
+            }
+            beforeOpenEditor();
+            //model.read invoke may cause editor presentation change and call of setupUi from 
+            //onChangePresentation handler, so we need check this
+            if (!editorIsOpened){
+                setupUi();
+            }        
+        }finally{
+            final long elapsedTime = System.currentTimeMillis()-time;        
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Opening modal editor of \'%1$s\' finished. Elapsed time: %2$s ms");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle, elapsedTime));
         }
-        //model.read invoke may cause editor presentation change and call of setupUi from 
-        //onChangePresentation handler, so we need check this
-        if (!editorIsOpened){
-            setupUi();
-        }        
     }
     
     private boolean detectReenterableModification(){
@@ -172,11 +182,21 @@ public final class EntityEditorDialog extends ExplorerDialog implements IPresent
             if (model.isNew()) {
                 if (model.getContext() instanceof IContext.ObjectPropCreating) {
                     final IContext.ObjectPropCreating context = (IContext.ObjectPropCreating) model.getContext();
-                    final Property property = context.propOwner.getProperty(context.propId);
+                    final EntityModel objectPropOwner = context.propOwner;
+                    if (objectPropOwner.isNew()){
+                        if (model.validatePropertyValues() && model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE)){
+                            final PropertyObject property = (PropertyObject)objectPropOwner.getProperty(context.propId);
+                            property.applyChangesInPreparedForCreateModel();
+                            accept();
+                        }
+                        return;
+                    }
+                    final Property property = context.propOwner.getProperty(context.propId);                    
                     if (property.getValueObject() != null && property.hasOwnValue()) {
                         final String caption = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Confirm to Change Value of Property");
                         final String message = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Old value of property \'%s\'\n will be lost. Do you really want to continue?");
-                        if (!Application.messageConfirmation(caption, String.format(message, property.getDefinition().getTitle()))) {
+                        final String propertyTitle = property.getDefinition().getTitle(getEnvironment());
+                        if (!Application.messageConfirmation(caption, String.format(message, propertyTitle))) {
                             return;
                         }
                     }
@@ -265,57 +285,157 @@ public final class EntityEditorDialog extends ExplorerDialog implements IPresent
         closing = true;
         try {
             if (editor != null) {
-                if (result == QDialog.DialogCode.Rejected.value() &&!forceClose) {
-                    model.finishEdit();
-                    final ModificationsList modifications;
-                    final boolean isModified;
-                    if (model.isNew()){
-                        modifications = ModificationsList.EMPTY_LIST;
-                        isModified = !model.getEditedProperties().isEmpty();
-                    }else{
-                        modifications = new ModificationsList(editor);
-                        isModified = !modifications.isEmpty();
-                    }
-                    if (isModified){
-                        final String message = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Do you really want to close editor without saving your changes?");
-                        final String title = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Confirm to Close Editor");
-                        if (!getEnvironment().messageConfirmation(title, message)){
-                            return;
-                        }
-                        else if (!model.isNew()){
-                            modifications.cancelChanges();
-                        }
-                    }
-                    if (!model.isNew() && !model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE)){
-                        return;
-                    }
+                if (result != QDialog.DialogCode.Rejected.value() || beforeCloseEditor(forceClose)){
+                    forceCloseEditor();
+                }else{
+                    return;
                 }
-                final Editor closingEditor = editor;
-                editor = null;
-                closingEditor.close(true);
-                layout().removeWidget((QWidget) closingEditor);
-                editorIsOpened = false;
-                removeButtonBox();
             }
-        }
-        catch (Exception exception){
+        }catch (Exception exception){
             getEnvironment().getTracer().error(exception);
         } finally {
             closing = false;
         }
 
+        afterCloseEditor();
+        super.done(result<0 ? QDialog.DialogCode.Rejected.value() : result);
+    }
+    
+    private boolean beforeCloseEditor(final boolean forced){
+        if (editor==null || forced){
+            return true;
+        }else{
+            model.finishEdit();
+            final ModificationsList modifications;
+            final boolean isModified;
+            if (model.isNew()){
+                modifications = ModificationsList.EMPTY_LIST;
+                isModified = !model.getEditedProperties().isEmpty();
+            }else{
+                modifications = new ModificationsList(editor);
+                isModified = !modifications.isEmpty();
+            }
+            if (isModified){
+                final String message = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Do you really want to close editor without saving your changes?");
+                final String title = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Confirm to Close Editor");
+                if (!getEnvironment().messageConfirmation(title, message)){
+                    return false;
+                }
+                else if (!model.isNew()){
+                    modifications.cancelChangesCascade();
+                }else if (model.getContext() instanceof IContext.ObjectPropCreating) {
+                    final IContext.ObjectPropCreating context = (IContext.ObjectPropCreating) model.getContext();
+                    final EntityModel objectPropOwner = context.propOwner;
+                    if (objectPropOwner.isNew()){
+                        modifications.cancelChangesCascade();
+                        model.cancelChanges();
+                    }
+                }
+            }
+            if (!model.isNew() && !model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE)){
+                return false;
+            }
+            return true;
+        }        
+    }
+    
+    private void forceCloseEditor(){
+        if (editor!=null){
+            final Editor closingEditor = editor;
+            editor = null;            
+            closingEditor.close(true);
+            layout().removeWidget((QWidget) closingEditor);
+            editorIsOpened = false;
+            removeButtonBox(); 
+        }
+    }
+    
+    private void afterCloseEditor(){
         if (model != null) {
-            ((IContext.Entity) model.getContext()).setPresentationChangedHandler(oldPCH);
+            if (oldPCH!=null){
+                ((IContext.Entity) model.getContext()).setPresentationChangedHandler(oldPCH);
+                oldPCH = null;
+            }
             if (allowUpdateOnClosing){
                 model.getRestrictions().setUpdateRestricted(false);
+                allowUpdateOnClosing = false;
             }
-        }
-        super.done(result<0 ? QDialog.DialogCode.Rejected.value() : result);
+        }        
     }
 
     @Override
     public EntityModel getEntityModel() {
         return model;
+    }
+    
+    private Id findFocusedProperty(){        
+        if (editorIsOpened){
+            for (QWidget widget = QApplication.focusWidget(); widget!=null; widget=widget.parentWidget()){
+                if (widget instanceof IPropEditor){
+                    final Property property = ((IPropEditor)widget).getProperty();
+                    return property==null ? null : property.getId();
+                }
+            }
+            if (editor instanceof StandardEditor){
+                final AbstractPropEditor propEditor = ((StandardEditor)editor).getCurrentPropEditor();
+                final Property property = propEditor==null ? null : propEditor.getProperty();
+                return property==null ? null : property.getId();
+            }else{
+                return null;
+            }
+        }else{
+            return null;
+        }
+    }
+    
+    private void setupPCH(){
+        oldPCH = ((IContext.Entity) model.getContext()).getPresentationChangedHandler();
+        ((IContext.Entity) model.getContext()).setPresentationChangedHandler(this);        
+    }
+    
+    private void beforeOpenEditor(){
+        if (model.isExists() && 
+            !model.getRestrictions().getIsUpdateRestricted() &&
+            detectReenterableModification()//RADIX-425
+           ){
+            model.getRestrictions().setUpdateRestricted(true);
+            allowUpdateOnClosing = true;
+        }else{
+            allowUpdateOnClosing = false;
+        }        
+    }
+    
+    @Override
+    public boolean reopen(final EntityModel entityModel, final boolean forced){
+        final Id focusedPropertyId = findFocusedProperty();
+        setUpdatesEnabled(false);
+        try {
+            if (entityModel!=null && (forced || beforeCloseEditor(forced))){
+                forceCloseEditor();
+                afterCloseEditor();
+                if (model!=null){
+                    model.clean();
+                }
+                model = entityModel;
+                setupPCH();
+                beforeOpenEditor();
+                setupUi();
+                if (focusedPropertyId!=null 
+                    && model!=null 
+                    && model.getEditorPresentationDef().isPropertyDefExistsById(focusedPropertyId)
+                    && model.getProperty(focusedPropertyId).isActivated()){
+                    model.getProperty(focusedPropertyId).setFocused();
+                }
+                return true;
+            }else{
+                return false;
+            }
+        }finally{
+            setUpdatesEnabled(true);
+            if (editor!=null && (editor.getMenu() instanceof ExplorerMenu)){
+                ((ExplorerMenu)editor.getMenu()).setUpdatesEnabled(true);
+            }
+        }
     }
     
     private void respawnModel(final Id presentationId, final IContext.Entity context){
@@ -344,14 +464,17 @@ public final class EntityEditorDialog extends ExplorerDialog implements IPresent
                 }else{
                     final EntityModel row = 
                         entityContext.getPresentationChangedHandler().onChangePresentation(rawData, newPresentationClassId, newPresentationId);
-                    model = row.openInSelectorEditModel();
-                    ((IContext.Entity) model.getContext()).setPresentationChangedHandler(this);
-                }                
+                    model = row.openInSelectorEditModel();                    
+                }
             } else {
                 respawnModel(newPresentationId, context);
             }
+            setupPCH();
             model.activate(rawData);
-            setupUi();
+            if (editor != null) {
+                beforeOpenEditor();
+                setupUi();
+            }
             return model;
         } finally {
             setUpdatesEnabled(true);

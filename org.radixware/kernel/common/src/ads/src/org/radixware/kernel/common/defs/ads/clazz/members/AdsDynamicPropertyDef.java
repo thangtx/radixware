@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.clazz.members;
 
 import org.radixware.kernel.common.defs.RadixObject;
@@ -26,9 +25,8 @@ import org.radixware.kernel.common.utils.ValTypes;
 import org.radixware.schemas.adsdef.AbstractPropertyDefinition;
 import org.radixware.schemas.adsdef.PropertyDefinition;
 
-
 public class AdsDynamicPropertyDef extends AdsPropertyDef implements IAdsPresentableProperty {
- 
+
     private final ServerPresentationSupport presentationSupport;
 
     @Override

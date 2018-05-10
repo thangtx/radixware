@@ -15,24 +15,27 @@ import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QWidget;
 import java.sql.Timestamp;
 import java.util.List;
-import org.radixware.kernel.common.auth.PasswordRequirements;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dialogs.DialogFactory;
 import org.radixware.kernel.common.client.dialogs.IAskForApplyChangesDialog;
+import org.radixware.kernel.common.client.dialogs.IBatchOperationResultDialog;
 import org.radixware.kernel.common.client.dialogs.IChangePasswordDialog;
 import org.radixware.kernel.common.client.dialogs.IDateTimeDialog;
 import org.radixware.kernel.common.client.dialogs.IDisplayProblemsDialog;
 import org.radixware.kernel.common.client.dialogs.IEnterPasswordDialog;
 import org.radixware.kernel.common.client.dialogs.IFiltersManagerDialog;
+import org.radixware.kernel.common.client.dialogs.IListDialog;
 import org.radixware.kernel.common.client.dialogs.IMandatoryPropertiesConfirmationDialog;
 import org.radixware.kernel.common.client.dialogs.ISelectEasSessionDialog;
 import org.radixware.kernel.common.client.dialogs.ISelectInstantiatableClassDialog;
 import org.radixware.kernel.common.client.dialogs.ISortingsManagerDialog;
+import org.radixware.kernel.common.client.dialogs.IWaitForAadcMemberSwitchDialog;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.exceptions.StandardProblemHandler;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
+import org.radixware.kernel.common.client.models.AbstractBatchOperationResult;
 import org.radixware.kernel.common.client.models.groupsettings.Filters;
 import org.radixware.kernel.common.client.models.groupsettings.Sortings;
 import org.radixware.kernel.common.client.models.items.properties.Property;
@@ -51,11 +54,14 @@ import org.radixware.kernel.explorer.dialogs.DateTimeDialog;
 import org.radixware.kernel.explorer.dialogs.DisplayProblemsDialog;
 import org.radixware.kernel.explorer.dialogs.EnterPasswordDialog;
 import org.radixware.kernel.explorer.dialogs.ExceptionMessageDialog;
+import org.radixware.kernel.explorer.dialogs.ExplorerListDialog;
 import org.radixware.kernel.explorer.dialogs.FiltersManagerDialog;
 import org.radixware.kernel.explorer.dialogs.MandatoryPropertiesConfirmationDialog;
 import org.radixware.kernel.explorer.dialogs.SelectEasSessionDialog;
 import org.radixware.kernel.explorer.dialogs.SelectInstantiatableClassDialog;
 import org.radixware.kernel.explorer.dialogs.SortingsManagerDialog;
+import org.radixware.kernel.explorer.dialogs.BatchOperationResultDialog;
+import org.radixware.kernel.explorer.dialogs.WaitForAadcMemberSwitchDialog;
 
 
 public class ExplorerDialogFactory implements DialogFactory {
@@ -111,6 +117,11 @@ public class ExplorerDialogFactory implements DialogFactory {
     public ISelectInstantiatableClassDialog newInstantiatableClassDialog(final IClientEnvironment environment, final IWidget parentWidget, final List<InstantiatableClass> classes, final String configGroup, final boolean sortByTitles) {
         return new SelectInstantiatableClassDialog(environment, (QWidget) parentWidget, classes, configGroup, sortByTitles);
     }
+    
+    @Override
+    public ISelectInstantiatableClassDialog newInstantiatableClassDialog(final IClientEnvironment environment, final IWidget parentWidget, final List<InstantiatableClass> classes, final String configGroup, final boolean sortByTitles, final boolean multipleSelection) {
+        return new SelectInstantiatableClassDialog(environment, (QWidget) parentWidget, classes, configGroup, sortByTitles, multipleSelection);
+    }    
 
     @Override
     public IMandatoryPropertiesConfirmationDialog newMandatoryPropertiesConfirmationDialog(final IClientEnvironment environment, final IWidget parentWidget, final List<String> propertyTitles) {
@@ -147,11 +158,11 @@ public class ExplorerDialogFactory implements DialogFactory {
     @Override
     public IDateTimeDialog newDateTimeDialog(final IClientEnvironment environment, final IWidget parent, final EditMaskDateTime mask, final Timestamp initialVal) {
         final DateTimeDialog dialog = new DateTimeDialog(environment, (QWidget)parent);
-        if (mask==null || !mask.timeFieldPresent(environment.getLocale())){
+        if (mask==null || !mask.timeFieldPresent(environment)){
             dialog.setTimeFieldVisible(false);            
         }
         else{
-            dialog.setTimeDisplayFormat(mask.getInputTimeFormat(environment.getLocale()));
+            dialog.setTimeDisplayFormat(mask.getInputTimeFormat(environment));
         }
         if (initialVal!=null){
             dialog.setCurrentDateTime(initialVal);
@@ -215,4 +226,20 @@ public class ExplorerDialogFactory implements DialogFactory {
     public ISelectEasSessionDialog newSelectEasSessionDialog(final IClientEnvironment environment, final IWidget parent) {
         return new SelectEasSessionDialog(environment, (QWidget)parent);
     }
+
+    @Override
+    public IListDialog newListDialog(final IClientEnvironment environment, final IWidget parent, final String configPrefix) {
+        return new ExplorerListDialog(environment, (QWidget)parent, configPrefix);
+    }        
+
+    @Override
+    public IBatchOperationResultDialog newBatchOperationResultDialog(final IClientEnvironment environment,final IWidget parent, final AbstractBatchOperationResult result) {
+        return new BatchOperationResultDialog(environment, result, (QWidget)parent);
+    }        
+
+    @Override
+    public IWaitForAadcMemberSwitchDialog newWaitForAadcMemberSwitchDialog(final IClientEnvironment environment) {
+        return new WaitForAadcMemberSwitchDialog(environment);
+    }
+        
 }

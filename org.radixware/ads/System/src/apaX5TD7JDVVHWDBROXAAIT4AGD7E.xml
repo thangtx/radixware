@@ -30,20 +30,26 @@
               <xsc:Java>final boolean isThisSys = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthH3FIFU4J55HFTI553DLPDIWKOM" Invoke="true"/>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthH3FIFU4J55HFTI553DLPDIWKOM" Invoke="true">
+                <xsc:Presentation>getEntity</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E col27EXNSNZRHWDBRCXAAIT4AGD7E" Invoke="true"/>
+              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E col27EXNSNZRHWDBRCXAAIT4AGD7E" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == 1);
 if (cmdId == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E cmdXUOGGQH5RNDMNBWVSUB3EP3BAI"/>
+              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E cmdXUOGGQH5RNDMNBWVSUB3EP3BAI">
+                <xsc:Presentation>System:ClearTracedSensitiveData</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
@@ -51,7 +57,9 @@ if (cmdId == </xsc:Java>
 } else if (cmdId == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E cmd3TMA2OVCZZA5BMFG6J7RO2HMWA"/>
+              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E cmd3TMA2OVCZZA5BMFG6J7RO2HMWA">
+                <xsc:Presentation>System:ExportManifest</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
@@ -59,7 +67,9 @@ if (cmdId == </xsc:Java>
 }else if (cmdId == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E cmdTJZ54QM6R5DEFD6ALWIRHUZSBU"/>
+              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E cmdTJZ54QM6R5DEFD6ALWIRHUZSBU">
+                <xsc:Presentation>System:ImportManifest</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
@@ -68,10 +78,40 @@ if (cmdId == </xsc:Java>
 return super.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthZ4QY527H2FFCVCSSDEH6EXQJAA" Invoke="true"/>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthZ4QY527H2FFCVCSSDEH6EXQJAA" Invoke="true">
+                <xsc:Presentation>isCommandDisabled</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(cmdId);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEDZCPWDTMJE7TEFPR5PLXXEDQA" Name="doUpdate" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>getEntity().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecX5TD7JDVVHWDBROXAAIT4AGD7E mthGWYTYMM6PZAFTBEVSWLIMPB5G4" Invoke="true">
+                <xsc:Presentation>checkValues</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthEDZCPWDTMJE7TEFPR5PLXXEDQA" Invoke="true">
+                <xsc:Presentation>doUpdate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

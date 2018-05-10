@@ -11,40 +11,96 @@
 
 package org.radixware.wps;
 
-import java.util.LinkedList;
 import java.util.List;
+import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.env.ClientIcon;
+import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.widgets.IToolButton;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.wps.rwt.ToolBar;
+import org.radixware.wps.views.RwtAction;
 
 
-public class ConnectionToolBar extends ToolBar {  
+public final class ConnectionToolBar extends ToolBar {  
+    
+    private final Action connectAction;
+    private final Action disconnectAction;        
 
-    private List<Action> addActions = new LinkedList<>();
-    private WpsEnvironment env;
-
-    public ConnectionToolBar(WpsEnvironment env, boolean navigatorMode) {
-        this.env = env;
-        this.addAction(env.connectAction);
-        this.addAction(env.disconnectAction);
-        this.addAction(env.checkForUpdatesAction);
-        this.addAction(env.changePasswordAction);
-        this.addAction(env.appearanceSettingsAction);
-        if (navigatorMode) {
-        }
-//        if (WebServerRunParams.getIsDevelopmentMode()) {
-//            this.addAction(env.checkForUpdatesAction);
-//        }
+    public ConnectionToolBar(final WpsEnvironment env) {
+        super();
+        connectAction = createAction(env, ClientIcon.Connection.CONNECT, "connect", new Action.ActionListener() {
+            @Override
+            public void triggered(final Action action) {
+                if (env.getEasSession() == null) {
+                    env.checkConnection();
+                }
+            }
+        });
+                
+        disconnectAction = createAction(env, ClientIcon.Connection.DISCONNECT, "disconnect", new Action.ActionListener() {
+            @Override
+            public void triggered(final Action action) {
+                final String title
+                        = env.getMessageProvider().translate("ExplorerMessage", "Confirm to Disconnect");
+                final String message
+                        = env.getMessageProvider().translate("ExplorerMessage", "Do you really want to disconnect?");
+                if (env.messageConfirmation(title, message)) {
+                    env.disconnect();
+                }
+            }
+        });
+        addAction(connectAction);
+        addAction(disconnectAction);
         setHeight(25);
+    }
+    
+    public Action getConnectAction(){
+        return connectAction;
+    }
+    
+    public Action getDisconnectAction(){
+        return disconnectAction;
     }
 
     public void updateNavigationState(List<Action> addActions) {
-        for (Action a : this.addActions) {
-            removeAction(a);
-        }
-        this.addActions.clear();
+        this.removeAllActions();
+        addAction(connectAction);
+        addAction(disconnectAction);        
         for (Action a : addActions) {
             this.addAction(a);
-            this.addActions.add(a);
+            final IToolButton button = this.getWidgetForAction(a);
+            if (button!=null){
+                button.setPopupMode(IToolButton.ToolButtonPopupMode.MenuButtonPopup);
+            }
         }
+    }
+    
+    public void updateTranslations(final MessageProvider messageProvider){
+        connectAction.setToolTip(messageProvider.translate("EnvironmentAction", "Connect..."));
+        connectAction.setText(messageProvider .translate("EnvironmentAction", "Connect..."));
+        disconnectAction.setToolTip(messageProvider.translate("EnvironmentAction", "Disconnect"));
+        disconnectAction.setText(messageProvider.translate("EnvironmentAction", "Disconnect"));        
+    }
+    
+    public void afterConnect(){
+        connectAction.setEnabled(false);
+        disconnectAction.setEnabled(true);
+    }
+    
+    public void afterDisconnect(){
+        connectAction.setEnabled(true);
+        disconnectAction.setEnabled(false);        
+    }
+    
+    private static RwtAction createAction(final IClientEnvironment env, 
+                                                            final ClientIcon icon, 
+                                                            final String name, 
+                                                            final Action.ActionListener listener){
+        final RwtAction action = new RwtAction(env, icon);
+        action.setObjectName(name);
+        if (listener!=null){
+            action.addActionListener(listener);
+        }
+        return action;
     }
 }

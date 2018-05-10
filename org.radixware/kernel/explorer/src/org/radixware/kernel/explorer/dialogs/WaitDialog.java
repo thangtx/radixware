@@ -44,6 +44,7 @@ public final class WaitDialog extends QDialog implements IProgressView{
     private final QPushButton btnCancel;
 
     private IProgressHandle lastProgress;
+    private int lastWidth = -1;
 
     public WaitDialog(final IClientEnvironment env){
         super();
@@ -106,6 +107,7 @@ public final class WaitDialog extends QDialog implements IProgressView{
 
     @Override
     public void updateForProgress(final IProgressHandle progress) {
+        final boolean newProgress = lastProgress!=progress;//NOPMD
         lastProgress = progress;
         setUpdatesEnabled(false);
         try{
@@ -127,7 +129,10 @@ public final class WaitDialog extends QDialog implements IProgressView{
         }
         layout.activate();
         final int width = Math.max(sizeHint().width(), fontMetrics().width(progress.getTitle())+150);
-        setFixedSize(width, sizeHint().height());
+        if (newProgress || lastWidth<width){
+            setFixedSize(width, sizeHint().height());
+            lastWidth = width;
+        }
     }
 
     @Override

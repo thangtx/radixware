@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcAIDFOY74TNHELJA374O2VN4M6E" Name="ValArrEditorController" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.wps.views.editors.valeditors.ValArrEditorController"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Arr"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderadcAIDFOY74TNHELJA374O2VN4M6E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAIDFOY74TNHELJA374O2VN4M6E"/>
+    </Bodies>
+    <MethodGroup Id="cmgY7UUIFLHYFAUPK6HFJLJBP3L4U" Name="Root"/>
+    <PropertyGroup Id="cpgJ7XODPIQJJDYTLASVLYPFZDJQM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth27MNEVUGLFGDVIJFAD4SP42CHM" Name="createEditorDialog" Nature="0" IsOverride="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="createEditorDialog()Lorg.radixware.kernel.common.client.views.IArrayEditorDialog;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.views.IArrayEditorDialog"/>
+      </Method>
+      <Method Id="mthCPASOQ5XQZCBBPFMGBDAWCQE4A" Name="edit" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="edit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthLAWDYWZPFRACFINIHOGRSVM2DA" Name="getDialogTitle" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getDialogTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth5VC6756YAVC4FPOGJGZUWWGV24" Name="getFirstArrayItemIndex" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getFirstArrayItemIndex()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthAPE2PCJQ4NB37A3Z3CNWD6IW3Q" Name="isArrayItemMandatory" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isArrayItemMandatory()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthRFNAPHEJ4FF2NNL5R7IIE6YKR4" Name="isArrayItemsMovable" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isArrayItemsMovable()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthAOMLQ7LG5ZENHKOAT4KUSNGE24" Name="isDuplicatesEnabled" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isDuplicatesEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFXQOCH65HRHNNJN57MMBVCZA2Y" Name="isEditButtonVisible" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isEditButtonVisible()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthEFQ22DRTVNFDPFMWIZ7Z7BYS5M" Name="setArrayItemMandatory" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setArrayItemMandatory(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isMandatory" Id="mprZ3NGD7P3SJBP5GUXHXF6YK6Q4A">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthML5Y5EIWA5ADHL4KQ3RB5ZK2JI" Name="setArrayItemsMovable" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setArrayItemsMovable(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isMovable" Id="mpr4KN66GG4RBHIPMZDY2ZEZ7O4LA">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOCX6IKVYBVH3DH6NYKEOPWAQ6E" Name="setDialogTitle" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDialogTitle(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="dialogTitle" Id="mprIIKAZ6DGXZHDTOBGAX2VHOBUBY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNJ7BPU55XJABPPEYHH5YN3LEV4" Name="setDuplicatesEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDuplicatesEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isEnabled" Id="mpr655PFUTWEREMZEWWQDOWXUWP5I">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOSNXM52CTJGNRESA7SS3EVFNHA" Name="setEditButtonVisible" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setEditButtonVisible(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isVisible" Id="mprGMXVQ2IFKFB5VNKYF7JBS6OQKI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKZESKS7R3VENLJV3ZDQF34MJKY" Name="setFirstArrayItemInex" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setFirstArrayItemInex(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mpr4LAP7VMT6NE65CWFSGJSEP6WPQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCP62DE3MD5GELFAM72TTYMCZMM" Name="setItemEditMask" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setItemEditMask(Lorg.radixware.kernel.common.client.meta.mask.EditMask;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="mask" Id="mpr3NEDLV5T2ZFOTASP7KDNDDRBDY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLOXHPKCJBBEPJDA75TKH5H3LO4" Name="ValArrEditorController" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.enums.EValType;Ljava.lang.Class&lt;*>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="env" Id="mprJBSNYH3NPFCS5NV3SNXRMBHYKE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="valType" Id="mprBQCRESFNAVEINDZ627I3OYHC74">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="valClass" Id="mprF3PBG6DJ25AFZHCGIMQMSO72JA">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZQJEC7KKGBH3ZPKRQ5L7IBZ45Y" Name="getItemEditMask" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getItemEditMask()Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthY2QVDOOLIVGOFCCJYZF2NJJM5I" Name="getMaxArrayItemsCount" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getMaxArrayItemsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthZAWFO42GXNEYFMMDNDWCSE74TU" Name="getMinArrayItemsCount" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getMinArrayItemsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthGLF5GYBRUFE67O3DP3V6ODTZZU" Name="setMaxArrayItemsCount" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setMaxArrayItemsCount(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="count" Id="mpr6EQIPKGMHVE7NJ73YB3NOCDSWM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthERFYMRBITVAEPGP37C4QVPIINE" Name="setMinArrayItemsCount" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setMinArrayItemsCount(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="count" Id="mprVH7VDK5OOZAEHJNI6UZP64QJZA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthX2R7N2GODNAQRDNDLJ3ETBMGFQ" Name="getArrayEditorDelegate" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getArrayEditorDelegate()Lorg.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate&lt;Lorg.radixware.wps.views.editors.valeditors.ValEditorController;Lorg.radixware.wps.rwt.UIObject;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.ValEditorController"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.UIObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthP4NXHDHU2BGHJKG7TUPFD5KLD4" Name="setEditorDelegate" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEditorDelegate(Lorg.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate&lt;Lorg.radixware.wps.views.editors.valeditors.ValEditorController;Lorg.radixware.wps.rwt.UIObject;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="delegate" Id="mprXC2OPJSRVBC3LICIACEAKJ5M3I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.ValEditorController"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.UIObject"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

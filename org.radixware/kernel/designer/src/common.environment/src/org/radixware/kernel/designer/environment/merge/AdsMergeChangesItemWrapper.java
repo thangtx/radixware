@@ -19,15 +19,16 @@ import java.util.List;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.module.AdsImageDef;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.SVN;
 import org.radixware.kernel.common.svn.SvnEntryComparator;
 import org.radixware.kernel.common.svn.SvnPathUtils;
 import org.radixware.kernel.common.svn.client.ISvnFSClient;
-import org.radixware.kernel.common.svn.client.SvnPath;
 import org.radixware.kernel.common.utils.Reference;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.schemas.adsdef.AdsDefinitionDocument;
@@ -55,7 +56,16 @@ public class AdsMergeChangesItemWrapper extends RadixObject {
     private File toFile;
     private final String fileTitle;
     private EIsoLanguage language;
+    private boolean isPreview;
 
+    public boolean isPreview() {
+        return isPreview;
+    }
+
+    public void setIsPreview(boolean isPreview) {
+        this.isPreview = isPreview;
+    }
+    
     public String getFileTitle() {
         return fileTitle;
     }
@@ -121,6 +131,17 @@ public class AdsMergeChangesItemWrapper extends RadixObject {
             }
         }
         return false;
+    }
+    
+    private static String removeHead(final URI uri, final AdsMergeChangesOptions options) throws RadixSvnException {
+        final String dir1 = uri.toString();
+        final String dir2 = options.getRepository().getRepositoryRoot();
+        
+        final int len2 = dir2.length();
+        
+        final String dir3 = dir1.substring(len2);
+        final String dir4 = /*SvnPathUtils.removeHead*/(dir3);
+        return dir4;
     }
 
     static public class MergeChangesLangugeItemWrapper {
@@ -299,9 +320,18 @@ public class AdsMergeChangesItemWrapper extends RadixObject {
                 fromFiles.add(def.getFile());
             }
         }
+        final File previewFromFile;
+        if (AdsUtils.isEnableHumanReadable(def)) {
+            previewFromFile = AdsUtils.calcHumanReadableFile(def);
+            if (previewFromFile != null) {
+                fromFiles.add(previewFromFile);
+            }
+        } else {
+            previewFromFile = null;
+        }
         ISvnFSClient client = options.getFsClient();
         for (File fromFile : fromFiles) {
-
+            final boolean isPreview = fromFile.equals(previewFromFile);
             final String mlbShortName = EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + fromFile.getName();
 
             final String toFileAbsolutePath = fromFile.getAbsolutePath();
@@ -320,8 +350,12 @@ public class AdsMergeChangesItemWrapper extends RadixObject {
                 toModuleFileUrl = SVN.getFileUrl(client, toModuleFile.getParentFile()).toString() + "/" + toModuleFile.getName();
             }
 
-            if (toFile.getParentFile().exists())//src not exists - src or locale                                
+            if (toFile.getParentFile().exists())//src not exists - src or locale
             {
+                if (!SVN.isNormalSvnStatus(options.getFsClient(), toFile.getParentFile())) {//RADIX-14856
+                    incorrectList.add(new DefinitionAndFile(def, toFile.getParentFile(), null));
+                    continue;
+                }
                 toFileUrl = SVN.getFileUrl(client, toFile.getParentFile());
             } else {
                 final File moduleFile = toFile.getParentFile().getParentFile();
@@ -337,7 +371,7 @@ public class AdsMergeChangesItemWrapper extends RadixObject {
                 incorrectList.add(new DefinitionAndFile(def, fromFile, null));
             } else {
 
-                final String pathFromFile = SvnPathUtils.removeHead(fromUri.getPath()) + "/" + fromFile.getName();
+                final String pathFromFile = removeHead(fromUri, options) + "/" + fromFile.getName();
                 final String pathToFile = options.getToPreffix() + pathFromFile.substring(options.getFromPreffix().length());
                 if (toFile.exists() && !SVN.isNormalSvnStatus(options.getFsClient(), toFile)) {
                     incorrectList.add(new DefinitionAndFile(def, toFile, null));
@@ -368,324 +402,325 @@ public class AdsMergeChangesItemWrapper extends RadixObject {
                     item.setToPath(pathToFile);
                     item.setSrcFile(fromFile);
                     item.setDestFile(toFile);
-
+                    item.setIsPreview(isPreview);
                     normalList.add(item);
 
                 }
             }
-            AdsMergeChangesItemWrapper item = new AdsMergeChangesItemWrapper(def, mlbShortName);
-            item.setMlb(true);
-            item.setMlbShortName(mlbShortName);
+            if (!isPreview) {
+                AdsMergeChangesItemWrapper item = new AdsMergeChangesItemWrapper(def, mlbShortName);
+                item.setMlb(true);
+                item.setMlbShortName(mlbShortName);
 
-            l:
-            while (true) {
-                //boolean isCorrectMlb = true;
-                if (options.getFromFormatVersion() < 2) {
+                l:
+                while (true) {
+                    //boolean isCorrectMlb = true;
+                    if (options.getFromFormatVersion() < 2) {
 
-                    String pathFromMlbPath = SvnPathUtils.removeHead(fromUri.getPath() + "/" + mlbShortName);
-                    File fromMlbFile = new File(fromFile.getParent() + "/" + mlbShortName);
-                    item.setSrcFile(fromMlbFile);
-                    item.setFromPath(pathFromMlbPath);
+                        String pathFromMlbPath = removeHead(fromUri, options) + "/" + mlbShortName;
+                        File fromMlbFile = new File(fromFile.getParent() + "/" + mlbShortName);
+                        item.setSrcFile(fromMlbFile);
+                        item.setFromPath(pathFromMlbPath);
 
-                    if (SVN.isExists(options.getRepository(), pathFromMlbPath)) {
-                        if (!SVN.isNormalSvnStatus(options.getFsClient(), fromMlbFile) || !fromMlbFile.exists()) {
-                            incorrectList.add(new DefinitionAndFile(def, fromMlbFile, null));
-                            break l;
-                        }
-                    }
-                } else //if (changesOptions.getFromFormatVersion()>=2)
-                {
-                    String fromModuleFileUrl = SVN.getFileUrl(client, fromFile.getParentFile().getParentFile());
-                    URI fromModuleFileUri = new URI(fromModuleFileUrl);
-
-                    File fromLocaleFile = new File(fromFile.getParentFile().getParentFile().getAbsolutePath() + "/" + LOCALE);
-                    item.setFromLocale(fromLocaleFile);
-
-                    item.setFromLocalePath(SvnPathUtils.removeHead(fromModuleFileUri.getPath() + "/" + LOCALE));
-
-                    for (EIsoLanguage lng : options.getCommonLangList()) {
-                        AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem = new AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper(lng);
-                        lngItem.fromMlbFile = new File(fromLocaleFile.getAbsolutePath() + "/" + lng.getValue() + "/" + mlbShortName);
-                        lngItem.fromPath = SvnPathUtils.removeHead(fromModuleFileUri.getPath() + "/" + LOCALE + "/" + lng.getValue() + "/" + mlbShortName);
-
-                        if (lngItem.fromMlbFile.exists()) {
-                            if (!SVN.isNormalSvnStatus(client, lngItem.fromMlbFile)) {
-                                incorrectList.add(new DefinitionAndFile(def, lngItem.fromMlbFile, "Language " + lng.getName()));
-                                break l;
-                                //continue;
-                            }
-                        }
-                        item.appendLangugeItem(lngItem);
-                    }
-                }
-
-                if (options.getToFormatVersion() < 2) {
-
-                    String pathToMlbPath = SvnPathUtils.removeHead(toUri.getPath() + "/" + mlbShortName);
-                    File toMlbFile = new File(toFile.getParent() + "/" + mlbShortName);
-                    if (toMlbFile.exists()) {
-                        if (!SVN.isNormalSvnStatus(client, toMlbFile)) {
-                            incorrectList.add(new DefinitionAndFile(def, toMlbFile, null));
-                            break l;
-                        }
-                    }
-                    item.setDestFile(toMlbFile);
-                    item.setToPath(pathToMlbPath);
-                } else //if (changesOptions.getToFormatVersion()>=2)
-                {
-
-                    //SVNURL toModuleFileUrl = SVN.getFileUrl(toFile.getParentFile().getParentFile());
-                    File toLocaleFile = new File(toFile.getParentFile().getParentFile().getAbsolutePath() + "/" + LOCALE);
-                    item.setToLocale(toLocaleFile);
-
-                    item.setToLocalePath(SvnPathUtils.removeHead(toModuleUri.getPath() + "/" + LOCALE));
-
-                    for (EIsoLanguage lng : options.getCommonLangList()) {
-                        AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem = item.findLangugeItem(lng);
-                        boolean mustAddThisLngItem = false;
-                        if (lngItem == null) {
-                            if (options.getFromFormatVersion() >= 2)//  svn stutus source files is realy incorrect
-                            {
-                                continue;
-                            }
-                            lngItem = new AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper(lng);
-                            mustAddThisLngItem = true;
-                        }
-                        lngItem.toMlbFile = new File(toLocaleFile.getAbsolutePath() + "/" + lng.getValue() + "/" + mlbShortName);
-                        lngItem.toPath = SvnPathUtils.removeHead(toModuleUri.getPath() + "/" + LOCALE + "/" + lng.getValue() + "/" + mlbShortName);
-
-                        if (lngItem.toMlbFile.exists()) {
-                            if (!SVN.isNormalSvnStatus(client, lngItem.toMlbFile)) {
-                                incorrectList.add(new DefinitionAndFile(def, lngItem.toMlbFile, "Language " + lng.getName()));
+                        if (SVN.isExists(options.getRepository(), pathFromMlbPath)) {
+                            if (!SVN.isNormalSvnStatus(options.getFsClient(), fromMlbFile) || !fromMlbFile.exists()) {
+                                incorrectList.add(new DefinitionAndFile(def, fromMlbFile, null));
                                 break l;
                             }
                         }
-                        if (mustAddThisLngItem) {
+                    } else //if (changesOptions.getFromFormatVersion()>=2)
+                    {
+                        String fromModuleFileUrl = SVN.getFileUrl(client, fromFile.getParentFile().getParentFile());
+                        URI fromModuleFileUri = new URI(fromModuleFileUrl);
+
+                        File fromLocaleFile = new File(fromFile.getParentFile().getParentFile().getAbsolutePath() + "/" + LOCALE);
+                        item.setFromLocale(fromLocaleFile);
+
+                        item.setFromLocalePath(removeHead(fromModuleFileUri, options) + "/" + LOCALE);
+
+                        for (EIsoLanguage lng : options.getCommonLangList()) {
+                            AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem = new AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper(lng);
+                            lngItem.fromMlbFile = new File(fromLocaleFile.getAbsolutePath() + "/" + lng.getValue() + "/" + mlbShortName);
+                            lngItem.fromPath = removeHead(fromModuleFileUri, options) + "/" + LOCALE + "/" + lng.getValue() + "/" + mlbShortName;
+
+                            if (lngItem.fromMlbFile.exists()) {
+                                if (!SVN.isNormalSvnStatus(client, lngItem.fromMlbFile)) {
+                                    incorrectList.add(new DefinitionAndFile(def, lngItem.fromMlbFile, "Language " + lng.getName()));
+                                    break l;
+                                    //continue;
+                                }
+                            }
                             item.appendLangugeItem(lngItem);
                         }
                     }
-                }
-                int copyLevel = SvnEntryComparator.NOT_MAY_COPY;
-                boolean mayMerge = false;
 
-                boolean isEq = false;
+                    if (options.getToFormatVersion() < 2) {
 
-                //boolean notExist = false;                                
-                if (options.getFromFormatVersion() < 2 && options.getToFormatVersion() < 2) {
+                        String pathToMlbPath = removeHead(toUri, options) + "/" + mlbShortName;
+                        File toMlbFile = new File(toFile.getParent() + "/" + mlbShortName);
+                        if (toMlbFile.exists()) {
+                            if (!SVN.isNormalSvnStatus(client, toMlbFile)) {
+                                incorrectList.add(new DefinitionAndFile(def, toMlbFile, null));
+                                break l;
+                            }
+                        }
+                        item.setDestFile(toMlbFile);
+                        item.setToPath(pathToMlbPath);
+                    } else //if (changesOptions.getToFormatVersion()>=2)
+                    {
 
-                    boolean notExist = !SVN.isExists(options.getRepository(), item.getToPath());
-                    copyLevel = notExist ? SvnEntryComparator.MAY_COPY_NEW : SvnEntryComparator.NOT_MAY_COPY;
-                    isEq = notExist ? false : SvnEntryComparator.equals(options.getRepository(), item.getToPath(), item.getFromPath());
-                    if (!isEq) {
-                        if (!notExist) {
-                            copyLevel = SvnEntryComparator.equalsToThePreviousVersions(options.getRepository(), item.getToPath(), item.getFromPath());
+                        //SVNURL toModuleFileUrl = SVN.getFileUrl(toFile.getParentFile().getParentFile());
+                        File toLocaleFile = new File(toFile.getParentFile().getParentFile().getAbsolutePath() + "/" + LOCALE);
+                        item.setToLocale(toLocaleFile);
+
+                        item.setToLocalePath(removeHead(toModuleUri, options) + "/" + LOCALE);
+
+                        for (EIsoLanguage lng : options.getCommonLangList()) {
+                            AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem = item.findLangugeItem(lng);
+                            boolean mustAddThisLngItem = false;
+                            if (lngItem == null) {
+                                if (options.getFromFormatVersion() >= 2)//  svn stutus source files is realy incorrect
+                                {
+                                    continue;
+                                }
+                                lngItem = new AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper(lng);
+                                mustAddThisLngItem = true;
+                            }
+                            lngItem.toMlbFile = new File(toLocaleFile.getAbsolutePath() + "/" + lng.getValue() + "/" + mlbShortName);
+                            lngItem.toPath = removeHead(toModuleUri, options) + "/" + LOCALE + "/" + lng.getValue() + "/" + mlbShortName;
+
+                            if (lngItem.toMlbFile.exists()) {
+                                if (!SVN.isNormalSvnStatus(client, lngItem.toMlbFile)) {
+                                    incorrectList.add(new DefinitionAndFile(def, lngItem.toMlbFile, "Language " + lng.getName()));
+                                    break l;
+                                }
+                            }
+                            if (mustAddThisLngItem) {
+                                item.appendLangugeItem(lngItem);
+                            }
                         }
                     }
-                    item.setFromNotExistsAndToExists(!item.getSrcFile().exists() && item.getDestFile().exists());
-                } else if (options.getFromFormatVersion() >= 2 && options.getToFormatVersion() >= 2) {
+                    int copyLevel = SvnEntryComparator.NOT_MAY_COPY;
+                    boolean mayMerge = false;
 
-                    for (AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem : item.getNewMlbItems()) {
-                        if (!lngItem.fromMlbFile.exists() && !lngItem.toMlbFile.exists()) {
-                            continue;
-                        }
-                        AdsMergeChangesItemWrapper newItem = new AdsMergeChangesItemWrapper(def,
-                                ".." + "/" + LOCALE + "/" + lngItem.language.getValue() + "/" + mlbShortName + " (" + lngItem.language.getName() + ")");
-                        newItem.setMlb(true);
-                        newItem.setFromLocale(item.getFromLocale());
-                        newItem.setToLocale(item.getToLocale());
-                        newItem.setMlbShortName(mlbShortName);
+                    boolean isEq = false;
 
-                        newItem.setSrcFile(lngItem.fromMlbFile);
-                        newItem.setFromPath(lngItem.fromPath);
+                    //boolean notExist = false;                                
+                    if (options.getFromFormatVersion() < 2 && options.getToFormatVersion() < 2) {
 
-                        newItem.setDestFile(lngItem.toMlbFile);
-                        newItem.setToPath(lngItem.toPath);
-
-                        newItem.setFromNotExistsAndToExists(!lngItem.fromMlbFile.exists() && lngItem.toMlbFile.exists());
-
-                        boolean notExist = !SVN.isExists(options.getRepository(), lngItem.toPath);
+                        boolean notExist = !SVN.isExists(options.getRepository(), item.getToPath());
                         copyLevel = notExist ? SvnEntryComparator.MAY_COPY_NEW : SvnEntryComparator.NOT_MAY_COPY;
-                        isEq = notExist ? false : SvnEntryComparator.equals(options.getRepository(), lngItem.toPath, lngItem.fromPath);
+                        isEq = notExist ? false : SvnEntryComparator.equals(options.getRepository(), item.getToPath(), item.getFromPath());
                         if (!isEq) {
                             if (!notExist) {
-                                copyLevel = SvnEntryComparator.equalsToThePreviousVersions(options.getRepository(), lngItem.toPath, lngItem.fromPath);
+                                copyLevel = SvnEntryComparator.equalsToThePreviousVersions(options.getRepository(), item.getToPath(), item.getFromPath());
                             }
                         }
-                        mayMerge = !notExist && !isEq;
+                        item.setFromNotExistsAndToExists(!item.getSrcFile().exists() && item.getDestFile().exists());
+                    } else if (options.getFromFormatVersion() >= 2 && options.getToFormatVersion() >= 2) {
 
-                        newItem.setEquals(isEq);
-                        newItem.setSrcChangesLevel(copyLevel);
-                        newItem.setMayMerge(mayMerge);
-                        normalList.add(newItem);
-                    }
-                    break l;
-                } else if (options.getFromFormatVersion() >= 2 && options.getToFormatVersion() < 2) {
-                    boolean fromExists = item.isExistsOneAdditionMlbFile(true);
-                    boolean toExists = item.getDestFile().exists();
+                        for (AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem : item.getNewMlbItems()) {
+                            if (!lngItem.fromMlbFile.exists() && !lngItem.toMlbFile.exists()) {
+                                continue;
+                            }
+                            AdsMergeChangesItemWrapper newItem = new AdsMergeChangesItemWrapper(def,
+                                    ".." + "/" + LOCALE + "/" + lngItem.language.getValue() + "/" + mlbShortName + " (" + lngItem.language.getName() + ")");
+                            newItem.setMlb(true);
+                            newItem.setFromLocale(item.getFromLocale());
+                            newItem.setToLocale(item.getToLocale());
+                            newItem.setMlbShortName(mlbShortName);
 
-                    if (!fromExists && !toExists) {
-                        break l;
-                    } else if (!fromExists && toExists) {
-                        item.setFromNotExistsAndToExists(true);
-                        copyLevel = SvnEntryComparator.NOT_MAY_COPY;
-                        mayMerge = false;
-                        isEq = false;
-                    } else {
-                        File toMlbFile = item.getSrcFile() == null || !item.getSrcFile().exists() ? null : item.getSrcFile();
-                        AdsDefinitionDocument doc = MergeUtils.convertFromNewFormatToOld(options.getCommonLangList(), item.getFromLocale(), toMlbFile, item.getMlbShortName());
-                        String toXmlAsString = MergeUtils.saveToString(doc);
-                        item.setXmlStringDataEmulator(toXmlAsString);
+                            newItem.setSrcFile(lngItem.fromMlbFile);
+                            newItem.setFromPath(lngItem.fromPath);
 
-                        if (!toExists) {
-                            isEq = false;
-                            copyLevel = SvnEntryComparator.MAY_COPY_NEW;
-                            mayMerge = false;
-                        } else {
-                            SvnEntryComparator.EntrySizeAndEntrySha1Digest fromEntrySha1Digest = SvnEntryComparator.getEntrySizeAndEntrySha1DigestByString(toXmlAsString);
-                            SvnEntryComparator.EntrySizeAndEntrySha1Digest toEntrySha1Digest = SvnEntryComparator.getEntrySizeAndEntryTopSha1Digest(options.getRepository(), item.getToPath());
-                            isEq = Arrays.equals(fromEntrySha1Digest.entryDigest, toEntrySha1Digest.entryDigest);
-                            if (isEq) {
-                                copyLevel = SvnEntryComparator.NOT_MAY_COPY;
-                            } else {
-                                copyLevel = SvnEntryComparator.NOT_MAY_COPY;
+                            newItem.setDestFile(lngItem.toMlbFile);
+                            newItem.setToPath(lngItem.toPath);
 
-                                List<Long> allRevList = new ArrayList();
-                                for (AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem : item.getNewMlbItems()) {
-                                    if (lngItem.fromMlbFile.exists()) {
-                                        List<Long> currList = SVN.getSvnLog(options.getRepository(), lngItem.fromPath);
-                                        for (Long currRev : currList) {
-                                            if (!allRevList.contains(currRev)) {
-                                                allRevList.add(currRev);
-                                            }
-                                        }
-                                    }
+                            newItem.setFromNotExistsAndToExists(!lngItem.fromMlbFile.exists() && lngItem.toMlbFile.exists());
+
+                            boolean notExist = !SVN.isExists(options.getRepository(), lngItem.toPath);
+                            copyLevel = notExist ? SvnEntryComparator.MAY_COPY_NEW : SvnEntryComparator.NOT_MAY_COPY;
+                            isEq = notExist ? false : SvnEntryComparator.equals(options.getRepository(), lngItem.toPath, lngItem.fromPath);
+                            if (!isEq) {
+                                if (!notExist) {
+                                    copyLevel = SvnEntryComparator.equalsToThePreviousVersions(options.getRepository(), lngItem.toPath, lngItem.fromPath);
                                 }
-                                Collections.sort(allRevList);
-
-                                List<String> lngListAsStr = new ArrayList();
-                                int curLevel = 0;
-                                for (int i = allRevList.size() - 1; i >= 0; i--) {// slow cycle 
-                                    long rev = allRevList.get(i);
-                                    lngListAsStr.clear();
-
-                                    for (EIsoLanguage lng : options.getCommonLangList()) {
-                                        String path = item.getFromLocalePath() + "/" + lng.getValue() + "/" + mlbShortName;
-                                        if (SVN.isExists(options.getRepository(), path, rev)) {
-                                            lngListAsStr.add(SVN.getFileAsStr(options.getRepository(), path, rev));
-                                        } else {
-                                            lngListAsStr.add(null);
-                                        }
-                                    }
-                                    AdsDefinitionDocument defDoc = MergeUtils.convertFromNewFormatToOld(options.getCommonLangList(), lngListAsStr, toXmlAsString, mlbShortName);
-                                    String fromXmlAsString = MergeUtils.saveToString(defDoc);
-
-                                    if (Utils.equals(fromXmlAsString, toXmlAsString)) {
-                                        copyLevel = curLevel;
-                                        break;
-                                    }
-                                    curLevel++;
-                                }
-
                             }
-                            mayMerge = !isEq;
-                        }
-                    }
-                } else if (options.getFromFormatVersion() < 2 && options.getToFormatVersion() >= 2) {
-
-                    boolean fromFileExists = item.getSrcFile().exists();
-                    boolean toFileExists = item.getDestFile() != null && item.getDestFile().exists();
-                    if (!fromFileExists && !toFileExists) {
-                        break l;
-                    }
-
-                    Reference<Boolean> fromFileRefExists = new Reference();
-
-                    for (AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem : item.getNewMlbItems()) {
-                        final EIsoLanguage language = lngItem.language;
-
-                        boolean currFromExists = false;
-                        String currFromMlbAsStr = null;
-
-                        if (fromFileExists) {
-                            AdsDefinitionDocument docAsNewFormat = MergeUtils.convertFromOldFormatToNew(language, item.getSrcFile(), fromFileRefExists);
-                            currFromExists = fromFileRefExists.get();
-                            currFromMlbAsStr = MergeUtils.saveToString(docAsNewFormat);
-                        }
-
-                        if (!currFromExists && !lngItem.toMlbFile.exists()) {
-                            continue;
-                        }
-
-                        AdsMergeChangesItemWrapper newItem = new AdsMergeChangesItemWrapper(def,
-                                ".." + "/" + LOCALE + "/" + language.getValue() + "/" + mlbShortName + " (" + language.getName() + ")");
-                        newItem.setMlb(true);
-                        newItem.setFromLocale(item.getFromLocale());
-                        newItem.setToLocale(item.getToLocale());
-                        newItem.setMlbShortName(mlbShortName);
-
-                        newItem.setLanguage(language);
-
-                        newItem.setSrcFile(item.getSrcFile());
-                        newItem.setFromPath(item.getFromPath());
-                        newItem.setXmlStringDataEmulator(currFromMlbAsStr);
-
-                        newItem.setDestFile(lngItem.toMlbFile);
-                        newItem.setToPath(lngItem.toPath);
-
-                        newItem.setFromNotExistsAndToExists(!currFromExists);
-
-                        if (!currFromExists) {
-                            newItem.setEquals(false);
-                            newItem.setSrcChangesLevel(SvnEntryComparator.NOT_MAY_COPY);
-                            newItem.setMayMerge(false);
-                        } else if (!lngItem.toMlbFile.exists()) {
-                            newItem.setEquals(false);
-                            newItem.setSrcChangesLevel(SvnEntryComparator.MAY_COPY_NEW);
-                            newItem.setMayMerge(false);
-                        } else {
-
-                            SvnEntryComparator.EntrySizeAndEntrySha1Digest fromEntry = SvnEntryComparator.getEntrySizeAndEntrySha1DigestByString(currFromMlbAsStr);
-                            SvnEntryComparator.EntrySizeAndEntrySha1Digest toEntry = SvnEntryComparator.getEntrySizeAndEntryTopSha1Digest(options.getRepository(), lngItem.toPath);
-                            //String toMlbAsStr = SVN.getFileAsStr(options.getRepository(), lngItem.toPath, options.getRepository().getLatestRevision());
-
-                            final String ff = currFromMlbAsStr;
-
-                            isEq = fromEntry.equals(toEntry);
-                            if (isEq) {
-                                copyLevel = SvnEntryComparator.NOT_MAY_COPY;
-                            } else {
-                                copyLevel = SvnEntryComparator.equalsToThePreviousVersions(options.getRepository(), toEntry, item.getFromPath(),
-                                        new SvnEntryComparator.StringConverter() {
-                                            @Override
-                                            public String convert(String str) throws Exception {
-                                                if (str == null) {
-                                                    return "";
-                                                }
-                                                String s = MergeUtils.saveToString(MergeUtils.convertFromOldFormatToNew(language, str, null));
-                                                return s;
-                                            }
-                                        });
-                            }
+                            mayMerge = !notExist && !isEq;
 
                             newItem.setEquals(isEq);
                             newItem.setSrcChangesLevel(copyLevel);
-                            newItem.setMayMerge(!isEq);
+                            newItem.setMayMerge(mayMerge);
+                            normalList.add(newItem);
                         }
-                        normalList.add(newItem);
+                        break l;
+                    } else if (options.getFromFormatVersion() >= 2 && options.getToFormatVersion() < 2) {
+                        boolean fromExists = item.isExistsOneAdditionMlbFile(true);
+                        boolean toExists = item.getDestFile().exists();
+
+                        if (!fromExists && !toExists) {
+                            break l;
+                        } else if (!fromExists && toExists) {
+                            item.setFromNotExistsAndToExists(true);
+                            copyLevel = SvnEntryComparator.NOT_MAY_COPY;
+                            mayMerge = false;
+                            isEq = false;
+                        } else {
+                            File toMlbFile = item.getSrcFile() == null || !item.getSrcFile().exists() ? null : item.getSrcFile();
+                            AdsDefinitionDocument doc = MergeUtils.convertFromNewFormatToOld(options.getCommonLangList(), item.getFromLocale(), toMlbFile, item.getMlbShortName());
+                            String toXmlAsString = MergeUtils.saveToString(doc);
+                            item.setXmlStringDataEmulator(toXmlAsString);
+
+                            if (!toExists) {
+                                isEq = false;
+                                copyLevel = SvnEntryComparator.MAY_COPY_NEW;
+                                mayMerge = false;
+                            } else {
+                                SvnEntryComparator.EntrySizeAndEntrySha1Digest fromEntrySha1Digest = SvnEntryComparator.getEntrySizeAndEntrySha1DigestByString(toXmlAsString);
+                                SvnEntryComparator.EntrySizeAndEntrySha1Digest toEntrySha1Digest = SvnEntryComparator.getEntrySizeAndEntryTopSha1Digest(options.getRepository(), item.getToPath());
+                                isEq = Arrays.equals(fromEntrySha1Digest.entryDigest, toEntrySha1Digest.entryDigest);
+                                if (isEq) {
+                                    copyLevel = SvnEntryComparator.NOT_MAY_COPY;
+                                } else {
+                                    copyLevel = SvnEntryComparator.NOT_MAY_COPY;
+
+                                    List<Long> allRevList = new ArrayList();
+                                    for (AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem : item.getNewMlbItems()) {
+                                        if (lngItem.fromMlbFile.exists()) {
+                                            List<Long> currList = SVN.getSvnLog(options.getRepository(), lngItem.fromPath);
+                                            for (Long currRev : currList) {
+                                                if (!allRevList.contains(currRev)) {
+                                                    allRevList.add(currRev);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Collections.sort(allRevList);
+
+                                    List<String> lngListAsStr = new ArrayList();
+                                    int curLevel = 0;
+                                    for (int i = allRevList.size() - 1; i >= 0; i--) {// slow cycle 
+                                        long rev = allRevList.get(i);
+                                        lngListAsStr.clear();
+
+                                        for (EIsoLanguage lng : options.getCommonLangList()) {
+                                            String path = item.getFromLocalePath() + "/" + lng.getValue() + "/" + mlbShortName;
+                                            if (SVN.isExists(options.getRepository(), path, rev)) {
+                                                lngListAsStr.add(SVN.getFileAsStr(options.getRepository(), path, rev));
+                                            } else {
+                                                lngListAsStr.add(null);
+                                            }
+                                        }
+                                        AdsDefinitionDocument defDoc = MergeUtils.convertFromNewFormatToOld(options.getCommonLangList(), lngListAsStr, toXmlAsString, mlbShortName);
+                                        String fromXmlAsString = MergeUtils.saveToString(defDoc);
+
+                                        if (Utils.equals(fromXmlAsString, toXmlAsString)) {
+                                            copyLevel = curLevel;
+                                            break;
+                                        }
+                                        curLevel++;
+                                    }
+
+                                }
+                                mayMerge = !isEq;
+                            }
+                        }
+                    } else if (options.getFromFormatVersion() < 2 && options.getToFormatVersion() >= 2) {
+
+                        boolean fromFileExists = item.getSrcFile().exists();
+                        boolean toFileExists = item.getDestFile() != null && item.getDestFile().exists();
+                        if (!fromFileExists && !toFileExists) {
+                            break l;
+                        }
+
+                        Reference<Boolean> fromFileRefExists = new Reference();
+
+                        for (AdsMergeChangesItemWrapper.MergeChangesLangugeItemWrapper lngItem : item.getNewMlbItems()) {
+                            final EIsoLanguage language = lngItem.language;
+
+                            boolean currFromExists = false;
+                            String currFromMlbAsStr = null;
+
+                            if (fromFileExists) {
+                                AdsDefinitionDocument docAsNewFormat = MergeUtils.convertFromOldFormatToNew(language, item.getSrcFile(), fromFileRefExists);
+                                currFromExists = fromFileRefExists.get();
+                                currFromMlbAsStr = MergeUtils.saveToString(docAsNewFormat);
+                            }
+
+                            if (!currFromExists && !lngItem.toMlbFile.exists()) {
+                                continue;
+                            }
+
+                            AdsMergeChangesItemWrapper newItem = new AdsMergeChangesItemWrapper(def,
+                                    ".." + "/" + LOCALE + "/" + language.getValue() + "/" + mlbShortName + " (" + language.getName() + ")");
+                            newItem.setMlb(true);
+                            newItem.setFromLocale(item.getFromLocale());
+                            newItem.setToLocale(item.getToLocale());
+                            newItem.setMlbShortName(mlbShortName);
+
+                            newItem.setLanguage(language);
+
+                            newItem.setSrcFile(item.getSrcFile());
+                            newItem.setFromPath(item.getFromPath());
+                            newItem.setXmlStringDataEmulator(currFromMlbAsStr);
+
+                            newItem.setDestFile(lngItem.toMlbFile);
+                            newItem.setToPath(lngItem.toPath);
+
+                            newItem.setFromNotExistsAndToExists(!currFromExists);
+
+                            if (!currFromExists) {
+                                newItem.setEquals(false);
+                                newItem.setSrcChangesLevel(SvnEntryComparator.NOT_MAY_COPY);
+                                newItem.setMayMerge(false);
+                            } else if (!lngItem.toMlbFile.exists()) {
+                                newItem.setEquals(false);
+                                newItem.setSrcChangesLevel(SvnEntryComparator.MAY_COPY_NEW);
+                                newItem.setMayMerge(false);
+                            } else {
+
+                                SvnEntryComparator.EntrySizeAndEntrySha1Digest fromEntry = SvnEntryComparator.getEntrySizeAndEntrySha1DigestByString(currFromMlbAsStr);
+                                SvnEntryComparator.EntrySizeAndEntrySha1Digest toEntry = SvnEntryComparator.getEntrySizeAndEntryTopSha1Digest(options.getRepository(), lngItem.toPath);
+                                //String toMlbAsStr = SVN.getFileAsStr(options.getRepository(), lngItem.toPath, options.getRepository().getLatestRevision());
+
+                                final String ff = currFromMlbAsStr;
+
+                                isEq = fromEntry.equals(toEntry);
+                                if (isEq) {
+                                    copyLevel = SvnEntryComparator.NOT_MAY_COPY;
+                                } else {
+                                    copyLevel = SvnEntryComparator.equalsToThePreviousVersions(options.getRepository(), toEntry, item.getFromPath(),
+                                            new SvnEntryComparator.StringConverter() {
+                                                @Override
+                                                public String convert(String str) throws Exception {
+                                                    if (str == null) {
+                                                        return "";
+                                                    }
+                                                    String s = MergeUtils.saveToString(MergeUtils.convertFromOldFormatToNew(language, str, null));
+                                                    return s;
+                                                }
+                                            });
+                                }
+
+                                newItem.setEquals(isEq);
+                                newItem.setSrcChangesLevel(copyLevel);
+                                newItem.setMayMerge(!isEq);
+                            }
+                            normalList.add(newItem);
+                        }
+                        break l;
+
                     }
-                    break l;
 
+                    item.setMlbShortName(mlbShortName);
+                    item.setSrcChangesLevel(copyLevel);
+                    item.setMayMerge(mayMerge);
+                    item.setEquals(isEq);
+
+                    normalList.add(item);
+                    break;//NOPMD
                 }
-
-                item.setMlbShortName(mlbShortName);
-                item.setSrcChangesLevel(copyLevel);
-                item.setMayMerge(mayMerge);
-                item.setEquals(isEq);
-
-                normalList.add(item);
-                break;//NOPMD
             }
-
         }
 
     }

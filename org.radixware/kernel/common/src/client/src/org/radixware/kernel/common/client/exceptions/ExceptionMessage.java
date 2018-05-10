@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.exceptions;
 
+import java.io.EOFException;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.errors.CredentialsWasNotDefinedError;
 import org.radixware.kernel.common.client.errors.IAlarm;
@@ -27,6 +28,7 @@ import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.exceptions.AppError;
 import org.radixware.kernel.common.exceptions.ServiceCallFault;
+import org.radixware.kernel.common.exceptions.ServiceCallRecvException;
 
 
 public final class ExceptionMessage {
@@ -54,79 +56,72 @@ public final class ExceptionMessage {
             severity = ClientException.isInformationMessage(exception) ? EEventSeverity.EVENT : EEventSeverity.ERROR;
             contextModel = null;
             exceptionTitle = ClientException.getExceptionTitle(mp, exception);
-            traceMessageSeverity = EEventSeverity.ERROR;
-        }
-        else{            
-            if (exception.getClass() == AppError.class) {
-                final AppError error = (AppError) exception;
-                if (!error.getMessage().isEmpty() && error.getMessage() != null) {
-                    exceptionMessage = error.getMessage();                    
-                    exceptionDetails = "";
-                }
-                else{
-                    exceptionMessage = 
-                        ClientException.getExceptionReason(mp, exception);
-                    exceptionDetails = "";                        
-                }
-                severity = EEventSeverity.ERROR;
-                hasDialogMessage = true;
-                exceptionTitle = null;
-                exceptionTrace = ClientException.exceptionStackToString(error);
-                contextModel = null;
-                traceMessageSeverity = EEventSeverity.ERROR;
-            }
-            else{
-                String message = "", title = "";
-                EEventSeverity sev = null;
-                EEventSeverity traceSev = null;
-                boolean showDialog = true;
-                Model model = null;
-                for (Throwable err = exception; err != null && err.getCause() != err; err = err.getCause()) {
-                    if (err instanceof ParentRefSetterError) {
-                        final ParentRefSetterError error = (ParentRefSetterError) err;
-                        if (error.getSourceModel() != null) {
-                            model = error.getSourceModel();
-                            error.setSourceModel(null);
-                            title = mp.translate("ExplorerError", "Setting Property Value Error");
-                            break;
-                        }
-                    }
-                    if (err instanceof CredentialsWasNotDefinedError){
-                        traceSev = EEventSeverity.EVENT;
-                        sev = EEventSeverity.ALARM;
-                        showDialog = false;
-                        title = ((CredentialsWasNotDefinedError)err).getTitle(mp);
-                        message = mp.translate("ExplorerMessage", "Closing connection.")+"\n"+
-                                ((CredentialsWasNotDefinedError)err).getLocalizedMessage(mp);
-                        break;
-                    }else if (err instanceof IAlarm) {                    
-                        title = mp.translate("ExplorerMessage", "Error");
+            traceMessageSeverity = ClientException.getFaultSeverity(exception);
+        }else{
+            String message = "", title = "";
+            EEventSeverity sev = null;
+            EEventSeverity traceSev = null;
+            boolean showDialog = true;
+            boolean showExceptionDetails = true;
+            Model model = null;
+            for (Throwable err = exception; err != null && err.getCause() != err; err = err.getCause()) {
+                if (err.getClass()==AppError.class){
+                    if (err.getMessage() != null && !err.getMessage().isEmpty()) {
                         message = err.getMessage();
-                        sev = EEventSeverity.ALARM;
-                        break;
-                    } else if (err instanceof NoInstantiatableClassesException) {
-                        title = mp.translate("ExplorerError", "Failed to create object");
-                        message = mp.translate("ExplorerError", "It is impossible to create objects in this context");
+                    } else{
+                        message = ClientException.getExceptionReason(mp, exception);
+                    }
+                    showDialog = true;
+                    showExceptionDetails = false;
+                    break;
+                }else if (err instanceof ParentRefSetterError) {
+                    final ParentRefSetterError error = (ParentRefSetterError) err;
+                    if (error.getSourceModel() != null) {
+                        model = error.getSourceModel();
+                        error.setSourceModel(null);
+                        title = mp.translate("ExplorerError", "Setting Property Value Error");
                         break;
                     }
                 }
-                hasDialogMessage = showDialog && message!=null;
-                if (message==null || message.isEmpty()){
-                    if (exception instanceof ObjectNotFoundError){
-                        exceptionMessage = ((ObjectNotFoundError)exception).getMessageToShow();
-                    }else if (exception instanceof IClientError){
-                        exceptionMessage = ((IClientError)exception).getLocalizedMessage(mp);
-                    }else{
-                        exceptionMessage =  ClientException.getExceptionReason(mp, exception);
-                    }
+                if (err instanceof CredentialsWasNotDefinedError){
+                    traceSev = EEventSeverity.EVENT;
+                    sev = EEventSeverity.ALARM;
+                    showDialog = false;
+                    title = ((CredentialsWasNotDefinedError)err).getTitle(mp);
+                    message = mp.translate("ExplorerMessage", "Closing connection.")+"\n"+
+                            ((CredentialsWasNotDefinedError)err).getLocalizedMessage(mp);
+                    break;
+                }else if (err instanceof IAlarm) {                    
+                    title = mp.translate("ExplorerMessage", "Error");
+                    message = err.getMessage();
+                    sev = EEventSeverity.ALARM;
+                    break;
+                } else if (err instanceof NoInstantiatableClassesException) {
+                    title = mp.translate("ExplorerError", "Failed to create object");
+                    message = mp.translate("ExplorerError", "It is impossible to create objects in this context");
+                    break;
+                } else if (err instanceof ServiceCallRecvException && err.getCause() instanceof EOFException){
+                    title = mp.translate("ExplorerMessage", "Connection Problem");
+                    message = mp.translate("ExplorerError", "Unable to receive server response: broken network connection");
+                }
+            }
+            hasDialogMessage = showDialog && message!=null;
+            if (message==null || message.isEmpty()){
+                if (exception instanceof ObjectNotFoundError){
+                    exceptionMessage = ((ObjectNotFoundError)exception).getMessageToShow();
+                }else if (exception instanceof IClientError){
+                    exceptionMessage = ((IClientError)exception).getLocalizedMessage(mp);
                 }else{
-                    exceptionMessage = message;
+                    exceptionMessage =  ClientException.getExceptionReason(mp, exception);
                 }
-                exceptionTitle = title.isEmpty() ? ClientException.getExceptionTitle(mp, exception) : title;
-                severity = sev==null ? EEventSeverity.ERROR : sev;
-                traceMessageSeverity = traceSev==null ? EEventSeverity.ERROR : traceSev;
-                contextModel = model;
-                        
+            }else{
+                exceptionMessage = message;
+            }
+            exceptionTitle = title.isEmpty() ? ClientException.getExceptionTitle(mp, exception) : title;
+            severity = sev==null ? EEventSeverity.ERROR : sev;
+            traceMessageSeverity = traceSev==null ? EEventSeverity.ERROR : traceSev;
+            contextModel = model;
+            if (showExceptionDetails){
                 if (exception instanceof ModelException){
                     exceptionDetails = "";
                     exceptionTrace = ClientException.exceptionStackToString(exception);
@@ -147,7 +142,10 @@ public final class ExceptionMessage {
                     }
 
                 }
-            }            
+            }else{
+                exceptionDetails = "";
+                exceptionTrace = ClientException.exceptionStackToString(exception);
+            }
         }
     }
     
@@ -180,8 +178,7 @@ public final class ExceptionMessage {
             ClientValueFormatter.capitalizeIfNecessary(environment, title==null || title.isEmpty() ? exceptionTitle : title);
         if (getSeverity()==EEventSeverity.EVENT){
             environment.messageInformation(dialogTitle, getDialogMessage());
-        }
-        else{
+        }else{
             if (contextModel!=null){
                 contextModel.showException(dialogTitle, exception);
             }
@@ -207,15 +204,17 @@ public final class ExceptionMessage {
         display(null, parentWidget);
     }
     
-    public void trace(final ClientTracer tracer, final String title){
+    public void trace(final ClientTracer tracer, final String title){        
         if (traceMessageSeverity==EEventSeverity.EVENT){
             tracer.put(EEventSeverity.EVENT, exceptionMessage);
+        }else if (traceMessageSeverity==EEventSeverity.DEBUG){
+            tracer.debug(title, exception);
         }else{
             if (title==null || title.isEmpty()){
                 tracer.put(exception);
             }else{
                 tracer.error(title, exception);
             }
-        }  
-    } 
+        }
+    }
 }

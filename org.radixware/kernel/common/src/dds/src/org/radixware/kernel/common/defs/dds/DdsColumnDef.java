@@ -13,6 +13,8 @@ package org.radixware.kernel.common.defs.dds;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.IVisitor;
@@ -20,6 +22,7 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.sqml.Sqml;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.radixware.kernel.common.defs.ClipboardSupport;
@@ -30,6 +33,7 @@ import org.radixware.kernel.common.defs.value.RadixDefaultValue;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.defs.value.ValAsStr;
+import org.radixware.kernel.common.enums.EDatabaseType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.sqml.ISqmlProperty;
@@ -41,6 +45,88 @@ import org.radixware.kernel.common.utils.Utils;
  *
  */
 public class DdsColumnDef extends DdsColumnTemplateDef implements IDdsTableItemDef, ISqmlProperty {
+    private static final Set<String> RESERVED_ORACLE = new HashSet<>();
+    private static final Set<String> RESERVED_ENTERPRISEDB = new HashSet<>();
+    private static final Set<String> RESERVED_POSTGRES = new HashSet<>();
+
+    static {
+/*        RESERVED_DB_NAMES.addAll(Arrays.asList(
+                "ABORT", "ABS", "ABSENT", "ABSOLUTE", "ACCESS", "ACCORDING", "ACTION", "ADA", "ADD", "ADMIN", "AFTER", "AGGREGATE", "ALL", "ALLOCATE", "ALSO", "ALTER",
+                "ALWAYS", "ANALYSE", "ANALYZE", "AND", "ANY", "ARE", "ARRAY", "ARRAY_AGG", "ARRAY_MAX_CARDINALITY", "AS", "ASC", "ASENSITIVE", "ASSERTION", "ASSIGNMENT", "ASYMMETRIC", "AT",
+                "ATOMIC", "ATTRIBUTE", "ATTRIBUTES", "AUTHORIZATION", "AVG", "BACKWARD", "BASE64", "BEFORE", "BEGIN", "BEGIN_FRAME", "BEGIN_PARTITION", "BERNOULLI", "BETWEEN", "BIGINT", "BINARY", "BIT",
+                "BIT_LENGTH", "BLOB", "BLOCKED", "BOM", "BOOLEAN", "BOTH", "BREADTH", "BY", "CACHE", "CALL", "CALLED", "CARDINALITY", "CASCADE", "CASCADED", "CASE", "CAST",
+                "CATALOG", "CATALOG_NAME", "CEIL", "CEILING", "CHAIN", "CHAR", "CHARACTER", "CHARACTERISTICS", "CHARACTERS", "CHARACTER_LENGTH", "CHARACTER_SET_CATALOG", "CHARACTER_SET_NAME", "CHARACTER_SET_SCHEMA", "CHAR_LENGTH", "CHECK", "CHECKPOINT",
+                "CLASS", "CLASS_ORIGIN", "CLOB", "CLOSE", "CLUSTER", "COALESCE", "COBOL", "COLLATE", "COLLATION", "COLLATION_CATALOG", "COLLATION_NAME", "COLLATION_SCHEMA", "COLLECT", "COLUMN", "COLUMNS", "COLUMN_NAME",
+                "COMMAND_FUNCTION", "COMMAND_FUNCTION_CODE", "COMMENT", "COMMENTS", "COMMIT", "COMMITTED", "CONCURRENTLY", "CONDITION", "CONDITION_NUMBER", "CONFIGURATION", "CONFLICT", "CONNECT", "CONNECTION", "CONNECTION_NAME", "CONSTRAINT", "CONSTRAINTS",
+                "CONSTRAINT_CATALOG", "CONSTRAINT_NAME", "CONSTRAINT_SCHEMA", "CONSTRUCTOR", "CONTAINS", "CONTENT", "CONTINUE", "CONTROL", "CONVERSION", "CONVERT", "COPY", "CORR", "CORRESPONDING", "COST", "COUNT", "COVAR_POP",
+                "COVAR_SAMP", "CREATE", "CROSS", "CSV", "CUBE", "CUME_DIST", "CURRENT", "CURRENT_CATALOG", "CURRENT_DATE", "CURRENT_DEFAULT_TRANSFORM_GROUP", "CURRENT_PATH", "CURRENT_ROLE", "CURRENT_ROW", "CURRENT_SCHEMA", "CURRENT_TIME", "CURRENT_TIMESTAMP",
+                "CURRENT_TRANSFORM_GROUP_FOR_TYPE", "CURRENT_USER", "CURSOR", "CURSOR_NAME", "CYCLE", "DATA", "DATABASE", "DATALINK", "DATE", "DATETIME_INTERVAL_CODE", "DATETIME_INTERVAL_PRECISION", "DAY", "DB", "DEALLOCATE", "DEC", "DECIMAL",
+                "DECLARE", "DEFAULT", "DEFAULTS", "DEFERRABLE", "DEFERRED", "DEFINED", "DEFINER", "DEGREE", "DELETE", "DELIMITER", "DELIMITERS", "DENSE_RANK", "DEPENDS", "DEPTH", "DEREF", "DERIVED",
+                "DESC", "DESCRIBE", "DESCRIPTOR", "DETERMINISTIC", "DIAGNOSTICS", "DICTIONARY", "DISABLE", "DISCARD", "DISCONNECT", "DISPATCH", "DISTINCT", "DLNEWCOPY", "DLPREVIOUSCOPY", "DLURLCOMPLETE", "DLURLCOMPLETEONLY", "DLURLCOMPLETEWRITE",
+                "DLURLPATH", "DLURLPATHONLY", "DLURLPATHWRITE", "DLURLSCHEME", "DLURLSERVER", "DLVALUE", "DO", "DOCUMENT", "DOMAIN", "DOUBLE", "DROP", "DYNAMIC", "DYNAMIC_FUNCTION", "DYNAMIC_FUNCTION_CODE", "EACH", "ELEMENT",
+                "ELSE", "EMPTY", "ENABLE", "ENCODING", "ENCRYPTED", "END", "END-EXEC", "END_FRAME", "END_PARTITION", "ENFORCED", "ENUM", "EQUALS", "ESCAPE", "EVENT", "EVERY", "EXCEPT",
+                "EXCEPTION", "EXCLUDE", "EXCLUDING", "EXCLUSIVE", "EXEC", "EXECUTE", "EXISTS", "EXP", "EXPLAIN", "EXPRESSION", "EXTENSION", "EXTERNAL", "EXTRACT", "FALSE", "FAMILY", "FETCH",
+                "FILE", "FILTER", "FINAL", "FIRST", "FIRST_VALUE", "FLAG", "FLOAT", "FLOOR", "FOLLOWING", "FOR", "FORCE", "FOREIGN", "FORTRAN", "FORWARD", "FOUND", "FRAME_ROW",
+                "FREE", "FREEZE", "FROM", "FS", "FULL", "FUNCTION", "FUNCTIONS", "FUSION", "GENERAL", "GENERATED", "GET", "GLOBAL", "GO", "GOTO", "GRANT", "GRANTED",
+                "GREATEST", "GROUP", "GROUPING", "GROUPS", "HANDLER", "HAVING", "HEADER", "HEX", "HIERARCHY", "HOLD", "HOUR", "IDENTITY", "IF", "IGNORE", "ILIKE",
+                "IMMEDIATE", "IMMEDIATELY", "IMMUTABLE", "IMPLEMENTATION", "IMPLICIT", "IMPORT", "IN", "INCLUDING", "INCREMENT", "INDENT", "INDEX", "INDEXES", "INDICATOR", "INHERIT", "INHERITS", "INITIALLY",
+                "INLINE", "INNER", "INOUT", "INPUT", "INSENSITIVE", "INSERT", "INSTANCE", "INSTANTIABLE", "INSTEAD", "INT", "INTEGER", "INTEGRITY", "INTERSECT", "INTERSECTION", "INTERVAL", "INTO",
+                "INVOKER", "IS", "ISNULL", "ISOLATION", "JOIN", "KEY", "KEY_MEMBER", "KEY_TYPE", "LABEL", "LAG", "LARGE", "LAST", "LAST_VALUE", "LATERAL", "LEAD",
+                "LEADING", "LEAKPROOF", "LEAST", "LEFT", "LENGTH", "LEVEL", "LIBRARY", "LIKE", "LIKE_REGEX", "LIMIT", "LINK", "LISTEN", "LN", "LOAD", "LOCAL", "LOCALTIME",
+                "LOCALTIMESTAMP", "LOCATION", "LOCATOR", "LOCK", "LOCKED", "LOGGED", "LOWER", "MAP", "MAPPING", "MATCH", "MATCHED", "MATERIALIZED", "MAX", "MAXVALUE", "MAX_CARDINALITY", "MEMBER",
+                "MERGE", "MESSAGE_LENGTH", "MESSAGE_OCTET_LENGTH", "MESSAGE_TEXT", "METHOD", "MIN", "MINUTE", "MINVALUE", "MOD", "MODE", "MODIFIES", "MODULE", "MONTH", "MORE", "MOVE", "MULTISET",
+                "MUMPS", "NAME", "NAMES", "NAMESPACE", "NATIONAL", "NATURAL", "NCHAR", "NCLOB", "NESTING", "NEW", "NEXT", "NFC", "NFD", "NFKC", "NFKD", "NIL",
+                "NO", "NONE", "NORMALIZE", "NORMALIZED", "NOT", "NOTHING", "NOTIFY", "NOTNULL", "NOWAIT", "NTH_VALUE", "NTILE", "NULL", "NULLABLE", "NULLIF", "NULLS", "NUMBER",
+                "NUMERIC", "OBJECT", "OCCURRENCES_REGEX", "OCTETS", "OCTET_LENGTH", "OF", "OFF", "OFFSET", "OIDS", "OLD", "ON", "ONLY", "OPEN", "OPERATOR", "OPTION", "OPTIONS",
+                "OR", "ORDER", "ORDERING", "ORDINALITY", "OTHERS", "OUT", "OUTER", "OUTPUT", "OVER", "OVERLAPS", "OVERLAY", "OVERRIDING", "OWNED", "OWNER", "PAD", "PARALLEL",
+                "PARAMETER", "PARAMETER_MODE", "PARAMETER_NAME", "PARAMETER_ORDINAL_POSITION", "PARAMETER_SPECIFIC_CATALOG", "PARAMETER_SPECIFIC_NAME", "PARAMETER_SPECIFIC_SCHEMA", "PARSER", "PARTIAL", "PARTITION", "PASCAL", "PASSING", "PASSTHROUGH", "PASSWORD", "PATH", "PERCENT",
+                "PERCENTILE_CONT", "PERCENTILE_DISC", "PERCENT_RANK", "PERIOD", "PERMISSION", "PLACING", "PLANS", "PLI", "POLICY", "PORTION", "POSITION", "POSITION_REGEX", "POWER", "PRECEDES", "PRECEDING", "PRECISION",
+                "PREPARE", "PREPARED", "PRESERVE", "PRIMARY", "PRIOR", "PRIVILEGES", "PROCEDURAL", "PROCEDURE", "PROGRAM", "PUBLIC", "QUOTE", "RANGE", "RANK", "READ", "READS", "REAL",
+                "REASSIGN", "RECHECK", "RECOVERY", "RECURSIVE", "REF", "REFERENCES", "REFERENCING", "REFRESH", "REGR_AVGX", "REGR_AVGY", "REGR_COUNT", "REGR_INTERCEPT", "REGR_R2", "REGR_SLOPE", "REGR_SXX", "REGR_SXY",
+                "REGR_SYY", "REINDEX", "RELATIVE", "RELEASE", "RENAME", "REPEATABLE", "REPLACE", "REPLICA", "REQUIRING", "RESET", "RESPECT", "RESTART", "RESTORE", "RESTRICT", "RESULT", "RETURN",
+                "RETURNED_CARDINALITY", "RETURNED_LENGTH", "RETURNED_OCTET_LENGTH", "RETURNED_SQLSTATE", "RETURNING", "RETURNS", "REVOKE", "RIGHT", "ROLE", "ROLLBACK", "ROLLUP", "ROUTINE", "ROUTINE_CATALOG", "ROUTINE_NAME", "ROUTINE_SCHEMA", "ROW",
+                "ROWS", "ROW_COUNT", "ROW_NUMBER", "RULE", "SAVEPOINT", "SCALE", "SCHEMA", "SCHEMA_NAME", "SCOPE", "SCOPE_CATALOG", "SCOPE_NAME", "SCOPE_SCHEMA", "SCROLL", "SEARCH", "SECOND", "SECTION",
+                "SECURITY", "SELECT", "SELECTIVE", "SELF", "SENSITIVE", "SEQUENCE", "SEQUENCES", "SERIALIZABLE", "SERVER", "SERVER_NAME", "SESSION", "SESSION_USER", "SET", "SETOF", "SETS", "SHARE",
+                "SHOW", "SIMILAR", "SIMPLE", "SIZE", "SKIP", "SMALLINT", "SNAPSHOT", "SOME", "SOURCE", "SPACE", "SPECIFIC", "SPECIFICTYPE", "SPECIFIC_NAME", "SQL", "SQLCODE", "SQLERROR",
+                "SQLEXCEPTION", "SQLSTATE", "SQLWARNING", "SQRT", "STABLE", "STANDALONE", "START", "STATEMENT", "STATIC", "STATISTICS", "STDDEV_POP", "STDDEV_SAMP", "STDIN", "STDOUT", "STORAGE",
+                "STRICT", "STRIP", "STRUCTURE", "STYLE", "SUBCLASS_ORIGIN", "SUBMULTISET", "SUBSTRING", "SUBSTRING_REGEX", "SUCCEEDS", "SUM", "SYMMETRIC", "SYSID", "SYSTEM", "SYSTEM_TIME", "SYSTEM_USER", "TABLE",
+                "TABLES", "TABLESAMPLE", "TABLESPACE", "TABLE_NAME", "TEMP", "TEMPLATE", "TEMPORARY", "TEXT", "THEN", "TIES", "TIME", "TIMESTAMP", "TIMEZONE_HOUR", "TIMEZONE_MINUTE", "TO", "TOKEN",
+                "TOP_LEVEL_COUNT", "TRAILING", "TRANSACTION", "TRANSACTIONS_COMMITTED", "TRANSACTIONS_ROLLED_BACK", "TRANSACTION_ACTIVE", "TRANSFORM", "TRANSFORMS", "TRANSLATE", "TRANSLATE_REGEX", "TRANSLATION", "TREAT", "TRIGGER", "TRIGGER_CATALOG", "TRIGGER_NAME", "TRIGGER_SCHEMA",
+                "TRIM", "TRIM_ARRAY", "TRUE", "TRUNCATE", "TRUSTED", "TYPE", "TYPES", "UESCAPE", "UNBOUNDED", "UNCOMMITTED", "UNDER", "UNENCRYPTED", "UNION", "UNIQUE", "UNKNOWN", "UNLINK",
+                "UNLISTEN", "UNLOGGED", "UNNAMED", "UNNEST", "UNTIL", "UNTYPED", "UPDATE", "UPPER", "URI", "USAGE", "USER", "USER_DEFINED_TYPE_CATALOG", "USER_DEFINED_TYPE_CODE", "USER_DEFINED_TYPE_NAME", "USER_DEFINED_TYPE_SCHEMA", "USING",
+                "VACUUM", "VALID", "VALIDATE", "VALIDATOR", "VALUE", "VALUES", "VALUE_OF", "VARBINARY", "VARCHAR", "VARIADIC", "VARYING", "VAR_POP", "VAR_SAMP", "VERBOSE", "VERSION", "VERSIONING",
+                "VIEW", "VIEWS", "VOLATILE", "WHEN", "WHENEVER", "WHERE", "WHITESPACE", "WIDTH_BUCKET", "WINDOW", "WITH", "WITHIN", "WITHOUT", "WORK", "WRAPPER", "WRITE", "XML",
+                "XMLAGG", "XMLATTRIBUTES", "XMLBINARY", "XMLCAST", "XMLCOMMENT", "XMLCONCAT", "XMLDECLARATION", "XMLDOCUMENT", "XMLELEMENT", "XMLEXISTS", "XMLFOREST", "XMLITERATE", "XMLNAMESPACES", "XMLPARSE", "XMLPI", "XMLQUERY",
+                "XMLROOT", "XMLSCHEMA", "XMLSERIALIZE", "XMLTABLE", "XMLTEXT", "XMLVALIDATE", "YEAR", "YES", "ZONE"
+                )
+        );        
+*/        
+        RESERVED_ORACLE.addAll(Arrays.asList(
+                "ACCESS","ADD","ALL","ALTER","AND","ANY","AS","ASC","AUDIT","BETWEEN","BY","CHAR","CHECK","CLUSTER","COLUMN","COMMENT","COMPRESS","CONNECT","CREATE","CURRENT","DATE"
+                ,"DECIMAL","DEFAULT","DELETE","DESC","DISTINCT","DROP","ELSE","EXCLUSIVE","EXISTS","FILE","FLOAT","FOR","FROM","GRANT","GROUP","HAVING","IDENTIFIED","IMMEDIATE","IN"
+                ,"INCREMENT","INDEX","INITIAL","INSERT","INTEGER","INTERSECT","INTO","IS","LEVEL","LIKE","LOCK","LONG","MAXEXTENTS","MINUS","MLSLABEL","MODE","MODIFY","NOAUDIT"
+                ,"NOCOMPRESS","NOT","NOWAIT","NULL","NUMBER","OF","OFFLINE","ON","ONLINE","OPTION","OR","ORDER","PCTFREE","PRIOR","PRIVILEGES","PUBLIC","RAW","RENAME","RESOURCE","REVOKE"
+                ,"ROW","ROWID","ROWNUM","ROWS","SELECT","SESSION","SET","SHARE","SIZE","SMALLINT","START","SUCCESSFUL","SYNONYM","SYSDATE","TABLE","THEN","TO","TRIGGER","UID","UNION"
+                ,"UNIQUE","UPDATE","USER","VALIDATE","VALUES","VARCHAR","VARCHAR2","VIEW","WHENEVER","WHERE","WITH"        
+                )
+        );
+        RESERVED_ENTERPRISEDB.addAll(Arrays.asList(
+                "ALL","ANALYSE","ANALYZE","AND","ANY","ARRAY","AS","ASC","ASYMMETRIC","BOTH","CASE","CAST","CHECK","COLLATE","COLUMN","CONNECT","CONNECT_BY_ROOT","CONSTRAINT","CONSTRUCTOR"
+                ,"CREATE","CURRENT_CATALOG","CURRENT_ROLE","CURRENT_TIME","CURRENT_TIMESTAMP","CURRENT_USER","DEFAULT","DEFERRABLE","DESC","DISTINCT","DO","ELSE","END","EXCEPT","FALSE","FETCH"
+                ,"FINAL","FOR","FOREIGN","FROM","GRANT","GROUP","HAVING","IN","INITIALLY","INSTANTIABLE","INTERSECT","INTO","LATERAL","LEADING","LIMIT","LOCALTIME","LOCALTIMESTAMP","MINUS"
+                ,"NOT","NULL","OFFSET","ON","ONLY","OR","ORDER","OVERRIDING","PLACING","REFERENCES","REPEATABLE","RETURNING","SELECT","SESSION_USER","SOME","SYMMETRIC","SYS_CONNECT_BY_PATH","TABLE","THEN"
+                ,"TO","TYPE","TRAILING","TRUE","UNION","UNIQUE","USING","VARIADIC","WHEN","WHERE","WINDOW","WITH"        
+                )
+        );
+        RESERVED_POSTGRES.addAll(Arrays.asList(
+                "ALL","ANALYSE","ANALYZE","AND","ANY","ARRAY","AS","ASC","ASYMMETRIC","BOTH","CASE","CAST","CHECK","COLLATE","COLUMN","CONNECT","CONNECT_BY_ROOT","CONSTRAINT","CONSTRUCTOR"
+                ,"CREATE","CURRENT_CATALOG","CURRENT_ROLE","CURRENT_TIME","CURRENT_TIMESTAMP","CURRENT_USER","DEFAULT","DEFERRABLE","DESC","DISTINCT","DO","ELSE","END","EXCEPT","FALSE","FETCH"
+                ,"FINAL","FOR","FOREIGN","FROM","GRANT","GROUP","HAVING","IN","INITIALLY","INSTANTIABLE","INTERSECT","INTO","LATERAL","LEADING","LIMIT","LOCALTIME","LOCALTIMESTAMP","MINUS"
+                ,"NOT","NULL","OFFSET","ON","ONLY","OR","ORDER","OVERRIDING","PLACING","REFERENCES","REPEATABLE","RETURNING","SELECT","SESSION_USER","SOME","SYMMETRIC","SYS_CONNECT_BY_PATH","TABLE","THEN"
+                ,"TO","TYPE","TRAILING","TRUE","UNION","UNIQUE","USING","VARIADIC","WHEN","WHERE","WINDOW","WITH"        
+                )
+        );
+    }
 
     private String dbName = "";
 
@@ -52,14 +138,43 @@ public class DdsColumnDef extends DdsColumnTemplateDef implements IDdsTableItemD
     public String getDbName() {
         return dbName;
     }
-
+    
     @Override
-    public void setDbName(String dbName) {
-        if (!Utils.equals(this.dbName, dbName)) {
+    public void setDbName(final String dbName) {
+        if (dbName == null) {
+            throw new IllegalArgumentException("Column name can't be null!");
+        }
+        else if (!Utils.equals(this.dbName, dbName)) {
             this.dbName = dbName;
             this.setEditState(EEditState.MODIFIED);
         }
     }
+    
+    public boolean canUseAsDbName(final String dbName, final EDatabaseType dbType) {
+        return testCanUseAsDbName(dbName, dbType);
+    }
+    
+    public static boolean testCanUseAsDbName(final String dbName, final EDatabaseType dbType) {
+        if (dbName == null) {
+            throw new IllegalArgumentException("Name can't be null!");
+        }
+        else if (dbType == null) {
+            throw new IllegalArgumentException("Database type to check can't be null!");
+        }
+        else if (!dbName.isEmpty()) {
+            switch (dbType) {
+                case ORACLE         : return  !RESERVED_ORACLE.contains(dbName.toUpperCase());
+                case ENTERPRISEDB   : return  !RESERVED_ENTERPRISEDB.contains(dbName.toUpperCase());
+                case POSTGRESQL     : return  !RESERVED_POSTGRES.contains(dbName.toUpperCase());
+                default : throw new UnsupportedOperationException("Checking for database type ["+dbType+"] is not supported yet");
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    
+    
     private boolean autoDbName = true;
 
     @Override

@@ -14,7 +14,6 @@ import org.eclipse.jdt.core.compiler.CharOperation;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.radixware.kernel.common.compiler.CompilerUtils;
 import org.radixware.kernel.common.defs.Definition;
-import org.radixware.kernel.common.defs.ads.ICompilable;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 
 public class AdsTypeBinding extends SourceTypeBinding {
@@ -40,7 +39,7 @@ public class AdsTypeBinding extends SourceTypeBinding {
         }
         return null;
     }
-
+    
     @Override
     public FieldBinding resolveTypeFor(FieldBinding field) {
         if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0) {

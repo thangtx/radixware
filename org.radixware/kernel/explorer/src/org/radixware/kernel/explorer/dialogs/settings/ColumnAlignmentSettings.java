@@ -15,17 +15,18 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.enums.EValType;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 
 /**
  * Class represents a set of alignment options combo boxes
  */
-public class ColumnAlignmentSettings extends SettingsWidget {
+final class ColumnAlignmentSettings extends SettingsWidget implements ISettingsPage{
     
     private final static EnumSet<EValType> valueTypes = EnumSet.of(
             EValType.BIN,
@@ -38,18 +39,17 @@ public class ColumnAlignmentSettings extends SettingsWidget {
     
     public ColumnAlignmentSettings(final IClientEnvironment env, final QWidget parent) {
         super(env, parent, SettingNames.SELECTOR_GROUP, null, "");
-        setUpUi();
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
         for(ColumnAlignmentSetting s : vtypesToSettings.values()) {
             s.readSettings(src);
         }
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         for(ColumnAlignmentSetting s : vtypesToSettings.values()) {
             s.writeSettings(dst);
         }
@@ -61,6 +61,15 @@ public class ColumnAlignmentSettings extends SettingsWidget {
             s.restoreDefaults();
         }
     }
+
+    @Override
+    public void open(final IClientEnvironment environment, 
+                             final ISettingsProvider settingsProvider,
+                             final List<SettingsWidget> settingWidgets) {
+        setUpUi();
+        settingWidgets.add(this);
+        readSettings(settingsProvider.getSettings());
+    }        
 
     private void setUpUi() {
         final QGridLayout layout = new QGridLayout();

@@ -16,9 +16,14 @@ import com.trolltech.qt.gui.QShowEvent;
 import com.trolltech.qt.gui.QSizePolicy;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWidget;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameters;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
@@ -66,14 +71,34 @@ public class SqmlEditor extends ExplorerWidget {
         }        
     }
     
+    private final class InternalXscmlEditor extends XscmlEditor{
+        
+        public InternalXscmlEditor(final IClientEnvironment environment, final TagProcessor converter, final QWidget parent){
+            super(environment, converter, parent);
+            textChanged.connect(SqmlEditor.this, "textChange()");
+        }
+
+        @Override
+        public void updateTagsName() {
+            textChanged.disconnect(SqmlEditor.this);
+            try{
+                super.updateTagsName();
+            }finally{
+                textChanged.connect(SqmlEditor.this, "textChange()");
+            }
+            SqmlEditor.this.textChange();
+        }       
+    }
+    
     private final AbstractXscmlEditor editText;
     private final SqmlProcessor converter;
     private final SqmlEditor_UI ui;
     private final Highlighter hightlighter;
-    private final boolean isBranchAccessible;    
+    private final boolean isSqmlAccessible;    
     private final SqmlTagInsertion tagInsertion;
         
     private Sqml sqml;
+    private Sqml additionalFrom;
     private ISqmlTableDef contextClass;
     private Id contextClassId;        
     private boolean modified = false;    
@@ -91,7 +116,14 @@ public class SqmlEditor extends ExplorerWidget {
         public static final SqmlEditorIcons IMG_INSERT_EVENT_CODE = new SqmlEditorIcons("classpath:images/event_code.svg");
         public static final SqmlEditorIcons IMG_ADD_ALIAS = new SqmlEditorIcons("classpath:images/add_alias.svg");
         public static final SqmlEditorIcons IMG_SQML_TRAN = new SqmlEditorIcons("classpath:images/view_sql.svg");        
-        
+        public static final SqmlEditorIcons IMG_PARAM_VAL_COUNT = new SqmlEditorIcons("classpath:images/param_valcount.svg");
+        public static final SqmlEditorIcons IMG_ADD_PARAM_VAL_CAOUNT = new SqmlEditorIcons("classpath:images/add_param_valcount.svg");
+        public static final SqmlEditorIcons IMG_INSERT_IF_TAG = new SqmlEditorIcons("classpath:images/if.svg");
+        public static final SqmlEditorIcons IMG_INSERT_ELSE_TAG = new SqmlEditorIcons("classpath:images/if_else.svg");
+        public static final SqmlEditorIcons IMG_INSERT_END_TAG = new SqmlEditorIcons("classpath:images/if_end.svg");
+        public static final SqmlEditorIcons IMG_CUSTOM_PARAMETER = new SqmlEditorIcons("classpath:images/custom_parameter.svg");
+        public static final SqmlEditorIcons IMG_EXPORT = new SqmlEditorIcons("classpath:images/export_r.svg");
+        public static final SqmlEditorIcons IMG_IMPORT = new SqmlEditorIcons("classpath:images/import_r.svg");
         private SqmlEditorIcons(final String fileName) {
             super(fileName, true);
         }
@@ -109,9 +141,9 @@ public class SqmlEditor extends ExplorerWidget {
     @SuppressWarnings("LeakingThisInConstructor")
     public SqmlEditor(final IClientEnvironment environment, final QWidget parent, final Id contextId, final ISqmlParameters param) {
         super(environment, parent);
-        isBranchAccessible = environment.getApplication().isExtendedMetaInformationAccessible();
+        isSqmlAccessible = environment.getApplication().isSqmlAccessible();
         contextClassId = contextId;
-        if (isBranchAccessible && contextId != null) {
+        if (isSqmlAccessible && contextId != null) {
             this.contextClass = environment.getSqmlDefinitions().findTableById(contextId);
         }else{
             contextClass = null;
@@ -124,21 +156,21 @@ public class SqmlEditor extends ExplorerWidget {
         
         converter.setSqmlTagInsertion(tagInsertion);
         
-        if (isBranchAccessible){
-            editText = new XscmlEditor(environment, converter, this);            
+        if (isSqmlAccessible){
+            editText = new InternalXscmlEditor(environment, converter, this);            
             editText.textChanged.connect(this, "textChange()");
         }else{
             editText = new DummyXscmlEditor(parent, converter);            
         }
         editText.setObjectName("xscmleditor");
-        
+        editText.setIndent(5);
         ui = new SqmlEditor_UI(this, param);
         
         setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding);
         hightlighter = new Highlighter(environment, editText, converter, "org.radixware.explorer/S_E/SYNTAX_SQML/");
         open();
         modified = false;
-        if (!isBranchAccessible){
+        if (!isSqmlAccessible){
             readOnly = true;
             ui.setReadOnlyMode(true);
         }
@@ -147,7 +179,7 @@ public class SqmlEditor extends ExplorerWidget {
     public void setContextClass(final Id contextId) {
         if (!Objects.equals(contextId, contextClassId)){
             contextClassId = contextId;
-            if (isBranchAccessible && contextId != null) {
+            if (isSqmlAccessible && contextId != null) {
                 this.contextClass = getEnvironment().getSqmlDefinitions().findTableById(contextId);
             }else{
                 contextClass = null;
@@ -157,9 +189,8 @@ public class SqmlEditor extends ExplorerWidget {
             ui.updatePropTree();
             open();
         }
-    }    
-     
-
+    }
+    
     public final void open() {
         this.setFocusPolicy(FocusPolicy.StrongFocus);
         if (sqml == null) {
@@ -176,15 +207,47 @@ public class SqmlEditor extends ExplorerWidget {
     }
     
     private void updateSqlText(){
+        final String plainText;                
         if (sqml==null || sqml.getItemList()==null || sqml.getItemList().isEmpty()){
-            editText.setPlainText("");
+            plainText = "";            
         }else{
-            if (contextClass==null){
-                editText.setPlainText(SqmlTranslator.translate(getEnvironment(), sqml, null, contextClassId));
+            final TagProcessor tagProcessor = editText==null ? null : editText.getTagConverter();
+            final EDefinitionDisplayMode displayMode;
+            displayMode = tagProcessor==null ? EDefinitionDisplayMode.SHOW_SHORT_NAMES : tagProcessor.getShowMode();
+            if (contextClass==null){       
+                plainText = 
+                    SqmlTranslator.translate(getEnvironment(), sqml, null, contextClassId, getParamters(), null, displayMode);
             }else{
-                editText.setPlainText(SqmlTranslator.translate(getEnvironment(), sqml, contextClass));
+                plainText = 
+                    SqmlTranslator.translate(getEnvironment(), sqml, contextClass, getParamters(), null, displayMode);
             }
         }
+        editText.setPlainText(plainText);
+    }
+    
+    protected final void appendAdditionalTables(){//append tables that we can find in addintional from condition
+        final List<Sqml.Item> items = additionalFrom==null ? null : additionalFrom.getItemList();
+        if (items!=null && !items.isEmpty()){
+            final Map<String,Id> tableAliases = new HashMap<>();
+            final Set<Id> additionalTables = new HashSet<>();
+            for (Sqml.Item item: items){
+                final Sqml.Item.TableSqlName tableTag = item.getTableSqlName();
+                final Id tableId = tableTag==null ? null : tableTag.getTableId();
+                if (tableId!=null){
+                    if (tableTag.getTableAlias()==null || tableTag.getTableAlias().isEmpty()){
+                        additionalTables.add(tableId);
+                    }else{
+                        tableAliases.put(tableTag.getTableAlias(), tableId);
+                    }
+                }
+            }
+            if (!additionalTables.isEmpty()){
+                ui.addTables(additionalTables);
+            }
+            if (!tableAliases.isEmpty()){
+                ui.addAliases(tableAliases);
+            }
+        }        
     }
 
     public void sortPropTree() {
@@ -203,25 +266,29 @@ public class SqmlEditor extends ExplorerWidget {
      * @param sqml sqml-выражение
      */
     public void setSqml(final org.radixware.schemas.xscml.Sqml sqml) {
-        if (editText == null) {
-            return;
-        }
-        this.sqml = sqml==null ? null : (org.radixware.schemas.xscml.Sqml)sqml.copy();
-        open();
-        modified = false;
+        setSqml(sqml,null,null);
     }
 
     public void setSqml(final org.radixware.schemas.xscml.Sqml sqml, final ISqmlParameters parameters) {
+        setSqml(sqml,null,parameters);
+    }
+    
+    public void setSqml(final org.radixware.schemas.xscml.Sqml sqml, 
+                                 final org.radixware.schemas.xscml.Sqml additionalFrom,  
+                                 final ISqmlParameters parameters) {
         if (editText == null) {
             return;
         }
         this.sqml = sqml==null ? null : (org.radixware.schemas.xscml.Sqml)sqml.copy();
-        converter.setParameters(parameters);
-        ui.setParameters(parameters);
+        this.additionalFrom = additionalFrom==null ? null : (org.radixware.schemas.xscml.Sqml)additionalFrom.copy();
+        if (parameters!=null){
+            converter.setParameters(parameters);
+            ui.setParameters(parameters);
+        }
         open();
         modified = false;
     }
-
+    
     @SuppressWarnings("unused")
     private void updateEditorHightlight() {
         if (hightlighter != null) {
@@ -255,7 +322,7 @@ public class SqmlEditor extends ExplorerWidget {
      * @param flag false если можно редактировать
      */
     public void setReadonly(final boolean flag) {
-        if (isBranchAccessible){
+        if (isSqmlAccessible){
             readOnly = flag;
             ui.setReadOnlyMode(flag);
         }
@@ -270,6 +337,10 @@ public class SqmlEditor extends ExplorerWidget {
             sqml = converter.toXml(editText.toPlainText(), editText.textCursor());
         }
         return sqml==null ? null : (org.radixware.schemas.xscml.Sqml)sqml.copy();
+    }
+    
+    public org.radixware.schemas.xscml.Sqml getAdditionalFrom(){
+        return additionalFrom==null ? null : (org.radixware.schemas.xscml.Sqml)additionalFrom.copy();
     }
 
     /**
@@ -338,8 +409,36 @@ public class SqmlEditor extends ExplorerWidget {
     public void insertToolButton(final QToolButton toolBtn) {
         ui.insertToolButton(toolBtn);
     }
+    
+    public void setImportAccessible(final boolean isAccessible){
+        ui.setImportAccessible(isAccessible);
+    }
+    
+    public boolean isImportAccessible(){
+        return ui.isImportAccessible();
+    }
+    
+    public void setExportAccessible(final boolean isAccessible){
+        ui.setExportAccessible(isAccessible);
+    }
+    
+    public boolean isExportAccessible(){
+        return ui.isExportAccessible();
+    }    
 
     public SqmlTagInsertion getSqmlTagInsertion() {
         return tagInsertion;
+    }
+    
+    public void setTranslateButtonEnabled(final boolean isEnabled){
+        ui.setTranslateButtonEnabled(isEnabled);
+    }
+    
+    public boolean isTranslateSqmlEnabled(){
+        return ui.isTranslateSqmlEnabled();
+    }
+    
+    public ISqmlParameters getParamters(){
+        return converter.getParameters();
     }
 }

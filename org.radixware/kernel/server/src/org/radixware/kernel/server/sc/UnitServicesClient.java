@@ -25,7 +25,8 @@ import org.radixware.kernel.common.soap.RadixSoapMessage;
 import org.radixware.kernel.common.ssl.CertificateUtils;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.server.aio.ServiceManifestLoader;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
+import org.radixware.kernel.common.enums.EAadcMember;
 import org.radixware.kernel.server.soap.CxfClientFactory;
 import org.radixware.kernel.server.soap.ICxfClientContext;
 import org.radixware.kernel.server.soap.ServerSoapUtils;
@@ -53,9 +54,9 @@ public class UnitServicesClient extends ServiceClient {
     }
 
     @Override
-    public XmlObject invokeService(final RadixSoapMessage message) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+    public XmlObject invokeService(final RadixSoapMessage message, EAadcMember member) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         objectCache.maintenance();
-        return super.invokeService(message);
+        return super.invokeService(message, member);
     }
 
     @Override

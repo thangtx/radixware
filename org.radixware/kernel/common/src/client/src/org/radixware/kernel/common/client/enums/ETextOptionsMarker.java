@@ -24,9 +24,9 @@ public enum ETextOptionsMarker {
     CHOOSEN_OBJECT(ETextOptionsMarkerGroup.COMPONENT_STATUS,1/*this marker is not default*/),
     INVALID_VALUE(ETextOptionsMarkerGroup.VALUE_STATUS,5),
     BROKEN_REFERENCE(ETextOptionsMarkerGroup.VALUE_STATUS,4),
-    INHERITED_VALUE(ETextOptionsMarkerGroup.VALUE_STATUS,3),    
-    UNDEFINED_VALUE(ETextOptionsMarkerGroup.VALUE_STATUS,2),
-    OVERRIDDEN_VALUE(ETextOptionsMarkerGroup.VALUE_STATUS,1),
+    INHERITED_VALUE(ETextOptionsMarkerGroup.VALUE_STATUS,3),        
+    OVERRIDDEN_VALUE(ETextOptionsMarkerGroup.VALUE_STATUS,2),
+    UNDEFINED_VALUE(ETextOptionsMarkerGroup.VALUE_STATUS,1),
     REGULAR_VALUE(ETextOptionsMarkerGroup.VALUE_STATUS,0);
     
     private final ETextOptionsMarkerGroup group;

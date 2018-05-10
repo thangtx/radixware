@@ -14,15 +14,12 @@ package org.radixware.kernel.explorer.dialogs.settings;
 import com.trolltech.qt.gui.QGridLayout;
 import com.trolltech.qt.gui.QSpinBox;
 import com.trolltech.qt.gui.QWidget;
-//import com.trolltech.qt.gui.QHBoxLayout;
 import com.trolltech.qt.core.QSize;
-//import com.trolltech.qt.core.Qt.Alignment;
-//import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.gui.QLabel;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 
-public class SizesSettingsWidget extends SettingsWidget {
+final class SizesSettingsWidget extends SettingsWidget {
 
     private QLabel sizeLabel;
     private QSpinBox sizeSpinBox;
@@ -65,14 +62,16 @@ public class SizesSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
-        QSize d = new QSize(defaultsize.width(), defaultsize.height());
-        size = src.readQSize(getSettingCfgName(), d);
+    public void readSettings(IExplorerSettings src) {        
+        size = src.readQSize(getSettingCfgName());
+        if (size==null){
+            size= new QSize(defaultsize.width(), defaultsize.height());
+        }
         sizeSpinBox.setValue(size.width());
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         dst.writeQSize(getSettingCfgName(), size);
     }
 }

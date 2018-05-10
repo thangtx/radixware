@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.WeakListeners;
@@ -154,110 +155,116 @@ public class UIPropertySupport extends PropertySupport implements PropertyChange
     }
 
     @Override
-    public void setValue(Object val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if (!(node instanceof AdsCustomWidgetDef)) {
-            UiProperties props = AdsUIUtil.getUiProperties(node);
-            if (props.indexOf(prop) < 0) {
-                props.add(prop);
-            }
-        }
-
-        if (val instanceof AdsUIProperty.PropertyRefProperty) {
-            prop = (AdsUIProperty) val;
-            AdsUIUtil.setUiProperty(node, prop);
-        }
-
-        if (prop instanceof AdsUIProperty.BooleanValueProperty) {
-            if (!Utils.equals(((AdsUIProperty.BooleanValueProperty) prop).value, (Boolean) val)) {
-                ((AdsUIProperty.BooleanValueProperty) prop).value = (Boolean) val;
-                prop.setEditState(EEditState.MODIFIED);
-            }
-        }
-        if (prop instanceof AdsUIProperty.BooleanProperty) {
-            if (!Utils.equals(((AdsUIProperty.BooleanProperty) prop).value, (Boolean) val)) {
-                ((AdsUIProperty.BooleanProperty) prop).value = (Boolean) val;
-                prop.setEditState(EEditState.MODIFIED);
-            }
-        }
-        if (prop instanceof AdsUIProperty.IntProperty) {
-            if (!Utils.equals(((AdsUIProperty.IntProperty) prop).value, (Integer) val)) {
-                ((AdsUIProperty.IntProperty) prop).value = (Integer) val;
-                prop.setEditState(EEditState.MODIFIED);
-            }
-        }
-        if (prop instanceof AdsUIProperty.LongProperty) {
-            if (!Utils.equals(((AdsUIProperty.LongProperty) prop).value, (Long) val)) {
-                ((AdsUIProperty.LongProperty) prop).value = (Long) val;
-                prop.setEditState(EEditState.MODIFIED);
-            }
-        }
-        if (prop instanceof AdsUIProperty.DoubleProperty) {
-            if (!Utils.equals(((AdsUIProperty.DoubleProperty) prop).value, (Double) val)) {
-                ((AdsUIProperty.DoubleProperty) prop).value = (Double) val;
-                prop.setEditState(EEditState.MODIFIED);
-            }
-        }
-        if (prop instanceof AdsUIProperty.FloatProperty) {
-            if (!Utils.equals(((AdsUIProperty.FloatProperty) prop).value, (Float) val)) {
-                ((AdsUIProperty.FloatProperty) prop).value = (Float) val;
-                prop.setEditState(EEditState.MODIFIED);
-            }
-        }
-        if (prop instanceof AdsUIProperty.StringProperty) {
-            final String value = (String) val;
-            final String name = prop.getName();
-            if (name.equals("objectName") || name.equals("layoutName") || name.equals("spacerName")) {
-                if (!Utils.equals(name, AdsUIUtil.getUiName(node))) {
-                    AdsUIUtil.setUiName(node, value);
+    public void setValue(Object val) {
+        try {
+            if (!(node instanceof AdsCustomWidgetDef)) {
+                UiProperties props = AdsUIUtil.getUiProperties(node);
+                if (props.indexOf(prop) < 0) {
+                    props.add(prop);
                 }
-            } else {
-                if (!Utils.equals(((AdsUIProperty.StringProperty) prop).value, value)) {
-                    ((AdsUIProperty.StringProperty) prop).value = value;
+            }
+
+            if (val instanceof AdsUIProperty.PropertyRefProperty) {
+                prop = (AdsUIProperty) val;
+                AdsUIUtil.setUiProperty(node, prop);
+            }
+
+            if (prop instanceof AdsUIProperty.BooleanValueProperty) {
+                if (!Utils.equals(((AdsUIProperty.BooleanValueProperty) prop).value, (Boolean) val)) {
+                    ((AdsUIProperty.BooleanValueProperty) prop).value = (Boolean) val;
                     prop.setEditState(EEditState.MODIFIED);
                 }
             }
-        }
-        if (prop instanceof AdsUIProperty.ColorProperty) {
-            if (!Utils.equals(((AdsUIProperty.ColorProperty) prop).color, (Color) val)) {
-                ((AdsUIProperty.ColorProperty) prop).color = (Color) val;
+            if (prop instanceof AdsUIProperty.BooleanProperty) {
+                if (!Utils.equals(((AdsUIProperty.BooleanProperty) prop).value, (Boolean) val)) {
+                    ((AdsUIProperty.BooleanProperty) prop).value = (Boolean) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.IntProperty) {
+                if (!Utils.equals(((AdsUIProperty.IntProperty) prop).value, (Integer) val)) {
+                    ((AdsUIProperty.IntProperty) prop).value = (Integer) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.LongProperty) {
+                if (!Utils.equals(((AdsUIProperty.LongProperty) prop).value, (Long) val)) {
+                    ((AdsUIProperty.LongProperty) prop).value = (Long) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.DoubleProperty) {
+                if (!Utils.equals(((AdsUIProperty.DoubleProperty) prop).value, (Double) val)) {
+                    ((AdsUIProperty.DoubleProperty) prop).value = (Double) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.FloatProperty) {
+                if (!Utils.equals(((AdsUIProperty.FloatProperty) prop).value, (Float) val)) {
+                    ((AdsUIProperty.FloatProperty) prop).value = (Float) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.StringProperty) {
+                final String value = (String) val;
+                final String name = prop.getName();
+                if (name.equals("objectName") || name.equals("layoutName") || name.equals("spacerName")) {
+                    if (!Utils.equals(name, AdsUIUtil.getUiName(node))) {
+                        AdsUIUtil.setUiName(node, value);
+                    }
+                } else {
+                    if (!Utils.equals(((AdsUIProperty.StringProperty) prop).value, value)) {
+                        ((AdsUIProperty.StringProperty) prop).value = value;
+                        prop.setEditState(EEditState.MODIFIED);
+                    }
+                }
+            }
+            if (prop instanceof AdsUIProperty.ColorProperty) {
+                if (!Utils.equals(((AdsUIProperty.ColorProperty) prop).color, (Color) val)) {
+                    ((AdsUIProperty.ColorProperty) prop).color = (Color) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.BrushProperty) {
+                if (!Utils.equals(((AdsUIProperty.BrushProperty) prop).color, (Color) val)) {
+                    ((AdsUIProperty.BrushProperty) prop).color = (Color) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.EnumValueProperty) {
+                if (!Utils.equals(((AdsUIProperty.EnumValueProperty) prop).value, (UIEnum) val)) {
+                    ((AdsUIProperty.EnumValueProperty) prop).value = (UIEnum) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.CursorShapeProperty) {
+                if (!Utils.equals(((AdsUIProperty.CursorShapeProperty) prop).shape, (ECursorShape) val)) {
+                    ((AdsUIProperty.CursorShapeProperty) prop).shape = (ECursorShape) val;
+                    prop.setEditState(EEditState.MODIFIED);
+                }
+            }
+            if (prop instanceof AdsUIProperty.AccessProperty) {
+                ((AdsUIProperty.AccessProperty) prop).setAccess((EAccess) val);
+            }
+
+            if (prop instanceof AdsUIProperty.RectProperty
+                    || prop instanceof AdsUIProperty.SizeProperty
+                    || prop instanceof AdsUIProperty.SizePolicyProperty) {
+
                 prop.setEditState(EEditState.MODIFIED);
             }
-        }
-        if (prop instanceof AdsUIProperty.BrushProperty) {
-            if (!Utils.equals(((AdsUIProperty.BrushProperty) prop).color, (Color) val)) {
-                ((AdsUIProperty.BrushProperty) prop).color = (Color) val;
+
+            if (prop instanceof AdsUIProperty.EmbeddedEditorOpenParamsProperty
+                    || prop instanceof AdsUIProperty.EmbeddedSelectorOpenParamsProperty) {
+
                 prop.setEditState(EEditState.MODIFIED);
             }
-        }
-        if (prop instanceof AdsUIProperty.EnumValueProperty) {
-            if (!Utils.equals(((AdsUIProperty.EnumValueProperty) prop).value, (UIEnum) val)) {
-                ((AdsUIProperty.EnumValueProperty) prop).value = (UIEnum) val;
-                prop.setEditState(EEditState.MODIFIED);
-            }
-        }
-        if (prop instanceof AdsUIProperty.CursorShapeProperty) {
-            if (!Utils.equals(((AdsUIProperty.CursorShapeProperty) prop).shape, (ECursorShape) val)) {
-                ((AdsUIProperty.CursorShapeProperty) prop).shape = (ECursorShape) val;
-                prop.setEditState(EEditState.MODIFIED);
-            }
-        }
-        if (prop instanceof AdsUIProperty.AccessProperty) {
-            ((AdsUIProperty.AccessProperty) prop).setAccess((EAccess) val);
-        }
 
-        if (prop instanceof AdsUIProperty.RectProperty
-                || prop instanceof AdsUIProperty.SizeProperty) {
-
-            prop.setEditState(EEditState.MODIFIED);
+            AdsUIUtil.fire(node, prop, this);
+        } catch (Throwable ex) {
+            java.util.logging.Logger.getLogger(UIPropertySupport.class.getName()).log(Level.WARNING, "Can not change property", ex);
         }
-
-        if (prop instanceof AdsUIProperty.EmbeddedEditorOpenParamsProperty
-                || prop instanceof AdsUIProperty.EmbeddedSelectorOpenParamsProperty) {
-
-            prop.setEditState(EEditState.MODIFIED);
-        }
-
-        AdsUIUtil.fire(node, prop, this);
+        
     }
     private final static Set<String> extendableProps = new HashSet<>(Arrays.asList("toolTip"));
 

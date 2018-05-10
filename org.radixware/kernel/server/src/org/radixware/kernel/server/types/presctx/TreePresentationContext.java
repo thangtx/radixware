@@ -19,8 +19,8 @@ public abstract class TreePresentationContext extends PresentationContext{
     
     private final Id explorerItemId;
     
-    public TreePresentationContext(final Id explorerItemId, final EntityGroup group){
-        super(group);
+    public TreePresentationContext(final Id explorerItemId, final EntityGroup group, final Id selectorPresentationId){
+        super(group, selectorPresentationId);
         this.explorerItemId = explorerItemId;
     }
     

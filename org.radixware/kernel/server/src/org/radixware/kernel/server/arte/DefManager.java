@@ -49,6 +49,7 @@ import org.radixware.kernel.server.meta.clazzes.RadDetailPropDef;
 import org.radixware.kernel.server.meta.clazzes.RadPropDef;
 
 import org.radixware.kernel.server.meta.presentations.RadExplorerRootDef;
+import org.radixware.kernel.starter.radixloader.RadixLoader;
 
 /**
  * Provides access to versioned meta.
@@ -246,6 +247,10 @@ public class DefManager implements IRadixDefManager {
         return releaseCache.getMsdlScheme(id);
     }
 
+    public RootMsdlScheme findMsdlSchemeByTargetNamespace(final String targetNamespace) {
+        return releaseCache.findMsdlSchemeByTargetNamespace(targetNamespace);
+    }
+
     public RadClassDef getClassDef(final Id id) {
         return releaseCache.getClassDef(id);
     }
@@ -283,6 +288,10 @@ public class DefManager implements IRadixDefManager {
 
     public Collection<RadRoleDef> getRoleDefs() {
         return releaseCache.getAppAndStandardRoles();
+    }
+
+    public void updateAppRolesCache() {
+        releaseCache.updateAppRolesCache();
     }
 
     public Collection<RadRoleDef> getAvailableRoleDefs() {
@@ -328,6 +337,7 @@ public class DefManager implements IRadixDefManager {
                 arte.getTrace().put(EEventSeverity.WARNING, "Error on maintenance user cache for version " + rc.getRelease().getVersion() + ": " + ExceptionTextFormatter.throwableToString(ex), EEventSource.ARTE);
             }
         }
+        releasePool.scheduleOldVersionsForClose();
         for (ReleaseCache rc : releasePool.getSchedulledForClose()) {
             try {
                 setVersion(rc.getRelease().getVersion());
@@ -373,7 +383,7 @@ public class DefManager implements IRadixDefManager {
             schedulledForClose = new ArrayList<>();
             this.releaseFactory = releaseFactory;
         }
-
+        
         public ReleaseCache get(final Long version) throws ReleaseLoadException {
             if (version == null) {
                 throw new IllegalUsageError("Version can not be null");
@@ -386,6 +396,7 @@ public class DefManager implements IRadixDefManager {
                     return r;
                 }
             }
+            
             if (pool.size() == MAX_SIZE) {
                 ReleaseCache oldReleaseCache = null;
                 for (ReleaseCache r : pool) {
@@ -403,8 +414,7 @@ public class DefManager implements IRadixDefManager {
                     arte.getTrace().put(EEventSeverity.DEBUG, "ReleaseCache (version = " + String.valueOf(oldReleaseCache.getRelease().getVersion()) + ") removed from pool", EEventSource.DEF_MANAGER);
                 } else {
                     oldReleaseCache.clearDbQueriesCaches();
-                    schedulledForClose.add(oldReleaseCache);
-                    arte.getTrace().put(EEventSeverity.DEBUG, "ReleaseCache (version = " + String.valueOf(oldReleaseCache.getRelease().getVersion()) + ") schedulled for close", EEventSource.DEF_MANAGER);
+                    scheduleForClose(oldReleaseCache);
                     arte.requestMaintenance();
                 }
 
@@ -421,6 +431,30 @@ public class DefManager implements IRadixDefManager {
                 }
             }
             return r;
+        }
+
+        private void scheduleForClose(ReleaseCache r) {
+            if (r == null) {
+                return;
+            }
+            schedulledForClose.add(r);
+            arte.getTrace().put(EEventSeverity.DEBUG, "ReleaseCache (version = " + String.valueOf(r.getRelease().getVersion()) + ") schedulled for close", EEventSource.DEF_MANAGER);
+        }
+
+        public void scheduleOldVersionsForClose() {
+            final List<ReleaseCache> old = new ArrayList<>();
+            final long minAcceptableVersion = arte.getInstance().getArtePool().getMinAcceptableVersion();
+            for (ReleaseCache r : pool) {
+
+                if ((minAcceptableVersion != -1 && r.getRelease().getVersion() < minAcceptableVersion)
+                        || (r.getRelease().getVersion() != arte.getActualVersion() && r.getRelease().getVersion() != RadixLoader.getInstance().getPreviousRevision())) {
+                    old.add(r);
+                }
+            }
+            pool.removeAll(old);
+            for (ReleaseCache r : old) {
+                scheduleForClose(r);
+            }
         }
 
         public List<ReleaseCache> getCachedVersions() {
@@ -559,6 +593,7 @@ public class DefManager implements IRadixDefManager {
         return releaseCache.getRelease().getDefIdsByType(type);
     }
 
+    @Override
     public String getDefTitleById(final Id defId) {
         if (defId != null && defId.getPrefix() == EDefinitionIdPrefix.USER_DEFINED_REPORT) {
             RadClassDef classDef = getClassDef(defId);

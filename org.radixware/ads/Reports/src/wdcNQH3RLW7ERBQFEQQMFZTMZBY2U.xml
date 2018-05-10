@@ -41,12 +41,18 @@
               <ui:property name="objectName">
                 <ui:string>tree</ui:string>
               </ui:property>
+              <ui:property name="columnCount">
+                <ui:int>2</ui:int>
+              </ui:property>
+              <ui:property name="itemsExpandable">
+                <ui:bool>true</ui:bool>
+              </ui:property>
               <ui:property name="geometry">
                 <ui:rect>
-                  <ui:x>2</ui:x>
-                  <ui:y>2</ui:y>
+                  <ui:x>49</ui:x>
+                  <ui:y>57</ui:y>
                   <ui:width>471</ui:width>
-                  <ui:height>372</ui:height>
+                  <ui:height>342</ui:height>
                 </ui:rect>
               </ui:property>
             </ui:widget>
@@ -86,13 +92,17 @@
             <xsc:Java>private final java.util.List&lt;</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM">
+              <xsc:Presentation>Explorer.Types::Pid</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>> reportPubPids = new java.util.ArrayList&lt;</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM">
+              <xsc:Presentation>Explorer.Types::Pid</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>>();
@@ -102,14 +112,18 @@ private static class ReportPubData {
     public final </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM">
+              <xsc:Presentation>Explorer.Types::Pid</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> pubPid;
     public final java.util.List&lt;</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+            <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+              <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>> supportedFormats;
@@ -117,13 +131,17 @@ private static class ReportPubData {
     public ReportPubData(</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM">
+              <xsc:Presentation>Explorer.Types::Pid</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> pubPid, java.util.List&lt;</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+            <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+              <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>> supportedFormats) {
@@ -148,47 +166,102 @@ private static class ReportPubData {
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>.setColumnCount(1);
+                <xsc:Java>.setColumnCount(2);
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.header().hide();
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adc3AEWZU624BBLRHNBGYE5ZAE5MI"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adc3AEWZU624BBLRHNBGYE5ZAE5MI">
+                  <xsc:Presentation>Explorer.Utils::DialogUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc3AEWZU624BBLRHNBGYE5ZAE5MI mthMYZBFJCYHNGFDP4O6RXJFNWHTU" Invoke="true"/>
+                <xsc:IdReference Path="adc3AEWZU624BBLRHNBGYE5ZAE5MI mthMYZBFJCYHNGFDP4O6RXJFNWHTU" Invoke="true">
+                  <xsc:Presentation>initTree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(getEnvironment(), </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setItemsExpandable(true);
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthOIVRCJPUANHK7BHKDBFJX67KQY" Invoke="true">
+                  <xsc:Presentation>setItemDelegateForColumn</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1, new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY adcPIOEU2K2FNE5DCFGL2JRZIREVM mthN7ATC42T5JALXNHIJ24H2GOSZA" Invoke="true">
+                  <xsc:Presentation>ReportTreeClassColumnDelegate</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()));
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.clear();
@@ -198,12 +271,57 @@ if (xRoot != null) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthZHADYI7UXNA2BMIZC7XZ2J2C4E" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthZHADYI7UXNA2BMIZC7XZ2J2C4E" Invoke="true">
+                  <xsc:Presentation>addTopic</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(xRoot, null /*parent*/, true /*isRoot*/);   
 }
+
 </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.resizeColumnToContents(0);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgABRRDBJTB5HTXLEW3MXMV3KUKE" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:object</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mth5MV2VEVAJRCR3OPL4WDEMNH3G4" Invoke="true">
+                  <xsc:Presentation>makeSearchAllColumns</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgABRRDBJTB5HTXLEW3MXMV3KUKE" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:object</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Model.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mthU4FFCONA4BA67PZNDT7P2QBRTI" Invoke="true">
+                  <xsc:Presentation>setAddBlankLinesToResultOfSearch</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);</xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>
@@ -217,19 +335,25 @@ if (xRoot != null) {
                 <xsc:Java>final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE">
+                  <xsc:Presentation>Explorer.Qt.Types::QTreeWidgetItem</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> currentItem = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true">
+                  <xsc:Presentation>currentItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -237,7 +361,9 @@ if (currentItem != null) {
     ReportPubData data = (ReportPubData) currentItem.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthQ2NO2QBRD5DZJCXWA6QLYIHJBU" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthQ2NO2QBRD5DZJCXWA6QLYIHJBU" Invoke="true">
+                  <xsc:Presentation>data</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(0, Qt.ItemDataRole.UserRole);
@@ -268,7 +394,9 @@ if (xTopic.isSetTopics()){
     final java.util.List&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic">
+                  <xsc:Presentation>ReportsXsd:ReportPubTopic</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>> xSubTopics = xTopic.Topics.TopicList;
@@ -276,14 +404,18 @@ if (xTopic.isSetTopics()){
         for (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic">
+                  <xsc:Presentation>ReportsXsd:ReportPubTopic</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> xSubTopic : xSubTopics){
             if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthXQLHCXC5HBDVJDESFBVFYVA3BY" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthXQLHCXC5HBDVJDESFBVFYVA3BY" Invoke="true">
+                  <xsc:Presentation>isContainsPub</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(xSubTopic)){
@@ -299,7 +431,7 @@ return false;</xsc:Java>
           </Sources>
         </Method>
         <Method Id="mthZHADYI7UXNA2BMIZC7XZ2J2C4E" Name="addTopic" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="xTopic" Id="mprJIJ5TZWNRBCM3ITT6VWMMRNZC4">
               <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
@@ -317,7 +449,9 @@ return false;</xsc:Java>
                 <xsc:Java>if (!</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthXQLHCXC5HBDVJDESFBVFYVA3BY" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthXQLHCXC5HBDVJDESFBVFYVA3BY" Invoke="true">
+                  <xsc:Presentation>isContainsPub</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(xTopic)) {
@@ -327,7 +461,9 @@ return false;</xsc:Java>
 final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE">
+                  <xsc:Presentation>Explorer.Qt.Types::QTreeWidgetItem</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> topic;
@@ -338,7 +474,9 @@ if (isRoot) {
         topic = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthZNH4NZLNJNALBKDE7SOIKIKVLQ" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthZNH4NZLNJNALBKDE7SOIKIKVLQ" Invoke="true">
+                  <xsc:Presentation>QTreeWidgetItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(parent);
@@ -346,13 +484,17 @@ if (isRoot) {
         topic = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthZNH4NZLNJNALBKDE7SOIKIKVLQ" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthZNH4NZLNJNALBKDE7SOIKIKVLQ" Invoke="true">
+                  <xsc:Presentation>QTreeWidgetItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -360,39 +502,69 @@ if (isRoot) {
     topic.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true">
+                  <xsc:Presentation>setText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(0, xTopic.Title);
+                <xsc:Java>(0, xTopic.Title);    
     topic.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth3TM5C22IUFHFVCHC4KYGMW3J44" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true">
+                  <xsc:Presentation>setText</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1, xTopic.Title);
+    topic.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthQ3EEPER7UZBOPLKA7G2DO7XTDU" Invoke="true">
+                  <xsc:Presentation>setFirstColumnSpanned</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+    topic.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth3TM5C22IUFHFVCHC4KYGMW3J44" Invoke="true">
+                  <xsc:Presentation>setIcon</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(0, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA">
+                  <xsc:Presentation>Explorer.Icons::ExplorerIcon</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.getQIcon(Environment.getDefManager().getImage(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="imgHJGHAR6FB5BKTJMV45OAZ4W3NI"/>
+                <xsc:IdReference Path="imgHJGHAR6FB5BKTJMV45OAZ4W3NI">
+                  <xsc:Presentation>Report Topic</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>)));
     topic.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthLWAPZH3FTRAXDIQBYB7U5ZWIWE" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthLWAPZH3FTRAXDIQBYB7U5ZWIWE" Invoke="true">
+                  <xsc:Presentation>setToolTip</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(0, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthSGFBJQDEMBGCXLIOQYOHNQ7LZY" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthSGFBJQDEMBGCXLIOQYOHNQ7LZY" Invoke="true">
+                  <xsc:Presentation>makeToolTip</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(xTopic.Description, xTopic.Location));
@@ -400,26 +572,34 @@ if (isRoot) {
         final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM">
+                  <xsc:Presentation>Explorer.Types::Pid</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> topicPid = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthZERC4XWYWRFPFB3J5OEFQQ4CKM" Invoke="true"/>
+                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthZERC4XWYWRFPFB3J5OEFQQ4CKM" Invoke="true">
+                  <xsc:Presentation>Pid</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="tbl34F7JPGYHJEJHBCE7ISQKJN3IY"/>
+                <xsc:IdReference Path="tbl34F7JPGYHJEJHBCE7ISQKJN3IY">
+                  <xsc:Presentation>Reports::ReportPubTopic</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, xTopic.Pid);
         topic.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true">
+                  <xsc:Presentation>setData</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(0, com.trolltech.qt.core.Qt.ItemDataRole.UserRole, new ReportPubData(topicPid, null));
@@ -430,7 +610,9 @@ if (xTopic.isSetTopics()) {
     final java.util.List&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic">
+                  <xsc:Presentation>ReportsXsd:ReportPubTopic</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>> xSubTopics = xTopic.Topics.TopicList;
@@ -438,14 +620,18 @@ if (xTopic.isSetTopics()) {
         for (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPubTopic">
+                  <xsc:Presentation>ReportsXsd:ReportPubTopic</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> xSubTopic : xSubTopics) {
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthZHADYI7UXNA2BMIZC7XZ2J2C4E" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthZHADYI7UXNA2BMIZC7XZ2J2C4E" Invoke="true">
+                  <xsc:Presentation>addTopic</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(xSubTopic, topic, false);
@@ -457,7 +643,9 @@ if (xTopic.isSetPubs()) {
     final java.util.List&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPub"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPub">
+                  <xsc:Presentation>ReportsXsd:ReportPub</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>> xPubs = xTopic.Pubs.PubList;
@@ -465,14 +653,18 @@ if (xTopic.isSetPubs()) {
         for (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPub"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportPub">
+                  <xsc:Presentation>ReportsXsd:ReportPub</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> xPub : xPubs) {
             final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE">
+                  <xsc:Presentation>Explorer.Qt.Types::QTreeWidgetItem</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubItem;
@@ -480,7 +672,9 @@ if (xTopic.isSetPubs()) {
                 pubItem = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthZNH4NZLNJNALBKDE7SOIKIKVLQ" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthZNH4NZLNJNALBKDE7SOIKIKVLQ" Invoke="true">
+                  <xsc:Presentation>QTreeWidgetItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(topic);
@@ -488,13 +682,17 @@ if (xTopic.isSetPubs()) {
                 pubItem = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthZNH4NZLNJNALBKDE7SOIKIKVLQ" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthZNH4NZLNJNALBKDE7SOIKIKVLQ" Invoke="true">
+                  <xsc:Presentation>QTreeWidgetItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -502,93 +700,229 @@ if (xTopic.isSetPubs()) {
             pubItem.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true">
+                  <xsc:Presentation>setText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(0, xPub.Title);
+                <xsc:Java>(0, xPub.Title);            
             pubItem.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth3TM5C22IUFHFVCHC4KYGMW3J44" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth3TM5C22IUFHFVCHC4KYGMW3J44" Invoke="true">
+                  <xsc:Presentation>setIcon</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(0, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA">
+                  <xsc:Presentation>Explorer.Icons::ExplorerIcon</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.getQIcon(Environment.getDefManager().getImage(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="imgZV433DCBJRFDTFK7PCI7ZJURGU"/>
+                <xsc:IdReference Path="imgZV433DCBJRFDTFK7PCI7ZJURGU">
+                  <xsc:Presentation>Report Publication</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>)));
             pubItem.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthLWAPZH3FTRAXDIQBYB7U5ZWIWE" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthLWAPZH3FTRAXDIQBYB7U5ZWIWE" Invoke="true">
+                  <xsc:Presentation>setToolTip</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(0, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthSGFBJQDEMBGCXLIOQYOHNQ7LZY" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthSGFBJQDEMBGCXLIOQYOHNQ7LZY" Invoke="true">
+                  <xsc:Presentation>makeToolTip</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(xPub.Description, xPub.Location));
             final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM">
+                  <xsc:Presentation>Explorer.Types::Pid</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubPid = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthZERC4XWYWRFPFB3J5OEFQQ4CKM" Invoke="true"/>
+                <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthZERC4XWYWRFPFB3J5OEFQQ4CKM" Invoke="true">
+                  <xsc:Presentation>Pid</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="tblUNC67IF5OBCX7NOPNLQOCUG374"/>
+                <xsc:IdReference Path="tblUNC67IF5OBCX7NOPNLQOCUG374">
+                  <xsc:Presentation>Reports::ReportPub</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, xPub.Pid);
             pubItem.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true">
+                  <xsc:Presentation>setData</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(0, Qt.ItemDataRole.UserRole, new ReportPubData(pubPid, xPub.SupportedFormats));
+                <xsc:Java>(0, Qt.ItemDataRole.UserRole, new ReportPubData(pubPid, xPub.SupportedFormats));            
+            
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> className = xPub.ReportClassName;
+            if (className == null || className.isEmpty()) {
+                className = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsRYWSLFXWZJALHDEGENYNQN2RAU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> + (xPub.ReportClassId == null ? "" : "::" + xPub.ReportClassId.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true">
+                  <xsc:Presentation>toString</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+            }
+            
+            pubItem.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthUN4636AGPNAPPLWJLBVY2O2EBA" Invoke="true">
+                  <xsc:Presentation>setText</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1, className);
+            pubItem.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthLWAPZH3FTRAXDIQBYB7U5ZWIWE" Invoke="true">
+                  <xsc:Presentation>setToolTip</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mthSGFBJQDEMBGCXLIOQYOHNQ7LZY" Invoke="true">
+                  <xsc:Presentation>makeToolTip</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(xPub.Description, xPub.Location));
+            pubItem.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthNM2FAFOETVB4VANCCBBGW4XQUE" Invoke="true">
+                  <xsc:Presentation>setForeground</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1, new com.trolltech.qt.gui.QBrush(com.trolltech.qt.gui.QColor.lightGray));
+            pubItem.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthI4V27UVGMRFF7MZLZMLYM22N4M" Invoke="true">
+                  <xsc:Presentation>setTextAlignment</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1, com.trolltech.qt.core.Qt.AlignmentFlag.AlignRight.value());
+            
+            </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="1">
+                  <xsc:Presentation>Bool</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> isUserReport = xPub.ReportClassId == null ? null : xPub.ReportClassId.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthC7F2QKANMFBQTB24S6XOYKQHEY" Invoke="true">
+                  <xsc:Presentation>getPrefix</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aciQUVJXH3ULNGTXG64BG53LY673M" Invoke="true">
+                  <xsc:Presentation>Meta::DefinitionIdPrefix:USER_DEFINED_REPORT</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            pubItem.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthJOOM4H55GNHRJKSOD3MRWUQL2M" Invoke="true">
+                  <xsc:Presentation>setData</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1, Qt.ItemDataRole.UserRole, isUserReport);
+            
             this.reportPubPids.add(pubPid);
             // select first element
             if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true">
+                  <xsc:Presentation>currentItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>() == null) {
                 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthXIW4NYB3KBEZLDUGOAS3LGJBSA" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthXIW4NYB3KBEZLDUGOAS3LGJBSA" Invoke="true">
+                  <xsc:Presentation>setCurrentItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(pubItem);
@@ -601,7 +935,9 @@ if (topic != null) {
     topic.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthX5GNWR7SOJAJDH2UTXHKEMPMMQ" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthX5GNWR7SOJAJDH2UTXHKEMPMMQ" Invoke="true">
+                  <xsc:Presentation>setExpanded</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(true);
@@ -611,7 +947,7 @@ if (topic != null) {
           </Sources>
         </Method>
         <Method Id="mthIYOEKGWWEJCFXAKI336Z7OOSVU" Name="tree_currentItemChanged" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="current" Id="mprNYPP6M4OTFG2HOMNFTRSTTX3LE">
               <Type TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
@@ -623,7 +959,9 @@ if (topic != null) {
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U sig2A3MQZF46RB3JNIKWZIZIY6KJQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U sig2A3MQZF46RB3JNIKWZIZIY6KJQ" Invoke="true">
+                  <xsc:Presentation>currentItemChanged</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.emit();
@@ -633,7 +971,7 @@ if (topic != null) {
           </Sources>
         </Method>
         <Method Id="mthAMUP3GT66JH3JKQMOULJZROBHY" Name="tree_itemDoubleClicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="item" Id="mpr26VTJZGJHNGVFA276CIG26BYBQ">
               <Type TypeId="400" extStr="com.trolltech.qt.gui.QTreeWidgetItem"/>
@@ -648,14 +986,18 @@ if (topic != null) {
                 <xsc:Java>if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mth56CM6PGXKFD7XKQYKZZIZ5HZ4A" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U admNQH3RLW7ERBQFEQQMFZTMZBY2U mth56CM6PGXKFD7XKQYKZZIZ5HZ4A" Invoke="true">
+                  <xsc:Presentation>getCurrentPid</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>()!=null)
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U sigYVLUH7ZTU5GQPBSHGOEE6JCVOM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U sigYVLUH7ZTU5GQPBSHGOEE6JCVOM" Invoke="true">
+                  <xsc:Presentation>accepted</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.emit();    
@@ -685,7 +1027,7 @@ if (topic != null) {
           </Sources>
         </Method>
         <Method Id="mthSGFBJQDEMBGCXLIOQYOHNQ7LZY" Name="makeToolTip" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="description" Id="mprBIOLCAOL7NBSDIUSCV7ZYCXABQ">
               <Type TypeId="21"/>
@@ -728,19 +1070,25 @@ return res + "</body></html>";
                 <xsc:Java>final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE">
+                  <xsc:Presentation>Explorer.Qt.Types::QTreeWidgetItem</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> currentItem = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true"/>
+                <xsc:IdReference Path="wdcNQH3RLW7ERBQFEQQMFZTMZBY2U wdgLH3OIXVAQRHX5NWB4Q53N76PCM" Invoke="true">
+                  <xsc:Presentation>ChooseReportPubTreeWidget:Widget:tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true">
+                  <xsc:Presentation>currentItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -748,7 +1096,9 @@ if (currentItem != null) {
     ReportPubData data = (ReportPubData) currentItem.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthQ2NO2QBRD5DZJCXWA6QLYIHJBU" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthQ2NO2QBRD5DZJCXWA6QLYIHJBU" Invoke="true">
+                  <xsc:Presentation>data</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(0, Qt.ItemDataRole.UserRole);
@@ -757,7 +1107,9 @@ if (currentItem != null) {
     java.util.List&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+                <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                  <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>> formats = data.supportedFormats;

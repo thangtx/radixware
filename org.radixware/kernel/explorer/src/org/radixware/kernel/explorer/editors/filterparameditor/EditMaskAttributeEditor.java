@@ -33,15 +33,16 @@ final class EditMaskAttributeEditor extends AbstractAttributeEditor<EditMask>{
     
     private final QLabel lbEditMask;
     private final ValEditMaskEditor valEditMask;
+    private EValType valType;
     
     private final static EnumSet<EValType> SUPPORTED_VAL_TYPES = 
             EnumSet.of(EValType.ARR_CHAR, EValType.ARR_DATE_TIME, EValType.ARR_INT, EValType.ARR_NUM,  EValType.ARR_STR,
-                       EValType.CHAR,     EValType.DATE_TIME,     EValType.INT,      EValType.NUM,      EValType.STR
-                      );
+                       EValType.CHAR,     EValType.DATE_TIME,     EValType.INT,      EValType.NUM,      EValType.STR,
+                      EValType.BOOL);
     
     protected EditMaskAttributeEditor(IClientEnvironment environment, final boolean isReadonly, final QWidget parent) {
         super(environment);
-        lbEditMask = new QLabel(getAttribute().getTitle(), parent);
+        lbEditMask = new QLabel(getAttribute().getTitle(environment), parent);
         lbEditMask.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         lbEditMask.setObjectName("lbEditMask");
         valEditMask = new ValEditMaskEditor(environment, parent, EEditMaskType.STR);
@@ -74,6 +75,7 @@ final class EditMaskAttributeEditor extends AbstractAttributeEditor<EditMask>{
         }
         else{
             setVisible(true);
+            valType = parameter.getType();
             if (parameter.getEnumId()==null){
                 valEditMask.setValType(parameter.getType());
             }
@@ -102,7 +104,9 @@ final class EditMaskAttributeEditor extends AbstractAttributeEditor<EditMask>{
     public void onBaseAttributeChanged(AbstractAttributeEditor linkedEditor) {
         switch (linkedEditor.getAttribute()){
             case ENUM:{
-                if (linkedEditor.getAttributeValue()!=null){
+                if (linkedEditor.getAttributeValue()==null){                                        
+                    valEditMask.setValType(valType);
+                }else{
                     final Id enumId = ((ISqmlEnumDef)linkedEditor.getAttributeValue()).getId();
                     final RadEnumPresentationDef enumDef = 
                             getEnvironment().getDefManager().getEnumPresentationDef(enumId);
@@ -129,6 +133,7 @@ final class EditMaskAttributeEditor extends AbstractAttributeEditor<EditMask>{
                 if (valType!=null){
                     if (SUPPORTED_VAL_TYPES.contains(ValueConverter.serverValType2ClientValType(valType))){
                         setVisible(true);
+                        this.valType = valType;
                         valEditMask.setValType(valType);
                     }
                     else{

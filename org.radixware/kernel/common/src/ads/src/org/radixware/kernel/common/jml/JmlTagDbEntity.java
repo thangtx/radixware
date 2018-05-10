@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.common.jml;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
@@ -26,32 +28,40 @@ import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.types.Pid;
 import org.radixware.schemas.xscml.JmlType.Item;
 
 
 public class JmlTagDbEntity extends Jml.Tag {
+    
+    public static final char[] UF_OWNER_FIELD_NAME = "____________________$ufOwwer$".toCharArray();
 
     public static final class Factory {
+        
+        private Factory(){            
+        }
 
-        static final JmlTagDbEntity loadFrom(Item.DbEntity xDef) {
+        static JmlTagDbEntity loadFrom(Item.DbEntity xDef) {
             return new JmlTagDbEntity(xDef);
         }
 
-        public static final JmlTagDbEntity newInstance(Id entityId, String pidAsStr, boolean checkExistance) {
+        public static JmlTagDbEntity newInstance(Id entityId, String pidAsStr, boolean checkExistance) {
             return new JmlTagDbEntity(entityId, pidAsStr, checkExistance, false);
         }
 
-        public static final JmlTagDbEntity newInstanceForUFOwner(Id entityId, String pidAsStr) {
+        public static JmlTagDbEntity newInstanceForUFOwner(Id entityId, String pidAsStr) {
             return new JmlTagDbEntity(entityId, pidAsStr, false, true);
         }
     }
+    
     private String pidAsStr;
     private String title;
     private Id entityId;
-    private boolean checkExistance;
-    private boolean isOwner;
+    private final boolean checkExistance;
+    private final boolean isOwner;
 
     private JmlTagDbEntity(Item.DbEntity xDef) {
+        super(xDef);
         if (xDef != null) {
             entityId = xDef.getEntityId();
             pidAsStr = xDef.getPidAsStr();
@@ -67,6 +77,7 @@ public class JmlTagDbEntity extends Jml.Tag {
     }
 
     private JmlTagDbEntity(Id entityId, String pidAsStr, boolean checkExistance, boolean isOwner) {
+        super(null);
         this.entityId = entityId;//entityId.getPrefix() == EDefinitionIdPrefix.ADS_ENTITY_CLASS ? Id.Factory.changePrefix(entityId, EDefinitionIdPrefix.DDS_TABLE) : entityId;
         this.pidAsStr = pidAsStr;
         this.checkExistance = checkExistance;
@@ -86,6 +97,7 @@ public class JmlTagDbEntity extends Jml.Tag {
     @Override
     public void appendTo(Item item) {
         Item.DbEntity xDef = item.addNewDbEntity();
+        appendTo(xDef);
         xDef.setEntityId(entityId);
         xDef.setCheckExistance(checkExistance);
         xDef.setPidAsStr(pidAsStr);
@@ -126,9 +138,22 @@ public class JmlTagDbEntity extends Jml.Tag {
             if (target == null) {
                 error(problemHandler, "Class not found: #" + entityId.toString());
             }
-        }
-        if (pidAsStr == null) {
+        }        
+        if (pidAsStr == null && !isOwner) {
             error(problemHandler, "Object PID not specified");
+        }
+        
+        if (h != null && h.getHistory() != null) {
+            DbEntityTagsCheckContext context = (DbEntityTagsCheckContext) h.getHistory().get(DbEntityTagsCheckContext.class);
+            if (context != null && !isUFOwnerRef()) {
+                Pid pid = new Pid(getTableId(), getPidAsStr());
+                LinkedHashSet<JmlTagDbEntity> tags = context.pids2dbTags.get(pid);
+                if (tags == null) {
+                    tags = new LinkedHashSet<>();
+                    context.pids2dbTags.put(pid, tags);
+                }
+                tags.add(this);
+            }
         }
     }
 
@@ -215,8 +240,7 @@ public class JmlTagDbEntity extends Jml.Tag {
 
     public Id getEntityId() {
         return entityId;
-    }
-    public static final char[] UF_OWNER_FIELD_NAME = "____________________$ufOwwer$".toCharArray();
+    }    
 
     @Override
     public JavaSourceSupport getJavaSourceSupport() {
@@ -227,7 +251,7 @@ public class JmlTagDbEntity extends Jml.Tag {
 
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagDbEntity.this) {
                     @Override
                     public boolean writeCode(CodePrinter printer) {
                         AdsDefinition def = (AdsDefinition) getCurrentRoot();
@@ -238,7 +262,8 @@ public class JmlTagDbEntity extends Jml.Tag {
                         //if (table == null) {
                         //    return false;
                         //} 
-
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         AdsClassDef classDef = AdsSearcher.Factory.newAdsClassSearcher(def.getModule()).findById(entityId).get();
                         Id tableId = getTableId(classDef);
                         boolean canUseTyping = canUseTyping(classDef);
@@ -270,6 +295,7 @@ public class JmlTagDbEntity extends Jml.Tag {
                         if (canUseTyping) {
                             printer.print(')');
                         }
+                        WriterUtils.leaveHumanUnreadableBlock(printer);
                         return true;
                     }
 
@@ -280,5 +306,10 @@ public class JmlTagDbEntity extends Jml.Tag {
                 };
             }
         };
+    }
+    
+    public static class DbEntityTagsCheckContext {
+
+        public final LinkedHashMap<Pid, LinkedHashSet<JmlTagDbEntity>> pids2dbTags = new LinkedHashMap<>();
     }
 }

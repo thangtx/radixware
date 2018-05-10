@@ -76,7 +76,7 @@ public final class UnistallReportWizardWizardAction {
         }
     }
 
-    static List<String> execDisableAction(final Id reportId, final String command) {
+    public static List<String> execDisableAction(final Id reportId, final String command) {
         final List<String> result = new LinkedList<>();
         UserExtensionManager.getInstance().getRequestExecutor().submitAction(new RequestExecutor.ExplorerActionWithWaitImpl() {
 

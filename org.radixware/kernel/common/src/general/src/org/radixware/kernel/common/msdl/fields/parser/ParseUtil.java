@@ -8,17 +8,16 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.msdl.fields.parser;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlObject;
 
 import org.radixware.kernel.common.utils.Hex;
-
 
 public class ParseUtil {
 
@@ -31,17 +30,13 @@ public class ParseUtil {
     }
 
     public static byte convertHexToByte(byte b1, byte b2) throws UnsupportedEncodingException {
-        return Hex.decode(new String(new byte[]{b1, b2}, "US-ASCII"))[0];
+        return Hex.decode(new String(new byte[]{b1, b2}, StandardCharsets.US_ASCII))[0];
     }
 
     public static byte[] convertByteToHex(byte b) {
         byte res[] = null;
-        try {
-            String s = Integer.toHexString(b).toUpperCase();
-            res = s.getBytes("US-ASCII");
-        } catch (UnsupportedEncodingException e) {
-            Logger.getLogger(ParseUtil.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-        }
+        String s = Integer.toHexString(b).toUpperCase();
+        res = s.getBytes(StandardCharsets.US_ASCII);
         return res;
     }
 

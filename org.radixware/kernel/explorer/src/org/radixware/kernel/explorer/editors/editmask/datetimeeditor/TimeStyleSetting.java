@@ -23,6 +23,7 @@ final class TimeStyleSetting extends AbstractDateTimeStyleSetting {
     public TimeStyleSetting(final IClientEnvironment env, final QWidget parent) {
         super(env, parent);
         label.setText(env.getMessageProvider().translate("EditMask", "Time style:"));
+        setValue(EDateTimeStyle.DEFAULT);
      }
     
     @Override

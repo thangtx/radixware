@@ -17,6 +17,7 @@ import org.netbeans.api.visual.layout.Layout;
 import org.netbeans.api.visual.widget.Widget;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.ui.AdsLayout;
+import org.radixware.kernel.common.defs.ads.ui.AdsUIItemDef;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIUtil;
 import org.radixware.kernel.common.defs.ads.ui.AdsWidgetDef;
 import org.radixware.kernel.designer.ads.editors.clazz.forms.GraphSceneImpl;
@@ -47,7 +48,10 @@ public class VerticalLayout implements Layout {
 
             AdsLayout layout = null;
             if (node instanceof AdsWidgetDef) {
-                layout = ((AdsWidgetDef) AdsUIUtil.currentWidget(((AdsWidgetDef) node))).getLayout();
+                AdsUIItemDef itemDef =  AdsUIUtil.currentWidget(((AdsWidgetDef) node));
+                if (itemDef != null){
+                    layout = ((AdsWidgetDef) itemDef).getLayout();
+                }
             } else if (node instanceof AdsLayout) {
                 layout = (AdsLayout) node;
             }

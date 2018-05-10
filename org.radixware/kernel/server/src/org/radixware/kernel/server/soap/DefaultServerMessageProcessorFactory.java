@@ -15,7 +15,7 @@ import org.radixware.kernel.common.soap.DefaultServerSoapMessageProcessor;
 import org.radixware.kernel.common.soap.IServerMessageProcessorFactory;
 import org.radixware.kernel.common.soap.IServerSoapMessageProcessor;
 import org.radixware.kernel.common.trace.LocalTracer;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
 import org.radixware.kernel.server.sap.SapOptions;
 
 

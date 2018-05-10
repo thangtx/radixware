@@ -32,8 +32,11 @@ import org.radixware.kernel.common.client.views.IExplorerItemView;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
+import org.radixware.kernel.common.client.widgets.actions.IMenuBar;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.clientstate.ClientState;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.rwt.IMainView;
 import org.radixware.wps.views.NavigationView;
@@ -44,7 +47,7 @@ public class TreeManager implements IExplorerTreeManager {
 
     public static interface IUpdateVersionController {
 
-        boolean prepareNewVersion(Collection<Id> changedDefinitions);
+        boolean prepareNewVersion(Collection<Id> changedDefinitions, long versionNumber);
 
         void switchToNewVersion();
     }
@@ -54,6 +57,9 @@ public class TreeManager implements IExplorerTreeManager {
     private final Action changeRootAction;
     private final List<ExplorerRoot> currentExplorerRoots = new LinkedList<>();
     private final IUpdateVersionController updateVersionController;
+    private IMenu treeMenu;
+    private IMenu selectorMenu;
+    private IMenu editorMenu;
 
     public List<Action> getActions() {
         if (tree == null) {
@@ -61,7 +67,12 @@ public class TreeManager implements IExplorerTreeManager {
         } else {
             final List<Action> actions = new LinkedList<>();
             actions.add(changeRootAction);
-            actions.addAll(tree.getActions().getActions());
+            actions.add(tree.getActions().getRemoveCurrentNodeAction());
+            actions.add(tree.getActions().getRemoveChildChoosenObjectsAction());
+            actions.add(tree.getActions().getGoToParentNodeAction());
+            actions.add(tree.getActions().getGoToCurrentNodeAction());
+            actions.add(tree.getActions().getGoBackAction());
+            actions.add(tree.getActions().getGoForwardAction());
             return actions;
         }
     }
@@ -87,6 +98,15 @@ public class TreeManager implements IExplorerTreeManager {
         synchronized (this) {
             return tree;
         }
+    }
+
+    public void setupMainMenu(final IMenuBar menuBar) {        
+        treeMenu = menuBar.addSubMenu(environment.getMessageProvider().translate("MainMenu", "Tree"));
+        treeMenu.setEnabled(false);
+        selectorMenu = menuBar.addSubMenu(environment.getMessageProvider().translate("MainMenu", "Selector"));
+        editorMenu = menuBar.addSubMenu(environment.getMessageProvider().translate("MainMenu", "Editor"));
+        selectorMenu.setEnabled(false);
+        editorMenu.setEnabled(false);
     }
 
     @Override
@@ -164,7 +184,7 @@ public class TreeManager implements IExplorerTreeManager {
                 tree.refill(progress, needForRelogin);
             } catch (BrokenConnectionError error) {
                 environment.messageError(environment.getMessageProvider().translate("ExplorerMessage", "Can't Update Version"), error.getMessage());
-                environment.disconnectAction.trigger();
+                environment.disconnect();
             } finally {
                 progress.finishProgress();
             }
@@ -180,6 +200,9 @@ public class TreeManager implements IExplorerTreeManager {
         if (closeAllImpl(forced)) {
             if (parentWindow != null) {
                 parentWindow.close();
+            }
+            if (treeMenu != null) {
+                treeMenu.setEnabled(false);
             }
             return true;
         }
@@ -202,10 +225,23 @@ public class TreeManager implements IExplorerTreeManager {
 
     @Override
     public void translate() {
+        if (treeMenu != null) { 
+            treeMenu.setTitle(environment.getMessageProvider().translate("MainMenu", "Tree"));
+        } else {
+            environment.getTracer().warning("treeMenu = " + treeMenu);
+        }
+        if (selectorMenu != null) {
+            selectorMenu.setTitle(environment.getMessageProvider().translate("MainMenu", "Selector"));
+        }
+        if (editorMenu != null) {
+            editorMenu.setTitle(environment.getMessageProvider().translate("MainMenu", "Editor"));
+        }
     }
 
     @Override
-    public IExplorerTree openTree(final List<ExplorerRoot> explorerRoots, final IWidget parentWindow) throws ServiceClientException, InterruptedException {
+    public IExplorerTree openTree(final List<ExplorerRoot> explorerRoots, 
+                                                   final IWidget parentWindow,
+                                                   final ClientState xml) throws ServiceClientException, InterruptedException {
         synchronized (this) {
             if (explorerRoots == null || explorerRoots.isEmpty()) {
                 return null;
@@ -231,14 +267,30 @@ public class TreeManager implements IExplorerTreeManager {
                 return null;
             }
             this.parentWindow = (IMainView) parentWindow;
-            tree = new WpsTree(environment, this.parentWindow);
+            tree = new WpsTree(environment, this.parentWindow, selectorMenu, editorMenu);
             tree.open(rootToOpen, visibleExplorerItems, rootToOpen);
+            if (treeMenu != null) {
+                initTreeMenu();
+                treeMenu.setEnabled(true);
+            }
             updateToolBar();
             changeRootAction.setVisible(currentExplorerRoots.size() > 1);
             return tree;
         }
     }
 
+    private void initTreeMenu() {
+        if (tree != null) {
+            treeMenu.clear();
+            treeMenu.addAction(tree.getActions().getRemoveCurrentNodeAction());
+            treeMenu.addAction(tree.getActions().getRemoveChildChoosenObjectsAction());
+            treeMenu.addAction(tree.getActions().getGoToParentNodeAction());
+            treeMenu.addAction(tree.getActions().getGoToCurrentNodeAction());
+            treeMenu.addSubSeparator();
+            treeMenu.addAction(changeRootAction);
+        }
+    }
+    
     private ExplorerRoot selectExplorerRoot(final List<ExplorerRoot> explorerRoots) {
         final Id rootId = environment.selectExplorerRootId(explorerRoots);
         if (rootId != null) {
@@ -252,7 +304,11 @@ public class TreeManager implements IExplorerTreeManager {
     }
 
     private void updateToolBar() {
-        ((NavigationView) parentWindow.getNavigator()).updateToolBarState(getActions());
+        List<Action> actions = new LinkedList<>();
+        actions.add(tree.getActions().getGoBackAction());
+        actions.add(tree.getActions().getGoForwardAction());
+        actions.add(tree.getActions().getRemoveCurrentNodeAction());
+        ((NavigationView) parentWindow.getNavigator()).updateToolBarState(actions);
     }
 
     public boolean isOpened() {
@@ -333,11 +389,21 @@ public class TreeManager implements IExplorerTreeManager {
                 return;
             }
             if (!visibleExplorerItems.isEmpty()) {
-                tree = new WpsTree(environment, this.parentWindow);
+                tree = new WpsTree(environment, this.parentWindow, selectorMenu, editorMenu);
                 tree.open(rootToOpen, visibleExplorerItems, rootToOpen);
+                if (treeMenu != null) {
+                    initTreeMenu();
+                    treeMenu.setEnabled(true);
+                }
                 changeRootAction.setVisible(currentExplorerRoots.size() > 1);
                 updateToolBar();
             }
         }
     }
+
+    @Override
+    public void writeStateToXml(final ClientState xml) {
+        
+    }
+        
 }

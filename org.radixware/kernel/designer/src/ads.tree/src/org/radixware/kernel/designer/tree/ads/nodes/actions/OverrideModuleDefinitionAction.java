@@ -34,7 +34,7 @@ public class OverrideModuleDefinitionAction extends AdsDefinitionAction {
                 public boolean isTarget(RadixObject radixObject) {
                     if (radixObject instanceof AdsDefinition) {
                         AdsDefinition def = (AdsDefinition) radixObject;
-                        return def.isTopLevelDefinition() && def.isPublished() && def instanceof IOverwritable && ((IOverwritable) def).allowOverwrite() && module.getDefinitions().findById(def.getId()) == null;
+                        return def.isTopLevelDefinition() && def.isPublished() && def instanceof IOverwritable && ((IOverwritable) def).allowOverwrite() && module.getTopContainer().findById(def.getId()) == null;
                     }
                     return false;
                 }
@@ -117,6 +117,6 @@ public class OverrideModuleDefinitionAction extends AdsDefinitionAction {
 
     @Override
     public String getName() {
-        return "Ovewrite Definition...";
+        return "Overwrite Definition...";
     }
 }

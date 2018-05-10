@@ -21,12 +21,16 @@ import org.radixware.kernel.common.client.meta.RadParentRefPropertyDef;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
+import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
 import org.radixware.kernel.common.client.meta.mask.EditMaskRef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameterPersistentValue;
+import org.radixware.kernel.common.client.utils.ClientValueFormatter;
 import org.radixware.kernel.common.client.views.IPropEditorDialog;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.defs.value.ValAsStr;
+import org.radixware.kernel.common.enums.EDefType;
+import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EEditPossibility;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.kernel.common.enums.EPropertyValueStorePossibility;
@@ -34,6 +38,7 @@ import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.xscml.Sqml;
 
 
 public class RadFilterParamDef extends RadPropertyDef implements ISqmlParameter {
@@ -41,8 +46,10 @@ public class RadFilterParamDef extends RadPropertyDef implements ISqmlParameter 
     protected RadPropertyDef target;//инициализировать в конструкторе нельзя - может превести к рекурсии
     private final Id targetTableId, targetPropertyId;
     private long changeValueTimestamp = System.currentTimeMillis();
-    protected Id referencedClassId, parentSelectorPresentationId;
-
+    protected Id referencedClassId;
+    protected Id parentSelectorPresentationId;
+    protected Boolean useDropDownList;
+    
     public RadFilterParamDef(
             final Id id, //собственный идентификатор
             final String name, //собственное имя
@@ -65,6 +72,115 @@ public class RadFilterParamDef extends RadPropertyDef implements ISqmlParameter 
             //Parent selector
             final Id referencedClassId,
             final Id parentSelectorPresentationId) {
+        this(id, //собственный идентификатор
+             name, //собственное имя
+             titleId, //если перекрыт заголовок - идентификатор строки
+             ownerId, //идентификатор класса (aec), в котором определен фильтр
+             tableId,
+             propertyId,
+             type,
+             constSetId,
+             defaultValue,
+            //Editing
+            isMandatory,
+            storeHistory,
+            isCustomDialog,
+            customDialogId,
+            isCustomEditOnly,
+            editMask,
+            nullStringId,
+            isMemo,
+            //Parent selector
+            referencedClassId,
+            parentSelectorPresentationId,
+            null);
+    }    
+
+    public RadFilterParamDef(
+            final Id id, //собственный идентификатор
+            final String name, //собственное имя
+            final Id titleId, //если перекрыт заголовок - идентификатор строки
+            final Id ownerId, //идентификатор класса (aec), в котором определен фильтр
+            final Id tableId,
+            final Id propertyId,
+            final EValType type,
+            final Id constSetId,
+            final ValAsStr defaultValue,
+            //Editing
+            final boolean isMandatory,
+            final boolean storeHistory,
+            final boolean isCustomDialog,
+            final Id customDialogId,
+            final boolean isCustomEditOnly,
+            final EditMask editMask,
+            final Id nullStringId,
+            final boolean isMemo,
+            //Parent selector
+            final Id referencedClassId,
+            final Id parentSelectorPresentationId,
+            final Boolean useDropDownList) {
+
+        this(id,
+            name,
+            titleId,
+            ownerId,
+            tableId,
+            propertyId,
+            type,
+            constSetId,
+            defaultValue,
+            //Editing
+            isMandatory,
+            isMandatory,//arrayItemIsMandatory
+            storeHistory,
+            isCustomDialog,
+            customDialogId,
+            isCustomEditOnly,
+            editMask,
+            nullStringId,
+            nullStringId,//arrayItemNullStringId
+            null,//emptyArrayStringId (onlyForArrayProperties)
+            false,//isDuplicatesEnabled (onlyForArrayProperties)
+            -1,//minArrayItemsCount
+            -1,//maxArrayItemsCount
+            1,//firstArrayItemIndex
+            isMemo,            
+            //Parent selector
+            referencedClassId,
+            parentSelectorPresentationId,
+            useDropDownList);
+    }    
+    
+    public RadFilterParamDef(
+            final Id id, //собственный идентификатор
+            final String name, //собственное имя
+            final Id titleId, //если перекрыт заголовок - идентификатор строки
+            final Id ownerId, //идентификатор класса (aec), в котором определен фильтр
+            final Id tableId,
+            final Id propertyId,
+            final EValType type,
+            final Id constSetId,
+            final ValAsStr defaultValue,
+            //Editing
+            final boolean isMandatory,
+            final boolean arrayItemIsMandatory,
+            final boolean storeHistory,
+            final boolean isCustomDialog,
+            final Id customDialogId,
+            final boolean isCustomEditOnly,
+            final EditMask editMask,
+            final Id nullStringId,
+            final Id arrayItemNullStringId,
+            final Id emptyArrayStringId,// (onlyForArrayProperties)
+            final boolean isDuplicatesEnabled,// (onlyForArrayProperties)
+            final int minArrayItemsCount,
+            final int maxArrayItemsCount,
+            final int firstArrayItemIndex,
+            final boolean isMemo,
+            //Parent selector
+            final Id referencedClassId,
+            final Id parentSelectorPresentationId,
+            final Boolean useDropDownList) {
 
         super(id,
                 name,
@@ -87,26 +203,28 @@ public class RadFilterParamDef extends RadPropertyDef implements ISqmlParameter 
                 EEditPossibility.ALWAYS,
                 ERuntimeEnvironmentType.COMMON_CLIENT,
                 isMandatory,
-                isMandatory,//arrayItemIsMandatory
+                arrayItemIsMandatory,
                 false,//storeHistory
                 isCustomDialog,
                 customDialogId,
                 isCustomEditOnly,
                 editMask,
                 nullStringId,
-                nullStringId,//arrayItemNullStringId
-                null,//emptyArrayStringId (onlyForArrayProperties)
-                false,//isDuplicatesEnabled (onlyForArrayProperties)
-                -1,//minArrayItemsCount
-                -1,//maxArrayItemsCount
-                1,//firstArrayItemIndex
+                arrayItemNullStringId,
+                emptyArrayStringId,
+                isDuplicatesEnabled,
+                minArrayItemsCount,
+                maxArrayItemsCount,
+                firstArrayItemIndex,
                 isMemo,
-                false, EPropertyValueStorePossibility.NONE//canBeUsedInSorting
+                false, 
+                EPropertyValueStorePossibility.NONE//canBeUsedInSorting
                 );
         targetTableId = tableId;
         targetPropertyId = propertyId;
         this.referencedClassId = referencedClassId;
         this.parentSelectorPresentationId = parentSelectorPresentationId;
+        this.useDropDownList = useDropDownList;
     }    
 
     public boolean isPredefined() {
@@ -141,22 +259,40 @@ public class RadFilterParamDef extends RadPropertyDef implements ISqmlParameter 
             }
         }
         return super.hasTitle();
-    }
+    }    
+
+    @Override
+    public String getTitle(final IClientEnvironment environment) {
+        if (inheritanceMask.isTitleInherited()) {
+            getInheritedTitle(environment);
+        }
+        return super.getTitle(environment);
+    }        
 
     @Override
     public String getTitle() {
         if (inheritanceMask.isTitleInherited()) {
-            if (getBasePropertyId() != null) {
-                return getTargetProperty().getTitle();
-            } else if (type == EValType.PARENT_REF || type == EValType.ARR_REF) {
-                final RadSelectorPresentationDef presentation = getParentSelectorPresentation();
-                if (presentation != null) {
-                    final RadClassPresentationDef classDef = presentation.getClassPresentation();
-                    return type == EValType.ARR_REF ? classDef.getGroupTitle() : classDef.getObjectTitle();
+            getInheritedTitle(IClientEnvironment.Locator.getEnvironment());
+        }
+        return super.getTitle();
+    }
+    
+    private String getInheritedTitle(final IClientEnvironment environment){
+        if (getBasePropertyId() != null) {
+            return getTargetProperty().getTitle(environment);
+        } else if (type == EValType.PARENT_REF || type == EValType.ARR_REF) {
+            final RadSelectorPresentationDef presentation = getParentSelectorPresentation();
+            if (presentation != null) {
+                final RadClassPresentationDef classDef = presentation.getClassPresentation();
+                final String referencedClassObjectTitle = type == EValType.ARR_REF ? classDef.getGroupTitle() : classDef.getObjectTitle();
+                if (environment==null){
+                    return referencedClassObjectTitle;
+                }else{
+                    return ClientValueFormatter.decapitalizeIfNecessary(environment, referencedClassObjectTitle);
                 }
             }
         }
-        return super.getTitle();
+        return super.getTitle(environment);
     }
 
     @Override
@@ -174,8 +310,19 @@ public class RadFilterParamDef extends RadPropertyDef implements ISqmlParameter 
 
     @Override
     public EditMask getEditMask() {
-      if (type == EValType.PARENT_REF || type == EValType.ARR_REF) {
-           return new EditMaskRef(getParentSelectorPresentationId());
+        if (type == EValType.PARENT_REF || type == EValType.ARR_REF) {
+            final EditMaskRef editMask = new EditMaskRef(getParentSelectorPresentationId());
+            if (useDropDownList==null){
+                final RadPropertyDef prop = getTargetProperty();
+                if (prop!=null 
+                    && prop.getEditMask() instanceof EditMaskRef
+                    && ((EditMaskRef)prop.getEditMask()).isUseDropDownList()){
+                    editMask.setUseDropDownList(true);
+                }
+            }else if (Boolean.TRUE==useDropDownList){
+                editMask.setUseDropDownList(true);
+            }
+            return editMask;
         }   
         if (inheritanceMask.isEditingInherited() && getBasePropertyId() != null) {
             return getTargetProperty().getEditMask();
@@ -314,6 +461,11 @@ public class RadFilterParamDef extends RadPropertyDef implements ISqmlParameter 
     }
 
     @Override
+    public Sqml getParentSelectorAdditionalCondition() {
+        return null;
+    }        
+
+    @Override
     public boolean canHavePersistentValue() {
         return false;
     }
@@ -344,5 +496,45 @@ public class RadFilterParamDef extends RadPropertyDef implements ISqmlParameter 
     
     final long getChangeValueTimestamp(){
         return changeValueTimestamp;
-    }    
+    }
+    
+    public static void writeToXml(final ISqmlParameter parameter, final org.radixware.schemas.groupsettings.FilterParameters parameters){
+        final org.radixware.schemas.groupsettings.FilterParameters.Parameter param = parameters.addNewParameter();
+        final org.radixware.schemas.groupsettings.CustomFilterParameter xmlParameter =
+                param.addNewCustomParameter();
+        xmlParameter.setId(parameter.getId());
+        xmlParameter.setDefinitionType(EDefType.FILTER_PARAM);
+        xmlParameter.setTitle(parameter.getTitle());
+        xmlParameter.setValType(parameter.getType());
+        xmlParameter.setNotNull(parameter.isMandatory());
+        final EditMask mask = parameter.getEditMask();
+        if (mask != null && mask.getType() != null) {
+            mask.writeToXml(xmlParameter.addNewEditMask());
+            if (mask instanceof EditMaskConstSet){
+                final Id enumId = ((EditMaskConstSet)mask).getEnumId();
+                if (enumId!=null){
+                    xmlParameter.setEnumId(enumId);
+                }
+            }
+            if (mask instanceof EditMaskRef){
+                xmlParameter.setUseDropDownList(((EditMaskRef)mask).isUseDropDownList());
+            }
+        }
+        final String nullValueTitle = parameter.getNullString();
+        if (nullValueTitle != null) {
+            xmlParameter.setNullTitle(nullValueTitle);
+        }
+        final ValAsStr defaultVal = parameter.getInitialVal();
+        if (defaultVal != null) {
+            xmlParameter.setDefaultVal(defaultVal.toString());
+        }  
+        final Id referencedTableId = parameter.getReferencedTableId();
+        if (referencedTableId != null) {
+            xmlParameter.setReferencedClassId(Id.Factory.changePrefix(referencedTableId, EDefinitionIdPrefix.ADS_ENTITY_CLASS));
+        }
+        final Id parentSelPresId = parameter.getParentSelectorPresentationId();
+        if (parentSelPresId!=null){
+            xmlParameter.setParentSelectorPresentationId(parentSelPresId);
+        }
+    }
 }

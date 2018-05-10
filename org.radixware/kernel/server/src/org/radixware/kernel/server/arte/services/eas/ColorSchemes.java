@@ -11,10 +11,12 @@
 
 package org.radixware.kernel.server.arte.services.eas;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.radixware.kernel.common.enums.ETimingSection;
@@ -22,31 +24,39 @@ import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.arte.Arte;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 
 
 public class ColorSchemes extends CommonSelectorAddons<ColorScheme> {
 
     private static final String COLOR_SCHEME_CLASS_GUID = "aclE65CQY2JMRHAVFOBY4ESCWHFPM";
+    private static final String qryEasCommonSortingsStmtSQL = "select "
+                                                            + "addons.guid, addons.title, addons.lastUpdateTime "
+                                                            + "from "
+                                                            + "rdx_easselectoraddons addons "
+                                                            + "where "
+                                                            + "addons.isActive=1 and "
+                                                            + "addons.classGuid='" + COLOR_SCHEME_CLASS_GUID + "' and "
+                                                            + "addons.tableGuid=? and "
+                                                            + "(addons.selPresentations is null or addons.selPresentations like ?) "
+                                                            + "order by "
+                                                            + "addons.seq";
+    private static final Stmt qryEasCommonSortingsStmt = new Stmt(qryEasCommonSortingsStmtSQL,Types.VARCHAR,Types.VARCHAR);
+            
     private final PreparedStatement qryEasCommonSortings;
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
+
+    private ColorSchemes(){
+        qryEasCommonSortings = null;
+    }
     
     ColorSchemes(final Arte arte) throws SQLException {
         super(arte);
-
-        qryEasCommonSortings = arte.getDbConnection().get().prepareStatement(
-                "select "
-                + "addons.guid, addons.title, addons.lastUpdateTime "
-                + "from "
-                + "rdx_easselectoraddons addons "
-                + "where "
-                + "addons.isActive=1 and "
-                + "addons.classGuid='" + COLOR_SCHEME_CLASS_GUID + "' and "
-                + "addons.tableGuid=? and "
-                + "(addons.selPresentations is null or addons.selPresentations like ?) "
-                + "order by "
-                + "addons.seq");
-
-        
+        qryEasCommonSortings = ((RadixConnection)arte.getDbConnection().get()).prepareStatement(qryEasCommonSortingsStmt);
     }
     
     public ColorScheme getColorScheme(final Arte arte, final RadClassDef classDef, final Id selPresentationId){

@@ -13,9 +13,11 @@ package org.radixware.kernel.common.repository.dds;
 
 import java.util.List;
 import org.radixware.kernel.common.defs.HierarchyWalker;
+import org.radixware.kernel.common.defs.IVisitor;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObjectIcon;
 import org.radixware.kernel.common.defs.RadixObjects;
+import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.dds.DdsDefinitionIcon;
 import org.radixware.kernel.common.repository.Layer;
 
@@ -170,6 +172,7 @@ public class DdsUpdateInfo extends RadixObject {
     private boolean reverse = false;
     private String straightFileName;
     private RadixObjects<BaseLayerInfo> baseLayersInfo = new BaseLayersInfo(this);
+    private final DdsAadcTransform ddsAadcTransform = new DdsAadcTransform(this);
 
     protected DdsUpdateInfo() {
         super();
@@ -195,6 +198,9 @@ public class DdsUpdateInfo extends RadixObject {
                 }
             }
         }
+        if (xScript.isSetAadcTransform()) {
+            ddsAadcTransform.loadFrom(xScript.getAadcTransform());
+        }
     }
 
     protected void appendTo(org.radixware.schemas.product.Scripts.Script xScript) {
@@ -216,7 +222,9 @@ public class DdsUpdateInfo extends RadixObject {
                 baseLayerInfo.appendTo(xLayer);
             }
         }
-
+        
+        ddsAadcTransform.appendTo(xScript.addNewAadcTransform());
+        
     }
 
     public String getUpdateFileName() {
@@ -299,5 +307,15 @@ public class DdsUpdateInfo extends RadixObject {
             return DdsDefinitionIcon.SQL_REVERSE_SCRIPT;
         }
         return DdsDefinitionIcon.SQL_SCRIPT;
+    }
+
+    @Override
+    public void visitChildren(IVisitor visitor, VisitorProvider provider) {
+        super.visitChildren(visitor, provider);
+        ddsAadcTransform.visit(visitor, provider);
+    }
+
+    public DdsAadcTransform getDdsAadcTransform() {
+        return ddsAadcTransform;
     }
 }

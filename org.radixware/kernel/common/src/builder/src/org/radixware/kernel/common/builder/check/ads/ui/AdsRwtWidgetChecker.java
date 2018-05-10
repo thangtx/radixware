@@ -27,6 +27,7 @@ import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegist
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.ui.AdsAbstractUIDef;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIProperty.TypeDeclarationProperty;
+import org.radixware.kernel.common.defs.ads.ui.AdsWidgetProperties;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtUIDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtWidgetDef;
 import org.radixware.kernel.common.types.Id;
@@ -145,6 +146,11 @@ public class AdsRwtWidgetChecker<T extends AdsRwtWidgetDef> extends DefinitionCh
                 }
                 error(widget, problemHandler, "Value of property 'ItemType' should be set");
                 break;
+            case AdsMetaInfo.RWT_EDITOR_PAGE:
+                AdsUIProperty.EditorPageRefProperty prop = (AdsUIProperty.EditorPageRefProperty) widget.getProperties().getByName(AdsWidgetProperties.EDITOR_PAGE);
+                if (prop == null || prop.getEditorPageId() == null) {
+                    error(widget, problemHandler, "Page model for editor page is not defined");
+                }
             default:
             // ...
         }

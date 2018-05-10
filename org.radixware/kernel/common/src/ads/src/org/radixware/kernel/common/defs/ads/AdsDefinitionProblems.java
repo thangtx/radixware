@@ -37,6 +37,8 @@ public class AdsDefinitionProblems extends RadixProblem.WarningSuppressionSuppor
     public static final int PRESENTATION_WITH_LAZY_PROPS_IN_CREATE_CONTEXT = 1006;    
     public static final int DO_NOT_MATCH_THE_NAME_OF_OVERWRITTEN = 1007;
     public static final int LAZY_PROPS_IN_SELECTOR_COLUMNS = 1008;
+    public static final int NOT_SPECIFIED_CREATION_CATALOG = 1009;
+    public static final int EXPIRED_DEPRECATED_DEFINITION = 1010;
     
 
     protected AdsDefinitionProblems(AdsDefinition owner) {
@@ -58,7 +60,15 @@ public class AdsDefinitionProblems extends RadixProblem.WarningSuppressionSuppor
 
     @Override
     public boolean canSuppressWarning(int code) {
-        return code == MISSING_WEB_CUSTOM_VIEW || code == MISSING_EXPLORER_CUSTOM_VIEW || PRESENTATION_WITH_LAZY_PROPS_IN_CREATE_CONTEXT == code || DO_NOT_MATCH_THE_NAME_OF_OVERWRITTEN == code;
+        switch(code){
+            case MISSING_WEB_CUSTOM_VIEW:
+            case MISSING_EXPLORER_CUSTOM_VIEW:
+            case PRESENTATION_WITH_LAZY_PROPS_IN_CREATE_CONTEXT:
+            case DO_NOT_MATCH_THE_NAME_OF_OVERWRITTEN:
+            case NOT_SPECIFIED_CREATION_CATALOG: 
+                return true;
+            default : return false;
+        }
     }
 
     @Override

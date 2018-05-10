@@ -67,7 +67,7 @@ public class ParagraphView extends Container implements IParagraphEditor {
             }
             model.setView(this);
         }
-
+        setObjectName("rx_parag_view_#"+model.getDefinition().getId());
     }
 
     @Override

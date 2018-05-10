@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.utils;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 
 
@@ -21,7 +22,7 @@ public class Hex {
         if (bytes == null) {
             return null;
         }
-        return new String(org.apache.xmlbeans.impl.util.HexBin.encode(bytes));
+        return new String(org.apache.xmlbeans.impl.util.HexBin.encode(bytes), StandardCharsets.UTF_8);
     }
 
     public static final byte[] decode(final String str) {
@@ -30,9 +31,9 @@ public class Hex {
         }
         final byte[] res;
         if (str.length() % 2==0){
-            res = org.apache.xmlbeans.impl.util.HexBin.decode(str.getBytes());
+            res = org.apache.xmlbeans.impl.util.HexBin.decode(str.getBytes(StandardCharsets.UTF_8));
         }else{
-            res = org.apache.xmlbeans.impl.util.HexBin.decode(("0"+str).getBytes());
+            res = org.apache.xmlbeans.impl.util.HexBin.decode(("0"+str).getBytes(StandardCharsets.UTF_8));
         }
         if (res == null) {
             throw new WrongFormatError("Wrong HEX: \"" + str + "\"");

@@ -113,6 +113,9 @@ public abstract class LinearBoxContainer extends AbstractContainer {
                             break;
                         }
                     }
+                    if (dropIndex == -1) {
+                        return;
+                    }
                     if (items.length == 1) {
                         attr = null;
                     } else {

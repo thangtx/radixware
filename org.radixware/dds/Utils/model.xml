@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prj5YRLT26YCJCRNLQ37OCBUFDSZY">
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prj5YRLT26YCJCRNLQ37OCBUFDSZY" DbNamePrefix="RDX">
   <Tables>
-    <Table Id="tbl44TUT3JSR5BPTNBRF3PO2HF6OU" Name="Counter" DbName="COUNTER" UserExtMask="65572">
+    <Table Id="tbl44TUT3JSR5BPTNBRF3PO2HF6OU" Name="Counter" DbName="RDX_COUNTER" UserExtMask="65572">
       <Columns>
         <Column Id="colGRP5IIOQG5AEPPXSLVNHDZEZRI" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqnHW77WU4F65FP5F2OTUZFBX24FI"/>
         <Column Id="colBW34NCALPBBMVJM4KXPBC5LZBM" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CLASSGUID"/>
@@ -23,14 +23,14 @@
         <Column Id="colPC7PN6V5Z5EMPM35JKWELO7QYY" Name="upOwnerEntityId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="UPOWNERENTITYID"/>
         <Column Id="colNJSBNTX3FZGHBB3Z5CPJEFLKVQ" Name="upOwnerPid" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="true" DbName="UPOWNERPID"/>
       </Columns>
-      <PrimaryKey Id="idxLUVAFTV3Y5C27L3YSGSPAMBXP4" Name="PrimaryKey" DbName="PK_COUNTER" Unique="true">
+      <PrimaryKey Id="idxLUVAFTV3Y5C27L3YSGSPAMBXP4" Name="PrimaryKey" DbName="PK_RDX_COUNTER" Unique="true">
         <Columns>
           <Column ColumnId="colGRP5IIOQG5AEPPXSLVNHDZEZRI" Order="Asc"/>
         </Columns>
-        <UniqueConstraint Id="unqTTKZBYG37NBYVCPBMT5VDCL4YE" DbName="PK_COUNTER" Rely="true"/>
+        <UniqueConstraint Id="unqTTKZBYG37NBYVCPBMT5VDCL4YE" DbName="PK_RDX_COUNTER" Rely="true"/>
       </PrimaryKey>
       <Indices>
-        <Index Id="idxCNHENV6FXFHXDOYDNBWI654W74" Name="UserPropertyObjectUniqueIndex" DbName="IDX_COUNTER_USERPROPERTYOBJECT" Unique="true">
+        <Index Id="idxCNHENV6FXFHXDOYDNBWI654W74" Name="UserPropertyObjectUniqueIndex" DbName="IDX_RDX_COUNTER_USERPROPERTYOB" Unique="true">
           <Columns>
             <Column ColumnId="colQLLTVKCZDZAGJPWEJNGWQU4Z3Q" Order="Asc"/>
             <Column ColumnId="colPC7PN6V5Z5EMPM35JKWELO7QYY" Order="Asc"/>
@@ -67,7 +67,7 @@ end;</xsc:Sql>
     </ExtTable>
   </ExtTables>
   <References>
-    <Reference Id="refHEYWJ3WMKRCZNPHMH34GPAE4IY" DbName="FK_COUNTER_UPVALREF" Type="LINK" ChildTableId="tbl44TUT3JSR5BPTNBRF3PO2HF6OU" ParentTableId="tblZVJUSFASRDNBDCBEABIFNQAABA" ExtParentTableId="tbeLTBQJDWMMJADDFKIQFKM5ZTJWA" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqZVJUSFASRDNBDCBEABIFNQAABA">
+    <Reference Id="refHEYWJ3WMKRCZNPHMH34GPAE4IY" DbName="FK_RDX_COUNTER_UPVALREF" Type="LINK" ChildTableId="tbl44TUT3JSR5BPTNBRF3PO2HF6OU" ParentTableId="tblZVJUSFASRDNBDCBEABIFNQAABA" ExtParentTableId="tbeLTBQJDWMMJADDFKIQFKM5ZTJWA" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqZVJUSFASRDNBDCBEABIFNQAABA">
       <Columns>
         <Item ChildColumnId="colQLLTVKCZDZAGJPWEJNGWQU4Z3Q" ParentColumnId="col2BJUSFASRDNBDCBEABIFNQAABA"/>
         <Item ChildColumnId="colPC7PN6V5Z5EMPM35JKWELO7QYY" ParentColumnId="col2FJUSFASRDNBDCBEABIFNQAABA"/>
@@ -76,7 +76,7 @@ end;</xsc:Sql>
     </Reference>
   </References>
   <Sequences>
-    <Sequence Id="sqnHW77WU4F65FP5F2OTUZFBX24FI" Name="CounterId" DbName="SQN_COUNTERID" Cycle="false" Order="true" Cache="20">
+    <Sequence Id="sqnHW77WU4F65FP5F2OTUZFBX24FI" Name="CounterId" DbName="SQN_RDX_COUNTERID" Cycle="false" Order="true" Cache="20">
       <Placement PosX="136" PosY="33"/>
     </Sequence>
   </Sequences>

@@ -1,0 +1,7 @@
+update RDX_PC_CHANNELUNIT set EMAILSECURECONNECTION='None' where EMAILSECURECONNECTION is null
+/
+
+alter table RDX_PC_CHANNELUNIT
+	modify (EMAILSECURECONNECTION default 'None' not null)
+/
+

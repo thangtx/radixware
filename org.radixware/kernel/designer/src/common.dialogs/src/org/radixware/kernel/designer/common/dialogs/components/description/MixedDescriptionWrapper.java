@@ -59,6 +59,14 @@ public final class MixedDescriptionWrapper implements IDescribable, ILocalizedDe
     public Id getDescriptionId() {
         return localizedDescribable.getDescriptionId();
     }
+   
+    @Override
+    public Id getDescriptionId(boolean inherited) {
+        if (localizedDescribable instanceof ILocalizedDescribable.Inheritable){
+            return ((ILocalizedDescribable.Inheritable)localizedDescribable).getDescriptionId(inherited);
+        }
+        return localizedDescribable.getDescriptionId();
+    }
 
     @Override
     public void setDescriptionId(Id id) {
@@ -103,7 +111,12 @@ public final class MixedDescriptionWrapper implements IDescribable, ILocalizedDe
     public Definition getDescriptionLocation() {
         return localizedDescribable.getDescriptionLocation();
     }
-    
+
+    @Override
+    public Definition getDescriptionLocation(boolean inherited) {
+        return localizedDescribable.getDescriptionLocation();
+    }
+
     @Override
     public boolean isReadOnly() {
         if (describable instanceof RadixObject) {

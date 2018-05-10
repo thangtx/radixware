@@ -31,14 +31,6 @@ public class BooleanFieldModel extends AbstractFieldModel {
     }
 
     @Override
-    public SmioField getParser() {
-        if (parser == null) {
-            parser = new SmioFieldBoolean(this);
-        }
-        return parser;
-    }
-
-    @Override
     public DBFField getDBFField() {
         DBFField f = new DBFField();
         f.setName(getName());

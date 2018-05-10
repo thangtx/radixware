@@ -83,5 +83,62 @@
     
     
     <xs:element name="Instance2" type="Type2"/>
+    
+    <xs:element name="Names">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Layer" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Module" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:NamedElement">
+                                            <xs:sequence>
+                                                <xs:element name="Class" maxOccurs="unbounded">
+                                                    <xs:complexType>
+                                                        <xs:complexContent>
+                                                            <xs:extension base="this:NamedElement">
+                                                                <xs:sequence>
+                                                                    <xs:element name="Method" maxOccurs="unbounded">
+                                                                        <xs:complexType>
+                                                                            <xs:complexContent>
+                                                                                <xs:extension base="this:NamedElement"/>
+                                                                            </xs:complexContent>
+                                                                        </xs:complexType>
+                                                                    </xs:element>
+                                                                </xs:sequence>
+                                                                <xs:attribute name="Environment" use="required">
+                                                                    <xs:simpleType>
+                                                                        <xs:annotation>
+                                                                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                                                <types:class>org.radixware.kernel.common.enums.ERuntimeEnvironmentType</types:class>
+                                                                            </xs:appinfo>
+                                                                        </xs:annotation>
+                                                                        <xs:restriction base="types:StrEnum"/>
+                                                                    </xs:simpleType>
+                                                                </xs:attribute>
+                                                            </xs:extension>
+                                                        </xs:complexContent>
+                                                    </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                        </xs:extension>
+                                    </xs:complexContent> 
+                                </xs:complexType> 
+                            </xs:element>
+                        </xs:sequence>
+                         <xs:attribute name="uri" type="types:Str" use="required"/>
+                    </xs:complexType>
+                </xs:element>          
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="NamedElement">
+        <xs:attribute name="Name" type="xs:string" use="required"/>
+        <xs:attribute name="Id" type="types:Id" use="required"/>
+    </xs:complexType>
+    
 </xs:schema>
 

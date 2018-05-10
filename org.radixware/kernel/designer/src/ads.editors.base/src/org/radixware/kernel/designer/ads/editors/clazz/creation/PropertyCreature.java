@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.clazz.creation;
 
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyPresentat
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsProcedureClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsStatementClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsEventCodeDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.type.AdsTransparence;
@@ -343,26 +343,37 @@ public class PropertyCreature extends Creature<AdsPropertyDef> {
     public void afterAppend(AdsPropertyDef object) {
 
         if (object instanceof IAdsPresentableProperty) {
-            if (object instanceof ColumnProperty && ((ColumnProperty) object).getColumnInfo() != null) {
-                DdsColumnDef column = ((ColumnProperty) object).getColumnInfo().findColumn();
-                if (column != null && column.isPrimaryKey()) {
-                    ServerPresentationSupport support = ((IAdsPresentableProperty) object).getPresentationSupport();
-                    if (support.getPresentation() != null && support.getPresentation().isPresentable() && !support.getPresentation().isEditOptionsInherited()) {
-                        support.getPresentation().getEditOptions().setEditPossibility(EEditPossibility.ON_CREATE);
-                    }
-                }
-            }
-
             ServerPresentationSupport support = ((IAdsPresentableProperty) object).getPresentationSupport();
             if (support != null) {
-                PropertyPresentation res = support.getPresentation();
-                if (res != null) {
-                    res.setTitleInherited(res.isMayInheritTitle());
-                    res.setEditOptionsInherited(res.isMayInheritEditOptions());
+                PropertyPresentation presintation = support.getPresentation();
+                if (presintation != null) {
+
+                    // 
+                    presintation.setTitleInherited(presintation.isMayInheritTitle());
+                    presintation.setEditOptionsInherited(presintation.isMayInheritEditOptions());
+
+                    //
+                    if (object instanceof ColumnProperty && ((ColumnProperty) object).getColumnInfo() != null) {
+                        DdsColumnDef column = ((ColumnProperty) object).getColumnInfo().findColumn();
+                        if (column != null && column.isPrimaryKey()) {
+                            if (presintation.isPresentable() && !presintation.isEditOptionsInherited()) {
+                                presintation.getEditOptions().setEditPossibility(EEditPossibility.ON_CREATE);
+                            }
+                        }
+                    }
+
+                    // change init property if create in report (RADIX-14064)
+                    AdsClassDef ownerClassDef = object.getOwnerClass();
+                    if (ownerClassDef instanceof AdsReportClassDef) {
+                        presintation.setPresentable(false);
+                        if (object.getValue().getType().getTypeId() == EValType.ARR_REF) {
+                            presintation.getEditOptions().setDuplicatesEnabled(false);
+                        }
+                    }
+
                 }
             }
         }
-
 
         if (object instanceof AdsEventCodePropertyDef) {
             AdsLocalizingBundleDef bunfle = object.findLocalizingBundle();
@@ -395,7 +406,6 @@ public class PropertyCreature extends Creature<AdsPropertyDef> {
 //                            opp.getCreatePresentationsList().addPresentationId(editorPresentations.get(0).getId());
 //                        }
 //                    }
-
                     final List<AdsEditorPresentationDef> editorPresentations = typeClass.getPresentations().getEditorPresentations().get(ExtendableDefinitions.EScope.ALL);
                     if (!editorPresentations.isEmpty()) {
 

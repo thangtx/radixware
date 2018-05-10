@@ -217,6 +217,7 @@ public class XmlValueEdit implements IXmlValueEditor<ValEditor> {
             wrongValueEditor.setValidationResult(ValidationResult.Factory.newInvalidResult(InvalidValueReason.WRONG_FORMAT));
             openDialog = new QAction(null);
             openDialog.triggered.connect(this, "openDialog()");
+            openDialog.setObjectName("open_dialog");
             if (!isReadOnly) {
                 wrongValueEditor.addButton("...", openDialog);
             }

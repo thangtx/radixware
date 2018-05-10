@@ -12,6 +12,7 @@
 package org.radixware.kernel.designer.environment.navigation;
 
 import java.io.File;
+import java.util.Objects;
 import javax.swing.Icon;
 import org.openide.filesystems.FileObject;
 import org.radixware.kernel.common.defs.Module;
@@ -107,4 +108,23 @@ class RadixObjectDescriptorAdapter {
     public void open() {
         DialogUtils.goToObject(radixObject);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof RadixObjectDescriptorAdapter) {
+            if (((RadixObjectDescriptorAdapter)obj).radixObject == radixObject) {
+                return true;
+            }
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.radixObject);
+        return hash;
+    }
+    
+    
 }

@@ -508,7 +508,7 @@ public class PropertyPresentation extends RadixObject implements IJavaSource, IL
         } else {
             if (isHintInherited()) {
                 this.inheritanceMask.remove(EPropAttrInheritance.HINT);
-                this.titleId = null;
+                this.hintId = null;
                 setEditState(EEditState.MODIFIED);
             }
             return true;

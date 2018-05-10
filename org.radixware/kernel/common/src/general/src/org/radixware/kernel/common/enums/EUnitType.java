@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -28,9 +28,12 @@ public enum EUnitType implements IKernelIntEnum {
     DPC_TWITTER(4010, "DpcTwitter"),
     DPC_GCM(4011, "DpcGcm"),
     DPC_APNS(4012, "DpcApns"),
+    DPC_WNS(4013, "DpcWns"),
+    DPC_DELIVERY_ACK(4014, "DpcDeliveryAck"),
     JOB_EXECUTOR(2001, "JobExecutor"),
     JOB_SCHEDULER(1001, "JobScheduler"),
     NET_PORT_HANDLER(201, "NetPortHandler"),
+    @Deprecated
     JMS_HANDLER(202, "JmsHandler"),
     NET_HUB(2010, "NetHub"),
     SNMP_AGENT(5001, "SnmpAgent"),

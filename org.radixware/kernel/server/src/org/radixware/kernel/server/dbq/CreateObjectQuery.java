@@ -26,6 +26,7 @@ import static org.radixware.kernel.server.dbq.DbQuery.checkIfItIsNullConstraintV
 import org.radixware.kernel.server.exceptions.DatabaseError;
 import org.radixware.kernel.server.exceptions.DbQueryBuilderError;
 import org.radixware.kernel.server.exceptions.PropNotLoadedException;
+import org.radixware.kernel.server.jdbc.RadixPreparedStatement;
 import org.radixware.kernel.server.meta.clazzes.RadObjectUpValueRef;
 import org.radixware.kernel.server.meta.clazzes.RadPropDef;
 import org.radixware.kernel.server.types.Entity;
@@ -33,12 +34,21 @@ import org.radixware.kernel.server.types.EntityPropVals;
 
 public class CreateObjectQuery extends DbQuery {
 
+    private boolean isInSendBatch = false;
+
     CreateObjectQuery(
             final Arte arte,
             final DdsTableDef table,
             final String createSql,
             final List<Param> params) {
         super(arte, table, null, params, createSql);
+    }
+
+    @Override
+    protected void releaseTemporaryLobs() {
+        if (getExecuteBatch() <= 1 || isInSendBatch) {
+            super.releaseTemporaryLobs();
+        }
     }
 
     @Override
@@ -144,43 +154,48 @@ public class CreateObjectQuery extends DbQuery {
     }
 
     void sendBatch(final boolean bThrowExceptionOnDbErr) {
-        if (asOracleStatement() == null) {
+        if (asStatement() == null) {
             return;
         }
-
-        arte.getProfiler().enterTimingSection(ETimingSection.RDX_ENTITY_DB_CREATE_BATCH);
+        isInSendBatch = true;
         try {
-            if (arte.getDbConnection().get().isClosed()) {
-                return;
-            }
-            asOracleStatement().sendBatch();
-        } catch (SQLException e) {
-            if (bThrowExceptionOnDbErr) {
-                throw new DatabaseError("Create query error: " + ExceptionTextFormatter.getExceptionMess(e), e);
-            } else {
-                arte.getTrace().put(EEventSeverity.DEBUG, "SQLException happend on CreateObjectQuery.sendBatch() is hidden: " + ExceptionTextFormatter.exceptionStackToString(e), EEventSource.DB_QUERY_BUILDER);
+            arte.getProfiler().enterTimingSection(ETimingSection.RDX_ENTITY_DB_CREATE_BATCH);
+            try {
+                if (arte.getDbConnection().get().isClosed()) {
+                    return;
+                }
+                ((RadixPreparedStatement) asStatement()).sendBatch();
+                releaseTemporaryLobs();
+            } catch (SQLException e) {
+                if (bThrowExceptionOnDbErr) {
+                    throw new DatabaseError("Create query error: " + ExceptionTextFormatter.getExceptionMess(e), e);
+                } else {
+                    arte.getTrace().put(EEventSeverity.DEBUG, "SQLException happend on CreateObjectQuery.sendBatch() is hidden: " + ExceptionTextFormatter.exceptionStackToString(e), EEventSource.DB_QUERY_BUILDER);
+                }
+            } finally {
+                arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ENTITY_DB_CREATE_BATCH);
             }
         } finally {
-            arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ENTITY_DB_CREATE_BATCH);
+            isInSendBatch = false;
         }
     }
 
     void setExecuteBatch(final int batchSize) {
-        if (asOracleStatement() == null) {
+        if (asStatement() == null) {
             return;
         }
         try {
-            asOracleStatement().setExecuteBatch(batchSize);
+            ((RadixPreparedStatement) asStatement()).setExecuteBatch(batchSize);
         } catch (SQLException e) {
             throw new DatabaseError("Create query error: " + ExceptionTextFormatter.getExceptionMess(e), e);
         }
     }
 
     int getExecuteBatch() {
-        if (asOracleStatement() == null) {
+        if (asStatement() == null) {
             return 0;
         }
-        return asOracleStatement().getExecuteBatch();
+        return ((RadixPreparedStatement) asStatement()).getExecuteBatch();
     }
 
     static final class InputSrcPidParam extends InputParam {

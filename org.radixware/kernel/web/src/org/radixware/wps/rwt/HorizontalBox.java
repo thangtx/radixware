@@ -72,6 +72,7 @@ public class HorizontalBox extends AbstractContainer {
     @Override
     public void add(int index, UIObject child) {
         super.add(index, new Proxy(child));
+        child.setParent(this);
     }
     
     public UIObject addSpace(final int height){

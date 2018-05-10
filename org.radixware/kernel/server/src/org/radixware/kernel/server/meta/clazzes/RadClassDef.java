@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.meta.clazzes;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.enums.EAccessAreaType;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 import org.radixware.kernel.server.arte.Release;
@@ -38,7 +38,6 @@ import org.radixware.kernel.common.types.MultilingualString;
 import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.dbq.DbQueryBuilder;
 import org.radixware.kernel.server.meta.presentations.RadClassPresentationDef;
-
 
 public class RadClassDef extends RadDefinition {
 
@@ -61,6 +60,7 @@ public class RadClassDef extends RadDefinition {
     private RadClassApJoins apJoins = null;
     private DdsTableDef tableDef = null;
     private DdsReferenceDef accessAreaInheritRef = null;
+    private Map<Id, UpstandingRefInfo> upstandingRefInfoById = new HashMap<>();
 
     public RadClassDef(
             final Arte arte,
@@ -176,7 +176,7 @@ public class RadClassDef extends RadDefinition {
         if (props == null) {
             this.propsById = Collections.emptyMap();
         } else {
-            this.propsById = new HashMap<>(props.length * 2 + 1);
+            this.propsById = new HashMap<>(props.length * 2, 0.3f);
             for (RadPropDef prop : props) {
                 propsById.put(prop.getId(), prop);
             }
@@ -205,10 +205,10 @@ public class RadClassDef extends RadDefinition {
             this.accessAreas = Collections.emptyList();
         }
         this.isDeprecated = depracated;
-        link(release);
+        linkAfterConstruct(release);
     }
 
-    private void link(final Release release) {
+    private void linkAfterConstruct(final Release release) {
         this.release = release;
         if (presentation != null) {
             presentation.link(this);
@@ -216,6 +216,43 @@ public class RadClassDef extends RadDefinition {
         for (RadPropDef prop : propsById.values()) {
             prop.link(this);
         }
+
+    }
+
+    private void linkUpstandingRefInfo() {
+        for (RadPropDef p : getProps()) {
+            if (p.getValType() == EValType.PARENT_REF && (p instanceof RadDetailParentRefPropDef || p instanceof RadInnateRefPropDef )) {
+                if (p instanceof RadDetailParentRefPropDef) {
+                    final RadDetailParentRefPropDef refProp = (RadDetailParentRefPropDef) p;
+                    for (DdsReferenceDef.ColumnsInfoItem refPart : refProp.getReference().getColumnsInfo()) {
+                        for (RadPropDef detPropCandidate : getProps()) {
+                            if (detPropCandidate instanceof RadDetailPropDef) {
+                                RadDetailPropDef detProp = (RadDetailPropDef) detPropCandidate;
+                                if (refPart.getChildColumnId().equals(detProp.getJoinedPropId())) {
+                                    upstandingRefInfoById.put(detProp.getId(), new UpstandingRefInfo(refProp.getReference(), p.getId(), refPart.getParentColumnId()));
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    final RadInnateRefPropDef refProp = (RadInnateRefPropDef) p;
+                    for (DdsReferenceDef.ColumnsInfoItem refPart : refProp.getReference().getColumnsInfo()) {
+                        for (RadPropDef innatePropCandidate : getProps()) {
+                            if (innatePropCandidate instanceof RadInnatePropDef) {
+                                RadInnatePropDef innnateProp = (RadInnatePropDef) innatePropCandidate;
+                                if (refPart.getChildColumnId().equals(innnateProp.getId())) {
+                                    upstandingRefInfoById.put(innnateProp.getId(), new UpstandingRefInfo(refProp.getReference(), p.getId(), refPart.getParentColumnId()));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public UpstandingRefInfo getUpstandingRefInfo(final Id propId) {
+        return upstandingRefInfoById.get(propId);
     }
 
     @Override
@@ -232,6 +269,10 @@ public class RadClassDef extends RadDefinition {
             if (hasPartitionRights()) {
                 getApJoins();
             }
+            linkUpstandingRefInfo();
+        }
+        if (presentation != null) {
+            presentation.link();
         }
     }
 
@@ -293,12 +334,13 @@ public class RadClassDef extends RadDefinition {
         return isDeprecated;
     }
 
-    public String getTitle() {
+     public String getTitle() {
         if (titleId != null) {
             return MultilingualString.get(Arte.get(), getId(), titleId);
-        } else {
-            return null;
+        } else if (ancestorId != null && (getType() == EClassType.APPLICATION || getType() == EClassType.ENTITY)) {
+            return Arte.get().getDefManager().getClassDef(ancestorId).getTitle();
         }
+        return null;
     }
 
     public final Collection<RadPropDef> getProps() {
@@ -537,5 +579,31 @@ public class RadClassDef extends RadDefinition {
 
     public static Id getEntityGroupClassIdByTableId(final Id tableId) {
         return Id.Factory.loadFrom(EDefinitionIdPrefix.ADS_ENTITY_GROUP_CLASS.getValue() + tableId.toString().substring(3));
+    }
+
+    public static class UpstandingRefInfo {
+
+        private final DdsReferenceDef reference;
+        private final Id parentRefPropId;
+        private final Id propInParentId;
+
+        public UpstandingRefInfo(DdsReferenceDef reference, Id parentRefPropId, Id propInParentId) {
+            this.reference = reference;
+            this.parentRefPropId = parentRefPropId;
+            this.propInParentId = propInParentId;
+        }
+
+        public DdsReferenceDef getReference() {
+            return reference;
+        }
+
+        public Id getParentRefPropId() {
+            return parentRefPropId;
+        }
+
+        public Id getPropInParentId() {
+            return propInParentId;
+        }
+
     }
 }

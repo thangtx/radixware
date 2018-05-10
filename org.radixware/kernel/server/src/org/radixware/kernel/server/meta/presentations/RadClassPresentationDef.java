@@ -20,9 +20,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.EPropAttrInheritance;
 import org.radixware.kernel.common.enums.EReportExportFormat;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
@@ -32,6 +35,8 @@ import org.radixware.kernel.common.meta.RadTitledDef;
 import org.radixware.kernel.common.meta.RadUtils;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.types.MultilingualString;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.arte.Release;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.clazzes.RadJoinPropDef;
@@ -41,6 +46,8 @@ import org.radixware.kernel.server.types.Restrictions;
 
 //TODO REFACTORING do and use here the generic class DbpObjList implements Iterable {DbpObjList(DbpObjList ancestorList), getByName(), getById()}
 public class RadClassPresentationDef extends RadTitledDef {
+
+    private static ThreadLocal<Boolean> LINKING = new ThreadLocal<>();
 
     private static enum Bits {
 
@@ -231,6 +238,7 @@ public class RadClassPresentationDef extends RadTitledDef {
 
     @Override
     public void link() {
+        LINKING.set(true);
         super.link();
         getCommands();
         getCommandByName(null);
@@ -243,6 +251,7 @@ public class RadClassPresentationDef extends RadTitledDef {
         for (ClassCatalog catalog : classCatalogsById.values()) {
             catalog.getPresentation();
         }
+        LINKING.set(false);
     }
 
     public void link(final RadClassDef classDef) {
@@ -271,6 +280,14 @@ public class RadClassPresentationDef extends RadTitledDef {
     }
 
     public String getTitle() {
+        if (getTitleId() == null) {
+            if (isEntityClassPres || (getClassId().getPrefix() == EDefinitionIdPrefix.ADS_APPLICATION_CLASS)) {
+                RadClassPresentationDef classPresentationDef = getAncestorPres();
+                if (classPresentationDef != null) {
+                    return classPresentationDef.getTitle();
+                }
+            }
+        }
         return super.getTitle(getClassDef().getRelease().getReleaseVirtualEnviroment());
     }
 
@@ -328,6 +345,9 @@ public class RadClassPresentationDef extends RadTitledDef {
         if (ancsPres != null) {
             return ancsPres.getCommandByName(cmdName);
         }
+        if (Objects.equals(LINKING.get(), Boolean.TRUE)) {
+            return null;
+        }
         throw new IllegalUsageError("Command with Name=\"" + cmdName + "\" not defined");
     }
 
@@ -368,6 +388,9 @@ public class RadClassPresentationDef extends RadTitledDef {
         if (ancsPres != null) {
             return ancsPres.getEditorPresentationByName(presName);
         }
+        if (Objects.equals(LINKING.get(), Boolean.TRUE)) {
+            return null;
+        }
         throw new IllegalUsageError("Editor presentation \"" + presName + "\" is not defined");
     }
 
@@ -395,6 +418,9 @@ public class RadClassPresentationDef extends RadTitledDef {
         final RadClassPresentationDef ancsPres = getAncestorPres();
         if (ancsPres != null) {
             return ancsPres.getSelectorPresentationByName(presName);
+        }
+        if (Objects.equals(LINKING.get(), Boolean.TRUE)) {
+            return null;
         }
         throw new IllegalUsageError("Selector presentation \"" + presName + "\" is not defined");
     }
@@ -601,6 +627,15 @@ public class RadClassPresentationDef extends RadTitledDef {
         throw new DefinitionNotFoundError(id);
     }
 
+    public ClassCatalog findClassCatalogById(final Id id) {
+        final ClassCatalog res = classCatalogsById.get(id);
+        if (res != null) {
+            return res;
+        }
+        final RadClassPresentationDef ancsPres = getAncestorPres();
+        return ancsPres == null ? null : ancsPres.getClassCatalogById(id);
+    }
+
     final RadPropertyPresentationDef getPropPres(final Id propId, final EPropAttrInheritance inherBit) {
         RadPropertyPresentationDef propPres = getPropPresentationsById().get(propId);
         if (propPres != null && !propPres.getInheritanceMask().contains(inherBit)) {
@@ -713,14 +748,14 @@ public class RadClassPresentationDef extends RadTitledDef {
                 } else {
                     allItems = new LinkedList<>();
                     final RadClassDef classDef = classPres.getClassDef();
-                    for (RadClassDef c : classDef.getRelease().getAllClassDefsBasedOnTableByTabId(classDef.getEntityId())) {
+                    for (Id clasId : classDef.getRelease().getAllClassIdsBasedOnTableByTabId(classDef.getEntityId())) {
                         try {
-                            ClassCatalog cat = c.getPresentation().getClassCatalogById(getId());
-                            if (cat.linkMode == ClassCatalog.ELinkMode.VIRTUAL) {
+                            ClassCatalog cat = classDef.getRelease().getClassDef(clasId).getPresentation().findClassCatalogById(getId());
+                            if (cat != null && cat.linkMode == ClassCatalog.ELinkMode.VIRTUAL) {
                                 allItems.addAll(cat.ownItems);
                             }
                         } catch (DefinitionNotFoundError e) {
-                            continue;
+                            Arte.get().getTrace().put(EEventSeverity.DEBUG, "Error while scanning class catalogs: " + ExceptionTextFormatter.throwableToString(e), EEventSource.EAS);
                         }
                     }
                 }

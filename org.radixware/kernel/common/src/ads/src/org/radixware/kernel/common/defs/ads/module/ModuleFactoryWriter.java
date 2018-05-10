@@ -31,6 +31,7 @@ import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 
 class ModuleFactoryWriter extends CodeWriter {
@@ -118,9 +119,9 @@ class ModuleFactoryWriter extends CodeWriter {
                 switch (def.getDefinitionType()) {
                     case CLASS:
                         AdsClassDef clazz = (AdsClassDef) def;
-                        printer.print(JavaSourceSupport.getPackageName(clazz, UsagePurpose.SERVER_EXECUTABLE));
+                        printer.print(JavaSourceSupport.getPackageName(clazz, UsagePurpose.SERVER_EXECUTABLE, printer instanceof IHumanReadablePrinter));
                         printer.print(".");
-                        printer.print(clazz.getRuntimeLocalClassName());
+                        printer.print(clazz.getRuntimeLocalClassName(printer instanceof IHumanReadablePrinter));
                         switch (clazz.getClassDefType()) {
                             case FORM_HANDLER:
                                 printer.print("((");

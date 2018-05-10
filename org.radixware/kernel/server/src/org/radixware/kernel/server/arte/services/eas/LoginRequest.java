@@ -16,18 +16,16 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.sql.Blob;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlObject;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.radixware.kernel.common.auth.AuthUtils;
 import org.radixware.kernel.common.enums.EAuthType;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.exceptions.ServiceProcessClientFault;
@@ -39,6 +37,10 @@ import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.server.arte.ArteProfiler;
 import org.radixware.kernel.server.exceptions.DatabaseError;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.schemas.eas.ExceptionEnum;
 import org.radixware.schemas.eas.LoginMess;
 import org.radixware.schemas.eas.LoginRq;
@@ -48,35 +50,53 @@ import org.radixware.schemas.easWsdl.LoginDocument;
 
 final class LoginRequest extends SessionRequest {
 
+    private static final String selectSessionQryStmtSQL = "select ses.USERCERTIFICATE, ses.SERVERKEY, ses.CHALLENGE, ses.ISINTERACTIVE, ses.USERNAME,"
+                                                        + " (case when "
+                                                        + "(u.logonScheduleId is not null AND RDX_JS_IntervalSchedule.isIn(logonScheduleId,sysdate)>0) "
+                                                        + "OR (u.logonScheduleId is null "
+                                                        + "   AND (not exists (select NULL from RDX_AC_USER2USERGROUP, RDX_AC_USERGROUP where RDX_AC_USER2USERGROUP.USERNAME=u.Name and RDX_AC_USERGROUP.NAME = RDX_AC_USER2USERGROUP.GROUPNAME)"
+                                                        + "        OR exists  (select NULL from RDX_AC_USER2USERGROUP, RDX_AC_USERGROUP where RDX_AC_USER2USERGROUP.USERNAME=u.Name and RDX_AC_USERGROUP.NAME = RDX_AC_USER2USERGROUP.GROUPNAME and (RDX_AC_USERGROUP.LOGONSCHEDULEID is null OR RDX_JS_IntervalSchedule.isIn(RDX_AC_USERGROUP.LOGONSCHEDULEID,sysdate)>0))"
+                                                        + "       )"
+                                                        + "   )"
+                                                        + "then 1 else 0 end) as LOGON_TIME_OK, "
+                                                        + " (case when "
+                                                        + "(u.SESSIONSLIMIT = 0 AND (sys.LIMITEASSESSIONSPERUSR is NULL or sys.LIMITEASSESSIONSPERUSR < 1 or ( select count(*) from RDX_EASSESSION where RDX_EASSESSION.USERNAME = u.Name AND RDX_EASSESSION.ISINTERACTIVE = 1  AND (RDX_EASSESSION.USERCERTIFICATE is null OR dbms_lob.getlength(RDX_EASSESSION.USERCERTIFICATE)=0) ) < sys.LIMITEASSESSIONSPERUSR))"
+                                                        + " OR "
+                                                        + "(u.SESSIONSLIMIT !=0 AND (u.SESSIONSLIMIT is NULL or u.SESSIONSLIMIT < 1 or ( select count(*) from RDX_EASSESSION where RDX_EASSESSION.USERNAME = u.Name AND RDX_EASSESSION.ISINTERACTIVE = 1  AND (RDX_EASSESSION.USERCERTIFICATE is null OR dbms_lob.getlength(RDX_EASSESSION.USERCERTIFICATE)=0) ) < u.SESSIONSLIMIT))"
+                                                        + " then 1 else 0 end) as SESSIONSLIMIT_OK, "
+                                                        + " (case when u.SESSIONSLIMIT = 0 then NVL(sys.LIMITEASSESSIONSPERUSR,0) else NVL(u.SESSIONSLIMIT,0) end) as SESSIONSLIMIT "
+                                                        + " from RDX_EASSESSION ses left outer join RDX_AC_USER u on u.name = ses.username, RDX_SYSTEM sys"
+                                                        + " where ses.ID = ? and sys.id = 1";
+    private static final Stmt selectSessionQryStmt = new Stmt(selectSessionQryStmtSQL,Types.BIGINT);
     private final PreparedStatement selectSessionQry;
 
+    //autonomous transaction is used to prevent deadlock on unregisterSession
+    private static final String updateSessionQryStmt1SQL = "declare pragma autonomous_transaction; "
+                                                        + "begin update RDX_EASSESSION set USERCERTIFICATE = NULL where RDX_EASSESSION.ID = ?; commit; end;";
+    private static final Stmt updateSessionQryStmt1 = new Stmt(updateSessionQryStmt1SQL,Types.BIGINT);
+
+    //autonomous transaction is used to prevent deadlock on unregisterSession
+    private static final String updateSessionQryStmt2SQL = "declare pragma autonomous_transaction; "
+                                                        + "begin update RDX_EASSESSION set USERCERTIFICATE = EMPTY_BLOB() where RDX_EASSESSION.ID = ?; commit; end;";
+    private static final Stmt updateSessionQryStmt2 = new Stmt(updateSessionQryStmt2SQL,Types.BIGINT);
+    
+    //autonomous transaction is used to prevent deadlock on unregisterSession
+    private static final String updateSessionQryStmt3SQL = "declare pragma autonomous_transaction; "
+                                                        + "begin update RDX_EASSESSION set USERCERTIFICATE = EMPTY_BLOB(), SERVERKEY = ? where RDX_EASSESSION.ID = ?; commit; end;";
+    private static final Stmt updateSessionQryStmt3 = new Stmt(updateSessionQryStmt3SQL,Types.VARCHAR,Types.BIGINT);
+
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
+    
+    private LoginRequest(){
+        selectSessionQry = null;
+    }
+    
     LoginRequest(final ExplorerAccessService presenter) {
         super(presenter);
-        final ArteProfiler profiler = getArte().getProfiler();
-        profiler.enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
-        try {
-            selectSessionQry = getArte().getDbConnection().get().prepareStatement(
-                    "select ses.USERCERTIFICATE, ses.SERVERKEY, ses.CHALLENGE, ses.ISINTERACTIVE, ses.USERNAME,"
-                    + " (case when "
-                    + "(u.logonScheduleId is not null AND RDX_JS_IntervalSchedule.isIn(logonScheduleId,sysdate)>0) "
-                    + "OR (u.logonScheduleId is null "
-                    + "   AND (not exists (select NULL from RDX_AC_USER2USERGROUP, RDX_AC_USERGROUP where RDX_AC_USER2USERGROUP.USERNAME=u.Name and RDX_AC_USERGROUP.NAME = RDX_AC_USER2USERGROUP.GROUPNAME)"
-                    + "        OR exists  (select NULL from RDX_AC_USER2USERGROUP, RDX_AC_USERGROUP where RDX_AC_USER2USERGROUP.USERNAME=u.Name and RDX_AC_USERGROUP.NAME = RDX_AC_USER2USERGROUP.GROUPNAME and (RDX_AC_USERGROUP.LOGONSCHEDULEID is null OR RDX_JS_IntervalSchedule.isIn(RDX_AC_USERGROUP.LOGONSCHEDULEID,sysdate)>0))"
-                    + "       )"
-                    + "   )"
-                    + "then 1 else 0 end) as LOGON_TIME_OK, "
-                    + " (case when "
-                    + "(u.SESSIONSLIMIT = 0 AND (sys.LIMITEASSESSIONSPERUSR is NULL or sys.LIMITEASSESSIONSPERUSR < 1 or ( select count(*) from RDX_EASSESSION where RDX_EASSESSION.USERNAME = u.Name AND RDX_EASSESSION.ISINTERACTIVE = 1  AND (RDX_EASSESSION.USERCERTIFICATE is null OR dbms_lob.getlength(RDX_EASSESSION.USERCERTIFICATE)=0) ) < sys.LIMITEASSESSIONSPERUSR))"
-                    + " OR "
-                    + "(u.SESSIONSLIMIT !=0 AND (u.SESSIONSLIMIT is NULL or u.SESSIONSLIMIT < 1 or ( select count(*) from RDX_EASSESSION where RDX_EASSESSION.USERNAME = u.Name AND RDX_EASSESSION.ISINTERACTIVE = 1  AND (RDX_EASSESSION.USERCERTIFICATE is null OR dbms_lob.getlength(RDX_EASSESSION.USERCERTIFICATE)=0) ) < u.SESSIONSLIMIT))"
-                    + " then 1 else 0 end) as SESSIONSLIMIT_OK, "
-                    + " (case when u.SESSIONSLIMIT = 0 then NVL(sys.LIMITEASSESSIONSPERUSR,0) else NVL(u.SESSIONSLIMIT,0) end) as SESSIONSLIMIT "
-                    + " from RDX_EASSESSION ses left outer join RDX_AC_USER u on u.name = ses.username, RDX_SYSTEM sys"
-                    + " where ses.ID = ? and sys.id = 1");
+        try (final ArteProfiler.TimingSection section = getArte().getProfiler().startTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE)) {
+            selectSessionQry = ((RadixConnection) getArte().getDbConnection().get()).prepareStatement(selectSessionQryStmt);
         } catch (SQLException e) {
             throw new DatabaseError("Can't init EAS service DB query: " + ExceptionTextFormatter.getExceptionMess(e), e);
-        } finally {
-            profiler.leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
         }
     }
 
@@ -191,19 +211,11 @@ final class LoginRequest extends SessionRequest {
         getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
         try {
             if (passwordAuth) {
-                updateSessionQry = getArte().getDbConnection().get().prepareStatement(
-                        "declare pragma autonomous_transaction; "//autonomous transaction is used to prevent deadlock on unregisterSession
-                        + "begin update RDX_EASSESSION set USERCERTIFICATE = NULL where RDX_EASSESSION.ID = ?; commit; end;");
+                updateSessionQry = ((RadixConnection)getArte().getDbConnection().get()).prepareStatement(updateSessionQryStmt1);
+            } else if (newServerKey == null) {
+                updateSessionQry = ((RadixConnection)getArte().getDbConnection().get()).prepareStatement(updateSessionQryStmt2);
             } else {
-                if (newServerKey == null) {
-                    updateSessionQry = getArte().getDbConnection().get().prepareStatement(
-                            "declare pragma autonomous_transaction; "//autonomous transaction is used to prevent deadlock on unregisterSession
-                            + "begin update RDX_EASSESSION set USERCERTIFICATE = EMPTY_BLOB() where RDX_EASSESSION.ID = ?; commit; end;");
-                } else {
-                    updateSessionQry = getArte().getDbConnection().get().prepareStatement(
-                            "declare pragma autonomous_transaction; "//autonomous transaction is used to prevent deadlock on unregisterSession
-                            + "begin update RDX_EASSESSION set USERCERTIFICATE = EMPTY_BLOB(), SERVERKEY = ? where RDX_EASSESSION.ID = ?; commit; end;");
-                }
+                updateSessionQry = ((RadixConnection)getArte().getDbConnection().get()).prepareStatement(updateSessionQryStmt3);
             }
         } catch (SQLException e) {
             throw EasFaults.exception2Fault(getArte(), e, "Can't create a database query");
@@ -253,13 +265,18 @@ final class LoginRequest extends SessionRequest {
 
     @Override
     void prepare(final XmlObject message) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(message);
         prepare(((LoginMess) message).getLoginRq());
     }
 
     @Override
     XmlObject process(final XmlObject message) throws ServiceProcessFault, InterruptedException {
-        final LoginDocument document = process(((LoginMess) message).getLoginRq());
-        postProcess(message, document.getLogin().getLoginRs());
+        LoginDocument document = null;
+        try{
+            document = process(((LoginMess) message).getLoginRq());
+        }finally{
+            postProcess(message, document==null ? null : document.getLogin().getLoginRs());
+        }
         return document;
 
     }

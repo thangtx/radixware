@@ -58,10 +58,12 @@ final class LocalizedDescriptionPanel extends LocalizingStringEditor implements 
         if (inherit){
             initComponent();
         }
+        setUseRichFormat(true);
     }
 
     @Override
     public void update() {
+        setUseRichFormat(true);
         update(getLocalizingStringContext());
         if (inherit){
             initComponent();

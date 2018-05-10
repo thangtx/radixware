@@ -31,6 +31,8 @@ public interface ILicenseClient {
 
     public List<ILicenseInfo> getDefinedLicenses(final String licenseServerAddress) throws IOException;
     
+    public ILicenseReport newReport();
+    
     public void sendReport(Date reportDate, Reader data, Connection dbConnection) throws IOException;
 
 }

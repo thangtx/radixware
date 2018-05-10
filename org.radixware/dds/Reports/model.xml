@@ -82,6 +82,8 @@
             <com:Value>0</com:Value>
           </DefaultVal>
         </Column>
+        <Column Id="colPS2XXJEY6ZHUXMSQRBWX5CKMNU" Name="maxResultSetCacheSizeKb" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="MAXRESULTSETCACHESIZEKB"/>
+        <Column Id="col3KG2NQHYBFGGJLWG2GKI4A6APE" Name="columnsSettings" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="COLUMNSSETTINGS"/>
       </Columns>
       <PrimaryKey Id="idxYZWEIB3HT5E75ENTSGD74MZLNE" Name="PrimaryKey" DbName="PK_RDX_REPORTPUB" Unique="true">
         <Columns>
@@ -136,7 +138,7 @@ end;</xsc:Sql>
       </Triggers>
       <Placement PosX="339" PosY="58"/>
     </Table>
-    <Table Id="tblM2NL42YXRRA5ZH27LCKIW5CQNI" Name="UserReportVersion" DbName="RDX_USERREPORTVERSION">
+    <Table Id="tblM2NL42YXRRA5ZH27LCKIW5CQNI" Name="UserReportVersion" DbName="RDX_USERREPORTVERSION" UserExtMask="32">
       <Columns>
         <Column Id="col443263VQHJDJTPL4VY3PNWTNCE" Name="reportGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="REPORTGUID"/>
         <Column Id="colT7D35GBIUBGHLHVAUNSMFGFCJM" Name="version" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="VERSION" SequenceId="sqn5AEBBOZCDRHXFCC5Y6FOZCJEKA"/>
@@ -153,9 +155,20 @@ end;</xsc:Sql>
         </Columns>
         <UniqueConstraint Id="unqEESWC3VZTVGEXGDLCW4GZL457I" DbName="PK_RDX_USERREPORTVERSION" Rely="true"/>
       </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgLQHN2KUUKZC5VCLPGMJFOB2C6E" Name="UserPropOwn" DbName="UPO_M2NL42YXRRA5ZH27LCKIW5CQNI" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblM2NL42YXRRA5ZH27LCKIW5CQNI', RDX_ENTITY.PackPIDStr(:old.REPORTGUID)||'~'||:old.VERSION);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
       <Placement PosX="978" PosY="237"/>
     </Table>
-    <Table Id="tblRHH7SYO5I5EFRGYIBOSVUXKD7U" Name="UserReport" DbName="RDX_USERREPORT">
+    <Table Id="tblRHH7SYO5I5EFRGYIBOSVUXKD7U" Name="UserReport" DbName="RDX_USERREPORT" UserExtMask="32">
       <Columns>
         <Column Id="colJENVO3VYOBBRXCG3GAOQDPK72Y" Name="guid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="GUID"/>
         <Column Id="colIE7QFFHT6VAJZMYY6E5NAFR57M" Name="moduleGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="MODULEGUID"/>
@@ -177,6 +190,17 @@ end;</xsc:Sql>
         </Columns>
         <UniqueConstraint Id="unqDQEG2ROKPZEFTERVMGFH542QTA" DbName="PK_RDX_USERREPORT" Rely="true"/>
       </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgSWVM3RLPZNEIHAID4FWO4JLJZM" Name="UserPropOwn" DbName="UPO_RHH7SYO5I5EFRGYIBOSVUXKD7U" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblRHH7SYO5I5EFRGYIBOSVUXKD7U', RDX_ENTITY.PackPIDStr(:old.GUID));
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
       <Placement PosX="681" PosY="291"/>
     </Table>
     <Table Id="tblN7LNYTJYXBDC7MTGOI4IP2THFA" Name="UserReportModule" DbName="RDX_USERREPORTMODULE">

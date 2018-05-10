@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcIUURDHFIENGVFOWC23RAN5TIUU" Name="ClassGuidDelegate" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcIUURDHFIENGVFOWC23RAN5TIUU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcIUURDHFIENGVFOWC23RAN5TIUU"/>
+    </Bodies>
+    <MethodGroup Id="cmgUXPTAIKEIRDHZDRD5EOG44HOWM" Name="Root"/>
+    <PropertyGroup Id="cpgEEQ7BV5SERHDRGMS43NBCR2JHE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthNUBN2T7BIVCWDOSANNLRZHPNUQ" Name="getCellText" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="row" Id="mprF522ZKKLDNEFTJ7AAPJIRKPHXQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="column" Id="mpr5VRY5D7DUBGL5OIN4DFPSC4X7Y">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="columnName" Id="mpr5VZYBW4ICJHBTCF4G3APONCLVY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprGIHQ6PJOXNBTDH5K77D4MAP3JM">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final String strValue = String.valueOf(value);
+try {
+    final org.radixware.kernel.server.meta.clazzes.RadClassDef classDef = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                <xsc:Presentation>getDefManager</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getClassDef(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(strValue));
+    return classDef.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y mthA7MSYHCKMBEFNBGCRW4F57LAZI" Invoke="true">
+                <xsc:Presentation>getTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+} catch (Exception ex) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to resolve classguid '" + strValue + "' during license report generation: " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U">
+                <xsc:Presentation>Utils::ExceptionTextFormatter</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciCPKKO6PCCFBO3KYIZPGYQ4M6CM" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:License</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return "&lt;unresolved: '" + strValue + "'>";
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXQF7MPRS25G2NN533NRP43HUIY" Name="ClassGuidDelegate" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="colIndex" Id="mprRIQUUXDYXZDPDLKV2HX2TZSK3Y">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(colIndex);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthK34HNI6K5RAIFELH7O4274AWOE" Name="ClassGuidDelegate" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="colName" Id="mprP2L3GAVOKJCJRAEIBZNIKFQZCM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(colName);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcTU24X65B45BANKTT7ZHOE44ZWU"/>
+  </AdsClassDefinition>
+</AdsDefinition>

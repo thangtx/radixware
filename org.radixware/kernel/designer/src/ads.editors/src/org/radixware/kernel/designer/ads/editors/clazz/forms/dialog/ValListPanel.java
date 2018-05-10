@@ -17,6 +17,7 @@ import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.AbstractCellEditor;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
@@ -446,9 +447,13 @@ public class ValListPanel extends EditorDialog.EditorPanel<AdsItemWidgetDef> {
             final WidgetItem item = ((TableModel)table.getModel()).getItem();
             UIPropertySupport sup = new UIPropertySupport(prop,uiDef, item) {
                 @Override
-                public void setValue(Object val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                    super.setValue(val);
-                    listModel.fireContentChanged(item);
+                public void setValue(Object val) {
+                    try {
+                        super.setValue(val);
+                        listModel.fireContentChanged(item);
+                    } catch (Throwable ex) {
+                        java.util.logging.Logger.getLogger(UIPropertySupport.class.getName()).log(Level.WARNING, "Can not change property", ex);
+                    }
                 }
             };
             return new PropertyPanel(sup, PropertyPanel.PREF_TABLEUI);

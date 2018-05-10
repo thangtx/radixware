@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
@@ -23,6 +24,7 @@ import org.radixware.kernel.common.enums.OracleTypeNames;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
+import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.server.arte.Arte;
@@ -36,7 +38,6 @@ import org.radixware.kernel.server.types.Pid;
 
 public abstract class GroupQuery extends DbQuery {
 
-//Constructors 
     GroupQuery(
             final Arte arte,
             final DdsTableDef table,
@@ -97,10 +98,12 @@ public abstract class GroupQuery extends DbQuery {
                 } catch (RuntimeException e) {// ChildProp может прийти только из Sqml-я
                     throw new WrongFormatError("Can't translate \"ChildColumn\" tag cause:" + e.getClass().getName() + (e.getMessage() != null ? "\n" + e.getMessage() : ""), e);
                 }
+            } else if (param instanceof ValuesCountInFilterParam){
+                setCountOfValuesInFilterParam(arte, query, i, (ValuesCountInFilterParam)param, group.getFltParamValsById());
             }
             i++;
         }
-    }
+    }    
 
     private void setFilterParam(final int idx, final FilterParam param, final Map<Id, Object> fltParamValsById) throws FilterParamNotDefinedException {
         setFilterParam(arte, query, idx, param, fltParamValsById);
@@ -108,7 +111,7 @@ public abstract class GroupQuery extends DbQuery {
 
     public static final void setFilterParam(final Arte arte, final PreparedStatement stmt, final int idx, final FilterParam param, final Map<Id, Object> fltParamValsById) throws FilterParamNotDefinedException {
         boolean defined = false;
-        final Id id = param.id;
+        final Id id = param.getId();        
         Object val = null;
         if (fltParamValsById != null) {
             val = fltParamValsById.get(id);
@@ -121,36 +124,92 @@ public abstract class GroupQuery extends DbQuery {
         if (!defined) {
             throw new FilterParamNotDefinedException(id);
         }
+        final int indexInArray = param.getArrayIndex();
+        if (indexInArray>=0 && val instanceof Arr){
+            val = ((Arr)val).get(indexInArray);
+        }
         if (param instanceof FilterKeyColumnParam) {
             final FilterKeyColumnParam p = (FilterKeyColumnParam) param;
             if (val == null) {
                 setParam(arte, stmt, idx, p.keyColumn.getValType(), p.keyColumn.getDbType(), null, p.keyColumn.getName());
             } else {
-                final Pid pid = val instanceof Pid ? (Pid) val : new Pid(arte, p.table, String.valueOf(val));
+                final Pid pid;
+                if (val instanceof Entity){
+                    pid = ((Entity)val).getPid();
+                }else if (val instanceof Pid){                
+                    pid = (Pid)val;
+                }else{
+                    pid = new Pid(arte, p.table, String.valueOf(val));
+                }
                 if (p.table != pid.getTable()) {
                     throw new IllegalUsageError("Wrong entity: expected #" + p.table.getId() + " but was #" + pid.getTable().getId());
                 }
                 final Entity referedObj = arte.getEntityObject(pid);
                 setParam(arte, stmt, idx, p.keyColumn.getValType(), p.keyColumn.getDbType(), referedObj.getProp(p.keyColumn.getId()), p.keyColumn.getName());
             }
-        } else if (param instanceof FilterKeyAsPidStrParam) {
-            final String pidStr = (val == null ? null : val.toString());
+        } else if (param instanceof FilterKeyAsPidStrParam) {            
+            final String pidStr;
+            if (val==null){
+                pidStr = null;
+            }else if (val instanceof Entity){
+                pidStr = ((Entity)val).getPid().toString();
+            }else{
+                pidStr = String.valueOf(val);
+            }
             setParam(arte, stmt, idx, EValType.STR, OracleTypeNames.VARCHAR2, pidStr, null);
-        } else {
+        } else {            
             setParam(arte, stmt, idx, val);
+        }
+    }
+    
+    public static final void setCountOfValuesInFilterParam(final Arte arte, final PreparedStatement stmt, final int idx, final ValuesCountInFilterParam param, final Map<Id, Object> fltParamValsById) throws FilterParamNotDefinedException {
+        boolean defined = false;
+        final Id id = param.getId();        
+        Object value = null;
+        if (fltParamValsById != null) {
+            value = fltParamValsById.get(id);
+            if (value != null) {
+                defined = true;
+            } else {
+                defined = fltParamValsById.containsKey(id);
+            }
+        }
+        if (!defined) {
+            throw new FilterParamNotDefinedException(id);
+        }
+        final int numberOfItems;
+        if (value instanceof Arr){
+            numberOfItems = ((Arr)value).size();
+        }else{
+            numberOfItems = value==null ? -1 : 1;
+        }
+        try{
+            stmt.setInt(idx, numberOfItems);
+        }catch (SQLException e) {
+            throw new DbQueryBuilderError("Can't set ParamValCount: " + ExceptionTextFormatter.getExceptionMess(e), e);
         }
     }
 
     static public class FilterParam extends InputParam {
 
-        protected final Id id;
-
-        public FilterParam(final Id id) {
+        private final Id id;
+        private final int arrayIndex;
+        
+        public FilterParam(final Id id, final int arrayIndex) {
             this.id = id;
+            this.arrayIndex = arrayIndex;
         }
 
-        public Id getId() {
+        public FilterParam(final Id id) {
+            this(id, -1);
+        }
+
+        public final Id getId() {
             return id;
+        }
+        
+        public final int getArrayIndex(){
+            return arrayIndex;
         }
 
         @Override
@@ -159,7 +218,8 @@ public abstract class GroupQuery extends DbQuery {
                 return true;
             }
             if (obj instanceof FilterParam) {
-                return Utils.equals(id, ((FilterParam) obj).id);
+                final FilterParam other = (FilterParam)obj;
+                return Utils.equals(id, other.id) && arrayIndex==other.arrayIndex;
             }
             return false;
         }
@@ -167,9 +227,44 @@ public abstract class GroupQuery extends DbQuery {
         @Override
         public int hashCode() {
             int hash = 3;
-            hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0);
+            hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0) + arrayIndex;
             return hash;
         }
+    }
+    
+    static public class ValuesCountInFilterParam extends InputParam {
+        
+        private final Id id;
+        
+        public ValuesCountInFilterParam(final Id id){
+            this.id = id;
+        }
+
+        public Id getId() {
+            return id;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 47 * hash + Objects.hashCode(this.id);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final ValuesCountInFilterParam other = (ValuesCountInFilterParam) obj;
+            if (!Objects.equals(this.id, other.id)) {
+                return false;
+            }
+            return true;
+        }        
     }
 
     static final class InputRequestedRoleIdsParam extends Param {
@@ -177,35 +272,41 @@ public abstract class GroupQuery extends DbQuery {
 
     static public final class FilterKeyAsPidStrParam extends FilterParam {
 
+        public FilterKeyAsPidStrParam(final Id id, final int arrayIndex) {
+            super(id, arrayIndex);
+        }
+        
         public FilterKeyAsPidStrParam(final Id id) {
-            super(id);
+            this(id, -1);
         }
     }
 
     static public final class FilterKeyColumnParam extends FilterParam {
-        //Fields
-
+        
         protected final DdsTableDef table;
         protected final DdsColumnDef keyColumn;
-        //Constructor
 
-        public FilterKeyColumnParam(final Id id, final DdsTableDef table, final DdsColumnDef keyColumn) {
-            super(id);
+        public FilterKeyColumnParam(final Id id, final DdsTableDef table, final DdsColumnDef keyColumn, final int arrayIndex) {
+            super(id, arrayIndex);
             this.table = table;
-            this.keyColumn = keyColumn;
+            this.keyColumn = keyColumn;            
         }
-
+        
+        public FilterKeyColumnParam(final Id id, final DdsTableDef table, final DdsColumnDef keyColumn) {
+            this(id, table, keyColumn, -1);
+        }        
+        
         @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (obj.getClass() == FilterKeyColumnParam.class) {
+            if (obj instanceof FilterKeyColumnParam) {
                 final FilterKeyColumnParam param = (FilterKeyColumnParam) obj;
-                return Utils.equals(id, param.id) && Utils.equals(table, param.table) && Utils.equals(keyColumn, param.keyColumn);
+                return Utils.equals(getId(), param.getId()) && 
+                       getArrayIndex()==param.getArrayIndex()&&
+                       Utils.equals(table, param.table) && 
+                       Utils.equals(keyColumn, param.keyColumn);
             }
             return false;
         }
@@ -215,6 +316,7 @@ public abstract class GroupQuery extends DbQuery {
             int hash = 7;
             hash = 37 * hash + (this.table != null ? this.table.hashCode() : 0);
             hash = 37 * hash + (this.keyColumn != null ? this.keyColumn.hashCode() : 0);
+            hash = 37 * hash + super.hashCode();
             return hash;
         }
     }

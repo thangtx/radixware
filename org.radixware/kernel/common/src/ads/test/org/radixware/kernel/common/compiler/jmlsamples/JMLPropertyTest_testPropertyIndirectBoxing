@@ -1,0 +1,30 @@
+
+class TestProperty2 {
+
+    public long getProp() {
+	return 0;
+    }
+}
+
+class TestProperty3 {
+
+    public Long getProp() {
+	return null;
+    }
+
+    public void setProp(Long l) {
+    }
+}
+
+class Test {
+
+    public TestProperty2 getProp2() {
+	return null;
+    }
+
+    static public void main(String[] args) {
+	TestProperty3 t3 = new TestProperty3();
+	Test t = new Test();
+	t3.Prop = t.Prop2.Prop;
+    }
+}

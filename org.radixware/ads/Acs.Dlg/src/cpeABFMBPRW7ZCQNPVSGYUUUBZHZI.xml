@@ -8,8 +8,8 @@
           <ui:rect>
             <ui:x>0</ui:x>
             <ui:y>0</ui:y>
-            <ui:width>612</ui:width>
-            <ui:height>138</ui:height>
+            <ui:width>615</ui:width>
+            <ui:height>144</ui:height>
           </ui:rect>
         </ui:property>
         <ui:property name="standardButtons">
@@ -26,8 +26,8 @@
             <ui:rect>
               <ui:x>3</ui:x>
               <ui:y>3</ui:y>
-              <ui:width>606</ui:width>
-              <ui:height>102</ui:height>
+              <ui:width>609</ui:width>
+              <ui:height>108</ui:height>
             </ui:rect>
           </ui:property>
           <ui:property name="anchor">
@@ -44,8 +44,8 @@
               <ui:rect>
                 <ui:x>3</ui:x>
                 <ui:y>3</ui:y>
-                <ui:width>597</ui:width>
-                <ui:height>76</ui:height>
+                <ui:width>600</ui:width>
+                <ui:height>82</ui:height>
               </ui:rect>
             </ui:property>
             <ui:property name="anchor">
@@ -161,19 +161,25 @@ String currUser =
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true">
+                  <xsc:Presentation>getProperty</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+                <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 colEF6ODCYWY3NBDGMCABQAQH3XQ4">
+                  <xsc:Presentation>Acs::User:name</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>).</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth7OXSCLQHDFCWJNUZN7LX5OO7VE" Invoke="true"/>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth7OXSCLQHDFCWJNUZN7LX5OO7VE" Invoke="true">
+                  <xsc:Presentation>getValueAsString</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -190,15 +196,28 @@ String title =
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdgLXACD2HC5RHE5EHODWWTU44HMQ" Invoke="true"/>
+                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdgLXACD2HC5RHE5EHODWWTU44HMQ" Invoke="true">
+                  <xsc:Presentation>UserPasswordEditorWeb:widget:groupBox</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setTitle(title);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdgLXACD2HC5RHE5EHODWWTU44HMQ" Invoke="true">
+                  <xsc:Presentation>UserPasswordEditorWeb:widget:groupBox</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setBorderBoxSizingEnabled(true);
 
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdgSHQ543PDMVBLTJ3XDMUEV5YKXI" Invoke="true"/>
+                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdgSHQ543PDMVBLTJ3XDMUEV5YKXI" Invoke="true">
+                  <xsc:Presentation>UserPasswordEditorWeb:widget</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setWindowTitle(</xsc:Java>
@@ -228,62 +247,120 @@ String title =
                 <xsc:Java>if(result==</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I">
+                  <xsc:Presentation>Client.Views::DialogResult</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>.ACCEPTED) {
-    
-    </xsc:Java>
+                <xsc:Java>.ACCEPTED) {    
+   </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="21"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java> val = </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcWYF5UGWT4ZAT7NTUSSOFE3P2WQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcWYF5UGWT4ZAT7NTUSSOFE3P2WQ">
+                  <xsc:Presentation>PasswordDialogController</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcWYF5UGWT4ZAT7NTUSSOFE3P2WQ mthNANSAC3E2NF7RGP4ECEQ6XOEHU" Invoke="true"/>
+                <xsc:IdReference Path="adcWYF5UGWT4ZAT7NTUSSOFE3P2WQ mthNANSAC3E2NF7RGP4ECEQ6XOEHU" Invoke="true">
+                  <xsc:Presentation>updatePassword</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthFKHYRWIKE5D6XKB46D6EI7U2QY" Invoke="true"/>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true">
+                  <xsc:Presentation>getSourceProperty</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(),</xsc:Java>
+                <xsc:Java>().getOwner(), </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdgFFN7V3PBTFB57LRO63RQT2OH2M" Invoke="true"/>
+                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdgFFN7V3PBTFB57LRO63RQT2OH2M" Invoke="true">
+                  <xsc:Presentation>UserPasswordEditorWeb:widget:groupBox:widget:edPassword</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>.Text,</xsc:Java>
+                <xsc:Java>.Text, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdg6BV7ITBJ7ZAXLKJY5CVBIIHN2Q" Invoke="true"/>
+                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdg6BV7ITBJ7ZAXLKJY5CVBIIHN2Q" Invoke="true">
+                  <xsc:Presentation>UserPasswordEditorWeb:widget:groupBox:widget:edConfirmation</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>.Text);    
-    ((</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 eprK3FTXQSCQRAAJPVNYCKOQSCK7U aemK3FTXQSCQRAAJPVNYCKOQSCK7U"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>)this.getPropEditorContext().getHolderModel()).</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 eprK3FTXQSCQRAAJPVNYCKOQSCK7U aemK3FTXQSCQRAAJPVNYCKOQSCK7U prdFZ3VQNXQ4BA4FNVATYUE3JNPYU" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java> = val;
+                <xsc:Java>.Text);
 }</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthLPH424JJSFHA3LTQF2HIUYTNNM" Name="beforeCloseDialog" Nature="0" IsOverride="true">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="result" Id="mpr6ZTIG3OPXBBHDBJFP62R2ADCHM">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return result!=</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I">
+                  <xsc:Presentation>Client.Views::DialogResult</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.ACCEPTED
+       || </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcWYF5UGWT4ZAT7NTUSSOFE3P2WQ">
+                  <xsc:Presentation>PasswordDialogController</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWYF5UGWT4ZAT7NTUSSOFE3P2WQ mthNANSAC3E2NF7RGP4ECEQ6XOEHU" Invoke="true">
+                  <xsc:Presentation>updatePassword</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true">
+                  <xsc:Presentation>getSourceProperty</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().getOwner(), </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdgFFN7V3PBTFB57LRO63RQT2OH2M" Invoke="true">
+                  <xsc:Presentation>UserPasswordEditorWeb:widget:groupBox:widget:edPassword</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Text, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cpeABFMBPRW7ZCQNPVSGYUUUBZHZI wdg6BV7ITBJ7ZAXLKJY5CVBIIHN2Q" Invoke="true">
+                  <xsc:Presentation>UserPasswordEditorWeb:widget:groupBox:widget:edConfirmation</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Text);
+   </xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>

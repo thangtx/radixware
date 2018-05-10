@@ -13,7 +13,9 @@ package org.radixware.kernel.common.defs.ads.type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.radixware.kernel.common.check.IProblemHandler;
+import org.radixware.kernel.common.check.XsdCheckHistory;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.msdl.AdsMsdlSchemeDef;
@@ -98,11 +100,11 @@ public class XmlType extends AdsDefinitionType {
     public TypeJavaSourceSupport getJavaSourceSupport() {
         return new TypeJavaSourceSupport(this) {
             @Override
-            public char[][] getPackageNameComponents(UsagePurpose env) {
+            public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
                 if (source == null) {
                     return XML_BEANS_PACKAGE_NAME;
                 }
-                String packageName = ((IXmlDefinition) source).getJavaPackageName();
+                String packageName = ((IXmlDefinition) source).getJavaPackageName(isHumanReadable);
 
                 String[] components = packageName.split("\\.");
                 char[][] result = new char[components.length][];
@@ -113,7 +115,7 @@ public class XmlType extends AdsDefinitionType {
             }
 
             @Override
-            public char[] getLocalTypeName(UsagePurpose env) {
+            public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
                 if (source == null) {
                     return XML_OBJECT_CLASS_NAME;
                 }
@@ -145,7 +147,7 @@ public class XmlType extends AdsDefinitionType {
     }
 
     @Override
-    protected void check(RadixObject referenceContext, ERuntimeEnvironmentType env, IProblemHandler problemHandler) {
+    protected void check(RadixObject referenceContext, ERuntimeEnvironmentType env, IProblemHandler problemHandler, Map<Object, Object> checkHistory) {
         super.check(referenceContext, env, problemHandler);
         if (source != null) {
             ERuntimeEnvironmentType se = getSource().getUsageEnvironment();
@@ -171,6 +173,21 @@ public class XmlType extends AdsDefinitionType {
 
                     break;
             }
+
+            AbstractXmlDefinition xmlSource = (AbstractXmlDefinition) source;
+            XsdCheckHistory xsdCheckHistory = XsdCheckHistory.getOrCreate(checkHistory);
+            String cyclicImportPath = xsdCheckHistory == null ? null : xsdCheckHistory.getCyclicImportPath(xmlSource.getTargetNamespace());
+            if (cyclicImportPath == null) {
+                cyclicImportPath = xmlSource.getCyclicImportPath();
+                if (xsdCheckHistory != null) {
+                    xsdCheckHistory.addCyclicImportPath(xmlSource.getTargetNamespace(), cyclicImportPath);
+                }
+            }
+
+            if (!cyclicImportPath.isEmpty()) {
+                error(referenceContext, problemHandler, MessageFormat.format("Type {0} can not be found because scheme {1} contains cyclic import: {2}", suffix, getSource().getQualifiedName(), cyclicImportPath));
+                return;
+            }
         }
         if (suffix != null) {
             XBeansType xb = getXmlType();
@@ -179,6 +196,12 @@ public class XmlType extends AdsDefinitionType {
             }
         }
     }
+
+    @Override
+    protected void check(RadixObject referenceContext, ERuntimeEnvironmentType env, IProblemHandler problemHandler) {
+        check(referenceContext, env, problemHandler, null);
+    }
+
     private XBeansType iface = null;
     private boolean not_found = false;
 

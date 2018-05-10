@@ -22,10 +22,10 @@ import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QPalette.ColorRole;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
-public class AlternativeColorSettingsWidget extends SettingsWidget {
+final class AlternativeColorSettingsWidget extends SettingsWidget {
 
     private final ColoredFrame styleColorFrame, oddColorFrame;
     private final QSlider slider;
@@ -62,13 +62,13 @@ public class AlternativeColorSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(final IExplorerSettings src) {
         final int value = src.readInteger(getSettingCfgName(), defaultValue);
         setValue(value);
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(final IExplorerSettings dst) {
         final String path = getSettingCfgName();
         dst.writeInteger(path, slider.value());
     }

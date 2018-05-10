@@ -1,0 +1,8 @@
+alter table RDX_FALLBACKMQHANDLER drop constraint FK_RDX_FALLBACKMQHANDLER_MUNIT
+/
+
+alter table RDX_FALLBACKMQHANDLER
+	add constraint FK_RDX_FALLBACKMQHANDLER_MUNIT foreign key (MAINUNITID)
+	references RDX_UNIT (ID)
+/
+

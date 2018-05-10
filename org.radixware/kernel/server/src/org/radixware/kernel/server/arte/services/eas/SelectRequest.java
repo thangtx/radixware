@@ -12,14 +12,13 @@ package org.radixware.kernel.server.arte.services.eas;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import org.radixware.kernel.server.dbq.SelectQuery.Result;
 import org.radixware.schemas.eas.ObjectList.Rows.Item;
 import org.radixware.schemas.eas.Presentation;
 
 import org.apache.xmlbeans.XmlObject;
-import org.radixware.kernel.common.enums.EEventSeverity;
-import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.ESelectorRowStyle;
 
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
@@ -47,6 +46,7 @@ import org.radixware.schemas.eas.Definition;
 import org.radixware.schemas.eas.EditorPages;
 import org.radixware.schemas.eas.ExceptionEnum;
 import org.radixware.schemas.eas.ObjectList;
+import org.radixware.schemas.eas.PresentableObject;
 import org.radixware.schemas.eas.PropertyList;
 import org.radixware.schemas.eas.SelectMess;
 import org.radixware.schemas.eas.SelectRq;
@@ -58,10 +58,8 @@ public class SelectRequest extends SessionRequest {
     public SelectRequest(final ExplorerAccessService presenter) {
         super(presenter);
     }
-
-    @Override
-    public final XmlObject process(final XmlObject request) throws ServiceProcessFault, InterruptedException {        
-        final SelectRq rqParams = getRqParams(request);
+    
+    private SelectDocument process(final SelectRq rqParams) throws ServiceProcessFault, InterruptedException {
         final RadClassDef classDef;
         final Definition classXml = rqParams.getClass1();
         if (classXml != null) {
@@ -85,7 +83,6 @@ public class SelectRequest extends SessionRequest {
         final PresentationContext presCtx = getPresentationContext(getArte(), presOptions.context, group.entityGroup);
         final SelectDocument resSel = SelectDocument.Factory.newInstance();
         final SelectRs rsStruct = resSel.addNewSelect().addNewSelectRs();
-        final XmlObject res = resSel;
         final ObjectList dsXml = rsStruct.addNewDataSet();
         final ObjectList.Rows dsRowsXml = dsXml.addNewRows();
         final Id presentationId = group.entityGroup.getPresentation().getId();
@@ -93,10 +90,12 @@ public class SelectRequest extends SessionRequest {
         if (isRowsDataRequested) {
             SelectQuery.Result rs = select(group, startIdx, count, presOptions);
             int skippedCount = 0;
+            int filteredCount = 0;
             long itemIdx = 0;
             do {
                 if (!rs.rows.isEmpty()) {
                     skippedCount = 0;
+                    filteredCount = 0;
                     final Class<?> selectionClass = getArte().getDefManager().getClass(group.entityGroup.getSelectionClassId());
                     for (EntityPropVals propVals : rs.rows) {
                         Pid pid = null;
@@ -117,17 +116,16 @@ public class SelectRequest extends SessionRequest {
                                 continue; //skip this record
                             }
                             if (filter != null && filter.omitEntity(curEntity)) {
-                                skippedCount++;
+                                filteredCount++;
                                 continue; //skip this record                                
                             }
-
                             //end of RADIX-2028 FIX
                             itemIdx++;
                             final boolean writeEntireObject = (rqParams.isSetEntireObjectIndexes() && rqParams.getEntireObjectIndexes().contains(Long.valueOf(itemIdx)))
                                     || (rqParams.isSetEntireObjectPids() && rqParams.getEntireObjectPids().contains(pid.toString()));
 
-                            rowXml = dsRowsXml.addNewItem();
-                            final Item.Object objectXml = Item.Object.Factory.newInstance();
+                            rowXml = dsRowsXml.addNewItem();                            
+                            final PresentableObject  objectXml = PresentableObject.Factory.newInstance();
                             objectXml.setPID(pid.toString());
                             final Presentation presXml = objectXml.addNewPresentation();
                             presXml.setId(curPres.getId());
@@ -161,20 +159,27 @@ public class SelectRequest extends SessionRequest {
                                 }
 
                                 final Restrictions restr = curPres.getTotalRestrictions(curEntity);
+                                final Restrictions additionalRestrictions = curPresEntAdapter.getAdditionalRestrictions(curPres);
+                                final Restrictions totalRestrictions;
+                                if (additionalRestrictions==Restrictions.ZERO){
+                                    totalRestrictions = restr;
+                                }else{
+                                    totalRestrictions = Restrictions.Factory.sum(restr, additionalRestrictions);
+                                }
                                 final EditorPages enadledEditorPages = objectXml.addNewEnabledEditorPages();
-                                if (restr.getIsAccessRestricted() || restr.getIsViewRestricted()) {
+                                if (totalRestrictions.getIsAccessRestricted() || totalRestrictions.getIsViewRestricted()) {
                                     enadledEditorPages.setAll(false);
-                                } else if (!restr.getIsAllEditPagesRestricted()) {
+                                } else if (!totalRestrictions.getIsAllEditPagesRestricted()) {
                                     enadledEditorPages.setAll(true);
                                 } else {
                                     enadledEditorPages.setAll(false);
-                                    Collection<Id> allowedEditPages = restr.getAllowedEditPages();
+                                    final Collection<Id> allowedEditPages = totalRestrictions.getAllowedEditPages();
                                     for (Id id : allowedEditPages) {
-                                        EditorPages.Item item = enadledEditorPages.addNewItem();
+                                        final EditorPages.Item item = enadledEditorPages.addNewItem();
                                         item.setId(id);
                                     }
-                                }
-                                writeAccessibleExplorerItems(curEntity, curPres, objectXml.addNewAccessibleExplorerItems());
+                                }                                
+                                writeAccessibleExplorerItems(curEntity, curPres, additionalRestrictions, objectXml.addNewAccessibleExplorerItems());
                             } else {
                                 for (RadPropDef col : columns) {
                                     addPropXml(propsXml, curPresEntAdapter, presOptions.selectorPresentation, presOptions.context, col, true);
@@ -196,10 +201,15 @@ public class SelectRequest extends SessionRequest {
                         }
                     }
                 }
-                if (skippedCount > 0 && rs.hasMore && !getArte().needBreak()) {
-                    getArte().getTrace().put(EEventSeverity.DEBUG, String.valueOf(skippedCount) + " records loaded from db where skipped by EAS due to access control settings", EEventSource.EAS);
+                if ((skippedCount > 0 || filteredCount > 0) && rs.hasMore && !getArte().needBreak()) {
+                    if (skippedCount>0){
+                        getArte().getTrace().put(Messages.MLS_ID_EAS_SKIPPED_BY_ACS_RECORDS, Collections.singletonList(String.valueOf(skippedCount)));
+                    }
+                    if (filteredCount>0){
+                        getArte().getTrace().put(Messages.MLS_ID_EAS_FILTERED_RECORDS, Collections.singletonList(String.valueOf(filteredCount)));
+                    }
                     startIdx += count;
-                    count = skippedCount;
+                    count = skippedCount + filteredCount;
                     rs = select(group, startIdx, count, presOptions);
                 } else {
                     break;
@@ -211,9 +221,6 @@ public class SelectRequest extends SessionRequest {
         }
         if (group.filter != null && (!rqParams.isSetFilter() || !group.filter.getId().equals(rqParams.getFilter().getId()))) {
             rsStruct.addNewFilter().setId(group.filter.getId());
-        }
-        if (group.colorScheme != null && (!rqParams.isSetColorScheme() || !group.colorScheme.getId().equals(rqParams.getColorScheme().getId()))) {
-            rsStruct.addNewColorScheme().setId(group.colorScheme.getId());
         }
         if (group.sorting != null && (!rqParams.isSetSorting() || !group.sorting.getId().equals(rqParams.getSorting().getId()))) {
             rsStruct.addNewSorting().setId(group.sorting.getId());
@@ -256,12 +263,23 @@ public class SelectRequest extends SessionRequest {
         } catch (Throwable e) {
             throw EasFaults.exception2Fault(getArte(), e, "Can't check group command is disabled");
         }
-        postProcess(request, rsStruct);
-        return res;
+        return resSel;
+    }
+
+    @Override
+    public final XmlObject process(final XmlObject request) throws ServiceProcessFault, InterruptedException {        
+        SelectDocument document = null;
+        try{
+            document = process(getRqParams(request));
+        }finally{
+            postProcess(request, document==null ? null : document.getSelect().getSelectRs());
+        }
+        return document;
     }
 
     @Override
     public void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(getRqParams(rqXml));
     }
 

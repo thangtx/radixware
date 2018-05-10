@@ -60,7 +60,7 @@ public class AppBlockEditorFormCreatorExecutor extends AppBlockFormCreatorExecut
         if (object == null && creationPresentationId == null) {
             throw new AppError("Editor creation presentation is not defined");
         }
-
+        
         form.setProp(DWF_FORM_PROP_CREATIONPRESENTATIONID_ID, Utils.toString(creationPresentationId));
         form.setProp(DWF_FORM_PROP_EDITORPRESENTATIONIDS_ID, presentationIds);
 
@@ -77,7 +77,7 @@ public class AppBlockEditorFormCreatorExecutor extends AppBlockFormCreatorExecut
             }
             form.create(null);
             postInitForm(algo);
-            StringTokenizer t = new StringTokenizer((String) Utils.nvl(executor.getProperty("submitVariants"), ""), ";");
+            StringTokenizer t = executor.getSubmitVariantsTokens(algo);
             return t.countTokens();
         } else {
             algo.scheduleEvent(executor.getPropertyId("submitWID")); // подписка на синхронный onEvent
@@ -116,7 +116,7 @@ public class AppBlockEditorFormCreatorExecutor extends AppBlockFormCreatorExecut
         }
 
         done(algo);
-        StringTokenizer t = new StringTokenizer((String) Utils.nvl(algo.getProperty("submitVariants"), ""), ";");
+        StringTokenizer t = executor.getSubmitVariantsTokens(algo);
         if (waitId.equals(timeoutWID)) {
             algo.setProperty("submitVariant", null);
             form.setProp(DWF_FORM_PROP_CLOSETIME_ID, executor.getCurrentTime());

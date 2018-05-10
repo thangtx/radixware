@@ -94,6 +94,9 @@ public class LicenseManager {
     }
   
     public static ILicenseReport newReport() {
+        if (LicenseClientHolder.CLIENT != null) {
+            return LicenseClientHolder.CLIENT.newReport();
+        }
         return null;
     }
 

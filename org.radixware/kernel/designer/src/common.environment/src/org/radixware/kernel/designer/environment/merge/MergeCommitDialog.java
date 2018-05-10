@@ -11,6 +11,7 @@
 package org.radixware.kernel.designer.environment.merge;
 
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.designer.common.dialogs.commitpanel.MergeCommitPanel;
 import org.radixware.kernel.designer.common.dialogs.commitpanel.MicroCommitPanel;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 

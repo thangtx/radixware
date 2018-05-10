@@ -1007,6 +1007,14 @@ is divided into following sections:
         </antcall>
         <antcall target="-maybe-call-dep">
             <param name="call.built.properties" value="${built-jar.properties}"/>
+            <param location="${project.org_radixware_kernel-common-svnclient}" name="call.subproject"/>
+            <param location="${project.org_radixware_kernel-common-svnclient}/build.xml" name="call.script"/>
+            <param name="call.target" value="jar"/>
+            <param name="transfer.built-jar.properties" value="${built-jar.properties}"/>
+            <param name="transfer.not.archive.disabled" value="true"/>
+        </antcall>
+        <antcall target="-maybe-call-dep">
+            <param name="call.built.properties" value="${built-jar.properties}"/>
             <param location="${project.org_radixware_kernel_radixdoc}" name="call.subproject"/>
             <param location="${project.org_radixware_kernel_radixdoc}/build.xml" name="call.script"/>
             <param name="call.target" value="jar"/>
@@ -1598,6 +1606,14 @@ is divided into following sections:
             <param name="call.built.properties" value="${built-clean.properties}"/>
             <param location="${project.org_radixware-kernel-utils}" name="call.subproject"/>
             <param location="${project.org_radixware-kernel-utils}/build.xml" name="call.script"/>
+            <param name="call.target" value="clean"/>
+            <param name="transfer.built-clean.properties" value="${built-clean.properties}"/>
+            <param name="transfer.not.archive.disabled" value="true"/>
+        </antcall>
+        <antcall target="-maybe-call-dep">
+            <param name="call.built.properties" value="${built-clean.properties}"/>
+            <param location="${project.org_radixware_kernel-common-svnclient}" name="call.subproject"/>
+            <param location="${project.org_radixware_kernel-common-svnclient}/build.xml" name="call.script"/>
             <param name="call.target" value="clean"/>
             <param name="transfer.built-clean.properties" value="${built-clean.properties}"/>
             <param name="transfer.not.archive.disabled" value="true"/>

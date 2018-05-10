@@ -237,9 +237,7 @@ public class TaskWaiter extends QObject implements ITaskWaiter {
             super.customEvent(event);
         }
     }
-    
-    
-
+        
     @Override
     public void close() {
         executor.shutdownNow();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
   <AdsClassDefinition Id="sscFAQCB3MFLVA67H3NWT2FKQWNVM" Name="DecreaseChildSeqNumbersStatement" Type="9">
-    <AccessRules IsPublished="false">
+    <AccessRules IsFinal="true" IsPublished="false">
       <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
     </AccessRules>
     <Headers>
@@ -21,6 +21,10 @@
         <AccessRules IsPublished="false"/>
         <Type TypeId="2"/>
       </Property>
+      <Property Id="prmJ36S5M2TIZBXRA7ERPMHCAMF5I" Name="byParent" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
     </Properties>
     <Methods>
       <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
@@ -32,7 +36,11 @@
           <Parameter Name="pAboveSeq" Id="mprTPNSPLVUNFC5XGARWGPYICB2PM">
             <Type TypeId="2"/>
           </Parameter>
+          <Parameter Name="byParent" Id="mprJ36S5M2TIZBXRA7ERPMHCAMF5I">
+            <Type TypeId="1"/>
+          </Parameter>
         </Parameters>
+        <ReturnType/>
       </Method>
       <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
         <AccessRules IsPublished="false" IsStatic="true"/>
@@ -69,7 +77,17 @@ set </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:Sql> - 1
-where </xsc:Sql>
+where
+</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IfParam ParamId="prmJ36S5M2TIZBXRA7ERPMHCAMF5I" Operation="Equal">
+            <xsc:Value>1</xsc:Value>
+          </xsc:IfParam>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+</xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colBHMUC3KGIJE3PA6RVXKLXFHP3U" Owner="TABLE"/>
@@ -81,7 +99,35 @@ where </xsc:Sql>
           <xsc:Parameter ParamId="prmEMITNGVNKBGODC465KTVFDOTL4"/>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql> and </xsc:Sql>
+          <xsc:Sql>
+</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ElseIf/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colC7IXI3MF4ZHHRJGGR7KVS6LL7Y" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmEMITNGVNKBGODC465KTVFDOTL4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:EndIf/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+and </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colWDY2TRTHU5CBNOYBLCQRTQSCZM" Owner="TABLE"/>

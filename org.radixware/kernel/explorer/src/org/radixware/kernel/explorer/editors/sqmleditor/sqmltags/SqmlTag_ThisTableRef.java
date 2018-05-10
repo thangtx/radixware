@@ -46,7 +46,7 @@ public final class SqmlTag_ThisTableRef extends SqmlTag_AbstractReference {
         this.contextTable = contextTable;        
         this.thisTableRef = thisTableRef;
         if ((contextTable == null) || (thisTableRef.getPidTranslationMode() != EPidTranslationMode.AS_STR && getIndexDef() == null)) {
-            valid = false;
+            setValid(false);
             setDisplayedInfo(null, "???" + "this" + "???");
         } else {
             setIsDeprecated(contextTable.isDeprecated());

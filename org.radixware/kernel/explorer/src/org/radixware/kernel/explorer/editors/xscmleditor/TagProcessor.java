@@ -86,11 +86,15 @@ public abstract class TagProcessor {
             }
         }
         tagList.add(newTag);
-        return tagList.size();
+        return tagList.size() > 1 ? tagList.size() - 1 : 0;
     }
     
     public void insertTagToTagList(final TagInfo newTag, int tagPos) {
-        getCurrentTagList().add(tagPos, newTag);
+        if (getCurrentTagList().size() > tagPos) {
+            getCurrentTagList().add(tagPos, newTag);
+        } else {
+            getCurrentTagList().add(newTag);
+        }
     }
 
     /**

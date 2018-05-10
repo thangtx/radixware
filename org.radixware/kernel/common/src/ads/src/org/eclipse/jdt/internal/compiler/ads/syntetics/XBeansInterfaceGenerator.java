@@ -45,6 +45,7 @@ import org.eclipse.jdt.internal.compiler.lookup.AdsXmlTypeDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.TypeIds;
 import org.radixware.kernel.common.build.xbeans.XBeansPropAcceptor;
 import org.radixware.kernel.common.build.xbeans.XBeansTypeAcceptor;
+import org.radixware.kernel.common.build.xbeans.XbeansSchemaCodePrinter;
 import static org.radixware.kernel.common.build.xbeans.XbeansSchemaCodePrinter.javaStringEscape;
 import org.radixware.kernel.common.compiler.core.ast.JMLArgument;
 import org.radixware.kernel.common.compiler.core.ast.JMLCastExpression;
@@ -415,6 +416,26 @@ public class XBeansInterfaceGenerator {
         public void acceptSeveralPropArrayElementRemoving() throws IOException {
             methods.add(BaseGenerator.createMethodDeclaration("remove" + propertyName, getPropertyXmlType(), modifiers, createIndexArgs(), compilationResult));
         }
+        
+        @Override
+        public void acceptSingletonPropGetterDateTimeWithTimezone(boolean several) throws IOException {
+            TypeReference dType = computePropertyType(XbeansSchemaCodePrinter.JAVA_CLASS_FOR_DATE_WITH_TIMEZONE);
+            methods.add(BaseGenerator.createMethodDeclaration("get" + propertyName + XbeansSchemaCodePrinter.TIME_ZONE_MTH_SUFFIX, dType, modifiers, compilationResult));
+        }
+
+        @Override
+        public void acceptSingletonPropSetterDateTimeWithTimezone(boolean several) throws IOException {
+            TypeReference dType = computePropertyType(XbeansSchemaCodePrinter.JAVA_CLASS_FOR_DATE_WITH_TIMEZONE);
+            methods.add(BaseGenerator.createMethodDeclaration("set" + propertyName + XbeansSchemaCodePrinter.TIME_ZONE_MTH_SUFFIX, modifiers, new Argument[]{
+                new JMLArgument(dType, VAL_ARG_NAME)
+            }, compilationResult));
+        }
+        
+        @Override
+        public void acceptSeveralPropListGetterDateTimeWithTimezone(String wrappedType) throws IOException {
+            TypeReference dType = computePropertyType(XbeansSchemaCodePrinter.JAVA_CLASS_FOR_DATE_WITH_TIMEZONE);
+            methods.add(BaseGenerator.createMethodDeclaration("get" + propertyName + XbeansSchemaCodePrinter.TIME_ZONE_MTH_SUFFIX + "List", createListOfType(dType), modifiers, compilationResult));
+        }
 
         @Override
         public void beginProperty(QName qName, String propertyName, String arrayName, String type, String xtype, boolean isAttr, boolean isDeprecated) {
@@ -509,6 +530,15 @@ public class XBeansInterfaceGenerator {
             }
             if (property.hasSingletonUnset()) {
                 acceptSingletonPropSetNull(several);
+            }
+            if (property.hasSingletonGetterDateTimeWithTimezone()) {
+                acceptSingletonPropGetterDateTimeWithTimezone(several);
+            }
+            if (property.hasSingletonSetterDateTimeWithTimezone()) {
+                acceptSingletonPropSetterDateTimeWithTimezone(several);
+            }
+            if (property.hasSeveralPropListGetterDateTimeWithTimezone()) {
+                acceptSingletonPropSetterDateTimeWithTimezone(several);
             }
         }
     }

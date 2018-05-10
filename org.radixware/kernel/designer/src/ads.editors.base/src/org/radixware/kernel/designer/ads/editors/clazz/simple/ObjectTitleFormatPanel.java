@@ -77,6 +77,7 @@ public class ObjectTitleFormatPanel extends javax.swing.JPanel {
             }
         ));
         */
+        objectTitleFormatTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(objectTitleFormatTable);
 
         /*

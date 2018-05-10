@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -11,18 +11,21 @@
 package org.radixware.kernel.server.units;
 
 import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.SwingUtilities;
 import org.radixware.kernel.server.exceptions.InvalidUnitState;
 import org.radixware.kernel.server.instance.Instance;
 import org.radixware.kernel.server.trace.ServerTrace;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,41 +35,53 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
-import org.radixware.kernel.common.trace.IRadixTrace;
 import org.radixware.kernel.common.trace.LocalTracer;
+import org.radixware.kernel.common.trace.TraceItem;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.server.SrvRunParams;
 import org.radixware.kernel.server.aio.ServiceManifestLoader;
 import org.radixware.kernel.server.aio.ServiceManifestServerLoader;
+import org.radixware.kernel.server.instance.DbConnectionResourceItem;
+import org.radixware.kernel.server.instance.ResourceRegistry;
 import org.radixware.kernel.server.instance.UnitCommand;
 import org.radixware.kernel.server.instance.UnitCommandResponse;
+import org.radixware.kernel.server.instance.aadc.AadcManager;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.monitoring.AbstractMonitor;
 import org.radixware.kernel.server.monitoring.MonitorFactory;
+import org.radixware.kernel.server.monitoring.MonitoringUtils;
 import org.radixware.kernel.server.trace.FileLogOptions;
 import org.radixware.kernel.server.trace.TraceProfiles;
 
 public abstract class Unit {
 
     public static final String UNIT_INTERRUPTION_ALLOWED_PROPERTY_NAME = "rdx.unit.interruption.allowed";
+    private static final int WAIT_NORMAL_STOP_ON_ABORT_MILLIS = SystemPropUtils.getIntSystemProp("rdx.unit.wait.normal.stop.on.abort.millis", 5000);
+    private static final int WAIT_STOP_ON_ABORT_AFTER_RESOURCE_RELEASE_MILLIS = SystemPropUtils.getIntSystemProp("rdx.unit.wait.stop.on.abort.after.resource.release.millis", 5000);
     private static final int OPTIONS_REREAD_PERIOD_MILLIS = 60 * 1000;//1 min
     public static final int DB_I_AM_ALIVE_PERIOD_MILLIS = 60 * 1000;//1 min
+    public static final int DG_I_AM_ALIVE_PERIOD_MILLIS = 30 * 1000;//0.5 min
     public static final int DB_I_AM_ALIVE_TIMEOUT_MILLIS = 3 * DB_I_AM_ALIVE_PERIOD_MILLIS;
     private static final int SHUTDOWN_TIMEOUT_MILLIS = 60000;//1 min  
     private static final int INTERRUPT_TIMEOUT_MILLIS = 3 * 60000;//3 min;
-    private static final int DB_RECONNECT_TRY_PERIOD_MILLIS = 5 * 1000;//5 sec
+    private static final int DB_RECONNECT_TRY_PERIOD_MILLIS = 1 * 1000;//1 sec
+    private static final int MAX_DB_RECONNECT_TRY_ATTEMPTS = 1;
+    static final long DELAY_BEFORE_START_AFTER_FAILURE = 5000;
     private static final int MONITORING_SETTINGS_REREAD_PERIOD_MILLIS = 60000;
     private static final int MONITORING_FLUSH_PERIOD_MILLIS = 30000;
     private static final int STATUS_IN_VIEW_UPDATE_PERIOD_MILLIS = 500;
     private static final int CPU_USAGE_UPDATE_PERIOD_MILLIS = 1000;
     private volatile boolean bShuttingDown = false;
     private volatile boolean bShutdownRequested = false;
-    private volatile boolean postponeStartAfterStopRequested = false;
+    private volatile String postponeStartAfterStopReason;
     private volatile String lastPostponeStartReason = null;
     private volatile long timeForPostponedStartMillis = -1;
-    private final DbQueries dbQueries;
-    private volatile Connection dbConnection = null;
+    private volatile long lastStoppingStateTimeMillis = -1;
+    private final UnitsDbQueries dbQueries;
+    private volatile RadixConnection dbConnection = null;
     private final Object controlSem = new Object();
     private AbstractMonitor monitor;
     private final MonitorFactory<AbstractMonitor, Unit> monitorFactory;
@@ -83,15 +98,38 @@ public abstract class Unit {
     private volatile int cpuUsagePercent = -1;
     private long lastCpuUsedNanos = -1;
     private long lastCpuUsageUpdateNanos = -1;
+    private volatile boolean aborted;
+    private long primaryUnitId = -1;
+    private boolean postponedDueToDuplicate;
+    private String acquiredSingletoneUnitLockId = null;
+    private final SimpleDateFormat timestampFormat = new SimpleDateFormat(TraceItem.getTimeFormat());
+    private final AadcManager aadcManager;
+    private int failedDbReconnectAttempts = 0;
+
+    protected Unit() {   // Use this constructor for testing only!
+        if (!SrvRunParams.isInTestEnvironment()) {
+            throw new IllegalStateException("Attempt to use Unit() in the production environment! It need be used only for the test purposes!");
+        } else {
+            trace = null;
+            instance = null;
+            this.id = -1;
+            listeners = new CopyOnWriteArrayList<>();
+            dbQueries = null;
+            this.title = "";
+            this.monitorFactory = null;
+            aadcManager = null;
+        }
+    }
 
     protected Unit(final Instance instModel, final Long id, final String title, final MonitorFactory<AbstractMonitor, Unit> monitorFactory) {
-        trace = ServerTrace.Factory.newInstance(instModel);
+        trace = ServerTrace.Factory.newInstance(instModel, "SystemUnit[" + id + "]");
         instance = instModel;
         this.id = id.longValue();
         listeners = new CopyOnWriteArrayList<>();
-        dbQueries = new DbQueries(this);
+        dbQueries = new UnitsDbQueries(this);
         this.title = title;
         this.monitorFactory = monitorFactory;
+        this.aadcManager = instModel.getAadcManager();
     }
 
     protected Unit(final Instance instModel, final Long id, final String title) {
@@ -113,6 +151,26 @@ public abstract class Unit {
         }
     }
 
+    public Callable<Boolean> getThisRunAliveChecker() {
+        return new Callable<Boolean>() {
+            private final UnitThread unitThread = thread;
+
+            @Override
+            public Boolean call() throws Exception {
+                return unitThread.isAlive() && !unitThread.isAborted();
+            }
+
+        };
+    }
+
+    protected AadcManager getAadcManager() {
+        return aadcManager;
+    }
+
+    public String getResourceKeyPrefix() {
+        return "Unit[" + getId() + "]";
+    }
+
     protected Object getControlSemaphore() {
         return controlSem;
     }
@@ -125,12 +183,49 @@ public abstract class Unit {
         return getUnitType().toString();
     }
 
-    protected boolean prepareForStart() throws InterruptedException {
+    public long getPrimaryUnitId() {
+        return primaryUnitId;
+    }
+
+    public String formatTimestamp(final long timeMillis) {
+        return timestampFormat.format(new Date(timeMillis));
+    }
+
+    protected boolean prepareForStart() throws Exception {
+        if (isSingletonUnit() && isSingletonByPrimary()) {
+            primaryUnitId = getInstance().getPrimaryUnitId(getId());
+            if (primaryUnitId <= 0) {
+                throw new IllegalStateException("Unable to determine primary unit for '" + getTitle() + "'");
+            }
+        }
+
         return true;
     }
 
     protected UnitDescription getStartedDuplicatedUnitDescription() throws SQLException {
-        return instance.getStartedUnitId(getUnitType());
+        if (isSingletonByPrimary()) {
+            return instance.getStartedUnitIdByPrimary(getPrimaryUnitId());
+        }
+        return instance.getStartedUnitIdByTypeAndAadcMember(getUnitType());
+    }
+
+    public void releaseAcquiredSingletoneUnitLock() {
+        synchronized (controlSem) {
+            if (acquiredSingletoneUnitLockId != null) {
+                instance.getSingletonUnitLock().releaseLock(acquiredSingletoneUnitLockId);
+                acquiredSingletoneUnitLockId = null;
+            }
+        }
+    }
+
+    private boolean acquireSingletoneUnitLock(final String lockId) {
+        synchronized (controlSem) {
+            if (instance.getSingletonUnitLock().lock(lockId)) {
+                acquiredSingletoneUnitLockId = lockId;
+                return true;
+            }
+            return false;
+        }
     }
 
     public final boolean start(final String reason) throws InterruptedException {
@@ -142,28 +237,28 @@ public abstract class Unit {
                 throw new InvalidUnitState(Messages.UNIT_IS_NOT_STOPPED);
             }
             timeForPostponedStartMillis = -1;
-            if (prepareForStart()) {
+            postponedDueToDuplicate = false;
+            boolean preparedForStart = false;
+            try {
+                preparedForStart = prepareForStart();
+            } catch (Exception ex) {
+                postponeStart("Unable to prepare for start: " + ex.getMessage(), System.currentTimeMillis() + DELAY_BEFORE_START_AFTER_FAILURE);
+                if (ex instanceof RuntimeException) {
+                    throw (RuntimeException) ex;
+                }
+                throw new IllegalStateException("Unable to prepare unit '" + getTitle() + "' for start", ex);
+            }
+            if (preparedForStart) {
                 if (isSingletonUnit()) {
                     final SingletoneStartCheckResult checkResult = checkSingletoneStart();
                     if (checkResult.getPostponeStartReason() != null) {
-                        if (checkResult.isLockAcquired()) {
-                            instance.getSingletonUnitLock().releaseLock(checkResult.getLockId());
+                        releaseAcquiredSingletoneUnitLock();
+                        if (checkResult.startedUnit != null) {
+                            postponedDueToDuplicate = true;
                         }
                         postponeStart(checkResult.getPostponeStartReason(), checkResult.getPlannedRestartTimeMillis());
                         return false;
                     }
-                    registerListener(new UnitListener() {
-                        @Override
-                        public void stateChanged(final Unit unit, final UnitState oldState, final UnitState newState) {
-                            if (newState == UnitState.STARTED || newState == UnitState.STOPPED) {
-                                try {
-                                    instance.getSingletonUnitLock().releaseLock(checkResult.getLockId());
-                                } finally {
-                                    unit.unregisterListener(this);
-                                }
-                            }
-                        }
-                    });
                 }
                 getView();
                 thread = new UnitThread(this);
@@ -185,25 +280,40 @@ public abstract class Unit {
     }
 
     protected SingletoneStartCheckResult checkSingletoneStart() {
+        final int fastRestartDelayMillis = 10000;
+
+        try {
+            UnitDescription startedUnitDescFastCheck = getStartedDuplicatedUnitDescription();
+            if (startedUnitDescFastCheck != null) {
+                return new SingletoneStartCheckResult(getDuplicatedUnitExistsReason(startedUnitDescFastCheck), -1, startedUnitDescFastCheck);
+            }
+        } catch (SQLException ex) {
+            return new SingletoneStartCheckResult(ExceptionTextFormatter.throwableToString(ex), System.currentTimeMillis() + fastRestartDelayMillis, null);
+        }
+
         final String lockId = getIdForSingletonLock();
-        if (instance.getSingletonUnitLock().lock(lockId)) {
+        if (acquireSingletoneUnitLock(lockId)) {
             UnitDescription startedUnitDesc = null;
             String postponeStartReason = null;
             try {
                 startedUnitDesc = getStartedDuplicatedUnitDescription();
                 if (startedUnitDesc != null) {
-                    postponeStartReason = String.format(Messages.UNIT_ID_IS_ALREADY_RUNNING, startedUnitDesc.getUnitId(), startedUnitDesc.getInstanceId(), startedUnitDesc.getInstanceTitle());
+                    postponeStartReason = getDuplicatedUnitExistsReason(startedUnitDesc);
                 }
             } catch (SQLException e) {
-                postponeStartReason = ExceptionTextFormatter.exceptionStackToString(e);// release lock and postpone start
+                return new SingletoneStartCheckResult(ExceptionTextFormatter.exceptionStackToString(e), System.currentTimeMillis() + fastRestartDelayMillis, startedUnitDesc);
             }
             if (postponeStartReason != null) {
-                return new SingletoneStartCheckResult(postponeStartReason, true, -1, startedUnitDesc, lockId);
+                return new SingletoneStartCheckResult(postponeStartReason, -1, startedUnitDesc);
             }
+            return new SingletoneStartCheckResult(null, -1, null);
         } else {
-            return new SingletoneStartCheckResult("Unable to acquire singletone unit lock '" + lockId + "' for unit #" + id, false, System.currentTimeMillis() + 5000, null, lockId);
+            return new SingletoneStartCheckResult("Unable to acquire singleton unit lock '" + lockId + "' for unit #" + id, -1, null);
         }
-        return new SingletoneStartCheckResult(null, true, -1, null, lockId);
+    }
+
+    private String getDuplicatedUnitExistsReason(final UnitDescription startedUnitDesc) {
+        return String.format(Messages.UNIT_ID_IS_ALREADY_RUNNING, startedUnitDesc.getUnitId(), startedUnitDesc.getInstanceId(), startedUnitDesc.getInstanceTitle());
     }
 
     public boolean isPostponedStartRequiredImmediately() {
@@ -237,7 +347,13 @@ public abstract class Unit {
             }
             setState(UnitState.START_POSTPONED, reason);
             final String reasonExplanation = (reason != null ? " (" + reason + ")" : "");
-            getInstance().getTrace().put(EEventSeverity.EVENT, String.format(Messages.UNIT_START_POSPONED, "'" + getFullTitle() + "'") + reasonExplanation, Messages.MLS_ID_UNIT_START_POSPONED_WITH_REASON, new ArrStr(getFullTitle(), reason), EEventSource.UNIT, false);
+            if (postponedDueToDuplicate) {
+                final String floodKey = getPostponedDueToDuplicateFloodKey();
+                getInstance().getTrace().setFloodPeriod(floodKey, 60 * 60000);
+                getInstance().getTrace().putFloodControlled(floodKey, EEventSeverity.EVENT, String.format(Messages.UNIT_START_POSPONED, "'" + getFullTitle() + "'") + reasonExplanation, Messages.MLS_ID_UNIT_START_POSPONED_WITH_REASON, new ArrStr(getFullTitle(), reason), EEventSource.UNIT.getValue(), -1, false, null);
+            } else {
+                getInstance().getTrace().put(EEventSeverity.EVENT, String.format(Messages.UNIT_START_POSPONED, "'" + getFullTitle() + "'") + reasonExplanation, Messages.MLS_ID_UNIT_START_POSPONED_WITH_REASON, new ArrStr(getFullTitle(), reason), EEventSource.UNIT, false);
+            }
             lastPostponeStartReason = reason;
             if (startTimeMillis != -1) {
                 if (timeForPostponedStartMillis == -1) {
@@ -247,6 +363,10 @@ public abstract class Unit {
                 }
             }
         }
+    }
+
+    protected String getPostponedDueToDuplicateFloodKey() {
+        return "UnitPostponedDueToDuplicate[" + getId() + "]";
     }
 
     /**
@@ -265,7 +385,7 @@ public abstract class Unit {
     public boolean stop(final String reason) throws InterruptedException {
         synchronized (controlSem) {
             if (getState() == UnitState.START_POSTPONED) {
-                setState(UnitState.STOPPED, "stop in start_postponed state");
+                setStopForDead("stop in START POSTPONED state");
                 return true;
             }
 
@@ -276,32 +396,11 @@ public abstract class Unit {
             final String reasonSuffix = getReasonSuffix(reason);
             getTrace().put(EEventSeverity.EVENT, Messages.TRY_SHUTDOWN_UNIT + reasonSuffix, Messages.MLS_ID_TRY_SHUTDOWN_UNIT, new ArrStr(getFullTitle() + reasonSuffix), getEventSource(), false);
 
+            final String stopDeadReason = "set STOPPED status in database for dead unit";
+
             if (thread == null || thread.getState() == Thread.State.TERMINATED) {
-                Connection connection = null;
-                try {
-                    try {
-                        connection = instance.openNewUnitDbConnection(this);
-                        setDbConnection(connection);
-                        setState(UnitState.STOPPED, "Set STOPPED status to dead unit");
-                        return true;
-                    } catch (Throwable t) {
-                        //ignore
-                    } finally {
-                        try {
-                            setDbConnection(null);
-                        } catch (Throwable t) {
-                            //ignore
-                        }
-                    }
-                } finally {
-                    if (connection != null) {
-                        try {
-                            connection.close();
-                        } catch (Throwable t) {
-                            //ignore
-                        }
-                    }
-                }
+                setStopForDead(stopDeadReason);
+                return true;
             }
 
             //soft stop
@@ -312,13 +411,103 @@ public abstract class Unit {
                 logErrorOnStop(e);
             }
             if (thread.getState() == Thread.State.TERMINATED) {
+                setStopForDead(stopDeadReason);
                 return true;
             }
-            getTrace().put(EEventSeverity.WARNING, Messages.TRY_INTERRUPT_UNIT, Messages.MLS_ID_TRY_INTERRUPT_UNIT, new ArrStr(getFullTitle()), getEventSource(), false);
+
             //hard stop
             thread.interrupt();
             thread.join(INTERRUPT_TIMEOUT_MILLIS);
             return getState() == UnitState.STOPPED;
+        }
+    }
+
+    public boolean abortAndUnload(final String reason) {
+        synchronized (controlSem) {
+            try {
+                getTrace().put(EEventSeverity.ERROR, "Aborting unit '" + getTitle() + "', reason: " + reason, null, null, EEventSource.UNIT.getValue(), false);
+                getTrace().flush();
+            } catch (Exception ex) {
+                //ignore
+            }
+
+            if (thread != null) {
+                requestShutdown();
+
+                try {
+                    thread.join(WAIT_NORMAL_STOP_ON_ABORT_MILLIS);
+                } catch (InterruptedException ex) {
+                    //ignore
+                }
+            }
+
+            getInstance().getResourceRegistry().closeAllWithKeyPrefix(getResourceKeyPrefix(), "unit abort, reason: " + reason);
+
+            if (thread != null) {
+                thread.setAborted(true);
+                requestShutdown();
+                thread.interrupt();
+
+                try {
+                    thread.join(WAIT_STOP_ON_ABORT_AFTER_RESOURCE_RELEASE_MILLIS);
+                } catch (InterruptedException ex) {
+                    //ignore
+                }
+            }
+
+            try {
+                trace.stopFileLogging();
+            } catch (Exception ex) {
+                //ignore
+            }
+
+            setStopForDead("settings STOPPED status in db for dead unit");
+
+            if (SrvRunParams.getIsGuiOn() && getViewNoCreate() != null) {
+                getViewNoCreate().dispose();
+            }
+            aborted = true;
+            getInstance().unloadUnit(this);
+            getInstance().getTrace().put(EEventSeverity.ERROR, "Unit '" + getTitle() + "' aborted and unloaded, reason: " + reason, null, null, EEventSource.INSTANCE.getValue(), false);
+            return true;
+        }
+    }
+
+    public boolean isAborted() {
+        return aborted;
+    }
+
+    private void setStopForDead(final String reason) {
+        Connection connection = null;
+        try {
+            try {
+                connection = instance.openNewUnitDbConnection(this);
+                setDbConnection((RadixConnection) connection);
+                try (PreparedStatement ps = connection.prepareStatement("select (started+postponed) from rdx_unit where id=?")) {
+                    ps.setLong(1, getId());
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next() && rs.getBoolean(1)) {
+                            setState(UnitState.STOPPED, reason);
+                        }
+                    }
+                }
+            } catch (Throwable t) {
+                //ignore
+            } finally {
+                try {
+                    setDbConnection(null);
+                } catch (Throwable t) {
+                    //ignore
+                }
+            }
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Throwable t) {
+                    //ignore
+                }
+            }
         }
     }
 
@@ -340,22 +529,6 @@ public abstract class Unit {
         }
     }
 
-    /**
-     * Dangerous! Used in development mode.
-     */
-    public void interrupt() {
-        if (isInterruptionAllowed()) {
-            final UnitThread threadSnapshot = thread;
-            if (threadSnapshot != null) {
-                threadSnapshot.interrupt();
-            }
-        }
-    }
-
-    public static boolean isInterruptionAllowed() {
-        return System.getProperty(UNIT_INTERRUPTION_ALLOWED_PROPERTY_NAME) != null;
-    }
-
 // overridable implementation of instance thread run():  try {if (startImpl()) {runImpl();}}finally{stopImpl()}
     /**
      * Called only from UnitThread if true is returned then runImpl() and
@@ -366,18 +539,28 @@ public abstract class Unit {
      * @throws Exception
      */
     protected boolean startImpl() throws Exception {
-        postponeStartAfterStopRequested = false;
+        postponeStartAfterStopReason = null;
+        failedDbReconnectAttempts = 0;
+        getInstance().getResourceRegistry().closeAllWithKeyPrefix(getResourceKeyPrefix(), "unit start");
         final Connection connection = instance.openNewUnitDbConnection(this);
         try {
             if (monitorFactory != null) {
                 monitor = monitorFactory.createMonitor(this);
             }
-            setDbConnection(connection);
+            setDbConnection((RadixConnection) connection);
             if (monitor != null) {
                 monitor.rereadSettings();
             }
             commandsQueue.clear();
             rereadCommonOptions();
+
+            if (instance.isAadcTestedMember() && commonOptions.useInAadcTestMode == false) {
+                throw new IllegalStateException("Unable to start unit not configured to use in AADC test mode in AADC test mode");
+            }
+            if (!instance.isAadcTestedMember() && commonOptions.useInAadcTestMode == true) {
+                throw new IllegalStateException("Unable to start unit configured to use in AADC test mode not in AADC test mode");
+            }
+
             final FileLogOptions fileLogOptions = getFileLogOptions();
             getTrace().startFileLogging(fileLogOptions);
             getTrace().clearContextStack();
@@ -392,23 +575,29 @@ public abstract class Unit {
                 }
             };
 
+            getTrace().clearFloodSettingsAndStats();
+
             return true;
         } catch (Exception e) {
             try {
                 connection.close();
-            } catch (SQLException e2) {
+            } catch (SQLException ex2) {
                 //do nothing
             }
             throw e;
         }
     }
 
-    public void setPostponeStartAfterStop(boolean postponeStart) {
-        postponeStartAfterStopRequested = true;
+    public void requestPostponeStartAfterStop(final String postponeStartReason) {
+        postponeStartAfterStopReason = postponeStartReason == null ? "unknown" : postponeStartReason;
     }
 
     public boolean isPostponeStartAfterStopRequested() {
-        return postponeStartAfterStopRequested;
+        return postponeStartAfterStopReason != null;
+    }
+
+    public String getPostponeStartAfterStopReason() {
+        return postponeStartAfterStopReason;
     }
 
     public ServiceManifestLoader getUnitServiceManifestLoader() {
@@ -425,7 +614,8 @@ public abstract class Unit {
                 "unit_#" + getId(),
                 instOpt.getMaxFileSizeBytes(),
                 instOpt.getRotationCount(),
-                instOpt.isRotateDaily());
+                instOpt.isRotateDaily(),
+                instOpt.isWriteContextToFile());
     }
 
     public void applyNewFileLogOptions() {
@@ -440,7 +630,10 @@ public abstract class Unit {
      * @throws Exception
      */
     protected final void runImpl() throws InterruptedException {
-        while (!Thread.interrupted() && !isShuttingDown()) {
+        while (!isShuttingDown()) {
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
             maintenance();
         }
     }
@@ -472,6 +665,7 @@ public abstract class Unit {
     }
     //
     private long lastDbIAmAliveMillis = 0;
+    private long lastDgIAmAliveMillis = 0;
     private long lastOptionsRereadMillis = 0;
     private long lastMonitoringSettingsRereadMillis = 0;
     private long lastMonitoringFlushMillis = 0;
@@ -489,8 +683,15 @@ public abstract class Unit {
             final long curMillis = System.currentTimeMillis();
             //selfcheck
             if (curMillis - lastDbIAmAliveMillis >= DB_I_AM_ALIVE_PERIOD_MILLIS) {
-                dbQueries.dbIAmStillAlive();
-                lastDbIAmAliveMillis = curMillis;
+                if (!dbQueries.dbIAmStillAlive(false)) {
+                    getTrace().putFloodControlled("unit-selfcheck-failed-[" + getId() + "]", EEventSeverity.WARNING, String.format(Messages.UNABLE_TO_UPDATE_SELFCHECK_TIME, getFullTitle()), Messages.MLS_ID_UNABLE_TO_UPDATE_SELFCHECK_TIME, new ArrStr(getFullTitle()), EEventSource.UNIT.getValue(), -1, false, null);
+                } else {
+                    lastDbIAmAliveMillis = curMillis;
+                }
+            }
+            if (curMillis - lastDgIAmAliveMillis >= DG_I_AM_ALIVE_PERIOD_MILLIS) {
+                instance.getAadcManager().unitIsAlive(id, curMillis);
+                lastDgIAmAliveMillis = curMillis;
             }
             //unit commands
             processCommands();
@@ -550,12 +751,12 @@ public abstract class Unit {
     }
 
     private void updateCpuUsage() {
-        final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-        if (threadBean != null && threadBean.isCurrentThreadCpuTimeSupported()) {
-            long newCpuUsedNanos = threadBean.getCurrentThreadCpuTime();
+        long newCpuUsedNanos = MonitoringUtils.getCurrentThreadCpuTime();
+        if (newCpuUsedNanos > 0) {
+
             long nanoTime = System.nanoTime();
             if (lastCpuUsedNanos > 0) {
-                cpuUsagePercent = (int) (100 * (newCpuUsedNanos - lastCpuUsedNanos) / (nanoTime - lastCpuUsageUpdateNanos));
+                cpuUsagePercent = (int) (100 * (Math.max(newCpuUsedNanos - lastCpuUsedNanos, 0)) / (Math.max(nanoTime - lastCpuUsageUpdateNanos, 1)));
                 if (cpuUsagePercent > 99) {
                     cpuUsagePercent = 99;
                 }
@@ -653,10 +854,14 @@ public abstract class Unit {
         return dbConnection;
     }
 
+    public RadixConnection getRadixDbConnection() {
+        return dbConnection;
+    }
+
     /**
      * Called only from UnitThread
      */
-    protected void setDbConnection(final Connection dbConnection) {
+    protected void setDbConnection(final RadixConnection dbConnection) {
         trace.setDbConnection(dbConnection);
         dbQueries.closeAll();
         try {
@@ -671,6 +876,9 @@ public abstract class Unit {
         if (monitor != null) {
             monitor.setConnection(dbConnection);
         }
+        if (dbConnection != null) {
+            getInstance().getResourceRegistry().register(new DbConnectionResourceItem(ResourceRegistry.buildDbConnectionKey(getResourceKeyPrefix(), dbConnection), dbConnection, null, getThisRunAliveChecker()));
+        }
     }
 
     /**
@@ -679,11 +887,14 @@ public abstract class Unit {
      * @throws InterruptedException
      */
     public void restoreDbConnection() throws InterruptedException {
+        if (isAborted()) {
+            throw new InterruptedException();
+        }
         getTrace().debug("Try to restore DB Connection", getEventSource(), false);
         setDbConnection(null);
         while (!isShuttingDown()) {
             try {
-                setDbConnection(instance.openNewUnitDbConnection(this));
+                setDbConnection((RadixConnection) instance.openNewUnitDbConnection(this));
                 getTrace().put(EEventSeverity.EVENT, Messages.DB_CONNECTION_RESTORED, Messages.MLS_ID_DB_CONNECTION_RESTORED, new ArrStr(getFullTitle()), getEventSource(), false);
                 if (isSingletonUnit()) {
                     final Connection instConn = instance.getDbConnection();
@@ -691,21 +902,32 @@ public abstract class Unit {
                         final SingletoneStartCheckResult checkStartResult = checkSingletoneStart();
                         if ((checkStartResult.getStartedUnit() == null || checkStartResult.getStartedUnit().getUnitId() != getId())
                                 && checkStartResult.getPostponeStartReason() != null) {
-                            requestShutdown();
-                            setPostponeStartAfterStop(true);
+                            requestStopAndPostponedRestartFromUnitThread(checkStartResult.getPostponeStartReason());
                             throw new IllegalStateException(checkStartResult.getPostponeStartReason());
                         }
-                        dbQueries.dbIAmStillAlive();
-                        instance.getSingletonUnitLock().releaseLock(checkStartResult.getLockId());
+                        try {
+                            dbQueries.dbIAmStillAlive(true);
+                        } catch (Exception ex) {
+                            getDbConnection().close();
+                        } finally {
+                            releaseAcquiredSingletoneUnitLock();
+                        }
                     } else {
                         throw new SQLException("Unable to perform singletone unit check: instance database connection is closed");
                     }
                 }
+                failedDbReconnectAttempts = 0;
                 break;
             } catch (SQLException e) {
                 final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
                 getTrace().put(EEventSeverity.ERROR, Messages.ERR_IN_DB_QRY + exStack, Messages.MLS_ID_ERR_IN_DB_QRY, new ArrStr(getFullTitle(), exStack), getEventSource(), false);
-                Thread.sleep(DB_RECONNECT_TRY_PERIOD_MILLIS);
+                if (failedDbReconnectAttempts < MAX_DB_RECONNECT_TRY_ATTEMPTS) {
+                    failedDbReconnectAttempts++;
+                    Thread.sleep(DB_RECONNECT_TRY_PERIOD_MILLIS);
+                } else {
+                    requestStopAndPostponedRestartFromUnitThread("no database connection");
+                    return;
+                }
             }
         }
     }
@@ -758,12 +980,11 @@ public abstract class Unit {
 
     final void setState(final UnitState newState, final String reason) throws InterruptedException {
         final UnitState oldState = state;
-        state = newState;
 
-        if (state == UnitState.STARTED) {
+        if (newState == UnitState.STARTED) {
             while (!isShuttingDown()) {
                 try {
-                    dbQueries.setDbStartedState(true);
+                    dbQueries.setDbStartedState(true, true);
                     break;
                 } catch (SQLException ex) {
                     final String exStack = ExceptionTextFormatter.exceptionStackToString(ex);
@@ -771,21 +992,32 @@ public abstract class Unit {
                     restoreDbConnection();
                 }
             }
-        } else if (state == UnitState.STOPPED && getDbConnection() != null/*
-                 * && oldState != UnitState.START_POSTPONED
-                 */) {
+        } else if (newState == UnitState.STOPPED && getDbConnection() != null) {
             try {
-                dbQueries.setDbStartedState(false);
+                dbQueries.setDbStartedState(false, true);
             } catch (SQLException ex) {
                 final String exStack = ExceptionTextFormatter.exceptionStackToString(ex);
                 getTrace().put(EEventSeverity.ERROR, Messages.ERR_IN_DB_QRY + exStack, Messages.MLS_ID_ERR_IN_DB_QRY, new ArrStr(getFullTitle(), exStack), getEventSource(), false);
             }
+        } else if (newState == UnitState.START_POSTPONED) {
+            try {
+                getInstance().setUnitStartPostponedInDb(getId(), true);
+            } catch (SQLException ex) {
+                final String exStack = ExceptionTextFormatter.exceptionStackToString(ex);
+                getInstance().getTrace().put(EEventSeverity.ERROR, Messages.ERR_IN_DB_QRY + exStack, Messages.MLS_ID_ERR_IN_DB_QRY, new ArrStr(getFullTitle(), exStack), getEventSource(), false);
+            }
+        } else if (newState == UnitState.STOPPING) {
+            lastStoppingStateTimeMillis = System.currentTimeMillis();
         }
 
-        final String title_ = getFullTitle();
-        final String reasonStr = getReasonSuffix(reason);
-        ServerTrace traceToPut = state == UnitState.STARTING ? getInstance().getTrace() : getTrace();
-        traceToPut.put(EEventSeverity.EVENT, Messages.getStateMessage(newState) + " " + (title_.length() != 0 ? " \"" + title_ + "\"" : "") + reasonStr, Messages.getStateMessageMslId(newState), new ArrStr(title_ + reasonStr), getEventSource(), false);
+        if (newState != UnitState.START_POSTPONED) {//POSTPONED START is handled separately
+            final String title_ = getFullTitle();
+            final String reasonStr = getReasonSuffix(reason);
+            ServerTrace traceToPut = state == UnitState.STARTING ? getInstance().getTrace() : getTrace();
+            traceToPut.put(EEventSeverity.EVENT, Messages.getStateMessage(newState) + " " + (title_.length() != 0 ? " \"" + title_ + "\"" : "") + reasonStr, Messages.getStateMessageMslId(newState), new ArrStr(title_ + reasonStr), getEventSource(), false);
+        }
+
+        state = newState;
         fireStateChanged(oldState);
     }
 
@@ -798,16 +1030,27 @@ public abstract class Unit {
         return trace;
     }
 
+    public long getLastStoppingStateTimeMillis() {
+        return lastStoppingStateTimeMillis;
+    }
+
+    public void setLastStoppingStateTimeMillis(long lastStoppingStateTimeMillis) {
+        this.lastStoppingStateTimeMillis = lastStoppingStateTimeMillis;
+    }
+
 //Options
     final static class CommonOptions {
 
         final TraceProfiles traceProfiles;
         final String scpName;
+        final boolean useInAadcTestMode;
 
-        CommonOptions(final TraceProfiles traceProfiles, final String scpName) {
+        public CommonOptions(TraceProfiles traceProfiles, String scpName, boolean useInAadcTestMode) {
             this.traceProfiles = traceProfiles;
             this.scpName = scpName;
+            this.useInAadcTestMode = useInAadcTestMode;
         }
+
     }
 
     /**
@@ -838,6 +1081,10 @@ public abstract class Unit {
         return false;
     }
 
+    public boolean isSingletonByPrimary() {
+        return false;
+    }
+
     public void registerListener(final UnitListener listener) {
         listeners.add(listener);
     }
@@ -858,6 +1105,13 @@ public abstract class Unit {
 
     protected void requestStopAndPostponedRestart(final String reason) {
         requestStopAndPostponedRestart(reason, -1);
+    }
+
+    protected void requestStopAndPostponedRestartFromUnitThread(final String reason) {
+        requestPostponeStartAfterStop(reason);
+        if (!isShutdownRequested()) {
+            requestShutdown();
+        }
     }
 
     /**
@@ -889,17 +1143,13 @@ public abstract class Unit {
     protected static class SingletoneStartCheckResult {
 
         private final String postponeStartReason;
-        private final boolean lockAcquired;
         private final long plannedRestartTimeMillis;
         private final UnitDescription startedUnit;
-        private final String lockId;
 
-        public SingletoneStartCheckResult(String postponeReason, boolean lockAcquired, long plannedRestartTimeMillis, UnitDescription startedUnit, final String lockId) {
+        public SingletoneStartCheckResult(String postponeReason, long plannedRestartTimeMillis, UnitDescription startedUnit) {
             this.postponeStartReason = postponeReason;
-            this.lockAcquired = lockAcquired;
             this.plannedRestartTimeMillis = plannedRestartTimeMillis;
             this.startedUnit = startedUnit;
-            this.lockId = lockId;
         }
 
         public UnitDescription getStartedUnit() {
@@ -910,16 +1160,8 @@ public abstract class Unit {
             return postponeStartReason;
         }
 
-        public boolean isLockAcquired() {
-            return lockAcquired;
-        }
-
         public long getPlannedRestartTimeMillis() {
             return plannedRestartTimeMillis;
-        }
-
-        public String getLockId() {
-            return lockId;
         }
 
     }

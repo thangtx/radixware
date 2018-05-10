@@ -15,6 +15,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -24,7 +26,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
@@ -34,8 +35,10 @@ import javax.swing.event.ListSelectionListener;
 import org.openide.actions.PasteAction;
 import org.openide.util.Exceptions;
 import org.openide.util.actions.SystemAction;
+import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.resources.RadixWareIcons;
+import org.radixware.kernel.common.userreport.common.UserExtensionManagerCommon;
 import org.radixware.kernel.designer.common.dialogs.utils.ClipboardUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 import org.radixware.kernel.designer.common.general.filesystem.RadixFileUtil;
@@ -72,9 +75,18 @@ public class StackTraceParserToolBar extends javax.swing.JPanel {
         private List<Branch> getBranches() {
             boolean shouldFire = false;
             try {
+                boolean isUserMode = BuildOptions.UserModeHandlerLookup.getUserModeHandler() != null;
                 synchronized (branchesLock) {
                     if (branches == null || branches.isEmpty()) {
                         Collection<Branch> loadedBranches = RadixFileUtil.getOpenedBranches();
+                        if (isUserMode){
+                                try{
+                                    Branch b = UserExtensionManagerCommon.getInstance().getBranch();
+                                    loadedBranches.add(b);
+                                } catch (IOException e){
+                                }
+                        }
+                        
                         if (loadedBranches.isEmpty()) {
                             return Collections.emptyList();
                         } else {
@@ -102,6 +114,7 @@ public class StackTraceParserToolBar extends javax.swing.JPanel {
         @Override
         public void setSelectedItem(Object anItem) {
             traceList.setBranch((Branch) anItem);
+            traceList.parseStackTrace();
         }
 
         @Override
@@ -150,7 +163,7 @@ public class StackTraceParserToolBar extends javax.swing.JPanel {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            final Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             final String text;
             if (value == null) {
                 text = "<Not specified>";
@@ -159,10 +172,8 @@ public class StackTraceParserToolBar extends javax.swing.JPanel {
                 File dir = b.getDirectory();
                 text = b.getName() + (dir == null ? "" : "(" + dir.getPath() + ")");
             }
-            final JLabel label = new JLabel(text);
-            label.setForeground(c.getForeground());
-            label.setBackground(c.getBackground());
-            return label;
+            this.setText(text);
+            return this;
         }
     }
     /**
@@ -233,8 +244,29 @@ public class StackTraceParserToolBar extends javax.swing.JPanel {
                 cmdGoToSource.setEnabled(traceList.isExposableSelection());
             }
         });
+        
+        traceList.addPropertyChangeListener(StackTraceList.PROCESS, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(final PropertyChangeEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        setInProcess((boolean) evt.getNewValue());
+                    }
+                });
+            }
+        });
 
     }
+
+    public void setInProcess(boolean readonly) {
+        btPaste.setEnabled(!readonly);
+        btParse.setEnabled(!readonly);
+    }
+    
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

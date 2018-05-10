@@ -25,6 +25,7 @@ import org.radixware.kernel.common.client.eas.resources.IResourceManager;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.DefManager;
 import org.radixware.kernel.common.client.env.IEventLoop;
+import org.radixware.kernel.common.client.env.ProductInstallationOptions;
 import org.radixware.kernel.common.client.env.progress.ProgressHandleManager;
 import org.radixware.kernel.common.client.exceptions.SignatureException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
@@ -44,7 +45,7 @@ import org.radixware.kernel.common.enums.EIsoCountry;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.environment.IEnvironmentAccessor;
 import org.radixware.kernel.common.types.Id;
-
+import org.radixware.schemas.clientstate.ConnectionParams;
 
 @SuppressWarnings({"PMD.UnusedModifier","PMD.DoNotUseThreads"})
 public interface IClientEnvironment {
@@ -62,6 +63,8 @@ public interface IClientEnvironment {
     String getUserName();
 
     String getStationName();
+    
+    String getConnectionName();
 
     TimeZoneInfo getServerTimeZoneInfo();
 
@@ -136,6 +139,8 @@ public interface IClientEnvironment {
     boolean isCustomFiltersAccessible();
 
     boolean isCustomSortingsAccessible();
+    
+    boolean isUserFuncDevelopmentAccessible();
 
     List<EIsoLanguage> getSupportedLanguages();
 
@@ -156,6 +161,8 @@ public interface IClientEnvironment {
     IEventLoop newEventLoop();
     
     String signText(final String text, final X509Certificate certificate) throws SignatureException;
+    
+    ProductInstallationOptions getProductInstallationOptions();
 
     public static class Locator {
         
@@ -172,8 +179,7 @@ public interface IClientEnvironment {
                     return null;
                 }
             }
-
-        }
+        }                
 
         @SuppressWarnings({"PMD.UseProperClassLoader"})
         public static IClientApplication getApplication(Object context) {
@@ -206,5 +212,7 @@ public interface IClientEnvironment {
     
     void addConnectionListener(final ConnectionListener listener);
     
-    void removeConnectionListener(final ConnectionListener listener);    
+    void removeConnectionListener(final ConnectionListener listener);
+    
+    void writeConnectionParametersToXml(final ConnectionParams xml);
 }

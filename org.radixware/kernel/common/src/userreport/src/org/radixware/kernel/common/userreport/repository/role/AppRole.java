@@ -17,13 +17,16 @@ import java.io.IOException;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.types.Pid;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.rights.AdsRoleDef;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.defs.utils.changelog.ChangeLog;
+import org.radixware.kernel.common.defs.utils.changelog.IChangeLogOwner;
 import org.radixware.kernel.common.userreport.common.UserExtensionManagerCommon;
 import org.radixware.kernel.common.utils.Utils;
 
-public class AppRole {
+public class AppRole implements IChangeLogOwner {
 
     public static final Id CLASS_ID = Id.Factory.loadFrom("aecM7J46MP6F3PBDIJEABQAQH3XQ4");
     public static final Id EDITOR_ID = Id.Factory.loadFrom("eprSIJFTYEHKVAQLBWEFIMTRLF5AQ");
@@ -34,16 +37,20 @@ public class AppRole {
     public static final Id GUID_PROP_ID = Id.Factory.loadFrom("col6FMTUQ76F3PBDIJEABQAQH3XQ4");
     public static final Id CLASS_GUID_PROP_ID = Id.Factory.loadFrom("colIXVB57MI2RADLC5IAUFV5QB67Y");
     public static final Id READ_ONLY_PROP_ID = Id.Factory.loadFrom("prdPZ5BW3BSXBE2RBOY2D3QOUWQ7M");
+    public static final Id CHANGE_LOG_PROP_ID = Id.Factory.loadFrom("prdQTZ7TUYLCVAPREYFWLZIE2OUM4");
     private final Id roleId;
     private String name;
     private String description;
     private boolean isReadOnly;
+    private ChangeLog changeLog;
+    private boolean isChangeLogModified = false;
     private final PropertyChangeSupport propChangeSupport = new PropertyChangeSupport(this);
 
-    public AppRole(final Id roleId, final String name, final String description, final boolean isReadOnly) {
+    public AppRole(final Id roleId, final String name, final String description, final ChangeLog changeLog, final boolean isReadOnly) {
         this.roleId = roleId;
         this.name = name;
         this.description = description;
+        this.changeLog = changeLog != null ? changeLog : ChangeLog.Factory.newInstance();
         this.isReadOnly = isReadOnly;
     }
 
@@ -174,5 +181,30 @@ public class AppRole {
             return;
         }
         UserExtensionManagerCommon.getInstance().getAppRoles().delete(this);
+    }
+    
+    public void afterSave() {
+        isChangeLogModified = false;
+    }
+
+    @Override
+    public void setChangeLog(ChangeLog log) {
+        if (!this.changeLog.equals(log)) {
+            this.changeLog = log;
+            AdsRoleDef roleDef = findRoleDefinition();
+            if (roleDef != null) {
+                roleDef.setEditState(RadixObject.EEditState.MODIFIED);
+            }
+            isChangeLogModified = true;
+        }
+    }
+
+    @Override
+    public ChangeLog getChangeLog() {
+        return changeLog;
+    }
+
+    public boolean isChangeLogModified() {
+        return isChangeLogModified;
     }
 }

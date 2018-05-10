@@ -10,16 +10,17 @@
  */
 package org.radixware.kernel.designer.ads.editors.clazz.report;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.math.BigDecimal;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
@@ -31,26 +32,32 @@ import org.radixware.kernel.designer.common.dialogs.components.BigDecimalSpinner
 import org.radixware.kernel.designer.common.dialogs.components.CheckedBigDecimalSpinnerEditor;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 
-class AdsReportBandAppearanceEditor extends JPanel {
+class AdsReportBandAppearanceEditor extends JPanel implements ChangeListener {
 
-    private class FontComboBoxModel extends DefaultComboBoxModel<String> {
-
-        private final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-        @Override
-        public int getSize() {
-            return fonts.length;
-        }
-
-        @Override
-        public String getElementAt(final int index) {
-            return fonts[index];
-        }
+    @Override
+    public void stateChanged(final ChangeEvent e) {
+        updateFont();
     }
+
+//    private class FontComboBoxModel extends DefaultComboBoxModel<String> {
+//
+//        private final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+//
+//        @Override
+//        public int getSize() {
+//            return fonts.length;
+//        }
+//
+//        @Override
+//        public String getElementAt(final int index) {
+//            return fonts[index];
+//        }
+//    }
     private volatile boolean updating = false;
     private final AdsReportBand appearance;
     private Color zebraColor;
     private Color defaultZebraColor = Color.decode("#f2f2f2");
+    private final AdsReportFontPanel innerFontPanel;
 
     /**
      * Creates new form AdsReportBandAppearanceEditor
@@ -63,8 +70,18 @@ class AdsReportBandAppearanceEditor extends JPanel {
         iconButton.setIcon(RadixWareIcons.DIALOG.ALL.getIcon());
         iconButton.setText("");
 
+        innerFontPanel = new AdsReportFontPanel(appearance.getFont(), "Font");
+        innerFontPanel.changeSupport.addChangeListener(this);
+        fontPanel.setLayout(new BorderLayout());
+        fontPanel.add(innerFontPanel, BorderLayout.NORTH);
+        fontPanel.updateUI();
+
         boolean isTextMode = appearance.getOwnerForm().getMode() != AdsReportForm.Mode.GRAPHICS;
-        fontComboBox.setModel(new FontComboBoxModel());
+
+        innerFontPanel.setFont(appearance.getFont(), true);
+        updateFont();
+
+        //fontComboBox.setModel(new FontComboBoxModel());
         if (isTextMode) {
             heightSpinner.setModel(new SpinnerNumberModel(0, 0, 1000000, 1));
             //heightSpinner.setEditor(new SpinnerNumberEdCheckedBigDecimalSpinnerEditor(heightSpinner));
@@ -72,8 +89,8 @@ class AdsReportBandAppearanceEditor extends JPanel {
             heightSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000000000), BigDecimal.valueOf(1)));
             heightSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(heightSpinner));
         }
-        fontSizeSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(100), BigDecimal.valueOf(0.1)));
-        fontSizeSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(fontSizeSpinner));
+//        fontSizeSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(100), BigDecimal.valueOf(0.1)));
+//        fontSizeSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(fontSizeSpinner));
         widthSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(50), BigDecimal.valueOf(0.1)));
         widthSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(widthSpinner));
         //cellWrappingEnabledCheckBox.setVisible(false);
@@ -82,6 +99,12 @@ class AdsReportBandAppearanceEditor extends JPanel {
             heightLabel.setText(heightLabel.getText().replace("mm", "rows"));
         }
         setupInitialValues();
+    }
+
+    private void updateFont() {
+        final AdsReportAbstractAppearance.Font reportFont = appearance.getFont();
+        final Font font = AdsReportWidgetUtils.reportFont2JavaFont(reportFont, textSampleLabel);
+        textSampleLabel.setFont(font);
     }
 
     private void setupInitialValues() {
@@ -98,11 +121,13 @@ class AdsReportBandAppearanceEditor extends JPanel {
         inheritFgColorCheckBox.setSelected(appearance.isFgColorInherited());
         fgColorButton.setColor(appearance.getFgColor());
         textSampleLabel.setForeground(appearance.getFgColor());
-        fontComboBox.setSelectedItem(appearance.getFont().getName());
-        boldButton.setSelected(appearance.getFont().isBold());
-        italicButton.setSelected(appearance.getFont().isItalic());
-        fontSizeSpinner.setValue(BigDecimal.valueOf(appearance.getFont().getSizeMm()));
+//        fontComboBox.setSelectedItem(appearance.getFont().getName());
+//        boldButton.setSelected(appearance.getFont().isBold());
+//        italicButton.setSelected(appearance.getFont().isItalic());
+//        fontSizeSpinner.setValue(BigDecimal.valueOf(appearance.getFont().getSizePts()));
+        innerFontPanel.setFont(appearance.getFont(), true);
         updateFont();
+
         switch (appearance.getBorder().getStyle()) {
             case SOLID:
                 solidRadioButton.setSelected(true);
@@ -131,6 +156,7 @@ class AdsReportBandAppearanceEditor extends JPanel {
         zebraColor = appearance.getAltBgColor();
         zebraColorButton.setColor(zebraColor);
         chUseZebra.setSelected(zebraColor != null);
+        chInsideZebra.setSelected(appearance.isInsideAltColor());
         updateEnableState();
         updating = false;
     }
@@ -143,10 +169,11 @@ class AdsReportBandAppearanceEditor extends JPanel {
         bgColorButton.setEnabled(enabled && !inheritBgColorCheckBox.isSelected() && !isTextMode);
         inheritFgColorCheckBox.setEnabled(enabled && !isTextMode);
         fgColorButton.setEnabled(enabled && !inheritFgColorCheckBox.isSelected() && !isTextMode);
-        fontComboBox.setEnabled(enabled && !isTextMode);
-        boldButton.setEnabled(enabled && !isTextMode);
-        italicButton.setEnabled(enabled && !isTextMode);
-        fontSizeSpinner.setEnabled(enabled && !isTextMode);
+//        fontComboBox.setEnabled(enabled && !isTextMode);
+//        boldButton.setEnabled(enabled && !isTextMode);
+//        italicButton.setEnabled(enabled && !isTextMode);
+//        fontSizeSpinner.setEnabled(enabled && !isTextMode);
+        innerFontPanel.setPanelEnabled(enabled && !isTextMode);
         solidRadioButton.setEnabled(enabled && !isTextMode);
         dashedRadioButton.setEnabled(enabled && !isTextMode);
         dottedRadioButton.setEnabled(enabled && !isTextMode);
@@ -165,19 +192,19 @@ class AdsReportBandAppearanceEditor extends JPanel {
         cellWrappingEnabledCheckBox.setEnabled(appearance.isMultiPage() && enabled);
         chUseZebra.setEnabled(enabled && !isTextMode);
         zebraColorButton.setEnabled(enabled && !isTextMode && zebraColor != null);
+        chInsideZebra.setEnabled(enabled && !isTextMode && zebraColor != null);
     }
 
-    private void updateFont() {
-        AdsReportAbstractAppearance.Font reportFont = appearance.getFont();
-        Font font = AdsReportWidgetUtils.reportFont2JavaFont(reportFont, textSampleLabel);
-        textSampleLabel.setFont(font);
-//        String name = fontComboBox.getSelectedItem() != null ? fontComboBox.getSelectedItem().toString() : "Arial";
-//        textSampleLabel.setFont(new Font(name,
-//                (boldButton.isSelected() ? Font.BOLD : 0) |
-//                (italicButton.isSelected() ? Font.ITALIC : 0),
-//                (int) ((BigDecimal) fontSizeSpinner.getValue()).doubleValue()));
-    }
-
+//    private void updateFont() {
+//        AdsReportAbstractAppearance.Font reportFont = appearance.getFont();
+//        Font font = AdsReportWidgetUtils.reportFont2JavaFont(reportFont, textSampleLabel);
+//        textSampleLabel.setFont(font);
+////        String name = fontComboBox.getSelectedItem() != null ? fontComboBox.getSelectedItem().toString() : "Arial";
+////        textSampleLabel.setFont(new Font(name,
+////                (boldButton.isSelected() ? Font.BOLD : 0) |
+////                (italicButton.isSelected() ? Font.ITALIC : 0),
+////                (int) ((BigDecimal) fontSizeSpinner.getValue()).doubleValue()));
+//    }
     private void updateBorder() {
 
         double ww = ((BigDecimal) widthSpinner.getValue()).doubleValue();
@@ -232,13 +259,8 @@ class AdsReportBandAppearanceEditor extends JPanel {
         fgColorButton = new org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton();
         chUseZebra = new javax.swing.JCheckBox();
         zebraColorButton = new org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton();
+        chInsideZebra = new javax.swing.JCheckBox();
         fontPanel = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        fontComboBox = new javax.swing.JComboBox<String>();
-        boldButton = new javax.swing.JToggleButton();
-        italicButton = new javax.swing.JToggleButton();
-        fontSizeSpinner = new javax.swing.JSpinner();
-        jLabel3 = new javax.swing.JLabel();
         borderPanel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -271,7 +293,7 @@ class AdsReportBandAppearanceEditor extends JPanel {
         textSamplePanel.setLayout(textSamplePanelLayout);
         textSamplePanelLayout.setHorizontalGroup(
             textSamplePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(textSampleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(textSampleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 756, Short.MAX_VALUE)
         );
         textSamplePanelLayout.setVerticalGroup(
             textSamplePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -330,6 +352,13 @@ class AdsReportBandAppearanceEditor extends JPanel {
             }
         });
 
+        chInsideZebra.setText(org.openide.util.NbBundle.getMessage(AdsReportBandAppearanceEditor.class, "AdsReportBandAppearanceEditor.chInsideZebra.text")); // NOI18N
+        chInsideZebra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chInsideZebraActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -337,7 +366,9 @@ class AdsReportBandAppearanceEditor extends JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textSamplePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(textSamplePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -347,17 +378,17 @@ class AdsReportBandAppearanceEditor extends JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(fgColorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(bgColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(chUseZebra)
-                                    .addComponent(zebraColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(bgColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(heightLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(heightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(zebraColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chUseZebra, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chInsideZebra))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -365,12 +396,13 @@ class AdsReportBandAppearanceEditor extends JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(heightLabel)
-                    .addComponent(heightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(heightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chUseZebra))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inheritBgColorCheckBox)
                     .addComponent(bgColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chUseZebra))
+                    .addComponent(chInsideZebra))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inheritFgColorCheckBox)
@@ -383,72 +415,15 @@ class AdsReportBandAppearanceEditor extends JPanel {
 
         fontPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportBandAppearanceEditor.class, "AdsReportBandAppearanceEditor.fontPanel.border.title"))); // NOI18N
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(AdsReportBandAppearanceEditor.class, "AdsReportBandAppearanceEditor.jLabel2.text")); // NOI18N
-
-        fontComboBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                fontComboBoxItemStateChanged(evt);
-            }
-        });
-
-        boldButton.setText(org.openide.util.NbBundle.getMessage(AdsReportBandAppearanceEditor.class, "AdsReportBandAppearanceEditor.boldButton.text")); // NOI18N
-        boldButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        boldButton.setPreferredSize(new java.awt.Dimension(25, 25));
-        boldButton.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                boldButtonItemStateChanged(evt);
-            }
-        });
-
-        italicButton.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
-        italicButton.setText(org.openide.util.NbBundle.getMessage(AdsReportBandAppearanceEditor.class, "AdsReportBandAppearanceEditor.italicButton.text")); // NOI18N
-        italicButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        italicButton.setPreferredSize(new java.awt.Dimension(25, 25));
-        italicButton.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                italicButtonItemStateChanged(evt);
-            }
-        });
-
-        fontSizeSpinner.setModel(new javax.swing.SpinnerNumberModel(1, 1, 1000, 1));
-        fontSizeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                fontSizeSpinnerStateChanged(evt);
-            }
-        });
-
-        jLabel3.setText(org.openide.util.NbBundle.getMessage(AdsReportBandAppearanceEditor.class, "AdsReportBandAppearanceEditor.jLabel3.text")); // NOI18N
-
         javax.swing.GroupLayout fontPanelLayout = new javax.swing.GroupLayout(fontPanel);
         fontPanel.setLayout(fontPanelLayout);
         fontPanelLayout.setHorizontalGroup(
             fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fontPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fontComboBox, 0, 365, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(boldButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(italicButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(fontSizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(4, 4, 4)
-                .addComponent(jLabel3)
-                .addContainerGap())
+            .addGap(0, 768, Short.MAX_VALUE)
         );
         fontPanelLayout.setVerticalGroup(
             fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fontPanelLayout.createSequentialGroup()
-                .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(fontComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(fontSizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(italicButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(boldButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 44, Short.MAX_VALUE)
         );
 
         borderPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportBandAppearanceEditor.class, "AdsReportBandAppearanceEditor.borderPanel.border.title"))); // NOI18N
@@ -571,7 +546,7 @@ class AdsReportBandAppearanceEditor extends JPanel {
                     .addComponent(dashedRadioButton)
                     .addComponent(dottedRadioButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(borderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -652,7 +627,7 @@ class AdsReportBandAppearanceEditor extends JPanel {
                         .addComponent(multiCheckBox)
                         .addGap(18, 18, 18)
                         .addComponent(cellWrappingEnabledCheckBox)))
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -692,37 +667,9 @@ class AdsReportBandAppearanceEditor extends JPanel {
                 .addComponent(borderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void fontComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fontComboBoxItemStateChanged
-        if (!updating) {
-            apply();
-            updateFont();
-        }
-    }//GEN-LAST:event_fontComboBoxItemStateChanged
-
-    private void boldButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_boldButtonItemStateChanged
-        if (!updating) {
-            apply();
-            updateFont();
-        }
-    }//GEN-LAST:event_boldButtonItemStateChanged
-
-    private void italicButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_italicButtonItemStateChanged
-        if (!updating) {
-            apply();
-            updateFont();
-        }
-    }//GEN-LAST:event_italicButtonItemStateChanged
-
-    private void fontSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_fontSizeSpinnerStateChanged
-        if (!updating) {
-            apply();
-            updateFont();
-        }
-    }//GEN-LAST:event_fontSizeSpinnerStateChanged
 
     private void leftCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_leftCheckBoxItemStateChanged
         if (!updating) {
@@ -873,21 +820,30 @@ class AdsReportBandAppearanceEditor extends JPanel {
             zebraColor = defaultZebraColor;
             zebraColorButton.setEnabled(!appearance.isReadOnly());
             zebraColorButton.setColor(zebraColor);
+            chInsideZebra.setEnabled(!appearance.isReadOnly());
         } else {
             zebraColor = null;
             zebraColorButton.setEnabled(false);
+            chInsideZebra.setEnabled(false);
         }
         apply();
     }//GEN-LAST:event_chUseZebraActionPerformed
 
     private void zebraColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zebraColorButtonActionPerformed
-        final Color clr = JColorChooser.showDialog(this, "Choose Alt. Background Color", zebraColor);
+        final Color clr = JColorChooser.showDialog(this, "Choose Alternative Background Color", zebraColor);
         if (clr != null) {
             zebraColor = clr;
             zebraColorButton.setColor(zebraColor);
             apply();
         }
     }//GEN-LAST:event_zebraColorButtonActionPerformed
+
+    private void chInsideZebraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chInsideZebraActionPerformed
+        if (!updating) {
+            apply();
+            updateEnableState();
+        }
+    }//GEN-LAST:event_chInsideZebraActionPerformed
 
     private void apply() {
         if (updating) {
@@ -903,12 +859,9 @@ class AdsReportBandAppearanceEditor extends JPanel {
         appearance.setBgColor(bgColorButton.getColor());
         appearance.setFgColorInherited(inheritFgColorCheckBox.isSelected());
         appearance.setFgColor(fgColorButton.getColor());
-        if (fontComboBox.getSelectedItem() != null) {
-            appearance.getFont().setName(fontComboBox.getSelectedItem().toString());
-        }
-        appearance.getFont().setBold(boldButton.isSelected());
-        appearance.getFont().setItalic(italicButton.isSelected());
-        appearance.getFont().setSizeMm(((BigDecimal) fontSizeSpinner.getValue()).doubleValue());
+        final AdsReportAbstractAppearance.Font reportFont = appearance.getFont();
+
+        innerFontPanel.apply();
         if (solidRadioButton.isSelected()) {
             appearance.getBorder().setStyle(EReportBorderStyle.SOLID);
         } else if (dashedRadioButton.isSelected()) {
@@ -929,31 +882,27 @@ class AdsReportBandAppearanceEditor extends JPanel {
         appearance.setAutoHeight(autoHeightCheckBox.isSelected());
         appearance.setCellWrappingEnabled(cellWrappingEnabledCheckBox.isSelected());
         appearance.setAltBgColor(zebraColor);
+        appearance.setInsideAltColor(chInsideZebra.isSelected());
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox autoHeightCheckBox;
     private org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton bgColorButton;
-    private javax.swing.JToggleButton boldButton;
     private javax.swing.JPanel borderPanel;
     private javax.swing.JCheckBox bottomCheckBox;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox cellWrappingEnabledCheckBox;
+    private javax.swing.JCheckBox chInsideZebra;
     private javax.swing.JCheckBox chUseZebra;
     private org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton colorButton;
     private javax.swing.JRadioButton dashedRadioButton;
     private javax.swing.JRadioButton dottedRadioButton;
     private org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton fgColorButton;
-    private javax.swing.JComboBox<String> fontComboBox;
     private javax.swing.JPanel fontPanel;
-    private javax.swing.JSpinner fontSizeSpinner;
     private javax.swing.JLabel heightLabel;
     private javax.swing.JSpinner heightSpinner;
     private javax.swing.JButton iconButton;
     private javax.swing.JCheckBox inheritBgColorCheckBox;
     private javax.swing.JCheckBox inheritFgColorCheckBox;
-    private javax.swing.JToggleButton italicButton;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;

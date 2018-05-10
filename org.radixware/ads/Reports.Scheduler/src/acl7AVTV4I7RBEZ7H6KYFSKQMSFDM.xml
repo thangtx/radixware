@@ -76,17 +76,23 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>if (</xsc:Java>
+              <xsc:Java>final long version = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM colPZVDPX2IPBCM7FVCASFB3JHBYM" Invoke="true"/>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mth4IMANV3AJFCFZNX2YJVLVBCXXI" Invoke="true">
+                <xsc:Presentation>lockVersion</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> == 0)
+              <xsc:Java>();
+try {
+if (version == 0)
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl7AVTV4I7RBEZ7H6KYFSKQMSFDM mthLMXFHJLMJ5E3PFAYDM7FKBR2RQ"/>
+              <xsc:IdReference Path="acl7AVTV4I7RBEZ7H6KYFSKQMSFDM mthLMXFHJLMJ5E3PFAYDM7FKBR2RQ">
+                <xsc:Presentation>UserFunc.WriteReportBand:writeBand</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -94,10 +100,23 @@ else
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl7AVTV4I7RBEZ7H6KYFSKQMSFDM mthR73TREIQTVAX7A2VIEE5MMMBOE"/>
+              <xsc:IdReference Path="acl7AVTV4I7RBEZ7H6KYFSKQMSFDM mthR73TREIQTVAX7A2VIEE5MMMBOE">
+                <xsc:Presentation>UserFunc.WriteReportBand:writeBand</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>;</xsc:Java>
+              <xsc:Java>;
+} finally {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthKBRYI4GTNFHDZP3VZSY5246NKA" Invoke="true">
+                <xsc:Presentation>unlockVersion</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

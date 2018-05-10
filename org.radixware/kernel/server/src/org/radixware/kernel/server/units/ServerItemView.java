@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.units;
 
 import java.awt.BorderLayout;
@@ -36,7 +35,6 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import org.radixware.kernel.common.enums.EEventSeverity;
 
-
 public final class ServerItemView {
 
     private static final long serialVersionUID = -1188041005445470384L;
@@ -61,6 +59,29 @@ public final class ServerItemView {
 
     private ServerItemView(final ViewModel item) {
         this.item = item;
+    }
+
+    public void updateStatus() {
+        if (item != null && traceList != null) {
+            if (SwingUtilities.isEventDispatchThread()) {
+                updateStatusOnEdt();
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        updateStatusOnEdt();
+                    }
+                });
+            }
+        }
+    }
+
+    private void updateStatusOnEdt() {
+        final TraceView traceView = traceList;
+        if (traceView != null) {
+            traceView.setStatus(item.getViewStatus());
+        }
     }
 
     public TraceView getTraceList() {

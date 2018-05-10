@@ -21,9 +21,7 @@ import java.io.RandomAccessFile;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -278,7 +276,7 @@ public class WpsIcon implements Icon {
                     Logger.getLogger(FSRepositoryBranch.class.getName()).log(Level.FINE, "Try to lock {0}... ", file.getName());
                 }
                 
-            } catch (IOException ex) {
+            } catch (IOException | OverlappingFileLockException ex) {
                 //try again later
             }
             try {

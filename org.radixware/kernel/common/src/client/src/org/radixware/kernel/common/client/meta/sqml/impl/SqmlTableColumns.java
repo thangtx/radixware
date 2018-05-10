@@ -70,7 +70,7 @@ final class SqmlTableColumns implements ISqmlTableColumns {
     private void fillColumns(final DdsTableDef tableDef, final Id ownerId) {
         final List<DdsColumnDef> ddsColumns = tableDef.getColumns().get(EScope.LOCAL_AND_OVERWRITE);
         for (DdsColumnDef ddsColumn : ddsColumns) {
-            if (getColumnById(ddsColumn.getId()) == null && !ddsColumn.isHidden() && !ddsColumn.getValType().isArrayType()) {
+            if (getColumnById(ddsColumn.getId()) == null && !ddsColumn.isHidden()) {
                 columns.add(new SqmlColumnDefImpl(environment, ddsColumn, ownerId));
             }
         }

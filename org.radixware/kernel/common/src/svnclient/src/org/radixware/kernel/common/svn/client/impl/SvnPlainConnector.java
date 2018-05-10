@@ -34,6 +34,8 @@ import org.radixware.kernel.common.svn.client.SvnRepository;
  */
 public class SvnPlainConnector extends SvnConnector {
 
+    private static final int SOCKET_SO_TIMEOUT_MILLIS = Integer.getInteger("rdx.svn.socket.timeout.millis", 60000);
+
     private abstract static class Gateway {
 
         public abstract void connect() throws IOException;
@@ -50,8 +52,6 @@ public class SvnPlainConnector extends SvnConnector {
     private static class SocketGateway extends Gateway {
 
         private Socket socket;
-        private OutputStream output;
-        private InputStream input;
         private final URI location;
         private final SvnRepository repository;
 
@@ -93,6 +93,7 @@ public class SvnPlainConnector extends SvnConnector {
                 }
                 socket = SocketFactory.getDefault().createSocket(location.getHost(), port);
             }
+            socket.setSoTimeout(SOCKET_SO_TIMEOUT_MILLIS);
         }
 
         @Override
@@ -114,41 +115,29 @@ public class SvnPlainConnector extends SvnConnector {
                     //IGNORE
                 } finally {
                     socket = null;
-                    input = null;
-                    output = null;
                 }
             }
         }
 
         @Override
         public boolean isStale() {
-            return true;
+            return socket == null ? false : socket.isClosed();
         }
 
         @Override
         public InputStream getInputStream() throws IOException {
-            synchronized (this) {
-                if (input == null) {
-                    if (socket == null) {
-                        throw new IOException("Not connected");
-                    }
-                    input = socket.getInputStream();
-                }
-                return input;
+            if (socket == null) {
+                return null;
             }
+            return socket.getInputStream();
         }
 
         @Override
         public OutputStream getOutputStream() throws IOException {
-            synchronized (this) {
-                if (output == null) {
-                    if (socket == null) {
-                        throw new IOException("Not connected");
-                    }
-                    output = socket.getOutputStream();
-                }
-                return output;
+            if (socket == null) {
+                return null;
             }
+            return socket.getOutputStream();
         }
     }
 
@@ -195,7 +184,7 @@ public class SvnPlainConnector extends SvnConnector {
 
         @Override
         public boolean isStale() {
-            return true;
+            return false;
         }
 
     }

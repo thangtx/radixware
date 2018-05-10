@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.radixware.kernel.common.builder.check.common.CheckHistory;
 import static org.radixware.kernel.common.builder.check.common.RadixObjectChecker.warning;
+import static org.radixware.kernel.common.builder.check.common.RadixObjectChecker.error;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.ProblemAnnotationFactory;
 import org.radixware.kernel.common.check.RadixProblem;
@@ -31,23 +32,26 @@ import org.radixware.kernel.common.defs.ads.AdsDefinitionProblems;
 import org.radixware.kernel.common.defs.ads.AdsDomainDef;
 import org.radixware.kernel.common.defs.ads.AdsValAsStr;
 import org.radixware.kernel.common.defs.ads.IInheritableTitledDefinition;
+import org.radixware.kernel.common.defs.ads.clazz.IAccessible;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.ServerPresentationSupport;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPageDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentableProperty;
-import org.radixware.kernel.common.defs.ads.clazz.presentation.ParentRefPropertyPresentation;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyPresentation;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.editmask.*;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.defs.ads.common.Restrictions;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.explorerItems.AdsSelectorExplorerItemDef;
 import org.radixware.kernel.common.defs.ads.module.AdsImageDef;
 import org.radixware.kernel.common.defs.ads.module.AdsPath;
 import org.radixware.kernel.common.defs.ads.module.AdsSearcher;
+import org.radixware.kernel.common.defs.ads.type.AdsAccessFlags;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
@@ -57,6 +61,7 @@ import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 import org.radixware.kernel.common.meta.InputMask;
+import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.types.Id;
 
 public class CheckUtils {
@@ -361,7 +366,7 @@ public class CheckUtils {
         if (!context.isWarningSuppressed(AdsDefinitionProblems.PRESENTATION_WITH_LAZY_PROPS_IN_CREATE_CONTEXT)) {
             for (AdsEditorPageDef page : checkPresentation.getEditorPages().get(EScope.ALL)) {
                 for (AdsEditorPageDef.PagePropertyRef ref : page.getProperties().list()) {
-                    AdsDefinition def = ref.findProperty();
+                    AdsDefinition def = ref.findItem();
                     if (def instanceof IAdsPresentableProperty) {
                         ServerPresentationSupport support = ((IAdsPresentableProperty) def).getPresentationSupport();
                         if (support != null) {
@@ -402,8 +407,8 @@ public class CheckUtils {
         }
     }
 
-    public static void checkSelectorPresentationCreationOptions(RadixObject context, Restrictions restrictions, AdsSelectorPresentationDef presentation, IProblemHandler problemHandler) {
-        if ((restrictions != null && !restrictions.isDenied(ERestriction.CREATE)) && !presentation.getRestrictions().isDenied(ERestriction.CREATE)) {
+    public static void checkSelectorPresentationCreationOptions(AdsDefinition context, Restrictions restrictions, AdsSelectorPresentationDef presentation, IProblemHandler problemHandler) {
+        if (!context.isWarningSuppressed(AdsDefinitionProblems.NOT_SPECIFIED_CREATION_CATALOG) && (restrictions != null && !restrictions.isDenied(ERestriction.CREATE)) && !presentation.getRestrictions().isDenied(ERestriction.CREATE)) {
             if (presentation.getCreationClassCatalogId() == null) {
                 AdsEntityObjectClassDef clazz = presentation.getOwnerClass();
                 if (clazz != null) {
@@ -416,15 +421,40 @@ public class CheckUtils {
                             if (item.isClassCatalogInherited() || item.getCreationClassCatalogId() == null) {
                                 report = true;
                             }
-                        } else if (context instanceof ParentRefPropertyPresentation) {
+                        } else if (context instanceof AdsPropertyDef) {
                             report = true;
                         }
                         if (report) {
-                            warning(context, problemHandler, "Creation class catalog not specified for selector presentation " + presentation.getQualifiedName());
+                            warning(context, problemHandler, AdsDefinitionProblems.NOT_SPECIFIED_CREATION_CATALOG, presentation.getQualifiedName());
                         }
                     }
                 }
             }
+        }
+    }
+    
+    /**
+     * Check expiration release in own definition checker. 
+     * If expiration release number is invalid show error. 
+     * If definition is expired show warning.
+     * @param definition
+     * @param flags - definition flags
+     * @param problemHandler
+    */
+    public static void checkExpirationRelease(AdsDefinition definition, AdsAccessFlags flags, IProblemHandler problemHandler) {
+        String expirationReleaseStr = flags.getExpirationRelease();
+        if (expirationReleaseStr == null) {
+            return;
+        }
+        if (!ReleaseUtils.isValidReleaseName(expirationReleaseStr, false)){
+            error(flags, problemHandler, "Wrong expiration release number");
+        }
+        Branch branch = flags.getBranch();
+        if (branch == null) {
+            return;
+        }
+        if (ReleaseUtils.isExpired(branch, flags)) {
+            problemHandler.accept(RadixProblem.Factory.newWarning(definition, AdsDefinitionProblems.EXPIRED_DEPRECATED_DEFINITION));
         }
     }
 }

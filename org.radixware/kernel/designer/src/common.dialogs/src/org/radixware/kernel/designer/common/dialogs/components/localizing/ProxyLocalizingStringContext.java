@@ -119,4 +119,10 @@ public class ProxyLocalizingStringContext implements ILocalizingStringContext {
     public ILocalizedStringInfo getStringInfo() {
         return null;
     }
+    
+    @Override
+    public boolean isReadOnly() {
+        Definition definition = getAdsDefinition();
+        return definition == null ? true : definition.isReadOnly();
+    }
 }

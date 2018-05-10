@@ -75,7 +75,7 @@ public class MetricHistWidget extends ExplorerWidget {
         public static final MetricHistIcons STARTED = new MetricHistIcons("classpath:images/run.svg");
         public static final MetricHistIcons STOPPED = new MetricHistIcons("classpath:images/stop.svg");
         public static final MetricHistIcons NOT_USED = new MetricHistIcons("classpath:images/cancel.svg");
-        public static final MetricHistIcons INSTANCE_NOT_STARTED = new MetricHistIcons("classpath:images/exeptionClass.svg");
+        public static final MetricHistIcons INSTANCE_NOT_STARTED = new MetricHistIcons("classpath:images/exceptionClass.svg");
         public static final MetricHistIcons HANG = new MetricHistIcons("classpath:images/percent.svg");
         public static final MetricHistIcons VALUE_SCALE = new MetricHistIcons("classpath:images/edit.svg");
         public static final MetricHistIcons TIME_SCALE = new MetricHistIcons("classpath:images/time_scale.svg");

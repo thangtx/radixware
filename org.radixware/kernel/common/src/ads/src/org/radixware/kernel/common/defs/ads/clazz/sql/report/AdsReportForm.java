@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginMm;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsDefinition.ESaveMode;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginTxt;
 import org.radixware.kernel.common.enums.EReportBandType;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.utils.Utils;
@@ -31,11 +33,13 @@ import org.radixware.kernel.common.utils.events.RadixEventSource;
 import org.radixware.schemas.adsdef.Report;
 import org.radixware.schemas.adsdef.ReportBand;
 
-public class AdsReportForm extends RadixObject {
-
+public class AdsReportForm extends RadixObject implements IReportNavigatorObject{
+    public final static double DEFAULT_GRID_SIZE_MM = 2.5;
+    
     private Color bgColor = Color.WHITE;
     private Color fgColor = Color.BLACK;
     private final Margin margin = new Margin();
+    private final MarginTxt marginTxt = new MarginTxt();
     private int pageWidthMm = 210;
     private int pageHeightMm = 297;
     private int pageWidthColumns = 80;
@@ -44,6 +48,10 @@ public class AdsReportForm extends RadixObject {
     private boolean textModeAccepted = false;
     private int multifileGroupLevel = -1;
     private boolean repeatGroupHeadersOnNewPage;
+
+    private boolean showGrid = true;
+    private boolean snapToGrid = true;
+    private double gridSizeMm = DEFAULT_GRID_SIZE_MM;
 
     //
     public class Bands extends RadixObjects<AdsReportBand> {
@@ -102,8 +110,7 @@ public class AdsReportForm extends RadixObject {
                         break;
                     case COLUMN_HEADER:
                         object.getFont().setSizeMm(2.81);
-                        object.setBgColorInherited(false);
-                        object.setBgColor(XmlColor.parseColor("#d3d4d5"));
+                        object.setBgColorInherited(true);
                         break;
                     case DETAIL:
                         object.getFont().setSizeMm(2.81);
@@ -115,8 +122,10 @@ public class AdsReportForm extends RadixObject {
                         object.getFont().setSizeMm(3.0);
                         break;
                 }
-
-                AdsReportForm.this.changeSupport.fireEvent(new ChangedEvent(this));
+                if (object.isNewStyle()) {
+                    AdsReportDefaultStyle.setDefaultBandStyle(object);
+                }
+                AdsReportForm.this.changeSupport.fireEvent(new ChangedEvent(this, ChangedEvent.ChangeEventType.ADD));
             }
         }
 
@@ -124,7 +133,7 @@ public class AdsReportForm extends RadixObject {
         protected void onRemove(AdsReportBand object) {
             super.onRemove(object);
             if (!loading) {
-                AdsReportForm.this.changeSupport.fireEvent(new ChangedEvent(this));
+                AdsReportForm.this.changeSupport.fireEvent(new ChangedEvent(this, ChangedEvent.ChangeEventType.REMOVE));
             }
         }
 
@@ -183,6 +192,7 @@ public class AdsReportForm extends RadixObject {
     private Bands pageFooterBand = new Bands(EReportBandType.PAGE_FOOTER);
     private final AdsReportGroups groups = new AdsReportGroups(this);
     private boolean columnsHeaderForEachGroupDisplayed = false;
+    private boolean isNewStyle = false;
 
     public enum Mode {
 
@@ -209,14 +219,17 @@ public class AdsReportForm extends RadixObject {
     protected AdsReportForm() {
     }
 
+    @SuppressWarnings("LeakingThisInConstructor")
     protected AdsReportForm(AdsReportClassDef ownerReport) {
         setContainer(ownerReport);
+        isNewStyle = true;
         setPageHeaderBandUsed(true);
         setTitleBandUsed(true);
         setColumnHeaderBandUsed(true);
         setDetailBandUsed(true);
         setSummaryBandUsed(true);
         setPageFooterBandUsed(true);
+        AdsReportDefaultStyle.setDefaultFormStyle(this);
     }
 
     protected AdsReportForm(AdsReportClassDef ownerReport, org.radixware.schemas.adsdef.Report.Form xForm) {
@@ -247,6 +260,15 @@ public class AdsReportForm extends RadixObject {
         }
         if (xForm.isSetMultifileGroupLevel()) {
             this.multifileGroupLevel = xForm.getMultifileGroupLevel();
+        }
+        if (xForm.isSetGridSize()){
+            this.gridSizeMm = xForm.getGridSize();
+        }
+        if (xForm.isSetShowGrid()){
+            this.showGrid = xForm.getShowGrid();
+        }
+        if (xForm.isSetSnapToGrid()){
+            this.snapToGrid = xForm.getSnapToGrid();
         }
 
         columnsHeaderForEachGroupDisplayed = xForm.getColumnsHeadersInGroups();
@@ -333,6 +355,7 @@ public class AdsReportForm extends RadixObject {
                 this.getGroups().add(group);
             }
         }
+        fireEvent(new ChangedEvent(this, ChangedEvent.ChangeEventType.LOADING));
     }
 
     public void appendTo(org.radixware.schemas.adsdef.Report.Form xForm) {
@@ -342,15 +365,18 @@ public class AdsReportForm extends RadixObject {
     public void appendTo(org.radixware.schemas.adsdef.Report.Form xForm, ESaveMode saveMode) {
         xForm.setBgColor(XmlColor.mergeColor(bgColor));
         xForm.setFgColor(XmlColor.mergeColor(fgColor));
-
         margin.appendTo(xForm, saveMode);
+        xForm.setColumnsHeadersInGroups(columnsHeaderForEachGroupDisplayed);
         xForm.setWidth(pageWidthMm);
         xForm.setHeight(pageHeightMm);
-
+        
+        if (saveMode == ESaveMode.API) {
+            //in API mode save only required attributes
+            return;
+        }
+        
         xForm.setWidthCols(pageWidthColumns);
         xForm.setHeightRows(pageHeightRows);
-
-        xForm.setColumnsHeadersInGroups(columnsHeaderForEachGroupDisplayed);
 
         if (isPageHeaderBandUsed()) {
             pageHeaderBand.appendTo(xForm, saveMode);
@@ -393,6 +419,18 @@ public class AdsReportForm extends RadixObject {
         if (repeatGroupHeadersOnNewPage) {
             xForm.setRepeatGroupHeadersOnNewPage(true);
         }
+        
+        if (!showGrid){
+            xForm.setShowGrid(showGrid);
+        }
+        
+        if (!snapToGrid){
+            xForm.setSnapToGrid(snapToGrid);
+        }
+        
+        if (gridSizeMm != DEFAULT_GRID_SIZE_MM && gridSizeMm > 0){
+            xForm.setGridSize(gridSizeMm);
+        }
     }
 
     public int getMultifileGroupLevel() {
@@ -423,7 +461,10 @@ public class AdsReportForm extends RadixObject {
     }
 
     public void setMode(Mode mode) {
-        this.mode = mode;
+        if (this.mode != mode){
+            this.mode = mode;
+            fireEvent(new ChangedEvent(this, ChangedEvent.ChangeEventType.MODE));
+        }
     }
 
     @Override
@@ -455,15 +496,13 @@ public class AdsReportForm extends RadixObject {
         }
     }
 
-    public final class Margin {
-
-        private double topMm = 10.0, bottomMm = 10.0, leftMm = 10.0, rightMm = 10.0;
-        private int topRows = 1, bottomRows = 1, leftCols = 1, rightCols = 1;
-
+    public final class Margin extends AdsReportMarginMm{
+        public static final double  DEFAULT_MARGIN = 10.0;
         /**
          * Creates a new Margin.
          */
         protected Margin() {
+            super(AdsReportForm.this, DEFAULT_MARGIN);
         }
 
         protected Margin(org.radixware.schemas.adsdef.Report.Form xForm) {
@@ -471,117 +510,77 @@ public class AdsReportForm extends RadixObject {
         }
 
         protected void loadFrom(org.radixware.schemas.adsdef.Report.Form xForm) {
-            topMm = xForm.getTopMargin();
-            bottomMm = xForm.getBottomMargin();
-            leftMm = xForm.getLeftMargin();
-            rightMm = xForm.getRightMargin();
+            if (xForm.isSetTopMargin()) {
+                setTopMm(xForm.getTopMargin(), false);
+            } else {
+                setTopMm(DEFAULT_MARGIN, false);
+            }
+            if (xForm.isSetLeftMargin()) {
+                setLeftMm(xForm.getLeftMargin(), false);
+            } else {
+                setLeftMm(DEFAULT_MARGIN, false);
+            }
+            if (xForm.isSetRightMargin()) {
+                setRightMm(xForm.getRightMargin(), false);
+            } else {
+                setRightMm(DEFAULT_MARGIN, false);
+            }
+            if (xForm.isSetBottomMargin()) {
+                setBottomMm(xForm.getBottomMargin(), false);
+            } else {
+                setBottomMm(DEFAULT_MARGIN, false);
+            }
+        }
+        
+        protected void appendTo(org.radixware.schemas.adsdef.Report.Form xForm, ESaveMode saveMode) {
+            xForm.setTopMargin(getTopMm());
+            xForm.setBottomMargin(getBottomMm());
+            xForm.setLeftMargin(getLeftMm());
+            xForm.setRightMargin(getRightMm());
+        }
+    }
+    
+    public final class MarginTxt extends AdsReportMarginTxt{
+        public static final int  DEFAULT_MARGIN = 0;
+        /**
+         * Creates a new Margin.
+         */
+        protected MarginTxt() {
+            super(AdsReportForm.this, DEFAULT_MARGIN);
+        }
+
+        protected MarginTxt(org.radixware.schemas.adsdef.Report.Form xForm) {
+            loadFrom(xForm);
+        }
+
+        protected void loadFrom(org.radixware.schemas.adsdef.Report.Form xForm) {
+            if (xForm.isSetTopMarginRows()) {
+                setTopRows(xForm.getTopMarginRows(), false);
+            } else {
+                setTopRows(DEFAULT_MARGIN, false);
+            }
+            if (xForm.isSetLeftMarginCols()) {
+                setLeftCols(xForm.getLeftMarginCols(), false);
+            } else {
+                setLeftCols(DEFAULT_MARGIN, false);
+            }
+            if (xForm.isSetRightMargin()) {
+                setRightCols(xForm.getRightMarginCols(), false);
+            } else {
+                setRightCols(DEFAULT_MARGIN, false);
+            }
+            if (xForm.isSetBottomMargin()) {
+                setBottomRows(xForm.getRightMarginCols(), false);
+            } else {
+                setBottomRows(DEFAULT_MARGIN, false);
+            }
         }
 
         protected void appendTo(org.radixware.schemas.adsdef.Report.Form xForm, ESaveMode saveMode) {
-            xForm.setTopMargin(topMm);
-            xForm.setBottomMargin(bottomMm);
-            xForm.setLeftMargin(leftMm);
-            xForm.setRightMargin(rightMm);
-        }
-
-        /**
-         * @return margin in millimeters from page top side to top band
-         */
-        public double getTopMm() {
-            return topMm;
-        }
-
-        public int getTopRows() {
-            return topRows;
-        }
-
-        public void setTopRows(int rows) {
-            if (topRows != rows) {
-                topRows = rows;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        public void setTopMm(double topMm) {
-            if (!Utils.equals(this.topMm, topMm)) {
-                this.topMm = topMm;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        /**
-         * @return margin in millimeters from page bottom side to bottom band
-         */
-        public double getBottomMm() {
-            return bottomMm;
-        }
-
-        public void setBottomMm(double bottomMm) {
-            if (!Utils.equals(this.bottomMm, bottomMm)) {
-                this.bottomMm = bottomMm;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        public int getBottomRows() {
-            return bottomRows;
-        }
-
-        public void setBottomRows(int rows) {
-            if (bottomRows != rows) {
-                bottomRows = rows;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        /**
-         * @return margin in millimeters from page left side to bands
-         */
-        public double getLeftMm() {
-            return leftMm;
-        }
-
-        public void setLeftMm(double leftMm) {
-            if (!Utils.equals(this.leftMm, leftMm)) {
-                this.leftMm = leftMm;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        public int getLeftCols() {
-            return leftCols;
-        }
-
-        public void setLeftCols(int rows) {
-            if (leftCols != rows) {
-                leftCols = rows;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        /**
-         * @return margin in millimeters from page right side to bands
-         */
-        public double getRightMm() {
-            return rightMm;
-        }
-
-        public void setRightMm(double rightMm) {
-            if (!Utils.equals(this.rightMm, rightMm)) {
-                this.rightMm = rightMm;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        public int getRightCols() {
-            return rightCols;
-        }
-
-        public void setRightCols(int rows) {
-            if (rightCols != rows) {
-                rightCols = rows;
-                setEditState(EEditState.MODIFIED);
-            }
+            xForm.setTopMarginRows(getTopRows());
+            xForm.setBottomMarginRows(getBottomRows());
+            xForm.setLeftMarginCols(getLeftCols());
+            xForm.setRightMarginCols(getRightCols());
         }
     }
 
@@ -590,6 +589,10 @@ public class AdsReportForm extends RadixObject {
      */
     public Margin getMargin() {
         return margin;
+    }
+    
+    public MarginTxt getMarginTxt() {
+        return marginTxt;
     }
 
     /**
@@ -758,11 +761,12 @@ public class AdsReportForm extends RadixObject {
     public boolean isPageHeaderBandUsed() {
         return !pageHeaderBand.isEmpty();
     }
-
+    
     public void setPageHeaderBandUsed(boolean used) {
         if (used) {
             if (this.pageHeaderBand.isEmpty()) {
-                this.pageHeaderBand.add(new AdsReportBand());
+                AdsReportBand band = isNewStyle? AdsReportBand.createNewStyleBand() : new AdsReportBand();
+                this.pageHeaderBand.add(band);
             }
         } else {
             this.pageHeaderBand.clear();
@@ -791,7 +795,7 @@ public class AdsReportForm extends RadixObject {
     public void setTitleBandUsed(boolean used) {
         if (used) {
             if (this.titleBand.isEmpty()) {
-                final AdsReportBand band = new AdsReportBand();
+                AdsReportBand band = isNewStyle? AdsReportBand.createNewStyleBand() : new AdsReportBand();
                 this.titleBand.add(band);
             }
         } else {
@@ -821,7 +825,7 @@ public class AdsReportForm extends RadixObject {
     public void setColumnHeaderBandUsed(boolean used) {
         if (used) {
             if (this.columnHeaderBand.isEmpty()) {
-                final AdsReportBand band = new AdsReportBand();
+                AdsReportBand band = isNewStyle? AdsReportBand.createNewStyleBand() : new AdsReportBand();
                 this.columnHeaderBand.add(band);
             }
         } else {
@@ -851,7 +855,7 @@ public class AdsReportForm extends RadixObject {
     public void setDetailBandUsed(boolean used) {
         if (used) {
             if (this.detailBand.isEmpty()) {
-                final AdsReportBand band = new AdsReportBand();
+                AdsReportBand band = isNewStyle? AdsReportBand.createNewStyleBand() : new AdsReportBand();
                 this.detailBand.add(band);
             }
         } else {
@@ -881,7 +885,7 @@ public class AdsReportForm extends RadixObject {
     public void setSummaryBandUsed(boolean used) {
         if (used) {
             if (this.summaryBand.isEmpty()) {
-                final AdsReportBand band = new AdsReportBand();
+                AdsReportBand band = isNewStyle? AdsReportBand.createNewStyleBand() : new AdsReportBand();
                 this.summaryBand.add(band);
             }
         } else {
@@ -911,7 +915,7 @@ public class AdsReportForm extends RadixObject {
     public void setPageFooterBandUsed(boolean used) {
         if (used) {
             if (this.pageFooterBand.isEmpty()) {
-                final AdsReportBand band = new AdsReportBand();
+                AdsReportBand band = isNewStyle? AdsReportBand.createNewStyleBand() : new AdsReportBand();
                 this.pageFooterBand.add(band);
             }
         } else {
@@ -1023,7 +1027,7 @@ public class AdsReportForm extends RadixObject {
     public boolean isRepeatGroupHeadersOnNewPage() {
         return repeatGroupHeadersOnNewPage;
     }
-
+    
     public void setRepeatGroupHeadersOnNewPage(boolean repeatGroupHeadersOnNewPage) {
         if (this.repeatGroupHeadersOnNewPage != repeatGroupHeadersOnNewPage) {
             this.repeatGroupHeadersOnNewPage = repeatGroupHeadersOnNewPage;
@@ -1031,18 +1035,27 @@ public class AdsReportForm extends RadixObject {
         }
     }
 
+    public void setTextModeAccepted(boolean accepted) {
+        if (textModeAccepted != accepted) {
+            textModeAccepted = accepted;
+            convertToTextMode();
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+    
     public void convertToTextMode() {
         if (textModeAccepted) {
-            return;
-        } else {
             if (isReadOnly()) {
                 return;
             }
             for (AdsReportBand band : getBands()) {
                 band.convertToTextMode();
             }
-            textModeAccepted = true;
             setEditState(EEditState.MODIFIED);
+        } else {
+            if (getMode() == Mode.TEXT) {
+                setMode(Mode.GRAPHICS);
+            }
         }
     }
 
@@ -1057,11 +1070,20 @@ public class AdsReportForm extends RadixObject {
     }
 
     public static class ChangedEvent extends RadixEvent {
-
+        public enum ChangeEventType {
+            ADD, REMOVE, NONE, MODE, LOADING
+        }
+        
         public final RadixObject radixObject;
+        public final ChangeEventType type;
 
         protected ChangedEvent(RadixObject radixObject) {
+            this(radixObject, ChangeEventType.NONE);
+        }
+
+        public ChangedEvent(RadixObject radixObject, ChangeEventType type) {
             this.radixObject = radixObject;
+            this.type = type;
         }
     }
 
@@ -1075,5 +1097,56 @@ public class AdsReportForm extends RadixObject {
     public void removeChangeListener(IChangeListener l) {
         changeSupport.removeEventListener(l);
     }
+    
+    void fireEvent(ChangedEvent changedEvent){
+       changeSupport.fireEvent(changedEvent);
+    }
 
+    public boolean isShowGrid() {
+        return showGrid;
+    }
+
+    public void setShowGrid(boolean showGrid) {
+        if (this.showGrid != showGrid) {
+            this.showGrid = showGrid;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public boolean isSnapToGrid() {
+        return snapToGrid;
+    }
+
+    public void setSnapToGrid(boolean snapToGrid) {
+        if (this.snapToGrid != snapToGrid) {
+            this.snapToGrid = snapToGrid;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public double getGridSizeMm() {
+        return gridSizeMm;
+    }
+
+    public void setGridSizeMm(double gridSizeMm) {
+        if (this.gridSizeMm != gridSizeMm){
+            this.gridSizeMm = gridSizeMm;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+     @Override
+    public RadixObject getParent() {
+        return null;
+    }
+
+    @Override
+    public List getChildren() {
+        return getBands();
+    }
+
+    @Override
+    public boolean isDiagramModeSupported(Mode mode) {
+        return true;
+    }
 }

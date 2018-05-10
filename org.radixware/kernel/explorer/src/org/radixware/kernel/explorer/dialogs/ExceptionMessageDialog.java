@@ -13,15 +13,12 @@ package org.radixware.kernel.explorer.dialogs;
 
 import com.trolltech.qt.core.QCoreApplication;
 import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.core.Qt.ScrollBarPolicy;
 import com.trolltech.qt.core.Qt.ToolButtonStyle;
 import com.trolltech.qt.core.Qt.WindowFlags;
 import com.trolltech.qt.core.Qt.WindowType;
-import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QDialogButtonBox;
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QFontMetrics;
@@ -46,6 +43,7 @@ import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
 public final class ExceptionMessageDialog extends QtDialog{
@@ -176,13 +174,12 @@ public final class ExceptionMessageDialog extends QtDialog{
         return visibleLinesCount * fontMetrics.height() + 8;
     }
 
-    private void updateSize() {
-        final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();
-        final int hardLimit = Math.min(screenSize.width() - 480, 1000);
+    private void updateSize() {        
+        final int hardLimit = WidgetUtils.getWndowMaxSize().width;
 
         final String[] lines = message.toPlainText().split("\n");
         final int ln_count = lines.length;
-        QFontMetrics fm = message.fontMetrics();
+        final QFontMetrics fm = message.fontMetrics();
 
         message.setFixedHeight(calcMessageHeight(ln_count, fm));
         if (ln_count > MAX_MESSAGE_LINES) {
@@ -210,9 +207,8 @@ public final class ExceptionMessageDialog extends QtDialog{
             messageWidget.layout().activate();
             layout().activate();            
         }
-        
-        fm = fontMetrics();
-        final int windowTitleWidth = Math.min(fm.width(windowTitle()) + 150, hardLimit);
+                
+        final int windowTitleWidth = Math.min(WidgetUtils.calcWindowHeaderWidth(this), hardLimit);
         if (windowTitleWidth > width) {
             width = windowTitleWidth;
         }

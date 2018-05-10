@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.radixware.kernel.common.auth.AuthUtils;
 import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.enums.EClientAuthentication;
+import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EKeyStoreType;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.exceptions.RadixError;
@@ -36,6 +37,7 @@ import org.radixware.kernel.starter.config.ConfigFileParseException;
 import org.radixware.wps.WebServerRunParams.ConfigFileNotSpecifiedException;
 import org.radixware.wps.WebServerRunParams.OptionProcessingResult;
 import org.radixware.wps.WebServerRunParams.UnableToLoadOptionsFromFile;
+import org.radixware.wps.rwt.Banner;
 import org.radixware.wps.utils.KernelLayers;
 import org.radixware.wps.utils.SecurityProvider;
 
@@ -47,13 +49,16 @@ public final class WebServerRunParams {
         TRACE_DIR("-traceDir", "trace directory"),
         TRACE_PROFILE("-traceProfile", "trace profile", false, true),
         DEVELOPMENT_MODE("-development", "development mode", true, true),
+        TRACE_MIN_SEVERITY("-traceMinSeverity", "trace min severity", false, true),
         RESTORE_TREE_POSITION("-restoreTreePosition", "restore position in explorer tree", true),
         /*web server parameters*/
         CONNECTIONS_FILE("-connectionsFile", "connections file"),
+        SETTINGS_DATABASE_PATH("-settingsDatabasePath", "custom local database storage dir", false, false),
         SESSION_MAX_INACTIVE_INTERVAL("-sessionMaxInactiveInterval", "session maximum inactive interval in sec"),
         SSH_REQUIRED("-sshRequired", "security connection required", true),
         /*kerberos parameters*/
         KRB_AUTH_POLICY("-krbAuthPolicy", null),
+        DISABLE_SPNEGO_AUTH("-disableSPNEGOAuth", "disable SPNEGO mechanism authentication", true),
         WPS_SPN("-wpsSpn", null),
         KEYTAB_FILE("-keyTabFile", null),
         REMOTE_KRB_AUTH("-remoteKrbAuth", null),
@@ -69,8 +74,18 @@ public final class WebServerRunParams {
         SALT("-salt", null),
         /*file uploading parameters*/
         FILE_SIZE_SOFT_LIMIT_MB("-uploadFileSizeSoftLimitMb", "uploading file size soft limit (Mb)", false),
-        FILE_SIZE_HARD_LIMIT_MB("-uploadFileSizeHardLimitMb", "uploading file size hard limit (Mb)", false),
-        SETTINGS_DATABASE_PATH("-settingsDatabasePath", "custom local database storage dir", false, false);
+        FILE_SIZE_HARD_LIMIT_MB("-uploadFileSizeHardLimitMb", "uploading file size hard limit (Mb)", false),        
+        /*banner parameters*/
+        BANNER_DIR("-bannerDir", "banner directory", false),
+        BANNER_FILE("-bannerFile", "banner file", false),
+        BANNER_FRAME_STYLE("-bannerFrameStyle", "banner frame style", false),
+        BANNER_FRAME_HEIGHT("-bannerFrameHeight", "banner frame height", false),
+        /*admin panel parameters*/
+        ADMIN_URL_PARAM("-adminPanelUrlParam", "Url parameter to open admin panel", false),
+        ADMIN_USERS("-adminUsers", "Admin user names", false),
+        /*other parameters*/
+        WRITE_OBJECT_NAMES_TO_HTML("-writeObjectNamesToHtml","write object names to html",true);
+        
         private final String argument;
         private final String title;
         private final boolean logical;
@@ -116,193 +131,404 @@ public final class WebServerRunParams {
             return null;
         }
     }
-    private final static Map<EParam, Object> PARAM_VALUES = new EnumMap<>(EParam.class);
-    private final static ReentrantReadWriteLock PARAM_RW_LOCK = new ReentrantReadWriteLock();
-    private static final String CONFIG_FILE = "-configFile";
-    private static volatile String configFile;
+    
+    public static final WebServerRunParams EMPTY = new WebServerRunParams();
+    
+    private static final String CONFIG_FILE_PARAM_NAME = "-configFile";
+    private static volatile String CONFIG_FILE_PATH;
     private static final String SERVER_SECTION = "WebPresentationServer";
     //array of zeroes (guaranteed by language specification)
-    private static final byte[] STUB_KEY = new byte[16];
+    private static final byte[] STUB_KEY = new byte[16];    
+    
+    private static final WebServerRunParams COMMON_INSTANCE = new WebServerRunParams();
+    private final static ReentrantReadWriteLock COMMON_INSTANCE_RW_LOCK = new ReentrantReadWriteLock();
+    
+    private final Map<EParam, Object> paramValues = new EnumMap<>(EParam.class);
 
     private WebServerRunParams() {
         //singleton
     }
-
-    private static Object getParamValue(final EParam param) {
-        PARAM_RW_LOCK.readLock().lock();
-        try {
-            return PARAM_VALUES.get(param);
-        } finally {
-            PARAM_RW_LOCK.readLock().unlock();
+    
+    public static WebServerRunParams newInstance(){
+        final WebServerRunParams instance = new WebServerRunParams();
+        COMMON_INSTANCE_RW_LOCK.readLock().lock();
+        try{
+            instance.paramValues.putAll(COMMON_INSTANCE.paramValues);
+        }finally{
+            COMMON_INSTANCE_RW_LOCK.readLock().unlock();
         }
+        return instance;
+    }
+    
+    public static WebServerRunParams readFromFile(){
+        final WebServerRunParams params = new WebServerRunParams();
+        return params.readFromConfigFile(false) ? params : null;
     }
 
-    private static String getStringParamValue(final EParam param) {
-        PARAM_RW_LOCK.readLock().lock();
-        try {
-            return (String) PARAM_VALUES.get(param);
-        } finally {
-            PARAM_RW_LOCK.readLock().unlock();
-        }
+    private Object getParamValue(final EParam param) {
+        return paramValues.get(param);
     }
 
-    private static int getIntParamValue(final EParam param) {
-        PARAM_RW_LOCK.readLock().lock();
-        try {
-            return ((Integer) PARAM_VALUES.get(param)).intValue();
-        } finally {
-            PARAM_RW_LOCK.readLock().unlock();
-        }
+    private String getStringParamValue(final EParam param) {
+        return (String) paramValues.get(param);
     }
 
-    private static boolean containsParamValue(final EParam param) {
-        PARAM_RW_LOCK.readLock().lock();
-        try {
-            return PARAM_VALUES.containsKey(param);
-        } finally {
-            PARAM_RW_LOCK.readLock().unlock();
+    private int getIntParamValue(final EParam param) {
+        return ((Integer) paramValues.get(param)).intValue();
+    }
+
+    private boolean containsParamValue(final EParam param) {
+        return paramValues.containsKey(param);
+    }
+    
+    private static void setParamValue(final EParam param, final Object value){
+        COMMON_INSTANCE_RW_LOCK.writeLock().lock();
+        try{
+            COMMON_INSTANCE.paramValues.put(param, value);
+        }finally{
+            COMMON_INSTANCE_RW_LOCK.writeLock().unlock();
         }
     }
 
     public static String getConfigFile() {
-        return configFile;
+        return CONFIG_FILE_PATH;
+    }
+    
+    public String getCertificateKeystoreFile() {
+        return getStringParamValue(EParam.KEYSTORE_FILE);
     }
 
-    public static String getConnectionsFile() {
+    public String getConnectionsFile() {
         return getStringParamValue(EParam.CONNECTIONS_FILE);
     }
+    
+    public static void setConnectionsFile(final String filePath){
+        setParamValue(EParam.CONNECTIONS_FILE, filePath);
+    }
 
-    public static String getSettingsDatabaseDir() {
+    public String getSettingsDatabaseDir() {
         return getStringParamValue(EParam.SETTINGS_DATABASE_PATH);
     }
+    
+    public static void setSettingsDatabaseDir(final String dirPath){
+        setParamValue(EParam.SETTINGS_DATABASE_PATH, dirPath);
+    }
 
-    public static String getTraceDir() {
+    public String getTraceDir() {
         return getStringParamValue(EParam.TRACE_DIR);
     }
-
-    public static String getTraceProfile() {
-        return getStringParamValue(EParam.TRACE_PROFILE);
+    
+    public static void setTraceDir(final String dirPath){
+        setParamValue(EParam.TRACE_DIR, dirPath);
     }
 
-    public static String getCertificateAlias() {
+    public String getTraceProfile() {
+        return getStringParamValue(EParam.TRACE_PROFILE);
+    }
+    
+    public static void setTraceProfile(final String profile){
+        setParamValue(EParam.TRACE_PROFILE, profile);
+    }
+
+    public String getCertificateAlias() {
         final String alias = getStringParamValue(EParam.CERTIFICATE_ALIAS);
         return alias != null && alias.isEmpty() ? null : alias;
     }
+    
+    public static void setCertificateAlias(final String alias){
+        setParamValue(EParam.CERTIFICATE_ALIAS, alias);
+    }
 
     public static boolean getIsDevelopmentMode() {
-        return containsParamValue(EParam.DEVELOPMENT_MODE);
+        COMMON_INSTANCE_RW_LOCK.readLock().lock();
+        try{
+            return COMMON_INSTANCE.containsParamValue(EParam.DEVELOPMENT_MODE);
+        }finally{
+            COMMON_INSTANCE_RW_LOCK.readLock().unlock();
+        }        
     }
 
     public static boolean restoreTreePosition() {
-        return containsParamValue(EParam.RESTORE_TREE_POSITION);
+        COMMON_INSTANCE_RW_LOCK.readLock().lock();
+        try{        
+            return COMMON_INSTANCE.containsParamValue(EParam.RESTORE_TREE_POSITION);
+        }finally{
+            COMMON_INSTANCE_RW_LOCK.readLock().unlock();
+        }
     }
 
     public static boolean isSshRequired() {
-        return containsParamValue(EParam.SSH_REQUIRED);
+        COMMON_INSTANCE_RW_LOCK.readLock().lock();
+        try{                
+            return COMMON_INSTANCE.containsParamValue(EParam.SSH_REQUIRED);
+        }finally{
+            COMMON_INSTANCE_RW_LOCK.readLock().unlock();
+        }
     }
 
-    public static int getUploadSoftLimitMb() {
+    public int getUploadSoftLimitMb() {
         return getIntParamValue(EParam.FILE_SIZE_SOFT_LIMIT_MB);
+    }
+    
+    public static void setUploadSoftLimitMb(final int limit){
+        setParamValue(EParam.FILE_SIZE_SOFT_LIMIT_MB, limit);
     }
 
     public static int getUploadHardLimitMb() {
-        return getIntParamValue(EParam.FILE_SIZE_HARD_LIMIT_MB);
+        COMMON_INSTANCE_RW_LOCK.readLock().lock();
+        try{                        
+            return COMMON_INSTANCE.getIntParamValue(EParam.FILE_SIZE_HARD_LIMIT_MB);
+        }finally{
+            COMMON_INSTANCE_RW_LOCK.readLock().unlock();
+        }
     }
-
-    public static KrbWpsOptions getKerberosOptions() {
-        PARAM_RW_LOCK.readLock().lock();
-        try {
-            EClientAuthentication krbAuth = (EClientAuthentication) PARAM_VALUES.get(EParam.KRB_AUTH_POLICY);
-            if (krbAuth == null || krbAuth == EClientAuthentication.None) {
-                return null;
+    
+    public String getTraceMinSeverity() {
+        return getStringParamValue(EParam.TRACE_MIN_SEVERITY);
+    }
+    
+    public static void setTraceMinSeverity(final EEventSeverity severity){
+        setParamValue(EParam.TRACE_MIN_SEVERITY, severity == null ? null : severity.name());
+    }
+    
+    public boolean writeObjectNamesToHtml(){
+        boolean contains = containsParamValue(EParam.WRITE_OBJECT_NAMES_TO_HTML);
+        if (!contains) {
+            return false;
+        } else {
+            return (Boolean)getParamValue(EParam.WRITE_OBJECT_NAMES_TO_HTML) != null;
+        }   
+    }
+    
+    public static void setWriteObjectNamesToHtml(final boolean write){        
+        setParamValue(EParam.WRITE_OBJECT_NAMES_TO_HTML, write ? Boolean.TRUE : null);
+    }
+    
+    public KrbWpsOptions getKerberosOptions() {
+        EClientAuthentication krbAuth = (EClientAuthentication) paramValues.get(EParam.KRB_AUTH_POLICY);
+        if (krbAuth == null) { 
+            return null;
+        }
+        return new KrbWpsOptions(krbAuth,
+                (String) paramValues.get(EParam.WPS_SPN),
+                (String) paramValues.get(EParam.KEYTAB_FILE),
+                (ERemoteKerberosAuthScheme) paramValues.get(EParam.REMOTE_KRB_AUTH),
+                paramValues.containsKey(EParam.USE_DELEGATED_CREDENTIALS),
+                paramValues.containsKey(EParam.DOWNGRADE_NTLM),
+                paramValues.containsKey(EParam.FALLBACK_TO_CERTIFICATE_AUTH),
+                paramValues.containsKey(EParam.DISABLE_SPNEGO_AUTH));
+    }
+    
+    public static void setKerberosOptions(final KrbWpsOptions options){        
+        if (options==null){
+            final EnumSet<EParam> krbParams = 
+                EnumSet.of(EParam.KRB_AUTH_POLICY, EParam.WPS_SPN, EParam.KEYTAB_FILE, 
+                                  EParam.REMOTE_KRB_AUTH, EParam.USE_DELEGATED_CREDENTIALS, 
+                                  EParam.DOWNGRADE_NTLM, EParam.FALLBACK_TO_CERTIFICATE_AUTH);
+            COMMON_INSTANCE_RW_LOCK.writeLock().lock();
+            try{
+                for (EParam param: krbParams){
+                    COMMON_INSTANCE.paramValues.put(param, null);
+                }
+            }finally{
+                COMMON_INSTANCE_RW_LOCK.writeLock().unlock();
             }
-            return new KrbWpsOptions(krbAuth,
-                    (String) PARAM_VALUES.get(EParam.WPS_SPN),
-                    (String) PARAM_VALUES.get(EParam.KEYTAB_FILE),
-                    (ERemoteKerberosAuthScheme) PARAM_VALUES.get(EParam.REMOTE_KRB_AUTH),
-                    PARAM_VALUES.containsKey(EParam.USE_DELEGATED_CREDENTIALS),
-                    PARAM_VALUES.containsKey(EParam.DOWNGRADE_NTLM),
-                    PARAM_VALUES.containsKey(EParam.FALLBACK_TO_CERTIFICATE_AUTH));
-        } finally {
-            PARAM_RW_LOCK.readLock().unlock();
+        }else{
+            COMMON_INSTANCE_RW_LOCK.writeLock().lock();
+            try{
+                if (options.isKerberosAuthRequired()){
+                    COMMON_INSTANCE.paramValues.put(EParam.KRB_AUTH_POLICY, EClientAuthentication.Required);
+                }else{
+                    COMMON_INSTANCE.paramValues.put(EParam.KRB_AUTH_POLICY, EClientAuthentication.Enabled);
+                }
+                COMMON_INSTANCE.paramValues.put(EParam.WPS_SPN, options.getPrincipalName());
+                COMMON_INSTANCE.paramValues.put(EParam.KEYTAB_FILE, options.getAbsoluteKeyTabPath());
+                
+                COMMON_INSTANCE.paramValues.put(EParam.REMOTE_KRB_AUTH, options.getRemoteAuthScheme());
+                if (options.isCredentialsDelegationAllowed()){
+                    COMMON_INSTANCE.paramValues.put(EParam.USE_DELEGATED_CREDENTIALS, Boolean.TRUE);
+                }else{
+                    COMMON_INSTANCE.paramValues.put(EParam.USE_DELEGATED_CREDENTIALS, null);
+                }
+                if (options.downgradeNtlm()){
+                    COMMON_INSTANCE.paramValues.put(EParam.DOWNGRADE_NTLM, Boolean.TRUE);
+                }else{
+                    COMMON_INSTANCE.paramValues.put(EParam.DOWNGRADE_NTLM, null);
+                }
+                if (options.canUseCertificate()){
+                    COMMON_INSTANCE.paramValues.put(EParam.FALLBACK_TO_CERTIFICATE_AUTH, Boolean.TRUE);
+                }else{
+                    COMMON_INSTANCE.paramValues.put(EParam.FALLBACK_TO_CERTIFICATE_AUTH, null);
+                }
+                if (options.isSpnego()) {
+                    COMMON_INSTANCE.paramValues.put(EParam.DISABLE_SPNEGO_AUTH, null);
+                } else {
+                    COMMON_INSTANCE.paramValues.put(EParam.DISABLE_SPNEGO_AUTH, Boolean.TRUE);
+                }
+            }finally{
+                COMMON_INSTANCE_RW_LOCK.writeLock().unlock();
+            }            
         }
     }
 
-    public static String getCertAttrForUserName() {
+    public String getCertAttrForUserName() {
         final String certAttr = getStringParamValue(EParam.ACC_NAME_CERT_ATTR);
         return certAttr == null || certAttr.isEmpty() ? "CN" : certAttr;
     }
+    
+    public static void setCertAttrForUserName(final String attr){
+        setParamValue(EParam.ACC_NAME_CERT_ATTR, attr);
+    }
 
-    public static int getSessionInactiveInteraval() {
+    public int getSessionInactiveInteraval() {
         final Integer value = (Integer) getParamValue(EParam.SESSION_MAX_INACTIVE_INTERVAL);
         return value == null ? 0 : value.intValue();
     }
+    
+    public static void setSessionInactiveInterval(final int interval){
+        setParamValue(EParam.SESSION_MAX_INACTIVE_INTERVAL, interval);
+    }
+    
+    public Banner.Options getBannerOptions(){
+        final String bannerDir = getStringParamValue(EParam.BANNER_DIR);
+        if (bannerDir!=null && !bannerDir.isEmpty()){
+            final String bannerFile = getStringParamValue(EParam.BANNER_FILE);
+            if (bannerFile!=null && !bannerFile.isEmpty()){
+                return new Banner.Options(bannerDir, 
+                                                          bannerFile, 
+                                                          getStringParamValue(EParam.BANNER_FRAME_STYLE), 
+                                                          getStringParamValue(EParam.BANNER_FRAME_HEIGHT));
+            }
+        }
+        return null;
+    }
+    
+    public static void setBannerOptions(final Banner.Options options){
+        if (options==null){
+            final EnumSet<EParam> bannerParams = 
+                EnumSet.of(EParam.BANNER_DIR, EParam.BANNER_FILE, EParam.BANNER_FRAME_STYLE, EParam.BANNER_FRAME_HEIGHT); 
+            COMMON_INSTANCE_RW_LOCK.writeLock().lock();
+            try{
+                for (EParam param: bannerParams){
+                    COMMON_INSTANCE.paramValues.put(param, null);
+                }
+            }finally{
+                COMMON_INSTANCE_RW_LOCK.writeLock().unlock();
+            }            
+        }else{
+            COMMON_INSTANCE_RW_LOCK.writeLock().lock();
+            try{
+                COMMON_INSTANCE.paramValues.put(EParam.BANNER_DIR, options.getDirPath());
+                COMMON_INSTANCE.paramValues.put(EParam.BANNER_FILE, options.getFileName());
+                COMMON_INSTANCE.paramValues.put(EParam.BANNER_FRAME_STYLE, options.getFrameStyle());
+                COMMON_INSTANCE.paramValues.put(EParam.BANNER_FRAME_HEIGHT, options.getFrameHeight());
+            }finally{
+                COMMON_INSTANCE_RW_LOCK.writeLock().unlock();
+            }
+        }
+    }
+    
+    public static String getAdminPanelUrlParam(){
+        COMMON_INSTANCE_RW_LOCK.readLock().lock();
+        try{
+            return COMMON_INSTANCE.getStringParamValue(EParam.ADMIN_URL_PARAM);
+        }finally{
+            COMMON_INSTANCE_RW_LOCK.readLock().unlock();
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static List<String> getAdminUserNames(){
+        COMMON_INSTANCE_RW_LOCK.readLock().lock();
+        try{        
+            final Object value = COMMON_INSTANCE.getParamValue(EParam.ADMIN_USERS);
+            if (value instanceof List){
+                return (List<String>)value;
+            }else{
+                return Collections.emptyList();
+            }
+        }finally{
+            COMMON_INSTANCE_RW_LOCK.readLock().unlock();
+        }
+    }
 
-    public static String print() {
+    public String print() {
         final StringBuffer strBuffer = new StringBuffer();
         strBuffer.append("{");
-        PARAM_RW_LOCK.readLock().lock();
-        try {
-            for (EParam param : EnumSet.allOf(EParam.class)) {
-                if (param.getTitle() != null && !param.getTitle().isEmpty()) {
-                    strBuffer.append("\n\t");
-                    strBuffer.append(param.getTitle());
-                    strBuffer.append(": ");
-                    final Object value = PARAM_VALUES.get(param);
-                    if (value == null) {
-                        strBuffer.append(param.isBoolean() ? "false" : "not defined");
-                    } else {
-                        strBuffer.append(String.valueOf(value).toLowerCase());
-                    }
-                }
+        for (EParam param : EnumSet.allOf(EParam.class)) {
+            if (param==EParam.ADMIN_URL_PARAM || param==EParam.ADMIN_USERS){
+                continue;
             }
-        } finally {
-            PARAM_RW_LOCK.readLock().unlock();
+            if (param.getTitle() != null && !param.getTitle().isEmpty()) {
+                strBuffer.append("\n\t");
+                strBuffer.append(param.getTitle());
+                strBuffer.append(": ");
+                final Object value = paramValues.get(param);
+                if (value == null) {
+                    strBuffer.append(param.isBoolean() ? "false" : "not defined");
+                } else {
+                    strBuffer.append(String.valueOf(value).toLowerCase());
+                }
+            }          
         }
-        final KrbWpsOptions krbOptions = getKerberosOptions();
-        if (krbOptions == null) {
-            strBuffer.append("\n\tkerberos authentication: disabled");
-        } else {
-            strBuffer.append("\n\tkerberos authentication options: {\n");
-            strBuffer.append(krbOptions.toString());
-            strBuffer.append("\n\t}");
-        }
-        strBuffer.append("\n}");
+           final KrbWpsOptions krbOptions = getKerberosOptions();
+            if (krbOptions == null || !krbOptions.isKerberosOptionsEnabled()) {
+                strBuffer.append("\n\tkerberos authentication: disabled");
+            } else {
+                strBuffer.append("\n\tkerberos authentication options: {\n");
+                strBuffer.append(krbOptions.toString());
+                strBuffer.append("\n\t}");
+            }
+            strBuffer.append("\n}");               
         return strBuffer.toString();
     }
 
-    static boolean processArgs(final String[] args) {
-        configFile = findConfigFileParameter(args);
-        if (configFile == null) {
+    static WebServerRunParams processArgs(final String[] args) {        
+        CONFIG_FILE_PATH = findConfigFileParameter(args);        
+        if (CONFIG_FILE_PATH == null) {
+            COMMON_INSTANCE_RW_LOCK.writeLock().lock();
             try {
-                processArgsImpl(args, null);
+                COMMON_INSTANCE.processArgsImpl(args, null, true);
             } catch (ParamException | ConfigFileParseException ex) {
-                System.err.println(ex.getMessage());
-                return false;
+                Logger.getLogger(WebServer.class.getName()).severe(ex.getMessage());                
+                return null;
             } catch (DecryptionException ex) {
-                System.err.println("Error while decrypting passwords: " + ex.getMessage());
+                Logger.getLogger(WebServer.class.getName()).severe("Error while decrypting passwords: " + ex.getMessage());
+            }finally{
+                COMMON_INSTANCE_RW_LOCK.writeLock().unlock();
             }
-            return true;
-
+            return WebServerRunParams.newInstance();
         } else {
-            final List<String> argsForProcessing;
-            try {
-                argsForProcessing = readArgsFromFile(configFile);
-            } catch (UnableToLoadOptionsFromFile ex) {
-                System.err.println("Error while reading Server parameters:");
-                ex.printStackTrace(System.err);
-                return false;
+            COMMON_INSTANCE_RW_LOCK.writeLock().lock();
+            try{
+                if (!COMMON_INSTANCE.readFromConfigFile(true)){
+                    COMMON_INSTANCE.paramValues.clear();
+                    return null;
+                }
+            }finally{
+                COMMON_INSTANCE_RW_LOCK.writeLock().unlock();
             }
-            try {
-                processArgsImpl(argsForProcessing.toArray(new String[argsForProcessing.size()]), null);
-            } catch (ParamException | ConfigFileParseException ex) {
-                System.err.println(ex.getMessage());
-                return false;
-            } catch (DecryptionException ex) {
-                System.err.println("Error while decrypting passwords: " + ex.getMessage());
-            }
-            return true;
+            return WebServerRunParams.newInstance();
         }
+    }
+    
+    private boolean readFromConfigFile(final boolean apply){
+        final List<String> argsForProcessing;
+        try {
+            argsForProcessing = readArgsFromFile(CONFIG_FILE_PATH);
+        } catch (UnableToLoadOptionsFromFile ex) {
+            Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Error while reading Server parameters", ex);
+            return false;
+        }
+        try {
+            processArgsImpl(argsForProcessing.toArray(new String[argsForProcessing.size()]), null, apply);
+        } catch (ParamException | ConfigFileParseException ex) {
+            Logger.getLogger(WebServer.class.getName()).severe(ex.getMessage());
+            return false;
+        } catch (DecryptionException ex) {
+            Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE,"Error while decrypting passwords", ex);
+        }
+        return true;
     }
 
     private static List<String> readArgsFromFile(final String fileName) throws UnableToLoadOptionsFromFile {
@@ -340,15 +566,14 @@ public final class WebServerRunParams {
         }
     }
 
+    /*
     public static List<OptionProcessingResult> rereadFromFile(final List<String> options, final LocalTracer tracer) throws ConfigFileNotSpecifiedException, UnableToLoadOptionsFromFile, DecryptionException {
-        if (configFile == null) {
+        if (CONFIG_FILE_PATH == null) {
             throw new ConfigFileNotSpecifiedException("Configuration file was not specified at startup");
         }
-        final List<String> loadedOptions = new ArrayList<>();
         final List<OptionProcessingResult> results = new ArrayList<>();
         for (String option : options) {//read every option individually. This approach has a greater cost, but simplifies the code.
-            loadedOptions.clear();
-            final List<String> args = readArgsFromFileImpl(configFile, Collections.singleton(option));
+            final List<String> args = readArgsFromFileImpl(CONFIG_FILE_PATH, Collections.singleton(option));
             if (args.isEmpty()) {
                 results.add(new OptionProcessingResult(option, false, "Configuration file doesn't contain this option"));
                 continue;
@@ -361,13 +586,13 @@ public final class WebServerRunParams {
             }
         }
         return results;
-    }
+    }*/
 
     public static void reencryptPasswords() throws ConfigFileParseException, DecryptionException {
-        if (configFile == null || configFile.isEmpty()) {
+        if (CONFIG_FILE_PATH == null || CONFIG_FILE_PATH.isEmpty()) {
             return;
         }
-        final ConfigFileAccessor configAccessor = ConfigFileAccessor.get(configFile, SERVER_SECTION);
+        final ConfigFileAccessor configAccessor = ConfigFileAccessor.get(CONFIG_FILE_PATH, SERVER_SECTION);
         if (configAccessor == null) {
             throw new ConfigFileParseException(SERVER_SECTION + " section was not found in configuration file");
         }
@@ -390,11 +615,11 @@ public final class WebServerRunParams {
         final List<ConfigEntry> toWrite = new ArrayList<>();
         final String ksPwd;
 
-        PARAM_RW_LOCK.readLock().lock();
+        COMMON_INSTANCE_RW_LOCK.readLock().lock();
         try {
-            ksPwd = decrypt((String) PARAM_VALUES.get(EParam.ENCRYPTED_KS_PWD), (byte[]) PARAM_VALUES.get(EParam.SALT));
+            ksPwd = decrypt((String) COMMON_INSTANCE.paramValues.get(EParam.ENCRYPTED_KS_PWD), (byte[]) COMMON_INSTANCE.paramValues.get(EParam.SALT));
         } finally {
-            PARAM_RW_LOCK.readLock().unlock();
+            COMMON_INSTANCE_RW_LOCK.readLock().unlock();
         }
 
         final byte[] newSalt = generateSalt();
@@ -409,25 +634,25 @@ public final class WebServerRunParams {
         toWrite.add(new ConfigEntry(EParam.SALT.getName().substring(1), Hex.encode(newSalt)));
         configAccessor.update(toRemove, toWrite);
 
-        PARAM_RW_LOCK.writeLock().lock();
+        COMMON_INSTANCE_RW_LOCK.writeLock().lock();
         try {
-            PARAM_VALUES.put(EParam.ENCRYPTED_KS_PWD, newEncryptedKsPwd);
-            PARAM_VALUES.put(EParam.SALT, newSalt);
+            COMMON_INSTANCE.paramValues.put(EParam.ENCRYPTED_KS_PWD, newEncryptedKsPwd);
+            COMMON_INSTANCE.paramValues.put(EParam.SALT, newSalt);
         } finally {
-            PARAM_RW_LOCK.writeLock().unlock();
+            COMMON_INSTANCE_RW_LOCK.writeLock().unlock();
         }
     }
 
     private static String findConfigFileParameter(final String[] args) {
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals(CONFIG_FILE)) {
+            if (args[i].equals(CONFIG_FILE_PARAM_NAME)) {
                 return args[++i];
             }
         }
         return null;
     }
 
-    private static void processArgsImpl(final String[] args, final LocalTracer tracer) throws ParamException, DecryptionException, ConfigFileParseException {
+    private void processArgsImpl(final String[] args, final LocalTracer tracer, final boolean apply) throws ParamException, DecryptionException, ConfigFileParseException {
         final int len = args.length;
 
         String ksPwd = null, encKsPwd = null;
@@ -435,115 +660,147 @@ public final class WebServerRunParams {
         Integer fileSizeSoftLimitMb = null;
         Integer fileSizeHardLimitMb = null;
         final List<String> commonParamsList = new LinkedList<>();
-        PARAM_RW_LOCK.writeLock().lock();
-        try {
-            for (int i = 0; i < len; i++) {
-                final EParam param = EParam.getForArg(args[i]);
-                if (param != null) {
-                    final String valueAsStr = param.isBoolean() ? null : readValue(args, ++i, param);
-                    final Object value;
-                    switch (param) {
-                        case SESSION_MAX_INACTIVE_INTERVAL:
-                            try {
-                                value = Integer.parseInt(valueAsStr);
-                            } catch (NumberFormatException e) {
-                                throw new ParamValueException(param.getName(), e);
-                            }
-                            break;
-                        case KRB_AUTH_POLICY:
-                            value = parseKrbAuthPolicy(valueAsStr);
-                            break;
-                        case REMOTE_KRB_AUTH:
-                            value = parseRemoteKrbAuthScheme(valueAsStr);
-                            break;
-                        case SALT:
-                            try {
-                                salt = Hex.decode(valueAsStr);
-                                value = salt;
-                            } catch (WrongFormatError e) {
-                                throw new ParamValueException(param.getName(), e);
-                            }
-                            break;
-                        case KEYSTORE_PWD:
-                            ksPwd = valueAsStr;
-                            continue;
-                        case ENCRYPTED_KS_PWD:
-                            encKsPwd = valueAsStr;
-                            continue;
-                        case FILE_SIZE_SOFT_LIMIT_MB:
-                            try {
-                                fileSizeSoftLimitMb = Integer.parseInt(valueAsStr);
-                            } catch (NumberFormatException e) {
-                                throw new ParamValueException(param.getName(), e);
-                            }
-                            value = fileSizeSoftLimitMb;
-                            break;
-                        case FILE_SIZE_HARD_LIMIT_MB:
-                            try {
-                                fileSizeHardLimitMb = Integer.parseInt(valueAsStr);
-                            } catch (NumberFormatException e) {
-                                throw new ParamValueException(param.getName(), e);
-                            }
-                            value = fileSizeHardLimitMb;
-                            break;
-                        case TRACE_PROFILE:
-                            try{
-                                new TraceProfile(valueAsStr);
-                            }catch(NoConstItemWithSuchValueError | WrongFormatError error){
-                                final Logger logger = Logger.getLogger(WebServer.class.getName());                                
-                                final String reason = error.getMessage();
-                                if (reason==null || reason.isEmpty()){
-                                    logger.log(Level.SEVERE, "Parameter \'\'{0}\'\' has invalid value \'\'{1}\'\'.Using default value (\'\'None\'\')", new Object[]{param.getName(),valueAsStr});
-                                }else{
-                                    logger.log(Level.SEVERE, "Parameter \'\'{0}\'\' has invalid value \'\'{1}\'\':\n{2}\nUsing default value (\'\'None\'\')", new Object[]{param.getName(),valueAsStr,reason});
-                                }
-                                continue;
-                            }
-                            value = valueAsStr;
-                            break;
-                        default:
-                            value = param.isBoolean() ? Boolean.TRUE : valueAsStr;
-                    }
-                    PARAM_VALUES.put(param, value);
-                    if (param.isCommon()) {
-                        commonParamsList.add(param.getName());
-                        if (!param.isBoolean()) {
-                            commonParamsList.add(valueAsStr);
+        String keyStoreFilePath = null;
+        EClientAuthentication krbAuthPolicy = null;
+        ERemoteKerberosAuthScheme remoteKrbAuth = null;
+        Boolean disableSPNEGOAuth = false;
+        for (int i = 0; i < len; i++) {
+            final EParam param = EParam.getForArg(args[i]);
+            if (param != null) {
+                final String valueAsStr = param.isBoolean() ? null : readValue(args, ++i, param);
+                final Object value;
+                switch (param) {
+                    case SESSION_MAX_INACTIVE_INTERVAL:
+                        try {
+                            value = Integer.parseInt(valueAsStr);
+                        } catch (NumberFormatException e) {
+                            throw new ParamValueException(param.getName(), e);
                         }
+                        break;
+                    case KRB_AUTH_POLICY:
+                        krbAuthPolicy = parseKrbAuthPolicy(valueAsStr);
+                        value = krbAuthPolicy;
+                        break;
+                    case REMOTE_KRB_AUTH:
+                        remoteKrbAuth = parseRemoteKrbAuthScheme(valueAsStr);
+                        value = remoteKrbAuth;
+                        break;
+                    case SALT:
+                        try {
+                            salt = Hex.decode(valueAsStr);
+                            value = salt;
+                        } catch (WrongFormatError e) {
+                            throw new ParamValueException(param.getName(), e);
+                        }
+                        break;
+                    case KEYSTORE_FILE:
+                        keyStoreFilePath = valueAsStr;
+                        value = valueAsStr;
+                        break;
+                    case KEYSTORE_PWD:
+                        ksPwd = valueAsStr;
+                        continue;
+                    case ENCRYPTED_KS_PWD:
+                        encKsPwd = valueAsStr;
+                        continue;
+                    case FILE_SIZE_SOFT_LIMIT_MB:
+                        try {
+                            fileSizeSoftLimitMb = Integer.parseInt(valueAsStr);
+                        } catch (NumberFormatException e) {
+                            throw new ParamValueException(param.getName(), e);
+                        }
+                        value = fileSizeSoftLimitMb;
+                        break;
+                    case FILE_SIZE_HARD_LIMIT_MB:
+                        try {
+                            fileSizeHardLimitMb = Integer.parseInt(valueAsStr);
+                        } catch (NumberFormatException e) {
+                            throw new ParamValueException(param.getName(), e);
+                        }
+                        value = fileSizeHardLimitMb;
+                        break;
+                    case TRACE_PROFILE:
+                        try{
+                            new TraceProfile(valueAsStr);
+                        }catch(NoConstItemWithSuchValueError | WrongFormatError error){
+                            final Logger logger = Logger.getLogger(WebServer.class.getName());                                
+                            final String reason = error.getMessage();
+                            if (reason==null || reason.isEmpty()){
+                                logger.log(Level.SEVERE, "Parameter \'\'{0}\'\' has invalid value \'\'{1}\'\'.Using default value (\'\'None\'\')", new Object[]{param.getName(),valueAsStr});
+                            }else{
+                                logger.log(Level.SEVERE, "Parameter \'\'{0}\'\' has invalid value \'\'{1}\'\':\n{2}\nUsing default value (\'\'None\'\')", new Object[]{param.getName(),valueAsStr,reason});
+                            }
+                            continue;
+                        }
+                        value = valueAsStr;
+                        break;
+                    case TRACE_MIN_SEVERITY:
+                         try{
+                            EEventSeverity.getForName(valueAsStr);
+                        }catch(NoConstItemWithSuchValueError error){
+                            final Logger logger = Logger.getLogger(WebServer.class.getName());                                
+                            final String reason = error.getMessage();
+                            if (reason==null || reason.isEmpty()){
+                                logger.log(Level.SEVERE, "Parameter \'\'{0}\'\' has invalid value \'\'{1}\'\'.Using default value (\'\'None\'\')", new Object[]{param.getName(),valueAsStr});
+                            }else{
+                                logger.log(Level.SEVERE, "Parameter \'\'{0}\'\' has invalid value \'\'{1}\'\':\n{2}\nUsing default value (\'\'None\'\')", new Object[]{param.getName(),valueAsStr,reason});
+                            }
+                            continue;
+                        }
+                        value = valueAsStr;
+                        break;
+                    case ADMIN_USERS:
+                        value = parseUserNames(valueAsStr);
+                        break;
+                    case DISABLE_SPNEGO_AUTH:
+                        disableSPNEGOAuth = Boolean.TRUE;
+                        value = Boolean.TRUE;
+                        break;
+                    default:
+                        value = param.isBoolean() ? Boolean.TRUE : valueAsStr;
+                }
+                paramValues.put(param, value);
+                if (param.isCommon()) {
+                    commonParamsList.add(param.getName());
+                    if (!param.isBoolean()) {
+                        commonParamsList.add(valueAsStr);
                     }
                 }
             }
-
-            if (salt == null) {
-                if (encKsPwd != null) {
-                    throw new ParamException("Keystore password is encrypted, but salt is not defined");
-                }
-                salt = generateSalt();
-                PARAM_VALUES.put(EParam.SALT, salt);
-            }
-            if (ksPwd != null) {
-                KeystoreController.setServerKeystorePassword(ksPwd.toCharArray());
-                PARAM_VALUES.put(EParam.ENCRYPTED_KS_PWD, encrypt(ksPwd, salt));
-                reencryptPasswords();
-            } else if (encKsPwd != null) {
-                KeystoreController.setServerKeystorePassword(decrypt(encKsPwd, salt).toCharArray());
-                PARAM_VALUES.put(EParam.ENCRYPTED_KS_PWD, encKsPwd);
-            }
-            if (fileSizeSoftLimitMb == null) {
-                PARAM_VALUES.put(EParam.FILE_SIZE_SOFT_LIMIT_MB, 10);
-            }
-            if (fileSizeHardLimitMb == null) {
-                PARAM_VALUES.put(EParam.FILE_SIZE_HARD_LIMIT_MB, 100);
-            }
-        } finally {
-            PARAM_RW_LOCK.writeLock().unlock();
         }
-        final String keyStoreFilePath = getStringParamValue(EParam.KEYSTORE_FILE);
-        if (keyStoreFilePath != null) {
+
+        if (salt == null) {
+            if (encKsPwd != null) {
+                throw new ParamException("Keystore password is encrypted, but salt is not defined");
+            }
+            salt = generateSalt();
+            paramValues.put(EParam.SALT, salt);
+        }
+        if (ksPwd != null) {
+            KeystoreController.setServerKeystorePassword(ksPwd.toCharArray());
+            paramValues.put(EParam.ENCRYPTED_KS_PWD, encrypt(ksPwd, salt));
+            reencryptPasswords();
+        } else if (encKsPwd != null) {
+            KeystoreController.setServerKeystorePassword(decrypt(encKsPwd, salt).toCharArray());
+            paramValues.put(EParam.ENCRYPTED_KS_PWD, encKsPwd);
+        }
+        if (fileSizeSoftLimitMb == null) {
+            paramValues.put(EParam.FILE_SIZE_SOFT_LIMIT_MB, 10);
+        }
+        if (fileSizeHardLimitMb == null) {
+            paramValues.put(EParam.FILE_SIZE_HARD_LIMIT_MB, 100);
+        }
+
+        if (EClientAuthentication.Required.equals(krbAuthPolicy)  && disableSPNEGOAuth.equals(Boolean.TRUE) && 
+            (remoteKrbAuth == null || ERemoteKerberosAuthScheme.DISABLED.equals(remoteKrbAuth))) {
+            paramValues.remove(EParam.DISABLE_SPNEGO_AUTH);
+            Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Parameter \'\'{0}\'\' conflicts with \'\'{1}\'=\'{2}\'\' and \'\'{3}\'=\'{4}\'\'. It will be ignored.", new Object[]{EParam.DISABLE_SPNEGO_AUTH.getName(), EParam.KRB_AUTH_POLICY.getName(), EClientAuthentication.Required.getName() , EParam.REMOTE_KRB_AUTH.getName(), ERemoteKerberosAuthScheme.DISABLED.name()});
+        }
+        if (apply && keyStoreFilePath != null) {
             KeystoreController.setServerKeystoreType(EKeyStoreType.FILE);
             KeystoreController.setServerKeystorePath(keyStoreFilePath);
         }
-        if (!commonParamsList.isEmpty()) {
+        if (apply && !commonParamsList.isEmpty()) {
             try {
                 RunParams.initialize(commonParamsList.toArray(new String[commonParamsList.size()]));
             } catch (Exception exception) {
@@ -579,6 +836,40 @@ public final class WebServerRunParams {
             }
         }
         throw new WrongParamValueException(EParam.REMOTE_KRB_AUTH, value);
+    }
+    
+    private static List<String> parseUserNames(final String value) throws WrongParamValueException, EmptyParamValueException{
+        if (value==null || value.isEmpty()){
+            throw new EmptyParamValueException(EParam.ADMIN_USERS);
+        }else{
+            final List<String> userNames = new LinkedList<>();
+            final StringBuilder userNameBuilder = new StringBuilder();
+            boolean inQuotes = false;
+            for (int i=0,length=value.length(); i<length; i++){
+                final char symbol = value.charAt(i);
+                if (symbol=='"'){
+                    if (i<length-1 && value.charAt(i+1)=='"'){
+                        userNameBuilder.append('"');
+                        i++;
+                    }else{
+                        inQuotes = !inQuotes;
+                    }
+                }else if (symbol==',' && !inQuotes){
+                    userNames.add(userNameBuilder.toString());
+                    userNameBuilder.setLength(0);
+                }else{
+                    userNameBuilder.append(symbol);
+                }
+            }
+            if (inQuotes){
+                throw new WrongParamValueException(EParam.ADMIN_USERS, value);
+            }else{
+                if (userNameBuilder.length()>0){
+                    userNames.add(userNameBuilder.toString());
+                }
+                return userNames;
+            }                    
+        }
     }
 
     private static String decrypt(final String encryptedString, final byte[] salt) throws DecryptionException {
@@ -733,7 +1024,7 @@ public final class WebServerRunParams {
         EmptyParamValueException(final EParam param) {
             super("The parameter \"" + param.getName() + "\" does not have a value");
         }
-    }
+    }        
 
     public static class ConfigFileNotSpecifiedException extends Exception {
         
@@ -801,7 +1092,18 @@ public final class WebServerRunParams {
                 final boolean allowDelegatedCredentials,
                 final boolean downgradeNtlm,
                 final boolean fallbackToCertAuth) {
-            super(keyTab, spn, true);
+            this(krbAuthPolicy, spn, keyTab, remoteAuthScheme, allowDelegatedCredentials, downgradeNtlm, fallbackToCertAuth, false);
+        }
+        
+        public KrbWpsOptions(final EClientAuthentication krbAuthPolicy,
+                final String spn,
+                final String keyTab,
+                final ERemoteKerberosAuthScheme remoteAuthScheme,
+                final boolean allowDelegatedCredentials,
+                final boolean downgradeNtlm,
+                final boolean fallbackToCertAuth, 
+                final boolean spnegoAuthDisabled) {
+            super(keyTab, spn, !spnegoAuthDisabled);
             authPolicy = krbAuthPolicy;
             this.remoteAuthScheme =
                     remoteAuthScheme == null ? ERemoteKerberosAuthScheme.DISABLED : remoteAuthScheme;
@@ -809,7 +1111,7 @@ public final class WebServerRunParams {
             this.downgradeNtlm = downgradeNtlm;
             fallbackToCertificateAuth = fallbackToCertAuth;
         }
-
+        
         @Override
         protected String getDefaultPrincipalName() {
             try {
@@ -838,12 +1140,18 @@ public final class WebServerRunParams {
         public boolean isKerberosAuthRequired() {
             return authPolicy == EClientAuthentication.Required;
         }
-
+        
+        public boolean isKerberosOptionsEnabled() {
+            return authPolicy != EClientAuthentication.None;
+        }
+        
         @Override
         public String toString() {
             final StringBuffer strBuffer = new StringBuffer();
             strBuffer.append("\t\tkrbAuthPolicy: ");
             strBuffer.append(authPolicy.getName().toLowerCase());
+            strBuffer.append("\n\t\tSPNEGO mechanism: ");
+            strBuffer.append(isSpnego() ?  "enabled" : "disabled");
             strBuffer.append("\n");
             strBuffer.append(super.toString());
             strBuffer.append("\n\t\tremoteKrbAuth: ");

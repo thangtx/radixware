@@ -1,0 +1,21 @@
+
+class TestParent {
+
+    protected int Property;
+}
+
+class Test extends TestParent {
+
+    String getProperty() {
+	return "abc";
+    }
+
+    void f() {
+	this.Property = 123;
+    }
+
+    static public void main(String[] args) {
+	Test t = new Test();
+	t.f();
+    }
+}

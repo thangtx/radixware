@@ -39,7 +39,10 @@ public class LayerUtils {
         private final List<Boolean> editableAvailableValues;
         private final List<Boolean> editableOnUpgradeAvailableValues;
 
-        public DependencyInfo(Layer.DatabaseOptionDependency dependency, Layer defaultModeSourceLayer, Layer editableSourceLayer, Layer defaultUpgradeModeSourceLayer, Layer editableOnUpgradesourceLayer) {
+        public DependencyInfo(Layer.DatabaseOptionDependency dependency, Layer defaultModeSourceLayer, Layer editableSourceLayer, Layer defaultUpgradeModeSourceLayer, Layer editableOnUpgradesourceLayer) {            
+            if (dependency == null) {
+                throw new IllegalArgumentException("Dependency can't be null!");
+            }
             this.dependency = dependency;
             this.defaultModeSourceLayer = defaultModeSourceLayer;
             this.editableSourceLayer = editableSourceLayer;
@@ -47,12 +50,12 @@ public class LayerUtils {
             this.editableOnUpgradeSourceLayer = editableOnUpgradesourceLayer;
             this.defaultModeAvailableValues = new ArrayList<>(Arrays.asList(EOptionMode.values()));
             this.defaultModeAvailableValues.add(null);
-            if (dependency.getEditableOnUpgrade() != false) {
-                this.defaultUpgradeModeAvailableValues = new ArrayList<>(Arrays.asList(EOptionMode.values()));
-                this.editableOnUpgradeAvailableValues = new ArrayList<>(Arrays.asList(new Boolean[]{true, false, null}));
-            } else {
+            if (dependency.getEditableOnUpgrade() != null && dependency.getEditableOnUpgrade() == false) {
                 this.defaultUpgradeModeAvailableValues = new ArrayList<>();
                 this.editableOnUpgradeAvailableValues = new ArrayList<>(Arrays.asList(new Boolean[]{null}));
+            } else {
+                this.defaultUpgradeModeAvailableValues = new ArrayList<>(Arrays.asList(EOptionMode.values()));
+                this.editableOnUpgradeAvailableValues = new ArrayList<>(Arrays.asList(new Boolean[]{true, false, null}));
             }
             this.defaultUpgradeModeAvailableValues.add(null);
             this.editableAvailableValues = new ArrayList<>(Arrays.asList(new Boolean[]{true, false, null}));            

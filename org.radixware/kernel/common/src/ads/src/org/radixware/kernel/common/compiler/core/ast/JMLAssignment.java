@@ -107,4 +107,15 @@ public class JMLAssignment extends Assignment implements IJMLExpression {
     public RadixObjectLocation getRadixObject(int index) {
         return null;
     }
+
+    @Override
+    public TypeBinding resolveTypeExpecting(BlockScope scope, TypeBinding expectedType) {
+        TypeBinding rhsType = this.expression.resolvedType;
+        if (rhsType == null) {
+            return null;
+        }
+        return super.resolveTypeExpecting(scope, expectedType);
+    }
+    
+    
 }

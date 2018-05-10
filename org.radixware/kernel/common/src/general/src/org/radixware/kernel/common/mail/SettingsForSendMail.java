@@ -11,8 +11,8 @@
 package org.radixware.kernel.common.mail;
 
 import java.util.prefs.Preferences;
-import org.radixware.kernel.common.mail.enums.EAuthentication;
-import org.radixware.kernel.common.mail.enums.ESecureConnection;
+import org.radixware.kernel.common.mail.enums.EMailAuthentication;
+import org.radixware.kernel.common.mail.enums.EMailSecureConnection;
 
 public class SettingsForSendMail extends SettingsMail {
 
@@ -31,9 +31,9 @@ public class SettingsForSendMail extends SettingsMail {
         SettingsForSendMail settings = new SettingsForSendMail();
         settings.host = Preferences.userNodeForPackage(SettingsForSendMail.class).get(PREFERENCE_NAME_DEFAULT_HOST, settings.host);
         settings.port = Preferences.userNodeForPackage(SettingsForSendMail.class).getInt(PREFERENCE_NAME_DEFAULT_PORT, settings.port);
-        settings.secureConnection = ESecureConnection.getForValue(Preferences.userNodeForPackage(SettingsForSendMail.class).get(PREFERENCE_NAME_DEFAULT_SECURE_CONNECTION, settings.secureConnection.getValue()));
-        settings.authentication = EAuthentication.getForValue(Preferences.userNodeForPackage(SettingsForSendMail.class).get(PREFERENCE_NAME_DEFAULT_AUTHENTICATION, settings.authentication.getValue()));
-        if (settings.authentication != EAuthentication.NONE) {
+        settings.secureConnection = EMailSecureConnection.getForValue(Preferences.userNodeForPackage(SettingsForSendMail.class).get(PREFERENCE_NAME_DEFAULT_SECURE_CONNECTION, settings.secureConnection.getValue()));
+        settings.authentication = EMailAuthentication.getForValue(Preferences.userNodeForPackage(SettingsForSendMail.class).get(PREFERENCE_NAME_DEFAULT_AUTHENTICATION, settings.authentication.getValue()));
+        if (settings.authentication != EMailAuthentication.NONE) {
             settings.user = Preferences.userNodeForPackage(SettingsForSendMail.class).get(PREFERENCE_NAME_DEFAULT_USER, settings.user);
             settings.rememberPassword = Preferences.userNodeForPackage(SettingsForSendMail.class).getBoolean(PREFERENCE_NAME_DEFAULT_REMEMBER_PASSWORD, settings.rememberPassword);
             if (settings.rememberPassword) {
@@ -67,12 +67,12 @@ public class SettingsForSendMail extends SettingsMail {
         store(SettingsForSendMail.PREFERENCE_NAME_DEFAULT_PORT, port);
     }
 
-    public void storeSecureConnection(ESecureConnection secureConnection) {
+    public void storeSecureConnection(EMailSecureConnection secureConnection) {
         this.secureConnection = secureConnection;
         store(SettingsForSendMail.PREFERENCE_NAME_DEFAULT_SECURE_CONNECTION, secureConnection.getValue());
     }
 
-    public void storeAuthentication(EAuthentication authentication) {
+    public void storeAuthentication(EMailAuthentication authentication) {
         this.authentication = authentication;
         store(SettingsForSendMail.PREFERENCE_NAME_DEFAULT_AUTHENTICATION, authentication.getValue());
     }

@@ -105,10 +105,7 @@ public class DdsReferenceScriptGenerator extends DdsConstraintScriptGenerator<Dd
         }
         Id oldParentColumnId = oldColumnsInfoItem.getParentColumnId();
         Id newParentColumnId = newColumnsInfoItem.getParentColumnId();
-        if (!oldParentColumnId.equals(newParentColumnId)) {
-            return true;
-        }
-        return false;
+        return !oldParentColumnId.equals(newParentColumnId);
     }
 
     // Reference must be dropped if its structure was changed (except renaming, and renaming of columns and tables).
@@ -187,25 +184,10 @@ public class DdsReferenceScriptGenerator extends DdsConstraintScriptGenerator<Dd
             parentColumns += columnsInfoItem.getParentColumn().getDbName();
         }
 
-        cp.print("alter ");
-        if (childTable instanceof DdsViewDef) {
-            cp.print("view ");
-        } else {
-            cp.print("table ");
-        }
-
-        cp.println(childTable.getDbName());
-        cp.print('\t');
-        cp.print("add constraint ");
-        cp.print(reference.getDbName());
-        cp.print(" foreign key (");
-        cp.print(childColumns);
-        cp.println(")");
-        cp.print("\treferences ");
-        cp.print(parentTable.getDbName());
-        cp.print(" (");
-        cp.print(parentColumns);
-        cp.print(")");
+        cp.print("alter ").print(childTable instanceof DdsViewDef ? "view " : "table ").println(childTable.getDbName());
+        cp.print("\tadd constraint ").print(reference.getDbName());
+        cp.print(" foreign key (").print(childColumns).println(")");
+        cp.print("\treferences ").print(parentTable.getDbName()).print(" (").print(parentColumns).print(")");
 
         switch (reference.getDeleteMode()) {
             case CASCADE:
@@ -231,21 +213,27 @@ public class DdsReferenceScriptGenerator extends DdsConstraintScriptGenerator<Dd
             cp.print("table ");
         }
 
-        cp.println(childTable.getDbName());
-        cp.print('\t');
+        cp.println(childTable.getDbName()).print('\t');
         if (enable) {
             cp.print("enable");
         } else {
             cp.print("disable");
         }
-        cp.print(" constraint ");
-        cp.print(reference.getDbName());
-        cp.printCommandSeparator();
+        cp.print(" constraint ").print(reference.getDbName()).printCommandSeparator();
     }
 
     @Override
     public void getRunRoleScript(CodePrinter printer, DdsReferenceDef definition) {
 
+    }
+
+    @Override
+    public void getReCreateScript(CodePrinter printer, DdsReferenceDef definition, boolean storeData) {
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, DdsReferenceDef definition, boolean enable) {
+        getEnableDisableScript(definition,cp,enable);
     }
 
     public static final class Factory {

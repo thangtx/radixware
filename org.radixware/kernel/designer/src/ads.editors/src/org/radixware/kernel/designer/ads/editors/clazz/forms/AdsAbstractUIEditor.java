@@ -11,14 +11,13 @@
 package org.radixware.kernel.designer.ads.editors.clazz.forms;
 
 import java.awt.BorderLayout;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
@@ -32,7 +31,6 @@ import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponentGroup;
 import org.openide.windows.WindowManager;
-import org.radixware.kernel.common.defs.HierarchyIterator;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.defs.ads.AdsDefinitions;
@@ -49,7 +47,6 @@ import org.radixware.kernel.designer.ads.editors.clazz.forms.common.HorizontalLa
 import org.radixware.kernel.designer.ads.editors.clazz.forms.common.LayoutProcessor;
 import org.radixware.kernel.designer.ads.editors.clazz.forms.common.VerticalLayoutProcessor;
 import org.radixware.kernel.designer.ads.editors.clazz.forms.dialog.CustomPropertiesPanel;
-import org.radixware.kernel.designer.ads.editors.clazz.forms.dialog.JavaScriptPanel;
 import org.radixware.kernel.designer.ads.editors.clazz.forms.dialog.SignalsPanel;
 import org.radixware.kernel.designer.ads.editors.clazz.forms.palette.Palette;
 import org.radixware.kernel.designer.ads.editors.clazz.forms.widget.BaseWidget;
@@ -71,8 +68,10 @@ public class AdsAbstractUIEditor extends RadixObjectEditor<AdsAbstractUIDef> {
     /**
      * Creates new form AdsUIEditorView
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     public AdsAbstractUIEditor(final AdsAbstractUIDef uiDef) {
         super(uiDef);
+        DrawUtil.getFontMetrics(this);
         initComponents();
         if (uiDef instanceof AdsRwtUIDef) {
             toolBar.remove(btGLayout);
@@ -82,25 +81,27 @@ public class AdsAbstractUIEditor extends RadixObjectEditor<AdsAbstractUIDef> {
             toolBar.remove(btParams);
             toolBar.remove(jSeparator1);
             toolBar.remove(btActions);
-            btEditJScript.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JavaScriptPanel panel = new JavaScriptPanel();
-                    panel.open(((AdsRwtUIDef) uiDef).getJsCode());
-                    ModalDisplayer displayer = new ModalDisplayer(panel, "Edit JavaScript Code");
-                    if (displayer.showModal()) {
-                        ((AdsRwtUIDef) uiDef).setJsCode(panel.getCode());
-                    }
-                }
-            });
+            toolBar.remove(btEditJScript);
+            toolBar.remove(spCustom);
+//            btEditJScript.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    JavaScriptPanel panel = new JavaScriptPanel();
+//                    panel.open(((AdsRwtUIDef) uiDef).getJsCode());
+//                    ModalDisplayer displayer = new ModalDisplayer(panel, "Edit JavaScript Code");
+//                    if (displayer.showModal()) {
+//                        ((AdsRwtUIDef) uiDef).setJsCode(panel.getCode());
+//                    }
+//                }
+//            });
         } else {
             toolBar.remove(btActions);
             toolBar.remove(btEditJScript);
         }
 
-        final List<EIsoLanguage> languages = uiDef.getModule().getSegment().getLayer().getLanguages();
+        final List<EIsoLanguage> languages = uiDef.getLayer().getLanguages();
         comboLang.setModel(new javax.swing.DefaultComboBoxModel(languages.toArray()));
-        comboLang.setSelectedItem(Settings.getLanguage());
+        comboLang.setSelectedItem(Settings.getLanguage()); 
     }
 
     private void closeWindowsGroup() {
@@ -176,6 +177,7 @@ public class AdsAbstractUIEditor extends RadixObjectEditor<AdsAbstractUIDef> {
 
         setLayout(new java.awt.BorderLayout());
 
+        toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.X_AXIS)); //for some look and feels
         toolBar.setBorder(null);
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
@@ -462,8 +464,8 @@ private void deprecatedCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {/
     public AdsAbstractUIDef getUi() {
         return getRadixObject();
     }
-    private InstanceContent lookupContent = new InstanceContent();
-    private Lookup lookup = new AbstractLookup(lookupContent);
+    private final InstanceContent lookupContent = new InstanceContent();
+    private final Lookup lookup = new AbstractLookup(lookupContent);
 
     @Override
     public Lookup getLookup() {
@@ -514,13 +516,6 @@ private void deprecatedCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {/
         }
 
         boolean opened = super.open(info);
-        if (opened || true) {
-            if (DrawUtil.DEFAULT_FONT_METRICS == null) {
-                Graphics2D gr = (Graphics2D) getGraphics();
-                DrawUtil.DEFAULT_FONT_METRICS = (gr != null ? gr.getFontMetrics() : null);
-                assert DrawUtil.DEFAULT_FONT_METRICS != null;
-            }
-        }
 
         if (scroll != null) {
             remove(scroll);

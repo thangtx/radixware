@@ -64,11 +64,23 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             = SystemProperties.getProperty("line.separator") == null
                     ? "\n"
                     : SystemProperties.getProperty("line.separator");
-    static final String MAX_SPACES = "                                        ";
+    private final String[] EMPTY_STRINGS = new String[]{
+        " ", "  ", "   ", "    ", "     ",
+        "      ", "       ", "        ", "         ", "          ",
+        "           ", "            ", "             ", "              ", "               ",
+        "                ", "                 ", "                  ", "                   ", "                    ",
+        "                     ", "                      ", "                       ", "                        ", "                         ",
+        "                          ", "                           ", "                            ", "                             ", "                              ",
+        "                               ","                                ","                                 ","                                  ","                                   ",
+        "                                    ","                                     ","                                      ","                                       ","                                        ",
+    };
+    //static final String MAX_SPACES = "                                        ";
     static final int INDENT_INCREMENT = 4;
     public static final String INDEX_CLASSNAME = "TypeSystemHolder";
     static final String RADIX_TYPES_URI = "http://schemas.radixware.org/types.xsd";
     static final String THIS_PACKAGE = "org.radixware.kernel.common.build.xbeans";
+    public static final String JAVA_CLASS_FOR_DATE_WITH_TIMEZONE = "org.apache.xmlbeans.GDate";
+    public static final String TIME_ZONE_MTH_SUFFIX = "WithTimezone";
 
     abstract static class RadixType {
 
@@ -236,7 +248,7 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
     }
 
     static class RadixDateTime extends RadixType {
-
+        
         @Override
         public String getJavaClassName() {
             return "java.sql.Timestamp";
@@ -496,13 +508,13 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
     void emit(String s) throws IOException {
         int indent = _indent;
 
-        if (indent > MAX_SPACES.length() / 2) {
-            indent = MAX_SPACES.length() / 4 + indent / 2;
+        if (indent > EMPTY_STRINGS.length / 2) {
+            indent = EMPTY_STRINGS.length / 4 + indent / 2;
         }
-        if (indent > MAX_SPACES.length()) {
-            indent = MAX_SPACES.length();
+        if (indent > EMPTY_STRINGS.length) {
+            indent = EMPTY_STRINGS.length;
         }
-        _writer.write(MAX_SPACES.substring(0, indent));
+        _writer.write(EMPTY_STRINGS[indent]);
         try {
             _writer.write(s);
         } catch (CharacterCodingException cce) {
@@ -693,6 +705,10 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
 
     static String shortIndexClassForSystem(@SuppressWarnings("unused") SchemaTypeSystem system) {
         return INDEX_CLASSNAME;
+    }
+    
+    static boolean isDateWithTimezone(String type) {
+        return JAVA_CLASS_FOR_DATE_WITH_TIMEZONE.equals(type);
     }
 
     void printStaticTypeDeclaration(SchemaType sType, SchemaTypeSystem system) throws IOException {
@@ -1089,6 +1105,7 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                         xmlTypeForProperty(prop), prop.isAttribute(), propIsDeprecated(prop));
 
                 printPropertyGetters(
+                        prop,
                         prop.getJavaTypeCode(),
                         javaTypeForProperty(prop),
                         prop.hasNillable() != SchemaProperty.NEVER,
@@ -1101,6 +1118,7 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                     try {
                         //System.out.println(prop.getName() + " " + prop.extendsJavaOption() + " " + prop.extendsJavaArray() + " " + prop.extendsJavaSingleton() + " " + isRadixPrimitiveType(prop));
                         printPropertySetters(
+                                prop,
                                 prop.getJavaTypeCode(),
                                 prop.hasNillable() != SchemaProperty.NEVER,
                                 prop.extendsJavaOption(),
@@ -1994,9 +2012,37 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             }
             emit("void remove" + propertyName + "(int i);");
         }
+
+        @Override
+        public void acceptSingletonPropGetterDateTimeWithTimezone(boolean several) throws IOException {
+            printJavaDoc((several ? "Gets first " : "Gets the ") + propdesc + " with timezone");
+            if (isDeprecated) {
+                emit("@Deprecated");
+            }
+            emit(JAVA_CLASS_FOR_DATE_WITH_TIMEZONE + " get" + propertyName + TIME_ZONE_MTH_SUFFIX + "();");
+        }
+
+        @Override
+        public void acceptSingletonPropSetterDateTimeWithTimezone(boolean several) throws IOException {
+            printJavaDoc((several ? "Sets first " : "Sets the ") + propdesc + " with timezone");
+            if (isDeprecated) {
+                emit("@Deprecated");
+            }
+            emit("void set" + propertyName + TIME_ZONE_MTH_SUFFIX + "(" + JAVA_CLASS_FOR_DATE_WITH_TIMEZONE + " " + safeVarName + ");");
+        }
+
+        @Override
+        public void acceptSeveralPropListGetterDateTimeWithTimezone(String wrappedType) throws IOException {
+            printJavaDoc("Gets a List of " + propdesc + "s with timezone");
+            if (isDeprecated) {
+                emit("@Deprecated");
+            }
+            emit("java.util.List<" + JAVA_CLASS_FOR_DATE_WITH_TIMEZONE + "> get" + propertyName + TIME_ZONE_MTH_SUFFIX + "List();");
+        }
     }
 
     void printPropertyGetters(
+            SchemaProperty prop,
             int javaType,
             String type,
             boolean nillable, boolean optional,
@@ -2004,9 +2050,14 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             throws IOException {
 
         boolean xmltype = (javaType == SchemaProperty.XML_OBJECT);
+        final boolean isRdxDateTime = getRadixType(prop.getType()) instanceof RadixDateTime;
 
         if (singleton) {
             acceptor.acceptSingletonPropGetter(several);
+            
+            if (isRdxDateTime) {
+                acceptor.acceptSingletonPropGetterDateTimeWithTimezone(several);
+            }
 
             if (!xmltype && !isRadix) {
                 acceptor.acceptSingletonPropXmlGetter(several);
@@ -2028,6 +2079,10 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                     wrappedType = javaWrappedType(javaType);
                 }
                 acceptor.acceptSeveralPropListGetter(wrappedType);
+                
+                if (isRdxDateTime) {
+                    acceptor.acceptSeveralPropListGetterDateTimeWithTimezone(wrappedType);
+                }
             }
 
             if (!isRadix) {
@@ -2053,6 +2108,7 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
     }
 
     void printPropertySetters(
+            SchemaProperty prop,
             int javaType,
             boolean nillable, boolean optional,
             boolean several, boolean singleton, boolean isRadixPrimitive, XBeansPropAcceptor acceptor)
@@ -2062,6 +2118,10 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
 
         if (singleton) {
             acceptor.acceptSingletonPropSetter(several);
+            
+            if (getRadixType(prop.getType()) instanceof RadixDateTime) {
+                acceptor.acceptSingletonPropSetterDateTimeWithTimezone(several);
+            }
 
             if (!xmltype && !isRadixPrimitive) {
                 acceptor.acceptSingletonPropXmlSetter(several);
@@ -2319,10 +2379,14 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
         }
     }
 
-    private void printRadixDateTimeGetter(RadixDateTime radixDateTime, String acceptingCode) throws IOException {
+    private void printRadixDateTimeGetter(RadixDateTime radixDateTime, String acceptingCode, boolean withTimezone) throws IOException {
         final String gdateVarName = "target_tmp_radix_gdate";
         final String calendarVarName = "target_tmp_radix_calendar";
         emit("org.apache.xmlbeans.GDate " + gdateVarName + " = " + radixDateTime.jgetMethod() + ";");
+        if (withTimezone) {
+            emit(acceptingCode + " " + gdateVarName + ";");
+            return;
+        }
         emit("if (" + gdateVarName + " == null) return null;");
         emit("if (" + gdateVarName + ".hasTimeZone())");
         {
@@ -2347,17 +2411,18 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             endBlock();
         }
     }
-
+    
     void printJGetArrayValue(int javaType, String type, RadixType radixType) throws IOException {
         if (radixType != null) {
-            type = radixType.getJavaClassName();
+            final boolean withTimezone = radixType instanceof RadixDateTime && isDateWithTimezone(type);
+            type = withTimezone ? type : radixType.getJavaClassName();
             String suffix = radixType.isArray() ? "[]" : "";
             emit(type + "[]" + suffix + " result = new " + type + "[targetList.size()]" + suffix + ";");
             emit("for (int i = 0, len = targetList.size() ; i < len ; i++)");
             startBlock();
             emit("org.apache.xmlbeans.SimpleValue target = ((org.apache.xmlbeans.SimpleValue)targetList.get(i));");
             if (radixType instanceof RadixDateTime) {//XMLCALENDAR
-                printRadixDateTimeGetter((RadixDateTime) radixType, "result[i] = ");
+                printRadixDateTimeGetter((RadixDateTime) radixType, "result[i] = ", withTimezone);
             } else {
                 emit("result[i] = " + radixType.jgetMethod() + ";");
             }
@@ -2496,7 +2561,8 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                 emit("if (target.isNil()) return null;");
             }
             if (radixType instanceof RadixDateTime) {//XMLCALENDAR
-                printRadixDateTimeGetter((RadixDateTime) radixType, "return ");
+                final boolean withTimezone = isDateWithTimezone(type);
+                printRadixDateTimeGetter((RadixDateTime) radixType, "return ", withTimezone);
             } else {
                 emit("return " + radixType.jgetMethod() + ";");
             }
@@ -2753,7 +2819,11 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
         PrePostExtension ext = sImpl.getPrePostExtension();
         if (ext != null) {
             if (ext.hasPreCall()) {
-                emit("if ( " + ext.getStaticHandler() + ".preSet(" + prePostOpString(opType) + ", this, " + identifier + ", " + isAttr + ", " + index + "))");
+                StringBuilder sb = new StringBuilder(200);
+                sb.append("if ( ").append(ext.getStaticHandler()).append(".preSet(")
+                        .append(prePostOpString(opType)).append(", this, ").append(identifier)
+                        .append(", ").append(isAttr).append(", ").append(index).append("))");
+                emit(sb.toString());
                 startBlock();
             }
         }
@@ -2775,7 +2845,13 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             }
 
             if (ext.hasPostCall()) {
-                emit(ext.getStaticHandler() + ".postSet(" + prePostOpString(opType) + ", this, " + identifier + ", " + isAttr + ", " + index + ");");
+                StringBuilder sb = new StringBuilder(200);
+                sb.append(ext.getStaticHandler())
+                        .append(".postSet(").append(prePostOpString(opType))
+                        .append(", this, ").append(identifier)
+                        .append(", ").append(isAttr)
+                        .append(", ").append(index).append(");");
+                emit(sb.toString());
             }
         }
     }
@@ -2887,14 +2963,13 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
         @Override
         public void endProperty() {
         }
-
-        @Override
-        public void acceptSingletonPropGetter(SchemaProperty prop, String jtargetType, String identifier, String setIdentifier, int javaType, boolean isRadix) throws IOException {
+        
+        private void acceptSingletonPropGetter(String type_, String methodName, SchemaProperty prop, String jtargetType, String identifier, String setIdentifier, int javaType, boolean isRadix) throws IOException {
             printJavaDoc((several ? "Gets first " : "Gets the ") + propdesc);
             if (isDeprecated) {
                 emit("@Deprecated");
             }
-            emit("public " + type + " get" + propertyName + "()");
+            emit("public " + type_ + " " + methodName + "()");
             startBlock();
             emitImplementationPreamble();
 
@@ -2912,35 +2987,43 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             makeMissingValue(javaType, isRadix);
             endBlock();
 
-            printJGetValue(prop, type);
+            printJGetValue(prop, type_);
 
             emitImplementationPostamble();
 
             endBlock();
         }
 
-        private void printRadixDateTimeSetterPreparation() throws IOException {
-            String calendarVarName = safeVarName + "_tmp_radix_calendar";
-            emit("java.util.Calendar " + calendarVarName + " = java.util.Calendar.getInstance();");
-            emit(calendarVarName + "." + "setTimeInMillis(" + safeVarName + ".getTime());");
-            emit("org.apache.xmlbeans.GDate " + safeVarName + "_tmp_radix = new org.apache.xmlbeans.GDate("
-                    + calendarVarName + ".get(java.util.Calendar.YEAR),"
-                    + calendarVarName + ".get(java.util.Calendar.MONTH)+1,"
-                    + calendarVarName + ".get(java.util.Calendar.DAY_OF_MONTH),"
-                    + calendarVarName + ".get(java.util.Calendar.HOUR_OF_DAY),"
-                    + calendarVarName + ".get(java.util.Calendar.MINUTE),"
-                    + calendarVarName + ".get(java.util.Calendar.SECOND),"
-                    + "java.math.BigDecimal.valueOf(" + calendarVarName + ".get(java.util.Calendar.MILLISECOND), 3)"
-                    + ");");
+        @Override
+        public void acceptSingletonPropGetter(SchemaProperty prop, String jtargetType, String identifier, String setIdentifier, int javaType, boolean isRadix) throws IOException {
+            acceptSingletonPropGetter(type, "get" + propertyName, prop, jtargetType, identifier, setIdentifier, javaType, isRadix);
         }
 
-        @Override
-        public void acceptSingletonPropSetter(SchemaType sType, SchemaProperty prop, String jtargetType, int javaType, String identifier, String setIdentifier, boolean isRadix, boolean xmltype, String jSet, boolean optional, boolean nillable) throws IOException {
+        private void printRadixDateTimeSetterPreparation(boolean withTimezone) throws IOException {
+            if (withTimezone) {
+                emit("org.apache.xmlbeans.GDate " + safeVarName + "_tmp_radix = " + safeVarName + ";");
+            } else {
+                String calendarVarName = safeVarName + "_tmp_radix_calendar";
+                emit("java.util.Calendar " + calendarVarName + " = java.util.Calendar.getInstance();");
+                emit(calendarVarName + "." + "setTimeInMillis(" + safeVarName + ".getTime());");
+                emit("org.apache.xmlbeans.GDate " + safeVarName + "_tmp_radix = new org.apache.xmlbeans.GDate("
+                            + calendarVarName + ".get(java.util.Calendar.YEAR),"
+                            + calendarVarName + ".get(java.util.Calendar.MONTH)+1,"
+                            + calendarVarName + ".get(java.util.Calendar.DAY_OF_MONTH),"
+                            + calendarVarName + ".get(java.util.Calendar.HOUR_OF_DAY),"
+                            + calendarVarName + ".get(java.util.Calendar.MINUTE),"
+                            + calendarVarName + ".get(java.util.Calendar.SECOND),"
+                            + "java.math.BigDecimal.valueOf(" + calendarVarName + ".get(java.util.Calendar.MILLISECOND), 3)"
+                            + ");");
+            }
+        }
+        
+        private void acceptSingletonPropSetter(String type_, String methodName, SchemaType sType, SchemaProperty prop, String jtargetType, int javaType, String identifier, String setIdentifier, boolean isRadix, boolean xmltype, String jSet, boolean optional, boolean nillable) throws IOException {
             printJavaDoc((several ? "Sets first " : "Sets the ") + propdesc);
             if (isDeprecated) {
                 emit("@Deprecated");
             }
-            emit("public void set" + propertyName + "(" + type + " " + safeVarName + ")");
+            emit("public void " + methodName + "(" + type_ + " " + safeVarName + ")");
             startBlock();
             emitImplementationPreamble();
             String closingPar;
@@ -2971,8 +3054,7 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
 //                            + calendarVarName + ".get(java.util.Calendar.SECOND),"
 //                            + "java.math.BigDecimal.valueOf(" + calendarVarName + ".get(java.util.Calendar.MILLISECOND), 3)"
 //                            + ");");
-                    printRadixDateTimeSetterPreparation();
-
+                    printRadixDateTimeSetterPreparation(isDateWithTimezone(type_));
                 }
 
                 emit(jSet + "(" + (radixType != null ? radixType.jUnboxed(safeVarName, javaType) : safeVarName) + closingPar);
@@ -3007,6 +3089,11 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             emitPost(sType, PrePostExtension.OPERATION_SET, identifier, isAttr, several ? "0" : "-1");
             emitImplementationPostamble();
             endBlock();
+        }
+
+        @Override
+        public void acceptSingletonPropSetter(SchemaType sType, SchemaProperty prop, String jtargetType, int javaType, String identifier, String setIdentifier, boolean isRadix, boolean xmltype, String jSet, boolean optional, boolean nillable) throws IOException {
+            acceptSingletonPropSetter(type, "set" + propertyName, sType, prop, jtargetType, javaType, identifier, setIdentifier, isRadix, xmltype, jSet, optional, nillable);
         }
 
         @Override
@@ -3090,15 +3177,14 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             emitImplementationPostamble();
             endBlock();
         }
-
-        @Override
-        public void acceptSeveralPropArrayAccess(SchemaProperty prop, String setIdentifier, int javaType) throws IOException {
+        
+        private void acceptSeveralPropArrayAccess(String type, String methodName, SchemaProperty prop, String setIdentifier, int javaType) throws IOException {
             // Value[] getProp()
             printJavaDoc("Gets array of all " + propdesc + "s");
             if (isDeprecated) {
                 emit("@Deprecated");
             }
-            emit("public " + type + "[] get" + arrayName + "()");
+            emit("public " + type + "[] " + methodName + "()");
             startBlock();
             emitImplementationPreamble();
 
@@ -3112,13 +3198,17 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
         }
 
         @Override
-        public void acceptSeveralPropArrayElementAccess(SchemaProperty prop, String identifier, String setIdentifier, String jtargetType) throws IOException {
+        public void acceptSeveralPropArrayAccess(SchemaProperty prop, String setIdentifier, int javaType) throws IOException {
+            acceptSeveralPropArrayAccess(type, "get" + arrayName, prop, setIdentifier, javaType);
+        }
+        
+        private void acceptSeveralPropArrayElementAccess(String type, String methodName, SchemaProperty prop, String identifier, String setIdentifier, String jtargetType) throws IOException {
             // Value getProp(int i)
             printJavaDoc("Gets ith " + propdesc);
             if (isDeprecated) {
                 emit("@Deprecated");
             }
-            emit("public " + type + " get" + arrayName + "(int i)");
+            emit("public " + type + " " + methodName + "(int i)");
             startBlock();
             emitImplementationPreamble();
 
@@ -3127,6 +3217,11 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
 
             emitImplementationPostamble();
             endBlock();
+        }
+        
+        @Override
+        public void acceptSeveralPropArrayElementAccess(SchemaProperty prop, String identifier, String setIdentifier, String jtargetType) throws IOException {
+            acceptSeveralPropArrayElementAccess(type, "get" + arrayName, prop, identifier, setIdentifier, jtargetType);
         }
 
         @Override
@@ -3278,14 +3373,13 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             emitImplementationPostamble();
             endBlock();
         }
-
-        @Override
-        public void acceptSeveralPropArrayElementSetter(SchemaType sType, SchemaProperty prop, String identifier, String setIdentifier, String jtargetType, String jSet, int javaType) throws IOException {
+        
+        private void acceptSeveralPropArrayElementSetter(String type, String methodName, SchemaType sType, SchemaProperty prop, String identifier, String setIdentifier, String jtargetType, String jSet, int javaType) throws IOException {
             printJavaDoc("Sets ith " + propdesc);
             if (isDeprecated) {
                 emit("@Deprecated");
             }
-            emit("public void set" + arrayName + "(int i, " + type + " " + safeVarName + ")");
+            emit("public void " + methodName + "(int i, " + type + " " + safeVarName + ")");
             startBlock();
             emitImplementationPreamble();
             emitPre(sType, PrePostExtension.OPERATION_SET, identifier, isAttr, "i");
@@ -3307,7 +3401,7 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                 endBlock();
                 emit("else");
                 startBlock();
-                printRadixDateTimeSetterPreparation();
+                printRadixDateTimeSetterPreparation(isDateWithTimezone(type));
                 emit(jSet + "(" + safeVarName + "_tmp_radix" + closingPar);
                 endBlock();
             } else if (radixType instanceof RadixType) {
@@ -3324,6 +3418,11 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             emitPost(sType, PrePostExtension.OPERATION_SET, identifier, isAttr, "i");
             emitImplementationPostamble();
             endBlock();
+        }
+
+        @Override
+        public void acceptSeveralPropArrayElementSetter(SchemaType sType, SchemaProperty prop, String identifier, String setIdentifier, String jtargetType, String jSet, int javaType) throws IOException {
+            acceptSeveralPropArrayElementSetter(type, "set" + arrayName, sType, prop, identifier, setIdentifier, jtargetType, jSet, javaType);
         }
 
         @Override
@@ -3375,14 +3474,13 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             emitImplementationPostamble();
             endBlock();
         }
-
-        @Override
-        public void acceptSeveralPropElementInsertion(SchemaType sType, String identifier, String setIdentifier, String jtargetType, boolean isSubstGroup, String jSet, int javaType) throws IOException {
+        
+        private  void acceptSeveralPropElementInsertion(String type, String methodName, SchemaType sType, String identifier, String setIdentifier, String jtargetType, boolean isSubstGroup, String jSet, int javaType) throws IOException {
             printJavaDoc("Inserts the value as the ith " + propdesc);
             if (isDeprecated) {
                 emit("@Deprecated");
             }
-            emit("public void insert" + propertyName + "(int i, " + type + " " + safeVarName + ")");
+            emit("public void " + methodName + "(int i, " + type + " " + safeVarName + ")");
             startBlock();
             emitImplementationPreamble();
             emitPre(sType, PrePostExtension.OPERATION_INSERT, identifier, isAttr, "i");
@@ -3413,7 +3511,7 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                 endBlock();
                 emit("else");
                 startBlock();
-                printRadixDateTimeSetterPreparation();
+                printRadixDateTimeSetterPreparation(isDateWithTimezone(type));
                 emit(jSet + "(" + safeVarName + "_tmp_radix" + closingPar);
                 endBlock();
             } else if (radixType instanceof RadixType) {
@@ -3431,14 +3529,19 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             emitImplementationPostamble();
             endBlock();
         }
+        
 
         @Override
-        public void acceptSeveralPropElementAddition(SchemaType sType, String identifier, String jtargetType, int javaType, String jSet) throws IOException {
+        public void acceptSeveralPropElementInsertion(SchemaType sType, String identifier, String setIdentifier, String jtargetType, boolean isSubstGroup, String jSet, int javaType) throws IOException {
+            acceptSeveralPropElementInsertion(type, "insert" + propertyName, sType, identifier, setIdentifier, jtargetType, isSubstGroup, jSet, javaType);
+        }
+        
+        private void acceptSeveralPropElementAddition(String type, String methodName, SchemaType sType, String identifier, String jtargetType, int javaType, String jSet) throws IOException {
             printJavaDoc("Appends the value as the last " + propdesc);
             if (isDeprecated) {
                 emit("@Deprecated");
             }
-            emit("public void add" + propertyName + "(" + type + " " + safeVarName + ")");
+            emit("public void " + methodName + "(" + type + " " + safeVarName + ")");
             startBlock();
             emitImplementationPreamble();
             emitDeclareTarget(true, jtargetType);
@@ -3461,7 +3564,7 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                 endBlock();
                 emit("else");
                 startBlock();
-                printRadixDateTimeSetterPreparation();
+                printRadixDateTimeSetterPreparation(isDateWithTimezone(type));
                 emit(jSet + "(" + safeVarName + "_tmp_radix" + closingPar);
                 endBlock();
             } else if (radixType instanceof RadixType) {
@@ -3478,6 +3581,11 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             emitPost(sType, PrePostExtension.OPERATION_INSERT, identifier, isAttr);
             emitImplementationPostamble();
             endBlock();
+        }
+
+        @Override
+        public void acceptSeveralPropElementAddition(SchemaType sType, String identifier, String jtargetType, int javaType, String jSet) throws IOException {
+            acceptSeveralPropElementAddition(type, "add" + propertyName, sType, identifier, jtargetType, javaType, jSet);
         }
 
         @Override
@@ -3552,9 +3660,8 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             emitImplementationPostamble();
             endBlock();
         }
-
-        @Override
-        public void acceptListGetter15GetList(boolean xget, String wrappedType, String parentThis, boolean xmltype) throws IOException {
+        
+        private void acceptListGetter15GetList(String methodSuffix, boolean xget, String wrappedType, String parentThis, boolean xmltype) throws IOException {
             String xgetMethod = (xget ? "x" : "") + "get";
             String xsetMethod = (xget ? "x" : "") + "set";
 
@@ -3562,7 +3669,13 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             if (isDeprecated) {
                 emit("@Deprecated");
             }
-            emit("public java.util.List<" + wrappedType + "> " + xgetMethod + listName + "()");
+            String methodName = xgetMethod + listName;
+            if (listName != null && methodSuffix != null && !methodSuffix.isEmpty()) {
+                if (methodName.contains("List")) {
+                    methodName = methodName.substring(0, methodName.indexOf("List")) + methodSuffix + "List";
+                }
+            }
+            emit("public java.util.List<" + wrappedType + "> " + methodName + "()");
             startBlock();
 
             emit("final class " + listName + " extends java.util.AbstractList<" + wrappedType + ">");
@@ -3570,14 +3683,14 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
 
             // Object get(i)
             emit("public " + wrappedType + " get(int i)");
-            emit("    { return " + parentThis + xgetMethod + arrayName + "(i); }");
+            emit("    { return " + parentThis + xgetMethod + arrayName + methodSuffix + "(i); }");
             emit("");
 
             // Object set(i, o)
             emit("public " + wrappedType + " set(int i, " + wrappedType + " o)");
             startBlock();
-            emit(wrappedType + " old = " + parentThis + xgetMethod + arrayName + "(i);");
-            emit(parentThis + xsetMethod + arrayName + "(i, o);");
+            emit(wrappedType + " old = " + parentThis + xgetMethod + arrayName + methodSuffix + "(i);");
+            emit(parentThis + xsetMethod + arrayName + methodSuffix + "(i, o);");
             emit("return old;");
             endBlock();
             emit("");
@@ -3587,14 +3700,14 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             if (xmltype || xget) {
                 emit("    { " + parentThis + "insertNew" + propertyName + "(i).set(o); }");
             } else {
-                emit("    { " + parentThis + "insert" + propertyName + "(i, o); }");
+                emit("    { " + parentThis + "insert" + propertyName + methodSuffix + "(i, o); }");
             }
             emit("");
 
             // Object remove(i)
             emit("public " + wrappedType + " remove(int i)");
             startBlock();
-            emit(wrappedType + " old = " + parentThis + xgetMethod + arrayName + "(i);");
+            emit(wrappedType + " old = " + parentThis + xgetMethod + arrayName + methodSuffix + "(i);");
             emit(parentThis + "remove" + propertyName + "(i);");
             emit("return old;");
             endBlock();
@@ -3618,6 +3731,11 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
         }
 
         @Override
+        public void acceptListGetter15GetList(boolean xget, String wrappedType, String parentThis, boolean xmltype) throws IOException {
+            acceptListGetter15GetList("", xget, wrappedType, parentThis, xmltype);
+        }
+
+        @Override
         public void acceptListSetter15AssignList(SchemaType sType, String identifier, String setIdentifier, boolean isobj, boolean isSubstGroup) throws IOException {
             printJavaDoc("Assign a List of " + propdesc + "s");
             if (isDeprecated) {
@@ -3636,6 +3754,46 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             endBlock();
 
         }
+
+        @Override
+        public void acceptSingletonPropGetterDateTimeWithTimezone(SchemaProperty prop, String jtargetType, String identifier, String setIdentifier, int javaType, boolean isRadix) throws IOException {
+            acceptSingletonPropGetter(JAVA_CLASS_FOR_DATE_WITH_TIMEZONE, "get" + propertyName + TIME_ZONE_MTH_SUFFIX, prop, jtargetType, identifier, setIdentifier, javaType, isRadix);
+        }
+
+        @Override
+        public void acceptSingletonPropSetterDateTimeWithTimezone(SchemaType sType, SchemaProperty prop, String jtargetType, int javaType, String identifier, String setIdentifier, boolean isRadix, boolean xmltype, String jSet, boolean optional, boolean nillable) throws IOException {
+            acceptSingletonPropSetter(JAVA_CLASS_FOR_DATE_WITH_TIMEZONE, "set" + propertyName + TIME_ZONE_MTH_SUFFIX, sType, prop, jtargetType, javaType, identifier, setIdentifier, isRadix, xmltype, jSet, optional, nillable);
+        }
+        
+        @Override
+        public void acceptListGetter15GetListDateTimeWithTimezone(boolean xget, String wrappedType, String parentThis, boolean xmltype) throws IOException {
+            acceptListGetter15GetList(TIME_ZONE_MTH_SUFFIX, xget, JAVA_CLASS_FOR_DATE_WITH_TIMEZONE, parentThis, xmltype);
+        }
+
+        @Override
+        public void acceptSeveralPropArrayAccessDateTimeWithTimezone(SchemaProperty prop, String setIdentifier, int javaType) throws IOException {
+            acceptSeveralPropArrayAccess(JAVA_CLASS_FOR_DATE_WITH_TIMEZONE, "get" + arrayName + TIME_ZONE_MTH_SUFFIX, prop, setIdentifier, javaType);
+        }
+
+        @Override
+        public void acceptSeveralPropArrayElementAccessDateTimeWithTimezone(SchemaProperty prop, String identifier, String setIdentifier, String jtargetType) throws IOException {
+            acceptSeveralPropArrayElementAccess(JAVA_CLASS_FOR_DATE_WITH_TIMEZONE, "get" + arrayName + TIME_ZONE_MTH_SUFFIX, prop, identifier, setIdentifier, jtargetType);
+        }
+
+        @Override
+        public void acceptSeveralPropArrayElementSetterDateTimeWithTimezone(SchemaType sType, SchemaProperty prop, String identifier, String setIdentifier, String jtargetType, String jSet, int javaType) throws IOException {
+            acceptSeveralPropArrayElementSetter(JAVA_CLASS_FOR_DATE_WITH_TIMEZONE, "set" + arrayName + TIME_ZONE_MTH_SUFFIX, sType, prop, identifier, setIdentifier, jtargetType, jSet, javaType);
+        }
+
+        @Override
+        public void acceptSeveralPropElementInsertionDateTimeWithTimezone(SchemaType sType, String identifier, String setIdentifier, String jtargetType, boolean isSubstGroup, String jSet, int javaType) throws IOException {
+            acceptSeveralPropElementInsertion(JAVA_CLASS_FOR_DATE_WITH_TIMEZONE, "insert" + propertyName + TIME_ZONE_MTH_SUFFIX, sType, identifier, setIdentifier, jtargetType, isSubstGroup, jSet, javaType);
+        }
+
+        @Override
+        public void acceptSeveralPropElementAdditionDateTimeWithTimezone(SchemaType sType, String identifier, String jtargetType, int javaType, String jSet) throws IOException {
+            acceptSeveralPropElementAddition(JAVA_CLASS_FOR_DATE_WITH_TIMEZONE, "add" + propertyName + TIME_ZONE_MTH_SUFFIX, sType, identifier, jtargetType, javaType, jSet);
+        }
     }
 
     void printGetterImpls(String parentJavaName,
@@ -3649,10 +3807,15 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
         boolean isRadix = isRadixType(prop);
         boolean xmltype = (javaType == SchemaProperty.XML_OBJECT);
         String jtargetType = (isunion || !xmltype) ? "org.apache.xmlbeans.SimpleValue" : xtype;
+        final boolean isRdxDateTime = isRadix && getRadixType(prop.getType()) instanceof RadixDateTime;
 
         if (singleton) {
             // Value getProp()
             acceptor.acceptSingletonPropGetter(prop, jtargetType, identifier, setIdentifier, javaType, isRadix);
+            
+            if (isRdxDateTime) {
+                acceptor.acceptSingletonPropGetterDateTimeWithTimezone(prop, jtargetType, identifier, setIdentifier, javaType, isRadix);
+            }
 
             if (!xmltype && !isRadix) {
                 acceptor.acceptSingletonPropXmlGetter(prop, identifier, setIdentifier);
@@ -3676,11 +3839,20 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                     wrappedType = javaWrappedType(javaType);
                 }
                 printListGetter15Impl(parentJavaName, wrappedType, xmltype, false, acceptor);
-
+                
+                if (isRdxDateTime) {
+                    final String parentThis = parentJavaName + ".this.";
+                    acceptor.acceptListGetter15GetListDateTimeWithTimezone(xmltype, wrappedType, parentThis, xmltype);
+                }
             }
 
             acceptor.acceptSeveralPropArrayAccess(prop, setIdentifier, javaType);
             acceptor.acceptSeveralPropArrayElementAccess(prop, identifier, setIdentifier, jtargetType);
+            
+            if (isRdxDateTime) {
+                acceptor.acceptSeveralPropArrayAccessDateTimeWithTimezone(prop, setIdentifier, javaType);
+                acceptor.acceptSeveralPropArrayElementAccessDateTimeWithTimezone(prop, identifier, setIdentifier, jtargetType);
+            }
 
             if (!xmltype && !isRadix) {
                 if (_useJava15) {
@@ -3711,10 +3883,15 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
         boolean isSubstGroup = !Objects.equals(identifier, setIdentifier);
         String jSet = jsetMethod(prop);
         String jtargetType = (isunion || !xmltype) ? "org.apache.xmlbeans.SimpleValue" : xtype;
+        final boolean isRdxDateTime = isRadixPrimitive && getRadixType(prop.getType()) instanceof RadixDateTime;
 
         if (singleton) {
             // void setProp(Value v);
             acceptor.acceptSingletonPropSetter(sType, prop, jtargetType, javaType, identifier, setIdentifier, isRadixType(prop), xmltype, jSet, optional, nillable);
+            
+            if (isRdxDateTime) {
+                acceptor.acceptSingletonPropSetterDateTimeWithTimezone(sType, prop, jtargetType, javaType, identifier, setIdentifier, isRadixType(prop), xmltype, jSet, optional, nillable);
+            }
 
             if (!xmltype && !isRadixPrimitive) {
                 acceptor.acceptSingletonPropXmlSetter(sType, identifier, setIdentifier);
@@ -3744,6 +3921,10 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
                 }
             }
             acceptor.acceptSeveralPropArrayElementSetter(sType, prop, identifier, setIdentifier, jtargetType, jSet, javaType);
+            
+            if (isRdxDateTime) {
+                acceptor.acceptSeveralPropArrayElementSetterDateTimeWithTimezone(sType, prop, identifier, setIdentifier, jtargetType, jSet, javaType);
+            }
 
             if (!xmltype && !isRadixPrimitive) {
                 acceptor.acceptSeveralPropArrayXmlSetter(sType, identifier);
@@ -3757,6 +3938,10 @@ public class XbeansSchemaCodePrinter implements SchemaCodePrinter {
             if (!xmltype) {
                 acceptor.acceptSeveralPropElementInsertion(sType, identifier, setIdentifier, jtargetType, isSubstGroup, jSet, javaType);
                 acceptor.acceptSeveralPropElementAddition(sType, identifier, jtargetType, javaType, jSet);
+                if (isRdxDateTime) {
+                    acceptor.acceptSeveralPropElementInsertionDateTimeWithTimezone(sType, identifier, setIdentifier, jtargetType, isSubstGroup, jSet, javaType);
+                    acceptor.acceptSeveralPropElementAdditionDateTimeWithTimezone(sType, identifier, jtargetType, javaType, jSet);
+                }
             }
 
             acceptor.acceptSeveralPropNewElementInsertion(sType, identifier, setIdentifier, isSubstGroup);

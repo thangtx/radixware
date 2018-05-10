@@ -24,12 +24,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
@@ -78,6 +80,7 @@ import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsModule;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.types.Pid;
 import org.radixware.kernel.common.utils.XmlUtils;
 import org.radixware.schemas.adsdef.AbstractMethodDefinition;
 import org.radixware.schemas.adsdef.AdsUserFuncDefinitionDocument;
@@ -95,6 +98,9 @@ import org.radixware.schemas.xscml.JmlType;
 
 public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTypeSource, IJmlSource, IUserFuncDef {
 
+    public static final Id LIB_USER_FUNC_TABLE = Id.Factory.loadFrom("tblW7BRVVQLHBE2FCNK7ZBRMAUJGM");
+    
+    
     public static final class Problems extends AdsDefinitionProblems {
 
         private Problems(AdsUserFuncDef prop, List warnings) {
@@ -312,6 +318,13 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
                                 this.getDefinitions().remove(def);
                             }
                             this.getDefinitions().add(wrapperClass);
+                            
+                            RadixObject.enableChangeTracking();
+                            try {
+                                wrapperClass.setEditState(EEditState.MODIFIED);
+                            } finally {
+                                RadixObject.disableChangeTracking();
+                            }
                         }
                     }
                 }
@@ -390,12 +403,12 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
         public TypeJavaSourceSupport getJavaSourceSupport() {
             return new TypeJavaSourceSupport(this) {
                 @Override
-                public char[][] getPackageNameComponents(final UsagePurpose purpose) {
-                    return JavaSourceSupport.getPackageNameComponents(source, purpose);
+                public char[][] getPackageNameComponents(final UsagePurpose purpose, boolean isHumanReadable) {
+                    return JavaSourceSupport.getPackageNameComponents(source, isHumanReadable, purpose);
                 }
 
                 @Override
-                public char[] getLocalTypeName(final UsagePurpose purpose) {
+                public char[] getLocalTypeName(final UsagePurpose purpose, boolean isHumanReadable) {
                     return source.getId().toCharArray();
                 }
             };
@@ -418,6 +431,8 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
     }
 
     public static final class Lookup {
+
+        private static volatile boolean SPLIT_LOOKUP_BY_THREAD = false;
 
         public static interface IDefInfoFilter {
 
@@ -498,11 +513,21 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
                 return env;
             }
         }
-        private static WeakHashMap<Branch, Lookup> lookups = null;
+        private static final List<Lookup> lookups = new ArrayList<>();
         //private final Map<Id, UFModule> ufModules = new HashMap<Id, UFModule>(5);
         private volatile UFModule module = null;
         private volatile List<Id> knownAdsModuleIds = null;
         private volatile List<Id> knownDdsModuleIds = null;
+        private final Thread creatorThread = Thread.currentThread();
+        private final Branch branch;
+
+        public Lookup(Branch branch) {
+            this.branch = branch;
+        }
+
+        public static void setSplitLookupsByThread(boolean split) {
+            Lookup.SPLIT_LOOKUP_BY_THREAD = split;
+        }
 
         @Override
         public void finalize() throws Throwable {
@@ -518,7 +543,18 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
             synchronized (Lookup.class) {
                 if (lookups != null) {
                     lookups.clear();
-                    lookups = null;
+                }
+            }
+        }
+        
+        public static void clearCaches(final Branch branch, final Thread ownerThread) {
+            synchronized (Lookup.class) {
+                final Iterator<Lookup> it = lookups.iterator();
+                while (it.hasNext()) {
+                    final Lookup l = it.next();
+                    if (l.branch == branch && (!SPLIT_LOOKUP_BY_THREAD || Thread.currentThread() == l.creatorThread)) {
+                        it.remove();
+                    }
                 }
             }
         }
@@ -615,13 +651,16 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
 
         private static Lookup findLookup(Branch branch) {
             synchronized (Lookup.class) {
-                if (lookups == null) {
-                    lookups = new WeakHashMap<>(2);
+                Lookup lookup = null;
+                for (Lookup l : lookups) {
+                    if (l.branch == branch && (!SPLIT_LOOKUP_BY_THREAD || (l.creatorThread == Thread.currentThread()))) {
+                        lookup = l;
+                        break;
+                    }
                 }
-                Lookup lookup = lookups.get(branch);
                 if (lookup == null) {
-                    lookup = new Lookup();
-                    lookups.put(branch, lookup);
+                    lookup = new Lookup(branch);
+                    lookups.add(lookup);
                 }
                 return lookup;
             }
@@ -636,6 +675,17 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
             } else {
                 return null;
             }
+        }
+        
+        public static AdsUserFuncDef createTempFunc(AdsUserFuncDef template) {
+            AdsUserFuncDefinition xDef = AdsUserFuncDefinition.Factory.newInstance();
+            xDef.addNewSource().addNewItem().setJava(" ");
+            xDef.addNewUserFuncProfile().setMethodName("tempMethod");
+            return lookup(template.getBranch(), FREE_FORM_CLASS_ID,
+                    Id.Factory.newInstance(EDefinitionIdPrefix.ADS_CLASS_METHOD), 
+                    Id.Factory.newInstance(EDefinitionIdPrefix.USER_FUNC_CLASS), 
+                    null, null, null, xDef, null, 
+                    ((UFModule) template.getModule()).observer);
         }
 
         public static AdsMethodDef findMethod(Branch branch, final Id classId, final Id methodId) {
@@ -731,6 +781,7 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
                 }
             });
         }
+
     }
     private final UFJml source;
     private final AdsClassDef clazz;
@@ -986,8 +1037,36 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
         if (method == null) {
             problemHandler.accept(RadixProblem.Factory.newError(this, "Method #" + methodId != null ? methodId.toString() : "null" + " is not found in class " + clazz.getQualifiedName()));
         }
-        getSource().check(problemHandler, null);
-        //source.check(problemHandler, null);
+        Map<Object, Object> history = new HashMap<>(); //All we have here, normal history in common.builder :(
+        JmlTagDbEntity.DbEntityTagsCheckContext dbTagsContext = new JmlTagDbEntity.DbEntityTagsCheckContext();
+        history.put(JmlTagDbEntity.DbEntityTagsCheckContext.class, dbTagsContext);
+
+        getSource().check(problemHandler, history);
+
+        checkDbTags(dbTagsContext.pids2dbTags, problemHandler);
+    }
+
+    private void checkDbTags(LinkedHashMap<Pid, LinkedHashSet<JmlTagDbEntity>> pids2dbTags, final IProblemHandler problemHandler) {
+        if (pids2dbTags == null || pids2dbTags.isEmpty() || problemHandler == null) {
+            return;
+        }
+        Module ownerModule = getModule();
+        if (ownerModule instanceof UFModule) {
+            Map<Pid, Boolean> checkedPids = ((UFModule) ownerModule).observer.checkEntitiesExistance(pids2dbTags.keySet());
+            if (checkedPids.isEmpty()) {
+                return;
+            }
+            for (Map.Entry<Pid, LinkedHashSet<JmlTagDbEntity>> pid2Tags : pids2dbTags.entrySet()) {
+                if (checkedPids.get(pid2Tags.getKey()).booleanValue()) {
+                    continue;
+                }
+                for (JmlTagDbEntity dbTag : pid2Tags.getValue()) {
+                    problemHandler.accept(RadixProblem.Factory.newWarning(dbTag,
+                            String.format("Entity object '%s' not found in database by PID '%s'",
+                                    dbTag.getDisplayName(), dbTag.getPidAsStr())));
+                }
+            }
+        }
     }
 
     public void appendTo(AdsUserFuncDefinition xDef) {
@@ -1170,10 +1249,19 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
         }
     }
 
+    public List<AdsDefinition> getUsedWrappers(JmlType xSource) {
+        Jml jml = Jml.Factory.loadFrom(this, xSource, "source");
+        return getUsedWrappers(jml);
+    }
+
     public List<AdsDefinition> getUsedWrappers() {
         ((UFModule) getModule()).resetKnownLibFuncs();
+        return getUsedWrappers(source);
+    }
+
+    private List<AdsDefinition> getUsedWrappers(Jml _source) {
         Map<Id, AdsDefinition> usedWrappers = new HashMap<>();
-        for (Scml.Item item : this.getSource().getItems()) {
+        for (Scml.Item item : _source.getItems()) {
             AdsPath path = null;
             if (item instanceof JmlTagTypeDeclaration) {
                 ((JmlTagTypeDeclaration) item).getType().resolve(this);
@@ -1189,7 +1277,7 @@ public class AdsUserFuncDef extends AdsDefinition implements IJavaSource, IAdsTy
 
                     AdsDefinition clazz = ((UFModule) getModule()).findDefWrapper(id);
                     if (clazz != null) {
-                        if (clazz instanceof AdsLibUserFuncWrapper) {
+                        if (clazz instanceof AdsLibUserFuncWrapper && getOwnerPid() != null) {
                             AdsLibUserFuncWrapper libUf = (AdsLibUserFuncWrapper) clazz;
                             if (libUf.isEqualTo(getOwnerPid())) {
                                 libUf.updateProfile(findProfile());

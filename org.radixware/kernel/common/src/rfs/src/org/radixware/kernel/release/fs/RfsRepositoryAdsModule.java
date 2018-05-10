@@ -44,6 +44,7 @@ class RfsRepositoryAdsModule extends RfsRepositoryModule<AdsModule> implements I
 
     private Map<Definition, RfsRepositoryAdsDefinition> repositories = null;
     private Set<Id> ids = null;
+    private AdsModule owner = null;
 
     public RfsRepositoryAdsModule(RfsRepositorySegment<AdsModule> segment, String dirName) {
         super(segment, dirName);
@@ -219,5 +220,18 @@ class RfsRepositoryAdsModule extends RfsRepositoryModule<AdsModule> implements I
         } else {
             throw new FileNotFoundException(usagesXmlFileName);
         }
+    }
+
+    @Override
+    public IRepositoryAdsDefinition getMlsRepository() {
+        if (owner != null){
+            return new RfsRepositoryAdsLocaleDefinition(owner, getRelease(), dirName);
+        }
+        return null;
+    }
+    
+    @Override
+    public void setModule(AdsModule module) {
+        owner = module;
     }
 }

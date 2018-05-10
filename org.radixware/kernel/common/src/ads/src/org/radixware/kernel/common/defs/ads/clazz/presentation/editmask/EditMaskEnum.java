@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
+import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
 import org.radixware.kernel.common.defs.ads.type.AdsEnumType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
@@ -148,4 +150,23 @@ public class EditMaskEnum extends EditMask {
     public boolean isDbRestrictionsAvailable() {
         return false;
     }
+
+    @Override
+    public void collectDependences(List<Definition> list) {
+        super.collectDependences(list);
+        if (correctionItems != null) {
+            AdsEnumDef enumDef = findEnum();
+            if (enumDef != null) {
+                AdsEnumDef.Items items = enumDef.getItems();
+                for (Id id : correctionItems) {
+                    AdsEnumItemDef item = items.findById(id, ExtendableDefinitions.EScope.ALL).get();
+                    if (item != null) {
+                        list.add(item);
+                    }
+                }
+            }
+        }
+    }
+    
+    
 }

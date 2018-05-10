@@ -20,7 +20,17 @@ public abstract class ValEditorFactory {
 
     private static DefaultValEditorFactory DEFAULT_FACTORY = new DefaultValEditorFactory();
 
-    private static class DefaultValEditorFactory extends ValEditorFactory {
+    public static class DefaultValEditorFactory extends ValEditorFactory {
+        
+        private final LabelFactory labelFactory;
+        
+        public DefaultValEditorFactory(final LabelFactory labelFactory){
+            this.labelFactory = labelFactory;
+        }
+        
+        public DefaultValEditorFactory(){
+            this(null);
+        }
 
         @Override
         @SuppressWarnings("unchecked")
@@ -31,45 +41,45 @@ public abstract class ValEditorFactory {
             final EEditMaskType editMaskType = editMask.getType();
 
             if (valType != null && valType.isArrayType()) {
-                return new ValArrEditorController(env, valType, null).getValEditor();
+                return new ValArrEditorController(env, valType, null, labelFactory).getValEditor();
             } else if (valType == EValType.BOOL && editMaskType == null) {
-                return new ValBoolEditorController(env).getValEditor();//check 
+                return new ValBoolEditorController(env, labelFactory).getValEditor();//check 
             } else if (valType == EValType.BIN || valType == EValType.BLOB) {
-                return new ValBinEditorController(env).getValEditor();
+                return new ValBinEditorController(env, labelFactory).getValEditor();
             } else if (valType == EValType.CHAR && editMaskType == EEditMaskType.STR) {
-                return new ValCharEditorController(env).getValEditor();
+                return new ValCharEditorController(env, labelFactory).getValEditor();
             } else {
                 final InputBoxController valueController;
                 switch (editMaskType) {
                     case DATE_TIME:
-                        valueController = new ValDateTimeEditorController(env);
+                        valueController = new ValDateTimeEditorController(env, labelFactory);
                         break;
                     case ENUM:
-                        valueController = new ValEnumEditorController(env);
+                        valueController = new ValEnumEditorController(env, null, labelFactory);
                         break;
                     case INT:
-                        valueController = new ValIntEditorController(env);
+                        valueController = new ValIntEditorController(env, labelFactory);
                         break;
                     case LIST:
-                        valueController = new ValListEditorController(env);
+                        valueController = new ValListEditorController(env, null, labelFactory);
                         break;
                     case NUM:
-                        valueController = new ValNumEditorController(env);
+                        valueController = new ValNumEditorController(env, labelFactory);
                         break;
                     case STR:
-                        valueController = new ValStrEditorController(env);
+                        valueController = new ValStrEditorController(env, labelFactory);
                         break;
                     case TIME_INTERVAL:
-                        valueController = new ValTimeIntervalEditorController(env);
+                        valueController = new ValTimeIntervalEditorController(env, labelFactory);
                         break;
                     case BOOL:
-                        valueController = new AdvancedValBoolEditorController(env);
+                        valueController = new AdvancedValBoolEditorController(env, null, labelFactory);
                         break;
                     case FILE_PATH:
-                        valueController = new ValFilePathEditorController(env);
+                        valueController = new ValFilePathEditorController(env,  null, labelFactory);
                         break;
                     case OBJECT_REFERENCE:
-                        valueController = new ValReferenceEditorController(env);
+                        valueController = new ValReferenceEditorController(env, labelFactory);
                         break;
                     default:
                         throw new IllegalArgumentError("Unknown edit mask type: " + editMaskType.getName());

@@ -11,15 +11,11 @@
 
 package org.radixware.kernel.designer.tree.ads.nodes.defs;
 
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.radixware.kernel.common.defs.RadixObject;
-import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.ads.msdl.AdsMsdlSchemeDef;
-import org.radixware.kernel.common.msdl.MsdlStructureField;
-import org.radixware.kernel.common.msdl.fields.StructureFieldModel;
 import org.radixware.kernel.designer.common.annotations.registrators.NodeFactoryRegistration;
 import org.radixware.kernel.designer.common.general.nodes.INodeFactory;
-import org.radixware.kernel.designer.common.tree.RadixObjectsNodeChildren;
 import org.radixware.kernel.designer.tree.ads.nodes.defs.msdl.MsdlFieldNodeCustomChildren;
 
 
@@ -35,6 +31,6 @@ class AdsMsdlSchemeNode extends AdsObjectNode<AdsMsdlSchemeDef> {
     }
 
     private AdsMsdlSchemeNode(AdsMsdlSchemeDef descriptor) {
-        super(descriptor, new MsdlFieldNodeCustomChildren(descriptor.getRootMsdlScheme().getStructureFieldModel()));
+        super(descriptor, descriptor.getRootMsdlScheme() == null ? Children.LEAF : new MsdlFieldNodeCustomChildren(descriptor.getRootMsdlScheme().getStructureFieldModel()));
     }
 }

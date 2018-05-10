@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.utils.Utils;
@@ -91,11 +92,12 @@ public abstract class DropDownListDelegate<T> extends InputBox.DropDownDelegate<
     }
 
     @Override
-    protected final ToolButton createDropDownButton() {
+    protected ToolButton createDropDownButton() {
         final ToolButton listBoxButton = new ToolButton();
         listBoxButton.setIcon(WsIcons.SPIN_DOWN);
         listBoxButton.setIconHeight(5);
         listBoxButton.setIconWidth(8);
+        listBoxButton.setObjectName("tbList");
         return listBoxButton;
     }
 
@@ -117,14 +119,19 @@ public abstract class DropDownListDelegate<T> extends InputBox.DropDownDelegate<
             }
         }
     }
+    
+    protected ListBox createListBox(final IClientEnvironment environment){
+        final ListBox list = new ListBox();
+        list.setBackground(Color.WHITE);
+        return list;
+    }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected final ListBox createUIObject(final InputBox box, final InputBox.DisplayController displayController) {
-        final ListBox list = new ListBox();
+    protected ListBox createUIObject(final InputBox box, final InputBox.DisplayController displayController) {        
+        final ListBox list = createListBox(box.getEnvironment());
         list.setParent(box);
         list.addCurrentItemListener(new CurrentItemListener(list, box));
-        list.setBackground(Color.WHITE);
         boolean hasNullItem = false;
         final List<DropDownListItem<T>> items = getItems();
         if (items != null) {
@@ -132,7 +139,7 @@ public abstract class DropDownListDelegate<T> extends InputBox.DropDownDelegate<
                 if (item == null) {
                     continue;
                 }
-                if (showCurrentItemInList || !Utils.equals(box.getValue(), item.getValue())) {
+                if (showCurrentItemInList || !item.isEnabled() || !Utils.equals(box.getValue(), item.getValue())) {
                     list.add(item);
                     if (item.getValue() == null) {
                         hasNullItem = true;
@@ -203,4 +210,5 @@ public abstract class DropDownListDelegate<T> extends InputBox.DropDownDelegate<
     }
 
     protected abstract List<DropDownListItem<T>> getItems();
+    
 }

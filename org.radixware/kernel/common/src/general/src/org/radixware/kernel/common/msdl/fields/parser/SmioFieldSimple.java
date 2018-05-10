@@ -13,6 +13,8 @@ package org.radixware.kernel.common.msdl.fields.parser;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
@@ -26,7 +28,7 @@ import org.radixware.schemas.msdl.SimpleField;
 
 public abstract class SmioFieldSimple extends SmioField {
 
-    private byte[] nullIndicator;
+    private final byte[] nullIndicator;
     private SmioCoder coder = null;
     protected boolean nullable;
     private EncodingDef.Enum encodingDef = null;
@@ -35,13 +37,21 @@ public abstract class SmioFieldSimple extends SmioField {
         super(model);
         try {
             if (!(this instanceof SmioFieldBCH)) {
-                String encoding = getField().isSetEncoding() ? getField().getEncoding() : getModel().getEncoding();
+                String encoding = getField().isSetEncoding() ? getField().getEncoding() : getModel().calcEncoding();
                 if (encoding != null) {
                     //isHex = encoding.equalsIgnoreCase(EncodingDef.HEX.toString());
                     coder = new SmioCoder(encoding);
                 }
             }
-            nullIndicator = getField().isSetNullIndicator() ? getField().getNullIndicator() : getModel().getNullIndicator(true);
+            
+            byte[] nullIndicatorValue;
+            try {
+                nullIndicatorValue = getModel().getNullIndicatorSelf(coder);
+            } catch (SmioException ex) {
+                nullIndicatorValue = null;
+            }
+            nullIndicator = nullIndicatorValue;
+            
             nullable = getField().isSetIsNilable() && getField().getIsNilable();
         }
         catch (Throwable e) {
@@ -49,6 +59,11 @@ public abstract class SmioFieldSimple extends SmioField {
         }
     }
 
+    @Override
+    public SimpleFieldModel getModel() {
+        return (SimpleFieldModel) super.getModel();
+    }
+        
     public abstract XmlObject getDefaultVal();
 
     protected ByteBuffer getNullValue() throws SmioException {
@@ -99,7 +114,7 @@ public abstract class SmioFieldSimple extends SmioField {
 
     public EncodingDef.Enum getEncoding() {
         if (encodingDef == null) {
-            final String encoding = getField().isSetEncoding() ? getField().getEncoding() : getModel().getEncoding();
+            final String encoding = getField().isSetEncoding() ? getField().getEncoding() : getModel().calcEncoding();
             encodingDef = EncodingDef.Enum.forString(encoding);
         }
         return encodingDef;
@@ -117,7 +132,7 @@ public abstract class SmioFieldSimple extends SmioField {
     public SmioCoder getCoder() throws SmioException {
         if (coder == null) {
             if (!(this instanceof SmioFieldBCH)) {
-                String encoding = getField().isSetEncoding() ? getField().getEncoding() : getModel().getEncoding();
+                String encoding = getField().isSetEncoding() ? getField().getEncoding() : getModel().calcEncoding();
                 if (encoding != null) {
                     //isHex = encoding.equalsIgnoreCase(EncodingDef.HEX.toString());
                     coder = new SmioCoder(encoding);
@@ -129,7 +144,7 @@ public abstract class SmioFieldSimple extends SmioField {
         return coder;
     }
 
-    private boolean checkForNull(ByteBuffer bf) {
+    protected boolean checkForNull(ByteBuffer bf) {
 //        if (nullIndicator != null && nullIndicator.length > 0) {
         if (nullIndicator != null && nullIndicator.length == bf.limit()) {
             for (int i=0; i<nullIndicator.length; i++) {
@@ -143,7 +158,7 @@ public abstract class SmioFieldSimple extends SmioField {
     }
 
     protected String parseToString(IDataSource ids) throws SmioException, IOException {
-        ByteBuffer bf = ids.getByteBuffer();
+        ByteBuffer bf = ByteBuffer.wrap(ids.getAll());
         if (checkForNull(bf))
             return null;
         return getCoder().decode(bf);
@@ -159,6 +174,7 @@ public abstract class SmioFieldSimple extends SmioField {
         super.check(source, handler);
         try {
             getCoder();
+            getModel().getNullIndicatorSelf(coder);
         } catch (SmioException ex) {
             handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "error: '" + ex.getMessage() + "'"));
         }

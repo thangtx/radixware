@@ -20,8 +20,12 @@ import org.radixware.wps.rwt.InputBox.ValueController;
 
 public class ValIntEditorController extends InputBoxController<Long,EditMaskInt> {
 
-    public ValIntEditorController(IClientEnvironment env) {
-        super(env);
+    public ValIntEditorController(final IClientEnvironment env) {
+        this(env,null);
+    }
+    
+    public ValIntEditorController(final IClientEnvironment env, final LabelFactory factory) {
+        super(env,factory);
         setEditMask(new EditMaskInt());
     }
     

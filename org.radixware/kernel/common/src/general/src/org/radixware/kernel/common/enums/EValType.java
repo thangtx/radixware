@@ -23,6 +23,7 @@ public enum EValType implements IKernelIntEnum {
     INT(2, "Int", OracleTypeNames.NUMBER),
     CHAR(3, "Char", OracleTypeNames.CHAR),
     NUM(11, "Num", OracleTypeNames.NUMBER),
+    IMG(4, "Img", OracleTypeNames.NUMBER),
     DATE_TIME(12, "DateTime", OracleTypeNames.TIMESTAMP),
     STR(21, "Str", OracleTypeNames.VARCHAR2),
     BIN(22, "Bin", OracleTypeNames.RAW),

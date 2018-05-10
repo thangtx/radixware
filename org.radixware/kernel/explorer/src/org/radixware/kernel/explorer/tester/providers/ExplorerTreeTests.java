@@ -16,7 +16,6 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.tree.ExplorerItemView;
-import org.radixware.kernel.common.client.tree.IExplorerTree;
 import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
 
 import org.radixware.kernel.common.client.models.ITestableModel;
@@ -36,6 +35,7 @@ public class ExplorerTreeTests extends TestsProvider {
 
     ExplorerTree testTree;
     IExplorerTreeNode currentNode, rootNode;
+    boolean wasClosed;
 
     public ExplorerTreeTests(IClientEnvironment environment, TestsProvider provider) {
         super(environment, provider);
@@ -59,6 +59,9 @@ public class ExplorerTreeTests extends TestsProvider {
 
     @Override
     public ITest createNextTest(TestsOptions options) {
+        if (wasClosed){
+            return null;
+        }
         if (currentNode != null
                 && currentNode.isValid() && currentNode.getView().getModel().getView() != null) {
             if (currentNode.getView().getModel() instanceof ITestableModel) {
@@ -97,16 +100,30 @@ public class ExplorerTreeTests extends TestsProvider {
                 }
             }
         }
-
-        if (currentNode != null) {            
-            return new OpenViewTest(currentNode);
-        } else {
-            rootNode = null;
-            testTree.closeModel(true);
-            testTree = null;
-            return null;
-        }
+        return currentNode == null ? null : new OpenViewTest(currentNode);
     }
+
+    @Override
+    public void close() {
+        super.close();
+        if (!wasClosed){
+            if (currentNode!=null  
+                && currentNode.isValid()
+                && currentNode.getView()!=null
+                && currentNode.getView().getModel()!=null
+                && currentNode.getView().getModel().getView()!=null){
+                currentNode.getView().getModel().getView().close(true);
+            }
+            if (testTree!=null){
+                testTree.closeModel(true);
+                testTree.disposeLater();
+                testTree = null;
+            }            
+            wasClosed = true;
+        }        
+    }
+    
+    
 
     private IExplorerTreeNode findSibling(IExplorerTreeNode node) {
         IExplorerTreeNode siblingNode = null, prevNode;
@@ -121,9 +138,6 @@ public class ExplorerTreeTests extends TestsProvider {
             if (prevNode.isValid() && prevNode.getView()!=null){
                 if (prevNode.getView().isChoosenObject()){
                     testTree.removeNode(prevNode);
-                }
-                else{
-                    prevNode.getView().getModel().clean();
                 }
             }                        
         }

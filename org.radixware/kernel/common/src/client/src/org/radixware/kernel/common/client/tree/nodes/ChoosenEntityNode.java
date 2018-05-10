@@ -121,7 +121,30 @@ public class ChoosenEntityNode extends ExplorerTreeNode implements IPresentation
         return String.format(msg, title, classId.toString(), pid, presentationId, presentationClassId);
     }
 
-    public ExplorerTreeNode clone(IExplorerTree tree) {
+    @Override
+    public ExplorerTreeNode clone(final IExplorerTree tree) {
         return new ChoosenEntityNode(tree, this);
     }
+    
+    @Override
+    public String getName() {
+        return "rx_explorer_tree_node_"+pid.getTableId().toString()+"_"+pid.toString();
+    }    
+    
+    @Override
+    public org.radixware.schemas.clientstate.ExplorerTreeNode writeToXml(org.radixware.schemas.clientstate.ExplorerTreeNode node) {
+        final org.radixware.schemas.clientstate.ExplorerTreeNode xml;
+        if (node==null){
+            xml = org.radixware.schemas.clientstate.ExplorerTreeNode.Factory.newInstance();
+        }else{
+            xml = node;
+        }
+        final org.radixware.schemas.clientstate.ExplorerTreeNode.Object objectNode = xml.addNewObject();
+        objectNode.setTableId(pid.getTableId());
+        objectNode.setPID(pid.toString());
+        objectNode.setEditorPresentationId(presentationId);        
+        objectNode.setClassId(classId);
+        objectNode.setContext(contextAsStr);
+        return xml;
+    }    
 }

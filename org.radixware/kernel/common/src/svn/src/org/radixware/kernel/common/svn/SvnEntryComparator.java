@@ -66,7 +66,8 @@ public class SvnEntryComparator {
     }
 
     public static byte[] getFileHash(final SVNRepositoryAdapter repository, final String path, final long revision) throws RadixSvnException, UnsupportedEncodingException {
-        return SVN.getChecksum(repository, path, revision).getBytes("UTF-8");
+        final String checksum = SVN.getChecksum(repository, path, revision);
+        return checksum==null ? null : checksum.getBytes("UTF-8");
         //final Sha1OutputStream sha1 = new Sha1OutputStream();
         //SVN.getFile(repository, path, revision, sha1);
         //return sha1.digest();

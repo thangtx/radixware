@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlSCK7YASNWFBSPFELZFLRCIAH6E" QualifiedName="Radix::Reports">
+  <TableDef Id="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" Name="ReportPubTopic">
+    <Indexes>
+      <Index Id="idxRZSDGGHOYVBRDPR5F3DZHXPXQA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colOLKKTSVUOJHDTGFXOHQDX2Q46Y"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refDFMXRCYUJRFBZJXXTHVPDY4PEQ" Name="ReportPubTopic=>ReportPubTopic (parentTopicId=>id)" ReferencedTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ChildColumnNames="parentTopicId"/>
+      <Reference Id="refWSIMMLZIYJDLRFTRXCGLFQEYRI" Name="ReportPubTopic=>ReportPubTopic (inheritedTopicId=>id)" ReferencedTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ChildColumnNames="inheritedTopicId"/>
+      <Reference Id="refXPXHRZKMBVBGNPKHUIH3HU4J64" Name="ReportPubTopic=>ReportPubList (listId=>id)" ReferencedTableId="tblQ5T72ARKKBHHNBHOH3LPATQA6M" ChildColumnNames="listId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colOLKKTSVUOJHDTGFXOHQDX2Q46Y" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colJSSZIPYLFBEFHKBHWRTCBFRAM4" Name="listId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colFVRRJS5GRVFQZPUTC4IMSP24GM" Name="parentTopicId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colU5NMWBAWSBHGZES7JGA7YRAQEM" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colGHAOYWUEDBGLHITBO7A7G3XCPM" Name="inheritedTopicId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colKASE5XKEAZCI7LZUZKMA5IJ4PE" Name="title" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="col6GT7SSV73ZBDLPFK2N2BCUQDYQ" Name="description" ValType="21" Length="2000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" Name="ReportParam">
+    <Indexes>
+      <Index Id="idxHE5DJ4JHZ5ETRLVJWPEX6HE4FQ" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colOGWYNEBFO5BNTE6XQLKPFAZ3CY"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refOPBI4OKMQ5EUVBN47EGKQXCLQI" Name="ReportParam=>ReportParam (parentId=>id)" ReferencedTableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" ChildColumnNames="parentId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colOGWYNEBFO5BNTE6XQLKPFAZ3CY" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colPBLHLVVEUBGJ7OD24EVEPDNZJU" Name="classGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colPAEUQ3ALXFDFLIZDLKK52LKUKA" Name="parentId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colZKB7AM3R2JDILKAIZEWZGDVIAY" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colIUFE5UCZWZELHFY2RZT7JSLVO4" Name="lastUpdateUserName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblM2NL42YXRRA5ZH27LCKIW5CQNI" Name="UserReportVersion">
+    <Indexes>
+      <Index Id="idxY2C4ZQLNC5GKRKU2DPGFLBMGPE" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col443263VQHJDJTPL4VY3PNWTNCE colT7D35GBIUBGHLHVAUNSMFGFCJM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refFKTLCBCHPFBBDMZ7KLWKFPLSVQ" Name="UserReportVersion=>UserReport (reportGuid=>guid)" ReferencedTableId="tblRHH7SYO5I5EFRGYIBOSVUXKD7U" ChildColumnNames="reportGuid"/>
+      <Reference Id="refUBNH2Q6WFFEA3M67GRBYQMML3I" Name="UserReportVersion=>User (lastUpdateUserName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUserName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="col443263VQHJDJTPL4VY3PNWTNCE" Name="reportGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colT7D35GBIUBGHLHVAUNSMFGFCJM" Name="version" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colFE5OD3ZALVENPLKO63SWMLOFXA" Name="lastUpdateTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colJFWEA3OFWFBENHJROC57MS5FYM" Name="lastUpdateUserName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="col3FPD27GEFBBTPFKKRBBVO5ODS4" Name="reportSource" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colTV4V72I4NZDNHP2S3DMDKGZMEQ" Name="reportBinary" ValType="28" Length="0" Precision="0"/>
+      <Column Id="colFCOKOL7E3JD3PDNES4EAW35XTE" Name="reportClassGuid" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblN7LNYTJYXBDC7MTGOI4IP2THFA" Name="UserReportModule">
+    <Indexes>
+      <Index Id="idxZ56WTVCRLFAJHI3W5FQM5WVZAI" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colHL2DQINMTBFYBKFSXNSK43NHY4"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colHL2DQINMTBFYBKFSXNSK43NHY4" Name="guid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colAW4TWZKC4ZCUJI4QSCYEBQ3DTA" Name="title" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colGI2BEXFEXRCZZHEQ3HDSNPNN34" Name="description" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colTD5STVFJWZCWTAEXMFGIDXXUHU" Name="images" ValType="28" Length="0" Precision="0"/>
+      <Column Id="colJIQZ4KJI75DQVKCF22MJY6QZMQ" Name="formatVersion" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblQ5T72ARKKBHHNBHOH3LPATQA6M" Name="ReportPubList">
+    <Indexes>
+      <Index Id="idx64OTI4SUPJB2FONZRL7EBQKUMM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colQ3B6R3LVVBGDZFTHVOYGQXIGW4"/>
+      <Index Id="idxI7DWYVFJDNCJJDWRWKYR37EJIQ" Name="Context" IndexColumns="colYKEM5Q2LR5BORNW7UDQGGHK7BU colWZ4H7UJ6RFA6FMTXPZBFRNV52M colULDE4U54JZHEFOCELCQKPNYX6M"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colQ3B6R3LVVBGDZFTHVOYGQXIGW4" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colYKEM5Q2LR5BORNW7UDQGGHK7BU" Name="classGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colWZ4H7UJ6RFA6FMTXPZBFRNV52M" Name="pubContextClassGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colULDE4U54JZHEFOCELCQKPNYX6M" Name="contextPid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colLZJGEHVT2ZGKTBYIF7MQCY6FMA" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="col3HPYVDGDE5HGJN2DFHFEN354VQ" Name="lastUpdateUserName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblRHH7SYO5I5EFRGYIBOSVUXKD7U" Name="UserReport">
+    <Indexes>
+      <Index Id="idxTXLPT3DWLVBFXDEVGS4QRDEIDA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colJENVO3VYOBBRXCG3GAOQDPK72Y"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref652JVAU3R5ERFEAOH2QYSBTMR4" Name="UserReport=>User (lastUpdateUserName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUserName"/>
+      <Reference Id="refSC2JFGD3GFFENGINX22X66YUEA" Name="UserReport=>UserReportModule (moduleGuid=>guid)" ReferencedTableId="tblN7LNYTJYXBDC7MTGOI4IP2THFA" ChildColumnNames="moduleGuid"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colJENVO3VYOBBRXCG3GAOQDPK72Y" Name="guid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colIE7QFFHT6VAJZMYY6E5NAFR57M" Name="moduleGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colUVEMGNNQCVCRLKP7GTOHJKGL7I" Name="title" ValType="21" Length="2000" Precision="0"/>
+      <Column Id="colRFGZDGVYONGERF2WDQ5THDREOE" Name="curVersion" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colSAPAWW6RG5HJLMVL34K2YQKHKY" Name="descirption" ValType="21" Length="2000" Precision="0"/>
+      <Column Id="colMLR5RZCEI5DXRPTXTCRC46763A" Name="contextParameterType" ValType="27" Length="0" Precision="0"/>
+      <Column Id="col4V6ACMPQZVGUDIUW2BJMXKSFJU" Name="lastUpdateTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colVU7VPPUTCFHAZIJVOZS3LW5E2I" Name="lastUpdateUserName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colS4YCAONUQVCXXJX2JRQCLCRFKA" Name="formatVersion" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblUNC67IF5OBCX7NOPNLQOCUG374" Name="ReportPub">
+    <Indexes>
+      <Index Id="idxYZWEIB3HT5E75ENTSGD74MZLNE" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col5Z77DJW25NE3NOMCZ6G7JSIGSQ"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref33FTUNJWBNG7XILKNQF3VKWVRA" Name="ReportPub=>ReportPubTopic (parentTopicId=>id)" ReferencedTableId="tbl34F7JPGYHJEJHBCE7ISQKJN3IY" ChildColumnNames="parentTopicId"/>
+      <Reference Id="refBOVOJ7JCA5DABMRYFMKTL2IMRQ" Name="ReportPub=>ReportPub (inheritedPubId=>Id)" ReferencedTableId="tblUNC67IF5OBCX7NOPNLQOCUG374" ChildColumnNames="inheritedPubId"/>
+      <Reference Id="refJLB3T4LDYNGENHZH4FUXEMEU7E" Name="ReportPub=>ReportPubList (listId=>id)" ReferencedTableId="tblQ5T72ARKKBHHNBHOH3LPATQA6M" ChildColumnNames="listId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="col5Z77DJW25NE3NOMCZ6G7JSIGSQ" Name="Id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col2GB4IHLRWVAHTCYF3F2KNK2WBU" Name="classGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colQXFVM3NF5JBVPM44EQV6TLOEB4" Name="listId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNNK3L4L6SJFGZBFKG64XTIGTBM" Name="parentTopicId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colKRIJCTPH4BBTJACPINFNMGHFOU" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colLOAH3AWYW5DLBHJSUCBMFDJEHY" Name="isEnabled" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="col2BK2KKPDYJCOFIAHL23AZ4XOCE" Name="inheritedPubId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colXU7SJ5KBINF27AV7GLWZLCIO4E" Name="title" ValType="21" Length="2000" Precision="0"/>
+      <Column Id="colNCCJD67UNVD4LM7B3IKHJPER5Y" Name="description" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colAQV2RHG7LRHZVJ2KHGLJI2HVEQ" Name="reportClassGuid" ValType="21" Length="50" Precision="0"/>
+      <Column Id="colCFIB7BM27NH67GFPFCDMY7Y7OQ" Name="userRoleGuids" ValType="221" Length="0" Precision="0"/>
+      <Column Id="colVP3HR4T4VRDJXE2SQKI3CUOSJI" Name="isForCustomer" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colWN7EWE5K45C4HNELVSOXTYA2RM" Name="paramBinding" ValType="27" Length="0" Precision="0"/>
+      <Column Id="col7FRUCC2LRVCFDN26X3OA73GNIY" Name="format" ValType="21" Length="50" Precision="0"/>
+      <Column Id="colX5QBHA4M3NABRLT52FMFOWQVYQ" Name="printOnly" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colPS2XXJEY6ZHUXMSQRBWX5CKMNU" Name="maxResultSetCacheSizeKb" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col3KG2NQHYBFGGJLWG2GKI4A6APE" Name="columnsSettings" ValType="27" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

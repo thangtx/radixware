@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.tree;
 
 import java.util.Collections;
@@ -42,8 +41,15 @@ public abstract class RadixObjectsNodeAbstractChildren<T extends RadixObject> ex
         return radixObjects;
     }
 
+    /**
+     * Возращает Definition которые нужно отображать в Tree.
+     */
+    protected List<T> getFilterList() {
+        return getOrderedList();
+    }
+
     private void doUpdate() {
-        final List<T> list = getOrderedList();
+        final List<T> list = getFilterList();
         setKeys(list);
     }
 
@@ -51,7 +57,7 @@ public abstract class RadixObjectsNodeAbstractChildren<T extends RadixObject> ex
         if (SwingUtilities.isEventDispatchThread()) {
             doUpdate();
         } else {
-            SwingUtilities.invokeLater(new Runnable() { 
+            SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     doUpdate();
@@ -79,7 +85,7 @@ public abstract class RadixObjectsNodeAbstractChildren<T extends RadixObject> ex
             final Node node = createNodeForObject(radixObject);
             result = new Node[]{node};
         } else {
-            final List<T> list = getOrderedList();
+            final List<T> list = getFilterList();
             final int size = list.size();
             result = new Node[size];
             for (int i = 0; i < size; i++) {

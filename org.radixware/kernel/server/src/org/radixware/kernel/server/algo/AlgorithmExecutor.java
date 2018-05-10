@@ -21,6 +21,7 @@ import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.io.Writer;
 import java.sql.Clob;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -803,6 +805,9 @@ public final class AlgorithmExecutor {
                         //e.printStackTrace();
                         trace(EEventSeverity.DEBUG, "Exception " + e + " in block " + thread.blockId);
                         trace(EEventSeverity.DEBUG, "Exception stack:\n" + getArte().getTrace().exceptionStackToString(e));
+                        Connection conn = getArte().getDbConnection().get(); //RADIX-11845
+                        if (conn.isClosed())
+                            throw e;
 
                         for (;;) {
                             try {
@@ -1034,6 +1039,16 @@ public final class AlgorithmExecutor {
 
     public EValType getPropertyType(String name) {
         return getDataType(currentAlgo.getBlockPropId(currentThread.blockId, name));
+    }
+    
+    public StringTokenizer getSubmitVariantsTokens(Algorithm algo) {
+        return new StringTokenizer((String) Utils.nvl(getSubmitVariants(algo), ""), ";");
+    }
+
+    public String getSubmitVariants(Algorithm algo) {
+        return algo.isMethodBackCompatible(Algorithm.EAlgoMethodAdded.SUBMIT_VARIANTS)
+                ? algo.getSubmitVariants(currentThread.blockId)
+                : (String) getProperty("submitVariants");
     }
 
     public Object getProperty(String name) {

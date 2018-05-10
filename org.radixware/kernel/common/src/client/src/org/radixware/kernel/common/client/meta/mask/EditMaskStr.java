@@ -21,7 +21,6 @@ import org.radixware.kernel.common.client.meta.mask.validators.IInputValidator;
 import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidatorsFactory;
-import org.radixware.kernel.common.defs.ads.clazz.presentation.editmask.EditMaskStr.ValidatorType;
 import org.radixware.kernel.common.enums.EEditMaskType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Arr;
@@ -197,7 +196,11 @@ public final class EditMaskStr extends org.radixware.kernel.common.client.meta.m
     }
 
     public int getMaxLength() {
-        return maxLength == null || maxLength <= 0 || maxLength > DEFAULT_MAX_LENGTH ? DEFAULT_MAX_LENGTH : maxLength;
+        return maxLength == null || maxLength <= 0 ? DEFAULT_MAX_LENGTH : maxLength;
+    }
+    
+    public boolean isMaxLengthDefined(){
+        return maxLength!=null && maxLength>0;
     }
 
     public void setMaxLength(final int length) {
@@ -291,7 +294,7 @@ public final class EditMaskStr extends org.radixware.kernel.common.client.meta.m
                     return ValidationResult.Factory.newInvalidResult(validation.getInvalidValueReason());
             }
             else if (!inputMask.isEmpty() && !inputMask.isAcceptableInput((String)value)){
-                return ValidationResult.Factory.newInvalidResult(InvalidValueReason.WRONG_FORMAT);
+                return ValidationResult.Factory.newInvalidResult(InvalidValueReason.Factory.createForWrongFormatValue(environment));
             }
             return ValidationResult.ACCEPTABLE;
         }

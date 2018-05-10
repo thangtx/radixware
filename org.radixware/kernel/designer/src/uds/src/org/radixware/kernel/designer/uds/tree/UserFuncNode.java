@@ -26,14 +26,14 @@ import org.radixware.kernel.designer.tree.ads.nodes.actions.ViewServerSourceActi
 import org.radixware.kernel.designer.tree.ads.nodes.actions.ViewServerSourceAction.ViewServerSourceCookie;
 import org.radixware.kernel.designer.uds.tree.actions.ExportBodyAction;
 import org.radixware.kernel.designer.uds.tree.actions.ImportBodyAction;
-import org.radixware.kernel.designer.uds.tree.actions.UdsDefinitionReloadAction;
+import org.radixware.kernel.designer.uds.tree.actions.UdsReloadAction;
 
 
 public class UserFuncNode extends RadixObjectNode {
 
     public UserFuncNode(UdsUserFuncDef radixObject) {
         super(radixObject, Children.LEAF);
-        addCookie(new UdsDefinitionReloadAction.Cookie(radixObject));
+        addCookie(new UdsReloadAction.Cookie(radixObject));
         Set<JavaSourceSupport.CodeType> types = radixObject.getJavaSourceSupport().getSeparateFileTypes(ERuntimeEnvironmentType.SERVER);
         addCookie(new ViewServerSourceCookie(radixObject, types));
         addCookie(new CompileCookie(radixObject));
@@ -44,7 +44,7 @@ public class UserFuncNode extends RadixObjectNode {
     @Override
     public void addCustomActions(List<Action> actions) {
         super.addCustomActions(actions);
-        actions.add(SystemAction.get(UdsDefinitionReloadAction.class));
+        actions.add(SystemAction.get(UdsReloadAction.class));
         actions.add(null);
         actions.add(SystemAction.get(CompileDefinitionAction.class));
         actions.add(SystemAction.get(ViewServerSourceAction.class));

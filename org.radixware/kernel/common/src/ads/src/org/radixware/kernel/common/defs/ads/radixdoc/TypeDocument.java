@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.radixdoc;
 
 import java.util.ArrayList;
@@ -18,9 +17,11 @@ import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.type.AdsClassType;
+import org.radixware.kernel.common.defs.ads.type.AdsDefinitionType;
+import org.radixware.kernel.common.defs.ads.type.AdsEnumType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
-
+import org.radixware.kernel.common.defs.ads.type.XmlType;
 
 public class TypeDocument {
 
@@ -30,20 +31,22 @@ public class TypeDocument {
         private final AdsDefinition def;
         private final String name;
 
-        public Entry(AdsTypeDeclaration declaration, AdsDefinition def) {
+        public Entry(AdsTypeDeclaration declaration, AdsDefinition def, String name) {
             this.declaration = declaration;
             this.def = def;
-            this.name = null;
+            this.name = name;
+        }
+        
+        public Entry(AdsTypeDeclaration declaration, AdsDefinition def) {
+            this(declaration, def, null);
         }
 
         public Entry(String name) {
-            this.def = null;
-            this.declaration = null;
-            this.name = name;
+            this(null, null, name);
         }
 
         public boolean isString() {
-            return name != null;
+            return name != null && declaration == null && def == null;
         }
 
         public AdsDefinition getDefinition() {
@@ -52,6 +55,10 @@ public class TypeDocument {
 
         public String getString() {
             return name;
+        }
+        
+        public boolean hasName() {
+            return name != null;
         }
 
         public AdsTypeDeclaration getDeclaration() {
@@ -70,6 +77,13 @@ public class TypeDocument {
             final AdsClassDef typeSource = ((AdsClassType) type).getSource();
             if (typeSource != null) {
                 doc.add(new Entry(declaration, typeSource));
+            } else {
+                doc.add(new Entry(type.getQualifiedName(context)));
+            }
+        } else if (type instanceof XmlType || type instanceof AdsEnumType) {
+            final Definition typeSource = ((AdsDefinitionType) type).getSource();
+            if (typeSource != null) {
+                doc.add(new Entry(declaration, (AdsDefinition) typeSource, type.getQualifiedName(context)));
             } else {
                 doc.add(new Entry(type.getQualifiedName(context)));
             }
@@ -99,22 +113,22 @@ public class TypeDocument {
 
         return doc;
     }
-    
+
     private final List<Entry> entries = new ArrayList<>();
 
     public List<Entry> getEntries() {
         return entries;
     }
-    
+
     public TypeDocument addString(String str) {
         entries.add(new Entry(str));
-        
+
         return this;
     }
-    
+
     public TypeDocument addType(AdsTypeDeclaration declaration, Definition context) {
         entries.addAll(parseType(declaration, context));
-        
+
         return this;
     }
 }

@@ -26,7 +26,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.design.msdleditor.enums.EShieldedFormat;
 import org.radixware.kernel.common.design.msdleditor.field.panel.SetHexDialog;
@@ -36,7 +36,7 @@ import org.radixware.kernel.common.utils.Hex;
 import org.radixware.schemas.msdl.SeparatedDef;
 
 
-public class SeparatedPanel extends AbstractEditItem implements ActionListener {
+public class SeparatedPanel extends AbstractMsdlPanel implements ActionListener {
     private SeparatedDef separated;
     private AbstractFieldModel fieldModel;
     private Vector<String> shieldedList;
@@ -58,7 +58,7 @@ public class SeparatedPanel extends AbstractEditItem implements ActionListener {
     }
 
     public void open(AbstractFieldModel fieldModel, SeparatedDef separated) {
-        super.open(fieldModel.getMsdlField());
+        super.open(fieldModel, fieldModel.getMsdlField());
         this.fieldModel = fieldModel;
         this.separated = separated;
 
@@ -75,18 +75,12 @@ public class SeparatedPanel extends AbstractEditItem implements ActionListener {
     @Override
     public void update() {
         startSepPanel.setValue(separated.getStartSeparator(),
-                               fieldModel.getStartSeparator(true), 
-                               EEncoding.getInstanceForHexViewType(separated.getStartSeparatorViewType()), 
-                               EEncoding.getInstanceForHexViewType(fieldModel.getStartSeparatorViewType(true)));
+                               fieldModel.getStartSeparator(true));
         endSepPanel.setValue(separated.getEndSeparator(),
-                               fieldModel.getEndSeparator(true),
-                               EEncoding.getInstanceForHexViewType(separated.getEndSeparatorViewType()),
-                               EEncoding.getInstanceForHexViewType(fieldModel.getEndSeparatorViewType(true)));
+                               fieldModel.getEndSeparator(true));
         shieldedFormatPanel.setShieldedFormat(EShieldedFormat.getInstance(separated.getShieldedFormat()),
                                               EShieldedFormat.getInstance(fieldModel.getShieldedFormat(true)));
-        shieldPanel.setValue(separated.getShield(), fieldModel.getShield(true),
-                EEncoding.getInstanceForHexViewType(separated.getShieldViewType()),
-                EEncoding.getInstanceForHexViewType(fieldModel.getShieldViewType(true)));
+        shieldPanel.setValue(separated.getShield(), fieldModel.getShield(true));
         List<byte[]> l = separated.getShieldedList();
         shieldedList = new Vector<String>();
         for (byte[] b : l)
@@ -96,15 +90,12 @@ public class SeparatedPanel extends AbstractEditItem implements ActionListener {
         super.update();
     }
 
-    private void save() {
+    @Override
+    protected void doSave() {
         separated.setStartSeparator(startSepPanel.getValue());
-        separated.setStartSeparatorViewType(startSepPanel.getViewEncodingAsStr());
         separated.setEndSeparator(endSepPanel.getValue());
-        separated.setEndSeparatorViewType(endSepPanel.getViewEncodingAsStr());
         separated.setShield(shieldPanel.getValue());
-        separated.setShieldViewType(shieldPanel.getViewEncodingAsStr());
         separated.setShieldedFormat(shieldedFormatPanel.getShieldedFormat().getValue());
-        fieldModel.setModified();
     }
 
     /** This method is called from within the constructor to

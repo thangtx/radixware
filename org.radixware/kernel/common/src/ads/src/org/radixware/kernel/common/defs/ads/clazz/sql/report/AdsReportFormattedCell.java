@@ -213,4 +213,8 @@ public class AdsReportFormattedCell extends AdsReportCell {
     public boolean isModeSupported(AdsReportForm.Mode mode) {
         return true;
     }
+    
+    public String getDefaultName() {
+        return null;
+    }
 }

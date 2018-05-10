@@ -16,4 +16,5 @@ public interface ISecretStore {
     byte[] getSecret();
     void setSecret(byte[] secret);
     void clearSecret();
+    boolean isEmpty();
 }

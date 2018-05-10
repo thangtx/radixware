@@ -11,8 +11,13 @@
 
 package org.radixware.kernel.designer.environment.saveall;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataLoader;
 import org.openide.loaders.DataLoaderPool;
@@ -23,7 +28,9 @@ import org.openide.nodes.Node;
 import org.openide.nodes.Node.Cookie;
 import org.openide.util.HelpCtx;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.exceptions.RadixObjectError;
+import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.designer.common.general.nodes.NodesManager;
 
 /**
@@ -120,5 +127,28 @@ class RadixDataObject extends DataObject {
         } catch (DataObjectNotFoundException cause) {
             throw new RadixObjectError("Unable to create data object.", radixObject, cause);
         }
+    }
+    
+    public static DataObject[] findAll(RadixObject ro) {
+        ArrayList<DataObject> list = new ArrayList<>();
+        DataObject dataObject = find(ro);
+        if (dataObject != null) {
+            list.add(dataObject);            
+        }
+        File file = AdsUtils.calcHumanReadableFile(ro);
+        if (file != null && file.exists()) {
+            FileObject fo = FileUtil.toFileObject(file);
+            if (fo != null) {
+                try {
+                    DataObject dobj = DataObject.find(fo);
+                    if (dobj != null) {
+                        list.add(dobj);
+                    }
+                } catch (DataObjectNotFoundException ex) {
+                    Logger.getLogger(RadixDataObject.class.getName()).log(Level.FINE, ex.getMessage(), ex);
+                }
+            }
+        }
+        return list.toArray(new DataObject[list.size()]);
     }
 }

@@ -11,7 +11,6 @@
 
 package org.radixware.kernel.common.client.types;
 
-import java.util.EnumSet;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.IContext;
@@ -29,6 +28,7 @@ public final class EntityRestrictions extends ModelRestrictions {
 
     private final EntityModel entity;
     private EntityRestrictions synchronizedRestrictions;
+    private boolean changing;
 
     public EntityRestrictions(EntityModel model) {
         super(model);
@@ -85,8 +85,9 @@ public final class EntityRestrictions extends ModelRestrictions {
     }
 
     public void startSynchronization(EntityRestrictions restrictions) {
-        if (synchronizedRestrictions == null) {
+        if (synchronizedRestrictions == null && restrictions!=null && restrictions.synchronizedRestrictions==null) {
             synchronizedRestrictions = restrictions;
+            restrictions.synchronizedRestrictions = this;
         }
     }
 
@@ -99,9 +100,17 @@ public final class EntityRestrictions extends ModelRestrictions {
 
     @Override
     protected void setMask(ERestriction restriction, boolean flag) {
-        super.setMask(restriction, flag);
-        if (synchronizedRestrictions != null) {
-            synchronizedRestrictions.setMask(restriction, flag);
+        if (changing){
+            return;
+        }        
+        changing = true;
+        try{
+            super.setMask(restriction, flag);
+            if (synchronizedRestrictions != null) {
+                synchronizedRestrictions.setMask(restriction, flag);
+            }
+        }finally{
+            changing = false;
         }
     }
 
@@ -138,11 +147,19 @@ public final class EntityRestrictions extends ModelRestrictions {
     
     @Override
     public void add(final Restrictions from) {
-        final boolean updateRestricted = getIsUpdateRestricted();
-        super.add(from);
-        refreshView(updateRestricted != getIsUpdateRestricted());
-        if (synchronizedRestrictions != null) {
-            synchronizedRestrictions.add(from);
+        if (changing){
+            return;
+        }
+        changing = true;
+        try{
+            final boolean updateRestricted = getIsUpdateRestricted();
+            super.add(from);
+            refreshView(updateRestricted != getIsUpdateRestricted());
+            if (synchronizedRestrictions != null) {
+                synchronizedRestrictions.add(from);
+            }
+        }finally{
+            changing = false;
         }
     }
 }

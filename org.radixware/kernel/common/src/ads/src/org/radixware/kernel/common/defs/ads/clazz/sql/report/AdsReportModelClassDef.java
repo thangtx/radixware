@@ -50,13 +50,17 @@ public class AdsReportModelClassDef extends AbstractFormModelClassDef<AdsReportC
     }
 
     @Override
-    public String getRuntimeLocalClassName() {
+    public String getRuntimeLocalClassName(boolean isHumanReadable) {
         AdsClassDef report = findServerSideClasDef();
         if (report instanceof AdsUserReportClassDef) {
-            Id runtimeId = getRuntimeId();
-            return runtimeId.toString();
+            if (isHumanReadable) {
+                return getName();
+            } else {
+                Id runtimeId = getRuntimeId();
+                return runtimeId.toString();
+            }
         } else {
-            return super.getRuntimeLocalClassName();
+            return super.getRuntimeLocalClassName(isHumanReadable);
         }
     }
 

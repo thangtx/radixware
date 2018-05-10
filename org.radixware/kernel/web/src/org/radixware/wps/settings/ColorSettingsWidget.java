@@ -21,31 +21,20 @@ import org.radixware.wps.rwt.Label;
 import org.radixware.wps.rwt.UIObject;
 
 
-public class ColorSettingsWidget extends SettingsWidget {
+final class ColorSettingsWidget extends SettingsWidget {
 
-    private ColorPicker cc;
-    private WpsEnvironment env;
+    private final ColorPicker cc = new ColorPicker();
 
-    public ColorSettingsWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n, Object defVal) {
-        this(env, parent, gr, sub, n, null, defVal);
+    public ColorSettingsWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n) {
+        super(env, parent, gr, sub, n);
+        createUI(null);
     }
 
-    public ColorSettingsWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n, String descr, Object defVal) {
-        super(env, parent, gr, sub, n, defVal);
-        this.env = env;
-        this.name = n;
-        this.defaultValue = (String) defVal;
-        createUI(descr);
-    }
-
-    private void createUI(String descr) {
-        cc = new ColorPicker();
-        //defaultColor = getDefaultSettings().readString(getSettingCfgName());
-        //cc.setParent(this);
+    private void createUI(final String descr) {
         if (descr != null) {
-            HorizontalBox box = new HorizontalBox();
+            final HorizontalBox box = new HorizontalBox();
             add(box);
-            Label l = new Label(descr);
+            final Label l = new Label(descr);
             box.add(l);
             l.setTextWrapDisabled(true);
             box.getHtml().setCss("padding", "5px");
@@ -54,11 +43,16 @@ public class ColorSettingsWidget extends SettingsWidget {
             add(cc);
             cc.getHtml().setCss("padding", "5px");
         }
-        this.setToolTip(env.getApplication().getMessageProvider().translate("Settings Dialog", "Choose a color"));
+        this.setToolTip(getEnvironment().getApplication().getMessageProvider().translate("Settings Dialog", "Choose a color"));
+    }
+    
+    String getDefaultValue(){
+        final String valueAsStr = readDefaultValue();
+        return valueAsStr==null || valueAsStr.isEmpty() ? "#FFFFFF" : valueAsStr;
     }
 
     public final String getColor() {
-        return cc.getHexColor() == null ? (String) defaultValue : cc.getHexColor();
+        return cc.getHexColor() == null ? getDefaultValue() : cc.getHexColor();
     }
 
     public void setColor(Color color) {
@@ -75,7 +69,7 @@ public class ColorSettingsWidget extends SettingsWidget {
     public void readSettings(WpsSettings src) {
         String color = src.readString(getSettingCfgName());
         if (color == null || "".equals(color)) {
-            color = defaultValue == null ? "#FFFFFF" : (String) defaultValue;
+            color = getDefaultValue();
         }
         cc.setColor(color);
     }
@@ -87,6 +81,6 @@ public class ColorSettingsWidget extends SettingsWidget {
 
     @Override
     public void restoreDefaults() {
-        cc.resetColor(defaultValue == null ? "#FFFFFF" : (String) defaultValue);
+        cc.resetColor(getDefaultValue());
     }
 }

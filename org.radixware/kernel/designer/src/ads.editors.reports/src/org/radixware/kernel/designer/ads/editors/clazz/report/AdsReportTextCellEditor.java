@@ -20,6 +20,7 @@ import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.LocalizingEditorPanel;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.html.EHtmlEditorState;
 
 
 class AdsReportTextCellEditor extends JPanel {
@@ -81,14 +82,14 @@ class AdsReportTextCellEditor extends JPanel {
 
     //private volatile boolean updating = false;
     private final AdsReportTextCell adsReportTextCell;
-    private final LocalizingEditorPanel localizingPaneList = new LocalizingEditorPanel();
+    private final LocalizingEditorPanel localizingPaneList = new LocalizingEditorPanel("Text", true);
 
     /** Creates new form AdsReportTextCellEditor */
     public AdsReportTextCellEditor(final AdsReportTextCell cell) {
         super();
         adsReportTextCell = cell;
         initComponents();
-        panel.add(localizingPaneList, BorderLayout.NORTH);
+        panel.add(localizingPaneList, BorderLayout.CENTER);
 
 //        typeComboBox.setModel(new DefaultComboBoxModel(EReportCellType.values()));
 
@@ -106,6 +107,8 @@ class AdsReportTextCellEditor extends JPanel {
         //updating = true;
 //        typeComboBox.setSelectedItem(adsReportTextCell.getCellType());
         localizingPaneList.open(new TitleHandleInfo());
+        localizingPaneList.setUseRichFormat(true);
+        localizingPaneList.setHtmlEditorState(EHtmlEditorState.REPORT);
         localizingPaneList.setVisible(true);
 //        contentTextField.setText(adsReportTextCell.getContent());
         updateEnableState();

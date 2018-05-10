@@ -13,9 +13,12 @@ package org.radixware.kernel.server.arte.services.eas;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.arte.DefManager;
+import org.radixware.kernel.server.arte.Trace;
 import org.radixware.kernel.server.meta.clazzes.IRadRefPropertyDef;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.presentations.RadClassPresentationDef;
@@ -50,13 +53,17 @@ public final class InstantiatableClassesCollector {
             for (RadClassPresentationDef.ClassCatalog.ItemPresentation item : classCatalog.getPresentation()) {
                 if (item.getClassId() == null) {
                     classes.add(new EntityGroup.ClassCatalogItem(item.getLevel(), item.getClassId(), item.getTitle(), item.getId()));
-                } else if ((valClass == null || valClass.isAssignableFrom(defManager.getClass(item.getClassId()))) && //отсеем классы по типу
+                } else if (canLoadClass(defManager, item.getClassId(), entGrp.getArte().getTrace()) &&
+                        (valClass == null || valClass.isAssignableFrom(defManager.getClass(item.getClassId()))) && //отсеем классы по типу
                         curUserCanCreate(defManager.getClassDef(item.getClassId()), creationPresentationIds, roleIds) //отсеем классы, на инстанцирование которых нет прав
                         ) {
-                    classes.add(new EntityGroup.ClassCatalogItem(item.getLevel(), item.getClassId(), item.getTitle(), item.getId()));
+                    classes.add(new EntityGroup.ClassCatalogItem(item.getLevel(), item.getClassId(), getItemTitle(item, defManager), item.getId()));
                 }
             }
-        } else if (contextProperty != null && contextProperty.getDestinationClassId() != null) {
+        } else if (contextProperty != null 
+                      && contextProperty.getDestinationClassId() != null
+                      && canLoadClass(defManager, contextProperty.getDestinationClassId(), entGrp.getArte().getTrace())
+                      ) {
             //DBP-1630 if class catalog is not defined for a user property then let's try to create object of the property very class
             classes.add(new EntityGroup.ClassCatalogItem(1, contextProperty.getDestinationClassId(), null));
         }
@@ -78,10 +85,38 @@ public final class InstantiatableClassesCollector {
                 itemXml.setLevel(item.getLevel());
                 itemXml.setId(item.getItemId());
             }
-        }                
+        }
     }
     
-    private static boolean curUserCanCreate(final RadClassDef classDef, final List<Id> creationEditorPresentationIds, final List<Id> roleIds) {
+    private static boolean canLoadClass(final DefManager defManager, final Id classId, final Trace trace){
+        try{
+            defManager.getClassDef(classId);
+            defManager.getClass(classId);
+            return true;
+        }catch(DefinitionError error){
+            final List<String> words = new LinkedList<>();
+            words.add(classId.toString());
+            words.add(ExceptionTextFormatter.exceptionStackToString(error));
+            trace.put(Messages.MLS_ID_EAS_ERR_ON_LOAD_INST_CLASS, words);
+            return false;
+        }
+    }
+    
+    private static String getItemTitle(final RadClassPresentationDef.ClassCatalog.ItemPresentation item, final DefManager defManager){
+        final String itemTitle = item.getTitle();
+        if (itemTitle==null || itemTitle.isEmpty()){
+            if (item.getClassId()==null){
+                return item.getId().toString();
+            }else{
+                final RadClassDef classDef = defManager.getClassDef(item.getClassId());
+                return classDef.getName();
+            }
+        }else{
+            return itemTitle;
+        }
+    }
+    
+    private static boolean curUserCanCreate(final RadClassDef classDef, final List<Id> creationEditorPresentationIds, final List<Id> roleIds) {        
         final RadClassPresentationDef classPres = classDef.getPresentation();
         for (Id creationEditorPresentationId : creationEditorPresentationIds) {
             final Id presId = classPres.getActualPresentationId(creationEditorPresentationId);            

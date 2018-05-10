@@ -30,7 +30,9 @@ public abstract class ValEditorFactory {
                 final QWidget parentWidget) {
             final EEditMaskType masktype = editMask == null ? null : editMask.getType();
             if (valType != null && valType.isArrayType()) {
-                return new ValArrEditor(environment, valType, null, parentWidget, false, false);
+                final ValEditor editor = new ValArrEditor(environment, valType, null, parentWidget, false, false);
+                editor.setEditMask(editMask);
+                return editor;
             } else if (valType == EValType.BOOL && masktype == null) {
                 return new ValBoolEditor(environment, parentWidget);//check constructor
             } else if (valType == EValType.BIN || valType == EValType.BLOB) {

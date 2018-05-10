@@ -22,6 +22,7 @@ import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableReference;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.ParentRef_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
@@ -82,7 +83,7 @@ public class SqmlTag_ParentRefPropSqlName extends SqmlTag {
             }
         }
         Id propId = parentRefPropSqlName.getPropId();
-        if (classDef.getColumns().getColumnById(propId) == null) {
+        if (propId==null || classDef.getColumns().getColumnById(propId) == null) {
             String mess = Application.translate("SqmlEditor", "column #%s not found");
             return String.format(mess, propId);
         }
@@ -103,7 +104,7 @@ public class SqmlTag_ParentRefPropSqlName extends SqmlTag {
 
     @Override
     public boolean showEditDialog(XscmlEditor editText, EDefinitionDisplayMode showMode) {
-        if (valid) {
+        if (isValid()) {
             ParentRef_Dialog dialog = new ParentRef_Dialog(editText.getEnvironment(), editText, refs, showMode);
             if (dialog.exec() == 1) {
                 return true;
@@ -140,36 +141,24 @@ public class SqmlTag_ParentRefPropSqlName extends SqmlTag {
     }
 
     private void setNotValid(final Id propId, final String mess) {
-        valid = false;
+        setValid(false);
         String s = "???ParentRefProp-" + propId + "???";
         environment.getTracer().warning(mess);
         setDisplayedInfo(s, s);
     }
 
     private String createTitle(String sTable, String sProp, String sPropType, List<String> refColumnNameList) {
-        if (!valid) {
+        if (!isValid()) {
             return "";
         }
-        if (sTable.indexOf('<') != -1) {
-            sTable = sTable.replaceAll("<", " ");//&#60;
-        }
-        if (sTable.indexOf('>') != -1) {
-            sTable = sTable.replaceAll(">", " ");//&#62;
-        }
-        if (sProp.indexOf('<') != -1) {
-            sProp = sProp.replaceAll("<", " ");//&#60;
-        }
-        if (sProp.indexOf('>') != -1) {
-            sProp = sProp.replaceAll(">", " ");//&#62;
-        }
+        sTable = Html.string2HtmlString(sTable);
+        sProp = Html.string2HtmlString(sProp);//&#60;
         StringBuilder sb = new StringBuilder();
         sb.append("<b>ParentRef property:</b><br>&nbsp;&nbsp;&nbsp;&nbsp; ").append(sProp).append("</br>");
         if (!refColumnNameList.isEmpty()) {
             sb.append("<br><b>Reference columns:</b></br>");
             for (String refColumnName : refColumnNameList) {
-                if (refColumnName.indexOf('<') != -1) {
-                    refColumnName = refColumnName.replaceAll("<", "&#60;");
-                }
+                refColumnName = Html.string2HtmlString(refColumnName);
                 sb.append("<br>&nbsp;&nbsp;&nbsp;&nbsp;").append(refColumnName).append("</br>");
             }
         }

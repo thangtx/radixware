@@ -11,12 +11,14 @@
 
 package org.radixware.kernel.designer.common.dialogs.components.description;
 
+import java.util.List;
 import java.util.Map;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
+import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
 import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
@@ -25,57 +27,108 @@ import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ELocalizedStringKind;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfoAdapter;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.ILocalizedStringInfo;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.ILocalizingStringContext;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.LocalizingStringContextFactory;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.ProxyHandleInfo;
 
 
 public class LocalizedDescriptionHandleInfo extends DescriptionHandleInfo {
 
-    private ILocalizingStringContext understudy;
+    private HandleInfoAdapter understudy;
     private final ILocalizedDescribable definition;
 
     public LocalizedDescriptionHandleInfo(final ILocalizedDescribable definition, boolean proxy) {
         super(proxy);
 
         this.definition = definition;
+        final HandleInfo handleInfo;
+        if (proxy){
+            handleInfo = new ProxyHandleInfo(){
+                @Override
+                public Definition getAdsDefinition() {
+                    return definition.getDescriptionLocation();
+                }
 
-        final HandleInfo handleInfo = new HandleInfo() {
-            @Override
-            public Definition getAdsDefinition() {
-                return definition.getDescriptionLocation();
-            }
+                @Override
+                public Id getTitleId() {
+                    return definition.getDescriptionId();
+                }
 
-            @Override
-            public Id getTitleId() {
-                return definition.getDescriptionId();
-            }
+                @Override
+                public ELocalizedStringKind getLocalizedStringKind() {
+                    return ELocalizedStringKind.DESCRIPTION;
+                }
 
-            @Override
-            public ELocalizedStringKind getLocalizedStringKind() {
-                return ELocalizedStringKind.DESCRIPTION;
-            }
+                @Override
+                protected void onAdsMultilingualStringDefChange(IMultilingualStringDef multilingualStringDef) {
+                }
 
-            @Override
-            protected void onAdsMultilingualStringDefChange(IMultilingualStringDef multilingualStringDef) {
-                definition.setDescriptionId(multilingualStringDef != null ? multilingualStringDef.getId() : null);
-            }
+                @Override
+                public boolean isProxyState() {
+                    if (definition instanceof ILocalizedDescribable.Inheritable){
+                        return !((ILocalizedDescribable.Inheritable) definition).isDescriptionInherited();
+                    }
+                    return true;
+                }
 
-            @Override
-            protected void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
-                definition.setDescription(language, newStringValue);
-            }
-        };
+                @Override
+                protected void updateProxyString() {
+                    for (EIsoLanguage language : EIsoLanguage.values()){
+                        String value = definition.getDescription(language);
+                        if (value != null){
+                            if (adsMultilingualStringDef == null){
+                                adsMultilingualStringDef = AdsMultilingualStringDef.Factory.newDescriptionInstance();
+                            }
+                            onLanguagesPatternChange(language, value);
+                        }
+                    }
+                }
 
-        understudy = proxy ? LocalizingStringContextFactory.newProxyInstance(handleInfo)
-                : LocalizingStringContextFactory.newInstance(handleInfo);
-    }
+                @Override
+                public boolean commit() {
+                    definition.setDescriptionId(adsMultilingualStringDef != null ? adsMultilingualStringDef.getId() : null);
+                    if (adsMultilingualStringDef != null){
+                        for (IMultilingualStringDef.StringStorage storage : adsMultilingualStringDef.getValues(EScope.LOCAL)){
+                            definition.setDescription(storage.getLanguage(), storage.getValue());
+                        }
+                    }
+                    return true;
+                }
 
-    LocalizedDescriptionHandleInfo(final ILocalizedDescribable definition, ILocalizingStringContext understudy) {
-        super(understudy.isProxy());
+            };
+        } else {
+            handleInfo = new HandleInfo() {
+                @Override
+                public Definition getAdsDefinition() {
+                    return definition.getDescriptionLocation();
+                }
 
-        this.definition = definition;
-        this.understudy = understudy;
+                @Override
+                public Id getTitleId() {
+                    return definition.getDescriptionId();
+                }
+
+                @Override
+                public ELocalizedStringKind getLocalizedStringKind() {
+                    return ELocalizedStringKind.DESCRIPTION;
+                }
+
+                @Override
+                protected void onAdsMultilingualStringDefChange(IMultilingualStringDef multilingualStringDef) {
+                    definition.setDescriptionId(multilingualStringDef != null ? multilingualStringDef.getId() : null);
+                }
+
+                @Override
+                protected void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
+                    definition.setDescription(language, newStringValue);
+                }
+            };
+        }
+        
+
+        understudy = LocalizingStringContextFactory.newInstance(handleInfo);
     }
 
     @Override
@@ -130,6 +183,12 @@ public class LocalizedDescriptionHandleInfo extends DescriptionHandleInfo {
 
     @Override
     public boolean commit() {
+        if (isProxy()) {
+            HandleInfo handleInfo = understudy.getHandleInfo();
+            if (handleInfo instanceof ProxyHandleInfo){
+                ((ProxyHandleInfo) handleInfo).commit();
+            }
+        }
         return understudy.commit();
     }
 

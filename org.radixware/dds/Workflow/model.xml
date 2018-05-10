@@ -6,9 +6,9 @@
         <Column Id="colJGHFDGEHXLNRDF5JABIFNQAABA" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqn2JVM7UMHXLNRDF5JABIFNQAABA" TemplateId="cdmIPP7BRC6XVHYNGYP5YKDW4FMDE"/>
         <Column Id="colSM57J2EHXLNRDF5JABIFNQAABA" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
         <Column Id="colFOZ357EHXLNRDF5JABIFNQAABA" Name="processId" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="PROCESSID" TemplateId="cdm4D3OXB3KLJFKHBXXD6PF5B5WMQ"/>
-        <Column Id="col34WUQDUIXLNRDF5JABIFNQAABA" Name="title" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
-        <Column Id="colPUVYKRSRX7OBDBG7ABIFNQAABA" Name="headerTitle" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="HEADERTITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
-        <Column Id="colVNBSW6CRX7OBDBG7ABIFNQAABA" Name="footerTitle" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="false" DbName="FOOTERTITLE" TemplateId="cdmVKEXNOQQ5ZGI3KZWQLOMROTKWE"/>
+        <Column Id="col34WUQDUIXLNRDF5JABIFNQAABA" Name="title" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="TITLE" TemplateId="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U"/>
+        <Column Id="colPUVYKRSRX7OBDBG7ABIFNQAABA" Name="headerTitle" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="HEADERTITLE" TemplateId="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U"/>
+        <Column Id="colVNBSW6CRX7OBDBG7ABIFNQAABA" Name="footerTitle" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="FOOTERTITLE" TemplateId="cdmBTGBYZC5GBAM5PKMEF2HYVPF7U"/>
         <Column Id="colFPUVAH4IXLNRDF5JABIFNQAABA" Name="priority" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="PRIORITY"/>
         <Column Id="colFFO5OHMJXLNRDF5JABIFNQAABA" Name="openTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="OPENTIME"/>
         <Column Id="colD2WOGKUJXLNRDF5JABIFNQAABA" Name="dueTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="DUETIME"/>
@@ -58,6 +58,16 @@
         <Column Id="colUSDVE5UQXLNRDF5JABIFNQAABA" Name="clerkRoleGuids" ValType="221" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="CLERKROLEGUIDS"/>
         <Column Id="col7VCUPAEQXLNRDF5JABIFNQAABA" Name="adminRoleGuids" ValType="221" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="ADMINROLEGUIDS"/>
         <Column Id="colDG7VJCMQXLNRDF5JABIFNQAABA" Name="accessArea" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="ACCESSAREA"/>
+        <Column Id="colOIPTT7ZYYRAWHJ7PPXNVS3GW5M" Name="forbidForProcessCreator" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="FORBIDFORPROCESSCREATOR">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colRLTHTDATCFEZPELZRCNXILBD34" Name="forbidRedirection" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="FORBIDREDIRECTION">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>0</com:Value>
+          </DefaultVal>
+        </Column>
       </Columns>
       <PrimaryKey Id="idxVP66JC4HXLNRDF5JABIFNQAABA" Name="PrimaryKey" DbName="PK_RDX_WF_FORM" Unique="true">
         <Columns>
@@ -470,7 +480,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgPLT2PTDN3FAJNDTHJHPSCOXTFI" Name="AuditUpdate" DbName="atuXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col6SKMJNSZZNFVDNGCP26PG6QPEM col6KIGNQEL7NEWFDQMOEIO4POSTQ colNWJ6DLDISBBWZKPVZUMMGLM5LI" Disabled="true">
+        <Trigger Id="trgPLT2PTDN3FAJNDTHJHPSCOXTFI" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col6SKMJNSZZNFVDNGCP26PG6QPEM col6KIGNQEL7NEWFDQMOEIO4POSTQ colNWJ6DLDISBBWZKPVZUMMGLM5LI" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -618,7 +628,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trg63NTK4JOUBG6NNTO2HKG6VVMXQ" Name="AuditInsert" DbName="atiXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trg63NTK4JOUBG6NNTO2HKG6VVMXQ" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -722,7 +732,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgV4VIXVC345FPZPGYWA37GW4RJQ" Name="AuditDelete" DbName="atdXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgV4VIXVC345FPZPGYWA37GW4RJQ" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdXI6CAOIGDBAGJEE6JQEGJME43Q" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -737,7 +747,7 @@ end;</xsc:Sql>
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -1198,6 +1208,15 @@ SELECT
     <Package Id="pkgEX4IXO2HXPNRDF5KABIFNQAABA" Name="RDX_WF" PurityLevelMask="0">
       <Header>
         <Item>
+          <Prototype Id="dprJQKPOQO5WRBZ3OKUG66Z7N442U" FunctionId="dfnMXCPLENAGVESLAS5WIPHYNKUWY"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprPBE6RMBKR5DD5ORNIWZYFT6SWQ" FunctionId="dfnZTJX25YSFJCIXN2BJLP7WDXAUQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprQGBMGQY52BDFLIJJ3RR666HDSE" FunctionId="dfnGOFOXLG2L5EF5JJP4BFMXAFYXE"/>
+        </Item>
+        <Item>
           <CustomText Id="dtxZ7GH3H7OGTOBDGAOABIFNQAABA" Name="=== ACCESSIBILITY ===">
             <Text/>
           </CustomText>
@@ -1331,15 +1350,40 @@ SELECT
       </Header>
       <Body>
         <Item>
-          <CustomText Id="dtxJ6IPKP5MVBFKNLIQJMSVQLX7YI" Name="CONSTS">
-            <Text>
+          <Function Id="dfnMXCPLENAGVESLAS5WIPHYNKUWY" Name="constDebugRole" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>DEBUG_ROLE CONSTANT VARCHAR2(50) := 'rol7MTXJKWQORCJFD7EEZHGZ7TOJM';
-ADMIN_ROLE CONSTANT VARCHAR2(50) := 'rolHM6FIFA4JFCJFIYPB3P2KC435U';
-CLERK_ROLE CONSTANT VARCHAR2(50) := 'rolOYMAGGZIXNF6TMGZASCZET6VOI';</xsc:Sql>
+                <xsc:Sql>is
+begin
+    return 'rol7MTXJKWQORCJFD7EEZHGZ7TOJM';
+end;</xsc:Sql>
               </xsc:Item>
-            </Text>
-          </CustomText>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnZTJX25YSFJCIXN2BJLP7WDXAUQ" Name="constAdminRole" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    return 'rolHM6FIFA4JFCJFIYPB3P2KC435U';
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnGOFOXLG2L5EF5JJP4BFMXAFYXE" Name="constClerkRole" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    return 'rolOYMAGGZIXNF6TMGZASCZET6VOI';
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
         </Item>
         <Item>
           <CustomText Id="dtxXLU7QAHPGTOBDGAOABIFNQAABA" Name="=== ACCESSIBILITY ===">
@@ -1408,7 +1452,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(ADMIN_ROLE, accessArea) = 0 and </xsc:Sql>
+                <xsc:Sql>( </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZTJX25YSFJCIXN2BJLP7WDXAUQ">
+                  <xsc:Sql>RDX_WF.constAdminRole</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, accessArea) = 0 and </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
@@ -1416,7 +1468,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(DEBUG_ROLE, accessArea) = 0 then
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnMXCPLENAGVESLAS5WIPHYNKUWY">
+                  <xsc:Sql>RDX_WF.constDebugRole</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, accessArea) = 0 then
         return 0;
     end if;
 /*    
@@ -1632,7 +1692,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(ADMIN_ROLE, accessArea) = 0 and </xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZTJX25YSFJCIXN2BJLP7WDXAUQ">
+                  <xsc:Sql>RDX_WF.constAdminRole</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, accessArea) = 0 and </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4">
@@ -1640,7 +1708,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(DEBUG_ROLE, accessArea) = 0then
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnMXCPLENAGVESLAS5WIPHYNKUWY">
+                  <xsc:Sql>RDX_WF.constDebugRole</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, accessArea) = 0then
         return 0;
     end if;
 /*    
@@ -1919,7 +1995,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(pUser, CLERK_ROLE, accessArea) = 0 then
+                <xsc:Sql>(pUser, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGOFOXLG2L5EF5JJP4BFMXAFYXE">
+                  <xsc:Sql>RDX_WF.constClerkRole</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, accessArea) = 0 then
         return 0;
     end if;
 /*    

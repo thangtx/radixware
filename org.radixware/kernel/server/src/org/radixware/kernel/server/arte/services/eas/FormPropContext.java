@@ -22,6 +22,7 @@ import org.radixware.kernel.server.meta.clazzes.RadPropDef;
 import org.radixware.kernel.server.meta.presentations.RadClassPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadConditionDef;
 import org.radixware.kernel.server.meta.presentations.RadParentTitlePropertyPresentationDef;
+import org.radixware.kernel.server.meta.presentations.RadSelectorPresentationDef;
 import org.radixware.kernel.server.types.EntityGroup;
 import org.radixware.kernel.server.types.FormHandler;
 import org.radixware.kernel.server.types.IRadClassInstance;
@@ -133,7 +134,9 @@ final class FormPropContext extends PropContext{
 
     @Override
     FormPropertyPresentationContext getPresentationContext(final EntityGroup entityGroup) {
-        return new FormPropertyPresentationContext(form, getPropertyId(), entityGroup);
+        final RadSelectorPresentationDef selectorPresentation = getSelectorPresentation();
+        final Id selectorPresentationId = selectorPresentation==null ? null : selectorPresentation.getId();
+        return new FormPropertyPresentationContext(form, getPropertyId(), entityGroup, selectorPresentationId);
     }        
 
     @Override

@@ -44,14 +44,14 @@ class ChooseDeviceDialog extends ExplorerDialog{
     
     private static class ReloadCompleteEvent extends QEvent{
         
-        private final Collection<ImageAcquaringDevice> devices;
+        private final Collection<ImageAcquiringDevice> devices;
         
-        public ReloadCompleteEvent(final Collection<ImageAcquaringDevice> devices){
+        public ReloadCompleteEvent(final Collection<ImageAcquiringDevice> devices){
             super(QEvent.Type.User);
             this.devices = devices;
         }
         
-        public Collection<ImageAcquaringDevice> getDevices(){
+        public Collection<ImageAcquiringDevice> getDevices(){
             return devices;
         }
     }
@@ -60,12 +60,12 @@ class ChooseDeviceDialog extends ExplorerDialog{
         
         private final IClientEnvironment environment;
         private final AbstractIadBackend iadBackend;
-        private final EImageAcquaringDeviceType type;
+        private final EImageAcquiringDeviceType type;
         private final QObject listener;
         
         public ReloadDevicesTask(final IClientEnvironment environment, 
                                  final AbstractIadBackend backend,
-                                 final EImageAcquaringDeviceType type,
+                                 final EImageAcquiringDeviceType type,
                                  final QObject obj){
             super("Reload IAD devices");
             iadBackend = backend;
@@ -76,7 +76,7 @@ class ChooseDeviceDialog extends ExplorerDialog{
 
         @Override
         public void run() {
-            final Collection<ImageAcquaringDevice> devices;
+            final Collection<ImageAcquiringDevice> devices;
             try{
                 devices = iadBackend.enumDevices(environment,type);
                 QApplication.postEvent(listener, new ReloadCompleteEvent(devices));
@@ -84,7 +84,7 @@ class ChooseDeviceDialog extends ExplorerDialog{
             }catch(Exception exception){
                 environment.getTracer().error(exception);
             }
-            QApplication.postEvent(listener, new ReloadCompleteEvent(Collections.<ImageAcquaringDevice>emptyList()));
+            QApplication.postEvent(listener, new ReloadCompleteEvent(Collections.<ImageAcquiringDevice>emptyList()));
         }
     
     }
@@ -96,17 +96,17 @@ class ChooseDeviceDialog extends ExplorerDialog{
     private final QScrollArea  scaDevices = new QScrollArea(gbDevices);
     private final QVBoxLayout  btnLayout = new QVBoxLayout();        
     private final IPushButton  pbRefresh;
-    private final EImageAcquaringDeviceType type;
-    private final Map<String,ImageAcquaringDevice> deviceById = new HashMap<>();    
+    private final EImageAcquiringDeviceType type;
+    private final Map<String,ImageAcquiringDevice> deviceById = new HashMap<>();    
     private final AbstractIadBackend iadBackend;
     private String selectedDeviceId;
-    private ImageAcquaringDevice selectedDevice;
+    private ImageAcquiringDevice selectedDevice;
     private ReloadDevicesTask reloadDevicesTask;
     
     public ChooseDeviceDialog(final IClientEnvironment environment, 
                               final AbstractIadBackend backend,
-                              final Collection<ImageAcquaringDevice> initialDeviceList,
-                              final EImageAcquaringDeviceType type,
+                              final Collection<ImageAcquiringDevice> initialDeviceList,
+                              final EImageAcquiringDeviceType type,
                               final QWidget parentWidget){
         super(environment,parentWidget);
         iadBackend = backend;
@@ -153,7 +153,7 @@ class ChooseDeviceDialog extends ExplorerDialog{
         layout().addWidget(gbDevices);        
     }
     
-    private void updateDevicesList(final Collection<ImageAcquaringDevice> deviceList){
+    private void updateDevicesList(final Collection<ImageAcquiringDevice> deviceList){
         for (int i=btgDevices.buttons().size()-1; i>=0; i--){
             btgDevices.removeButton(btgDevices.buttons().get(i));
         }
@@ -170,7 +170,7 @@ class ChooseDeviceDialog extends ExplorerDialog{
             gbDevices.setTitle(getEnvironment().getMessageProvider().translate("IAD", "Found devices:"));
             lbExplanation.setVisible(false);
             scaDevices.setVisible(true);
-            for (ImageAcquaringDevice device: deviceList) {
+            for (ImageAcquiringDevice device: deviceList) {
                 final QRadioButton rbDevice = new QRadioButton(wtDeviceContainer);                
                 rbDevice.setObjectName(device.getId());                
                 rbDevice.setText(device.getDescription());
@@ -252,7 +252,7 @@ class ChooseDeviceDialog extends ExplorerDialog{
         super.done(result);
     }
     
-    public ImageAcquaringDevice getSelectedDevice(){
+    public ImageAcquiringDevice getSelectedDevice(){
         return selectedDevice;
     }
     

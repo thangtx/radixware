@@ -15,13 +15,13 @@ import java.sql.Timestamp;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import org.radixware.kernel.common.auth.PasswordRequirements;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dialogs.*;
 import org.radixware.kernel.common.client.exceptions.StandardProblemHandler;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
+import org.radixware.kernel.common.client.models.AbstractBatchOperationResult;
 import org.radixware.kernel.common.client.models.groupsettings.Filters;
 import org.radixware.kernel.common.client.models.groupsettings.Sortings;
 import org.radixware.kernel.common.client.models.items.properties.Property;
@@ -81,6 +81,11 @@ public class WpsDialogFactory implements DialogFactory {
     public ISelectInstantiatableClassDialog newInstantiatableClassDialog(final IClientEnvironment environment, final IWidget parentWidget, final List<InstantiatableClass> classes, final String configGroup, final boolean sortByTitles) {
         return new SelectInstantiatableClassDialog((WpsEnvironment) environment, classes, configGroup, sortByTitles);
     }
+
+    @Override
+    public ISelectInstantiatableClassDialog newInstantiatableClassDialog(IClientEnvironment environment, IWidget parentWidget, List<InstantiatableClass> classes, String configGroup, boolean sortByTitles, boolean multipleSelection) {
+        return new SelectInstantiatableClassDialog((WpsEnvironment) environment, classes, configGroup, sortByTitles, multipleSelection);
+    }        
 
     @Override
     public IMandatoryPropertiesConfirmationDialog newMandatoryPropertiesConfirmationDialog(final IClientEnvironment environment, final IWidget parentWidget, final List<String> propertyTitles) {
@@ -149,4 +154,19 @@ public class WpsDialogFactory implements DialogFactory {
     public ISelectEasSessionDialog newSelectEasSessionDialog(final IClientEnvironment environment, final IWidget parent) {
         return new SelectEasSessionDialog((WpsEnvironment)environment);
     }
+
+    @Override
+    public IListDialog newListDialog(IClientEnvironment environment, IWidget parent, String configPrefix) {
+        return new RwtListDialog(environment, configPrefix);
+    }        
+
+    @Override
+    public IBatchOperationResultDialog newBatchOperationResultDialog(final IClientEnvironment environment, final IWidget parent, final AbstractBatchOperationResult result) {
+        return new BatchOperationResultDialog((WpsEnvironment)environment, result);
+    }        
+    
+    @Override
+    public IWaitForAadcMemberSwitchDialog newWaitForAadcMemberSwitchDialog(IClientEnvironment environment) {
+        return new WaitForAadcMemberSwitchDialog((WpsEnvironment)environment);
+    }            
 }

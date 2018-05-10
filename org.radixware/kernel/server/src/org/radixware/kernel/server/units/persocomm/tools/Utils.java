@@ -14,15 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Iterator;
 import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.kernel.common.types.IKernelStrEnum;
-import org.radixware.kernel.server.units.persocomm.interfaces.IExtendedRadixTrace;
 
 public class Utils {
     private static final int        SMPP_SLICE_SIZE = 134;
@@ -93,17 +86,6 @@ public class Utils {
         return common;
     }
     
-    public static IExtendedRadixTrace getPseudoTrace() {
-        final InvocationHandler     ih = new InvocationHandler(){
-                                            @Override
-                                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                                                System.err.println("Method="+method.getName()+", parameters="+Arrays.toString(args));
-                                                return null;
-                                            }
-                                        };
-        return (IExtendedRadixTrace)Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[]{IExtendedRadixTrace.class}, ih);
-    }
-
     public static String[] matches(final String value, final String template) {
         if (value == null) {
             return null;

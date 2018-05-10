@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="adcXI56W3OPAJCYDNL367FELXOZ7U" Name="EditMask" Type="3" Environment="common-client">
     <AccessRules IsAbstract="true">
       <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.meta.mask.EditMask"/>
@@ -188,6 +188,133 @@
           </Parameter>
         </Parameters>
         <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.validators.ValidationResult"/>
+      </Method>
+      <Method Id="mthAOOFYC6OWNAX3OBI4ED4ZSP55U" Name="getEmptyArrayString" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getEmptyArrayString(Lorg.radixware.kernel.common.client.localization.MessageProvider;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="mp" Id="mprTDNM7TFFBNBNJHXG3SIAWPLCBM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.localization.MessageProvider"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth7X4JWHY3DVAPNOEEKTMR4TYZ5M" Name="getType" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getType()Lorg.radixware.kernel.common.enums.EEditMaskType;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EEditMaskType"/>
+      </Method>
+      <Method Id="mthN4UQKYMYAVEHBF77DSLMIS5BXQ" Name="getSupportedValueTypes" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getSupportedValueTypes()Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.enums.EValType;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.EnumSet">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthNVOEF52TWJA2PLX7AC5B4VPYGI" Name="isSpecialValue" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isSpecialValue(Ljava.lang.Object;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="value" Id="mprYHEUFS3NVBFXVJG3JDGXCNJDOI">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthUQIVMEDDINBGBD3HSOQWGFFEYY" Name="setEmptyArrayString" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setEmptyArrayString(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="str" Id="mprGBT5XW73IZECXICJ5OAU4YR5EE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPGB27ZPZVND3PO6VX24WUQFADA" Name="writeToXml" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="writeToXml(Lorg.radixware.schemas.editmask.EditMask;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="xml" Id="mpr7AGE7U3L6RENTDR2A2XC4MPVYA">
+            <Type TypeId="400" extStr="org.radixware.schemas.editmask.EditMask"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSJHFMD7U6RCWJK3WGWBNXPD3PQ" Name="loadFrom" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="loadFrom(Lorg.radixware.schemas.editmask.RadixEditMaskDocument;)Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="editMaskDoc" Id="mprZH2ZF4KBPVENLDLCQAAYP5YLQE">
+            <Type TypeId="400" extStr="org.radixware.schemas.editmask.RadixEditMaskDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthQ2L7L7DOPBFOPCEOYDDRQDKBJA" Name="loadEditMaskConstSetFrom" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="loadEditMaskConstSetFrom(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.schemas.editmask.RadixEditMaskDocument;)Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="enumId" Id="mprKTQ56JELARD65BU55OUWYSOMB4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="xml" Id="mprK7GE25CY2RFDJDAHXBEKPI7X7A">
+            <Type TypeId="400" extStr="org.radixware.schemas.editmask.RadixEditMaskDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthLFWJ7CC4QVC6FOWAA76XHBHJBE" Name="loadEditMaskList" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="loadEditMaskList(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.types.Id;Lorg.radixware.schemas.editmask.RadixEditMaskDocument;)Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprOV5M4NJMXRCWFEI4JKEFAA4EAA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprKGMCJDWOW5F4RGMXU7X2HHS33Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="titleOwnerId" Id="mprDMFDQ5FEZBDUJEW7XVOVTFU6D4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="xml" Id="mprM3U6LGTUUFENBPNGAXFTEU7HZI">
+            <Type TypeId="400" extStr="org.radixware.schemas.editmask.RadixEditMaskDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthWJ5PNPCSPBAVLLQHJXEUZEC7EI" Name="createCopy" Nature="0" IsOverride="false">
+        <AccessRules Access="1" IsStatic="true">
+          <Transparence Extendable="false" PublishedName="createCopy(Lorg.radixware.kernel.common.client.meta.mask.EditMask;)Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="source" Id="mpr54J5HU4TMNGQPM3SI74DC6KFQE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthPNQMMSJ4CBASTBFEYG2URB5IDQ" Name="newInstance" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="newInstance(Lorg.radixware.kernel.common.enums.EEditMaskType;)Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="maskType" Id="mprOALEERGJHBCW3KCV6H7BRCOEL4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEditMaskType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
       </Method>
     </Methods>
   </AdsClassDefinition>

@@ -8,19 +8,21 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.units.job.executor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.EUnitType;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
+import org.radixware.kernel.common.sc.SapClientOptions;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.aio.Event;
@@ -31,6 +33,8 @@ import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.arte.JobQueue;
 import org.radixware.kernel.server.exceptions.DatabaseError;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.aadc.AadcManager;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.monitoring.AbstractMonitor;
 import org.radixware.kernel.server.monitoring.MonitorFactory;
 import org.radixware.kernel.server.units.AsyncEventHandlerUnit;
@@ -52,17 +56,19 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
     private static final long RESTORE_CONNECTION_RETRY_INTERVAL_MILLIS = 3000;
     private static final long MAX_CONTINUOUS_EXECUTION_TIME_MILLIS = 5000;
     private static final long PROCESS_HUNG_JOBS_INTERVAL_MILLIS = 5000;
-    private final DbQueries jobExecDbQueries;
+    private final JobExecutorDbQueries jobExecDbQueries;
     private long sleepOnAllLastRqFaultedMillis = 0;
     private ServiceManifestLoader manifestLoader = null;
     private Options options;
     private final Map<Long, Job> executingJobs = new HashMap<>();
+    private final Set<ThreadKey> executingThreads = new HashSet<>();
     boolean isDoCurJobsSheduled = false;
     private AasClientPool aasClientPool = null;
     private long lastRestoreConnectionMillis = 0;
     private long lastProcessHungJobsMillis = 0;
     private boolean restoreConnectionScheduled = false;
     final JobQueue.Utils jobQueueUtils;
+    private final AadcManager aadcManager;
 
     public JobExecutorUnit(final Instance instModel, final Long id, final String title) {
         super(instModel, id, title, new MonitorFactory<AbstractMonitor, Unit>() {
@@ -71,8 +77,9 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
                 return new JobExecutorMonitor(unit);
             }
         });
-        jobExecDbQueries = new DbQueries(this);
+        jobExecDbQueries = new JobExecutorDbQueries(this);
         jobQueueUtils = new JobQueue.Utils(getDbConnection());
+        aadcManager = instModel.getAadcManager();
     }
 
     ServiceManifestLoader getManifestLoader() {
@@ -89,6 +96,17 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
             return false;
         }
         manifestLoader = new ServiceManifestServerLoader() {
+
+            @Override
+            public List<SapClientOptions> readSaps(Long systemId, Long thisInstanceId, String serviceUri, String scpName, long maxCachedValAgeMillis) {
+                return super.readSaps(systemId, thisInstanceId, serviceUri, scpName, maxCachedValAgeMillis); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            protected Integer getTargetAadcMemberId() {
+                return getInstance().getAadcInstMemberId();
+            }
+
             @Override
             protected Connection getDbConnection() {
                 return JobExecutorUnit.this.getDbConnection();
@@ -187,13 +205,13 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
     }
 
     @Override
-    protected void setDbConnection(final Connection dbConnection) {
+    protected void setDbConnection(final RadixConnection dbConnection) {
         jobExecDbQueries.closeAll();
         jobQueueUtils.setDbConnection(dbConnection);
         super.setDbConnection(dbConnection);
     }
 
-    final DbQueries getDbQueries() {
+    final JobExecutorDbQueries getDbQueries() {
         return jobExecDbQueries;
     }
 
@@ -201,7 +219,7 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
     protected void maintenanceImpl() throws InterruptedException {
         isDoCurJobsSheduled = false;
         super.maintenanceImpl();
-        if (isDoCurJobsSheduled) {
+        if (isDoCurJobsSheduled && !isShutdownRequested()) {
             try {
                 if (restoreConnectionScheduled) {
                     restoreDbConnection();
@@ -238,6 +256,17 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
         return getInstance().getTargetJobExecutorId() != null && getInstance().getTargetJobExecutorId() == getId();
     }
 
+    @Override
+    protected String getIdForSingletonLock() {
+        if (isLocal()) {
+            return "LocalJobExecutorUnit#" + getId();
+        } else if (aadcManager.isInAadc()) {
+            return "JobExecutor-AADC#" + aadcManager.getMemberId();
+        } else {
+            return super.getIdForSingletonLock();
+        }
+    }
+
     void doCurJobs() throws SQLException {
         final long curExecutionStartMillis = System.currentTimeMillis();
         while (!isShuttingDown()) {
@@ -254,7 +283,7 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
                 }				//after sleepOnOnAllLastRqFaulted we should try to send rq one more time
                 sleepOnAllLastRqFaultedMillis = 0;
             }
-            DbQueries.JobIter jobs = null;
+            JobExecutorDbQueries.JobIter jobs = null;
             getAasClientPool().newIteration();
             try {
                 final long jobsLoadTimeMillis = System.currentTimeMillis();
@@ -266,22 +295,24 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
                 Job job;
                 if (jobs != null && (job = jobs.next()) != null) {
                     while (job != null && !isShuttingDown()) {
-                        if (job.delayMillis > 0) {
-                            sleepTimeMillis = Math.min(sleepTimeMillis, job.delayMillis);
-                        } else {
-                            final AasClientPool.EInvokeResult result = getAasClientPool().invoke(job);
-                            if (result == AasClientPool.EInvokeResult.OK) {
-                                setJobIsExecuting(job);
-                            } else if (result == AasClientPool.EInvokeResult.ALL_CLIENTS_ARE_BUSY) {
-                                final int waitingJobsCnt = getDbQueries().getCurJobsCount();
-                                if (waitingJobsCnt != -1) {
-                                    ((JobExecutorMonitor) getMonitor()).setWaitingJobsCount(waitingJobsCnt);
-                                }
-                                //let's sleep a bit to allow IO event be handled
-                                getDispatcher().waitEvent(new TimerEvent(), this, System.currentTimeMillis() + ON_BUSY_SLEEP_TIME_MILLIS);
-                                return;
+                        if (!isThreadExecuting(job.getThreadKey())) {
+                            if (job.delayMillis > 0) {
+                                sleepTimeMillis = Math.min(sleepTimeMillis, job.delayMillis);
                             } else {
-                                //unable to execute job, try next
+                                final AasClientPool.EInvokeResult result = getAasClientPool().invoke(job);
+                                if (result == AasClientPool.EInvokeResult.OK) {
+                                    setJobIsExecuting(job);
+                                } else if (result == AasClientPool.EInvokeResult.ALL_CLIENTS_ARE_BUSY) {
+                                    final int waitingJobsCnt = getDbQueries().getCurJobsCount();
+                                    if (waitingJobsCnt != -1) {
+                                        ((JobExecutorMonitor) getMonitor()).setWaitingJobsCount(waitingJobsCnt);
+                                    }
+                                    //let's sleep a bit to allow IO event be handled
+                                    getDispatcher().waitEvent(new TimerEvent(), this, System.currentTimeMillis() + ON_BUSY_SLEEP_TIME_MILLIS);
+                                    return;
+                                } else {
+                                    //unable to execute job, try next
+                                }
                             }
                         }
                         job = jobs.next();
@@ -330,7 +361,22 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
 
     final void setJobIsExecuting(final Job job) {
         executingJobs.put(job.id, job);
+        setThreadExecuting(job.threadKey, true);
         ((JobExecutorMonitor) getMonitor()).jobStarted();
+    }
+
+    private boolean isThreadExecuting(final ThreadKey threadKey) {
+        return threadKey == null ? false : executingThreads.contains(threadKey);
+    }
+
+    void setThreadExecuting(final ThreadKey key, final boolean executing) {
+        if (key != null) {
+            if (executing) {
+                executingThreads.add(key);
+            } else {
+                executingThreads.remove(key);
+            }
+        }
     }
 
     final Job getExecutingJob(final long id) {
@@ -345,8 +391,9 @@ public final class JobExecutorUnit extends AsyncEventHandlerUnit {
             //and we don't want to mark new (and unfinished) job as done.
             if (executingJob.unlockCount == job.unlockCount) {
                 executingJobs.remove(job.id);
-                ((JobExecutorMonitor) getMonitor()).jobDone();
+                setThreadExecuting(job.threadKey, false);
             }
+            ((JobExecutorMonitor) getMonitor()).jobDone();
         }
     }
 

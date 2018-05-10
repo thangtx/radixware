@@ -13,6 +13,7 @@ package org.radixware.kernel.explorer.views;
 
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QPainter;
@@ -21,6 +22,7 @@ import com.trolltech.qt.gui.QStackedLayout;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.utils.ThreadDumper;
 import org.radixware.kernel.common.client.widgets.IBlocakbleWidget;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.ExplorerWidget;
@@ -44,7 +46,7 @@ public class BlockableWidget extends ExplorerWidget implements IBlocakbleWidget 
     
     private final QVBoxLayout mainLayout = WidgetUtils.createVBoxLayout(this);
     private final QStackedLayout stackedLayout = new QStackedLayout(mainLayout);    
-    private QPixmap pixmap;    
+    private QPixmap pixmap;
     private final QWidget snapshot = new QWidget(this) {
 
         @Override
@@ -67,8 +69,9 @@ public class BlockableWidget extends ExplorerWidget implements IBlocakbleWidget 
             super.customEvent(event);
         }
     };
-    
-    private int blockRedraw = 0;
+    private boolean internalPainting;
+    private boolean switchingWidget;
+    private int blockRedraw = 0;    
 
     public BlockableWidget(final IClientEnvironment environment, final QWidget parent) {
         super(environment, parent);
@@ -90,7 +93,7 @@ public class BlockableWidget extends ExplorerWidget implements IBlocakbleWidget 
                 stackedLayout.removeWidget(mainWidget());
             }
             stackedLayout.addStackedWidget(widget);
-            stackedLayout.setCurrentIndex(1);
+            switchWidget(1);
         }
     }
 
@@ -100,14 +103,14 @@ public class BlockableWidget extends ExplorerWidget implements IBlocakbleWidget 
 
     private QWidget mainWidget() {
         return stackedLayout.count() > 1 ? stackedLayout.widget(1) : null;
-    }
-    
-    private boolean internalPainting;
+    }        
 
     @Override
     public final void blockRedraw() {
-        if (blockRedraw == 0 && mainWidget().isVisible()) {
-
+        if (switchingWidget){
+            return;
+        }
+        if (blockRedraw == 0 && mainWidget().isVisible()) {            
             internalPainting = true;
             try {
                 final QWidget widget = mainWidget();
@@ -122,33 +125,50 @@ public class BlockableWidget extends ExplorerWidget implements IBlocakbleWidget 
             } finally {
                 internalPainting = false;
             }
-            stackedLayout.setCurrentIndex(0);
-        }
+            switchWidget(0);
+        }        
         blockRedraw++;
     }
-
+    
     @Override
-    public final void unblockRedraw() {
-        if (blockRedraw > 0) {
-            blockRedraw--;
+    public final void unblockRedraw() {        
+        if (blockRedraw > 0 && !switchingWidget) {            
+            blockRedraw--;          
             if (blockRedraw == 0) {
                 pixmap = null;
-                stackedLayout.setCurrentIndex(1);
+                switchWidget(1);
                 QApplication.postEvent(this, new RepaintMainWidgetEvent());
             }
         }
     }
 
     public final void forceUnblockRedraw() {
-        blockRedraw = 0;
-        stackedLayout.setCurrentIndex(1);
-        QApplication.postEvent(this, new RepaintMainWidgetEvent());
+        if (switchingWidget){
+            getEnvironment().getTracer().warning("Unable to unblock redraw:\n"+ThreadDumper.dumpSync());
+        }else{
+            blockRedraw = 0;
+            switchWidget(1);
+            QApplication.postEvent(this, new RepaintMainWidgetEvent());
+        }
+    }
+    
+    private void switchWidget(final int index){
+        switchingWidget = true;
+        try{
+            stackedLayout.setCurrentIndex(index);
+        }finally{
+            switchingWidget = false;
+        }
     }
     
     protected void filteredMouseEvent(final FilteredMouseEvent event){
         final QWidget widget = getWidget();
-        if (widget!=null && widget.nativeId()!=0){
-            QApplication.sendEvent(widget, new FilteredMouseEvent(event.getFilteredEventType()));
+        if (widget!=null && widget.nativeId()!=0){            
+            final QRect rect =  widget.rect();
+            rect.moveTopLeft(widget.mapToGlobal(WidgetUtils.ZERO_POINT));
+            if (rect.contains(event.getGlobalPos())){
+                QApplication.sendEvent(widget, new FilteredMouseEvent(event, widget));
+            }
         }
     }
 

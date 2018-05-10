@@ -43,10 +43,6 @@ import org.radixware.kernel.common.utils.SystemTools;
 
 final class ExplorerDefaultSettings implements IExplorerSettings{
     
-    private static enum SETTINGS_SOURCE{
-        FONT,OTHER
-    }
-    
     private final static String DEFAULT_MACOSX_SETTINGS_FILE_NAME = "default_macosx_fonts.ini";
         
     private final List<IExplorerSettings> settingsList;
@@ -327,9 +323,24 @@ final class ExplorerDefaultSettings implements IExplorerSettings{
     }
 
     @Override
-    public void setConfigProfile(final String profile) {
+    public void pushGroup() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String popGroup() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }    
+
+    @Override
+    public void setConfigProfile(final String profile) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getConfigProfile() {
+        return "";
+    }       
 
     @Override
     public int beginReadArray(final String array) {

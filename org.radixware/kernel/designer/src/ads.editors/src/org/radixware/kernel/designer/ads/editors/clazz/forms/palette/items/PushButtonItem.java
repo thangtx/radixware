@@ -89,8 +89,8 @@ public class PushButtonItem extends AbstractButtonItem {
         AdsUIProperty.LocalizedStringRefProperty text = (AdsUIProperty.LocalizedStringRefProperty) AdsUIUtil.getUiProperty(node, "text");
         String label = Item.getTextById(node, text.getStringId());
 
-        int height = DrawUtil.DEFAULT_FONT_METRICS.getHeight();
-        int width = DrawUtil.DEFAULT_FONT_METRICS.stringWidth(label);
+        int height = DrawUtil.getFontMetrics().getHeight();
+        int width = DrawUtil.getFontMetrics().stringWidth(label);
 
         if (image != null) {
             if (toolButtonStyle == EToolButtonStyle.ToolButtonIconOnly) {

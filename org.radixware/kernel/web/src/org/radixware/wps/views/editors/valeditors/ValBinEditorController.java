@@ -23,9 +23,13 @@ import org.radixware.wps.rwt.InputFormat;
 
 public class ValBinEditorController extends InputBoxController<Bin,EditMaskNone> {
     
-    public ValBinEditorController(final IClientEnvironment env){
-        super(env);
+    public ValBinEditorController(final IClientEnvironment env, final LabelFactory factory){
+        super(env,factory);
         setEditMask(new EditMaskNone());
+    }
+    
+    public ValBinEditorController(final IClientEnvironment env){
+        this(env,null);
     }
 
     @Override
@@ -34,7 +38,7 @@ public class ValBinEditorController extends InputBoxController<Bin,EditMaskNone>
             @Override
             public Bin getValue(final String text) throws InvalidStringValueException {
                 try {
-                    final String hexadecimalString = text.replaceAll(" ", "");
+                    final String hexadecimalString = text.replace(" ", "");
                     if (hexadecimalString.isEmpty()) {
                         return null;
                     }

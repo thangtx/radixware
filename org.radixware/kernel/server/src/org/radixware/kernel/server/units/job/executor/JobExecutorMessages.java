@@ -91,6 +91,6 @@ final class JobExecutorMessages {
         
         HUNG_JOB_UNLOCKED = bundle.getString("HUNG_JOB_UNLOCKED");
         HUNG_JOB_REMOVED = bundle.getString("HUNG_JOB_REMOVED");
-
+        
     }
 }

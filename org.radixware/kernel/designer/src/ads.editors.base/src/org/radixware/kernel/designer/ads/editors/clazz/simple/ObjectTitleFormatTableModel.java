@@ -20,6 +20,7 @@ import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsObjectTitleFormatDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsObjectTitleFormatDef.TitleItem;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.ETitleNullFormat;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 
 
@@ -52,7 +53,7 @@ class ObjectTitleFormatTableModel extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -94,14 +95,30 @@ class ObjectTitleFormatTableModel extends AbstractTableModel{
         if (columnIndex == ObjectTitleFormatTableModel.TITLES_FORMAT_COLUMN){
             final AdsPropertyDef adsPropertyDef = items.get(rowIndex).findProperty();
             return adsPropertyDef == null ? "<Undefined>" : adsPropertyDef.getName();
-        }else{
+        } else if (columnIndex == ObjectTitleFormatTableModel.FORMAT_COLUMN) {
             final TitleItem item = items.get(rowIndex);
             if (item.isMultilingual()){
                 return item.getPattern(EISoLanguageForCurrentLocale);
             }else{
                 return item.getPattern();
             }
+        } else if (columnIndex == ObjectTitleFormatTableModel.NULL_FORMAT) {
+            final TitleItem item = items.get(rowIndex);
+            return getNullValuePattern(item);
         }
+        return null;
+    }
+    
+    
+    public String getNullValuePattern(AdsObjectTitleFormatDef.TitleItem titleItem) {
+        StringBuilder sb = new StringBuilder(titleItem.getNullFormat().toString());
+        if (titleItem.getNullFormat() == ETitleNullFormat.CUSTOM) {
+            AdsObjectTitleFormatDef.TitleItem item = titleItem.getCustomTitle();
+            if (item != null) {
+                sb.append(": ").append(item.isMultilingual() ?  item.getPattern(EISoLanguageForCurrentLocale): item.getPattern());
+            }
+        }
+        return sb.toString();
     }
 
     private static EIsoLanguage getEISOLanguageForCurrentLocale(){
@@ -145,6 +162,6 @@ class ObjectTitleFormatTableModel extends AbstractTableModel{
         };
     }
     
-    private static final String columnNamesArray[] = new String[]{"Property", "Format"};
-    public static final int TITLES_FORMAT_COLUMN = 0, FORMAT_COLUMN = 1;
+    private static final String columnNamesArray[] = new String[]{"Property", "Format", "Null Format"};
+    public static final int TITLES_FORMAT_COLUMN = 0, FORMAT_COLUMN = 1, NULL_FORMAT = 2;
 }

@@ -10,6 +10,8 @@
  */
 package org.radixware.kernel.common.builder.check.dds;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import static org.radixware.kernel.common.builder.check.common.RadixObjectChecker.error;
 import org.radixware.kernel.common.defs.RadixObject;
@@ -25,6 +27,7 @@ import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegist
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.dds.DdsExtTableDef;
 import org.radixware.kernel.common.defs.dds.DdsExtendableDefinitions;
+import org.radixware.kernel.common.defs.dds.DdsReferenceDef.Problems;
 import org.radixware.kernel.common.enums.EDdsConstraintDbOption;
 import org.radixware.kernel.common.enums.EDeleteMode;
 import org.radixware.kernel.common.types.Id;
@@ -126,7 +129,7 @@ public class DdsReferenceChecker<T extends DdsReferenceDef> extends DdsConstrain
         }
 
         // column structure
-        int size = reference.getColumnsInfo().size();
+         int size = reference.getColumnsInfo().size();
 
         DdsIndexDef index = reference.findParentIndex();
         if (index != null) {
@@ -254,7 +257,7 @@ public class DdsReferenceChecker<T extends DdsReferenceDef> extends DdsConstrain
 //                    error(reference, problemHandler, "Reference must be based on at least one column");
 //                }    
 //        }
-
+        
         if (size == 0) {
             error(reference, problemHandler, "Reference must be based on at least one column");
         }
@@ -304,6 +307,20 @@ public class DdsReferenceChecker<T extends DdsReferenceDef> extends DdsConstrain
                 break;
             }
         }
+        
+        EnumSet<EDdsConstraintDbOption> constraintDbOptions = reference.getDbOptions();
+        if (reference.isGeneratedInDb() && !constraintDbOptions.contains(EDdsConstraintDbOption.DISABLE)) {
+            final ArrayList<DdsColumnDef> childrenColumns = new ArrayList<>();
+            for (DdsReferenceDef.ColumnsInfoItem item : reference.getColumnsInfo()) {
+                DdsColumnDef def = item.findChildColumn();
+                if (def != null) {
+                    childrenColumns.add(def);
+                }
+            }
+            if (!checkFK2Index(childTable, size, childrenColumns) && !reference.isWarningSuppressed(Problems.FK_INDEXED)) {
+                warning(reference, problemHandler, Problems.FK_INDEXED);
+            }
+        }
 
         // master detail
         if (reference.getType() == DdsReferenceDef.EType.MASTER_DETAIL) {
@@ -343,5 +360,44 @@ public class DdsReferenceChecker<T extends DdsReferenceDef> extends DdsConstrain
             }
 
         }
+    }
+    
+    private boolean checkFK2Index(final DdsTableDef childTable, int size,  final ArrayList<DdsColumnDef> childrenColumns) {
+        final DdsPrimaryKeyDef childPk = childTable.getPrimaryKey();
+        if (checkColumnsInfo(childPk.getColumnsInfo(), size, childrenColumns)) {
+            return true;
+        }
+        List<DdsIndexDef> childIndices = childTable.getIndices().get(ExtendableDefinitions.EScope.ALL);
+
+        if (childIndices != null) {
+            for (DdsIndexDef ddsIndexDef : childIndices) {
+                final DdsIndexDef.ColumnsInfo indexColumnsInfo = ddsIndexDef.getColumnsInfo();
+                if (checkColumnsInfo(indexColumnsInfo, size, childrenColumns)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    private boolean checkColumnsInfo(final DdsIndexDef.ColumnsInfo indexColumnsInfo, int tableSize,  final ArrayList<DdsColumnDef> childrenColumns) {
+        if (indexColumnsInfo.size() >= tableSize) {
+            for (int i = 0; i < tableSize; i++) {
+                final DdsIndexDef.ColumnInfo info = indexColumnsInfo.get(i);
+                if (info == null) {
+                    return false;
+                }
+                final DdsColumnDef column = info.getColumn();
+                if (column == null) {
+                    return false;
+                }
+                if (!childrenColumns.contains(column)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

@@ -14,6 +14,7 @@ package org.radixware.kernel.explorer.editors.monitoring.tree;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.ItemDataRole;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QTreeWidgetItem;
 import java.text.DecimalFormat;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.enums.EEventContextType;
@@ -22,18 +23,28 @@ import org.radixware.kernel.explorer.editors.monitoring.UnitsWidget;
 import org.radixware.kernel.explorer.editors.monitoring.tree.MetricInfoGetter.InstanceInfo;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.schemas.monitoringcommand.SysMonitoringRq;
 
 
 public class InstanceTreeItem extends TreeItem {
     private EState state;
     private boolean isCalculated = false;
+    private boolean sortByName = false; 
 
     private static enum EState {
         STARTED, STOPPED
     }
     //id - instance id
     public InstanceTreeItem(UnitsWidget.IdsGetter idsGetter,MetricInfoGetter.InstanceInfo instanceInfo,final Model groupModel) {
-        super(idsGetter,instanceInfo,groupModel);      
+        super(idsGetter, instanceInfo, groupModel, null);      
+    }
+    
+    public void setSortByName(boolean sortByName) {
+        this.sortByName = sortByName;
+    }
+    
+    public boolean isSortByName() {
+        return sortByName;
     }
     
     @Override
@@ -46,6 +57,11 @@ public class InstanceTreeItem extends TreeItem {
             return EState.STARTED;
         }
         return EState.STOPPED;
+    }
+    
+    @Override
+    public boolean operator_less(QTreeWidgetItem qtwi) { 
+        return super.operator_less(qtwi);
     }
     
     @Override
@@ -81,7 +97,7 @@ public class InstanceTreeItem extends TreeItem {
             if(md==null){
                 md = new MetricData(MetricData.Type.DIAGRAM);
                 this.setData(1, ItemDataRole.UserRole, md);
-                String toolTip = Application.translate("SystemMonitoring", "The relation between the number of active ARTE instances and the maximum number of ARTE instances");//"Количество активных инстанций ARTE по отношению к максимальному количеству ARTE инстанций" 
+                String toolTip = Application.translate("SystemMonitoring", "The relation between the number of active ARTEs and the maximum number of ARTEs");//"Количество активных ARTE по отношению к максимальному количеству ARTE" 
                 this.setToolTip(1, toolTip);
             }
             Double val=instanceInfo.getInstArteSessionCnt();
@@ -97,14 +113,14 @@ public class InstanceTreeItem extends TreeItem {
                 MetricData md1 = (MetricData) this.data(2, ItemDataRole.UserRole);
                 DecimalFormat f = new DecimalFormat("0.00");
                 String s= val!=null ? f.format(val) :"-";
-                String strActiveArteInst = Application.translate("SystemMonitoring", "Active ARTE instances")+" = ";
-                String strArteInst = Application.translate("SystemMonitoring", "ARTE instances")+" = ";
-                String strMaxArteInst = Application.translate("SystemMonitoring", "Max ARTE instances")+" = ";
+                String strActiveArteInst = Application.translate("SystemMonitoring", "Active ARTEs")+" = ";
+                String strArteInst = Application.translate("SystemMonitoring", "ARTEs")+" = ";
+                String strMaxArteInst = Application.translate("SystemMonitoring", "Max ARTEs")+" = ";
                 String text=strActiveArteInst + s + ";  " + strArteInst + arteInstCnt + ";  " + strMaxArteInst + maxArteInstCnt;
                 if(md1==null){              
                     md1 = new MetricData(MetricData.Type.TEXT);
                     this.setData(2, ItemDataRole.UserRole, md1);
-                    //String toolTip = Application.translate("SystemMonitoring", "Active ARTE instances / Number of arte instances / Maximum number of ARTE instances");
+                    //String toolTip = Application.translate("SystemMonitoring", "Active ARTEs / Number of ARTEs / Maximum number of ARTEs");
                     //this.setToolTip(2, toolTip);
                 }
                 this.setText(2, text);
@@ -113,6 +129,15 @@ public class InstanceTreeItem extends TreeItem {
         }        
     }
 
+    @Override
+    protected UnitsTree.ExpandCommandEvent getExpandEvent(SysMonitoringRq sysMonitoringRq) {
+        SysMonitoringRq.ExpandedInstances expInst = sysMonitoringRq.addNewExpandedInstances();
+        SysMonitoringRq.ExpandedInstances.Instance instance = SysMonitoringRq.ExpandedInstances.Instance.Factory.newInstance();
+        instance.setId(getId());
+        expInst.getInstanceList().add(instance);
+        return new UnitsTree.ExpandCommandEvent(this, sysMonitoringRq);
+    }
+    
     @Override
     protected QIcon getStateIcon() {
         if (state == EState.STARTED) {
@@ -132,15 +157,17 @@ public class InstanceTreeItem extends TreeItem {
         return true;
     }
 
+    @Override
     public boolean isCalculated() {
         return isCalculated;
     }
 
+    @Override
     protected void setIsCalculated(boolean isCalc) {
         isCalculated = isCalc;
     }
     
-     @Override
+    @Override
     protected Id getTableId(){
         return idsGetter.getInstanceTableId();
     }

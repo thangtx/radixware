@@ -10,7 +10,6 @@
  */
 package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +36,6 @@ import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef.Lookup.DefIn
 import org.radixware.kernel.common.defs.ads.userfunc.IUserDefModule;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
-import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ENamingPolicy;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
@@ -48,13 +46,12 @@ import org.radixware.kernel.common.repository.ads.fs.FSRepositoryAdsDefinition;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.common.utils.XmlFormatter;
 import org.radixware.schemas.adsdef.AdsDefinitionDocument;
 import org.radixware.schemas.adsdef.AdsUserReportDefinitionDocument;
 import org.radixware.schemas.adsdef.ClassDefinition;
-import org.radixware.schemas.adsdef.LocalizedString;
-import org.radixware.schemas.adsdef.LocalizingBundleDefinition;
+import org.radixware.schemas.adsdef.Report;
 import org.radixware.schemas.adsdef.UserReportDefinitionType;
+import org.radixware.schemas.adsdef.UserReportExchangeType;
 import org.radixware.schemas.xscml.TypeDeclaration;
 
 public class AdsUserReportClassDef extends AdsReportClassDef {
@@ -97,8 +94,12 @@ public class AdsUserReportClassDef extends AdsReportClassDef {
     }
 
     @Override
-    public String getRuntimeLocalClassName() {
-        return getRuntimeId().toString();
+    public String getRuntimeLocalClassName(boolean isHumanReadable) {
+        if (isHumanReadable) {
+            return getName();
+        } else {
+            return getRuntimeId().toString();
+        }
     }
 
     public Id getRuntimeId() {
@@ -287,72 +288,76 @@ public class AdsUserReportClassDef extends AdsReportClassDef {
     public static Id buildReportVersion(Id reportId, long reportVersion) {
         return Id.Factory.loadFrom(reportId.toString() + "_urv_" + reportVersion);
     }
+    
+    public static UserReportDefinitionType getReportDefWithCorrectIds(UserReportDefinitionType xRepDef, Id reportId, long version, boolean isCurrentVersion) {
+        if (xRepDef == null) {
+            throw new NullPointerException("Report xml is null");
+        }
+        
+        final Id oldRepId, newRepId;
+        String repAsStr = xRepDef.xmlText();
+        if (isCurrentVersion) {
+            oldRepId = buildReportVersion(reportId, version);
+            newRepId = reportId;
+        } else {
+            oldRepId = reportId;
+            newRepId = buildReportVersion(reportId, version);
+            
+            //avoid case with replacing part of newRepId:
+            //id="rpuXXX_urv_1" => replace(oldRepId, newRepId) => id="rpuXXX_urv_1_urv_1"
+            repAsStr = repAsStr.replace(newRepId.toString(), oldRepId.toString()); 
+        }
+        final String newRepStr = repAsStr.replace(oldRepId.toString(), newRepId.toString());
+        
+        try {
+            return UserReportDefinitionType.Factory.parse(newRepStr);
+        } catch (XmlException ex) {
+            throw new IllegalArgumentException("Unable to actualize report denifition ids, according current version", ex);
+        }
+    }
 
-    public static boolean loadFromDbStorage(AdsUserReportDefinitionDocument xReportDoc, Id reportId, long version, boolean isCurrentVersion, List<IRepositoryAdsDefinition> repositoryList) {
-        if (xReportDoc != null) {
-            UserReportDefinitionType xReportDef = xReportDoc.getAdsUserReportDefinition();
-            if (xReportDef != null) {
-                AdsDefinitionDocument xDefDoc = AdsDefinitionDocument.Factory.newInstance();
-                xDefDoc.addNewAdsDefinition().setAdsClassDefinition(xReportDef.getReport());
-                xDefDoc.getAdsDefinition().setFormatVersion(AdsSqlClassDef.FORMAT_VERSION);
-                Id localId;
-                if (isCurrentVersion) {
-                    localId = reportId;
-                } else {
-                    localId = buildReportVersion(reportId, version);
-                }
-                xDefDoc.getAdsDefinition().getAdsClassDefinition().setId(reportId);
-                TypeDeclaration superType = TypeDeclaration.Factory.newInstance();
-                superType.setTypeId(EValType.USER_CLASS);
-                superType.setPath(Arrays.asList(AdsReportClassDef.PREDEFINED_ID));
-                xDefDoc.getAdsDefinition().getAdsClassDefinition().setExtends(superType);
+    public static boolean loadFromDbStorage(AdsUserReportDefinitionDocument xReportDoc, 
+            Id reportId, long version, boolean isCurrentVersion, List<IRepositoryAdsDefinition> repositoryList) {
+        if (xReportDoc != null && xReportDoc.getAdsUserReportDefinition() != null) {
+            UserReportDefinitionType xReportWithCorrectIds = getReportDefWithCorrectIds(
+                    xReportDoc.getAdsUserReportDefinition(),
+                    reportId, version, isCurrentVersion);
+            AdsDefinitionDocument xDefDoc = AdsDefinitionDocument.Factory.newInstance();
+            xDefDoc.addNewAdsDefinition().setAdsClassDefinition(xReportWithCorrectIds.getReport());
+            xDefDoc.getAdsDefinition().setFormatVersion(AdsSqlClassDef.FORMAT_VERSION);
 
-                if (!isCurrentVersion) {//replace original id to version id;
-                    String text = xDefDoc.xmlText();
-                    String currentId = reportId.toString();
-                    String newId = localId.toString();
-                    String oldText;
-                    do {
-                        oldText = text;
-                        text = oldText.replace(newId, currentId);
-                    } while (text != oldText);
+            TypeDeclaration superType = TypeDeclaration.Factory.newInstance();
+            superType.setTypeId(EValType.USER_CLASS);
+            superType.setPath(Arrays.asList(AdsReportClassDef.PREDEFINED_ID));
+            xDefDoc.getAdsDefinition().getAdsClassDefinition().setExtends(superType);
 
-                    text = text.replace(currentId, newId);
-                    try {
-                        xDefDoc = AdsDefinitionDocument.Factory.parse(text);
-                    } catch (XmlException ex) {
-                    }
-                } else {
-                    Id possibleVersionId = buildReportVersion(reportId, version);
-                    String text = xDefDoc.xmlText();
-                    String currentId = possibleVersionId.toString();
-                    String newId = localId.toString();
-                    text = text.replace(currentId, newId);
-                    try {
-                        xDefDoc = AdsDefinitionDocument.Factory.parse(text);
-                    } catch (XmlException ex) {
-                    }
-                }
+            AdsReportClassDef reportClass = AdsUserReportClassDef.Factory.
+                    loadFromUser(xDefDoc.getAdsDefinition().getAdsClassDefinition());
+            FSRepositoryAdsDefinition definitionRepository = new FSRepositoryAdsDefinition(reportClass, false);
+            repositoryList.add(definitionRepository);
 
-                FSRepositoryAdsDefinition definitionRepository = null;
-                if (xDefDoc != null && xDefDoc.getAdsDefinition() != null && xDefDoc.getAdsDefinition().getAdsClassDefinition() != null) {
-                    AdsReportClassDef reportClass = AdsUserReportClassDef.Factory.loadFromUser(xDefDoc.getAdsDefinition().getAdsClassDefinition());
-                    repositoryList.add(definitionRepository = new FSRepositoryAdsDefinition(reportClass, false));
-                } else {
-                    return false;
-                }
-                if (xReportDef.getStrings() != null) {
-                    localId = Id.Factory.loadFrom("mlb" + localId.toString());
-                    xDefDoc = AdsDefinitionDocument.Factory.newInstance();
-                    xDefDoc.addNewAdsDefinition().addNewAdsLocalizingBundleDefinition().setId(localId);
-                    xDefDoc.getAdsDefinition().setFormatVersion(0);
-                    xDefDoc.getAdsDefinition().getAdsLocalizingBundleDefinition().assignStringList(xReportDef.getStrings().getStringList());
-                    AdsLocalizingBundleDef bundle = AdsLocalizingBundleDef.Factory.loadFrom(xDefDoc.getAdsDefinition().getAdsLocalizingBundleDefinition());
-                    definitionRepository.setBundle(bundle);
-                }
-                return true;
+            if (xReportWithCorrectIds.getStrings() != null) {
+                xDefDoc = AdsDefinitionDocument.Factory.newInstance();
+                xDefDoc.addNewAdsDefinition().addNewAdsLocalizingBundleDefinition().
+                        setId(xReportWithCorrectIds.getStrings().getId());
+                xDefDoc.getAdsDefinition().setFormatVersion(0);
+                xDefDoc.getAdsDefinition().getAdsLocalizingBundleDefinition().
+                        assignStringList(xReportWithCorrectIds.getStrings().getStringList());
+                AdsLocalizingBundleDef bundle = AdsLocalizingBundleDef.Factory.
+                        loadFrom(xDefDoc.getAdsDefinition().getAdsLocalizingBundleDefinition());
+                definitionRepository.setBundle(bundle);
             }
+            return true;
         }
         return false;
+    }
+    
+    public static void migrateChangeLogToVersionForCompatibility(UserReportExchangeType exportDoc, UserReportDefinitionType xVersion) {
+        if (exportDoc == null || xVersion == null || xVersion.getReport() == null || xVersion.getReport().getReport() == null) {
+            return;
+        }
+        if (exportDoc.isSetChangeLog() && !xVersion.getReport().getReport().isSetChangeLog()) {
+            xVersion.getReport().getReport().setChangeLog(exportDoc.getChangeLog());
+        }
     }
 }

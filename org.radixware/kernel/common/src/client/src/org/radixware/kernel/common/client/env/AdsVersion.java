@@ -25,6 +25,8 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.common.utils.VersionNumber;
 import org.radixware.kernel.starter.meta.RevisionMeta;
 import org.radixware.kernel.starter.radixloader.EActualizeAction;
 import org.radixware.kernel.starter.radixloader.IActualizeController;
@@ -80,7 +82,7 @@ public abstract class AdsVersion {
         public static void printListOfChanges(final long versionNum, final Set<String> modifiedFiles, final Set<String> removedFiles, final Set<String> changedGroups, final ClientTracer tracer){
             final StringBuffer message = new StringBuffer("");
             if (changedGroups != null) {
-                final List<String> changedGroupNames = new ArrayList<String>();
+                final List<String> changedGroupNames = new ArrayList<>();
                 String groupName;
                 for (String group : changedGroups) {
                     groupName = groupToString(GroupType.Enum.forString(group));
@@ -117,6 +119,9 @@ public abstract class AdsVersion {
         }
         
         public static boolean isKernelChanged(final Set<String> changedGroups){
+            if (changedGroups==null){
+                return false;
+            }
             return changedGroups.contains(GroupType.KERNEL_EXPLORER.toString())
                     || changedGroups.contains(GroupType.KERNEL_WEB.toString())
                     || changedGroups.contains(GroupType.KERNEL_COMMON.toString());
@@ -126,28 +131,32 @@ public abstract class AdsVersion {
     //Запрещает подъем версии, если были изменения в файлах, используемых проводником
     final private static class PrimaryActualizeController implements IActualizeController{
         
-        private volatile long newVersion = -1;
+        private volatile long targetVersion = -1;
         private volatile boolean kernelWasChanged = false;
         private volatile boolean wasActualized = false;
         private final boolean isAdsLoaded;
         private final IClientEnvironment environment;
         private final Object changedFilesSemaphore = new Object();
         private final Set<String> changedFiles = new HashSet<>();        
+        private final boolean hotUpdate;
         
-        public PrimaryActualizeController(final IClientEnvironment environment, final boolean adsWasLoaded){
+        public PrimaryActualizeController(final IClientEnvironment environment, 
+                                                           final boolean adsWasLoaded,
+                                                           final boolean hotUpdate){
             this.environment = environment;
             isAdsLoaded = adsWasLoaded;
+            this.hotUpdate = hotUpdate;
         }
         
-        public long getNewVersion(){
-            return newVersion;
+        public long getTargetVersion(){
+            return targetVersion;
         }
         
         public boolean kernelWasChanged(){
             return kernelWasChanged;
         }
         
-        public boolean isNewVersionAccepted(){
+        public boolean isTargetVersionAccepted(){
             return wasActualized;
         }
         
@@ -158,9 +167,19 @@ public abstract class AdsVersion {
         }        
 
         @Override
-        public EActualizeAction canUpdateTo(final RevisionMeta revisionMeta, final Set<String> modifiedFiles, final Set<String> removedFiles, final Set<String> changedGroups) {            
-            newVersion = revisionMeta.getNum();
-            ActualizationUtils.printListOfChanges(newVersion, modifiedFiles, removedFiles, changedGroups, environment.getTracer());
+        public EActualizeAction canUpdateTo(final RevisionMeta revisionMeta, 
+                                                                final Set<String> modifiedFiles, 
+                                                                final Set<String> removedFiles, 
+                                                                final Set<String> changedGroups) {
+            targetVersion = revisionMeta.getNum();
+            ActualizationUtils.printListOfChanges(targetVersion, modifiedFiles, removedFiles, changedGroups, environment.getTracer());
+            if (!hotUpdate){
+                if (changedGroups!=null && ActualizationUtils.isKernelChanged(changedGroups)) {
+                    kernelWasChanged = true;
+                    ActualizationUtils.printKernelChangesMessage(environment.getMessageProvider(), environment.getTracer());                    
+                }                
+                return EActualizeAction.POSTPONE;
+            }
             if (changedGroups != null) {
                 if (ActualizationUtils.isKernelChanged(changedGroups)) {
                     kernelWasChanged = true;
@@ -181,6 +200,7 @@ public abstract class AdsVersion {
                 
                 if (isAdsLoaded                        
                         && (changedGroups.contains(clientGroupType)
+                        || changedGroups.contains(GroupType.ADS_CLIENT.toString())
                         || changedGroups.contains(GroupType.ADS_COMMON.toString()))) {
                     synchronized(changedFilesSemaphore){
                         changedFiles.addAll(modifiedFiles);
@@ -191,7 +211,7 @@ public abstract class AdsVersion {
             }
 
             final String message = environment.getMessageProvider().translate("ExplorerMessage", "There are no changes of explorer definitions found in %s version. Just change number of version");
-            environment.getTracer().put(EEventSeverity.DEBUG, String.format(message, String.valueOf(newVersion)), EEventSource.CLIENT_DEF_MANAGER);
+            environment.getTracer().put(EEventSeverity.DEBUG, String.format(message, String.valueOf(targetVersion)), EEventSource.CLIENT_DEF_MANAGER);
             wasActualized = true;
             return EActualizeAction.PERFORM_ACTUALIZATION;
         }
@@ -201,17 +221,17 @@ public abstract class AdsVersion {
     //Разрешает подъем версии, если не изменялся сам проводник
     final private static class SecondaryActualizeController implements IActualizeController{
         
-        private volatile long newVersion = -1;
+        private volatile long targetVersion = -1;
         private volatile boolean kernelChanged = false;
         private final IClientApplication environment;
 
-        public SecondaryActualizeController(final IClientApplication environment, final long newVersion){
+        public SecondaryActualizeController(final IClientApplication environment, final long targetVersion){
             this.environment = environment;            
-            this.newVersion = newVersion;
+            this.targetVersion = targetVersion;
         }
         
-        public long getNewVersion(){
-            return newVersion;
+        public long getTargetVersion(){
+            return targetVersion;
         }        
         
         public boolean kernelWasChanged(){
@@ -219,10 +239,13 @@ public abstract class AdsVersion {
         }        
         
         @Override
-        public EActualizeAction canUpdateTo(RevisionMeta revisionMeta, Set<String> modifiedFiles, Set<String> removedFiles, Set<String> changedGroups) {
-            if (revisionMeta.getNum()>newVersion){
-                newVersion = revisionMeta.getNum();
-                ActualizationUtils.printListOfChanges(newVersion, modifiedFiles, removedFiles, changedGroups, environment.getTracer());
+        public EActualizeAction canUpdateTo(final RevisionMeta revisionMeta, 
+                                                                final Set<String> modifiedFiles,
+                                                                final Set<String> removedFiles,
+                                                                final Set<String> changedGroups) {
+            if (revisionMeta.getNum()>targetVersion){
+                targetVersion = revisionMeta.getNum();
+                ActualizationUtils.printListOfChanges(targetVersion, modifiedFiles, removedFiles, changedGroups, environment.getTracer());
                 if (changedGroups != null && ActualizationUtils.isKernelChanged(changedGroups)) {
                     kernelChanged = true;
                     ActualizationUtils.printKernelChangesMessage(environment.getMessageProvider(), environment.getTracer());
@@ -235,12 +258,14 @@ public abstract class AdsVersion {
             
     private final Object releaseLock = new Object();    
     private volatile Release release;    
-    private volatile long newVersion = -1;
+    private volatile long targetVersion = -1;
     private volatile long currentVersion = -1;
     private volatile boolean kernelWasChanged;
     private volatile boolean isSupported = true;
     private volatile boolean isActualized = true;
     private volatile Collection<Id> changedDefinitionIds;
+    private boolean creatingRelease = false;
+    protected final IClientApplication env;    
     private final List<VersionListener> listeners = new LinkedList<>();
     private final VersionListener versionListener = new VersionListener() {
 
@@ -269,13 +294,18 @@ public abstract class AdsVersion {
             listeners.remove(l);
         }
     }
-    protected final IClientApplication env;
-
-    public AdsVersion(IClientApplication env) {
-        this.env = env;
-    }
     
-    private boolean creatingRelease = false;
+
+    public AdsVersion(final IClientApplication env) {
+        this.env = env;
+    }        
+    
+    protected AdsVersion(final IClientApplication env, final long targetVersion) {
+        this.env = env;
+        this.currentVersion = targetVersion>-1 ? 0 : -1;
+        this.targetVersion = targetVersion;
+    }        
+    
 
     Release release(final boolean showWaitDialog) {
         synchronized (releaseLock) {
@@ -286,8 +316,8 @@ public abstract class AdsVersion {
                     } catch (RadixLoaderException ex) {
                         throw new RadixError("Unnable to init definition manager: Cannot get current definition's version", ex);
                     }
-                } else if (isNewVersionAvailable() && !isKernelWasChanged()) {
-                    updateToNewVersion();
+                } else if (getTargetVersionNumber()>-1 && !isKernelWasChanged()) {
+                    switchToTargetVersion();
                     if (release != null) {
                         return release;
                     }
@@ -318,9 +348,9 @@ public abstract class AdsVersion {
         Thread.currentThread().setContextClassLoader(rxClassLoader);
     }
 
-    public boolean isNewVersionAvailable() {
+    public long getTargetVersionNumber() {
         synchronized (releaseLock) {
-            return currentVersion < newVersion;
+            return targetVersion;
         }
     }
 
@@ -329,26 +359,25 @@ public abstract class AdsVersion {
             return kernelWasChanged;
         }
     }
-
-    public void setNewVersion(final long version) {
+    protected void setTargetVersion(final long version) {
         synchronized (releaseLock) {
             final String message = env.getMessageProvider().translate("ExplorerMessage", "New definition version with number %s detected.");
             env.getTracer().put(EEventSeverity.EVENT, String.format(message, String.valueOf(version)), EEventSource.CLIENT_DEF_MANAGER);
-            newVersion = version;
+            targetVersion = version;
         }
     }
 
-    protected void afterUpdateToNewVersion(final Integer oldClassLoaderId){
+    protected void afterSwitchVersion(final Integer oldClassLoaderId){
         env.getImageManager().clearCache(true);
     }
 
-    public final void updateToNewVersion() throws CantUpdateVersionException{        
+    public final void switchToTargetVersion() throws CantUpdateVersionException{
         synchronized (releaseLock) {
             if (!kernelWasChanged){
-                final SecondaryActualizeController acontroller = new SecondaryActualizeController(env, newVersion);
-                actualizeRadixLoader(acontroller, null);
-                if (acontroller.getNewVersion()>0){
-                    newVersion = acontroller.getNewVersion();
+                final SecondaryActualizeController acontroller = new SecondaryActualizeController(env, targetVersion);
+                actualizeRadixLoader(acontroller, null, targetVersion);
+                if (acontroller.getTargetVersion()>0){
+                    targetVersion = acontroller.getTargetVersion();
                 }
                 kernelWasChanged = acontroller.kernelWasChanged();
             }
@@ -360,7 +389,7 @@ public abstract class AdsVersion {
                     throw new KernelClassModifiedException(false);
                 }
             }
-            if (newVersion >= 0) {
+            if (targetVersion >= 0) {
                 final RadixClassLoader oldClassLoader = getRadixClassLoader();
                 final Integer oldClassLoaderId = oldClassLoader==null ? null : oldClassLoader.hashCode();                
                 env.getEnvironmentCache().invalidateUserSessions();
@@ -370,13 +399,13 @@ public abstract class AdsVersion {
                 }
                 release = null;
                 changedDefinitionIds = null;
-                currentVersion = newVersion;
+                currentVersion = targetVersion;
                 isSupported = true;
-                newVersion = -1;
+                targetVersion = -1;
                 final String message = env.getMessageProvider().translate("ExplorerMessage", "Update to version %s complete.");
                 env.getTracer().put(EEventSeverity.EVENT, String.format(message, String.valueOf(currentVersion)), EEventSource.CLIENT_DEF_MANAGER);                
                 versionUpdated();
-                afterUpdateToNewVersion(oldClassLoaderId);
+                afterSwitchVersion(oldClassLoaderId);
             }
         }
     }
@@ -437,15 +466,6 @@ public abstract class AdsVersion {
         }
     }
     
-    public long getLastVersionNumber(){
-        if (release == null){
-            release(false);//init version
-        }        
-        synchronized (releaseLock) {
-            return Math.max(newVersion,currentVersion);
-        }
-    }
-
     private String getKernelChangesMessage() {
         return env.getMessageProvider().translate("ExplorerMessage", "Changes detected in kernel.\nYou should restart explorer to apply changes");
     }
@@ -464,12 +484,16 @@ public abstract class AdsVersion {
 
     protected abstract void versionNumberUpdated();
     
-    private void actualizeRadixLoader(final IActualizeController controller, final IClientEnvironment contextEnvironment) throws CantUpdateVersionException{
+    private void actualizeRadixLoader(final IActualizeController controller, final IClientEnvironment contextEnvironment, final long targetVersion) throws CantUpdateVersionException{
         RadixLoader.getInstance().setActualizeController(controller);
         if (contextEnvironment==null || !contextEnvironment.getApplication().isInGuiThread()){
             try{
                 isActualized = false;
-                RadixLoader.getInstance().actualize(null, null, null, null);
+                if (targetVersion>-1){
+                    RadixLoader.getInstance().actualize(targetVersion, null, null, null, null);
+                }else{
+                    RadixLoader.getInstance().actualize(null, null, null, null);
+                }
                 isActualized = true;
             }catch(RadixLoaderException exception){
                 throw new CantUpdateVersionException("Error occuring during actualize version: " + exception.getMessage());
@@ -479,7 +503,11 @@ public abstract class AdsVersion {
                 final Callable<Set<String>> task = new Callable<Set<String>>() {
                     @Override
                     public Set<String> call() throws RadixLoaderException {
-                        return RadixLoader.getInstance().actualize(null, null, null, null);
+                        if (targetVersion>-1){
+                            return RadixLoader.getInstance().actualize(targetVersion, null, null, null, null);
+                        }else{
+                            return RadixLoader.getInstance().actualize(null, null, null, null);
+                        }
                     }
                 };                    
                 final ITaskWaiter waiter = contextEnvironment.getApplication().newTaskWaiter();
@@ -501,21 +529,31 @@ public abstract class AdsVersion {
             }
         }
     }
+    
+    public final Collection<Id> checkForUpdates(final IClientEnvironment contextEnvironment) throws CantUpdateVersionException {
+        return prepareSwitchVersion(contextEnvironment, -1, true);
+    }
         
-    public Collection<Id> checkForUpdates(final IClientEnvironment contextEnvironment) throws CantUpdateVersionException {
+    public Collection<Id> prepareSwitchVersion(final IClientEnvironment contextEnvironment, 
+                                                                      final long targetVersion,
+                                                                      final boolean enableAutoSwitch) throws CantUpdateVersionException {
+        if (targetVersion>0 && targetVersion==getNumber()){
+            return null;
+        }                
         synchronized (releaseLock) {
             if (kernelWasChanged) {
                 return Collections.emptyList();
             }
-            final PrimaryActualizeController acontroller = new PrimaryActualizeController(contextEnvironment, release!=null);
-            actualizeRadixLoader(acontroller, contextEnvironment);
+            final PrimaryActualizeController acontroller = 
+                new PrimaryActualizeController(contextEnvironment, release!=null, enableAutoSwitch);
+            actualizeRadixLoader(acontroller, contextEnvironment, targetVersion);
 
-            final long version = acontroller.getNewVersion();
+            final long version = acontroller.getTargetVersion();
             if (version>=0){
-                if (changedDefinitionIds != null && version == newVersion) {
+                if (changedDefinitionIds != null && version == targetVersion) {
                     return changedDefinitionIds;
                 }
-                if (acontroller.isNewVersionAccepted()){
+                if (acontroller.isTargetVersionAccepted()){
                     if (release!=null){
                         versionNumberUpdated();
                     }
@@ -524,13 +562,13 @@ public abstract class AdsVersion {
                 }else{
                     if (acontroller.kernelWasChanged()){
                         kernelWasChanged = true;
-                        setNewVersion(version);
+                        setTargetVersion(version);
                         return Collections.emptyList();
                     }
                     if (changedDefinitionIds == null) {
                         changedDefinitionIds = new ArrayList<>();
                     }
-                    setNewVersion(version);
+                    setTargetVersion(version);
                     final IProgressHandle ph = startChangeAnalyse(contextEnvironment);
                     final ReleaseRepository repository = release(true).getClassLoader().getRepository();
                     try {
@@ -545,6 +583,19 @@ public abstract class AdsVersion {
         contextEnvironment.getTracer().put(EEventSeverity.DEBUG, contextEnvironment.getMessageProvider().translate("ExplorerMessage", "version was not changed"), EEventSource.CLIENT_DEF_MANAGER);
         return null;
     }
+    
+    public static boolean belowRadixWareVersion(final String version){
+        if (RadixLoader.getInstance()==null || version==null || version.isEmpty()){
+            return false;
+        }else{
+            final RevisionMeta revisionMeta = RadixLoader.getInstance().getCurrentRevisionMeta();
+            final String appVersionString = revisionMeta.getAppLayerVersionsString();
+            final Map<String,VersionNumber> appVersionByUri = Utils.parseVersionsByKey(appVersionString);
+            final VersionNumber rxVersion = appVersionByUri.get("org.radixware");
+            return rxVersion!=null && rxVersion.compareTo(VersionNumber.valueOf(version))<0;
+        }
+    }
+    
 
     protected abstract IProgressHandle startChangeAnalyse(IClientEnvironment contextEnvironment);
 

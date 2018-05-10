@@ -1,0 +1,24 @@
+
+class TestParent {
+
+    protected int Property; // should be overriden
+}
+
+class Test extends TestParent {
+
+    int getProperty() {
+	return 1;
+    }
+
+    void setProperty(int i) {
+    }
+
+    void f() {
+	this.Property = 1;
+    }
+
+    static public void main(String[] args) {
+	Test t = new Test();
+	t.f();
+    }
+}

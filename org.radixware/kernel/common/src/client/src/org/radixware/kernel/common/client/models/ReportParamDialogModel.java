@@ -161,7 +161,7 @@ public abstract class ReportParamDialogModel extends ModelWithPages {
                     if (property.getDefinition().getType() == EValType.XML) {
                         final PropertyXml xmlProp = (PropertyXml) property;
                         value = 
-                            xmlProp.castValue(ValueConverter.easPropXmlVal2ObjVal(item, EValType.XML, null));                        
+                            xmlProp.castValue(ValueConverter.easPropXmlVal2ObjVal(item, EValType.XML, null));
                     } else {
                         final Id valTableId;
                         if (property.getDefinition() instanceof RadParentRefPropertyDef) {
@@ -170,7 +170,7 @@ public abstract class ReportParamDialogModel extends ModelWithPages {
                             valTableId = null;
                         }
                         value = 
-                            ValueConverter.easPropXmlVal2ObjVal(item, property.getDefinition().getType(), valTableId);
+                            ValueConverter.easPropXmlVal2ObjVal(item, property.getDefinition().getType(), valTableId, getEnvironment().getDefManager());
                     }
                     property.setServerValue(new PropertyValue(property.getDefinition(), value));
                 } catch (RuntimeException ex) {

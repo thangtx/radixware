@@ -53,8 +53,8 @@ public class RwtRadioButtonItem extends Item {
         String label = Item.getTextById(node, text.getStringId());
 
         AdsUIProperty.RectProperty size = (AdsUIProperty.RectProperty) AdsMetaInfo.getPropByName(AdsUIUtil.getQtClassName(node), "geometry", node);
-        int height = DrawUtil.DEFAULT_FONT_METRICS.getHeight();
-        int width = DrawUtil.DEFAULT_FONT_METRICS.stringWidth(label) + size.height;
+        int height = DrawUtil.getFontMetrics().getHeight();
+        int width = DrawUtil.getFontMetrics().stringWidth(label) + size.height;
 //        if (width != size.height)
 //            width += 4;
 

@@ -145,9 +145,18 @@ class ProgressHandle extends QObject implements IProgressHandle {
             }
         }
     }        
+    
+    public final boolean forceShow(){
+        if (isActive() && !wasShown && startTimer.isActive()){            
+            startTimer.stop();
+            return start();            
+        }else{
+            return false;
+        }
+    }
 
     @SuppressWarnings("unused")
-    private void start() {
+    private boolean start() {
         traceCall("start");
         //WaitDialog.getInstance().setUpdatesEnabled(true);
         wasShown = true;
@@ -156,8 +165,10 @@ class ProgressHandle extends QObject implements IProgressHandle {
             updateProgressView();
             pause(PAUSE_AFTER_UPDATE);
             unblockUserInput();
+            return true;
         } else {
             updateProgressView();
+            return false;
         }
     }
 

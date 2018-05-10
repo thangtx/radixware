@@ -10,7 +10,6 @@
  */
 package org.radixware.kernel.common.compiler.core.completion;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.defs.RadixObject;
@@ -40,7 +39,7 @@ public class AdsTypeCompletionItem extends AbstractCompletionItem {
         if (xmlType != null) {
             this.sortText = xmlType.getName();
             this.leadText = "<b><font color=\"001F3D\">" + this.sortText + "</font></b>";
-            this.tailText = obj.getOwnerForQualifedName().getQualifiedName();
+            this.tailText = obj.getQualifiedName();
             if (xmlType.getOwnerInterface() != null) {
                 this.tailText += ":" + xmlType.getOwnerInterface().getQName();
             }
@@ -56,7 +55,7 @@ public class AdsTypeCompletionItem extends AbstractCompletionItem {
             this.tailText = obj.getOwnerForQualifedName().getQualifiedName();
         }
     }
-
+    
     @Override
     public RadixIcon getIcon() {
         return getRadixObject().getIcon();

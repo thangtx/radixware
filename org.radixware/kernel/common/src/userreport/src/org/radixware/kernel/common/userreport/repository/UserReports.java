@@ -25,17 +25,18 @@ import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef;
 import org.radixware.kernel.common.defs.ads.module.AdsImageDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.ERepositorySegmentType;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.defs.utils.changelog.ChangeLog;
 import org.radixware.kernel.common.userreport.common.UserExtensionManagerCommon;
 import org.radixware.kernel.common.utils.Base64;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.XmlFormatter;
-import org.radixware.schemas.adsdef.AdsUserReportDefinitionDocument;
 import org.radixware.schemas.adsdef.AdsUserReportExchangeDocument;
 import org.radixware.schemas.adsdef.UserReportDefinitionType;
 import org.radixware.schemas.adsdef.UserReportExchangeType;
@@ -86,93 +87,10 @@ public class UserReports {
 
     public UserReport addNewReport(ReportsModule reportModule) {
         return UserExtensionManagerCommon.getInstance().getUserReportManager().addNewReport(reportModule);
-       /* final AdsClassCreature creature = AdsClassCreature.Factory.newInstance(reportModule, EClassType.REPORT, true);
-
-        ICreatureGroup.ICreature result = CreationWizard.execute(new ICreatureGroup[]{new ICreatureGroup() {
-                @Override
-                public List<ICreatureGroup.ICreature> getCreatures() {
-                    return Collections.<ICreatureGroup.ICreature>singletonList(creature);
-                }
-
-                @Override
-                public String getDisplayName() {
-                    return "User Reports";
-                }
-            }}, creature);
-        if (result != null) {
-
-            final RadixObject radixObject = result.commit();
-            if (radixObject instanceof AdsReportClassDef) {
-                //try create user report in database using new report guid;
-                AdsReportClassDef report = (AdsReportClassDef) radixObject;
-
-                UserReport userReport = UserReport.create(reportModule, report);
-                if (userReport != null) {
-                    firePropertyChange("report-list");
-                }
-                return userReport;
-            } else {
-                if (radixObject != null) {
-                    radixObject.delete();
-                }
-            }
-        }
-
-
-        return null;*/
     }
-
-   /* private static final class UserReportModuleCreature extends NamedRadixObjectCreature<AdsModule> {
-
-        public UserReportModuleCreature() {
-            super(UserExtensionManager.getInstance().getReportsSegment().getModules(), "Create new Module");
-        }
-
-        @Override
-        public AdsModule createInstance(String name) {
-            return new ReportsModule(name);
-        }
-
-        @Override
-        public RadixIcon getIcon() {
-            return AdsDefinitionIcon.MODULE;
-        }
-    }*/
 
     public ReportsModule addNewModule() {
         return UserExtensionManagerCommon.getInstance().getUserReportManager().addNewModule();
-        /*final UserReportModuleCreature creature = new UserReportModuleCreature();
-        ICreatureGroup.ICreature result = CreationWizard.execute(new ICreatureGroup[]{new ICreatureGroup() {
-                @Override
-                public List<ICreatureGroup.ICreature> getCreatures() {
-                    return Collections.<ICreatureGroup.ICreature>singletonList(creature);
-                }
-
-                @Override
-                public String getDisplayName() {
-                    return "User Report Modules";
-                }
-            }}, creature);
-        if (result != null) {
-
-            final RadixObject radixObject = result.commit();
-            if (radixObject instanceof ReportsModule) {
-                //try create user report in database using new report guid;
-                ReportsModule module = (ReportsModule) radixObject;
-                if (module.create()) {
-                    firePropertyChange("report-module-list");
-                    return module;
-                } else {
-                    radixObject.delete();
-                    return null;
-                }
-            } else {
-                radixObject.delete();
-                return null;
-            }
-        } else {
-            return null;
-        }*/
     }
 
     public ReportsModule findModuleById(Id id) {
@@ -191,8 +109,9 @@ public class UserReports {
         if (readLock.tryLock()) {
             try {
                 if (reports != null) {
-                    for (UserReport r : reports.values()) {
-                        r.notifyUnloaded();
+                    List<UserReport> copy = new ArrayList<>(reports.values());
+                    for (UserReport r : copy) {
+                        unregisterReportImpl(r);
                     }
                 }
                 reports = null;
@@ -268,16 +187,21 @@ public class UserReports {
     }
 
     public void unregisterReport(UserReport report) {
+        unregisterReportImpl(report);
+        firePropertyChange("report-list");
+    }
+    
+    private void unregisterReportImpl(UserReport report) {
         readLock.lock();
         try {
             if (reports != null) {
                 reports.remove(report.getId());
+                report.setModified(false);
                 report.notifyUnloaded();
             }
         } finally {
             readLock.unlock();
         }
-        firePropertyChange("report-list");
     }
 
     public void close() {
@@ -344,17 +268,6 @@ public class UserReports {
                     }else{
                         currentReportId = id;
                     }
-                    /*ChooseImportActionDialog dialog = new ChooseImportActionDialog(existingReport.getName());
-                    ModalDisplayer.showModal(dialog);
-                    switch (dialog.getOption()) {
-                        case ChooseImportActionDialog.OPTION_CANCEL:
-                            return;
-                        case ChooseImportActionDialog.OPTION_ADD_VERSIONS:
-                            existingReport.importNewVersion(xDoc);
-                            return;
-                        default:
-                            currentReportId = Id.Factory.newInstance(EDefinitionIdPrefix.USER_DEFINED_REPORT);
-                    }*/
                 }else{
                     currentReportId=Id.Factory.newInstance(EDefinitionIdPrefix.USER_DEFINED_REPORT);
                 }
@@ -421,6 +334,7 @@ public class UserReports {
                 for (int i = 0; i < xEx.getAdsUserReportDefinitionList().size(); i++) {
                     UserReportDefinitionType xDef = xEx.getAdsUserReportDefinitionList().get(i);
                     if (xDef.getReport() != null) {
+                        AdsUserReportClassDef.migrateChangeLogToVersionForCompatibility(xEx, xDef);
                         UserReport.ReportVersion newVersion = report.getVersions().addNewVersion(xEx.getAdsUserReportDefinitionList().get(i));
                         if (newCurrent == null) {
                             newCurrent = newVersion;

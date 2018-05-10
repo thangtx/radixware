@@ -8,11 +8,12 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +24,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.logging.LogFactory;
 import org.radixware.kernel.common.auth.AuthUtils;
 import org.radixware.kernel.common.enums.EEventSeverity;
@@ -32,13 +35,33 @@ import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.server.utils.KernelLayers;
+import org.radixware.kernel.starter.StarterAgent;
 import org.radixware.kernel.starter.config.ConfigEntry;
 import org.radixware.kernel.starter.config.ConfigFileAccessor;
 import org.radixware.kernel.starter.config.ConfigFileParseException;
 
 public final class SrvRunParams {
 
+    private static final boolean testMode;
+
+    static {
+        final String serverClassName = Server.class.getName();
+        boolean found = false;
+
+        loop:
+        for (StackTraceElement[] stack : Thread.getAllStackTraces().values()) {
+            for (StackTraceElement item : stack) {
+                if (item.getClassName().equals(serverClassName) && "main".equals(item.getMethodName())) {
+                    found = true;
+                    break loop;
+                }
+            }
+        }
+        testMode = !found;
+    }
+
     static final String DEV_MODE = "-development";
+    static final String HOTSWAP_MODE = "-hotswap";
     static final String USE_LOCAL_JOB_EXECUTOR = "-useLocalJobExecutor";
     public static final String DETAILED_3RD_PARTY_LOGGING = "-detailed3rdPartyLogging";
     static final String SWITCH_EAS_VER_CHECKS_OFF = "-switchEasVerChecksOff";
@@ -76,6 +99,8 @@ public final class SrvRunParams {
     public static final String TDUMPS_STORE_DAYS = "-tdumpsStoreDays";
     public static final String DUAL_CONTROL_ROLE_ASSIGNMENT = "-dualControlRoleAssignment";
     public static final String DISABLE_ARTE_DB_CONN_CLOSE_ON_CLIENT_DISCONNECT = "-disableArteDbConnCloseOnClientDisconnect";
+    public static final String LICENSE_WARN_DAYS = "-licenseWarnDays";
+    public static final String ALLOW_WEB_DRIVER_FOR_EAS = "-allowWebDriverForEas";
     //
     public static final String SERVER_SECTION = "Server";
     public static final int SENS_TRACE_TIME_MAX_MILLIS = 8 * 60 * 60 * 1000;//from PA-DSS standarts
@@ -98,6 +123,7 @@ public final class SrvRunParams {
     private static volatile boolean externalAuth = false;
     private static volatile String jdwpAddress = null;
     private static volatile boolean isDevMode = false;
+    private static volatile boolean isHotSwapMode = false;
     private static volatile boolean isDetailed3rdPartyLogging = false;
     private static volatile long localSensitiveTracingFinishMillis = 0;
     private static volatile NewInstanceSettings newInstanceSettings;
@@ -109,16 +135,21 @@ public final class SrvRunParams {
     private static volatile int tdumpsStoreDays = -1;
     private static volatile boolean dualControlRoleAssignment = false;
     private static volatile boolean disableArteDbConnCloseOnClientDisconnect = false;
+    private static volatile int licenseWarnDays = -1;
+    private static volatile boolean allowWebDriverForEas = false;
 
     private SrvRunParams() {
         //singleton
     }
-    
-    
+
+    public static final boolean isInTestEnvironment() {
+        return testMode;
+    }
+
     public static final boolean getIsDisableArteDbConnCloseOnClientDisconnect() {
         return disableArteDbConnCloseOnClientDisconnect;
     }
-    
+
     public static final void setIsDisableArteDbConnCloseOnClientDisconnect(final boolean value) {
         disableArteDbConnCloseOnClientDisconnect = value;
     }
@@ -130,11 +161,19 @@ public final class SrvRunParams {
     public static final void setIgnoreDdsWarnings(final boolean val) {
         ignoreDdsWarnings = val;
     }
-    
+
+    public static final void setLicenseWarnDays(final int days) {
+        licenseWarnDays = days;
+    }
+
+    public static final int getLicenseWarnDays() {
+        return licenseWarnDays;
+    }
+
     public static boolean getIsDualControlRoleAssignment() {
         return dualControlRoleAssignment;
     }
-    
+
     public static void setDualControlRoleAssignment(final boolean val) {
         dualControlRoleAssignment = val;
     }
@@ -220,6 +259,10 @@ public final class SrvRunParams {
         isDevMode = true;
     }
 
+    public static void setHotSwapMode() {
+        isHotSwapMode = true;
+    }
+    
     public static void setDetailed3rdPartyLoggingEnabled(boolean enabled) {
         isDetailed3rdPartyLogging = enabled;
     }
@@ -300,6 +343,10 @@ public final class SrvRunParams {
         return isDevMode;
     }
 
+    public static boolean getIsHotSwapMode() {
+        return isHotSwapMode;
+    }
+    
     public static boolean isDetailed3rdPartyLoggingEnabled() {
         return isDetailed3rdPartyLogging;
     }
@@ -336,6 +383,14 @@ public final class SrvRunParams {
         return tdumpsStoreDays;
     }
 
+    public static boolean getAllowWebDriverForEas() {
+        return allowWebDriverForEas;
+    }
+
+    public static void setAllowWebDriverForEas(final boolean allow) {
+        allowWebDriverForEas = allow;
+    }
+
     public static String[] getRestartParams() {
         final ArrayList<String> params = new ArrayList<String>(20);
         params.add(AUTOSTART);
@@ -347,6 +402,9 @@ public final class SrvRunParams {
         }
         if (getIsDevelopmentMode()) {
             params.add(DEV_MODE);
+        }
+        if (getIsHotSwapMode()) {
+            params.add(HOTSWAP_MODE);
         }
         params.add(DB_URL);
         params.add(getDbUrl());
@@ -419,9 +477,13 @@ public final class SrvRunParams {
             params.add(TDUMPS_STORE_DAYS);
             params.add(String.valueOf(tdumpsStoreDays));
         }
-        
+
         if (dualControlRoleAssignment) {
             params.add(DUAL_CONTROL_ROLE_ASSIGNMENT);
+        }
+
+        if (allowWebDriverForEas) {
+            params.add(ALLOW_WEB_DRIVER_FOR_EAS);
         }
 
         params.add(RESTART);
@@ -684,6 +746,8 @@ public final class SrvRunParams {
         String dbPwd = null, encDbPwd = null;
         String ksPwd = null, encKsPwd = null;
         String oraWalletPwd = null, encOraWalletPwd = null;
+        boolean needHotSwap = false;
+        
         for (int i = 0; i < len; i++) {
             try {
                 if (args[i].equals(SrvRunParams.DB_URL)) {
@@ -710,11 +774,13 @@ public final class SrvRunParams {
                     SrvRunParams.setExternalAuth(true);
                 } else if (args[i].equals(SrvRunParams.DEV_MODE)) {
                     SrvRunParams.setDevelopmentMode();
+                } else if (args[i].equals(SrvRunParams.HOTSWAP_MODE)) {
+                    needHotSwap = true;
                 } else if (args[i].equals(SrvRunParams.DETAILED_3RD_PARTY_LOGGING)) {
                     SrvRunParams.setDetailed3rdPartyLoggingEnabled(true);
                 } else if (args[i].equals(SrvRunParams.DUAL_CONTROL_ROLE_ASSIGNMENT)) {
                     SrvRunParams.setDualControlRoleAssignment(true);
-                }  else if (args[i].equals(SrvRunParams.USE_LOCAL_JOB_EXECUTOR)) {
+                } else if (args[i].equals(SrvRunParams.USE_LOCAL_JOB_EXECUTOR)) {
                     SrvRunParams.setUseLocalJobExecutor(true);
                 } else if (args[i].equals(SrvRunParams.ROTATE_FILE_LOGS_DAILY)) {
                     SrvRunParams.setRotateFileLogsDaily(true);
@@ -751,14 +817,21 @@ public final class SrvRunParams {
                     setIgnoreDdsWarnings(true);
                 } else if (args[i].equals(SrvRunParams.TDUMPS_STORE_DAYS)) {
                     try {
-                    setTdumpsStoreDays(Integer.parseInt(args[++i]));
+                        setTdumpsStoreDays(Integer.parseInt(args[++i]));
                     } catch (NumberFormatException ex) {
                         throw new ParamValueException(TDUMPS_STORE_DAYS + " should be an integer");
                     }
                 } else if (args[i].equals(SrvRunParams.DISABLE_ARTE_DB_CONN_CLOSE_ON_CLIENT_DISCONNECT)) {
                     setIsDisableArteDbConnCloseOnClientDisconnect(true);
-                }
-                else {
+                } else if (args[i].equals(SrvRunParams.ALLOW_WEB_DRIVER_FOR_EAS)) {
+                    setAllowWebDriverForEas(true);
+                } else if (args[i].equals(SrvRunParams.LICENSE_WARN_DAYS)) {
+                    try {
+                        setLicenseWarnDays(Integer.parseInt(args[++i]));
+                    } catch (NumberFormatException ex) {
+                        throw new ParamValueException(LICENSE_WARN_DAYS + " should be an integer");
+                    }
+                } else {
                     throw new UnsupportedParamException(args[i]);
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -766,6 +839,27 @@ public final class SrvRunParams {
             }
         }
 
+        if (needHotSwap) {
+            if (!getIsDevelopmentMode()) {
+                throw new ParamException("HotSwap mode can be used in conjunction with development mode only!");
+            }
+            else if (!StarterAgent.isValidJVM4DynamicCodeEvolution(ManagementFactory.getRuntimeMXBean().getVmName())) {
+                LogFactory.getLog(SrvRunParams.class).error("Currently running JVM ["+ManagementFactory.getRuntimeMXBean().getVmName()+"] doesn't support hot swap mode! Exclude hot swap key from server parameters");
+            }
+            else {
+                try {
+                    if (StarterAgent.installInstrumentation() != null) {                
+                        SrvRunParams.setHotSwapMode();
+                    }
+                    else {
+                        throw new ParamException("Instrumentation is not installed properly. Check -javaagent option in the starter command line!");
+                    }
+                } catch (IOException ex) {
+                    throw new ParamException("Instrumentation is not installed properly. ("+ex.getMessage()+") Check -javaagent option in the starter command line!",ex);
+                }
+            }
+        }
+        
         if (salt == null) {
             if (encKsPwd != null) {
                 throw new ParamException("Keystore password is encrypted, but salt is not defined");

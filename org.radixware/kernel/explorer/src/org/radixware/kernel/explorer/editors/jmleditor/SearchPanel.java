@@ -56,6 +56,7 @@ public class SearchPanel extends QWidget {
     private final QTimer searchTimer;
     private final MatchesLabel matchesLabel;
     private final ISearchEngine engine;
+    private boolean needHighlightOnFirstShow = true;
     
     public static final int SEARCH_TIMER_INTERVAL_MS = 300;
     private static final String NO_MATCHES_MESSAGE = Application.translate("JmlEditor", "No matches");
@@ -105,6 +106,7 @@ public class SearchPanel extends QWidget {
         cbBackwards.setObjectName("cbBackwards");
         
         matchesLabel = new MatchesLabel(this);
+        matchesLabel.setObjectName("matchesLabel");
         engine = new SearchEngine(editText, null);
         
         searchTimer = new QTimer(this);
@@ -114,7 +116,7 @@ public class SearchPanel extends QWidget {
         createUi();
     }
     
-    private class MatchesLabel extends QLabel {
+    public static class MatchesLabel extends QLabel {
         
         private int matchCnt = -1;
         private int totalCnt = -1;
@@ -178,6 +180,8 @@ public class SearchPanel extends QWidget {
         void setCurPosAndIndex(int pos, int index);
         
         boolean setPattern(QRegExp pattern);
+        
+        boolean isSearchResultActual();
         
     }
     
@@ -245,6 +249,11 @@ public class SearchPanel extends QWidget {
                 return true;
             }
         }
+        
+        @Override
+        public boolean isSearchResultActual() {
+            return isSearchResultActual;
+        }
                 
         private void clearState() {
             isSearchResultActual = false;
@@ -291,6 +300,7 @@ public class SearchPanel extends QWidget {
         lb.setText(Application.translate("JmlEditor", "Search") + ": ");
         edSearchingText.textChanged.connect(this, "findText(String)");
         edSearchingText.setMinimumWidth(200);
+        edSearchingText.setMinimumHeight(20);
         btnPrev.setText(Application.translate("JmlEditor", "Previous"));
         btnPrev.clicked.connect(this, "btnPrevClicked()");
         btnNext.setText(Application.translate("JmlEditor", "Next"));
@@ -332,6 +342,7 @@ public class SearchPanel extends QWidget {
         searchOptsLayout.addWidget(cbWholeWord);
         searchOptsLayout.addWidget(cbRegExpression);
         searchOptsLayout.addWidget(cbHighlightResults);
+        searchOptsPanel.setMinimumHeight(20);
         searchLayout.addWidget(searchOptsPanel);
         
         searchLayout.addWidget(matchesLabel, 1, Qt.AlignmentFlag.AlignRight);
@@ -355,6 +366,7 @@ public class SearchPanel extends QWidget {
         lb.setText(Application.translate("JmlEditor", "Replace") + ":");
         //edReplaceText.textChanged.connect(this,"findText(String)");
         edReplaceText.setMinimumWidth(200);
+        edReplaceText.setMinimumHeight(20);
         btnReplace.setText(Application.translate("JmlEditor", "Replace"));
         btnReplace.clicked.connect(this, "replaceText()");
         btnReplaceAll.setText(Application.translate("JmlEditor", "Replace all"));
@@ -373,11 +385,11 @@ public class SearchPanel extends QWidget {
     public void setReplacePanelVisible(final boolean isVisible) {
         if (isVisible /*&& !isVisible()*/) {
             setVisible(isVisible);
-            this.setMinimumHeight(50);
-            this.setMaximumHeight(50);
+            this.setMinimumHeight(60);
+            this.setMaximumHeight(60);
         } else {
-            this.setMinimumHeight(25);
-            this.setMaximumHeight(25);
+            this.setMinimumHeight(30);
+            this.setMaximumHeight(30);
         }
         replacePanel.setVisible(isVisible);
     }
@@ -388,6 +400,7 @@ public class SearchPanel extends QWidget {
     
     public void setSearchingText(final String text) {
         edSearchingText.setText(text);
+        edSearchingText.textChanged.emit(text);
     }
 
     public boolean isCaseSensitive() {
@@ -415,6 +428,26 @@ public class SearchPanel extends QWidget {
         final String text = edSearchingText.text();
         if (text != null && !text.isEmpty()) {
             edSearchingText.setSelection(0, edSearchingText.text().length());
+        }
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        
+        if (visible) {
+            QTextCursor tc = editText.textCursor();
+            String textToSearch;
+            if (tc.hasSelection()) {
+                textToSearch = tc.selectedText();
+            } else {
+                textToSearch = getSearchingText();
+            }
+            if (!textToSearch.isEmpty()) {
+                setSearchingText(textToSearch);
+            }
+
+            needHighlightOnFirstShow = true;
         }
     }
 
@@ -456,8 +489,10 @@ public class SearchPanel extends QWidget {
 
     private void searchText(final String text,final boolean isForward) {
         final QRegExp searchReg = createSearchText(text);
-        if (engine.setPattern(searchReg) && cbHighlightResults.isChecked()) {
+        engine.setPattern(searchReg);
+        if (cbHighlightResults.isChecked() && (!engine.isSearchResultActual() || needHighlightOnFirstShow)) {
             highlightSearchResult(searchReg);
+            needHighlightOnFirstShow = false;
         }
         final QTextDocument.FindFlags flags = getFindOptions(isForward);
         selectCurrent(text, flags);
@@ -526,11 +561,7 @@ public class SearchPanel extends QWidget {
         }
         
         int newPos = matches.get(foundIndex).getStart();
-        tcOld.setPosition(newPos);
-        if (!isFindTextInTag(tcOld, false)) {
-            tcOld.movePosition(QTextCursor.MoveOperation.Right, QTextCursor.MoveMode.KeepAnchor, engine.getMatchLen());
-            editText.setTextCursor(tcOld);
-        }
+        selectTextWithTags(tcOld, newPos, newPos + engine.getMatchLen());
         
         engine.setCurPosAndIndex(editText.textCursor().position(), foundIndex);
         matchesLabel.setMatchCnt(foundIndex + 1, matches.size());
@@ -569,19 +600,29 @@ public class SearchPanel extends QWidget {
         }
         return flags;
     }
-
-    private boolean isFindTextInTag(final QTextCursor tc, final boolean replace) {
-        if (editText.isCursorOnTag(tc.position(), true)) {
-            tc.setPosition(tc.position() + 1);
-            final TagInfo tag = editText.selectTagUnderCursor(tc);
-            if (replace) {
-                editText.getTagConverter().deleteTag(tag);
-                tc.removeSelectedText();
-                tc.setCharFormat(editText.getDefaultCharFormat());
-            }
-            return true;
+    
+    private List<TagInfo> selectTextWithTags(final QTextCursor tc, final int startPos, final int endPos) {
+        //1. getTagsFromSelection.
+        List<TagInfo> tagsInSelection = editText.getTagConverter().getTagListInSelection(startPos, endPos, true);
+        //2. calc selection pos
+        final int selStart, selEnd, selLen;
+        if (!tagsInSelection.isEmpty()) {
+            int firstTagStart = (int) tagsInSelection.get(0).getStartPos() - 1;
+            selStart = firstTagStart <  startPos ? firstTagStart : startPos;
+            int lastTagEnd = (int) tagsInSelection.get(tagsInSelection.size() - 1).getEndPos() - 1;
+            selEnd = lastTagEnd > endPos ? lastTagEnd : endPos;
+        } else {
+            selStart = startPos;
+            selEnd = endPos;
         }
-        return false;
+        selLen = selEnd - selStart;
+
+        //3. select text
+        tc.setPosition(selStart);
+        tc.movePosition(QTextCursor.MoveOperation.Right, QTextCursor.MoveMode.KeepAnchor, selLen);
+        editText.setTextCursor(tc);
+
+        return tagsInSelection;
     }
 
     @SuppressWarnings("unused")
@@ -599,6 +640,7 @@ public class SearchPanel extends QWidget {
             editText.setTextCursor(editText.textCursor());
         }
         //findDialog.accept();
+        matchesLabel.setMatchCnt(0, 0);
         editText.setCursorInEditor(editText.toPlainText().length());
         editText.setFocusInText();
     }
@@ -640,8 +682,15 @@ public class SearchPanel extends QWidget {
             editText.blockSignals(true);
             //editText.document().blockSignals(true);
             tc.beginEditBlock();
-
-            isFindTextInTag(tc, true);
+            
+            // remove tags
+            List<TagInfo> tagsToRemove = selectTextWithTags(tc, tc.selectionStart(), tc.selectionEnd());
+            for (TagInfo tag : tagsToRemove) {
+                editText.getTagConverter().deleteTag(tag);
+            }
+            // remove text
+            tc.removeSelectedText();
+            tc.setCharFormat(editText.getDefaultCharFormat());
             tc.insertText(replaceWith);
         } finally {
             tc.endEditBlock();

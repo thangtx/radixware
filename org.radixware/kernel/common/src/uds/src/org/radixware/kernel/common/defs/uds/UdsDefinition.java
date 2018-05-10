@@ -14,13 +14,10 @@ package org.radixware.kernel.common.defs.uds;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.IFileBasedDef;
@@ -107,9 +104,16 @@ public abstract class UdsDefinition extends AdsDefinition implements IFileBasedD
     public long getFileLastModifiedTime() {
         return this.modificationStamp;
     }
+    
+    public String getXPath(){
+        return null;
+    }
 
     @Override
     public boolean setName(String newName) {
+        if (this instanceof IUdsFileDefinition){
+            return super.setName(newName);
+        }
         if (getOwnerDefinition() == getModule()) {
             String oldName = getName();
             File defFile = getFile();

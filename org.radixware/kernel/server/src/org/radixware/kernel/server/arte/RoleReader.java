@@ -14,6 +14,7 @@ package org.radixware.kernel.server.arte;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -27,21 +28,21 @@ public class RoleReader {
     }
     
     public ResultSet selectOwnCoords(final String username, final String[] ids) {
-        try {
-            final PreparedStatement stmt = arte.getDbConnection().get().prepareStatement(
-                    prepareOwnQuery(username, ids));
-            final ResultSet result = stmt.executeQuery();
-            return result;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
+        return selectOwnCoords(username, Arrays.asList(ids));
+//        try {
+//            final PreparedStatement stmt = arte.getDbConnection().get().prepareStatement(
+//                    prepareOwnQuery(username, ids));
+//            final ResultSet result = stmt.executeQuery();
+//            return result;
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//            return null;
+//        }
     }
     
     public ResultSet selectOwnCoords(final String username, final List<String> ids) {
         try {
-            final PreparedStatement stmt = arte.getDbConnection().get().prepareStatement(
-                    prepareOwnQuery(username, ids));
+            final PreparedStatement stmt = arte.getDbConnection().get().prepareStatement(prepareOwnQuery(username, ids));
             final ResultSet result = stmt.executeQuery();
             return result;
         } catch (SQLException ex) {
@@ -52,8 +53,7 @@ public class RoleReader {
     
     public ResultSet selectGroupCoords(final String groupname, final List<String> ids) {
         try {
-            final PreparedStatement stmt = arte.getDbConnection().get().prepareStatement(
-                    prepareGroupQuery(groupname, ids));
+            final PreparedStatement stmt = arte.getDbConnection().get().prepareStatement(prepareGroupQuery(groupname, ids));
             final ResultSet result = stmt.executeQuery();
             
             return result;
@@ -63,53 +63,54 @@ public class RoleReader {
     }
     
      public ResultSet selectGroupCoords(final String groupname, final String[] ids) {
-        try {
-            final PreparedStatement stmt = arte.getDbConnection().get().prepareStatement(
-                    prepareGroupQuery(groupname, ids));
-            final ResultSet result = stmt.executeQuery();
-            
-            return result;
-        } catch(SQLException ex) {
-            return null;
-        }
+        return selectGroupCoords(groupname, Arrays.asList(ids));
+//        try {
+//            final PreparedStatement stmt = arte.getDbConnection().get().prepareStatement(
+//                    prepareGroupQuery(groupname, ids));
+//            final ResultSet result = stmt.executeQuery();
+//            
+//            return result;
+//        } catch(SQLException ex) {
+//            return null;
+//        }
     }
     
     
-    private String prepareOwnQuery(final String username, final String [] ids) {
-        return prepareQuery(username, "RDX_AC_USER2ROLE", ids, " WHERE isOwn=1 AND username='");
-    }
+//    private String prepareOwnQuery(final String username, final String [] ids) {
+//        return prepareQuery(username, "RDX_AC_USER2ROLE", ids, " WHERE isOwn=1 AND username='");
+//    }
     
     private String prepareOwnQuery(final String username, final List<String> ids) {
         return prepareQuery(username, "RDX_AC_USER2ROLE", ids, " WHERE isOwn=1 AND username='");
     }
     
-    private String prepareGroupQuery(final String groupName, final String [] ids) {
-        return prepareQuery(groupName, "RDX_AC_USERGROUP2ROLE", ids, " WHERE groupname='");
-    }
+//    private String prepareGroupQuery(final String groupName, final String [] ids) {
+//        return prepareQuery(groupName, "RDX_AC_USERGROUP2ROLE", ids, " WHERE groupname='");
+//    }
     
     private String prepareGroupQuery(final String groupName, final List<String> ids) {
         return prepareQuery(groupName, "RDX_AC_USERGROUP2ROLE", ids, " WHERE groupname='");
     }
     
-    private String prepareQuery(final String name, final String table,final String [] ids, final String filter) {
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ");
-        for(int i = 0; i < ids.length; i++) {
-            sb.append("MA$$");
-            sb.append(ids[i]);
-            sb.append(", PA$$");
-            sb.append(ids[i]);
-            if(i + 1 < ids.length) sb.append(",");
-            
-        }
-        sb.append(" FROM ");
-        sb.append(table);
-        sb.append(filter);
-        sb.append(name);
-        sb.append("'");
-        return sb.toString();
-    }
+//    private String prepareQuery(final String name, final String table,final String [] ids, final String filter) {
+//        
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("SELECT ");
+//        for(int i = 0; i < ids.length; i++) {
+//            sb.append("MA$$");
+//            sb.append(ids[i]);
+//            sb.append(", PA$$");
+//            sb.append(ids[i]);
+//            if(i + 1 < ids.length) sb.append(",");
+//            
+//        }
+//        sb.append(" FROM ");
+//        sb.append(table);
+//        sb.append(filter);
+//        sb.append(name);
+//        sb.append("'");
+//        return sb.toString();
+//    }
     
     private String prepareQuery(final String name, final String table,final List<String> ids, final String filter) {
         StringBuilder sb = new StringBuilder();

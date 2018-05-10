@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
-  <AdsClassDefinition Id="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ" Name="MessageQueue" Type="1">
+  <AdsClassDefinition Id="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ" Name="MessageQueue" Type="1" ClientEnvironment="explorer">
     <AccessRules/>
     <Headers>
       <Src Name="Headeraec4RKPGKBXK5D27NZV4R5LUDMBEM"/>
@@ -10,8 +10,11 @@
     </Bodies>
     <MethodGroup Id="cmgYSX2Q6EBIVBC3MQZRQQ4PMORRU" Name="Root"/>
     <PropertyGroup Id="cpgYOQLYYBGLRBRLFBOSWMF2CRASY" Name="Root">
-      <Group Id="cpgTH66TDGLIBCILMQX72MC4SXJSY" Name="DB Props" Members="colZDZ4CALBLBGEJCZMA5VSTVPUGQ colLVCKVHLVHBDFDG7LREI4IXZPTM colOPGPZBRRSZFCFP6DSBBECKFM74 colMMPJ3MOF5NEEFB4MEBKFURZTMQ colB56SD6AHQ5AJFMZJHTWW2XRHQE colPRWBAX2DZJDFLL5RB6UKQPNJCM col7PCH7MSGLZFSNNDIFYF6WQLWDI colTRIHVJKCKNDNVESJUPLUFKPVQA colID5J43B3FRHA7OBLDQQQ5DYWSM colFXFWBKZSLZG3JBCGX3IJH6FJCU"/>
-      <Group Id="cpgNYQTBV77TZCXFKUF4O7EFP2FXA" Name="Dynamic Props"/>
+      <Group Id="cpgTH66TDGLIBCILMQX72MC4SXJSY" Name="DB Props" Members="colZDZ4CALBLBGEJCZMA5VSTVPUGQ colLVCKVHLVHBDFDG7LREI4IXZPTM colOPGPZBRRSZFCFP6DSBBECKFM74 colMMPJ3MOF5NEEFB4MEBKFURZTMQ colB56SD6AHQ5AJFMZJHTWW2XRHQE colPRWBAX2DZJDFLL5RB6UKQPNJCM col7PCH7MSGLZFSNNDIFYF6WQLWDI colTRIHVJKCKNDNVESJUPLUFKPVQA colID5J43B3FRHA7OBLDQQQ5DYWSM colFXFWBKZSLZG3JBCGX3IJH6FJCU colGCM6JRLAT5CAXJONB26HGBYOY4 colI3C6OY6R4VCHJNHCYV2ZDL3JEA colMPATD4CKTZEBHFC5RWD46EALMM colND23O3YXCNGRNMXWNMAXZX5FKI colDSVR3K6T2FAEDPCDLLBGENDJP4 colTBQHV362WJHA3AZCHRTQ5SB7KE colCAHU2GDPARFC7APU2EOVSAW6MA colGMGHD6NWG5CKZL4AGB4UIYTXMA">
+        <Group Id="cpgMIVWYQROQZCITNPAF22NHLMC7E" Name="SSL" Members="colL6K3EEEXRBG4BEGHD54YVL5VVE col24OZ2N37RNEQPPFU36C2MKSK2A colU44WLH4LFZFR5M4IQMPS5TIT7I colTTNAG76GNNHGFLD7J2IHJSMUSA"/>
+        <Group Id="cpgRHE56Z63OJGP5KRAB5U7CBHCRE" Name="JNDI" Members="colS6KAB3VU5RBUXA5HJVMUCA44VY colDXGGXKN2HNC4NJ6JA35SXHXNCY colPESXTKOHY5BGBAXHNVMC5JUKCE colMNST2OY3VRBFTHZDJPS34GEHEU"/>
+      </Group>
+      <Group Id="cpgNYQTBV77TZCXFKUF4O7EFP2FXA" Name="Dynamic Props" Members="prd2OSCKSQLXNAXDAFQEBDV3VTRUY prd6GY2EAULYZG65BLJHY7NLFA3D4 prdGHZ3HNAUO5BN5BJCMGVFWYNBRI"/>
     </PropertyGroup>
     <Properties>
       <Property Id="colZDZ4CALBLBGEJCZMA5VSTVPUGQ" Name="id" Nature="0" IsConst="false" IsOverride="false">
@@ -88,8 +91,629 @@
           <Editing IsDuplicatesEnabled="true"/>
         </Presentation>
       </Property>
+      <Property Id="colGCM6JRLAT5CAXJONB26HGBYOY4" Name="useSaf" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls2LUL6UT4WRFQDMOP2APYTLVDTM" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colI3C6OY6R4VCHJNHCYV2ZDL3JEA" Name="timeoutSec" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>30</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsNOHC6J44NNAGVAQOSUK376NTPU" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colMPATD4CKTZEBHFC5RWD46EALMM" Name="lastPartOnlineSwitchTime" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="12"/>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colND23O3YXCNGRNMXWNMAXZX5FKI" Name="partitionSource" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing EditPossibility="5" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colDSVR3K6T2FAEDPCDLLBGENDJP4" Name="prefetchCount" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsD57LMJAOMFFNVL3DB5YGNHY7OA" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colTBQHV362WJHA3AZCHRTQ5SB7KE" Name="procOrder" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="21" Path="acsJ7XCDYIB4ZDVTO2RX6Q37UCTYM"/>
+        <Presentation TitleId="mlsLX6HZKATMZBPNJKTQ3N366WIDU" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colCAHU2GDPARFC7APU2EOVSAW6MA" Name="copyIdToCorrId" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsKXG3EIJDM5ELFPHWLWUT7FFFUY" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colGMGHD6NWG5CKZL4AGB4UIYTXMA" Name="uuidMessId" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsMFF4AJ4HZ5DIDDNX6LGIKBK5PY" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colL6K3EEEXRBG4BEGHD54YVL5VVE" Name="serverCertAliases" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="221"/>
+        <Presentation TitleId="mlsHO6SUEJWGFEJDHUBSWZZZDRW4A" InheritanceMask="4">
+          <Editing NullValTitleId="mlsHDWEXMNHLRAYHEA2QKR2NTMINY" IsArrayElementMandatory="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="col24OZ2N37RNEQPPFU36C2MKSK2A" Name="clientKeyAliases" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="221"/>
+        <Presentation TitleId="mlsQVNVG3GSV5HJDJBYSZLOBEDZE4" InheritanceMask="4">
+          <Editing NullValTitleId="mlsNXA6V4RYF5GZ3A4THFXNWNA2DI" IsArrayElementMandatory="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colU44WLH4LFZFR5M4IQMPS5TIT7I" Name="cipherSuites" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="221"/>
+        <Presentation TitleId="mls5NHCGVBPJVB7ZMT43TE6NMSLUQ" InheritanceMask="4">
+          <Editing NullValTitleId="mls6DOGMQQPGVA5TMYT6BXTD7QXNQ" EmptyValTitleId="mlsUABSKRMKZNCYDNNAHBO7G2WTUA" IsArrayElementMandatory="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colTTNAG76GNNHGFLD7J2IHJSMUSA" Name="securityProtocol" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="2" Path="acsOQBHNCGYX7NRDB6TAALOMT5GDM"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsLOMLKH2QEBGX5E6FSDUDBEVVGQ" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prd2OSCKSQLXNAXDAFQEBDV3VTRUY" Name="keyStoreKeyAliases" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="221"/>
+        <Presentation InheritanceMask="4">
+          <Editing NullValTitleId="mlsNX6VKBSXJFD4FIRDEKIWRQYTZU" EditPossibility="1" ReadSeparately="true" IsArrayElementMandatory="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd2OSCKSQLXNAXDAFQEBDV3VTRUY" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>keyStoreKeyAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null){
+    try{
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd2OSCKSQLXNAXDAFQEBDV3VTRUY" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>keyStoreKeyAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2JKR32T6FZGZHO2FWQI5T5HJWQ">
+                <xsc:Presentation>Pki::KeystoreController</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2JKR32T6FZGZHO2FWQI5T5HJWQ mthNGV3UBA4JNDPRK2LG22FABZ2RI" Invoke="true">
+                <xsc:Presentation>getServerKeystoreKeyAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcAJD4CYZTQRGZDGRFM6MM62KHY4">
+                <xsc:Presentation>Exceptions::InvalidServerKeystoreSettingsException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>debug</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsX7TCHNNVW5G73KL25B5FJUKIIQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>+e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthDEDM6MLWERE63DT4NJIHBZHN2I" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:App</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsYJ25SZS5FJFKTJ3Z7B23ID6IIU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>+e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthDEDM6MLWERE63DT4NJIHBZHN2I" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:App</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd2OSCKSQLXNAXDAFQEBDV3VTRUY" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>keyStoreKeyAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd2OSCKSQLXNAXDAFQEBDV3VTRUY" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>keyStoreKeyAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> : new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+return result;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="prd6GY2EAULYZG65BLJHY7NLFA3D4" Name="keyStoreTrustedCertificateAliases" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="221"/>
+        <Presentation InheritanceMask="4">
+          <Editing NullValTitleId="mlsM7LGNYXN2VHHXBLYPEAOBJI5X4" EditPossibility="1" ReadSeparately="true" IsArrayElementMandatory="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd6GY2EAULYZG65BLJHY7NLFA3D4" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>keyStoreTrustedCertificateAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null){
+    try{
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd6GY2EAULYZG65BLJHY7NLFA3D4" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>keyStoreTrustedCertificateAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2JKR32T6FZGZHO2FWQI5T5HJWQ">
+                <xsc:Presentation>Pki::KeystoreController</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2JKR32T6FZGZHO2FWQI5T5HJWQ mth6VKSTRAHGFFPVIOAUU5UM6C65E" Invoke="true">
+                <xsc:Presentation>getServerKeystoreTrustedCertAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcAJD4CYZTQRGZDGRFM6MM62KHY4">
+                <xsc:Presentation>Exceptions::InvalidServerKeystoreSettingsException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>debug</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls72E5AQYU7FGLRLR6MCEO4SSGPU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>+e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthDEDM6MLWERE63DT4NJIHBZHN2I" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:App</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e){
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls3ATY7XJ7LJEUVKNROFOBABWPVY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>+e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthDEDM6MLWERE63DT4NJIHBZHN2I" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:App</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd6GY2EAULYZG65BLJHY7NLFA3D4" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>keyStoreTrustedCertificateAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd6GY2EAULYZG65BLJHY7NLFA3D4" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>keyStoreTrustedCertificateAliases</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> : new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+return result;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="colS6KAB3VU5RBUXA5HJVMUCA44VY" Name="jndiInitialContextFactory" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsOGUNPZKPZZFTPEEZSRF22FC67A" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colDXGGXKN2HNC4NJ6JA35SXHXNCY" Name="jndiProviderUrl" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsOTYH7XBTDVEYTLN7AAGPTYDYHI" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colPESXTKOHY5BGBAXHNVMC5JUKCE" Name="jndiOptions" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mls4I3RLVY3MNHEBBEZB3OBYCJ35I" InheritanceMask="4">
+          <Editing CustomDialogId="cpeZVO2LZ7DVVBGNBUYC4F3R7332E" CustomEditOnly="true" ShowDialogButton="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colMNST2OY3VRBFTHZDJPS34GEHEU" Name="jndiQueueLookupName" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsN7M6GVFDWNFYPMSOFCNNSF6Y6M" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdGHZ3HNAUO5BN5BJCMGVFWYNBRI" Name="jndiOptionsMap" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.common.utils.Maps.fromKeyValuePairsString(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colPESXTKOHY5BGBAXHNVMC5JUKCE" Invoke="true">
+                <xsc:Presentation>jndiOptions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
     </Properties>
-    <Methods/>
+    <Methods>
+      <Method Id="mth_loadByPidStr_____________" Name="loadByPidStr" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pidAsStr" Id="mprPidAsStr__________________">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="checkExistance" Id="mprCheckExisstance___________">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ"/>
+      </Method>
+      <Method Id="mth_loadByPK_________________" Name="loadByPK" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="id" Id="mprZDZ4CALBLBGEJCZMA5VSTVPUGQ">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="checkExistance" Id="mprCheckExisstance___________">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ"/>
+      </Method>
+      <Method Id="mthFMXUFM5J25E4TNM4PR73F6V3E4" Name="beforeCreate" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mprYYE3XSVOVVCEZOJHO53RJS74OU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colMPATD4CKTZEBHFC5RWD46EALMM" Invoke="true">
+                <xsc:Presentation>lastPartOnlineSwitchTime</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null || src != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colMPATD4CKTZEBHFC5RWD46EALMM" Invoke="true">
+                <xsc:Presentation>lastPartOnlineSwitchTime</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthO6E3U4KDA5A5FFVCN7JGELDMAU" Invoke="true">
+                <xsc:Presentation>getDatabaseSysDate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+return super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthFMXUFM5J25E4TNM4PR73F6V3E4" Invoke="true">
+                <xsc:Presentation>beforeCreate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
     <Entity EntityId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ">
       <AccessAreas Type="None"/>
     </Entity>
@@ -120,36 +744,134 @@
             </Bodies>
             <MethodGroup Id="cmgT5ZB3KCRPZEOJLWBUTEYUGUCUI" Name="Root"/>
             <PropertyGroup Id="cpgCHLDNR3ZQFEBLO5NHUUJEQ4YM4" Name="Root"/>
-            <Properties/>
+            <Properties>
+              <Property Id="colTTNAG76GNNHGFLD7J2IHJSMUSA" Name="securityProtocol" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="2" Path="acsOQBHNCGYX7NRDB6TAALOMT5GDM"/>
+                <DependentItems/>
+                <SetterSources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true" extStr="#STD_PROP_VALUE#">
+                        <xsc:Presentation>securityProtocol</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> = val;
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Invoke="true">
+                        <xsc:Presentation>setVisibility</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </SetterSources>
+              </Property>
+            </Properties>
             <Methods>
               <Method Id="mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Name="setVisibility" Nature="0" Environment="common-client" IsOverride="false">
                 <AccessRules/>
                 <Sources>
                   <Src>
                     <xsc:Item>
-                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true"/>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true">
+                        <xsc:Presentation>partitionName</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true"/>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>(false);
+
+final boolean isSsl = </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true">
+                        <xsc:Presentation>securityProtocol</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value != </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="acsOQBHNCGYX7NRDB6TAALOMT5GDM aciF6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                        <xsc:Presentation>System::PortSecurityProtocol:None</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
 </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colFXFWBKZSLZG3JBCGX3IJH6FJCU" Invoke="true"/>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 mth62P523WPMNHLHLUYUWJSWOXCGA" Invoke="true">
+                        <xsc:Presentation>configurePredefinedTlsCipherSuites</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colL6K3EEEXRBG4BEGHD54YVL5VVE" Invoke="true">
+                        <xsc:Presentation>serverCertAliases</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true"/>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:Java>(false);</xsc:Java>
+                      <xsc:Java>(isSsl);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col24OZ2N37RNEQPPFU36C2MKSK2A" Invoke="true">
+                        <xsc:Presentation>clientKeyAliases</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(isSsl);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colU44WLH4LFZFR5M4IQMPS5TIT7I" Invoke="true">
+                        <xsc:Presentation>cipherSuites</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(isSsl);
+</xsc:Java>
                     </xsc:Item>
                   </Src>
                 </Sources>
@@ -162,20 +884,35 @@
                       <xsc:Java>if (!(</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth7I77JEZSOVDBZPRP7N6QITSMQI" Invoke="true"/>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth7I77JEZSOVDBZPRP7N6QITSMQI" Invoke="true">
+                        <xsc:Presentation>getContext</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>() instanceof </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adcA2QXPQM7ZRAO3O43ZSXPOOS324"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcA2QXPQM7ZRAO3O43ZSXPOOS324">
+                        <xsc:Presentation>Explorer.Context::SelectorRowContext</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>)) {
     </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Invoke="true"/>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Invoke="true">
+                        <xsc:Presentation>setVisibility</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+    </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 mthZGIWHMYRXFEEBGXKQ72LYEMHLI" Invoke="true">
+                        <xsc:Presentation>configurePredefinedValues</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();
@@ -183,10 +920,111 @@
 super.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth7X7O4RPENFCDZELLNSKEQOPN4Q" Invoke="true"/>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth7X7O4RPENFCDZELLNSKEQOPN4Q" Invoke="true">
+                        <xsc:Presentation>afterRead</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+              <Method Id="mthZGIWHMYRXFEEBGXKQ72LYEMHLI" Name="configurePredefinedValues" Nature="0" Environment="common-client" IsOverride="false">
+                <AccessRules Access="1"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 mth62P523WPMNHLHLUYUWJSWOXCGA" Invoke="true">
+                        <xsc:Presentation>configurePredefinedTlsCipherSuites</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+
+final java.util.List&lt;Object> keyStoreTrustedCertAliasesList = new java.util.ArrayList&lt;Object>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd6GY2EAULYZG65BLJHY7NLFA3D4" Invoke="true">
+                        <xsc:Presentation>keyStoreTrustedCertificateAliases</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value);
+final java.util.List&lt;Object> keyStoreKeyAliasesList = new java.util.ArrayList&lt;Object>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prd2OSCKSQLXNAXDAFQEBDV3VTRUY" Invoke="true">
+                        <xsc:Presentation>keyStoreKeyAliases</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value);
+
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colL6K3EEEXRBG4BEGHD54YVL5VVE" Invoke="true">
+                        <xsc:Presentation>serverCertAliases</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.setPredefinedValuesForArrayItem(keyStoreTrustedCertAliasesList);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col24OZ2N37RNEQPPFU36C2MKSK2A" Invoke="true">
+                        <xsc:Presentation>clientKeyAliases</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.setPredefinedValuesForArrayItem(keyStoreKeyAliasesList);
+</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+              <Method Id="mth62P523WPMNHLHLUYUWJSWOXCGA" Name="configurePredefinedTlsCipherSuites" Nature="0" Environment="common-client" IsOverride="false">
+                <AccessRules Access="1"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>final java.util.List&lt;Object> suitesList = new java.util.ArrayList&lt;Object>();
+suitesList.addAll(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc5CRTETV6DFCIHD76IPMNU6KO2E">
+                        <xsc:Presentation>System::SslUtils</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc5CRTETV6DFCIHD76IPMNU6KO2E mthBZF4PRED4NA5LMXLH3TQK5YDIA" Invoke="true">
+                        <xsc:Presentation>getStrongCipherSuitesAsStrList</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true">
+                        <xsc:Presentation>securityProtocol</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value));
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colU44WLH4LFZFR5M4IQMPS5TIT7I" Invoke="true">
+                        <xsc:Presentation>cipherSuites</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.PredefinedValuesForArrayItem = suitesList;
+</xsc:Java>
                     </xsc:Item>
                   </Src>
                 </Sources>
@@ -196,16 +1034,14 @@ super.</xsc:Java>
           <ChildExplorerItems/>
           <EditorPages>
             <Page Id="epgSSMUGGSOLNEENDZTYAGQ7AIZ5I" Name="General" TitleId="mls3VAC7B2MZNAFFCOZJO3PW7IBPY" Type="1">
-              <AccessRules IsPublished="false"/>
               <Properties>
                 <Property Id="colZDZ4CALBLBGEJCZMA5VSTVPUGQ" Row="0" Column="0"/>
                 <Property Id="colID5J43B3FRHA7OBLDQQQ5DYWSM" Row="1" Column="0"/>
                 <Property Id="colOPGPZBRRSZFCFP6DSBBECKFM74" Row="3" Column="0"/>
                 <Property Id="colTRIHVJKCKNDNVESJUPLUFKPVQA" Row="4" Column="0"/>
-                <Property Id="colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Row="7" Column="0"/>
-                <Property Id="colPRWBAX2DZJDFLL5RB6UKQPNJCM" Row="8" Column="0"/>
+                <Property Id="colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Row="6" Column="0"/>
+                <Property Id="colPRWBAX2DZJDFLL5RB6UKQPNJCM" Row="7" Column="0"/>
                 <Property Id="colB56SD6AHQ5AJFMZJHTWW2XRHQE" Row="5" Column="0"/>
-                <Property Id="colFXFWBKZSLZG3JBCGX3IJH6FJCU" Row="6" Column="0"/>
                 <Property Id="col7PCH7MSGLZFSNNDIFYF6WQLWDI" Row="2" Column="0"/>
               </Properties>
             </Page>

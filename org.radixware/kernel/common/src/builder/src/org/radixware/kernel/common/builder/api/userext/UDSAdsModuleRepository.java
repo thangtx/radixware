@@ -92,7 +92,7 @@ public class UDSAdsModuleRepository extends FSRepositoryAdsModule {
             }
         }
 
-        return new IRepositoryAdsDefinition[0];//super.listDefinitions();
+        return getLoadedDefinitions();//super.listDefinitions();
     }
 
     @Override

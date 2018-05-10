@@ -11,28 +11,32 @@
 
 package org.radixware.kernel.designer.ads.editors.clazz.report;
 
+import java.awt.BorderLayout;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportExpressionCell;
+import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
 
 
 public class AdsReportExpressionCellEditor extends javax.swing.JPanel {
 
     private final AdsReportExpressionCell cell;
-    private volatile boolean updating = false;
 
     /** Creates new form AdsReportExpressionCellEditor */
     public AdsReportExpressionCellEditor(final AdsReportExpressionCell cell) {
         super();
         this.cell = cell;
         initComponents();
-
-        updating = true;
-        nameTextField.setText(cell.getName());
-        updating = false;
     }
 
-    public void open(final OpenInfo openInfo) {
-        jmlEditor.open(cell.getExpression(), openInfo);
+    public boolean open(final OpenInfo openInfo) {
+        Jml jmlExpression = cell.getExpression();
+        if (openInfo.getTarget() == jmlExpression){
+            jmlEditor.open(jmlExpression, openInfo);
+            return true;
+        } else {
+            jmlEditor.open(jmlExpression);
+            return false;
+        }
     }
 
     /** This method is called from within the constructor to
@@ -44,54 +48,15 @@ public class AdsReportExpressionCellEditor extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        nameTextField = new javax.swing.JTextField();
         jmlEditor = new org.radixware.kernel.designer.common.editors.jml.JmlEditor();
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(AdsReportExpressionCellEditor.class, "AdsReportExpressionCellEditor.jLabel1.text_1")); // NOI18N
-
-        nameTextField.setText(org.openide.util.NbBundle.getMessage(AdsReportExpressionCellEditor.class, "AdsReportExpressionCellEditor.nameTextField.text")); // NOI18N
-        nameTextField.addCaretListener(new javax.swing.event.CaretListener() {
-            public void caretUpdate(javax.swing.event.CaretEvent evt) {
-                nameTextFieldCaretUpdate(evt);
-            }
-        });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                .addContainerGap())
-            .addComponent(jmlEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jmlEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
-        );
+        setLayout(new java.awt.BorderLayout());
+        add(jmlEditor, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void nameTextFieldCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_nameTextFieldCaretUpdate
-        if (!updating && !cell.getName().equals(nameTextField.getText())){
-            cell.setName(nameTextField.getText());
-        }
-    }//GEN-LAST:event_nameTextFieldCaretUpdate
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private org.radixware.kernel.designer.common.editors.jml.JmlEditor jmlEditor;
-    private javax.swing.JTextField nameTextField;
     // End of variables declaration//GEN-END:variables
 
 }

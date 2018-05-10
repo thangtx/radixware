@@ -28,6 +28,7 @@ import org.radixware.kernel.common.svn.SVN;
 import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
 import org.radixware.kernel.common.svn.SvnPathUtils;
 import org.radixware.kernel.common.svn.client.SvnEntry;
+import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.designer.common.dialogs.commitpanel.MicroCommitPanel;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import static org.radixware.kernel.designer.environment.merge.MergeUtils.getTableAsStr;
@@ -159,7 +160,7 @@ public class DdsCopyMergeTable extends CopyMergeTable {
         byte buf[] = null;
 
         if (list.get(index).getXmlStringDataEmulator() != null) {
-            buf = list.get(index).getXmlStringDataEmulator().getBytes();
+            buf = list.get(index).getXmlStringDataEmulator().getBytes(FileUtils.XML_ENCODING);
         } else if (toFileExists) {
             SvnEntry dirEntry1 = repository.info(fromPath, rev);
             Long fileSize = dirEntry1.getSize();
@@ -418,7 +419,7 @@ public class DdsCopyMergeTable extends CopyMergeTable {
                 String toPath = list.get(index).getToPath();
                 boolean toFileExists = SVN.isFileExists(repository, toPath);
                 if (list.get(index).getXmlStringDataEmulator() != null) {
-                    changedData.add(list.get(index).getXmlStringDataEmulator().getBytes());
+                    changedData.add(list.get(index).getXmlStringDataEmulator().getBytes(FileUtils.XML_ENCODING));
                 } else if (toFileExists) {
                     SvnEntry dirEntry1 = repository.info(fromPath, rev);
                     Long fileSize = dirEntry1.getSize();

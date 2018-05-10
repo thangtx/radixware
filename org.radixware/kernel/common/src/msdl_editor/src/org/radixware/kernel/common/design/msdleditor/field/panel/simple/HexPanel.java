@@ -24,32 +24,52 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
 import org.radixware.kernel.common.utils.Hex;
 import javax.swing.text.PlainDocument;
+import org.radixware.kernel.common.msdl.MsdlSettings;
+import org.radixware.kernel.common.msdl.enums.EViewTypeGroup;
 
 
 public class HexPanel extends AbstractEditItem {
 
     private EEncoding viewType = EEncoding.HEX;
+    private final EViewTypeGroup viewTypeGroup;
     private byte[] value = null;
-    private CaretListener caretListener = null;
-    private ActionListener listener;
+    private DocumentListener docListener = null;
+    private ActionListener encodingListener = null;
     private HexInputVerifier verifier = new HexInputVerifier();
     private LengthRestrictedDocument doc = new LengthRestrictedDocument();
 
-    /** Creates new form HexPanel */
     public HexPanel() {
+        this(EViewTypeGroup.OTHER);
+    }
+    
+    public HexPanel(EViewTypeGroup viewGroup) {
         initComponents();
+        this.viewTypeGroup = viewGroup;
         encodingComboBox.addItem(EEncoding.HEX);
         encodingComboBox.addItem(EEncoding.ASCII);
         encodingComboBox.addItem(EEncoding.EBCDIC);
         //verifier.shouldYieldFocus(valueTextField);
         valueTextField.setInputVerifier(verifier);
         valueTextField.setDocument(doc);
+        
+        encodingListener = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EEncoding newEncoding = (EEncoding) encodingComboBox.getSelectedItem();
+                onEncodingValueChanged(newEncoding);
+                MsdlSettings.getInstance().set(viewTypeGroup.getKey(), newEncoding.name());
+            }
+        };
+        encodingComboBox.addActionListener(encodingListener);
     }
 
     @Override
@@ -62,46 +82,58 @@ public class HexPanel extends AbstractEditItem {
         valueTextField.setEditable(state);
     }
     
-    public void setValue(byte[] val, EEncoding viewType) {
+    private EEncoding getLastUsedViewType() {
+        String encoding = MsdlSettings.getInstance().get(viewTypeGroup.getKey());
+        return encoding != null ? EEncoding.valueOf(encoding) : null;
+    }
+    
+    public void setValue(byte[] val) {
         value = null;
         if (val != null) {
             value = new byte[val.length];
             for (int i=0; i<val.length; i++)
                 value[i] = val[i];
         }
-        if(viewType != null && viewType != this.viewType) {
-            this.viewType = viewType;
-            encodingComboBox.setSelectedItem(this.viewType);
+        
+        EEncoding lastUsed = getLastUsedViewType();
+        if(lastUsed != null && lastUsed != this.viewType) {
+            encodingComboBox.removeActionListener(encodingListener);
+            encodingComboBox.setSelectedItem(lastUsed);
+            onEncodingValueChanged(lastUsed);
+            encodingComboBox.addActionListener(encodingListener);
         }
         showValue();
     }
 
     private void showValue() {
-        valueTextField.removeCaretListener(caretListener);
-        if (value == null || value.length == 0) {
-            valueTextField.setText("");
-        } else {
-            switch (viewType) {
-                case ASCII:
-                    try {
-                        valueTextField.setText(new String(value, "US-ASCII"));
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                case HEX:
-                    valueTextField.setText(Hex.encode(value));
-                    break;
-                case EBCDIC:
-                    try {
-                        valueTextField.setText(new String(value, "IBM500"));
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
+        doc.removeDocumentListener(docListener);
+        try {
+            if (value == null || value.length == 0) {
+                valueTextField.setText("");
+            } else {
+                switch (viewType) {
+                    case ASCII:
+                        try {
+                            valueTextField.setText(new String(value, "US-ASCII"));
+                        } catch (UnsupportedEncodingException ex) {
+                            Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        break;
+                    case HEX:
+                        valueTextField.setText(Hex.encode(value));
+                        break;
+                    case EBCDIC:
+                        try {
+                            valueTextField.setText(new String(value, "IBM500"));
+                        } catch (UnsupportedEncodingException ex) {
+                            Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        break;
+                }
             }
+        } finally {
+            doc.addDocumentListener(docListener);
         }
-        valueTextField.addCaretListener(caretListener);
     }
 
     @Override
@@ -139,30 +171,47 @@ public class HexPanel extends AbstractEditItem {
         }
         return result;
     }
+    
+    private void onDocumentUpdate(final ActionListener l) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                byte[] newValue;
+                try {
+                    newValue = readContent();
+                } catch (Exception ex) {
+                    return;
+                }
+                if (!isEqual(newValue, value)) {
+                    value = newValue;
+                    l.actionPerformed(new ActionEvent(this, 0, ""));
+                }
+            }
+        });
+    }
 
     public void addActionListener(final ActionListener l) {
-        listener = l;
-        caretListener = new CaretListener() {
+        if (docListener != null) {
+            throw new IllegalStateException("Listener set more than once");
+        }
+        docListener = new DocumentListener() {
+
             @Override
-            public void caretUpdate(CaretEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        byte[] newValue;
-                        try {
-                            newValue = readContent();
-                        } catch (Exception ex) {
-                            return;
-                        }
-                        if (!isEqual(newValue, value)) {
-                            value = newValue;
-                            l.actionPerformed(new ActionEvent(this, 0, ""));
-                        }
-                    }
-                });
+            public void insertUpdate(DocumentEvent e) {
+                onDocumentUpdate(l);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                onDocumentUpdate(l);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onDocumentUpdate(l);
             }
         };
-        valueTextField.addCaretListener(caretListener);
+        doc.addDocumentListener(docListener);
     }
     
     private boolean isEqual(byte[] value1, byte[] value2) {
@@ -199,6 +248,25 @@ public class HexPanel extends AbstractEditItem {
    private boolean changedFromHex(EEncoding oldEncoding, EEncoding newEncoding) {
        return oldEncoding == EEncoding.HEX && newEncoding != EEncoding.HEX;
    }
+   
+   private void onEncodingValueChanged(EEncoding newEncoding) {
+        if (doc.getLimit() > 0) {
+            if (changedToHex(viewType, newEncoding)) {
+                doc.setLimit(doc.getLimit() * 2);
+            } else if (changedFromHex(viewType, newEncoding)) {
+                doc.setLimit(doc.getLimit() / 2);
+            }
+        }
+
+        viewType = newEncoding;
+        if (viewType == EEncoding.HEX) {
+            valueTextField.setInputVerifier(verifier);
+        } else {
+            valueTextField.setInputVerifier(null);
+        }
+
+        showValue();
+   }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -217,38 +285,8 @@ public class HexPanel extends AbstractEditItem {
         add(valueTextField);
         add(filler2);
 
-        encodingComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                encodingComboBoxActionPerformed(evt);
-            }
-        });
         add(encodingComboBox);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void encodingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_encodingComboBoxActionPerformed
-
-        EEncoding selectedEncoding = (EEncoding) encodingComboBox.getSelectedItem();
-        if (doc.getLimit() > 0) {
-            if (changedToHex(viewType, selectedEncoding)) {
-                doc.setLimit(doc.getLimit() * 2);
-            } else if (changedFromHex(viewType, selectedEncoding)) {
-                doc.setLimit(doc.getLimit() / 2);
-            }
-        }
-
-        viewType = selectedEncoding;
-        if (viewType == EEncoding.HEX) {
-            valueTextField.setInputVerifier(verifier);
-        } else {
-            valueTextField.setInputVerifier(null);
-        }
-
-        showValue();
-        
-        if(listener != null) {
-            listener.actionPerformed(new ActionEvent(this, 0, ""));
-        }
-    }//GEN-LAST:event_encodingComboBoxActionPerformed
 
     private void jTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldKeyPressed
     }//GEN-LAST:event_jTextFieldKeyPressed

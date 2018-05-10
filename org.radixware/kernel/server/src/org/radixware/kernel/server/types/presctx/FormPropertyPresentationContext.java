@@ -20,8 +20,8 @@ public final class FormPropertyPresentationContext extends PropertyPresentationC
     
     private final FormHandler form;
 
-    public FormPropertyPresentationContext(final FormHandler form, final Id propertyId, final EntityGroup group){
-        super(propertyId, group);
+    public FormPropertyPresentationContext(final FormHandler form, final Id propertyId, final EntityGroup group, final Id selectorPresentationId){
+        super(propertyId, group, selectorPresentationId);
         this.form = form;
     }
     

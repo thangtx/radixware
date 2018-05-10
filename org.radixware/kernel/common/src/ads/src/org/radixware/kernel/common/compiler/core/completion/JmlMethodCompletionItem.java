@@ -42,6 +42,7 @@ public class JmlMethodCompletionItem extends AbstractCompletionItem {
         this.leadText = text.toString();
         this.sortText = String.valueOf(method.selector);
         this.tailText = String.valueOf(method.returnType.shortReadableName());
+        this.tailText = this.tailText.replace("<", "&lt;").replace(">", "&gt;");
     }
 
     @Override

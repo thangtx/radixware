@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:this="http://schemas.radixware.org/persocommdelivery.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/persocommdelivery.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    
+    <xs:simpleType name="DeliveryStatus">
+        <xs:annotation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <types:class>org.radixware.kernel.common.enums.EPersoCommDeliveryStatus</types:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="types:StrEnum"/>
+    </xs:simpleType>
+    
+    <xs:complexType name="DeliveryItem">
+        <xs:attribute name="MessageId" type="types:Int" use="required"/>
+        <xs:attribute name="DeliveryStatus" type="this:DeliveryStatus" use="required"/>
+        <!--<xs:attribute name="DeliveryTimeMillis" type="types:Int" use="optional"/>-->
+    </xs:complexType>
+    
+    <xs:complexType name="DeliveryRq">
+        <xs:sequence>
+            <xs:element name="DeliveryItem" type="this:DeliveryItem" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="DeliveryRs">
+    </xs:complexType>
+    
+    <xs:complexType name="DeliveryMess">
+        <xs:choice>
+            <xs:element name="DeliveryRq" type="this:DeliveryRq"/>
+            <xs:element name="DeliveryRs" type="this:DeliveryRs"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:schema>

@@ -45,6 +45,7 @@ import org.radixware.kernel.common.client.text.ITextOptionsProvider;
 import org.radixware.kernel.common.client.types.CommonEditingHistory;
 import org.radixware.kernel.common.client.types.IEditingHistory;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
+import org.radixware.kernel.common.client.utils.ClientValueFormatter;
 import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.ICommandToolButton;
@@ -65,6 +66,8 @@ import org.radixware.kernel.explorer.utils.WidgetUtils;
  *
  */
 public abstract class PropEditor extends AbstractPropEditor implements ICachableWidget {
+    
+    private final static int COMMAND_BUTTONS_PRIORITY = Integer.MAX_VALUE - 100;
 
     private final static class SetFocusEvent extends QEvent {
 
@@ -81,12 +84,11 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
             final boolean isEditMaskCompatible =
                     maskType == EEditMaskType.LIST || maskType == EEditMaskType.ENUM || maskType == EEditMaskType.BOOL;
             final Property property = getProperty();
-            final boolean displayStringCanBeOverrided = isEditMaskCompatible
-                    || property.getType().isArrayType()
-                    || property.getType()==EValType.OBJECT
-                    || isReadonly();
+            final EValType valType = property.getType();
+            final boolean isValTypeCompatible = valType.isArrayType() || valType==EValType.OBJECT || valType==EValType.XML;
+            final boolean displayStringCanBeOverrided = isEditMaskCompatible || isValTypeCompatible || isReadonly();
             if (displayStringCanBeOverrided) {
-                return getProperty().getOwner().getDisplayString(getProperty().getId(), value, defaultDisplayString, !getProperty().hasOwnValue());
+                return getProperty().getOwner().getDisplayString(property.getId(), value, defaultDisplayString, !property.hasOwnValue());
             }
             return defaultDisplayString;
         }
@@ -110,8 +112,9 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
     
     private QHBoxLayout layout;
     private ValEditor valEditor;
-    private final boolean initComplete;
+    private boolean initComplete;
     private boolean inCache;
+    private boolean wasBinded;    
     private List<QToolButton> customButtons;
     private ChangeFontEventFilter changeFontEventFilter;
 
@@ -128,13 +131,69 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
         initComplete = true;
     }
 
+    public String getPropTitle() {
+        // 20180313 Котрачев добавил этот метод только для 
+        // org.radixware\kernel\explorer\src\org\radixware\kernel\explorer\webdriver\elements\UIElementPropertyGetters.java
+        // UIElementPropertyGetters.isPropertyGetter
+        // чтобы упростить клиенту поиск элемента по имени проперти.
+        return this.getProperty().getTitle();
+    }
+
     private void createUi(final ValEditorFactory valEditorFactory) {
         layout = WidgetUtils.createHBoxLayout(this);
         final EValType valType = ValueConverter.serverValType2ClientValType(getProperty().getType());
+        valEditor =
+            valEditorFactory.createValEditor(valType, getPropertyEditMask(), getEnvironment(), this);
+        initValEditor();
+        setSizePolicy(Policy.Expanding, Policy.Fixed);
+        layout.addWidget(valEditor);
+        addStandardButtons();
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected void changeValEditor(final ValEditorFactory valEditorFactory){        
+        clearValEditor(false);
+        final List<IButton> standardButtons = controller.getStandardButtons();
         {
-            valEditor =
-                    valEditorFactory.createValEditor(valType, getPropertyEditMask(), getEnvironment(), this);
+            final ValEditor editor = getValEditor();            
+            for (IButton button: standardButtons){
+                if (button instanceof QToolButton){
+                    editor.removeButton((QToolButton)button, false);
+                    ((QToolButton)button).setParent(this);
+                }
+            }
+
+            layout.removeWidget(editor);
+            editor.setParent(null);
+            editor.close();
+            editor.disposeLater();
         }
+        final EValType valType = ValueConverter.serverValType2ClientValType(getProperty().getType());
+        valEditor =
+            valEditorFactory.createValEditor(valType, getPropertyEditMask(), getEnvironment(), this);
+        initValEditor();
+        layout.insertWidget(0, valEditor);  
+        
+        for (IButton button: standardButtons){
+            if (button instanceof QToolButton){
+                valEditor.addButton((QToolButton)button);
+            }
+        }
+        addCommandButtons(controller.getCommandToolButtons());
+        
+        if (customButtons!=null){
+            for (QToolButton button: customButtons){
+                valEditor.addButton(button);
+            }
+        }
+        
+        if (wasBinded){
+            valEditor.valueChanged.connect(controller, "onValueEdit(Object)");
+        }
+            
+    }
+    
+    private void initValEditor(){
         {
             valEditor.setObjectName("ValEditor");
             if (valEditor.getLineEdit() != null) {
@@ -145,6 +204,7 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
             }
             valEditor.setAutoValidationEnabled(false);
             valEditor.setTextOptionsProvider(new PropertyValueTextOptionsProvaider());
+            valEditor.installEventFilter(getChangeFontEventFilter());
         }
         if (getProperty().getDefinition().storeHistory()) {
             final StringBuilder settingPath = new StringBuilder(getProperty().getOwner().getDefinition().getId().toString());
@@ -157,13 +217,11 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
         {
             setFocusPolicy(Qt.FocusPolicy.StrongFocus);
             setFocusProxy(valEditor.getLineEdit());
-            setSizePolicy(Policy.Expanding, Policy.Fixed);
-            layout.addWidget(valEditor);
-            addStandardButtons();
-        }
+        }        
     }
 
     @Override    
+    @SuppressWarnings("unchecked")
     void setProperty(final Property property) {
         super.setProperty(property);
         if (property != null) {
@@ -186,18 +244,21 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
                 enableEditingHistory(settingPath.toString());
             }
             {//add command buttons in the order like at first time
-                @SuppressWarnings("unchecked")//invalid java warning on controller.getCommandToolButtons() call
-                final List<ICommandToolButton> commandButtons = new ArrayList<>(controller.getCommandToolButtons());
-                Collections.reverse(commandButtons);
-                for (ICommandToolButton commandButton : commandButtons) {
-                    valEditor.addFirstButton((QToolButton)commandButton);
-                    if (customButtons == null) {
-                        customButtons = new LinkedList<>();
-                    }
-                    customButtons.add((QToolButton)commandButton);
-                }
-            }
+                addCommandButtons(controller.getCommandToolButtons());
+           }
+            valEditor.installEventFilter(getChangeFontEventFilter());
+            setObjectName("propEditor #"+property.getId().toString());
+            //setWindowTitle(property.getTitle());
+            
         }
+    }
+    
+    protected int getCommandButtonPriority(final QToolButton commandButton){
+        return COMMAND_BUTTONS_PRIORITY;
+    }
+    
+    EEditMaskType getEditMaskType(){
+        return valEditor.getEditMask().getType();
     }
     
     protected void enableEditingHistory(final String settingPath) {
@@ -229,11 +290,25 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
     public void addButton(final IButton button) {
         addButton((QToolButton) button);
     }
-
+        
+    @SuppressWarnings("unchecked")//invalid java warning on controller.getCommandToolButtons() call
+    @Override
+    protected void addCommandButtons(final List<ICommandToolButton> commandButtons) {
+        final List<ICommandToolButton> buttons = new ArrayList<>(commandButtons);
+        Collections.reverse(buttons);
+        QToolButton commandToolButton;
+        for (ICommandToolButton commandButton : buttons) {
+            commandToolButton = (QToolButton)commandButton;
+            valEditor.addButton(commandToolButton, getCommandButtonPriority(commandToolButton));
+        }
+    }
+    
     @Override
     public void refresh(final ModelItem changedItem) {
-        super.refresh(changedItem);
-        getValEditor().refresh();
+        if (getProperty()!=null){
+            super.refresh(changedItem);
+            getValEditor().refresh();
+        }
     }
 
     @Override
@@ -241,17 +316,20 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
         super.bind();
         valEditor.valueChanged.connect(controller, "onValueEdit(Object)");
         Application.getInstance().getActions().settingsChanged.connect(this, "updateSettings()");
+        wasBinded = true;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected void updateEditor(final Object value, final PropEditorOptions options) {
         final ValEditor finalValEditor = getValEditor();
+        final boolean valEditorFocused = finalValEditor.hasFocus();
         finalValEditor.setToolTip(options.getTooltip());
         finalValEditor.setValue(value);
         finalValEditor.setEditMask(options.getEditMask());
         finalValEditor.setMandatory(options.isMandatory());
         finalValEditor.setReadOnly(options.isReadOnly());
+        finalValEditor.setEmbeddedWidgetsVisible(options.isEnabled());
         if (RadPropertyDef.isPredefinedValuesSupported(getProperty().getType(), options.getEditMask().getType())){
             finalValEditor.setPredefinedValues(options.getPredefinedValues());
         }
@@ -262,14 +340,28 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
                 finalValEditor.setInputText(invalidText);
             }
         }
+        final String dialogTitle = 
+                ClientValueFormatter.capitalizeIfNecessary(getEnvironment(), getProperty().getTitle());
+        finalValEditor.setDialogTitle(dialogTitle);
+        finalValEditor.setMaxPredefinedValuesInDropDownList(getProperty().getMaxPredefinedValuesInDropDownList());
+        if (valEditorFocused && !finalValEditor.hasFocus()){
+            finalValEditor.scheduleSetFocus();
+        }
     }
 
     @Override
     protected void updateSettings() {
         final Property finalProperty = getProperty();
         final ValidationResult state = finalProperty.getOwner().getPropertyValueState(finalProperty.getId());
-        getValEditor().setValidationResult(state);
-        getValEditor().refreshTextOptions();
+        final ValEditor finalValEditor = getValEditor();
+        final boolean valEditorFocused = finalValEditor.hasFocus();
+        finalValEditor.setValidationResult(state);
+        finalValEditor.refreshTextOptions();
+        finalValEditor.refreshShowPredefinedValuesButton();
+        finalValEditor.refresh();
+        if (valEditorFocused && !finalValEditor.hasFocus()){
+            finalValEditor.scheduleSetFocus();
+        }
     }
 
     @Override
@@ -311,27 +403,20 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
         controller.changeStateForGrid();
         valEditor.refreshTextOptions();
     }
+    
+    public void setAdjustWidthByContentModeEnabled(final boolean enabled){
+        getValEditor().setAdjustWidthByContentModeEnabled(enabled);
+    }
+    
+    public boolean isAdjustWidthByContentModeEnabled(){
+        return getValEditor().isAdjustWidthByContentModeEnabled();
+    }    
 
     private QObject getChangeFontEventFilter() {
         if (changeFontEventFilter == null) {
             changeFontEventFilter = new ChangeFontEventFilter(this);
         }
         return changeFontEventFilter;
-    }
-
-    @Override
-    public void setVisible(final boolean visible) {
-        if (valEditor != null) {
-            final QObject eventFilter = getChangeFontEventFilter();
-            valEditor.installEventFilter(eventFilter);
-            try {
-                super.setVisible(visible);
-            } finally {
-                valEditor.removeEventFilter(eventFilter);
-            }
-        } else {
-            super.setVisible(visible);
-        }
     }
 
     @Override
@@ -369,8 +454,9 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
     }
 
     @Override
-    protected void closeEvent(final QCloseEvent event) {
+    protected void closeEvent(final QCloseEvent event) {        
         Application.getInstance().getActions().settingsChanged.disconnect(this);
+        clearValEditor(true);
         super.closeEvent(event);
     }
 
@@ -436,6 +522,16 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
     @Override
     @SuppressWarnings("unchecked")//invalid java warning on controller.getCommandToolButtons() call
     void clear() {
+        clearValEditor(true);
+        super.clear();
+        //it must be after setParent(null) call
+        final ValEditor editor = getValEditor();
+        editor.setDefaultTextOptions(null);
+        editor.setValue(null);
+    }
+    
+    @SuppressWarnings("unchecked")//invalid java warning on controller.getCommandToolButtons() call
+    private void clearValEditor(final boolean disposeButtons){
         final ValEditor editor = getValEditor();
         editor.setTextOptionsProvider(null);
         editor.setDisplayStringProvider(null);
@@ -443,20 +539,17 @@ public abstract class PropEditor extends AbstractPropEditor implements ICachable
         setEditingHistory(null);
         if (customButtons != null) {
             for (QToolButton customButton : customButtons) {
-                editor.removeButton(customButton);
+                editor.removeButton(customButton, disposeButtons);
             }
             customButtons = null;
         }
         valEditor.valueChanged.disconnect(controller);
+        valEditor.removeEventFilter(getChangeFontEventFilter());
         Application.getInstance().getActions().settingsChanged.disconnect(this);
         final List<ICommandToolButton> commandButtons = controller.getCommandToolButtons();
         for (ICommandToolButton button : commandButtons) {
-            editor.removeButton((QToolButton) button);
+            editor.removeButton((QToolButton) button, disposeButtons);
         }
-        super.clear();
-        //it must be after setParent(null) call
-        editor.setDefaultTextOptions(null);
-        editor.setValue(null);
     }
 
     @Override

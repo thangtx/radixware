@@ -55,6 +55,7 @@ import org.radixware.kernel.common.defs.ads.type.IAdsTypedObject;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EParamDirection;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.radixdoc.DocumentOptions;
@@ -555,6 +556,11 @@ public class AdsAlgoClassDef extends AdsClassDef implements ContainerChangesList
                     return false;
                 }
             };
+        }
+
+        @Override
+        public EDocGroup getDocGroup() {
+            return EDocGroup.PROPERTY;
         }
     }
 

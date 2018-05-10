@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.repository;
 
 import java.math.BigDecimal;
@@ -18,23 +17,37 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import org.radixware.kernel.common.enums.EDatabaseType;
 import org.radixware.kernel.common.enums.EOptionMode;
-
 
 public class DbConfiguration {
 
+    static final String DB_LAYER_URI = "layeruri";
+    static final String DB_NAME = "name";
+    static final String DB_VALUE = "value";
+    private static final String DB_SQL = "select " + DB_LAYER_URI + ", " + DB_NAME + ", " + DB_VALUE + " from rdx_ddsoption";
+
     private final BigDecimal targetDbVersion;
-    private final String targetDbType;
+    private final EDatabaseType targetDbType;
     private final List<DbOptionValue> options;
 
+    @Deprecated
     public DbConfiguration(final String targetDbType, final BigDecimal targetDbVersion, List<DbOptionValue> enabledOptions) {
-        this.targetDbType = targetDbType;
-        this.targetDbVersion = targetDbVersion;
-        this.options = Collections.unmodifiableList(new ArrayList<>(enabledOptions == null ? Collections.<DbOptionValue>emptyList() : enabledOptions));
+        this(Layer.TargetDatabase.string2DatabaseType(targetDbType), targetDbVersion, enabledOptions);
+    }
+
+    public DbConfiguration(final EDatabaseType targetDbType, final BigDecimal targetDbVersion, List<DbOptionValue> enabledOptions) {
+        if (targetDbType == null) {
+            throw new IllegalArgumentException("Database type can't be null");
+        } else if (targetDbVersion == null) {
+            throw new IllegalArgumentException("Database version can't be null");
+        } else {
+            this.targetDbType = targetDbType;
+            this.targetDbVersion = targetDbVersion;
+            this.options = Collections.unmodifiableList(new ArrayList<>(enabledOptions == null ? Collections.<DbOptionValue>emptyList() : enabledOptions));
+        }
     }
 
     public List<DbOptionValue> getOptions() {
@@ -46,6 +59,10 @@ public class DbConfiguration {
     }
 
     public String getTargetDbType() {
+        return targetDbType.toString();
+    }
+
+    public EDatabaseType getTargetDb() {
         return targetDbType;
     }
 
@@ -85,35 +102,52 @@ public class DbConfiguration {
     }
 
     public static DbConfiguration read(final Connection connection) throws SQLException {
-        try (PreparedStatement qryReadDbConfiguration = connection.prepareStatement("select layeruri, name, value from rdx_ddsoption")) {
-            try (ResultSet rs = qryReadDbConfiguration.executeQuery()) {
-                String targetDbType = null;
-                BigDecimal targetDbVersion = null;
-                final List<DbOptionValue> options = new ArrayList<>();
-                while (rs.next()) {
-                    final String optLayer = rs.getString("layeruri");
-                    final String optName = rs.getString("name");
-                    final String optVal = rs.getString("value");
-                    boolean special = false;
-                    if (Layer.ORG_RADIXWARE_LAYER_URI.equals(optLayer)) {
-                        if (Layer.DatabaseOption.TARGET_DB_TYPE.equals(optName)) {
-                            targetDbType = optVal;
-                            special = true;
-                        } else if (Layer.DatabaseOption.TARGET_DB_VERSION.equals(optName)) {
-                            try {
-                                targetDbVersion = new BigDecimal(optVal);
-                            } catch (NumberFormatException ex) {
-                                targetDbVersion = BigDecimal.ZERO;
+        if (connection == null) {
+            throw new IllegalArgumentException("Database connection can't be null");
+        } else {
+            try (final PreparedStatement qryReadDbConfiguration = connection.prepareStatement(DB_SQL)) {
+                try (final ResultSet rs = qryReadDbConfiguration.executeQuery()) {
+                    boolean recordsWereFound = false;
+                    EDatabaseType targetDbType = null;
+                    BigDecimal targetDbVersion = null;
+                    final List<DbOptionValue> options = new ArrayList<>();
+
+                    while (rs.next()) {
+                        final String optLayer = rs.getString(DB_LAYER_URI);
+                        final String optName = rs.getString(DB_NAME);
+                        final String optVal = rs.getString(DB_VALUE);
+                        boolean special = false;
+
+                        if (Layer.ORG_RADIXWARE_LAYER_URI.equals(optLayer)) {
+                            if (Layer.DatabaseOption.TARGET_DB_TYPE.equals(optName)) {
+                                try {
+                                    targetDbType = EDatabaseType.valueOf(optVal.trim().toUpperCase());
+                                } catch (IllegalArgumentException ex) {
+                                    targetDbType = EDatabaseType.ORACLE;
+                                }
+                                special = true;
+                            } else if (Layer.DatabaseOption.TARGET_DB_VERSION.equals(optName)) {
+                                try {
+                                    targetDbVersion = new BigDecimal(optVal);
+                                } catch (NumberFormatException ex) {
+                                    targetDbVersion = BigDecimal.ZERO;
+                                }
+                                special = true;
                             }
-                            special = true;
-                        } 
-                    } 
-                    if (!special) {
-                        EOptionMode mode = EOptionMode.ENABLED.name().equals(optVal) ? EOptionMode.ENABLED : EOptionMode.DISABLED;                       
-                        options.add(new DbOptionValue(Layer.DatabaseOption.getQualifiedOptionName(optLayer, optName), mode));
+                        }
+                        if (!special) {
+                            EOptionMode mode = EOptionMode.ENABLED.name().equals(optVal) ? EOptionMode.ENABLED : EOptionMode.DISABLED;
+                            options.add(new DbOptionValue(Layer.DatabaseOption.getQualifiedOptionName(optLayer, optName), mode));
+                        }
+                        recordsWereFound = true;
+                    }
+
+                    if (recordsWereFound) {
+                        return new DbConfiguration(targetDbType, targetDbVersion, options);
+                    } else {
+                        throw new SQLException("Database table [rdx_ddsoption] does not contain any valid data (possibly errors on database installation stage by RadixWare Manager)");
                     }
                 }
-                return new DbConfiguration(targetDbType, targetDbVersion, options);
             }
         }
     }

@@ -17,8 +17,8 @@
       <Method Id="mthNANSAC3E2NF7RGP4ECEQ6XOEHU" Name="updatePassword" Nature="0" IsOverride="false">
         <AccessRules IsPublished="false" IsStatic="true"/>
         <Parameters>
-          <Parameter Name="context" Id="mprHFQNZWL6FZGJLBRBT7CBMH7SYI">
-            <Type TypeId="411" Path="adcGAHR344WHJGMXD6R73H5EAUYWI"/>
+          <Parameter Name="userModel" Id="mprJ2FFXTUPKJETFMDPVRSLVSDDYQ">
+            <Type TypeId="411" Path="adc24D3IJUTHVH7HJZFW2PSATWURU"/>
           </Parameter>
           <Parameter Name="password" Id="mpr4WLH3VVAPZCVTONTSLC6UIASRI">
             <Type TypeId="21"/>
@@ -27,464 +27,250 @@
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="21"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
+              <xsc:Java>if (password == null || password.isEmpty()) {
+    userModel.Environment.messageError(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls2IZOMZMJ4VETPNK3BTIYBZQEDU">
+                <xsc:Presentation>Error</xsc:Presentation>
+              </xsc:LocalizedString>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsXKRL76V5NFBWDCNKZX3VLCCB3E">
+                <xsc:Presentation>Password not defined</xsc:Presentation>
+              </xsc:LocalizedString>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return false;
+}
+if (!password.equals(confirmation)) {
+    userModel.Environment.messageError(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsFR72NLZJEBFFFPMYWU6KW27YFY">
+                <xsc:Presentation>Error</xsc:Presentation>
+              </xsc:LocalizedString>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsIPYRUKJ6YFAXVM5FALAGFO4624">
+                <xsc:Presentation>New password confirmation does not match new password.</xsc:Presentation>
+              </xsc:LocalizedString>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return false;
+}
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="PasswordRequirementsDocument">
+                <xsc:Presentation>Arte::EasXsd:PasswordRequirementsDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> pwdReqXml = 
+    (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="PasswordRequirementsDocument">
+                <xsc:Presentation>Arte::EasXsd:PasswordRequirementsDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)userModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true">
+                <xsc:Presentation>getProperty</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 prdJGY5G5O23VG27HRRWMZD223LPY">
+                <xsc:Presentation>Acs::User:passwordRequirements</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true">
+                <xsc:Presentation>getValueObject</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> userName = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>)context.getHolderModel().
-        </xsc:Java>
+              <xsc:Java>)userModel.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true">
+                <xsc:Presentation>getProperty</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 colEF6ODCYWY3NBDGMCABQAQH3XQ4">
+                <xsc:Presentation>Acs::User:name</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true">
+                <xsc:Presentation>getValueObject</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
-        
-if  (userName == null)
-    {
-        final </xsc:Java>
+if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
+              <xsc:IdReference Path="adcWYF5UGWT4ZAT7NTUSSOFE3P2WQ mthBMPL7XJBOJGI3KKKXDCFQTPI5I" Invoke="true">
+                <xsc:Presentation>checkPasswordRequirements</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> userTemporaryName = "USER_TMP_NAME";//настоящий пользователь все равно будет введен
-                                                      //т.к. свойство мандаторное, и текущий пароль будет сброшен  
-        userName = userTemporaryName;
-    //context.Environment.messageError(</xsc:Java>
+              <xsc:Java>(pwdReqXml, password, userName, userModel.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsARN4SHYK2FCYFDJEOWN76FFQEU"/>
+              <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                <xsc:Presentation>getEnvironment</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>, </xsc:Java>
+              <xsc:Java>())){
+    userModel.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsINYTB4ZWBJFKRK5JLFAU5EUK2I"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>); //RADIX-8464
-    //return;
-}
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> val1 = confirmation;
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> val2 = password;
-if (val1 == null || val1.isEmpty()) {
-    context.Environment.messageError(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mls2IZOMZMJ4VETPNK3BTIYBZQEDU"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsXKRL76V5NFBWDCNKZX3VLCCB3E"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);
-    return null;
-}
-if (!val1.equals(val2)) {
-    context.Environment.messageError(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsFR72NLZJEBFFFPMYWU6KW27YFY"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsIPYRUKJ6YFAXVM5FALAGFO4624"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);
-    return null;
-}
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> pwdMinLen = (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)context.getHolderModel().
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true">
+                <xsc:Presentation>getProperty</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 prd5JJ4FIVBQ5BXXLNLCF53LI5R5I"/>
+              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 eprK3FTXQSCQRAAJPVNYCKOQSCK7U aemK3FTXQSCQRAAJPVNYCKOQSCK7U prdSGL3QG35NVANTBGL7EJW7HAXPI">
+                <xsc:Presentation>Acs::User:General:General:Model:rawPassword</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>();
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="1"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> mustHaveAChars = (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="1"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)context.getHolderModel().
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 prdDQRA3ZQRNNGGVOKXRNXBXFJ4IE"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>).</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>();
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="1"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> mustHaveNChars = (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="1"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)context.getHolderModel().
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 prdYHSK36EVSNCZTK7KW3IO6Q663I"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>).</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>();
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="1"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> mustDifferFromName = (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="1"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)context.getHolderModel().
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 prdENYNYCMZF5H5ZAQJWKLHQUFJEM"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>).</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>();
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcNGPHLVKYRZF2TFHKOOLH35WARM"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> reqs = new </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcNGPHLVKYRZF2TFHKOOLH35WARM mthK6OTZVIIKFDGBO7AQ3V3THRT5E" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(pwdMinLen == null ? 0 : pwdMinLen.intValue(),
-                                                            mustHaveAChars == null ? false : mustHaveAChars.booleanValue(),
-                                                            mustHaveNChars == null ? false : mustHaveNChars.booleanValue(),
-                                                            mustDifferFromName == null || mustDifferFromName.booleanValue() == false ? null : java.util.Collections.&lt;String>singleton(userName));
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcAYRF3G5BKZCVLFR7CGIZTFA7NI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> weakness = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcMNGECHDZOBBKVDOMOI5UB4CG5U"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcMNGECHDZOBBKVDOMOI5UB4CG5U mth5K62VPCHYRC47EN4UEM4FVPNKU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(val1, reqs);
-if (weakness == </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcAYRF3G5BKZCVLFR7CGIZTFA7NI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.FROM_BLACK_LIST) {
-    context.Environment.messageError(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsYZCXXM64CVDNPC7L3GV2XI6RKY"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mls4WDRHIT6SZD7LPM5SGPIOKF4L4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);
-    return null;
-}
-if (weakness == </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcAYRF3G5BKZCVLFR7CGIZTFA7NI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.TOO_SHORT){
-    context.Environment.messageError(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsU5KCUSOR7RC2VP2E3Z2AMTHWOY"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcVKGJPJRGY3NRDCKFABIFNQAABA"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcVKGJPJRGY3NRDCKFABIFNQAABA mthFTTYRRBGY3NRDCKFABIFNQAABA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mls5NW3VBYARVB2VJ4WOD7RCB3BEY"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, pwdMinLen));
-    return null;
-}
-if (weakness == </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcAYRF3G5BKZCVLFR7CGIZTFA7NI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.NO_ALPHABETIC_CHARS){
-    context.Environment.messageError(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsUIZHULKOURFZBKGAFMRZMY4CKA"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mls5NITVGG3Y5DRNHJNFGUIGT5CNM"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);
-    return null;
-}
-if (weakness == </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcAYRF3G5BKZCVLFR7CGIZTFA7NI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.NO_NUMERIC_CHARS){
-    context.Environment.messageError(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsXWRPK3M6FJCI3OMVMC25WVJYZQ"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsRNBAJETMFFGWJP3P46RBSNDTG4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);
-    return null;
+              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true">
+                <xsc:Presentation>setValueObject</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(password);
+    return true;
+}else{
+    return false;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBMPL7XJBOJGI3KKKXDCFQTPI5I" Name="checkPasswordRequirements" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pwdRequirementsXml" Id="mprIDQZSPL4BBE7DER6BQWGMLW5VU">
+            <Type TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="PasswordRequirementsDocument"/>
+          </Parameter>
+          <Parameter Name="password" Id="mprXOS2P2GC5BBVJEN7ET6LFM55Z4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="userName" Id="mpr6EVVOONG3NGDHN3XOTRT5SOY4I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mprMMAS24WRC5HMFI4E2NGVA34LG4">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNGPHLVKYRZF2TFHKOOLH35WARM">
+                <xsc:Presentation>Acs::PasswordRequirements</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> pwdRequirements;
+if (userName == null){
+    pwdRequirements = 
+        org.radixware.kernel.common.client.auth.ClientAuthUtils.getPasswordRequirements(pwdRequirementsXml.getPasswordRequirements(), null);
+}else{
+    pwdRequirements = 
+        org.radixware.kernel.common.client.auth.ClientAuthUtils.getPasswordRequirements(pwdRequirementsXml.getPasswordRequirements(), userName.trim());
 }
 
-
-
-byte[] bytes = org.radixware.kernel.common.auth.AuthUtils.calcPwdHash(userName, val1);
-context.getHolderModel().
-        </xsc:Java>
+final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(</xsc:Java>
+              <xsc:Java> message = 
+    org.radixware.kernel.common.client.auth.ClientAuthUtils.checkPassword(password, pwdRequirements, environment);
+if (message==null){
+    return true;
+}else{
+    environment.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 col53PYQMVBCDNRDHQQABQAQH3XQ4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>).
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcWQXERQYKIJHFRLULJ7V3XR32C4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthLOCUMHMZ5ZDG7NDBYGMWSCLZBU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(bytes));
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> modifyUser = context.getHolderModel().
-                            </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthI4ZEAFBPYRGELAKWN3W2VE4SA4" Invoke="true"/>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthA5MYDLGBIZFR7HVUDLFWB2FGJA" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4 colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+              <xsc:LocalizedString StringId="mlsS36LPXYLIVFHTB6WADYML4E4OE"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>).</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth7OXSCLQHDFCWJNUZN7LX5OO7VE" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>();
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> currUser = context.Environment.UserName;
-
-context.Environment.Tracer.event(
-        String.format(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsIHAATMCNUFEUBLJTASGQCX6QXU"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>,
-                     currUser, modifyUser)
-        );
-return val1;
-</xsc:Java>
+              <xsc:Java>, message);
+    return false;
+}</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

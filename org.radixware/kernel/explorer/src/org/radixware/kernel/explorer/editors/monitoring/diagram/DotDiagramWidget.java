@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.editors.monitoring.diagram;
 
+import org.radixware.kernel.common.client.dashboard.FastMetricRecordIterator;
 import com.trolltech.qt.gui.QWidget;
 import java.awt.BasicStroke;
 import java.awt.geom.Ellipse2D;
@@ -27,6 +28,7 @@ import org.jfree.data.time.SimpleTimePeriod;
 import org.jfree.data.time.TimePeriod;
 import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.data.xy.XYDataset;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dashboard.DiagramSettings;
 import org.radixware.kernel.explorer.editors.monitoring.diagram.AbstaractMetricView.DotMetricValue;
 import org.radixware.kernel.explorer.editors.monitoring.diagram.AbstaractMetricView.MetricValue;
@@ -37,9 +39,9 @@ import org.radixware.schemas.monitoringcommand.MetricRecord;
 
 public class DotDiagramWidget extends DiagramWidget {
 
-    public DotDiagramWidget(final QWidget parent) {
-        super(parent);
-        String sTime = Application.translate("SystemMonitoring", "Time");
+    public DotDiagramWidget(final IClientEnvironment env, final QWidget parent) {
+        super(env, parent);
+        String sTime = Application.translate("SystemMonitoring", null);
         String sValue = Application.translate("SystemMonitoring", "Value");
         chart = ChartFactory.createTimeSeriesChart(null, sTime, sValue, null, false, false, false);
 
@@ -63,17 +65,21 @@ public class DotDiagramWidget extends DiagramWidget {
             updateRenderers(chart.getXYPlot(), metricSettings.getHistSettings().isHistogram());
         }    
         List<MetricValue> resultList = new ArrayList<>();
-        for (MetricRecord rec : diagRs.getHistoryRs().getRecords().getRecordList()) {      
-            if( rec.getEndTime()!=null && rec.getEndVal()!=null){
-               long endTimeMs = rec.getEndTime().getTime();
-               long startTimeMs = endTimeMs;
-               if( rec.getBegTime()!=null)
-                    startTimeMs=rec.getBegTime().getTime();
-               resultList.add(new DotMetricValue(startTimeMs, endTimeMs, rec.getEndVal().doubleValue()));
-            }       
+        try (FastMetricRecordIterator iter = new FastMetricRecordIterator(diagRs.getHistoryRs().getRecords())) {
+            while (iter.hasNext()) {
+                MetricRecord rec = iter.next();
+                if (rec.getEndTime() != null && rec.getEndVal() != null) {
+                    long endTimeMs = rec.getEndTime().getTime();
+                    long startTimeMs = endTimeMs;
+                    if (rec.getBegTime() != null) {
+                        startTimeMs = rec.getBegTime().getTime();
+                    }
+                    resultList.add(new DotMetricValue(startTimeMs, endTimeMs, rec.getEndVal().doubleValue()));
+                }
+            }
         }
-        Timestamp begTime = diagRs.getHistoryRs().getTimeFrom();
-        Timestamp endTime = diagRs.getHistoryRs().getTimeTo();
+        begTime = diagRs.getHistoryRs().getTimeFrom();
+        endTime = diagRs.getHistoryRs().getTimeTo();
         updateDataset(resultList, begTime, endTime, metricSettings);
         metricSettings.getHistSettings().setValueScale(getMinVal(), getMaxVal());
     }

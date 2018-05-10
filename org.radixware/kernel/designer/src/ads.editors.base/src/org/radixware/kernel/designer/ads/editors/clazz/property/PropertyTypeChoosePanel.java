@@ -61,7 +61,7 @@ public class PropertyTypeChoosePanel extends ExtendableTextField {
     }
 
     public boolean isComplete() {
-        if (property.getValue().getType() != null && property.getValue().getType() != AdsTypeDeclaration.UNDEFINED) {
+        if (property.getValue().getType() != null && !property.getValue().getType().isUndefined()) {
             stateManager.ok();
             return true;
         } else {

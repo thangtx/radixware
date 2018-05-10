@@ -12,12 +12,13 @@
 package org.radixware.kernel.common.client.widgets.propertiesgrid;
 
 import org.radixware.kernel.common.client.localization.MessageProvider;
-import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.models.items.ModelItem;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.propertiesgrid.IPropertiesGridCell.ELinkageDirection;
 
 
-final class EmptyCell<L extends IModelWidget, E extends IModelWidget> implements IPropertiesGridCell<L, E> {
+final class EmptyCell<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> implements IPropertiesGridCell<L, E, G> {
 
     final int row, column;
 
@@ -47,9 +48,29 @@ final class EmptyCell<L extends IModelWidget, E extends IModelWidget> implements
     }
 
     @Override
-    public Property getProperty() {
+    public ModelItem getModelItem() {
         return null;
     }
+
+    @Override
+    public G getPropertiesGroupWidget() {
+        return null;
+    }
+
+    @Override
+    public boolean isModelItemVisible() {
+        return false;
+    }
+
+    @Override
+    public boolean isModelItemReadOnly() {
+        return false;
+    }
+
+    @Override
+    public int getRowSpan() {
+        return 1;
+    }        
 
     @Override
     public int getColumn() {
@@ -67,7 +88,7 @@ final class EmptyCell<L extends IModelWidget, E extends IModelWidget> implements
     }
 
     @Override
-    public IPropertiesGridCell<L, E> getLinkedCell(final ELinkageDirection direction) {
+    public IPropertiesGridCell<L, E, G> getLinkedCell(final ELinkageDirection direction) {
         return null;
     }
 
@@ -77,7 +98,7 @@ final class EmptyCell<L extends IModelWidget, E extends IModelWidget> implements
     }
 
     @Override
-    public void linkWith(final IPropertiesGridCell<L, E> cell, final ELinkageDirection direction) {
+    public void linkWith(final IPropertiesGridCell<L, E, G> cell, final ELinkageDirection direction) {
         throw new UnsupportedOperationException("Can't linL empty cell.");
     }
 
@@ -100,12 +121,12 @@ final class EmptyCell<L extends IModelWidget, E extends IModelWidget> implements
     }
 
     @Override
-    public IPropertiesGridCell<L, E> createCopy() {
-        return new EmptyCell<L, E>(column, row);
+    public IPropertiesGridCell<L, E, G> createCopy() {
+        return new EmptyCell<L, E, G>(column, row);
     }
 
     @Override
-    public void close(IPropertiesGridPresenter<L, E> presenter) {
+    public void close(IPropertiesGridPresenter<L, E, G> presenter) {
         //do nothing
     }        
 }

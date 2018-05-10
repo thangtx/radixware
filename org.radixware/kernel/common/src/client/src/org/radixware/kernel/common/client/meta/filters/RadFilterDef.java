@@ -44,6 +44,7 @@ import org.radixware.kernel.common.types.Id;
 public class RadFilterDef extends TitledDefinition implements IModelDefinition, IEditorPagesHolder {
 
     private final org.radixware.schemas.xscml.Sqml condition;
+    private final org.radixware.schemas.xscml.Sqml conditionFrom;
     protected final List<Id> enabledBaseSortings;
     private final boolean isAnyCustomSortingEnabled;
     private final boolean isAnyBaseSortingEnabled;
@@ -62,6 +63,7 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
             final Id classId,
             final Id titleId,
             final String condition,
+            final String conditionFrom,
             final Id[] enabledSortings,
             final boolean cstSortingsEnabled,
             final boolean baseSortingsEnabled,
@@ -74,6 +76,7 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
         super(id, name, classId, titleId);
         environmentType = envType;
         ownerId = classId;
+        
         org.radixware.schemas.xscml.Sqml condition_ = null;
         try {
             if (condition == null) {
@@ -83,12 +86,26 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
                         org.radixware.schemas.xscml.SqmlDocument.Factory.parse(condition);
                 condition_ = document.getSqml();
             }
-
         } catch (XmlException ex) {
-            final String message = getApplication().getMessageProvider().translate("ExplorerError", "Can't parse condition for filter '%s' #%s: %s");
+            final String message = getApplication().getMessageProvider().translate("ExplorerError", "Failed to parse condition for filter '%s' #%s: %s");
             getApplication().getTracer().error(String.format(message, name, id, ClientException.getExceptionReason(getApplication().getMessageProvider(), ex)));
         }
         this.condition = condition_;
+        
+        org.radixware.schemas.xscml.Sqml conditionFrom_ = null;
+        try {
+            if (conditionFrom != null) {
+                final org.radixware.schemas.xscml.SqmlDocument document =
+                        org.radixware.schemas.xscml.SqmlDocument.Factory.parse(conditionFrom);
+                conditionFrom_ = document.getSqml();
+            }
+        } catch (XmlException ex) {
+            final String message = getApplication().getMessageProvider().translate("ExplorerError", "Failed to parse from condition for filter '%s' #%s: %s");
+            getApplication().getTracer().error(String.format(message, name, id, ClientException.getExceptionReason(getApplication().getMessageProvider(), ex)));
+            conditionFrom_ = org.radixware.schemas.xscml.Sqml.Factory.newInstance();
+        }
+        this.conditionFrom = conditionFrom_;        
+        
         if (enabledSortings != null && enabledSortings.length > 0) {
             enabledBaseSortings = new ArrayList<>(enabledSortings.length);
             Collections.addAll(enabledBaseSortings, enabledSortings);
@@ -113,6 +130,39 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
         editorPages = new RadEditorPages(pageOrder, this);
         this.commandOrder = commandOrder;
     }
+        
+    public RadFilterDef(
+            final Id id,
+            final String name,
+            final ERuntimeEnvironmentType envType,
+            final Id classId,
+            final Id titleId,
+            final String condition,
+            final Id[] enabledSortings,
+            final boolean cstSortingsEnabled,
+            final boolean baseSortingsEnabled,
+            final Id defaultSortingId,
+            final RadFilterParamDef[] parameters,
+            final RadEditorPageDef[] pages, //страницы, объявленные в данном фильтре
+            final RadEditorPages.PageOrder[] pageOrder, //порядок страниц в фильтре
+            final Id[] commandOrder//бесконтекстные команды фильтра
+            ) {
+        this(id,
+             name,
+             envType,
+             classId,
+             titleId,
+             condition,
+             null,
+             enabledSortings,
+             cstSortingsEnabled,
+             baseSortingsEnabled,
+             defaultSortingId,
+             parameters,
+             pages,
+             pageOrder,
+             commandOrder);        
+    }
     
     public RadFilterDef(
         final Id id,
@@ -135,6 +185,7 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
              classId,
              titleId,
              condition,
+             null,
              enabledSortings,
              cstSortingsEnabled,
              baseSortingsEnabled,
@@ -165,7 +216,11 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
     }
 
     public org.radixware.schemas.xscml.Sqml getCondition() {
-        return condition != null ? (org.radixware.schemas.xscml.Sqml) condition.copy() : null;
+        return condition == null ? null : (org.radixware.schemas.xscml.Sqml) condition.copy();
+    }
+    
+    public org.radixware.schemas.xscml.Sqml getConditionFrom() {
+        return conditionFrom==null ?  null : (org.radixware.schemas.xscml.Sqml) conditionFrom.copy();
     }
 
     @Override
@@ -198,6 +253,7 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
     // Идентификаторы бесконтекстных команд, доступных в фильтре
     protected Id[] commandOrder = null;
     private List<RadCommandDef> enabledCommands = null;
+    private final Object commandsSemaphore = new Object();
 
     private RadCommandDef findCommandDef(final Id commandId) {
         if (commandId.getPrefix() == EDefinitionIdPrefix.CONTEXTLESS_COMMAND) {
@@ -212,17 +268,17 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
             RadCommandDef command;
             for (Id commandId : commandOrder) {
                 command = findCommandDef(commandId);
-                enabledCommands.add(command);
+                if (command!=null){
+                    enabledCommands.add(command);
+                }
             }
         }
     }
 
     @Override
     public RadCommandDef getCommandDefById(final Id commandId) {
-        if (enabledCommands == null) {
-            linkCommands();
-        }
-        for (RadCommandDef command : enabledCommands) {
+        final List<RadCommandDef> commands = getEnabledCommands();
+        for (RadCommandDef command : commands) {
             if (command.getId().equals(commandId)) {
                 return command;
             }
@@ -244,10 +300,12 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
 
     @Override
     public List<RadCommandDef> getEnabledCommands() {
-        if (enabledCommands == null) {
-            linkCommands();
-        }
-        return Collections.unmodifiableList(enabledCommands);
+        synchronized(commandsSemaphore){
+            if (enabledCommands == null) {
+                linkCommands();
+            }
+            return Collections.unmodifiableList(enabledCommands);
+        }        
     }
 
     @Override
@@ -276,16 +334,20 @@ public class RadFilterDef extends TitledDefinition implements IModelDefinition, 
     }
 
     protected Model createModelImpl(final IClientEnvironment environment) {
-        final Id modelClassId = Id.Factory.changePrefix(getId(), EDefinitionIdPrefix.ADS_FILTER_MODEL_CLASS);
+        return createModelImpl(environment, getId(), this);
+    }
+    
+    protected static Model createModelImpl(final IClientEnvironment environment, final Id defId, final RadFilterDef def){
+        final Id modelClassId = Id.Factory.changePrefix(defId, EDefinitionIdPrefix.ADS_FILTER_MODEL_CLASS);
         try {
             Constructor<Model> constructor = null;
 
             Class<Model> classModel = environment.getDefManager().getDefinitionModelClass(modelClassId);
             constructor = classModel.getConstructor(IClientEnvironment.class,RadFilterDef.class);
-            return constructor.newInstance(environment,this);
+            return constructor.newInstance(environment, def);
         } catch (Exception e) {
-            throw new ModelCreationError(ModelCreationError.ModelType.FILTER_MODEL, this, null, e);
-        }
+            throw new ModelCreationError(ModelCreationError.ModelType.FILTER_MODEL, def, null, e);
+        }        
     }
 
     @Override

@@ -219,8 +219,7 @@
       <Headers>
         <Src Name="HeaderadcVT3H6R5625GSHKVSKZR7LYGYQA" Environment="explorer">
           <xsc:Item>
-            <xsc:Java>import com.trolltech.qt.gui.QStackedWidget;
-import com.trolltech.qt.gui.QScrollArea;
+            <xsc:Java>import com.trolltech.qt.gui.QScrollArea;
 import com.trolltech.qt.gui.QMenu;
 import java.nio.charset.Charset;
 import java.io.File;
@@ -250,14 +249,18 @@ final String arrName = "history";
 </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QClipboard"/>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QClipboard">
+              <xsc:Presentation>com.trolltech.qt.gui.QClipboard</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> clipBoard = null;
 </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QLabel"/>
+            <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QLabel">
+              <xsc:Presentation>com.trolltech.qt.gui.QLabel</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> imageLabel = null;
@@ -376,7 +379,7 @@ private static class XmlHighlighter extends QSyntaxHighlighter {
       </MethodGroup>
       <PropertyGroup Id="cpgSNYU4IIJRJHATJDIIODWDPTFOM" Name="Root">
         <Group Id="cpgZVL77536O5DKBF62VMJ7E6LLFE" Name="Params" Members="prpTJHQCMQWPRDGRAG5DTIYE7AAHE prpRE4VQBCIZJF65K44ZKXCAVZ72I prp32GEUQZVRFERFB3SY73ILPDR2I prdYHI5PSMF3NBULGKLZGDP6SIKGE prdSMRP4CS4HVBUTNLQQKAP2JXFQA prdOMYHC733UNC3ZHVFAIRPMO3F7U prdFOK7TXQ5GJFANJKWDNR3ACYCHQ prdXNQOAKTOP5DEHLNLZBAU3XHEZE prdRSGROWWS5ZAMLHRWMUZFWMGV74"/>
-        <Group Id="cpgNWF7SRAJJBEVXAZCEQBDUS3YPI" Name="Props" Members="prpLG4ZCRNY4JFFHGDUJTB47SOXFM prp5SJSKUN2WFAJNF4TNJKGNGAS44 prpPUQDHGQU6ZDEDATASRFWELRISY prpBVT45WYGOBEKTAS6UY45C5I7D4 prpQNT5ZE5G6NCIFH5YZMR3BHAVSM"/>
+        <Group Id="cpgNWF7SRAJJBEVXAZCEQBDUS3YPI" Name="Props" Members="prpLG4ZCRNY4JFFHGDUJTB47SOXFM prp5SJSKUN2WFAJNF4TNJKGNGAS44 prpPUQDHGQU6ZDEDATASRFWELRISY prpQNT5ZE5G6NCIFH5YZMR3BHAVSM"/>
       </PropertyGroup>
       <Properties>
         <Property Id="prp32GEUQZVRFERFB3SY73ILPDR2I" Name="resShown" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
@@ -387,26 +390,19 @@ private static class XmlHighlighter extends QSyntaxHighlighter {
           </InitialValue>
         </Property>
         <Property Id="prp5SJSKUN2WFAJNF4TNJKGNGAS44" Name="scrollArea" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Type TypeId="400" extStr="com.trolltech.qt.gui.QScrollArea"/>
-        </Property>
-        <Property Id="prpBVT45WYGOBEKTAS6UY45C5I7D4" Name="album" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
-          <AccessRules Access="1"/>
-          <Type TypeId="400" extStr="com.trolltech.qt.gui.QStackedWidget"/>
-          <InitialValue>
-            <ValAsStr>new QStackedWidget()</ValAsStr>
-          </InitialValue>
         </Property>
         <Property Id="prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Name="browser" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
           <AccessRules Access="1"/>
           <Type TypeId="400" extStr="com.trolltech.qt.webkit.QWebView"/>
         </Property>
         <Property Id="prpPUQDHGQU6ZDEDATASRFWELRISY" Name="textEdit" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Type TypeId="400" extStr="com.trolltech.qt.gui.QPlainTextEdit"/>
         </Property>
         <Property Id="prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Name="menu" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Type TypeId="400" extStr="com.trolltech.qt.gui.QMenu"/>
         </Property>
         <Property Id="prpRE4VQBCIZJF65K44ZKXCAVZ72I" Name="parType" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
@@ -456,7 +452,7 @@ private static class XmlHighlighter extends QSyntaxHighlighter {
       </Properties>
       <Methods>
         <Method Id="mth5NQEWUQLVFFS5FYLRD2UBE6LCY" Name="readFile" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="charset" Id="mprFMHW2RH4YNF3LHQWS4Y2GT54B4">
               <Type TypeId="400" extStr="java.nio.charset.Charset"/>
@@ -466,14 +462,18 @@ private static class XmlHighlighter extends QSyntaxHighlighter {
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.clear();
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="21"/>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> plainText = "";
@@ -481,27 +481,35 @@ try {
     if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == null) {
         plainText = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>;
         if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
@@ -509,19 +517,25 @@ try {
                 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451"/>
+                <xsc:TypeDeclaration TypeId="451">
+                  <xsc:Presentation>Xml</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> xml = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451"/>
+                <xsc:TypeDeclaration TypeId="451">
+                  <xsc:Presentation>Xml</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.Factory.parse(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -529,14 +543,18 @@ try {
             } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU">
+                  <xsc:Presentation>Exceptions::XmlException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> ex) {
                 plainText = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>;
@@ -545,7 +563,9 @@ try {
             plainText = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>;
@@ -555,25 +575,33 @@ try {
     } else if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:PlainText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> || </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
@@ -581,13 +609,17 @@ try {
             if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
@@ -599,13 +631,17 @@ try {
         if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
@@ -613,19 +649,25 @@ try {
                 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451"/>
+                <xsc:TypeDeclaration TypeId="451">
+                  <xsc:Presentation>Xml</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> xml = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451"/>
+                <xsc:TypeDeclaration TypeId="451">
+                  <xsc:Presentation>Xml</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.Factory.parse(new File(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>));               
@@ -633,14 +675,18 @@ try {
             } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU">
+                  <xsc:Presentation>Exceptions::XmlException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> ex) {
                 plainText = org.radixware.kernel.common.utils.FileUtils.readTextFile(new File(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>), charset.name());
@@ -649,7 +695,9 @@ try {
             plainText = org.radixware.kernel.common.utils.FileUtils.readTextFile(new File(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>), charset.name());
@@ -659,21 +707,27 @@ try {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                  <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.Instance.Environment.Tracer.error(e.getMessage());
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp32GEUQZVRFERFB3SY73ILPDR2I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp32GEUQZVRFERFB3SY73ILPDR2I" Invoke="true">
+                  <xsc:Presentation>resShown</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = false;
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true">
+                  <xsc:Presentation>rejectDialog</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -682,47 +736,61 @@ try {
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:PlainText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.insertPlainText(plainText);
 } else if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.insertPlainText(plainText);
     new XmlHighlighter(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.document());
@@ -730,14 +798,18 @@ if (</xsc:Java>
     if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == null) {
         plainText = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthMBZBLDJ4OZHCHG2H67RPCWK3HE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthMBZBLDJ4OZHCHG2H67RPCWK3HE" Invoke="true">
+                  <xsc:Presentation>setColorToResultImportPhrases</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(plainText);
@@ -745,7 +817,9 @@ if (</xsc:Java>
             final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="21"/>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> fileName = "ViewFileDlg" + java.util.UUID.randomUUID().toString() + ".html";
@@ -754,33 +828,43 @@ if (</xsc:Java>
                 org.radixware.kernel.common.utils.FileUtils.writeToFile(f, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, charset.name());
             } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                  <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> exception) {
                 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>().</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true"/>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true">
+                  <xsc:Presentation>getTracer</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>().</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcACRZP2N7KJHLTPMFXSTA2VAWSA mthX5R7XEMUPVFW3EZ34456NIIJ6Y" Invoke="true"/>
+                <xsc:IdReference Path="adcACRZP2N7KJHLTPMFXSTA2VAWSA mthX5R7XEMUPVFW3EZ34456NIIJ6Y" Invoke="true">
+                  <xsc:Presentation>error</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(exception);
@@ -789,14 +873,18 @@ if (</xsc:Java>
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.settings().setDefaultTextEncoding(charset.name());
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.load(url);
@@ -804,7 +892,9 @@ if (</xsc:Java>
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setHtml(plainText);
@@ -813,7 +903,9 @@ if (</xsc:Java>
         final com.trolltech.qt.core.QUrl url = com.trolltech.qt.core.QUrl.fromLocalFile(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -821,13 +913,17 @@ if (</xsc:Java>
             final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="21"/>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> defaultCharset = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.settings().defaultTextEncoding();
@@ -837,7 +933,9 @@ if (</xsc:Java>
                 } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU">
+                  <xsc:Presentation>Exceptions::IllegalArgumentException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> exception) {
@@ -848,7 +946,9 @@ if (</xsc:Java>
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.settings().setDefaultTextEncoding(charset.name());
@@ -856,7 +956,9 @@ if (</xsc:Java>
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.load(url);
@@ -882,7 +984,9 @@ return charset;</xsc:Java>
 int idx = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.findText(action.text());
@@ -890,7 +994,9 @@ if (idx>=0)
    </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setCurrentIndex(idx);
@@ -908,7 +1014,9 @@ if (idx>=0)
                 <xsc:Java>com.trolltech.qt.gui.QActionGroup group = new com.trolltech.qt.gui.QActionGroup(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true">
+                  <xsc:Presentation>menu</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -916,7 +1024,9 @@ group.setExclusive(false);
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true">
+                  <xsc:Presentation>menu</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.clear();
@@ -925,7 +1035,9 @@ for(String str: historyArr)
   group.addAction(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true">
+                  <xsc:Presentation>menu</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.addAction(str));
@@ -935,14 +1047,18 @@ if (historyArr.size()&lt;HistorySize)
     while (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true">
+                  <xsc:Presentation>menu</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.actions().size()&lt;HistorySize)
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true">
+                  <xsc:Presentation>menu</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.addAction("");
@@ -950,26 +1066,34 @@ if (historyArr.size()&lt;HistorySize)
 group.triggered.connect(this, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthBN565RLOLNFZ7BZKJDBWOVXIGM"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthBN565RLOLNFZ7BZKJDBWOVXIGM">
+                  <xsc:Presentation>ViewFileDlg:ViewFileDlg:Model:menuSelect</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>+"(QAction)");
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true">
+                  <xsc:Presentation>menu</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.popup(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:historyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.window().pos().add(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:historyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.pos()));</xsc:Java>
@@ -990,20 +1114,26 @@ group.triggered.connect(this, </xsc:Java>
                 <xsc:Java>final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="21"/>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> charsetName = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.itemText(index.intValue());
 final Charset newCharset = charsetName==null ? null : (Charset)</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.itemData(index.intValue());
@@ -1020,42 +1150,70 @@ if (newCharset!=null){
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:historyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true">
+                  <xsc:Presentation>setEnabled</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(!historyArr.isEmpty());    
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>!=</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:PlainText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java> &amp;&amp; newCharset==null)
+                <xsc:Java> &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>!=</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>  &amp;&amp; newCharset==null)
 {
    com.trolltech.qt.core.QUrl url = new com.trolltech.qt.core.QUrl();
    url.setPath(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
    </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.load(url);
@@ -1064,7 +1222,9 @@ else
    </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mth5NQEWUQLVFFS5FYLRD2UBE6LCY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mth5NQEWUQLVFFS5FYLRD2UBE6LCY" Invoke="true">
+                  <xsc:Presentation>readFile</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(newCharset); 
@@ -1072,20 +1232,26 @@ else
 /*if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>==</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>)
     cb.text = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.page().currentFrame().toPlainText();*/
@@ -1095,7 +1261,7 @@ else
           </Sources>
         </Method>
         <Method Id="mthSLLPKSG2O5H4LNHIXMLRXKBCRE" Name="fillCharsetList" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Sources>
             <Src>
               <xsc:Item>
@@ -1104,13 +1270,17 @@ for (java.util.Map.Entry&lt;String,Charset> entry: charsets.entrySet()){
     if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>==</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> &amp;&amp;
@@ -1120,7 +1290,9 @@ for (java.util.Map.Entry&lt;String,Charset> entry: charsets.entrySet()){
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.addItem(entry.getKey(),entry.Value);
@@ -1130,7 +1302,7 @@ for (java.util.Map.Entry&lt;String,Charset> entry: charsets.entrySet()){
           </Sources>
         </Method>
         <Method Id="mthSMAAN7AVARCFHKSW7WUPIKKKEQ" Name="init" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="wndw" Id="mprAS57XHSGDBFKPIGLCCQYUP6SYI">
               <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
@@ -1142,7 +1314,9 @@ for (java.util.Map.Entry&lt;String,Charset> entry: charsets.entrySet()){
                 <xsc:Java>//if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>==null)
@@ -1150,26 +1324,34 @@ for (java.util.Map.Entry&lt;String,Charset> entry: charsets.entrySet()){
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == null) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QFile"/>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QFile">
+                  <xsc:Presentation>com.trolltech.qt.core.QFile</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> checkFile = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QFile"/>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.core.QFile">
+                  <xsc:Presentation>com.trolltech.qt.core.QFile</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -1177,13 +1359,17 @@ if (</xsc:Java>
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                  <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthZTCOXNJEKBAQFBAFKCDL2IQKCQ" Invoke="true"/>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthZTCOXNJEKBAQFBAFKCDL2IQKCQ" Invoke="true">
+                  <xsc:Presentation>messageError</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
@@ -1202,7 +1388,9 @@ if (</xsc:Java>
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true">
+                  <xsc:Presentation>rejectDialog</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -1214,7 +1402,9 @@ if (</xsc:Java>
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcJ2OYTC2GQJBANEQLYPGRV3VDZU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKFCOZM5UMZDSJFFSMEO2523XOI">
+                  <xsc:Presentation>SearchBox</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> searchBox = null;
@@ -1222,14 +1412,18 @@ if (</xsc:Java>
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = new com.trolltech.qt.gui.QPlainTextEdit(wndw);
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = new com.trolltech.qt.webkit.QWebView(wndw);
@@ -1238,28 +1432,36 @@ com.trolltech.qt.gui.QHBoxLayout encodingLine = new com.trolltech.qt.gui.QHBoxLa
 encodingLine.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgPPB5HHSCIVHRPJUVRAUOKXLYJQ" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgPPB5HHSCIVHRPJUVRAUOKXLYJQ" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeLabel</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 encodingLine.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 encodingLine.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:historyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 encodingLine.setStretchFactor(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, 2);
@@ -1267,71 +1469,93 @@ main.addLayout(encodingLine);
 if ((</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> != null &amp;&amp; !</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.isEmpty()) || </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>!=null/*String has always UTF-8 encoding*/) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgPPB5HHSCIVHRPJUVRAUOKXLYJQ" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgPPB5HHSCIVHRPJUVRAUOKXLYJQ" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeLabel</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:historyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);
@@ -1340,40 +1564,52 @@ if ((</xsc:Java>
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpQNT5ZE5G6NCIFH5YZMR3BHAVSM" Invoke="true">
+                  <xsc:Presentation>menu</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = new QMenu(wndw);
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:historyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.clicked.connect(this, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthGPO645BT6BBZPGACYFEKWUTASM"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthGPO645BT6BBZPGACYFEKWUTASM">
+                  <xsc:Presentation>ViewFileDlg:ViewFileDlg:Model:historyBtnClicked</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> + "()");
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthXL76OV6S7ZBIZGD3QVASOKO3K4" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthXL76OV6S7ZBIZGD3QVASOKO3K4" Invoke="true">
+                  <xsc:Presentation>load</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:historyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true">
+                  <xsc:Presentation>setEnabled</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(!historyArr.isEmpty());
@@ -1381,28 +1617,36 @@ if ((</xsc:Java>
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == null) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthUZHI5P3ILNASBFB6QT7NG3IUKE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthUZHI5P3ILNASBFB6QT7NG3IUKE" Invoke="true">
+                  <xsc:Presentation>loadAsImg</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(wndw);
     main.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true">
+                  <xsc:Presentation>scrollArea</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true">
+                  <xsc:Presentation>scrollArea</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.show();
@@ -1410,14 +1654,18 @@ if (</xsc:Java>
     switch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
         case </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>:
@@ -1425,26 +1673,34 @@ if (</xsc:Java>
             if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>==null){
                 charsetName = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> != null &amp;&amp; !</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.isEmpty() ? </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> : (historyArr.isEmpty() ? "UTF-8" : historyArr.get(0));
@@ -1454,27 +1710,35 @@ if (</xsc:Java>
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthSLLPKSG2O5H4LNHIXMLRXKBCRE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthSLLPKSG2O5H4LNHIXMLRXKBCRE" Invoke="true">
+                  <xsc:Presentation>fillCharsetList</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.currentIndexChanged.connect(this, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthQXJS4DDZ2JENPGZX42U7YAHZNU"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthQXJS4DDZ2JENPGZX42U7YAHZNU">
+                  <xsc:Presentation>ViewFileDlg:ViewFileDlg:Model:indexChanged</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> + "(java.lang.Integer)");
             int last = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.findText(charsetName);
@@ -1482,7 +1746,9 @@ if (</xsc:Java>
                 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setCurrentIndex(last);
@@ -1490,34 +1756,44 @@ if (</xsc:Java>
                 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setCurrentIndex(0);
             main.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.page().repaintRequested.connect(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>,"update()");//repaint forcedly
             main.setStretchFactor(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, 2);
@@ -1525,32 +1801,58 @@ if (</xsc:Java>
             searchBox = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJ2OYTC2GQJBANEQLYPGRV3VDZU mth7VXINRSEVZHCHJL3SB6SGW6VZU" Invoke="true"/>
+                <xsc:IdReference Path="adcKFCOZM5UMZDSJFFSMEO2523XOI mthVAZNCW2GMFAZHOJ3ZPBGLOBMUM" Invoke="true">
+                  <xsc:Presentation>SearchBox</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(wndw, </xsc:Java>
+                <xsc:Java>(wndw, new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKFCOZM5UMZDSJFFSMEO2523XOI">
+                  <xsc:Presentation>SearchBox</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>, </xsc:Java>
+                <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKFCOZM5UMZDSJFFSMEO2523XOI adcXTLUIF7ELRDD5EM4WSE2ULQQX4">
+                  <xsc:Presentation>WebViewSearchDelegate</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>), </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>());
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);
@@ -1560,33 +1862,43 @@ if (</xsc:Java>
         case </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciM4I5RPCJABF4DAOSADHPBMWMXU" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciM4I5RPCJABF4DAOSADHPBMWMXU" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:RichText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>:
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp32GEUQZVRFERFB3SY73ILPDR2I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp32GEUQZVRFERFB3SY73ILPDR2I" Invoke="true">
+                  <xsc:Presentation>resShown</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = false;
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1"/>
+                <xsc:TypeDeclaration TypeId="411" Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1">
+                  <xsc:Presentation>ClientUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthYRMGZRL23NDU7DDLA6JRMURYGM" Invoke="true"/>
+                <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthYRMGZRL23NDU7DDLA6JRMURYGM" Invoke="true">
+                  <xsc:Presentation>openFileByExtApplication</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -1595,49 +1907,63 @@ if (</xsc:Java>
         case </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:PlainText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>:
         case </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>:
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthSLLPKSG2O5H4LNHIXMLRXKBCRE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthSLLPKSG2O5H4LNHIXMLRXKBCRE" Invoke="true">
+                  <xsc:Presentation>fillCharsetList</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setReadOnly(true);
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setWordWrapMode(com.trolltech.qt.gui.QTextOption.WrapMode.NoWrap);
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setUndoRedoEnabled(false);
             Charset charset = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mth5NQEWUQLVFFS5FYLRD2UBE6LCY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mth5NQEWUQLVFFS5FYLRD2UBE6LCY" Invoke="true">
+                  <xsc:Presentation>readFile</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(null);
@@ -1645,40 +1971,52 @@ if (</xsc:Java>
                 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setCurrentIndex(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.findText(charset.name()));
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.currentIndexChanged.connect(this, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthQXJS4DDZ2JENPGZX42U7YAHZNU"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthQXJS4DDZ2JENPGZX42U7YAHZNU">
+                  <xsc:Presentation>ViewFileDlg:ViewFileDlg:Model:indexChanged</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> + "(java.lang.Integer)");
             main.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
             main.setStretchFactor(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, 2);
@@ -1686,19 +2024,41 @@ if (</xsc:Java>
             searchBox = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJ2OYTC2GQJBANEQLYPGRV3VDZU mth7VXINRSEVZHCHJL3SB6SGW6VZU" Invoke="true"/>
+                <xsc:IdReference Path="adcKFCOZM5UMZDSJFFSMEO2523XOI mthVAZNCW2GMFAZHOJ3ZPBGLOBMUM" Invoke="true">
+                  <xsc:Presentation>SearchBox</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(wndw, </xsc:Java>
+                <xsc:Java>(wndw, new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKFCOZM5UMZDSJFFSMEO2523XOI">
+                  <xsc:Presentation>SearchBox</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>, </xsc:Java>
+                <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKFCOZM5UMZDSJFFSMEO2523XOI adcMM6THBYFRVHCHLQBMSJAWG5MWE">
+                  <xsc:Presentation>PlainTextEditSearchDelegate</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>), </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>());
@@ -1706,13 +2066,17 @@ if (</xsc:Java>
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);
@@ -1722,54 +2086,70 @@ if (</xsc:Java>
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthUZHI5P3ILNASBFB6QT7NG3IUKE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthUZHI5P3ILNASBFB6QT7NG3IUKE" Invoke="true">
+                  <xsc:Presentation>loadAsImg</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(wndw);
             main.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true">
+                  <xsc:Presentation>scrollArea</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true">
+                  <xsc:Presentation>scrollArea</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.show();
             main.setStretchFactor(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp5SJSKUN2WFAJNF4TNJKGNGAS44" Invoke="true">
+                  <xsc:Presentation>scrollArea</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, 2);
@@ -1779,54 +2159,70 @@ com.trolltech.qt.gui.QHBoxLayout line = new com.trolltech.qt.gui.QHBoxLayout();
 line.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgIIHFHQGIC5G65LJ2LDDKX3RYTE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgIIHFHQGIC5G65LJ2LDDKX3RYTE" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:extViewBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 line.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgTFO2F7AY2BDS3PJSPC7CM67EJU" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgTFO2F7AY2BDS3PJSPC7CM67EJU" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:saveBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 line.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgRVNC6SXBPJEP7BTO4C2UOIWPPY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgRVNC6SXBPJEP7BTO4C2UOIWPPY" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:copyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg3P2S3OLXA5HXFHNVPFOQ7EJHVE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg3P2S3OLXA5HXFHNVPFOQ7EJHVE" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:printBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdFOK7TXQ5GJFANJKWDNR3ACYCHQ" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdFOK7TXQ5GJFANJKWDNR3ACYCHQ" Invoke="true">
+                  <xsc:Presentation>parPrintEnable</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.booleanValue());
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdFOK7TXQ5GJFANJKWDNR3ACYCHQ" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdFOK7TXQ5GJFANJKWDNR3ACYCHQ" Invoke="true">
+                  <xsc:Presentation>parPrintEnable</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == true)
     line.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg3P2S3OLXA5HXFHNVPFOQ7EJHVE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg3P2S3OLXA5HXFHNVPFOQ7EJHVE" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:printBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -1834,7 +2230,9 @@ line.addStretch();
 line.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgE4PXI2ESABAW7OPVJN427GI7IQ" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgE4PXI2ESABAW7OPVJN427GI7IQ" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:dlgBtns</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -1843,26 +2241,34 @@ wndw.setLayout(main);
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgTFO2F7AY2BDS3PJSPC7CM67EJU" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgTFO2F7AY2BDS3PJSPC7CM67EJU" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:saveBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdYHI5PSMF3NBULGKLZGDP6SIKGE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdYHI5PSMF3NBULGKLZGDP6SIKGE" Invoke="true">
+                  <xsc:Presentation>parSaveHtml</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.booleanValue());
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthR6HIAWSGIZBJDNIMZCCOHYFPCY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthR6HIAWSGIZBJDNIMZCCOHYFPCY" Invoke="true">
+                  <xsc:Presentation>loadGeometry</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(wndw);
@@ -1870,26 +2276,34 @@ wndw.setLayout(main);
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true">
+                  <xsc:Presentation>parCaption</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> != null &amp;&amp; !</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true">
+                  <xsc:Presentation>parCaption</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.isEmpty())
     wndw.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthQF2WXV3YDFGHNPOLGSKADYYKNM" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthQF2WXV3YDFGHNPOLGSKADYYKNM" Invoke="true">
+                  <xsc:Presentation>setWindowTitle</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true">
+                  <xsc:Presentation>parCaption</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -1897,14 +2311,18 @@ if (</xsc:Java>
 if (!</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp32GEUQZVRFERFB3SY73ILPDR2I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp32GEUQZVRFERFB3SY73ILPDR2I" Invoke="true">
+                  <xsc:Presentation>resShown</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true">
+                  <xsc:Presentation>rejectDialog</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -1914,7 +2332,7 @@ if (!</xsc:Java>
           </Sources>
         </Method>
         <Method Id="mthTD7I675LRRGZDC4BFBBTLJ73LU" Name="saveCfg" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Sources>
             <Src>
               <xsc:Item>
@@ -1922,13 +2340,17 @@ if (!</xsc:Java>
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ">
+                  <xsc:Presentation>Client.Env::ClientSettings</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> saves = Environment.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true"/>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true">
+                  <xsc:Presentation>getConfigStore</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -1956,7 +2378,7 @@ finally
           </Sources>
         </Method>
         <Method Id="mthXL76OV6S7ZBIZGD3QVASOKO3K4" Name="load" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Sources>
             <Src>
               <xsc:Item>
@@ -1964,13 +2386,17 @@ finally
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ">
+                  <xsc:Presentation>Client.Env::ClientSettings</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> saves = Environment.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true"/>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true">
+                  <xsc:Presentation>getConfigStore</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -1994,13 +2420,17 @@ if (historyArr.isEmpty())
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdg4K37NKZHBJFCTDXY4MQMYSETTA" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:historyBtn</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true">
+                  <xsc:Presentation>setEnabled</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(false);</xsc:Java>
@@ -2009,7 +2439,7 @@ if (historyArr.isEmpty())
           </Sources>
         </Method>
         <Method Id="mthE4PXI2ESABAW7OPVJN427GI7IQ_clicked" Name="dlgBtns_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="arg1" Id="mprA4UCBYZPTVGA5BSUOAFEGAXZI4">
               <Type TypeId="400" extStr="com.trolltech.qt.gui.QAbstractButton"/>
@@ -2032,7 +2462,7 @@ if (getDialogView()!=null)
           </Sources>
         </Method>
         <Method Id="mthUVKEEPYTCREGNMMXAECUCVWABE_closed" Name="dlgWndw_closed" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Sources>
             <Src>
               <xsc:Item>
@@ -2060,7 +2490,7 @@ if (getDialogView()!=null)
           </Sources>
         </Method>
         <Method Id="mthUVKEEPYTCREGNMMXAECUCVWABE_opened" Name="dlgWndw_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="wndw" Id="mprBMRWV2QKX5BEXLGPFF2GDAHQOQ">
               <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
@@ -2087,122 +2517,285 @@ if (getDialogView()!=null)
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:Java>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> filterString;
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog.Filter"/>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java> filter =
-        new </xsc:Java>
+                <xsc:Java>[] extensions;
+final String txtExt = ".txt";
+if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog.Filter"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(</xsc:Java>
+                <xsc:Java> == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:LocalizedString StringId="mlsIS6D75TJMBETVIBTFXFW3BFC7U"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>);
-String fileName = 
-        </xsc:Java>
+                <xsc:Java>) {
+    filterString = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog"/>
+                <xsc:LocalizedString StringId="mlsZTGTFN2LS5FWZENKQIYBUWEOPY"/>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>.getSaveFileName(((org.radixware.kernel.explorer.views.IQWidgetProvider)this.</xsc:Java>
+                <xsc:Java>;
+    extensions = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true"/>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>()).asQWidget(), 
+                <xsc:Java>[]{".htm", ".html", txtExt};
+} else if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    filterString = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsCZKWQCBEZBGZTNFZVS3NCWYJQI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    extensions = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[]{".xml"};
+} else {
+    filterString = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsH3UK2UJTSVEPLJCR5JPGBAUXQY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    extensions = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>[]{txtExt};
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog.Filter">
+                  <xsc:Presentation>com.trolltech.qt.gui.QFileDialog.Filter</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> filter = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog.Filter">
+                  <xsc:Presentation>com.trolltech.qt.gui.QFileDialog.Filter</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(filterString);
+
+String fileName = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QFileDialog">
+                  <xsc:Presentation>Explorer.Qt.Types::QFileDialog</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getSaveFileName(
+        ((org.radixware.kernel.explorer.views.IQWidgetProvider) this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true">
+                  <xsc:Presentation>getDialogView</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()).asQWidget(),
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
                 <xsc:LocalizedString StringId="mlsEZB32PIZSRAJPPQBU7IJNHRUAA"/>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>, "", filter);
-String htmEnd = ".htm";
-String txtEnd = ".txt";
-if (fileName==null || fileName.isEmpty())
+                <xsc:Java>,
+        "",
+        filter);
+
+if (fileName == null || fileName.isEmpty())
     return;
 
-
-if (!fileName.endsWith(htmEnd) &amp;&amp; !fileName.endsWith(txtEnd))
-{
-    if (filter.selectedFilter.contains(htmEnd))
-        fileName += htmEnd;
-    else
-        fileName += txtEnd;
+boolean exact = false;
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> selectedFilterExt = null;
+for (String ext : extensions) {
+    if (fileName.endsWith(ext)) {
+        exact = true;
+        break;
+    }
+    if (filter.selectedFilter.contains(ext)) {
+        selectedFilterExt = ext;
+        break;
+    }
+}
+if (!exact &amp;&amp; fileName.indexOf('.') &lt; 0) {
+    fileName = fileName + selectedFilterExt;
 }
 
 final String codecName = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>==null || </xsc:Java>
+                <xsc:Java> == null || </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>.isEmpty()?
-    </xsc:Java>
+                <xsc:Java>.isEmpty()
+        ? </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.itemText(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgQUXHHKFZGRE6BMAML4WUZTSG5U" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw:codeCB</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>.currentIndex()):
-    </xsc:Java>
+                <xsc:Java>.currentIndex())
+        : </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>;
 final String data;
-if (fileName.endsWith(txtEnd)){  
-   data = </xsc:Java>
+
+if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    if (fileName.endsWith(txtExt)) {
+        data = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.page().currentFrame().toPlainText();
-}else{
-   //TODO Need for optimization
-   data = </xsc:Java>
+    } else {
+        //TODO Need for optimization
+        data = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.page().currentFrame().toHtml();
+    }
+} else {
+    data = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.toPlainText();
 }
 
-try{    
-    org.radixware.kernel.common.utils.FileUtils.writeToFile(new java.io.File(fileName),data,codecName);
-}catch(java.io.IOException exception){
+try {
+    org.radixware.kernel.common.utils.FileUtils.writeToFile(new java.io.File(fileName), data, codecName);
+} catch (java.io.IOException exception) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true"/>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true">
+                  <xsc:Presentation>showException</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(exception);
@@ -2212,7 +2805,7 @@ try{
           </Sources>
         </Method>
         <Method Id="mthSFGCI5WCDJA3PFTE5MJTMAWCAM" Name="saveGeometry" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="wndw" Id="mpr4BYAQM7Y2JA3BABOGO7T3QEJ2U">
               <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
@@ -2251,7 +2844,7 @@ saves.endGroup();</xsc:Java>
           </Sources>
         </Method>
         <Method Id="mthR6HIAWSGIZBJDNIMZCCOHYFPCY" Name="loadGeometry" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="wndw" Id="mprWOWOOUZ7EFCQDEHRMGCPPNARVE">
               <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
@@ -2293,7 +2886,9 @@ saves.endGroup();</xsc:Java>
   clipBoard = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QApplication"/>
+                <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QApplication">
+                  <xsc:Presentation>com.trolltech.qt.gui.QApplication</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.clipboard();
@@ -2301,7 +2896,9 @@ saves.endGroup();</xsc:Java>
 switch(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>)
@@ -2309,14 +2906,18 @@ switch(</xsc:Java>
    case </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>:         
        clipBoard.setText(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.page().currentFrame().toPlainText());   
@@ -2325,14 +2926,27 @@ switch(</xsc:Java>
    case </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:PlainText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>:                        
+                <xsc:Java>:
+   case </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>:
       clipBoard.setText(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.toPlainText());
@@ -2483,7 +3097,9 @@ if (map.load(</xsc:Java>
 QPrintDialog dialog = new QPrintDialog(printer, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgUVKEEPYTCREGNMMXAECUCVWABE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI wdgUVKEEPYTCREGNMMXAECUCVWABE" Invoke="true">
+                  <xsc:Presentation>ViewFileDlg:dlgWndw</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -2501,7 +3117,9 @@ dialog.addEnabledOption(QPrintDialog.PrintDialogOption.PrintShowPageSize);
 if (dialog.exec() != </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU">
+                  <xsc:Presentation>Explorer.Qt.Types::QDialog</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.DialogCode.Accepted.value())
@@ -2510,14 +3128,18 @@ if (dialog.exec() != </xsc:Java>
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>==null){
    </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthFXEHOR5FB5FFHKWGEWOP55LEMM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthFXEHOR5FB5FFHKWGEWOP55LEMM" Invoke="true">
+                  <xsc:Presentation>printDraw</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(printer);     
@@ -2526,37 +3148,56 @@ else
     switch(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>){     
        case </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>:                   
           </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpLG4ZCRNY4JFFHGDUJTB47SOXFM" Invoke="true">
+                  <xsc:Presentation>browser</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.print(printer);
        break;
-
+       
        case </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:PlainText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>:                            
+                <xsc:Java>:      
+       case </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>:
           </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpPUQDHGQU6ZDEDATASRFWELRISY" Invoke="true">
+                  <xsc:Presentation>textEdit</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.print(printer);
@@ -2566,7 +3207,9 @@ else
           </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthFXEHOR5FB5FFHKWGEWOP55LEMM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI mthFXEHOR5FB5FFHKWGEWOP55LEMM" Invoke="true">
+                  <xsc:Presentation>printDraw</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(printer);     
@@ -2577,7 +3220,7 @@ else
           </Sources>
         </Method>
         <Method Id="mthMBZBLDJ4OZHCHG2H67RPCWK3HE" Name="setColorToResultImportPhrases" Nature="0" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="text" Id="mprZVJGGXS7WJABZP6PQJRHN3E2Y4">
               <Type TypeId="21"/>
@@ -2587,85 +3230,111 @@ else
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.replaceAll("создан новый", "&lt;i>&lt;font size=\"3\" color=\"darkblue\">создан новый&lt;/font>&lt;/i>");
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.replaceAll("new one created", "&lt;i>&lt;font size=\"3\" color=\"darkblue\">new one created&lt;/font>&lt;/i>");
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.replaceAll("слияние было выполнено успешно", "&lt;i>&lt;font size=\"3\" color=\"darkgreen\">слияние было выполнено успешно&lt;/font>&lt;/i>");
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.replaceAll("merged successfully", "&lt;i>&lt;font size=\"3\" color=\"darkgreen\">merged successfully&lt;/font>&lt;/i>");
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.replaceAll("слияние было отменено пользователем", "&lt;i>&lt;font size=\"3\" color=\"darkred\">слияние было отменено пользователем&lt;/font>&lt;/i>");
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.replaceAll("merge canceled by user", "&lt;i>&lt;font size=\"3\" color=\"darkred\">merge canceled by user&lt;/font>&lt;/i>");
 return </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>;</xsc:Java>
@@ -2674,7 +3343,7 @@ return </xsc:Java>
           </Sources>
         </Method>
         <Method Id="mthIIHFHQGIC5G65LJ2LDDKX3RYTE_clicked" Name="extViewBtn_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="arg1" Id="mprMTOIQZZWMVHYZBBD7QM3QGUZPQ">
               <Type TypeId="400" extStr="java.lang.Boolean"/>
@@ -2686,7 +3355,9 @@ return </xsc:Java>
                 <xsc:Java>//</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp32GEUQZVRFERFB3SY73ILPDR2I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prp32GEUQZVRFERFB3SY73ILPDR2I" Invoke="true">
+                  <xsc:Presentation>resShown</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = false;
@@ -2700,33 +3371,81 @@ return </xsc:Java>
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> == null) {
     try {
-        java.io.File file = java.io.File.createTempFile("abc", ".html");
+        String extension = ".txt";
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+            extension = ".html";
+        }
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+            extension = ".xml";
+        }
+        java.io.File file = java.io.File.createTempFile("abc", extension);
+
         java.io.FileOutputStream fileOutputStream = new java.io.FileOutputStream(file);
         java.io.BufferedWriter bufferedWriter = new java.io.BufferedWriter(new java.io.OutputStreamWriter(fileOutputStream, "UTF-8"));
         try {
             bufferedWriter.append(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
         } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                  <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> ex) {
             ex.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthBBYJ5RWGYFAPHCMZEY3THUS7NY" Invoke="true"/>
+                <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthBBYJ5RWGYFAPHCMZEY3THUS7NY" Invoke="true">
+                  <xsc:Presentation>getStackTrace</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -2736,14 +3455,18 @@ if (</xsc:Java>
             } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                  <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> ex) {
                 ex.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthBBYJ5RWGYFAPHCMZEY3THUS7NY" Invoke="true"/>
+                <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthBBYJ5RWGYFAPHCMZEY3THUS7NY" Invoke="true">
+                  <xsc:Presentation>getStackTrace</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -2754,14 +3477,18 @@ if (</xsc:Java>
             } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                  <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> ex) {
                 ex.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthBBYJ5RWGYFAPHCMZEY3THUS7NY" Invoke="true"/>
+                <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthBBYJ5RWGYFAPHCMZEY3THUS7NY" Invoke="true">
+                  <xsc:Presentation>getStackTrace</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -2770,7 +3497,9 @@ if (</xsc:Java>
 //        out.write(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -2778,21 +3507,27 @@ if (</xsc:Java>
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = file.AbsolutePath;
     } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                  <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> e) {
         e.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthV7ACZR4C3ZHILJFGZ2ZFQNLK74" Invoke="true"/>
+                <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthV7ACZR4C3ZHILJFGZ2ZFQNLK74" Invoke="true">
+                  <xsc:Presentation>printStackTrace</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -2801,39 +3536,51 @@ if (</xsc:Java>
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1"/>
+                <xsc:TypeDeclaration TypeId="411" Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1">
+                  <xsc:Presentation>ClientUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthYRMGZRL23NDU7DDLA6JRMURYGM" Invoke="true"/>
+                <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthYRMGZRL23NDU7DDLA6JRMURYGM" Invoke="true">
+                  <xsc:Presentation>openFileByExtApplication</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                  <xsc:Presentation>parFilePath</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdRSGROWWS5ZAMLHRWMUZFWMGV74" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdRSGROWWS5ZAMLHRWMUZFWMGV74" Invoke="true">
+                  <xsc:Presentation>parDoNotCloseOnExternalViewerOpened</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> != Boolean.TRUE) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true"/>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true">
+                  <xsc:Presentation>getDialogView</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>().</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mthF63NHKQDRVDDXKP3ATPQ2UAGRI" Invoke="true"/>
+                <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mthF63NHKQDRVDDXKP3ATPQ2UAGRI" Invoke="true">
+                  <xsc:Presentation>acceptDialog</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -2873,48 +3620,62 @@ painter.end();        </xsc:Java>
 this.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                  <xsc:Presentation>parText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = text;
 this.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdYHI5PSMF3NBULGKLZGDP6SIKGE" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdYHI5PSMF3NBULGKLZGDP6SIKGE" Invoke="true">
+                  <xsc:Presentation>parSaveHtml</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = true;
 this.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                  <xsc:Presentation>parCharsetName</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = utf;
 this.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdFOK7TXQ5GJFANJKWDNR3ACYCHQ" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdFOK7TXQ5GJFANJKWDNR3ACYCHQ" Invoke="true">
+                  <xsc:Presentation>parPrintEnable</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = false;
 this.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                  <xsc:Presentation>parType</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+                <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>;
 this.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true"/>
+                <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true">
+                  <xsc:Presentation>parCaption</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = </xsc:Java>

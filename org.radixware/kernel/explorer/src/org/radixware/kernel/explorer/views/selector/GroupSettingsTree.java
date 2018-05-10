@@ -244,7 +244,8 @@ public class GroupSettingsTree<T extends IGroupSetting> extends QTreeWidget {
     }
 
     protected boolean settingIsVisible(final T setting) {
-        return (!setting.isUserDefined() || addons.canCreateNew())
+        return setting.isVisible()
+                && (!setting.isUserDefined() || addons.canCreateNew())
                 && (showMode.contains(ShowMode.SHOW_INVALID_SETTINGS) || setting.isValid());
     }
 

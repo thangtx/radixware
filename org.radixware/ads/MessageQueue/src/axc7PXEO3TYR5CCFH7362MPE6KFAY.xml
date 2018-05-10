@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="axc7PXEO3TYR5CCFH7362MPE6KFAY" Name="MessageQueueException" DescriptionId="mlsP2HI4KC2WNHCXLPHWRIARZFP2M" TitleId="mlsOQXNWE5HDREHXOOUOA7QLJDKUQ" Type="8" Environment="common">
     <AccessRules>
       <Transparence Extendable="false"/>
@@ -13,7 +13,26 @@
     <MethodGroup Id="cmgTRBPOWWIWFC3FJTBATSWKRDWLQ" Name="Root"/>
     <PropertyGroup Id="cpgXKRR6YTLMFHSFJR2MZ4TKY5SBA" Name="Root"/>
     <Properties/>
-    <Methods/>
+    <Methods>
+      <Method Id="mthRNDG5BMZZNBGNJFGCI4Z73RS5E" Name="MessageQueueException" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="message" Id="mpr3YACG6SA2JE6HMDL56PAWOO52Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="cause" Id="mprLSD2O2C6ENEMNL45BUBD4F6C3Y">
+            <Type TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(message, cause);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
     <Extends TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
   </AdsClassDefinition>
 </AdsDefinition>

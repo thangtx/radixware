@@ -16,7 +16,11 @@ import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QCloseEvent;
+import com.trolltech.qt.gui.QFileDialog;
+import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QMenuBar;
 import com.trolltech.qt.gui.QSizePolicy;
 import com.trolltech.qt.gui.QStyle;
@@ -24,6 +28,7 @@ import com.trolltech.qt.gui.QToolBar;
 import com.trolltech.qt.gui.QWidget;
 import java.awt.Dimension;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
@@ -56,12 +61,18 @@ import org.radixware.kernel.common.client.tree.nodes.ChoosenEntityNode;
 import org.radixware.kernel.common.client.tree.nodes.ExplorerTreeNode;
 import org.radixware.kernel.common.client.tree.nodes.RootParagraphNode;
 import org.radixware.kernel.common.client.views.IProgressHandle;
+import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.utils.SystemTools;
+import org.radixware.kernel.explorer.utils.LeakedWidgetsDetector;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.views.BlockableWidget;
 import org.radixware.kernel.explorer.views.IExplorerView;
 import org.radixware.kernel.explorer.views.MainWindow;
 import org.radixware.kernel.explorer.views.Splitter;
 import org.radixware.kernel.explorer.widgets.ExplorerMenu;
 import org.radixware.kernel.explorer.widgets.FilteredMouseEvent;
+import org.radixware.schemas.clientstate.ClientState;
+import org.radixware.schemas.clientstate.ExplorerTreeState;
 
 
 public final class ExplorerTreeManager implements IExplorerTreeManager {
@@ -70,6 +81,7 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
 
         private final ExplorerTree explorerTree;
         private final QToolBar toolBar;
+        private final List<QMenu> menus = new LinkedList<>();
 
         public TreeWindow(final ExplorerTree tree) {
             super();
@@ -84,8 +96,18 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
                 toolBar = addToolBar("tree tool bar");
                 toolBar.setObjectName("tree tool bar");
                 toolBar.addAction(Application.getInstance().getActions().connect);
+                WidgetUtils.updateToolButtonObjectName(toolBar, Application.getInstance().getActions().connect);
                 toolBar.addAction(Application.getInstance().getActions().disconnect);
-                toolBar.addAction(tree.getActions().getRemoveCurrentNodeAction());
+                WidgetUtils.updateToolButtonObjectName(toolBar, Application.getInstance().getActions().disconnect);
+                toolBar.addSeparator();
+                addActionWithMenu(tree.getActions().getGoBackAction());
+                addActionWithMenu(tree.getActions().getGoForwardAction());
+                {
+                    final QAction qAction = (QAction)tree.getActions().getRemoveCurrentNodeAction();
+                    toolBar.addAction(qAction);
+                    WidgetUtils.updateToolButtonObjectName(toolBar,qAction);
+                }
+                
                 toolBar.setFloatable(false);
                 toolBar.setMovable(false);
             }
@@ -94,6 +116,17 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
             if (style().pixelMetric(QStyle.PixelMetric.PM_DefaultFrameWidth, null, tree)==0){
                 setContentsMargins(4, 0, 0, 0);
             }            
+        }
+        
+        private void addActionWithMenu(final Action action){
+            final QAction qAction = (QAction)action;
+            toolBar.addAction(qAction);
+            WidgetUtils.updateToolButtonObjectName(toolBar, qAction);
+            final QMenu menu = (QMenu)action.getActionMenu();
+            if (menu!=null){
+                LeakedWidgetsDetector.getInstance().registerTopLevelWidget(menu);
+                menus.add(menu);
+            }
         }
         
         public void setToolBarIconSize(final int width, final int height){
@@ -105,6 +138,85 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
         public ExplorerTree getExplorerTree() {
             return explorerTree;
         }
+
+        @Override
+        protected void closeEvent(final QCloseEvent event) {
+            super.closeEvent(event);
+            for (QMenu menu: menus){
+                menu.disposeLater();
+            }
+        }
+        
+        
+    }
+    
+    private final static class FileDialogHandler implements QFileDialog.DialogHandler{
+        /*On OSX when a native file dialog is opened, shortcuts for actions inside the dialog (cut, paste, ...)
+          continue to go through the same menu items which claimed those shortcuts.
+          http://forums.macrumors.com/showthread.php?t=1249452. 
+          So we need to add menu items to make those shortcuts work.
+        */
+        private final QMenu editorMenu;
+        private final List<QAction> actions = new LinkedList<>();
+        private final QAction copy = new QAction(null);
+        private final QAction cut = new QAction(null);
+        private final QAction paste = new QAction(null);
+        private final QAction selectAll = new QAction(null);
+        private QAction separator;
+        
+        public FileDialogHandler(final QMenu editorMenu){
+            this.editorMenu = editorMenu;
+            copy.setShortcut(QKeySequence.StandardKey.Copy);
+            actions.add(copy);
+            cut.setShortcut(QKeySequence.StandardKey.Cut);
+            actions.add(cut);
+            paste.setShortcut(QKeySequence.StandardKey.Paste);
+            actions.add(paste);
+            selectAll.setShortcut(QKeySequence.StandardKey.SelectAll);
+            actions.add(selectAll);
+            for (QAction action: actions){
+                action.setMenuRole(QAction.MenuRole.TextHeuristicRole);
+            }
+            translate();
+        }
+                
+        public void translate(){
+            copy.setText(com.trolltech.qt.core.QCoreApplication.translate("QMenuBar","Copy"));
+            cut.setText(com.trolltech.qt.core.QCoreApplication.translate("QMenuBar","Cut"));
+            paste.setText(com.trolltech.qt.core.QCoreApplication.translate("QMenuBar","Paste"));
+            selectAll.setText(com.trolltech.qt.core.QCoreApplication.translate("QMenuBar","Select All"));
+        }
+
+        @Override
+        public List<String> beforeOpen(final QFileDialog.AcceptMode mode, 
+                                       final String caption, 
+                                       final String dir, 
+                                       final String filter, 
+                                       final QFileDialog.Options options) {
+            separator = editorMenu.isEmpty() ? null : editorMenu.addSeparator();
+            for (QAction action: actions){
+                editorMenu.addAction(action);
+            }
+            return null;
+        }
+
+        @Override
+        public List<String> afterOpen(final QFileDialog.AcceptMode mode, 
+                                      final String caption, 
+                                      final String dir, 
+                                      final String filter, 
+                                      final QFileDialog.Options options, 
+                                      final List<String> result) {
+            for (QAction action: actions){
+                editorMenu.removeAction(action);
+            }
+            if (separator!=null){
+                editorMenu.removeAction(separator);
+                separator = null;
+            }
+            return result;
+        }
+        
     }
     
     private final class InternalBlockableWidget extends BlockableWidget{
@@ -115,11 +227,12 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
 
         @Override
         protected void filteredMouseEvent(final FilteredMouseEvent event) {
-            if (treeWindow!=null){
+            if (treeWindow!=null 
+                && (event.getFilteredEventType()==QEvent.Type.MouseButtonPress || event.getFilteredEventType()==QEvent.Type.MouseButtonDblClick)){
                 event.accept();
-                QApplication.sendEvent(treeWindow.getExplorerTree(), new FilteredMouseEvent(event.getFilteredEventType()));
+                QApplication.sendEvent(treeWindow.getExplorerTree(), new FilteredMouseEvent(event));
             }
-        }                        
+        }
     }
 
     public final class Actions {
@@ -156,6 +269,7 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
             changeRoot.setToolTip(Application.translate("ExplorerTree", "change explorer root"));
         }
     }
+        
     
     public final Actions actions = new Actions();    
     private final IProgressHandle openingTreeProgress;
@@ -167,6 +281,7 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
     private ExplorerMenu treeMenu;
     private ExplorerMenu selectorMenu;
     private ExplorerMenu editorMenu;
+    private FileDialogHandler fileDialogHandler;
     
     private final IClientEnvironment environment;
 
@@ -176,15 +291,29 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
     }
 
     @Override
-    public IExplorerTree openTree(final List<ExplorerRoot> explorerRoots, final IWidget parentWindow) throws ServiceClientException, InterruptedException {
+    public IExplorerTree openTree(final List<ExplorerRoot> explorerRoots, final IWidget parentWindow, final ClientState clientState) throws ServiceClientException, InterruptedException {
         if (treeWindow != null) {
             throw new UnsupportedOperationException("opening of second explorer tree is not supported yet");
         }
         if (explorerRoots.isEmpty()) {
             return null;
         }
-        this.explorerRoots = explorerRoots;
-        final Id storedExplorerRootId = restoreExplorerRootId();
+        this.explorerRoots = explorerRoots;        
+        final ExplorerTreeState treeState = clientState==null ? null : clientState.getExplorerTree();        
+        Id storedExplorerRootId = null;
+        if (treeState==null){
+            storedExplorerRootId = restoreExplorerRootId();
+        }else{
+            final List<Id> storedExplorerRootIds = treeState.getRootExplorerItemIds();
+            if (storedExplorerRootIds!=null && !storedExplorerRootIds.isEmpty()){
+                for (ExplorerRoot root: explorerRoots){
+                    if (storedExplorerRootIds.contains(root.getId())){
+                        storedExplorerRootId = root.getId();
+                        break;
+                    }
+                }
+            }
+        }
         ExplorerRoot explorerRoot = storedExplorerRootId==null ? null : findExplorerRootById(storedExplorerRootId);
         
         if (explorerRoot==null && ExplorerRoot.getDefault(environment) != null) {
@@ -199,8 +328,12 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
         }
         if (explorerRoot==null){
             return null;
-        }else{            
-            return openTreeImpl(explorerRoot, parentWindow);
+        }else{
+            final IExplorerTree tree = openTreeImpl(explorerRoot, parentWindow);
+            if (treeState!=null){
+                tree.restoreStateFromXml(treeState);
+            }
+            return tree;
         }
     }
     
@@ -232,18 +365,25 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
         return null;
     }
     
+    public void refreshViewManagerMenus() {
+        if (viewManager != null) {
+            ((ExplorerViewManager)viewManager).setMenu(selectorMenu, editorMenu);
+        }
+    }
+
+    
     private IExplorerTree openTreeImpl(final ExplorerRoot explorerRoot, final IWidget parentWindow) throws ServiceClientException, InterruptedException {
         final RadParagraphDef rootParagraph = explorerRoot.getParagraphDef();
         final String title = Application.translate("Wait Dialog", "Opening \'%s\'");
         openingTreeProgress.startProgress(String.format(title, rootParagraph.getTitle()), false);
         mainWindow = (MainWindow) parentWindow;
         try {
-            final ExplorerTree tree = new ExplorerTree(environment, (QWidget) parentWindow);
             if (viewManager == null && parentWindow != null) {
                 viewManager = new ExplorerViewManager(environment, selectorMenu, editorMenu, (QWidget) parentWindow);
-            }
+            }            
+            final ExplorerTree tree = new ExplorerTree(environment, (QWidget) parentWindow);
+            tree.setViewManager(viewManager);
             final List<Id> visibleExplorerItems = explorerRoot.getVisibleExplorerItems();
-            tree.setViewManager(viewManager);            
             treeWindow = new TreeWindow(tree);            
             final Splitter splitter;
             if (parentWindow != null) {
@@ -311,12 +451,12 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
         if (viewManager != null && version.isSupported() && !viewManager.canSafetyClose()) {
            return;
         }
-
         if (treeWindow != null && !treeWindow.getExplorerTree().getRootNodes().isEmpty()) {
             boolean needForRelogin = false;
+            boolean refillStarted = false;
             treeWindow.getExplorerTree().lock();
             final IProgressHandle progress = environment.getProgressHandleManager().newProgressHandle();
-            progress.startProgress(Application.translate("ExplorerMessage", "Updating Version"), false);
+            progress.startProgress(Application.translate("ExplorerMessage", "Updating Version"), false);            
             try {
                 final IExplorerTreeNode currentNode;
                 {
@@ -376,7 +516,7 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
 
                 //actualize definitions manager
                 try{
-                    version.updateToNewVersion();
+                    version.switchToTargetVersion();
                 }catch(CantUpdateVersionException exception){
                     if (exception instanceof KernelClassModifiedException==false){
                         environment.processException(exception);
@@ -387,18 +527,22 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
                     }
                 }
                 //refill tree
+                refillStarted = true;
                 treeWindow.getExplorerTree().refill(progress, needForRelogin);
+                refillStarted = false;
             } catch (BrokenConnectionError error) {
                 environment.messageError(Application.translate("ExplorerMessage", "Can't Update Version"), error.getMessage());                
                 Application.getInstance().getActions().forcedDisconnect.trigger();
             } finally {
                 progress.finishProgress();
-                if (treeWindow != null) {
+                if (refillStarted){//Some uncatched exception in refill
+                    Application.getInstance().getActions().forcedDisconnect.trigger();                    
+                }else if (treeWindow != null) {
                     treeWindow.getExplorerTree().unlock();
                 }
             }
         } else {
-            version.updateToNewVersion();
+            version.switchToTargetVersion();
         }
     }
 
@@ -469,6 +613,13 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
     }
 
     @Override
+    public void writeStateToXml(final ClientState xml) {
+        if (treeWindow!=null){
+            xml.setExplorerTree(treeWindow.getExplorerTree().writeStateToXml());
+        }
+    }
+        
+    @Override
     public boolean closeAll(final boolean forced) {
         if (treeWindow != null && !treeWindow.getExplorerTree().closeModel(forced) && !forced){
             return false;
@@ -492,9 +643,13 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
             }
             if (treeMenu != null) {
                 treeMenu.setDisabled(true);
-            }
+            }            
         }
         mainWindow = null;
+        if (fileDialogHandler!=null){
+            QFileDialog.removeDialogHandler(fileDialogHandler);
+            fileDialogHandler = null;
+        }        
         return true;
     }
 
@@ -511,6 +666,10 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
         editorMenu = new ExplorerMenu(Application.translate("MainMenu", "&Editor"),menuBar);
         menuBar.addMenu(editorMenu);
         editorMenu.setDisabled(true);
+        if (SystemTools.isOSX){
+            fileDialogHandler = new FileDialogHandler(editorMenu);
+            QFileDialog.installDialogHandler(fileDialogHandler);
+        }
     }
 
     @Override
@@ -525,16 +684,20 @@ public final class ExplorerTreeManager implements IExplorerTreeManager {
             editorMenu.setTitle(Application.translate("MainMenu", "&Editor"));
         }
         actions.translate();
+        if (fileDialogHandler!=null){
+            fileDialogHandler.translate();
+        }
     }
 
     private void initTreeMenu() {
         if (treeWindow != null) {
             treeMenu.clear();
+            treeMenu.removeAllActions();
             final ExplorerTree tree = treeWindow.getExplorerTree();
-            treeMenu.addAction((QAction)tree.getActions().getRemoveCurrentNodeAction());
-            treeMenu.addAction((QAction)tree.getActions().getRemoveChildChoosenObjectsAction());
-            treeMenu.addAction((QAction)tree.getActions().getGoToParentNodeAction());
-            treeMenu.addAction((QAction)tree.getActions().getGoToCurrentNodeAction());
+            treeMenu.addAction(tree.getActions().getRemoveCurrentNodeAction());
+            treeMenu.addAction(tree.getActions().getRemoveChildChoosenObjectsAction());
+            treeMenu.addAction(tree.getActions().getGoToParentNodeAction());
+            treeMenu.addAction(tree.getActions().getGoToCurrentNodeAction());
             treeMenu.addSeparator();
             treeMenu.addAction(actions.changeRoot);
         }

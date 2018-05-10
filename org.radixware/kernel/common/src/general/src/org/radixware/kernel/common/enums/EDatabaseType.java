@@ -21,7 +21,10 @@ import org.radixware.kernel.common.types.Id;
  */
 public enum EDatabaseType implements IKernelStrEnum {
 
-    ORACLE("Oracle", "oracle");
+    ORACLE("ORACLE", "ORACLE"),
+    ENTERPRISEDB("ENTERPRISEDB", "ENTERPRISEDB"),
+    POSTGRESQL("POSTGRESQL", "POSTGRESQL");
+    
     private final String name, value;
 
     private EDatabaseType(final String name, final String val) {
@@ -45,7 +48,7 @@ public enum EDatabaseType implements IKernelStrEnum {
                 return e;
             }
         }
-        throw new NoConstItemWithSuchValueError("EReportCellType has no item with value: " + String.valueOf(val),val);
+        throw new NoConstItemWithSuchValueError("EDatabaseType has no item with value: " + String.valueOf(val),val);
     }
 
     @Override

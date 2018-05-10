@@ -25,31 +25,32 @@ public class ModelProxyDescriptionHandleInfo extends MixedDescriptionHandleInfo<
     @Override
     protected IDescriptionHandleInfo createUnderstudy(final DescriptionModel object, EDescriptionType type, boolean proxy) {
         if (type == EDescriptionType.LOCALIZED) {
-            return new LocalizedDescriptionHandleInfo(object,
-                    new ProxyLocalizingStringContext(object.getDescriptionLocation(),
-                        object.getLocalizedDescriptions(), object.isSpellcheckEnabled()) {
-
-                        @Override
-                        public boolean commit() {
-
-                            if (hasValue()) {
-                                object.createDescription();
-                                object.setDescriptionType(EDescriptionType.LOCALIZED);
-
-                                final Map<EIsoLanguage, String> valueMap = getValueMap();
-                                for (final EIsoLanguage lang : valueMap.keySet()) {
-                                    object.setDescription(lang, valueMap.get(lang));
-                                }
-
-                                object.setSpellcheckEnabled(isSpellcheckEnable());
-
-                            } else {
-                                object.removeDescription();
-                            }
-
-                            return true;
-                        }
-                    });
+                return new LocalizedDescriptionHandleInfo(object, true);
+//            return new LocalizedDescriptionHandleInfo(object,
+//                    new ProxyLocalizingStringContext(object.getDescriptionLocation(),
+//                        object.getLocalizedDescriptions(), object.isSpellcheckEnabled()) {
+//
+//                        @Override
+//                        public boolean commit() {
+//
+//                            if (hasValue()) {
+//                                object.createDescription();
+//                                object.setDescriptionType(EDescriptionType.LOCALIZED);
+//
+//                                final Map<EIsoLanguage, String> valueMap = getValueMap();
+//                                for (final EIsoLanguage lang : valueMap.keySet()) {
+//                                    object.setDescription(lang, valueMap.get(lang));
+//                                }
+//
+//                                object.setSpellcheckEnabled(isSpellcheckEnable());
+//
+//                            } else {
+//                                object.removeDescription();
+//                            }
+//
+//                            return true;
+//                        }
+//                    });
         }
         return super.createUnderstudy(object, type, proxy);
     }

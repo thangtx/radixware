@@ -170,8 +170,9 @@
         <xbeans-build schema-file="jmshandler.wsdl" schema-name="jmshandler"/>
         <xbeans-build schema-file="personalcommunications.xsd"  schema-name="personalcommunications"/>
         <xbeans-build schema-file="nethub.wsdl"  schema-name="nethub"/>
+        <xbeans-build schema-file="persocommdelivery.wsdl"  schema-name="persocommdelivery"/>
         <xbeans-build schema-file="snmpagent.wsdl" schema-name="snmpagent"/>
-        <xbeans-build schema-file="messagequeue.wsdl" schema-name="messagequeue"/>
+       
     </target>
     <target name="-pre-compile" depends="build-xbeans"/>
 
@@ -186,7 +187,7 @@
             <arg value="../directory.xml"/>
             <arg value="lib/ojdbc6.jar||.*/(\.svn||src||xsd||doc||project||build)/.*" />
             <arg value="KernelServer"/>
-            <arg value="(bin||lib)/.*\.jar" />             
+            <arg value="(bin||lib)/.*\.jar" />            
             <classpath>
                 <fileset dir="${dist.dir}">
                     <include name="**/*.jar"/>

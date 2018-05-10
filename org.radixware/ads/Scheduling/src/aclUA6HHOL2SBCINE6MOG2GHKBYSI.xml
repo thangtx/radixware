@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclUA6HHOL2SBCINE6MOG2GHKBYSI" Name="UserFunc.EventUploadCondition" Type="2" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclUA6HHOL2SBCINE6MOG2GHKBYSI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclUA6HHOL2SBCINE6MOG2GHKBYSI"/>
+    </Bodies>
+    <MethodGroup Id="cmgLLSOF2VYTBDKNERIHUZGW34A6I" Name="Root"/>
+    <PropertyGroup Id="cpg66FBOTWJRBAWTHW5UEOAXQPYYE" Name="Root"/>
+    <Properties>
+      <Property Id="prd77PV6DO2FZC5JOX7BDLUKC75HY" Name="logInvoke" Nature="2" IsConst="false" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="401" extStr="boolean"/>
+        <Presentation InheritanceMask="63" IsPresentable="false"/>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthXGBDFSY2TRA6BN4R7VCUJVC2TQ" Name="check" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="task" Id="mprYUHIJOYZMZBKDDX3GNDGGQIKFU">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="event" Id="mprQE32OMC56FGM3CW2XIP2BVCWBU">
+            <Type TypeId="411" Path="aecACQVZOMVVHWDBROXAAIT4AGD7E"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    final Bool result = (Bool)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthTPAFKDKW4TOBDIECAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>invoke</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new Object[]{task, event});
+    return result.booleanValue();
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    if (ex instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ">
+                <xsc:Presentation>Exceptions::AppError</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        throw (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ">
+                <xsc:Presentation>Exceptions::AppError</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) ex;
+    }
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsEGZRBINUBFDXRMVJEL74VMGHK4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, ex);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Name="getMethodId" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclUA6HHOL2SBCINE6MOG2GHKBYSI mthXGBDFSY2TRA6BN4R7VCUJVC2TQ">
+                <xsc:Presentation>UserFunc.EventLogItemTest:test</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsEYV2CSEBAVBQDJ2Z4NFKEIDVYE"/>
+    <Extends TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

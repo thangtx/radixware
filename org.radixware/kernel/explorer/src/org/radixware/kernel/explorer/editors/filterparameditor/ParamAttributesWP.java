@@ -63,8 +63,8 @@ final class ParamAttributesWP extends QWizardPage {
                 attributes.add(EFilterParamAttribute.SELECTOR_PRESENTATION);
                 if (attributes.contains(EFilterParamAttribute.EDIT_MASK)) {
                     attributes.remove(EFilterParamAttribute.EDIT_MASK);
-                }
-            }
+                }                
+            }            
             if (isBoolean) {
                 if (attributes.contains(EFilterParamAttribute.EDIT_MASK)) {
                     attributes.remove(EFilterParamAttribute.EDIT_MASK);
@@ -72,7 +72,10 @@ final class ParamAttributesWP extends QWizardPage {
             }
         }
 
-        if (!isParentRef) {
+        if (isParentRef) {
+            attributes.add(EFilterParamAttribute.ADDITIONAL_SELECTOR_CONDITION);
+            attributes.add(EFilterParamAttribute.PARENT_REF_EDITING_MODE);            
+        }else{
             attributes.add(EFilterParamAttribute.DEFAULT_VALUE);
         }
         if (parameter.canHavePersistentValue()) {

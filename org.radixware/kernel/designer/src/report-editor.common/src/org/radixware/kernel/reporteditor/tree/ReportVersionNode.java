@@ -50,19 +50,22 @@ public class ReportVersionNode extends AdsReportClassNode {
         addCookie(new RemoveVersionAction.Cookie(version));
         addCookie(new MakeVersionCurrentAction.Cookie(version));
         addCookie(new ExportVersionAction.Cookie(version));
+        if (version.isCurrent()) {
+            setBold(true);
+        }
     }
 
     @Override
     public boolean canDestroy() {
         return false;
     }
-
+    
     @Override
     public Image getIcon(final int type) {
         if (version.isCurrent()) {
             return AdsDefinitionIcon.CLASS_USER_REPORT_CURRENT_VERSION.getImage();
         }
-        return super.getIcon(type);
+        return AdsDefinitionIcon.CLASS_USER_REPORT_UNACTIVE_VERSION.getImage();
     }
 
     @Override

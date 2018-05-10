@@ -16,6 +16,7 @@ import java.util.Comparator;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodThrowsList;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.components.description.DescriptionModel;
 
 
@@ -80,7 +81,16 @@ final class ThrowsItem implements Comparable<ThrowsItem> {
     }
 
     AdsMethodThrowsList.ThrowsListItem createItem() {
-        return AdsMethodThrowsList.ThrowsListItem.Factory.newInstance(type);
+        DescriptionModel model = getDescriptionModel();
+        String description = null;
+        Id descriptionId = null;
+        boolean  isDescriptionInherite = true;
+        if (model != null) {
+            description = model.getDescription();
+            descriptionId = model.getDescriptionId();
+            isDescriptionInherite = model.isDescriptionInherited();
+        }
+        return AdsMethodThrowsList.ThrowsListItem.Factory.newInstance(type, description, descriptionId, isDescriptionInherite);
     }
 
     AdsTypeDeclaration getType() {

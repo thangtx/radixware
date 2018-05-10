@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
 import java.text.MessageFormat;
@@ -22,11 +21,13 @@ import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.SearchResult;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.clazz.IAccessible;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyPresentationPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
 import org.radixware.kernel.common.defs.ads.module.AdsPath;
@@ -36,10 +37,10 @@ import org.radixware.kernel.common.defs.dds.DdsAccessPartitionFamilyDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.xscml.JmlType;
-
 
 public class JmlTagId extends Jml.Tag {
 
@@ -53,6 +54,7 @@ public class JmlTagId extends Jml.Tag {
     private boolean isSoftRef = false;
 
     JmlTagId(JmlType.Item.IdReference idRef) {
+        super(idRef);
         this.path = new AdsPath(idRef.getPath());
         if (idRef.isSetMode()) {
             this.mode = idRef.getMode();
@@ -65,6 +67,7 @@ public class JmlTagId extends Jml.Tag {
     }
 
     public JmlTagId(Id[] ids) {
+        super(null);
         this.path = new AdsPath(ids);
     }
 
@@ -80,6 +83,7 @@ public class JmlTagId extends Jml.Tag {
     }
 
     public JmlTagId(AdsDefinition referencedDef) {
+        super(null);
         if (referencedDef == null) {
             throw new NullPointerException();
         }
@@ -87,6 +91,7 @@ public class JmlTagId extends Jml.Tag {
     }
 
     public JmlTagId(DdsTableDef referencedDef) {
+        super(null);
         if (referencedDef == null) {
             throw new NullPointerException();
         }
@@ -94,6 +99,7 @@ public class JmlTagId extends Jml.Tag {
     }
 
     public JmlTagId(DdsAccessPartitionFamilyDef referencedDef) {
+        super(null);
         if (referencedDef == null) {
             throw new NullPointerException();
         }
@@ -101,6 +107,7 @@ public class JmlTagId extends Jml.Tag {
     }
 
     public JmlTagId(Module referencedDef) {
+        super(null);
         if (referencedDef == null) {
             throw new NullPointerException();
         }
@@ -135,6 +142,7 @@ public class JmlTagId extends Jml.Tag {
     @Override
     public void appendTo(JmlType.Item item) {
         JmlType.Item.IdReference ref = item.addNewIdReference();
+        appendTo(ref);
         ref.setPath(path.asList());
         if (mode != Mode.DEFAULT) {
             ref.setMode(mode);
@@ -180,12 +188,12 @@ public class JmlTagId extends Jml.Tag {
         Definition def = resolve(context);
         if (def != null) {
             if (mode == Mode.SLOT_DESCRIPTION && def instanceof AdsMethodDef) {
-                return "slot[" + def.getQualifiedName(context) + "]";
+                return "slot[" + rememberDisplayName(def.getQualifiedName(context)) + "]";
             } else {
-                return "idof[" + def.getQualifiedName(context) + "]";
+                return "idof[" + rememberDisplayName(def.getQualifiedName(context)) + "]";
             }
         } else {
-            return "unknownid[" + AdsPath.toString(getPath()) + "]";
+            return "unknownid[" + restoreDisplayName(AdsPath.toString(getPath())) + "]";
         }
     }
 
@@ -194,42 +202,46 @@ public class JmlTagId extends Jml.Tag {
         return new JavaSourceSupport(this) {
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagId.this) {
                     @Override
                     public boolean writeCode(CodePrinter printer) {
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
+                        try {
+                            final Definition def = resolve(getOwnerJml().getOwnerDefinition());
+                            if (def != null) {
+                                if (mode == Mode.SLOT_DESCRIPTION && def instanceof AdsMethodDef) {
+                                    final AdsMethodDef method = (AdsMethodDef) def;
+                                    final String slotDescription = method.getProfile().getProfileForQtSlotDescription();
+                                    if (slotDescription == null) {
+                                        return false;
+                                    }
+                                    final RadixObjectLocator locator = (RadixObjectLocator) printer.getProperty(RadixObjectLocator.PRINTER_PROPERTY_NAME);
+                                    RadixObjectLocator.RadixObjectData marker = null;
+                                    if (locator != null) {
+                                        marker = locator.start(JmlTagId.this);
+                                    }
+                                    printer.printStringLiteral(slotDescription);
+                                    if (marker != null) {
+                                        marker.commit();
+                                    }
+                                    return true;
+                                } else {
+                                    WriterUtils.writeIdUsage(printer, def.getId(), JmlTagId.this);
+                                    return true;
+                                }
 
-                        final Definition def = resolve(getOwnerJml().getOwnerDefinition());
-                        if (def != null) {
-                            if (mode == Mode.SLOT_DESCRIPTION && def instanceof AdsMethodDef) {
-                                final AdsMethodDef method = (AdsMethodDef) def;
-                                final String slotDescription = method.getProfile().getProfileForQtSlotDescription();
-                                if (slotDescription == null) {
-                                    return false;
-                                }
-                                final RadixObjectLocator locator = (RadixObjectLocator) printer.getProperty(RadixObjectLocator.PRINTER_PROPERTY_NAME);
-                                RadixObjectLocator.RadixObjectData marker = null;
-                                if (locator != null) {
-                                    marker = locator.start(JmlTagId.this);
-                                }
-                                printer.printStringLiteral(slotDescription);
-                                if (marker != null) {
-                                    marker.commit();
-                                }
-                                return true;
                             } else {
-                                WriterUtils.writeIdUsage(printer, def.getId(), JmlTagId.this);
-                                return true;
+                                if (mode != Mode.SLOT_DESCRIPTION) {
+                                    WriterUtils.writeIdUsage(printer, path.getTargetId(), JmlTagId.this);
+                                    return true;
+                                }
+                                printer.printError();
+                                return false;
                             }
-
-                        } else {
-                            if (mode != Mode.SLOT_DESCRIPTION) {
-                                WriterUtils.writeIdUsage(printer, path.getTargetId(), JmlTagId.this);
-                                return true;
-                            }
-                            printer.printError();
-                            return false;
+                        } finally {
+                            WriterUtils.leaveHumanUnreadableBlock(printer);
                         }
-
                     }
 
                     @Override
@@ -269,6 +281,9 @@ public class JmlTagId extends Jml.Tag {
         } else {
             if (def instanceof AdsDefinition) {
                 AdsUtils.checkAccessibility(this, (AdsDefinition) def, false, problemHandler);
+                if (def instanceof AdsMethodDef || def instanceof AdsPropertyDef) {//IAccessible
+                    ReleaseUtils.checkExprationRelease(context, def, problemHandler);
+                }
             }
         }
         if (performEnvCheck()) {
@@ -313,7 +328,7 @@ public class JmlTagId extends Jml.Tag {
             b.append("</html>");
             return b.toString();
         } else {
-            return def.getToolTip(language,jml.getOwnerDefinition());
+            return def.getToolTip(language, jml.getOwnerDefinition());
         }
     }
 

@@ -32,6 +32,9 @@ public abstract class TestsProvider {
     public TestsProvider getParentProvider() {
         return parent;
     }
+    
+    public void close(){        
+    }
 
     public IClientEnvironment getEnvironment() {
         return environment;

@@ -11,12 +11,12 @@
 
 package org.radixware.kernel.common.sqlscript.connection;
 
+import java.sql.CallableStatement;
 import org.radixware.kernel.common.sqlscript.parser.spi.SQLDialogHandler;
 import org.radixware.kernel.common.sqlscript.parser.SQLScriptException;
 import org.radixware.kernel.common.sqlscript.parser.SQLPosition;
 import org.radixware.kernel.common.utils.Reference;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,13 +24,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.ArrayList;
 
 
 public class SQLConnection {
-
+    private final List<String>  pseudoListing = new ArrayList<>();
+            
     private Connection con;
     private String dbUrl;
     private String user;
+    private boolean useDBMS = true;
 
     public SQLConnection() {
     }
@@ -74,7 +77,7 @@ public class SQLConnection {
         return DriverManager.getConnection(dbUrl, user, password);
     }
 
-    public final void login(String dbUrl, String user, String password) throws SQLException {
+    public void login(String dbUrl, String user, String password) throws SQLException {
         logoff();
         Connection currCon = createConnection(dbUrl, user, password);
         if (currCon == null) {
@@ -114,6 +117,7 @@ public class SQLConnection {
         }
         dbUrl = null;
         user = null;
+        pseudoListing.clear();
     }
 
     public String getDatabaseUrl() {
@@ -288,38 +292,57 @@ public class SQLConnection {
     }
 
     public void enableDbmsOutput() throws SQLException {
-        checkConnection();
-        try (CallableStatement stmt = con.prepareCall("begin dbms_output.enable; end;")) {
-            stmt.execute();
-        }
-    }
-
-    public void dbmsOut(String msg) throws SQLException {
-        checkConnection();
-        CallableStatement stmt = con.prepareCall("begin dbms_output.put_line(?); end;");
-        stmt.setString(1, msg);
-        try {
-            stmt.execute();
-        } finally {
-            stmt.close();
-        }
-    }
-
-    public void getDbmsOutput(List<String> out) throws SQLException {
-        checkConnection();
-        CallableStatement stmt = con.prepareCall("begin dbms_output.get_line(?, ?); end;");
-        stmt.registerOutParameter(1, java.sql.Types.VARCHAR);
-        stmt.registerOutParameter(2, java.sql.Types.INTEGER);
-        try {
-            for (;;) {
+        if (useDBMS) {
+            checkConnection();
+            try(final CallableStatement stmt = con.prepareCall("{call dbms_output.enable()}")) {
                 stmt.execute();
-                if (stmt.getInt(2) != 0) {
-                    break;
-                }
-                out.add(stmt.getString(1));
             }
-        } finally {
-            stmt.close();
+        }
+    }
+
+    public void dbmsOut(final String msg) throws SQLException {
+        if (msg != null && !msg.isEmpty()) {
+            if (useDBMS) {
+                checkConnection();
+                try(final CallableStatement stmt = con.prepareCall("{call dbms_output.put_line(?)}")){
+                    stmt.setString(1, msg);
+                    stmt.execute();
+//                } catch (SQLException exc) {
+//                    pseudoListing.add(msg);
+//                    useDBMS = false;
+                }
+            }
+            else {
+                pseudoListing.add(msg);
+            }
+        }
+    }
+
+    public void getDbmsOutput(final List<String> out) throws SQLException {
+        if (out == null) {
+            throw new IllegalArgumentException("Out list can't be null");
+        }
+        else {
+            if (useDBMS) {
+                checkConnection();
+                try(final CallableStatement stmt = con.prepareCall("{call dbms_output.get_line(?, ?)}")) {
+                    stmt.registerOutParameter(1, java.sql.Types.VARCHAR);
+                    stmt.registerOutParameter(2, java.sql.Types.INTEGER);
+                    for (;;) {
+                        stmt.execute();
+                        if (stmt.getInt(2) != 0) {
+                            break;
+                        }
+                        out.add(stmt.getString(1));
+                    }
+//                } catch (SQLException exc) {
+//                    useDBMS = false;
+//                    out.addAll(pseudoListing);
+                }
+            }
+            else {
+                out.addAll(pseudoListing);
+            }
         }
     }
 

@@ -14,17 +14,9 @@ package org.radixware.kernel.common.client.exceptions;
 
 public class KernelClassModifiedException extends CantUpdateVersionException{
     
-    static final long serialVersionUID = 3185712875753970162L;
-    
-    private final boolean restartScheduled;        
+    static final long serialVersionUID = 3185712875753970162L;    
 
     public KernelClassModifiedException(final boolean restart){
-        super("");
-        restartScheduled = restart;
+        super(restart);
     }
-    
-    public boolean restartScheduled(){
-        return restartScheduled;
-    }
-    
 }

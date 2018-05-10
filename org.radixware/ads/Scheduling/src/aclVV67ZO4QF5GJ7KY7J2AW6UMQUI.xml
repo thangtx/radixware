@@ -21,6 +21,7 @@ import java.util.TreeSet;</xsc:Java>
       <Group Id="cmg4U4CBCFMXJAD7JKVZOSEGZRMIA" Name="API.Protected" Members="mthQWAIDCVECBGARNCC5HIEVMFHTI mthY4ZBEWSU7FFSPIBEWQP53YY64A mthWSERKGJBZVCNXCMMIPTHG3MMEU mth6ZTBNTKRZZCWVJZ4D3UWRN3XKE"/>
       <Group Id="cmgQ35WD6UQZBGHNGA2RFEEAZGGBY" Name="Commands" Members="mthNLBAYGLMXZB7HL7S6GK2CQ6V3I mthcmdH7XYLTDBQFGKZCBUWRQJILDICU"/>
       <Group Id="cmgZYZCTMNU3NG6ZM7SE6ZVSNIK6Q" Name="API.Quarter" Members="mthDLWGJJEDK5AR7AOIZQJHEKWL6Y mthG3MLPWKHNBBKDGA3YZZLOFBFBY"/>
+      <Group Id="cmgJZOERB367BDKXOQGIEQ5EVIWRY" Name="API.Year" Members="mthM7LW72P2TZASFNAFP4Z23YWJ6E mthODSGNCQPUZALTHEJYW53ILAKVE"/>
     </MethodGroup>
     <PropertyGroup Id="cpg3W7LRWIZ2FAL7AABBGCQZPCVBA" Name="Root">
       <Group Id="cpgBCV2DPLLNJAFZDAMGA477AUYEA" Name="Cache" Members="prdSKF3A7P4DVGFDDCEUELPEUFQO4 prdAVAW43WZBJFPFATQLJVWFRLHRY"/>
@@ -146,8 +147,6 @@ final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(Direction.ToFuture, javaCalendar);
-
-System.out.println("Period built: " + periodBegin + " -> " + periodEnd);
 
 </xsc:Java>
             </xsc:Item>
@@ -730,13 +729,17 @@ return </xsc:Java>
               <xsc:Java>final Calendar dateCalendar = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA">
+                <xsc:Presentation>Utils::Timing</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZXNFDED6MVCYFP7CDFEBKA4SQI" Invoke="true"/>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZXNFDED6MVCYFP7CDFEBKA4SQI" Invoke="true">
+                <xsc:Presentation>getCalendarTruncatedToDay</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(date);
@@ -746,13 +749,17 @@ if(dateCalendar == null)
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> trunkedDate = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(dateCalendar.getTimeInMillis());
@@ -760,7 +767,9 @@ final </xsc:Java>
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> dateForCalc = trunkedDate;
@@ -769,14 +778,18 @@ for(int i=0; i&lt;10; i++)
 	</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mth6C42WQODAVEMNI44CHSABO4UKE" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mth6C42WQODAVEMNI44CHSABO4UKE" Invoke="true">
+                <xsc:Presentation>extendCachedPeriod</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(dateForCalc);
 	if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI prdAVAW43WZBJFPFATQLJVWFRLHRY" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI prdAVAW43WZBJFPFATQLJVWFRLHRY" Invoke="true">
+                <xsc:Presentation>dateRangeCache</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == null)
@@ -785,13 +798,17 @@ for(int i=0; i&lt;10; i++)
 	final SortedSet&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> head = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI prdSKF3A7P4DVGFDDCEUELPEUFQO4" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI prdSKF3A7P4DVGFDDCEUELPEUFQO4" Invoke="true">
+                <xsc:Presentation>datesCache</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.headSet(trunkedDate);
@@ -802,13 +819,17 @@ for(int i=0; i&lt;10; i++)
 	dateCalendar.setTimeInMillis(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI prdAVAW43WZBJFPFATQLJVWFRLHRY" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI prdAVAW43WZBJFPFATQLJVWFRLHRY" Invoke="true">
+                <xsc:Presentation>dateRangeCache</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcGNVI234N55HXZD5WWVPW5AIK34 prdCTYW27Y34NE7PIFVWQWPZSSYCA" Invoke="true"/>
+              <xsc:IdReference Path="adcGNVI234N55HXZD5WWVPW5AIK34 prdCTYW27Y34NE7PIFVWQWPZSSYCA" Invoke="true">
+                <xsc:Presentation>begin</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getTime());
@@ -816,7 +837,9 @@ for(int i=0; i&lt;10; i++)
 	dateForCalc = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(dateCalendar.getTimeInMillis());
@@ -901,7 +924,9 @@ return null;
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthY4ZBEWSU7FFSPIBEWQP53YY64A" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthY4ZBEWSU7FFSPIBEWQP53YY64A" Invoke="true">
+                <xsc:Presentation>refreshCache</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -909,7 +934,9 @@ return null;
 if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true">
+                <xsc:Presentation>itemIds</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.size() == 0)
@@ -918,13 +945,17 @@ if(</xsc:Java>
 Calendar calendar = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA">
+                <xsc:Presentation>Utils::Timing</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZXNFDED6MVCYFP7CDFEBKA4SQI" Invoke="true"/>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZXNFDED6MVCYFP7CDFEBKA4SQI" Invoke="true">
+                <xsc:Presentation>getCalendarTruncatedToDay</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(date);
@@ -934,13 +965,17 @@ if(calendar == null)
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> d = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(calendar.getTimeInMillis());
@@ -950,14 +985,36 @@ int daysInMonth = calendar.getMaximum(Calendar.DAY_OF_MONTH);
 int dayOfQuarter = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthG3MLPWKHNBBKDGA3YZZLOFBFBY" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthG3MLPWKHNBBKDGA3YZZLOFBFBY" Invoke="true">
+                <xsc:Presentation>dayOfQuarter</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(calendar);
 int daysInQuarter = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthDLWGJJEDK5AR7AOIZQJHEKWL6Y" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthDLWGJJEDK5AR7AOIZQJHEKWL6Y" Invoke="true">
+                <xsc:Presentation>daysInQuarter</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(calendar);
+int dayOfYear = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthM7LW72P2TZASFNAFP4Z23YWJ6E" Invoke="true">
+                <xsc:Presentation>dayOfYear</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(calendar);
+int daysInYear = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthODSGNCQPUZALTHEJYW53ILAKVE" Invoke="true">
+                <xsc:Presentation>daysInYear</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(calendar);
@@ -965,20 +1022,26 @@ int daysInQuarter = </xsc:Java>
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdHIRRUVHGXVHC3NL745JABUZIXA" extStr="GetDateDetailsRsDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdHIRRUVHGXVHC3NL745JABUZIXA" extStr="GetDateDetailsRsDocument">
+                <xsc:Presentation>CommandsXsd:GetDateDetailsRsDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> doc = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdHIRRUVHGXVHC3NL745JABUZIXA" extStr="GetDateDetailsRsDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdHIRRUVHGXVHC3NL745JABUZIXA" extStr="GetDateDetailsRsDocument">
+                <xsc:Presentation>CommandsXsd:GetDateDetailsRsDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Factory.newInstance();
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdHIRRUVHGXVHC3NL745JABUZIXA" extStr="GetDateDetailsRsDocument.GetDateDetailsRs"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdHIRRUVHGXVHC3NL745JABUZIXA" extStr="GetDateDetailsRsDocument.GetDateDetailsRs">
+                <xsc:Presentation>CommandsXsd:GetDateDetailsRsDocument.GetDateDetailsRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> rs = doc.addNewGetDateDetailsRs();
@@ -986,88 +1049,114 @@ int daysInQuarter = </xsc:Java>
 for(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2"/>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> id : </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true">
+                <xsc:Presentation>itemIds</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){
 	</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> item = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(id, false);
 	if(item instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){
 		</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> absItem = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)item;
 		if(absItem.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Invoke="true"/>
+              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Invoke="true">
+                <xsc:Presentation>isIncluded</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(d, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter) ||
+              <xsc:Java>(d, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter, daysInYear, dayOfYear) ||
 		   absItem.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Invoke="true"/>
+              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Invoke="true">
+                <xsc:Presentation>isExcluded</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(d, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter))
+              <xsc:Java>(d, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter, daysInYear, dayOfYear))
 		{
 		  </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdHIRRUVHGXVHC3NL745JABUZIXA" extStr="GetDateDetailsRsDocument.GetDateDetailsRs.Element"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdHIRRUVHGXVHC3NL745JABUZIXA" extStr="GetDateDetailsRsDocument.GetDateDetailsRs.Element">
+                <xsc:Presentation>CommandsXsd:GetDateDetailsRsDocument.GetDateDetailsRs.Element</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> el = rs.addNewElement();
 		  el.Oper = absItem.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>oper</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
 		  el.Title = absItem.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -1190,13 +1279,17 @@ return next;
               <xsc:Java>final Calendar javaCalendar = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA">
+                <xsc:Presentation>Utils::Timing</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZXNFDED6MVCYFP7CDFEBKA4SQI" Invoke="true"/>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZXNFDED6MVCYFP7CDFEBKA4SQI" Invoke="true">
+                <xsc:Presentation>getCalendarTruncatedToDay</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(date);
@@ -1206,27 +1299,35 @@ if(javaCalendar == null)
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> trunkedDate = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(javaCalendar.getTimeInMillis());
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mth6C42WQODAVEMNI44CHSABO4UKE" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mth6C42WQODAVEMNI44CHSABO4UKE" Invoke="true">
+                <xsc:Presentation>extendCachedPeriod</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(trunkedDate);
 if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true">
+                <xsc:Presentation>itemIds</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.size() == 0)
@@ -1238,14 +1339,36 @@ final int daysInMonth = javaCalendar.getMaximum(Calendar.DAY_OF_MONTH);
 final int dayOfQuarter = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthG3MLPWKHNBBKDGA3YZZLOFBFBY" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthG3MLPWKHNBBKDGA3YZZLOFBFBY" Invoke="true">
+                <xsc:Presentation>dayOfQuarter</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(javaCalendar);
 final int daysInQuarter = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthDLWGJJEDK5AR7AOIZQJHEKWL6Y" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthDLWGJJEDK5AR7AOIZQJHEKWL6Y" Invoke="true">
+                <xsc:Presentation>daysInQuarter</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(javaCalendar);
+final int dayOfYear = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthM7LW72P2TZASFNAFP4Z23YWJ6E" Invoke="true">
+                <xsc:Presentation>dayOfYear</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(javaCalendar);
+final int daysInYear = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthODSGNCQPUZALTHEJYW53ILAKVE" Invoke="true">
+                <xsc:Presentation>daysInYear</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(javaCalendar);
@@ -1255,69 +1378,89 @@ boolean flag = false;
 for(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2"/>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> id : </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true">
+                <xsc:Presentation>itemIds</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){
 	</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> item = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(id, false);
 	if(item instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){
 		</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> absItem = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)item;
 		flag = (flag == false &amp;&amp; absItem.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Invoke="true"/>
+              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Invoke="true">
+                <xsc:Presentation>isExcluded</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(trunkedDate, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter))
+              <xsc:Java>(trunkedDate, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter, daysInYear, dayOfYear))
 			|| (flag == true &amp;&amp; !absItem.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Invoke="true"/>
+              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Invoke="true">
+                <xsc:Presentation>isIncluded</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(trunkedDate, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter));
+              <xsc:Java>(trunkedDate, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter, daysInYear, dayOfYear));
 	}
 }
 
@@ -1341,7 +1484,9 @@ return flag;
               <xsc:Java>if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true">
+                <xsc:Presentation>itemIds</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.size() == 0)
@@ -1351,13 +1496,17 @@ boolean flag = false;
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> d = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(calendar.getTimeInMillis());
@@ -1367,14 +1516,36 @@ int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 int dayOfQuarter = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthG3MLPWKHNBBKDGA3YZZLOFBFBY" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthG3MLPWKHNBBKDGA3YZZLOFBFBY" Invoke="true">
+                <xsc:Presentation>dayOfQuarter</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(calendar);
 int daysInQuarter = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthDLWGJJEDK5AR7AOIZQJHEKWL6Y" Invoke="true"/>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthDLWGJJEDK5AR7AOIZQJHEKWL6Y" Invoke="true">
+                <xsc:Presentation>daysInQuarter</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(calendar);
+final int dayOfYear = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthM7LW72P2TZASFNAFP4Z23YWJ6E" Invoke="true">
+                <xsc:Presentation>dayOfYear</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(calendar);
+final int daysInYear = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVV67ZO4QF5GJ7KY7J2AW6UMQUI mthODSGNCQPUZALTHEJYW53ILAKVE" Invoke="true">
+                <xsc:Presentation>daysInYear</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(calendar);
@@ -1382,69 +1553,89 @@ int daysInQuarter = </xsc:Java>
 for(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2"/>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> id : </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM prd67VGLPR7Y5GQLEHLVEWR5WNXZM" Invoke="true">
+                <xsc:Presentation>itemIds</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){
 	</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> item = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aecHC6VVBZ4I3OBDCIOAALOMT5GDM mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(id, false);
 	if(item instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){
 		</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> absItem = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y">
+                <xsc:Presentation>CalendarItem.Absolute</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)item;
 		flag = (flag == false &amp;&amp; absItem.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Invoke="true"/>
+              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Invoke="true">
+                <xsc:Presentation>isIncluded</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(d, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter))
+              <xsc:Java>(d, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter, daysInYear, dayOfYear))
 			|| (flag == true &amp;&amp; !absItem.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Invoke="true"/>
+              <xsc:IdReference Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Invoke="true">
+                <xsc:Presentation>isExcluded</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(d, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter));
+              <xsc:Java>(d, dayOfWeek, daysInMonth, dayOfMonth, daysInQuarter, dayOfQuarter, daysInYear, dayOfYear));
 	}
 }
 
@@ -2193,6 +2384,42 @@ if(</xsc:Java>
 
 return res;
 </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthM7LW72P2TZASFNAFP4Z23YWJ6E" Name="dayOfYear" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="calendar" Id="mprZGMLY4ADUVBNFCSVKST7TYGGKY">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final Calendar cal = new GregorianCalendar();
+cal.setTime(calendar.getTime());
+return cal.get(Calendar.DAY_OF_YEAR);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthODSGNCQPUZALTHEJYW53ILAKVE" Name="daysInYear" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="calendar" Id="mprM45P6X6ZQZBN5HG4E2X56EGHOY">
+            <Type TypeId="400" extStr="java.util.Calendar"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final Calendar cal = new GregorianCalendar();
+cal.setTime(calendar.getTime());
+return cal.getActualMaximum(Calendar.DAY_OF_YEAR);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

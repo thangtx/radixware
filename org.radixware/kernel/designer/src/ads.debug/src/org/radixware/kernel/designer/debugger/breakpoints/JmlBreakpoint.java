@@ -149,7 +149,7 @@ public class JmlBreakpoint extends RadixBreakpoint {
     static JmlBreakpoint resolve(Branch branch, BreakpointInfo info) {
         Module module = info.findModule(branch, ERepositorySegmentType.ADS);
         if (module instanceof AdsModule) {
-            AdsDefinition root = ((AdsModule) module).getDefinitions().findById(info.definitionPath[0]);
+            AdsDefinition root = ((AdsModule) module).getTopContainer().findById(info.definitionPath[0]);
             if (root == null) {
                 return null;
             }

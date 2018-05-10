@@ -97,7 +97,7 @@ public class VerticalLayoutProcessor extends ReportLayoutProcessor {
     }
 
     @Override
-    void updateIndex(AdsReportSelectableWidget curWidget, InsertionInfo info) {
+    public void updateIndex(AdsReportSelectableWidget curWidget, InsertionInfo info) {
         if (info != null && curWidget != null) {
             int[] idx = info.getIdx();
             if (idx == null) {
@@ -230,6 +230,7 @@ public class VerticalLayoutProcessor extends ReportLayoutProcessor {
 
     @Override
     public void highlightInsertPlace(final InsertionInfo info) {
+        AdsReportForm form = reportWidgetContainer.getReportWidgetContainer().getOwnerForm();
         if (reportWidgetContainer.getDiagramMode() == AdsReportForm.Mode.GRAPHICS) {
             double height, width;
             if (reportWidgetContainer.getCell() == null) {
@@ -245,7 +246,7 @@ public class VerticalLayoutProcessor extends ReportLayoutProcessor {
             double y = 0;
             if (rowCnt > 0) {
                 double rowSpace = rowCnt > 0 ? height / rowCnt : height;
-                y = MmUtils.snapToGrid(rowSpace * idx[1]);
+                y = MmUtils.snapToGrid(rowSpace * idx[1], form);
             }
             int yPx = y == 0 ? 1 : MmUtils.mm2px(y);
             yPx = idx[1] == rowCnt ? yPx - 1 : yPx;

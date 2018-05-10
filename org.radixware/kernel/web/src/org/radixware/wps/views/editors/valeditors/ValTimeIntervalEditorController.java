@@ -18,10 +18,15 @@ import org.radixware.wps.rwt.InputBox.ValueController;
 
 
 public class ValTimeIntervalEditorController extends InputBoxController<Long,EditMaskTimeInterval> {
-
-    public ValTimeIntervalEditorController(IClientEnvironment env) {
-        super(env);
+    
+    public ValTimeIntervalEditorController(final IClientEnvironment env, final LabelFactory factory) {
+        super(env,factory);
         setEditMask(new EditMaskTimeInterval(1L,null,null,null));
+    }
+    
+
+    public ValTimeIntervalEditorController(final IClientEnvironment env) {
+        this(env,null);
     }
 
     @Override
@@ -38,6 +43,10 @@ public class ValTimeIntervalEditorController extends InputBoxController<Long,Edi
     
     @Override
     protected String calcFocusedText(final Long value, final EditMaskTimeInterval editMask) {
-        return editMask.getInputTextForValue(value);        
+        if (editMask.isSpecialValue(value)){
+            return editMask.getInputTextForValue(Long.valueOf(0));
+        }else{
+            return editMask.getInputTextForValue(value);
+        }
     }    
 }

@@ -21,6 +21,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.components.ICancellable;
 import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EDefType;
+import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
@@ -30,7 +31,6 @@ import org.radixware.schemas.adsdef.AbstractMethodDefinition;
 import org.radixware.schemas.adsdef.AbstractMethodDefinition.ReturnType;
 import org.radixware.schemas.adsdef.AbstractPropertyDefinition;
 import org.radixware.schemas.adsdef.AccessRules;
-import org.radixware.schemas.adsdef.AdsDefinitionElementType;
 import org.radixware.schemas.adsdef.ClassDefinition;
 import org.radixware.schemas.adsdef.DescribedAdsDefinition;
 import org.radixware.schemas.adsdef.EnumDefinition;
@@ -48,20 +48,22 @@ public class Usages2APIComparator implements ICancellable {
 
     public interface Reporter {
 
-        public void message(String message);
+        public void message(EEventSeverity severity, String message);
     }
 
     private class DefaultReporter implements Reporter {
 
         @Override
-        public void message(String message) {
-            System.out.println(message);
+        public void message(EEventSeverity severity, String message) {
+            System.out.println("[" + severity.getName() + "]: " + message);
         }
     }
 
     public interface APILookup {
 
         APIDocument lookup(String layerUri, Id moduleId) throws IOException;
+        
+        boolean isExpired(String layerUri, String expirationRelease) throws IOException;
     }
 
     public interface UsagesLookup {
@@ -110,7 +112,7 @@ public class Usages2APIComparator implements ICancellable {
                     try {
                         xDef = findUsed(usedLayerURI, usedModuleId, path);
                     } catch (IOException ex) {
-                        reporter.message("Unable to load API of module #" + usedModuleId + " from " + usedLayerURI);
+                        reporter.message(EEventSeverity.ERROR, "Unable to load API of module #" + usedModuleId + " from " + usedLayerURI);
                         return false;
                     }
                     if (xDef == null) {
@@ -122,29 +124,29 @@ public class Usages2APIComparator implements ICancellable {
                                 Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
                             }
                             if (xAPI == null || !isDeclaredInAPI(path, xAPI.getAPI())) {
-                                reporter.message("Warining: used icon " + xUsage.getQName() + " from " + usedLayerURI + "::" + xModule.getName() + " not found");
+                                reporter.message(EEventSeverity.WARNING, "Warning: used icon " + xUsage.getQName() + " from " + usedLayerURI + "::" + xModule.getName() + " not found");
                             }
                             return true;
                         } else {
                             if (Utils.equals(usedLayerURI, layerURI)) {//same layer. may use non API elements
                                 return true;
                             }
-                            reporter.message("Used definition " + xUsage.getQName() + " from " + usedLayerURI + "::" + xModule.getName() + " referenced from " + layerURI + "::" + moduleId + " not found");
+                            reporter.message(EEventSeverity.ERROR, "Used definition " + xUsage.getQName() + " from " + usedLayerURI + "::" + xModule.getName() + " referenced from " + layerURI + "::" + moduleId + " not found");
                             return false;
                         }
                     } else {
                         if (xDef.getDefinitionType() == null) {
-                            reporter.message("Warining: no definition type hint found at " + xUsage.getQName() + " from " + usedLayerURI);
+                            reporter.message(EEventSeverity.WARNING, "Warning: no definition type hint found at " + xUsage.getQName() + " from " + usedLayerURI);
                         } else {
                             if (xDef.getDefinitionType() != xUsage.getDefinitionType()) {
-                                reporter.message("Used definition is expected to be of type " + xUsage.getDefinitionType().getName() + " but found definition of type " + xDef.getDefinitionType().getName());
+                                reporter.message(EEventSeverity.WARNING, "Used definition is expected to be of type " + xUsage.getDefinitionType().getName() + " but found definition of type " + xDef.getDefinitionType().getName());
                             }
                         }
 
                         if (xUsage.isSetIsExtension() && xUsage.getIsExtension()) {
                             if (xDef instanceof DescribedAdsDefinition) {
                                 if (isFinal(((DescribedAdsDefinition) xDef).getAccessRules())) {
-                                    reporter.message("Used definition " + xUsage.getQName() + " is expected to be non-final");
+                                    reporter.message(EEventSeverity.ERROR, "Used definition " + xUsage.getQName() + " is expected to be non-final");
                                     return false;
                                 }
                             }
@@ -156,7 +158,7 @@ public class Usages2APIComparator implements ICancellable {
                                         return false;
                                     }
                                 } else {
-                                    reporter.message(xUsage.getQName() + " is expected to be method definition");
+                                    reporter.message(EEventSeverity.ERROR, xUsage.getQName() + " is expected to be method definition");
                                     return false;
                                 }
                                 break;
@@ -166,7 +168,7 @@ public class Usages2APIComparator implements ICancellable {
                                         return false;
                                     }
                                 } else {
-                                    reporter.message(xUsage.getQName() + " is expected to be property definition");
+                                    reporter.message(EEventSeverity.ERROR, xUsage.getQName() + " is expected to be property definition");
                                     return false;
                                 }
                                 break;
@@ -176,7 +178,7 @@ public class Usages2APIComparator implements ICancellable {
                                         return false;
                                     }
                                 } else {
-                                    reporter.message(xUsage.getQName() + " is expected to be enumeration item definition");
+                                    reporter.message(EEventSeverity.ERROR, xUsage.getQName() + " is expected to be enumeration item definition");
                                     return false;
                                 }
                                 break;
@@ -205,7 +207,7 @@ public class Usages2APIComparator implements ICancellable {
             return false;
         }
         if (mustStop || xUsages == null) {
-            reporter.message("Unable to load usages of module #" + moduleId + " from " + layerURI);
+            reporter.message(EEventSeverity.ERROR, "Unable to load usages of module #" + moduleId + " from " + layerURI);
             return false;
         }
 
@@ -221,29 +223,36 @@ public class Usages2APIComparator implements ICancellable {
         }
         return null;
     }
-
+    
     private Definition findInApi(APIDocument.API xApi, Id[] path) {
-        for (AdsDefinitionElementType xDef : xApi.getDefinitionList()) {
-            XmlCursor cursor = xDef.newCursor();
-            try {
-                if (cursor.toFirstChild()) {
-                    do {
-                        XmlObject obj = cursor.getObject();
-                        if (obj instanceof DescribedAdsDefinition) {
-                            DescribedAdsDefinition def = (DescribedAdsDefinition) obj;
-                            if (def.getId() == path[0]) {
-                                if (path.length == 1) {
-                                    return def;
-                                } else {
-                                    return findInside(def, path, 1);
+        final XmlCursor defCursor = xApi.newCursor();
+        try {
+            if (defCursor.toFirstChild()) {
+                while (defCursor.toNextSibling()) {
+                    XmlCursor cursor = defCursor.getObject().newCursor();
+                    try {
+                        if (cursor.toFirstChild()) {
+                            do {
+                                XmlObject obj = cursor.getObject();
+                                if (obj instanceof DescribedAdsDefinition) {
+                                    DescribedAdsDefinition def = (DescribedAdsDefinition) obj;
+                                    if (def.getId() == path[0]) {
+                                        if (path.length == 1) {
+                                            return def;
+                                        } else {
+                                            return findInside(def, path, 1);
+                                        }
+                                    }
                                 }
-                            }
+                            } while (cursor.toNextSibling());
                         }
-                    } while (cursor.toNextSibling());
+                    } finally {
+                        cursor.dispose();
+                    }
                 }
-            } finally {
-                cursor.dispose();
             }
+        } finally {
+            defCursor.dispose();
         }
         return null;
     }
@@ -283,17 +292,17 @@ public class Usages2APIComparator implements ICancellable {
     }
 
     private void paremeterListDiffers(String contextDescription) {
-        reporter.message("Parameter list of " + contextDescription + DIFFERS_SUFFIX);
+        reporter.message(EEventSeverity.ERROR, "Parameter list of " + contextDescription + DIFFERS_SUFFIX);
     }
 
     private void throwsListDiffers(String contextDescription) {
-        reporter.message("Thrown exception list of " + contextDescription + DIFFERS_SUFFIX);
+        reporter.message(EEventSeverity.WARNING, "Thrown exception list of " + contextDescription + DIFFERS_SUFFIX);
     }
 
     private void apiUsageKindDiffers(String contextDescription) {
-        reporter.message("API usage kind of " + contextDescription + DIFFERS_SUFFIX);
+        reporter.message(EEventSeverity.WARNING, "API usage kind of " + contextDescription + DIFFERS_SUFFIX);
     }
-
+    
     private boolean isStatic(AccessRules accessFlags) {
         if (accessFlags == null) {
             return false;
@@ -352,29 +361,29 @@ public class Usages2APIComparator implements ICancellable {
         AccessRules aacc = one.getAccessRules();
         if (isStatic(cacc) != isStatic(aacc)) {
             if (isStatic(cacc)) {
-                reporter.message(contextDescription + " is expected to be static");
+                reporter.message(EEventSeverity.ERROR, contextDescription + " is expected to be static");
             } else {
-                reporter.message(contextDescription + " is not expected to be static");
+                reporter.message(EEventSeverity.ERROR, contextDescription + " is not expected to be static");
             }
             return false;
         }
         if (one.isSetIsReflectiveCallable() && one.getIsReflectiveCallable()) {
             if (!another.isSetIsReflectiveCallable() || !another.getIsReflectiveCallable()) {
-                reporter.message(contextDescription + " is expected to be reflective callable");
+                reporter.message(EEventSeverity.WARNING, contextDescription + " is expected to be reflective callable");
                 return false;
             }
         }
 
         if (one.getIsConstructor() != another.getIsConstructor()) {
             if (one.getIsConstructor()) {
-                reporter.message(contextDescription + " is expected to be constructor");
+                reporter.message(EEventSeverity.ERROR, contextDescription + " is expected to be constructor");
             } else {
-                reporter.message(contextDescription + " is not expected to be constructor");
+                reporter.message(EEventSeverity.ERROR, contextDescription + " is not expected to be constructor");
             }
             return false;
         }
         if (one.getNature() != another.getNature()) {
-            reporter.message("Nature of " + contextDescription + DIFFERS_SUFFIX + " (expected " + one.getNature().getName() + " but found " + another.getNature().getName() + ")");
+            reporter.message(EEventSeverity.ERROR, "Nature of " + contextDescription + DIFFERS_SUFFIX + " (expected " + one.getNature().getName() + " but found " + another.getNature().getName() + ")");
             return false;
         }
         AbstractMethodDefinition.ThrownExceptions oex = one.getThrownExceptions();
@@ -411,26 +420,26 @@ public class Usages2APIComparator implements ICancellable {
         AccessRules aacc = one.getAccessRules();
         if (isStatic(cacc) != isStatic(aacc)) {
             if (isStatic(cacc)) {
-                reporter.message(contextDescription + " is expected to be static");
+                reporter.message(EEventSeverity.ERROR, contextDescription + " is expected to be static");
             } else {
-                reporter.message(contextDescription + " is not expected to be static");
+                reporter.message(EEventSeverity.ERROR, contextDescription + " is not expected to be static");
             }
             return false;
         }
         if (one.getIsConst() != another.getIsConst()) {
             if (!one.getIsConst()) {
-                reporter.message(contextDescription + " is not expected to be read only");
+                reporter.message(EEventSeverity.WARNING, contextDescription + " is not expected to be read only");
                 return false;
             }
         }
         if (one.getNature() != another.getNature()) {
-            reporter.message("Nature of " + contextDescription + DIFFERS_SUFFIX + " (expected " + one.getNature().getName() + " but found " + another.getNature().getName() + ")");
+            reporter.message(EEventSeverity.ERROR, "Nature of " + contextDescription + DIFFERS_SUFFIX + " (expected " + one.getNature().getName() + " but found " + another.getNature().getName() + ")");
             return false;
         }
         //one-usage
         if (one.getIsInvisibleForArte() != another.getIsInvisibleForArte()) {
             if (!one.getIsInvisibleForArte()) {
-                reporter.message(contextDescription + " is expected to be accessible for java code (visible for ARTE)");
+                reporter.message(EEventSeverity.WARNING, contextDescription + " is expected to be accessible for java code (visible for ARTE)");
             }
             return false;
         }
@@ -442,11 +451,11 @@ public class Usages2APIComparator implements ICancellable {
 
         if (one.getPresentation() != null && one.getPresentation().getIsPresentable()) {
             if (another.getPresentation() == null) {
-                reporter.message(contextDescription + " is expected to be available for client-server interaction");
+                reporter.message(EEventSeverity.WARNING, contextDescription + " is expected to be available for client-server interaction");
                 return false;
             } else {
                 if (!another.getPresentation().getIsPresentable()) {
-                    reporter.message(contextDescription + " is expected to be available for client-server interaction");
+                    reporter.message(EEventSeverity.WARNING, contextDescription + " is expected to be available for client-server interaction");
                     return false;
                 }
             }
@@ -459,7 +468,7 @@ public class Usages2APIComparator implements ICancellable {
             return false;
         }
         if (one.getValType() != another.getValType()) {
-            reporter.message("Item type of " + contextDescription + DIFFERS_SUFFIX + " (expected " + EValType.getForValue(one.getValType()).getName() + " but found " + EValType.getForValue(another.getValType()).getName() + ")");
+            reporter.message(EEventSeverity.ERROR, "Item type of " + contextDescription + DIFFERS_SUFFIX + " (expected " + EValType.getForValue(one.getValType()).getName() + " but found " + EValType.getForValue(another.getValType()).getName() + ")");
             return false;
         }
         return true;
@@ -470,7 +479,7 @@ public class Usages2APIComparator implements ICancellable {
             return false;
         }
         if (!Utils.equals(one.getValue(), another.getValue())) {
-            reporter.message("Value of " + contextDescription + DIFFERS_SUFFIX);
+            reporter.message(EEventSeverity.WARNING, "Value of " + contextDescription + DIFFERS_SUFFIX);
             return false;
         }
         return true;
@@ -478,6 +487,17 @@ public class Usages2APIComparator implements ICancellable {
 
     private boolean compareDefinitions(DescribedAdsDefinition used, String contextDescription, String contextLayerURI, Id contextModuleId, String usedLayerURI, Id usedModuleId) {
         if (used.isSetAccessRules()) {
+            if (used.getAccessRules().getIsDeprecated()) {
+                try {
+                    if (apiLookup.isExpired(usedLayerURI, used.getAccessRules().getExpirationRelease())) {
+                        reporter.message(EEventSeverity.ERROR, "API definition " + used.getName() + " expired since " + used.getAccessRules().getExpirationRelease());
+                    } else {
+                        reporter.message(EEventSeverity.WARNING, "API definition " + used.getName() + " is deprecated");
+                    }
+                } catch (IOException ex) {
+                    reporter.message(EEventSeverity.ERROR, "Error on check definition " + used.getName() + ": " + ex.getMessage());
+                }
+            }
             if (used.isSetDefinitionType() && used.getDefinitionType() == EDefType.ROLE) {
                 return true;
             }
@@ -486,12 +506,12 @@ public class Usages2APIComparator implements ICancellable {
                 boolean isPublished = arules.getIsPublished();
                 if (!isPublished) {
                     if (!Utils.equals(contextLayerURI, usedLayerURI)) {
-                        reporter.message(contextDescription + " is not accessible");
+                        reporter.message(EEventSeverity.WARNING, contextDescription + " is not accessible");
                         return false;
                     } else {
                         EAccess acc = EAccess.getForValue(Long.valueOf(arules.getAccess()));
                         if (acc == EAccess.DEFAULT || acc == EAccess.PRIVATE) {
-                            reporter.message(contextDescription + " is not accessible");
+                            reporter.message(EEventSeverity.WARNING, contextDescription + " is not accessible");
                             return false;
                         }
                     }
@@ -517,7 +537,7 @@ public class Usages2APIComparator implements ICancellable {
     }
 
     private void typeDeclarationDiffers(String contextDescription) {
-        reporter.message("Type of " + contextDescription + DIFFERS_SUFFIX);
+        reporter.message(EEventSeverity.ERROR, "Type of " + contextDescription + DIFFERS_SUFFIX);
     }
 
     private boolean compareTypeDeclarations(TypeDeclaration one, TypeDeclaration anoter, String contextDescription) {

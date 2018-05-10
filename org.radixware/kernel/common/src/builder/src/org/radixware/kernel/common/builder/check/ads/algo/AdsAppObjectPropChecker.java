@@ -32,6 +32,6 @@ public class AdsAppObjectPropChecker<T extends AdsAppObject.Prop> extends AdsDef
     @Override
     public void check(T prop, IProblemHandler problemHandler) {
         super.check(prop, problemHandler);
-        prop.getType().check(prop, problemHandler);
+        prop.getType().check(prop, problemHandler, getHistory().getMap());
     }
 }

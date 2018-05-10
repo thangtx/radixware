@@ -13,12 +13,12 @@ package org.radixware.kernel.designer.environment.upload;
 
 import java.io.File;
 import java.io.IOException;
-import org.openide.filesystems.FileUtil;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
-import org.radixware.kernel.common.defs.ads.module.ModuleDefinitions;
 //import org.radixware.kernel.common.defs.uds.module.ModuleDefinitions;
 import org.radixware.kernel.common.defs.uds.UdsDefinition;
+import org.radixware.kernel.common.defs.uds.module.UdsFiles;
 import org.radixware.kernel.common.defs.uds.module.UdsModule;
 import org.radixware.kernel.common.repository.fs.IRepositoryDefinition;
 import org.radixware.kernel.common.repository.uds.IRepositoryUdsModule;
@@ -33,10 +33,34 @@ class UdsModuleUploader extends ModuleUploader<UdsModule> {
     }
 
     @Override
-    public AdsDefinition uploadChild(File file) throws IOException {
+    public RadixObject uploadChild(File file) throws IOException {
+        UdsModule module = getModule();
         FSRepositoryUdsDefinition rep = new FSRepositoryUdsDefinition(file);
-        final AdsDefinition def = getModule().getDefinitions().addFromRepository(rep);
-        return def;
+        if (file.getAbsolutePath().contains(module.getEtcDir().getAbsolutePath())){
+           RadixObject radixObject = module.getUdsFiles().addFromRepository(rep);
+           return radixObject;
+        } else {
+            final AdsDefinition def = module.getDefinitions().addFromRepository(rep);
+            return def;
+        }
+    }
+    
+    private void loadNewFiles() {
+        UdsModule module = getModule();
+        IRepositoryUdsModule rep = module.getRepository();
+        if (rep != null) {
+            IRepositoryDefinition[] list = rep.getListFiles();
+            for (IRepositoryDefinition roRepository : list) {
+                File defFile = roRepository.getFile();
+                if (defFile != null) {
+                    RadixObject radixObject = module.getUdsFiles().getRadixObjectByFileName(defFile.getName());
+                    
+                    if (radixObject == null) {
+                        tryToUploadChild(defFile, "File");
+                    }
+                }
+            }
+        }
     }
 
     private void loadNewDefinitions() {
@@ -48,8 +72,14 @@ class UdsModuleUploader extends ModuleUploader<UdsModule> {
                 for (IRepositoryDefinition def : defs) {
                     File defFile = def.getFile();
                     if (defFile != null) {
-                        final Id id = UdsDefinition.fileName2DefinitionId(defFile);
-                        if (id != null && module.getDefinitions().findById(id) == null) {
+                        Id id = null;
+                        try{
+                            id = UdsDefinition.fileName2DefinitionId(defFile);
+                        }
+                        catch (Exception ex){
+                            throw new RuntimeException("Unable load file \'" + defFile.getAbsolutePath() + "\'", ex);
+                        }
+                        if (id != null && module.getTopContainer().findById(id) == null) {
                             tryToUploadChild(defFile, Definition.DEFINITION_TYPE_TITLE);
                         }
                     }
@@ -64,16 +94,12 @@ class UdsModuleUploader extends ModuleUploader<UdsModule> {
             return;
         }
 
-        final ModuleDefinitions definitions = getModule().getDefinitionsIfLoaded();
-        if (definitions != null) {
-            for (AdsDefinition definition : definitions) {
-                final UdsDefinitionUploader definitionUpdater = new UdsDefinitionUploader(definition);
-                definitionUpdater.update();
-            }
-            loadNewDefinitions();
+        final UdsFiles udsFiles = getModule().getUdsFilesIfLoaded();
+        if (udsFiles != null){
+            UdsUploaderUtils.updateDirChildren(udsFiles);
+            loadNewFiles();
         }
-        FileUtil.refreshFor(getModule().getEtcDir());
-
+        
 
     }
 }

@@ -1,37 +1,28 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:this="http://schemas.radixware.org/systemstate.xsd" 
-           xmlns:types="http://schemas.radixware.org/types.xsd" 
            targetNamespace="http://schemas.radixware.org/systemstate.xsd" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
-    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
-        
     <xs:complexType name="Position">
         <xs:sequence>            
             <xs:element name="Query" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Value">
+            <xs:element name="Value" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="Collection">
+                        <xs:element name="Node" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="Node" >
+                                    <xs:element name="Value" minOccurs="0" maxOccurs="unbounded">
                                         <xs:complexType>
-                                            <xs:sequence>
-                                                <xs:element name="Value" minOccurs="0" maxOccurs="1">
-                                                    <xs:complexType>
-                                                        <xs:simpleContent>
-                                                            <xs:extension base="xs:string">
-                                                                <xs:attribute name="Key" type="xs:string"/>                                                              
-                                                            </xs:extension>
-                                                        </xs:simpleContent>
-                                                    </xs:complexType>
-                                                </xs:element>                                        
-                                            </xs:sequence>                                              
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:string">
+                                                    <xs:attribute name="Key" type="xs:string"/>                                                              
+                                                </xs:extension>
+                                            </xs:simpleContent>
                                         </xs:complexType>
-                                    </xs:element>
-                                </xs:sequence>
+                                    </xs:element>                                        
+                                </xs:sequence>                                              
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
@@ -40,11 +31,22 @@
         </xs:sequence>        
         <!--Position KEY in path form Node/Node/Node/Node-->
         <xs:attribute name="Name" type="xs:string" use="required"/>            
-    </xs:complexType>   
+    </xs:complexType>
+    <xs:complexType name="LicenseSet">
+        <xs:sequence>
+            <xs:element name="License" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="Name" type="xs:string" use="required"/>
+                    <xs:attribute name="Available" type="xs:int" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
     <xs:element name="Report">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Position" type="this:Position" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="LicenseSet" type="this:LicenseSet" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

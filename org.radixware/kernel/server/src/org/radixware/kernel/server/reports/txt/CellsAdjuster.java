@@ -26,9 +26,11 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContai
 import org.radixware.kernel.common.enums.EReportCellType;
 import org.radixware.kernel.common.enums.EReportLayout;
 import org.radixware.kernel.server.reports.ReportGenerationException;
-import org.radixware.kernel.server.reports.fo.AdjustedCell;
-import org.radixware.kernel.server.reports.fo.CellContents;
-import org.radixware.kernel.server.reports.fo.HtmlParser;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.AdjustedCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellContents;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellParagraph;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellsUtils;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.HtmlParser;
 
 class CellsAdjuster {
  
@@ -38,25 +40,27 @@ class CellsAdjuster {
 
         int lineWidthCol = 0, maxWidthCol = 0;
         //int line=0;
-        for (int l = 0; l < adjustedCell.getLineCount(); l++) {
-            List<CellContents> list = adjustedCell.getContentsByLine(l);
-            for (int j = 0; j < list.size(); j++) {
-                CellContents cont = list.get(j);
-                String content = cont.getText();
-                if (content != null) {
-                    int prevPos = 0;
-                    for (int i = 0; i < content.length(); i++) {
-                        final char c = content.charAt(i);
-                        if (c == '\n') {
-                            lineWidthCol = 0;
-                            maxWidthCol = Math.max(maxWidthCol, lineWidthCol);
+        for (CellParagraph cellParagraph : adjustedCell) {
+            for (int l = 0; l < cellParagraph.getLinesCount(); l++) {
+                List<CellContents> list = cellParagraph.getContentsByLine(l);
+                for (int j = 0; j < list.size(); j++) {
+                    CellContents cont = list.get(j);
+                    String content = cont.getText();
+                    if (content != null) {
+                        int prevPos = 0;
+                        for (int i = 0; i < content.length(); i++) {
+                            final char c = content.charAt(i);
+                            if (c == '\n') {
+                                lineWidthCol = 0;
+                                maxWidthCol = Math.max(maxWidthCol, lineWidthCol);
 
-                            cont.setText(new String(content.substring(prevPos, i + 1)));
-                            splitContent(adjustedCell, new int[]{i + 1, j}, l);
-                            prevPos = i + 1;
-                            //break;
-                        } else {
-                            lineWidthCol++;
+                                cont.setText(new String(content.substring(prevPos, i + 1)));
+                                CellsUtils.splitContent(cellParagraph, new int[]{i + 1, j}, l);
+                                prevPos = i + 1;
+                                //break;
+                            } else {
+                                lineWidthCol++;
+                            }
                         }
                     }
                 }
@@ -75,114 +79,85 @@ class CellsAdjuster {
         AdjustedCell adjustedCell = adjustedCellContents.get(cell);
         //String runTimeContent="";
         StringBuilder sb = new StringBuilder();
-        for (int l = 0; l < adjustedCell.getLineCount(); l++) {//cycle by lines
-            List<CellContents> list = adjustedCell.getContentsByLine(l);
-            int lineWidthCol = 0, wordWidthCol = 0;
-            int maxWidthCol = cell.getWidthCols() - (cell.getMarginLeftCols() + cell.getMarginRightCols());
-            int insPos[] = new int[]{0, 0};
-            for (int j = 0; j < list.size(); j++) {//cycle by cell contants                
-                CellContents content = list.get(j);
-                boolean inQuotes = false;
+        for (CellParagraph cellParagraph : adjustedCell) {
+            for (int l = 0; l < cellParagraph.getLinesCount(); l++) {//cycle by lines
+                List<CellContents> list = cellParagraph.getContentsByLine(l);
+                int lineWidthCol = 0, wordWidthCol = 0;
+                int maxWidthCol = cell.getWidthCols() - (cell.getMarginLeftCols() + cell.getMarginRightCols());
+                int insPos[] = new int[]{0, 0};
+                for (int j = 0; j < list.size(); j++) {//cycle by cell contants                
+                    CellContents content = list.get(j);
+                    boolean inQuotes = false;
 
-                String text = content.getText();
-                if (text != null) {
-                    for (int i = 0; i < text.length(); i++) {
-                        final char c = text.charAt(i);
-                        if (c == '\n') {
-                            i++;
-                            insPos[0] = i;
-                            insPos[1] = j;
-                            splitContent(adjustedCell, insPos, l);
-                            lineWidthCol = 0;
-                            wordWidthCol = 0;
-                            insPos[0] = 0;
-                            break;
-                        } else {
-                            int charWidthCol = 1;
-                            if (lineWidthCol > 0 && lineWidthCol + charWidthCol > maxWidthCol && c != ' ') {
-                                if (insPos[0] == 0) {
-                                    insPos[0] = i;
-                                    insPos[1] = j;
-                                    wordWidthCol = 0;
-                                }                                
-                                splitContent(adjustedCell, insPos, l);
+                    String text = content.getText();
+                    if (text != null) {
+                        for (int i = 0; i < text.length(); i++) {
+                            final char c = text.charAt(i);
+                            if (c == '\n') {
                                 i++;
-                                insPos[0] = 0;
-                                lineWidthCol = wordWidthCol;
-                                break;
-                            }
-
-                            lineWidthCol += charWidthCol;
-
-                            if (c == '(' || c == '{' || c == '[' || c == '$' || (c == '"' && !inQuotes)) {
-                                wordWidthCol = charWidthCol;
                                 insPos[0] = i;
                                 insPos[1] = j;
-                            } else if (c == ' ' || c == ';' /*|| c == ',' || c == ':' || c == '.'*/ || c == ')' || c == ']' || c == '}' || c == '!' || c == '?' || c == '%' || (c == '"' && inQuotes) || c == '-') {
+                                CellsUtils.splitContent(cellParagraph, insPos, l);
+                                lineWidthCol = 0;
                                 wordWidthCol = 0;
-                                insPos[0] = i + 1;
-                                insPos[1] = j;
-                            } else if ((c == ',' || c == ':' || c == '.') && (!isNumber(text, i + 1))) {
-                                wordWidthCol = 0;
-                                insPos[0] = i + 1;
-                                insPos[1] = j;
+                                insPos[0] = 0;
+                                break;
                             } else {
-                                wordWidthCol += charWidthCol;
-                            }
-                            if (c == '"') {
-                                inQuotes = !inQuotes;
+                                int charWidthCol = 1;
+                                if (lineWidthCol > 0 && lineWidthCol + charWidthCol > maxWidthCol && c != ' ') {
+                                    if (insPos[0] == 0) {
+                                        insPos[0] = i;
+                                        insPos[1] = j;
+                                        wordWidthCol = 0;
+                                    }
+                                    CellsUtils.splitContent(cellParagraph, insPos, l);
+                                    i++;
+                                    insPos[0] = 0;
+                                    lineWidthCol = wordWidthCol;
+                                    break;
+                                }
+
+                                lineWidthCol += charWidthCol;
+
+                                if (c == '(' || c == '{' || c == '[' || c == '$' || (c == '"' && !inQuotes)) {
+                                    wordWidthCol = charWidthCol;
+                                    insPos[0] = i;
+                                    insPos[1] = j;
+                                } else if (c == ' ' || c == ';' /*|| c == ',' || c == ':' || c == '.'*/ || c == ')' || c == ']' || c == '}' || c == '!' || c == '?' || c == '%' || (c == '"' && inQuotes) || c == '-') {
+                                    wordWidthCol = 0;
+                                    insPos[0] = i + 1;
+                                    insPos[1] = j;
+                                } else if ((c == ',' || c == ':' || c == '.') && (!CellsUtils.isNumber(text, i + 1))) {
+                                    wordWidthCol = 0;
+                                    insPos[0] = i + 1;
+                                    insPos[1] = j;
+                                } else {
+                                    wordWidthCol += charWidthCol;
+                                }
+                                if (c == '"') {
+                                    inQuotes = !inQuotes;
+                                }
                             }
                         }
-                    }
 
                     //if (lastSignificantCharPos < text.length()) {
-                    //    text = text.substring(0, lastSignificantCharPos + 1);
-                    //}
-                    // sb.append(text);
-                    //runTimeContent+=text;
+                        //    text = text.substring(0, lastSignificantCharPos + 1);
+                        //}
+                        // sb.append(text);
+                        //runTimeContent+=text;
+                    }
                 }
             }
         }
-        for (int l = 0; l < adjustedCell.getLineCount(); l++) {
-            List<CellContents> list = adjustedCell.getContentsByLine(l);
-            for (int j = 0; j < list.size(); j++) {
-                sb.append(list.get(j).getText());
+        for (CellParagraph cellParagraph : adjustedCell) {
+            for (int l = 0; l <cellParagraph.getLinesCount(); l++) {
+                List<CellContents> list = cellParagraph.getContentsByLine(l);
+                for (int j = 0; j < list.size(); j++) {
+                    sb.append(list.get(j).getText());
+                }
             }
         }
         cell.setRunTimeContent(sb.toString());
-    }
-
-    private void splitContent(AdjustedCell adjustedCell, int[] insPos, int line) {
-        int charIndex = insPos[0];
-        int contentIndex = insPos[1];
-
-        CellContents content = adjustedCell.getContentsByLine(line).get(contentIndex);
-        String text = content.getText();
-        content.setText(new String(text.substring(0, charIndex)));
-
-        CellContents secondContent = new CellContents(content);
-        secondContent.setText(new String(text.substring(charIndex)));
-        int newContentIndex = 0;
-        adjustedCell.insertCellContent(newContentIndex, secondContent, line + 1);
-
-        for (int i = contentIndex + 1; i < adjustedCell.getContentsByLine(line).size(); i++) {
-            CellContents c = adjustedCell.getContentsByLine(line).get(i);
-            newContentIndex++;
-            adjustedCell.moveToNexLine(c, line, newContentIndex);
-            i--;
-        }
-    }
-
-    private boolean isNumber(String content, int charPos) {
-        if ((charPos < content.length()) && ((content.charAt(charPos) == '0')
-                || (content.charAt(charPos) == '1') || (content.charAt(charPos) == '2')
-                || (content.charAt(charPos) == '3') || (content.charAt(charPos) == '4')
-                || (content.charAt(charPos) == '5') || (content.charAt(charPos) == '6')
-                || (content.charAt(charPos) == '7') || (content.charAt(charPos) == '8')
-                || (content.charAt(charPos) == '9'))) {
-            return true;
-        }
-        return false;
     }
 
     public static int calcLineCount(final AdsReportCell cell) {
@@ -219,7 +194,7 @@ class CellsAdjuster {
         for (AdsReportWidget widget : band.getWidgets()) {
             if (!widget.isReportContainer()) {
                 AdsReportCell cell = (AdsReportCell) widget;
-                List<CellContents> cellContant = HtmlParser.getCellContant((AdsReportCell) cell);
+                List<CellContents> cellContant = CellsUtils.getCellContant((AdsReportCell) cell);
                 AdjustedCell adjustedCell = new AdjustedCell();
 
                 List<CellContents> line = new ArrayList<>();
@@ -227,7 +202,7 @@ class CellsAdjuster {
                     createLines(content, line, adjustedCell);
                 }
                 if (!line.isEmpty()) {
-                    adjustedCell.getLineCellContents().add(line);
+                    adjustedCell.createParagraph(line);
                 }
                 adjustedCellContents.put(cell, adjustedCell);
             } else {
@@ -241,9 +216,9 @@ class CellsAdjuster {
         int index = text.indexOf('\n');
         if (text != null && index != -1) {
             CellContents prev = new CellContents(content);
-            prev.setText(new String(text.substring(0, index + 1)));
+            prev.setText(new String(text.substring(0, index)));
             line.add(prev);
-            adjustedCell.getLineCellContents().add(new ArrayList<>(line));
+            adjustedCell.createParagraph(line);
 
             line.clear();
             CellContents next = new CellContents(content);
@@ -292,6 +267,7 @@ class CellsAdjuster {
                 if (cell.isVisible()) {
                     adjustCellHeight(cell);
                 } else {
+                    widget.setWidthCols(0);
                     widget.setHeightRows(0);
                 }
             }
@@ -360,7 +336,7 @@ class CellsAdjuster {
                     resizeContainerWidth((AdsReportWidgetContainer) w, ((AdsReportWidgetContainer) w).getWidthCols());
                 }
             }
-            int pageWidth = band.getOwnerForm().getPageWidthCols() - band.getOwnerForm().getMargin().getLeftCols() - band.getOwnerForm().getMargin().getRightCols();
+            int pageWidth = band.getOwnerForm().getPageWidthCols() - band.getOwnerForm().getMarginTxt().getLeftCols() - band.getOwnerForm().getMarginTxt().getRightCols();
             if (width != pageWidth && width != 0.0) {
                 int delta = pageWidth - width;
                 resizeCellsWidth(band, delta, false);
@@ -595,7 +571,7 @@ class CellsAdjuster {
         } else if (cell.isAdjustHeight()) {
             AdjustedCell adjustedCell = adjustedCellContents.get(cell);
             int contentHeightRows = 0;
-            for (int i = 0; i < adjustedCell.getLineCount(); i++) {
+            for (int i = 0; i < adjustedCell.getLinesCount(); i++) {
                 contentHeightRows++;
             }
             cell.setHeightRows(cell.getMarginTopRows() + cell.getMarginBottomRows() + contentHeightRows);

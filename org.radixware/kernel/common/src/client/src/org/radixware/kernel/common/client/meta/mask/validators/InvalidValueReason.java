@@ -29,6 +29,7 @@ public class InvalidValueReason {
     public final static InvalidValueReason NO_REASON = new InvalidValueReason(null);
     public final static InvalidValueReason WRONG_FORMAT = new InvalidValueReason(null);
     public final static InvalidValueReason NOT_DEFINED = new InvalidValueReason(null);
+    public final static InvalidValueReason STORING_CAPACITY_EXCEEDED = new InvalidValueReason(null);
 
     private final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);
     
@@ -43,15 +44,26 @@ public class InvalidValueReason {
         private Factory(){
         }
 
+        public static InvalidValueReason createForWrongFormatValue(final IClientEnvironment environment) {
+            final MessageProvider mp = environment.getMessageProvider();
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);
+            messages.put(EMessageType.Value, mp.translate("Value", "Value has wrong format"));
+            messages.put(EMessageType.PropertyValue, mp.translate("Value", "Value of property \'%1$s\' in \'%2$s\' has wrong format"));
+            messages.put(EMessageType.ParameterValue, mp.translate("Value", "Value of parameter \'%1$s\' in \'%2$s\' has wrong format"));
+            messages.put(EMessageType.ThisPropertyValue, mp.translate("Value", "Value of property \'%1$s\' has wrong format"));
+            messages.put(EMessageType.ThisParameterValue, mp.translate("Value", "Value of parameter \'%1$s\' has wrong format"));
+            return new InvalidValueReason(messages);
+        }
+        
         public static InvalidValueReason createForInvalidValue(final String reason){
-            final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);
             messages.put(EMessageType.Value, reason);
             return new InvalidValueReason(messages);
         }
 
         public static InvalidValueReason createForInvalidValueType(final IClientEnvironment environment){
             final MessageProvider mp = environment.getMessageProvider();
-            final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);            
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);            
             messages.put(EMessageType.Value, mp.translate("Value", "Value type is invalid"));
             messages.put(EMessageType.PropertyValue, mp.translate("Value", "Value of property \'%1$s\' in \'%2$s\' has invalid type"));
             messages.put(EMessageType.ParameterValue, mp.translate("Value", "Value of parameter \'%1$s\' in \'%2$s\' has invalid type"));
@@ -62,7 +74,7 @@ public class InvalidValueReason {
         
         public static InvalidValueReason createForDeprecatedValue(final IClientEnvironment environment){
             final MessageProvider mp = environment.getMessageProvider();
-            final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);
             messages.put(EMessageType.Value, mp.translate("Value", "Deprecated value"));
             messages.put(EMessageType.PropertyValue, mp.translate("Value", "Value of property \'%1$s\' in \'%2$s\' is deprecated"));
             messages.put(EMessageType.ParameterValue, mp.translate("Value", "Value of parameter \'%1$s\' in \'%2$s\' is deprecated"));
@@ -73,7 +85,7 @@ public class InvalidValueReason {
         
         public static InvalidValueReason createForValueWithNonprintableChars(final IClientEnvironment environment){
             final MessageProvider mp = environment.getMessageProvider();
-            final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);            
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);            
             messages.put(EMessageType.Value, mp.translate("Value", "Value contains non-printing characters that will be omitted if you change this field"));
             messages.put(EMessageType.PropertyValue, mp.translate("Value", "Value of property \'%1$s\' in \'%2$s\' contains non-printing characters that will be omitted if you change this field"));
             messages.put(EMessageType.ParameterValue, mp.translate("Value", "Value of parameter \'%1$s\' in \'%2$s\' contains non-printing characters that will be omitted if you change this field"));
@@ -84,7 +96,7 @@ public class InvalidValueReason {
 
         public static InvalidValueReason createForTooBigValue(final IClientEnvironment environment, final String maxValueAsStr){
             final MessageProvider mp = environment.getMessageProvider();
-            final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);            
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);            
             messages.put(EMessageType.Value, String.format(mp.translate("Value", "Value is too big. The highest acceptable value is %1$s"), maxValueAsStr));
             messages.put(EMessageType.PropertyValue, 
                          String.format(mp.translate("Value", "Value of property \'%1$s\' in \'%2$s\' is too big. The highest acceptable value is %3$s"), "%1$s", "%2$s", maxValueAsStr));
@@ -99,7 +111,7 @@ public class InvalidValueReason {
 
         public static InvalidValueReason createForTooSmallValue(final IClientEnvironment environment, final String minValueAsStr){
             final MessageProvider mp = environment.getMessageProvider();
-            final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);            
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);            
             messages.put(EMessageType.Value, String.format(mp.translate("Value", "Value is too small. The lowest acceptable value is %1$s"),minValueAsStr));
             messages.put(EMessageType.PropertyValue, 
                          String.format(mp.translate("Value", "Value of property \'%1$s\' in \'%2$s\' is too small. The lowest acceptable value is %3$s"), "%1$s", "%2$s", minValueAsStr));
@@ -114,7 +126,7 @@ public class InvalidValueReason {
 
         public static InvalidValueReason createForOutOfRange(final IClientEnvironment environment, final String minValueAsStr, final String maxValueAsStr){
             final MessageProvider mp = environment.getMessageProvider();
-            final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);            
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);            
             messages.put(EMessageType.Value, String.format(mp.translate("Value", "Value must be between %1$s and %2$s"),minValueAsStr, maxValueAsStr));
             messages.put(EMessageType.PropertyValue, 
                             String.format(mp.translate("Value", "Value of property \'%1$s\' in \'%2$s\' must be between %3$s and %4$s"), "%1$s", "%2$s", minValueAsStr, maxValueAsStr));
@@ -129,7 +141,7 @@ public class InvalidValueReason {
         
         public static InvalidValueReason createForInfeasibleValue(final IClientEnvironment environment, final String valueAsStr){
             final MessageProvider mp = environment.getMessageProvider();
-            final EnumMap<EMessageType, String> messages = new EnumMap<EMessageType, String>(EMessageType.class);            
+            final EnumMap<EMessageType, String> messages = new EnumMap<>(EMessageType.class);
             messages.put(EMessageType.Value, String.format(mp.translate("Value", "Value cannot be equal to %1$s"),valueAsStr));
             final String safeValueAsStr = valueAsStr==null || valueAsStr.isEmpty() ? valueAsStr : valueAsStr.replace("%", "%%");
             messages.put(EMessageType.PropertyValue, 
@@ -141,7 +153,7 @@ public class InvalidValueReason {
             messages.put(EMessageType.ThisParameterValue, 
                          String.format(mp.translate("Value", "Value of parameter \'%1$s\' cannot be equal to %2$s"), "%1$s", safeValueAsStr));
             return new InvalidValueReason(messages);
-        }
+        }        
     }
 
     @Override
@@ -190,9 +202,23 @@ public class InvalidValueReason {
                     return mp.translate("Value", "Value of property \'%1$s\' must be defined");
                 default:
                     return mp.translate("Value", "Value must be defined");
-            }            
+            }
+        }else if (this==STORING_CAPACITY_EXCEEDED){
+            switch (messageType){
+                case ParameterValue:
+                    return mp.translate("Value", "Value of parameter \'%1$s\' in \'%2$s\' exceeds the storing capacity in the database");
+                case PropertyValue:
+                    return mp.translate("Value", "Value of property \'%1$s\' in \'%2$s\' exceeds the storing capacity in the database");
+                case ThisParameterValue:
+                    return mp.translate("Value", "Value of parameter \'%1$s\' exceeds the storing capacity in the database");
+                case ThisPropertyValue:
+                    return mp.translate("Value", "Value of property \'%1$s\' exceeds the storing capacity in the database");
+                default:
+                    return mp.translate("Value", "Value exceeds the storing capacity in the database");
+            }
         }
-        if (messages.get(messageType)==null){
+        final String message = messages.get(messageType);
+        if (message==null || message.isEmpty()){
             final String reason = toString();
             if (reason!=null && !reason.isEmpty()){
                 switch (messageType){
@@ -212,6 +238,6 @@ public class InvalidValueReason {
                 return NO_REASON.getMessage(mp, messageType);
             }
         }
-        return messages.get(messageType);
+        return message;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -33,11 +33,13 @@ public enum EEventSource implements IKernelStrEnum {
     ARTE_COMMUNICATOR("Arte.Communicator"),
     ARTE_DB("Arte.Db"),
     ARTE_TRACE("Arte.Trace"),
+    ARTE_ACTIVITY("Arte.Activity"),
     ARTE_UNIT("Server.Unit.Arte"),
     WORKFLOW("App.Workflow"),
     APP_AUDIT("App.Audit"),
     CLIENT("Client"),
     CLIENT_SESSION("Client.Session"),
+	WEB_DRIVER("Client.Explorer.WebDriver"),
     PERSOCOMM_UNIT("Server.Unit.PersoComm"),
     EAS("Arte.Eas"),
     DB_QUERY_BUILDER("Arte.Dbqb"),
@@ -52,6 +54,7 @@ public enum EEventSource implements IKernelStrEnum {
     JOB_QUEUE("Arte.JobQueue"),
     JOB_SCHEDULER("Server.Unit.JobScheduler"),
     NET_PORT_HANDLER("Server.Unit.NetPortHandler"),
+    NET_PORT_HANDLER_QUEUE("Server.Unit.NetPortHandler.Queue"),
     NET_PORT_HANDLER_SERVICE("Server.Unit.NetPortHandler.Service"),
     UNIT("Server.Unit"),
     UNIT_PORT("Server.Unit.NetPortHandler.Port"),
@@ -59,7 +62,9 @@ public enum EEventSource implements IKernelStrEnum {
     JMS_HANDLER("Server.Unit.JmsHandler"),
     SERVER_CHANNEL_PORT("Server.ChannelPort"),
     SNMP_AGENT_UNIT("Server.Unit.SnmpAgent"),
-    MQ_HANDLER_UNIT("Server.Unit.MqHandler");
+    MQ_HANDLER_UNIT("Server.Unit.MqHandler"),
+    NOTIFICATION_SENDER("Arte.NotificationSender"),
+    ;
     
     private final String value;
 

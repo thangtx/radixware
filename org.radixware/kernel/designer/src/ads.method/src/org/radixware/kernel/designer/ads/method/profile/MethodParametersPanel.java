@@ -479,8 +479,6 @@ public final class MethodParametersPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         parametrs = new ParametersTable();
 
-        setLayout(new java.awt.BorderLayout());
-
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 6, 0, 0));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
@@ -546,8 +544,6 @@ public final class MethodParametersPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         jPanel1.add(cmdDown, gridBagConstraints);
 
-        add(jPanel1, java.awt.BorderLayout.LINE_END);
-
         parametrs.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -558,7 +554,20 @@ public final class MethodParametersPanel extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(parametrs);
 
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdAddActionPerformed

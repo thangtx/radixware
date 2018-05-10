@@ -14,7 +14,7 @@
     <PropertyGroup Id="cpg6WJ2P6P5TNGXDLTMVR2U4VZI44" Name="Root"/>
     <Properties>
       <Property Id="prdFBV3G7VDYZFWXNQMGESE24O4CA" Name="listener" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModelDataSource.Listener"/>
       </Property>
     </Properties>
@@ -39,7 +39,9 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:IdReference Path="adcRQFHXHVKJFBBTNB6DRZGW4YYZI prdFBV3G7VDYZFWXNQMGESE24O4CA" Invoke="true"/>
+              <xsc:IdReference Path="adcRQFHXHVKJFBBTNB6DRZGW4YYZI prdFBV3G7VDYZFWXNQMGESE24O4CA" Invoke="true">
+                <xsc:Presentation>listener</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = listener;
@@ -73,29 +75,61 @@ return null;</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc7DQQBACR7NEOTIVK3SHRIYWAYE"/>
+              <xsc:Java>//Should process data only if waitForData invoked (listener != null)
+//If reader in blocked state (open filters panel) waitForData not invoked
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRQFHXHVKJFBBTNB6DRZGW4YYZI prdFBV3G7VDYZFWXNQMGESE24O4CA" Invoke="true">
+                <xsc:Presentation>listener</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc7DQQBACR7NEOTIVK3SHRIYWAYE">
+                <xsc:Presentation>Explorer.Models::GroupModelData</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> newData = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcFYVNT76FFNA53CYKV2TYJ7U7EM mthQDOZ4FLXLFCCDEKZYXQMZ56H5U" Invoke="true"/>
+              <xsc:IdReference Path="adcFYVNT76FFNA53CYKV2TYJ7U7EM mthQDOZ4FLXLFCCDEKZYXQMZ56H5U" Invoke="true">
+                <xsc:Presentation>parseResponse</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(response);
-</xsc:Java>
+    </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRQFHXHVKJFBBTNB6DRZGW4YYZI prdFBV3G7VDYZFWXNQMGESE24O4CA" Invoke="true"/>
+              <xsc:IdReference Path="adcRQFHXHVKJFBBTNB6DRZGW4YYZI prdFBV3G7VDYZFWXNQMGESE24O4CA" Invoke="true">
+                <xsc:Presentation>listener</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcNRZPCUJ7XNCOHLW37HFQZUX3MY mthAQCM3T3UJJFBBAPX33AB2IXSYI" Invoke="true"/>
+              <xsc:IdReference Path="adcNRZPCUJ7XNCOHLW37HFQZUX3MY mthAQCM3T3UJJFBBAPX33AB2IXSYI" Invoke="true">
+                <xsc:Presentation>onDataReceived</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(newData);</xsc:Java>
+              <xsc:Java>(newData);
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRQFHXHVKJFBBTNB6DRZGW4YYZI prdFBV3G7VDYZFWXNQMGESE24O4CA" Invoke="true">
+                <xsc:Presentation>listener</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;
+}</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

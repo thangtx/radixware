@@ -12,28 +12,38 @@ package org.radixware.kernel.common.builder.release;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.builder.DirectoryFile;
+import org.radixware.kernel.common.builder.api.IProgressHandle;
 import org.radixware.kernel.common.builder.release.ReleaseUtils.ReleaseInfo;
 import org.radixware.kernel.common.builder.release.ReleaseUtils.SystemDirectory;
 import org.radixware.kernel.common.defs.ads.build.IFlowLogger;
-import org.radixware.kernel.common.dialogs.AuthenticationCancelledException;
+import org.radixware.kernel.common.defs.dds.utils.ScriptsUtils;
 import org.radixware.kernel.common.enums.ERepositoryBranchType;
-import org.radixware.kernel.common.enums.ESvnAuthType;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
+import org.radixware.kernel.common.repository.dds.DdsScript;
+import org.radixware.kernel.common.repository.dds.DdsScriptsDir;
+import org.radixware.kernel.common.repository.dds.DdsSegment;
+import org.radixware.kernel.common.repository.dds.DdsUpdateInfo;
 import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.SVN;
 import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
 import org.radixware.kernel.common.svn.SvnConnectionType;
+import org.radixware.kernel.common.svn.SvnPathUtils;
 import org.radixware.kernel.common.svn.client.ISvnFSClient;
 import org.radixware.kernel.common.svn.client.SvnPath;
 import org.radixware.kernel.common.svn.utils.ReleaseVerifier;
+import org.radixware.kernel.common.utils.FileUtils;
+import org.radixware.kernel.common.utils.RadixObjectsUtils;
 import org.radixware.kernel.common.utils.XmlUtils;
 import org.radixware.schemas.product.*;
 
@@ -88,11 +98,11 @@ public class ReleaseBuilder {
 
     public boolean process() {
 
-        if (!ReleaseSettings.isValidReleaseName(settings.getNumber(), false)) {
+        if (!org.radixware.kernel.common.defs.ads.common.ReleaseUtils.isValidReleaseName(settings.getNumber(), false)) {
             return logger.fatal("Invalid release number: " + settings.getNumber());
         }
         File branchDir = settings.getBranch().getDirectory();
-      
+
         logger.stateMessage("Preparing to make release version " + settings.getNumber() + " of " + branchDir.getAbsolutePath() + "...");
 
         SvnConnectionType connectionType = SvnConnectionType.SVN;
@@ -198,7 +208,7 @@ public class ReleaseBuilder {
                         }
 
                         builder.append("</tbody></table>");
-                        builder.append("<br><b>Warning:</b> This may cause in release incnsistence!");
+                        builder.append("<br><b>Warning:</b> This may cause in release inconsistency!");
                         builder.append("</html>");
                         if (!logger.recoverableError(builder.toString())) {
                             if (!flow.getSettings().TEST_MODE) {
@@ -210,6 +220,26 @@ public class ReleaseBuilder {
                     }
 
                     revision = topRevision;
+                }
+
+                logger.message("Checking scripts backward compatibility...");
+                if (settings.getScriptDialog() != null) {
+                    IProgressHandle ph = settings.getBuildEnvironment().getBuildDisplayer().getProgressHandleFactory().createHandle("Checking scripts backward compatibility...");
+                    try {
+                        ph.start();
+                        long newRevision;
+                        try {
+                            newRevision = cheakScripts(repository, svnClientAdapter, revision, null);
+                        } catch (URISyntaxException ex) {
+                            return logger.fatal(ex);
+                        }
+                        if (newRevision < 0) {
+                            return false;
+                        }
+                        revision = newRevision;
+                    } finally {
+                        ph.finish();
+                    }
                 }
 
                 logger.message("Will use repository revision number " + String.valueOf(revision));
@@ -546,4 +576,90 @@ public class ReleaseBuilder {
         }
         return true;
     }
+
+    /**
+     * @return new revision number.
+     */
+    private long cheakScripts(SVNRepositoryAdapter repository, ISvnFSClient svnClientAdapter, long revision, List<DdsScript> lastIncompatibleScripts) throws URISyntaxException {
+        List<DdsScript> scripts = ScriptsUtils.findIncompatible(settings.getBranch());
+        File branchDir = settings.getBranch().getDirectory();
+        long newRevision = revision;
+        if (!scripts.isEmpty()) {
+            IScriptDialog dialog = settings.getScriptDialog();
+            boolean isNeedConfirm = true;
+            if (lastIncompatibleScripts != null) {
+                isNeedConfirm = false;
+                for (DdsScript script : scripts) {
+                    if (!lastIncompatibleScripts.contains(script)) {
+                        isNeedConfirm = true;
+                        break;
+                    }
+                }
+            }
+            if (isNeedConfirm) {
+                List<ScriptFileInfo> modifyFiles = new ArrayList<>();
+                if (dialog.showDialog(scripts, settings, repository, revision, modifyFiles)) {
+                    if (!modifyFiles.isEmpty()) {
+                        try {
+                            newRevision = repository.getLatestRevision();
+                            svnClientAdapter.update(branchDir,
+                                    svnClientAdapter.getRevision(newRevision),
+                                    true);
+                            Iterator<ScriptFileInfo> i = modifyFiles.iterator();
+                            while (i.hasNext()) {
+                                ScriptFileInfo fileInfo = i.next();
+                                List<String> authors = new ArrayList<>();
+                                List<Long> revisions = new ArrayList<>();
+                                fileInfo.getSvnInfo(authors, revisions, newRevision, 1, 2);
+                                if (revisions.size() > 1) {
+                                    long r = revisions.get(1);
+                                    if (r <= fileInfo.getRevision()) {
+                                        i.remove();
+                                        continue;
+                                    }
+                                }
+                                ScriptFileInfo.ConflictCommitInfo commitInfo = new ScriptFileInfo.ConflictCommitInfo(authors.size() > 1 ? authors.get(1) : "", revisions.size() > 1? revisions.get(1) : 0);
+                                fileInfo.setConflictCommitInfo(commitInfo);
+                            }
+                            if (!modifyFiles.isEmpty()) {
+                                StringBuilder sb = new StringBuilder("<html>Recent changes in files\n");
+                                for (ScriptFileInfo fileInfo : modifyFiles) {
+                                    sb.append("   ");
+                                    sb.append(FileUtils.getRelativePath(branchDir, fileInfo.getFile()));
+                                  
+                                    ScriptFileInfo.ConflictCommitInfo info = fileInfo.getCommitInfo();
+                                    if (info != null) {
+                                        sb.append(" (");
+                                        sb.append("r");
+                                        sb.append(info.getRevision());
+                                        String auth = info.getLastAuthor();
+                                        if (auth != null){
+                                            sb.append(", ");
+                                            sb.append(auth);
+                                        }
+                                        sb.append(")");
+                                    }
+                                    sb.append("\n");
+                                }
+                                sb.append("were overwritten by this commit and now LOST");
+                                if (!logger.recoverableError(sb.toString())) {
+                                    return -1;
+                                }
+                            }
+                            scripts = ScriptsUtils.findIncompatible(settings.getBranch());
+                            return cheakScripts(repository, svnClientAdapter, newRevision, scripts);
+                        } catch (RadixSvnException ex) {
+                            settings.getLogger().fatal(ex);
+                            return -1;
+                        }
+                    }
+                } else {
+                    return -1;
+                }
+            }
+
+        }
+        return newRevision;
+    }
+
 }

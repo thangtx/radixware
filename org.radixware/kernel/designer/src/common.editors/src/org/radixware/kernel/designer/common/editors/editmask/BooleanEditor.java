@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import javax.swing.JButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.openide.util.Exceptions;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
@@ -45,6 +47,12 @@ public class BooleanEditor extends Editor {
     final private DecimalFormat decimalFormat;
     private final EEditMaskType editMaskType;
     private AdsDefinition definition;
+    private ChangeListener listener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updateWarning();
+            }
+    };
 
     public BooleanEditor(AdsDefinition def, final EditMaskBool editMaskBool, EEditMaskType editMaskType) {
         initComponents();
@@ -150,6 +158,18 @@ public class BooleanEditor extends Editor {
         if (falseTitleDef == null) {
             falseTitleDef = AdsMultilingualStringDef.Factory.newInstance();
         }
+        
+        if (editMaskType == EEditMaskType.BOOL) {
+            trueValueEditor.setVisible(false);
+            falseValueEditor.setVisible(false);
+            jLabel3.setVisible(false);
+            jLabel4.setVisible(false);
+            jLabel1.setText(org.openide.util.NbBundle.getMessage(BooleanEditor.class, "BooleanEditor.jLabel1.Bool.text"));
+            jLabel2.setText(org.openide.util.NbBundle.getMessage(BooleanEditor.class, "BooleanEditor.jLabel2.Bool.text"));
+        }
+        
+        this.trueValueEditor.addChangeListener(listener);
+        this.falseValueEditor.addChangeListener(listener);
 
         updateWarning();
     }
@@ -223,18 +243,18 @@ public class BooleanEditor extends Editor {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(falseValueEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
-                    .addComponent(trueValueEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(falseValueEditor, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(trueValueEditor, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(trueValueTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(trueValueTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(falseValueTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(falseValueTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)))
                 .addGap(56, 56, 56))
         );
         jPanel1Layout.setVerticalGroup(
@@ -366,8 +386,8 @@ public class BooleanEditor extends Editor {
                 }
             }
             boolEditMask.setCompatibleType(type);
-            boolEditMask.setFalseValue(falseValueEditor.getValue().toString());
-            boolEditMask.setTrueValue(trueValueEditor.getValue().toString());
+            boolEditMask.setFalseValue(falseValueEditor.getValue() != null? falseValueEditor.getValue().toString() : null);
+            boolEditMask.setTrueValue(trueValueEditor.getValue() != null? trueValueEditor.getValue().toString() : null);
 
             // System.out.println("apply: " + contextEditMaskType + "; trueValue: " + trueValue + "; falsevalue: " + falseValue + "; flsTextField.getText(): " + flsTextField.getText() + "; trueTextField.getText(): " + trueTextField.getText());
         } catch (Exception ex) {
@@ -393,7 +413,7 @@ public class BooleanEditor extends Editor {
         trueText = trueValueEditor.getValue();
         falseText = falseValueEditor.getValue();
 
-        if (trueText != null && trueText.equals(falseText)) {
+        if ((trueText != null && trueText.equals(falseText)) || (trueText == null && falseText == null)) {
             notificationLabel.setVisible(true);
             notificationLabel.setText("Warning: Values in the fields True value and False value cannot be equal or both be null.");
         } else {

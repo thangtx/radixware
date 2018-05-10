@@ -1,0 +1,102 @@
+
+class A {
+
+    Object val;
+    protected Object o;
+
+    public Object getO() {
+	return o;
+    }
+
+    public void setO(Object val) {
+	System.out.println("set => " + val);
+	o = val;
+    }
+}
+
+class B extends A {
+
+    @Override
+    public B getO() {
+	return (B) o;
+    }
+
+    @Override
+    public void setO(Object val) {
+	setO((B) val);
+    }
+
+    public void setO(B val) {
+	System.out.println("setB => " + val);
+	o = val;
+    }
+}
+
+class C extends B {
+
+    @Override
+    public C getO() {
+	return (C) o;
+    }
+
+    @Override
+    public void setO(B val) {
+	setO((C) val);
+    }
+
+    public void setO(C val) {
+	System.out.println("setC => " + val);
+	o = val;
+    }
+}
+
+class D extends C {
+
+    @Override
+    public D getO() {
+	return (D) o;
+    }
+
+    @Override
+    public void setO(C val) {
+	setO((D) val);
+    }
+
+    public void setO(D val) {
+	System.out.println("setD => " + val);
+	o = val;
+    }
+}
+
+public class Test {
+
+    public void f() {
+	A a = new D();
+	Object val = a.o;
+	a.O = new D();
+	try {
+	    a.O = "str";
+	} catch (ClassCastException e) {
+	    System.out.println("err");
+	}
+	B b = (B) a;
+	B valB = b.O;
+	b.O = new D();
+	try {
+	    b.O = new B();
+	} catch (ClassCastException e) {
+	    System.out.println("err");
+	}
+	C c = (C) a;
+	C valC = c.O;
+	c.O = new D();
+	try {
+	    c.O = new C();
+	} catch (ClassCastException e) {
+	    System.out.println("err");
+	}
+	D d = (D) a;
+	D valD = d.O;
+	d.O = new D();
+    }
+}

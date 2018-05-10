@@ -8,14 +8,26 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.radixdoc.html;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+import org.apache.xmlbeans.XmlException;
+import org.radixware.kernel.common.conventions.RadixdocConventions;
+import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.common.utils.FileUtils;
+import org.radixware.schemas.adsdef.DocumentationTopicBody;
 
 public abstract class LocalFileProvider extends FileProvider {
 
@@ -38,6 +50,49 @@ public abstract class LocalFileProvider extends FileProvider {
     }
 
     @Override
+    public ZipInputStream getDocDecorationInputStream(String layerUri) {
+        Collection<LayerEntry> layers = getLayers();
+        if (layers != null) {
+            for (LayerEntry layerEntry : layers) {
+                if (layerUri.equals(layerEntry.getIdentifier())) {
+                    try {
+                        String path = rootPath + "/" + layerEntry.getRootPath() + "/" + RadixdocConventions.RADIXDOC_DECORATIONS_PATH;
+                        File decorationsDir = new File(path);
+                        if (!decorationsDir.exists()) {
+                            return null;
+                        }
+                        
+                        final int random = (int) (1000000000 * Math.random());
+                        File tmp = File.createTempFile("docDec" + random, ".zip");
+                        FileOutputStream fos = new FileOutputStream(tmp);
+                        ZipOutputStream zos = new ZipOutputStream(fos);
+                        for (File decoration : decorationsDir.listFiles()) {
+                            if (decoration.isDirectory()) {
+                                continue;
+                            }
+                            zos.putNextEntry(new ZipEntry(decoration.getName()){{setMethod(DEFLATED);}});
+
+                            try (FileInputStream fis = new FileInputStream(decoration)) {
+                                FileUtils.copyStream(fis, zos);
+                            }
+                        }
+
+                        zos.flush();
+                        zos.close();
+                        ZipInputStream result = new ZipInputStream(new TmpFileInputStreamWrapper(tmp));
+
+                        return result;
+                    } catch (IOException ex) {
+                        Logger.getLogger(LocalFileProvider.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+    
+    @Override
     public File getOutput() {
         return out;
     }
@@ -45,4 +100,11 @@ public abstract class LocalFileProvider extends FileProvider {
     public String getRootPath() {
         return rootPath;
     }
+
+    @Override
+    protected boolean isFileExists(String filePath) {
+        File file = new File(rootPath + File.separator + filePath);
+        return file.exists();
+    }
+
 }

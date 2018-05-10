@@ -27,7 +27,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import javax.swing.text.AbstractDocument;
+import org.radixware.kernel.common.components.ExtendableTextField;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.design.msdleditor.enums.EAlign;
 import org.radixware.kernel.common.design.msdleditor.enums.EDateTimeFormat;
@@ -37,19 +39,33 @@ import org.radixware.kernel.common.design.msdleditor.enums.ESelfInclusive;
 import org.radixware.kernel.common.design.msdleditor.enums.EShieldedFormat;
 import org.radixware.kernel.common.design.msdleditor.enums.EUnit;
 import org.radixware.kernel.common.design.msdleditor.field.RootPanel;
+import org.radixware.kernel.common.design.msdleditor.field.panel.simple.IUnitValueStructure;
+import org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel;
 import org.radixware.kernel.common.msdl.EFieldsFormat;
+import org.radixware.kernel.common.msdl.MsdlField;
+import org.radixware.kernel.common.msdl.MsdlUnitContext;
 import org.radixware.kernel.common.msdl.RootMsdlScheme;
 import org.radixware.kernel.common.msdl.enums.EStrCharSet;
+import org.radixware.kernel.common.msdl.enums.EXmlBadCharAction;
+import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.schemas.msdl.Structure;
 
 
-public class StructurePanel extends AbstractEditItem implements ActionListener {
+public class StructurePanel extends AbstractMsdlPanel implements ActionListener, AbstractMsdlPanel.IEncodingField, MsdlField.MsdlFieldStructureChangedListener {
 
     private JPanel childrenFormatPanel = null;
     private StructureFieldModel fieldModel;
     private Structure structure;
     private boolean isOpened;
     RootPanel rootPanel;
+    private ExtendableTextField.ExtendableTextChangeListener timeZoneFieldListener = new ExtendableTextField.ExtendableTextChangeListener() {
+
+        @Override
+        public void onEvent(ExtendableTextField.ExtendableTextChangeEvent e) {
+            actionPerformed(new ActionEvent(specifedTimeZoneIdPanel, 0, null));
+        }
+    };
     /** Creates new form StructurePanel */
     public StructurePanel() {
         initComponents();
@@ -63,11 +79,15 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         ArrayList<JLabel> lcommon = new ArrayList<>();
         lcommon.add(encodingLabel);
         lcommon.add(jLabel2);
+        lcommon.add(nullIndicatorUnitLabel);
         lcommon.add(jLabel1);
+        lcommon.add(shieldLabel);
         ArrayList<JComponent> ecommon = new ArrayList<>();
         ecommon.add(encodingPanelCommon);
         ecommon.add(extHexPanelNullIndicator);
+        ecommon.add(nullIndicatorUnitPanel);
         ecommon.add(extHexPanelItemSeparator);
+        ecommon.add(shieldHexPanel);
         DefaultLayout.doLayout(jPanelCommon, lcommon, ecommon,true);
 
         //Str
@@ -77,12 +97,14 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         lstr.add(jLabel23);
         lstr.add(jLabel33);
         lstr.add(jLabel34);
+        lstr.add(xmlBadCharActionLabel);
         ArrayList<JComponent> estr = new ArrayList<>();
         estr.add(encodingPanelStrField);
         estr.add(alignPanelStr);
         estr.add(strPadPanel);
         estr.add(charSetPanel);
         estr.add(charSetExp);
+        estr.add(xmlBadCharActionPanel);
         DefaultLayout.doLayout(jPanelStr, lstr, estr,true);
 
         //Bin
@@ -112,10 +134,16 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         ldt.add(jLabel32);
         ldt.add(jLabel19);
         ldt.add(jLabel21);
+        ldt.add(lbUtc);
+        ldt.add(lbSpecifedTimeZoneId);
+        ldt.add(lbLenient);
         ArrayList<JComponent> edt = new ArrayList<>();
         edt.add(encodingDateTimePanel);
         edt.add(dateTimeFormatPanel);
         edt.add(dateTimePatternPanel);
+        edt.add(timeZonePanel);
+        edt.add(specifedTimeZoneIdPanel);
+        edt.add(lenientPanel);
         DefaultLayout.doLayout(jPanelDateTime, ldt, edt,true);
 
         //Int,Num Fields
@@ -170,7 +198,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
     }
 
     public void open(StructureFieldModel field, RootPanel rootPanel) {
-        super.open(field.getMsdlField());
+        super.open(field, field.getMsdlField());
         this.rootPanel = rootPanel;
         fieldModel = field;
         structure = field.getStructure();
@@ -204,6 +232,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         dmodel.addElement(EEncoding.CP1252);
         dmodel.addElement(EEncoding.CP866);
         dmodel.addElement(EEncoding.EBCDIC);
+        dmodel.addElement(EEncoding.EBCDIC_CP1047);
         dmodel.addElement(EEncoding.UTF8);
         encodingDateTimePanel.setEncodingModel(dmodel);
 
@@ -214,6 +243,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         smodel.addElement(EEncoding.CP1251);
         smodel.addElement(EEncoding.CP1252);
         smodel.addElement(EEncoding.EBCDIC);
+        smodel.addElement(EEncoding.EBCDIC_CP1047);
         smodel.addElement(EEncoding.UTF8);
         encodingPanelStrField.setEncodingModel(smodel);
 
@@ -223,12 +253,16 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         cmodel.addElement(EStrCharSet.XML);
         cmodel.addElement(EStrCharSet.User);
         charSetPanel.setCharSetModel(cmodel);
-        
+                
         //Common
+        extHexPanelNullIndicator.open(new StructureNullIndicator(structure, field, nullIndicatorUnitPanel));
         encodingPanelCommon.addActionListener(this);
         encodingPanelCommon.getSetParentPanel().addActionListener(this);
         extHexPanelNullIndicator.addActionListener(this);
+        nullIndicatorUnitPanel.addActionListener(extHexPanelNullIndicator);
+        nullIndicatorUnitPanel.getSetParentPanel().addActionListener(extHexPanelNullIndicator);
         extHexPanelItemSeparator.addActionListener(this);
+        shieldHexPanel.addActionListener(this);
         
         if (!structure.isSetDefaultEncoding() && (fieldModel == null 
                 || !(fieldModel.getContainer() instanceof RootMsdlScheme))) {
@@ -249,7 +283,9 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         alignPanelStr.getSetParentPanel().addActionListener(this);
         strPadPanel.addActionListener(this);
         charSetPanel.addActionListener(this);
-        charSetPanel.getSetParentPanel().addActionListener(this);        
+        charSetPanel.getSetParentPanel().addActionListener(this);
+        xmlBadCharActionPanel.addActionListener(this);
+        xmlBadCharActionPanel.getSetParentPanel().addActionListener(this);
         charSetExp.addActionListener(this);
         final DocumentListener dls = new DocumentListener() {
             @Override
@@ -290,6 +326,15 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         dateTimeFormatPanel.getSetParentPanel().addActionListener(this);
         dateTimePatternPanel.addActionListener(this);
         dateTimePatternPanel.getSetParentPanel().addActionListener(this);
+        timeZonePanel.addActionListener(this);
+        timeZonePanel.getSetParentPanel().addActionListener(this);
+        specifedTimeZoneIdPanel.addChangeListener(timeZoneFieldListener);
+        lenientPanel.addActionListener(this);
+        lenientPanel.getSetParentPanel().addActionListener(this);
+        if (field.getMsdlField() instanceof RootMsdlScheme == false) {
+            lbSpecifedTimeZoneId.setVisible(false);
+            specifedTimeZoneIdPanel.setVisible(false);
+        }
 
         //Int,Num Fields
         encodingIntNumPanel.addActionListener(this);
@@ -314,13 +359,98 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         endSepPanel.addActionListener(this);
         schieldedFormatPanel.addActionListener(this);
         schieldedFormatPanel.getSetParentPanel().addActionListener(this);
-        shieldPanel.addActionListener(this);
 
         //EmbeddedLen
         selfInclusivePanel.addActionListener(this);
         selfInclusivePanel.getSetParentPanel().addActionListener(this);
-
+        
+        field.getMsdlField().getStructureChangedSupport().addEventListener(this);
+        
         update();
+    }
+    
+    public void removeAllListeners() {
+        //Common
+        encodingPanelCommon.removeActionListener(this);
+        encodingPanelCommon.getSetParentPanel().removeActionListener(this);
+        extHexPanelNullIndicator.removeActionListener(this);
+        extHexPanelItemSeparator.removeActionListener(this);
+        shieldHexPanel.removeActionListener(this);
+        
+        //Str
+        encodingPanelStrField.removeActionListener(this);
+        encodingPanelStrField.getSetParentPanel().removeActionListener(this);        
+        alignPanelStr.removeActionListener(this);
+        alignPanelStr.getSetParentPanel().removeActionListener(this);
+        strPadPanel.removeActionListener(this);
+        charSetPanel.removeActionListener(this);
+        charSetPanel.getSetParentPanel().removeActionListener(this);
+        xmlBadCharActionPanel.removeActionListener(this);
+        xmlBadCharActionPanel.getSetParentPanel().removeActionListener(this);
+        charSetExp.removeActionListener(this);
+        AbstractDocument doc = (AbstractDocument) charSetExp.getDocument();
+        for (DocumentListener listener : doc.getDocumentListeners()) {
+            doc.removeDocumentListener(listener);
+        }
+        
+        //Bin
+        encodingPanelBin.removeActionListener(this);
+        encodingPanelBin.getSetParentPanel().removeActionListener(this);
+        alignPanelBin.removeActionListener(this);
+        alignPanelBin.getSetParentPanel().removeActionListener(this);
+        unitBinPanel.removeActionListener(this);
+        unitBinPanel.getSetParentPanel().removeActionListener(this);
+        extHexBinPanel.removeActionListener(this);
+
+        //BCH
+        alignBCHPanel.removeActionListener(this);
+        alignBCHPanel.getSetParentPanel().removeActionListener(this);
+        extCharBCHPanel.removeActionListener(this);
+
+        //DateTime
+        encodingDateTimePanel.removeActionListener(this);
+        encodingDateTimePanel.getSetParentPanel().removeActionListener(this);
+        dateTimeFormatPanel.removeActionListener(this);
+        dateTimeFormatPanel.getSetParentPanel().removeActionListener(this);
+        dateTimePatternPanel.removeActionListener(this);
+        dateTimePatternPanel.getSetParentPanel().removeActionListener(this);
+        timeZonePanel.removeActionListener(this);
+        timeZonePanel.getSetParentPanel().removeActionListener(this);
+        specifedTimeZoneIdPanel.removeChangeListener(timeZoneFieldListener);
+        lenientPanel.removeActionListener(this);
+        lenientPanel.getSetParentPanel().removeActionListener(this);
+
+        //Int,Num Fields
+        encodingIntNumPanel.removeActionListener(this);
+        encodingIntNumPanel.getSetParentPanel().removeActionListener(this);
+        alignIntNumPanel.removeActionListener(this);
+        alignIntNumPanel.getSetParentPanel().removeActionListener(this);
+        plusSignPanel.removeActionListener(this);
+        minusSigngPanel.removeActionListener(this);
+        fractPointPanel.removeActionListener(this);
+        padIntNumPanel.removeActionListener(this);
+
+        //Fixed Len
+        unitFixedLenPanel.removeActionListener(this);
+        unitFixedLenPanel.getSetParentPanel().removeActionListener(this);
+        alignFixedLenPanel.removeActionListener(this);
+        alignFixedLenPanel.getSetParentPanel().removeActionListener(this);
+        padBinFixedLenPanel.removeActionListener(this);
+        padCharFixedLenPanel.removeActionListener(this);
+
+        //Separated
+        startSepPanel.removeActionListener(this);
+        endSepPanel.removeActionListener(this);
+        schieldedFormatPanel.removeActionListener(this);
+        schieldedFormatPanel.getSetParentPanel().removeActionListener(this);
+
+        //EmbeddedLen
+        selfInclusivePanel.removeActionListener(this);
+        selfInclusivePanel.getSetParentPanel().removeActionListener(this);
+        
+        if (fieldModel != null) {
+            fieldModel.getMsdlField().getStructureChangedSupport().removeEventListener(this);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -345,8 +475,12 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         jLabel2 = new javax.swing.JLabel();
         encodingPanelCommon = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel();
         encodingLabel = new javax.swing.JLabel();
-        extHexPanelNullIndicator = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
         extHexPanelItemSeparator = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
+        shieldHexPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
+        shieldLabel = new javax.swing.JLabel();
+        extHexPanelNullIndicator = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel();
+        nullIndicatorUnitPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel();
+        nullIndicatorUnitLabel = new javax.swing.JLabel();
         jPanelStr = new javax.swing.JPanel();
         encodingPanelStrField = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel();
         alignPanelStr = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.AlignPanel();
@@ -358,6 +492,8 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         charSetExp = new javax.swing.JTextField();
         charSetPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.CharSetPanel();
         jLabel33 = new javax.swing.JLabel();
+        xmlBadCharActionPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.XmlBadCharActionPanel();
+        xmlBadCharActionLabel = new javax.swing.JLabel();
         jPanelBin = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -379,6 +515,12 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         jLabel32 = new javax.swing.JLabel();
         dateTimeFormatPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimeFormatPanel();
         dateTimePatternPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimePatternPanel();
+        lbUtc = new javax.swing.JLabel();
+        lbLenient = new javax.swing.JLabel();
+        lenientPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtBoolPanel();
+        timeZonePanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimeZonePanel();
+        lbSpecifedTimeZoneId = new javax.swing.JLabel();
+        specifedTimeZoneIdPanel = new org.radixware.kernel.common.components.ExtendableTextField();
         jPanelIntNum = new javax.swing.JPanel();
         encodingIntNumPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel();
         alignIntNumPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.AlignPanel();
@@ -442,7 +584,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBoxFieldsFormatType, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addContainerGap(247, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -460,14 +602,14 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         jPanelFieldsFormatLayout.setHorizontalGroup(
             jPanelFieldsFormatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanelChildrenType, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+            .addComponent(jPanelChildrenType, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
         );
         jPanelFieldsFormatLayout.setVerticalGroup(
             jPanelFieldsFormatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelFieldsFormatLayout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelChildrenType, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
+                .addComponent(jPanelChildrenType, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Child Fields Format", jPanelFieldsFormat);
@@ -476,11 +618,11 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
 
         jPanelCommon.setName(""); // NOI18N
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/Bundle"); // NOI18N
         jLabel1.setText(bundle.getString("ITEM_SEPARATOR")); // NOI18N
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel2.setText(bundle.getString("NULL_INDICATOR")); // NOI18N
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
@@ -490,28 +632,38 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
             }
         });
 
+        encodingLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         encodingLabel.setText("Encoding");
+
+        shieldLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        shieldLabel.setText("Shield");
+
+        nullIndicatorUnitLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        nullIndicatorUnitLabel.setText("Null Indicator Unit");
 
         javax.swing.GroupLayout jPanelCommonLayout = new javax.swing.GroupLayout(jPanelCommon);
         jPanelCommon.setLayout(jPanelCommonLayout);
         jPanelCommonLayout.setHorizontalGroup(
             jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelCommonLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelCommonLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(encodingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)))
-                    .addGroup(jPanelCommonLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)))
+                    .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(nullIndicatorUnitLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(shieldLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                        .addComponent(encodingLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(extHexPanelNullIndicator, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                    .addComponent(encodingPanelCommon, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 142, Short.MAX_VALUE)
-                    .addComponent(extHexPanelItemSeparator, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE))
-                .addContainerGap(149, Short.MAX_VALUE))
+                .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(encodingPanelCommon, javax.swing.GroupLayout.PREFERRED_SIZE, 142, Short.MAX_VALUE)
+                        .addComponent(extHexPanelItemSeparator, 0, 0, Short.MAX_VALUE)
+                        .addComponent(extHexPanelNullIndicator, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(nullIndicatorUnitPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(shieldHexPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(162, Short.MAX_VALUE))
         );
         jPanelCommonLayout.setVerticalGroup(
             jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -519,16 +671,26 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addContainerGap()
                 .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(encodingLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(encodingPanelCommon, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE))
+                    .addComponent(encodingPanelCommon, javax.swing.GroupLayout.PREFERRED_SIZE, 21, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(extHexPanelNullIndicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(extHexPanelNullIndicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(extHexPanelItemSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(287, Short.MAX_VALUE))
+                .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(nullIndicatorUnitPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(nullIndicatorUnitLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelCommonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelCommonLayout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(shieldLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelCommonLayout.createSequentialGroup()
+                        .addComponent(extHexPanelItemSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(shieldHexPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Common", jPanelCommon);
@@ -567,6 +729,8 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         jLabel33.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel33.setText(bundle1.getString("StrPanel.jLabel2.text")); // NOI18N
 
+        xmlBadCharActionLabel.setText("On Invalid XML Character");
+
         javax.swing.GroupLayout jPanelStrLayout = new javax.swing.GroupLayout(jPanelStr);
         jPanelStr.setLayout(jPanelStrLayout);
         jPanelStrLayout.setHorizontalGroup(
@@ -579,15 +743,17 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                         .addComponent(jLabel22)
                         .addComponent(jLabel23)
                         .addComponent(jLabel33, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel34))
+                    .addComponent(jLabel34)
+                    .addComponent(xmlBadCharActionLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelStrLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(charSetExp)
                     .addComponent(charSetPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(alignPanelStr, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(encodingPanelStrField, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(strPadPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
-                .addContainerGap(165, Short.MAX_VALUE))
+                    .addComponent(strPadPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                    .addComponent(alignPanelStr, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(encodingPanelStrField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(charSetExp, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(xmlBadCharActionPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanelStrLayout.setVerticalGroup(
             jPanelStrLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -612,7 +778,11 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addGroup(jPanelStrLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(charSetExp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(231, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelStrLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xmlBadCharActionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(xmlBadCharActionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Str Field", jPanelStr);
@@ -659,7 +829,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                         .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(encodingPanelBin, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(179, Short.MAX_VALUE))
+                .addContainerGap(214, Short.MAX_VALUE))
         );
         jPanelBinLayout.setVerticalGroup(
             jPanelBinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -667,7 +837,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addContainerGap()
                 .addGroup(jPanelBinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(encodingPanelBin, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE))
+                    .addComponent(encodingPanelBin, javax.swing.GroupLayout.PREFERRED_SIZE, 21, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelBinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -680,7 +850,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addGroup(jPanelBinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(extHexBinPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(257, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Bin Field", jPanelBin);
@@ -710,12 +880,12 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addContainerGap()
                 .addGroup(jPanelBCHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(alignBCHPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(alignBCHPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelBCHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(extCharBCHPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(317, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("BCH Field", jPanelBCH);
@@ -738,35 +908,57 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
             }
         });
 
+        lbUtc.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lbUtc.setText(bundle1.getString("DateTimePanel.lbUtc.text")); // NOI18N
+
+        lbLenient.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        lbLenient.setText(bundle1.getString("DateTimePanel.lbLenient.text")); // NOI18N
+
+        lenientPanel.setDefaultParentValue(true);
+
+        lbSpecifedTimeZoneId.setText("Specified Time Zone Id");
+
         javax.swing.GroupLayout jPanelDateTimeLayout = new javax.swing.GroupLayout(jPanelDateTime);
         jPanelDateTime.setLayout(jPanelDateTimeLayout);
         jPanelDateTimeLayout.setHorizontalGroup(
             jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelDateTimeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelDateTimeLayout.createSequentialGroup()
+                .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanelDateTimeLayout.createSequentialGroup()
+                        .addComponent(lbLenient)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                        .addComponent(lenientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelDateTimeLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dateTimePatternPanel, 0, 144, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelDateTimeLayout.createSequentialGroup()
+                        .addComponent(dateTimePatternPanel, 0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanelDateTimeLayout.createSequentialGroup()
                         .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(dateTimeFormatPanel, 0, 0, Short.MAX_VALUE)
-                            .addComponent(encodingDateTimePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, Short.MAX_VALUE))))
-                .addContainerGap(173, Short.MAX_VALUE))
+                            .addComponent(encodingDateTimePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 144, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDateTimeLayout.createSequentialGroup()
+                        .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lbUtc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbSpecifedTimeZoneId, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(timeZonePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                            .addComponent(specifedTimeZoneIdPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(206, Short.MAX_VALUE))
         );
         jPanelDateTimeLayout.setVerticalGroup(
             jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelDateTimeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(encodingDateTimePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE))
+                .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(encodingDateTimePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -775,7 +967,19 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(dateTimePatternPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(286, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbUtc, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(timeZonePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbSpecifedTimeZoneId)
+                    .addComponent(specifedTimeZoneIdPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelDateTimeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lenientPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbLenient, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Date Time Field", jPanelDateTime);
@@ -846,7 +1050,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                     .addComponent(plusSignPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(alignIntNumPanel, 0, 0, Short.MAX_VALUE)
                     .addComponent(encodingIntNumPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(153, Short.MAX_VALUE))
+                .addContainerGap(174, Short.MAX_VALUE))
         );
         jPanelIntNumLayout.setVerticalGroup(
             jPanelIntNumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -858,7 +1062,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelIntNumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(alignIntNumPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(alignIntNumPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))
                 .addGap(9, 9, 9)
                 .addGroup(jPanelIntNumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(plusSignPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -875,7 +1079,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addGroup(jPanelIntNumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(padIntNumPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(199, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Int, Num Fields", jPanelIntNum);
@@ -934,7 +1138,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addGroup(jPanelFixedLenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(padCharFixedLenPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(249, Short.MAX_VALUE))
+                .addContainerGap(83, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Fixed Length", jPanelFixedLen);
@@ -946,6 +1150,8 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         jLabel13.setText(bundle.getString("SHIELDED_FORMAT")); // NOI18N
 
         jLabel14.setText(bundle.getString("SHIELD")); // NOI18N
+
+        shieldPanel.setEnabled(false);
 
         javax.swing.GroupLayout jPanelSeparatedLayout = new javax.swing.GroupLayout(jPanelSeparated);
         jPanelSeparated.setLayout(jPanelSeparatedLayout);
@@ -964,7 +1170,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                     .addComponent(endSepPanel, 0, 0, Short.MAX_VALUE)
                     .addComponent(startSepPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(schieldedFormatPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(130, Short.MAX_VALUE))
+                .addContainerGap(147, Short.MAX_VALUE))
         );
         jPanelSeparatedLayout.setVerticalGroup(
             jPanelSeparatedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -985,7 +1191,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addGroup(jPanelSeparatedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(shieldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(257, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Separated", jPanelSeparated);
@@ -1001,7 +1207,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addComponent(jLabel15)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selfInclusivePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addContainerGap(174, Short.MAX_VALUE))
         );
         jPanelEmbeddedLenLayout.setVerticalGroup(
             jPanelEmbeddedLenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1010,7 +1216,7 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
                 .addGroup(jPanelEmbeddedLenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(selfInclusivePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(344, Short.MAX_VALUE))
+                .addContainerGap(181, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Embedded Length", jPanelEmbeddedLen);
@@ -1146,14 +1352,19 @@ public class StructurePanel extends AbstractEditItem implements ActionListener {
         jPanelChildrenType.validate();
     }
 
-private void save() {
+    @Override
+    public EEncoding getEncoding() {
+        return encodingPanelCommon.getEncoding();
+    }
+    
+    @Override
+    protected void doSave() {
     //Common
     structure.setDefaultEncoding(encodingPanelCommon.getEncoding().getValue());
 
-    structure.setDefaultNullIndicator(extHexPanelNullIndicator.getValue());
-    structure.setDefaultNullIndicatorViewType(extHexPanelNullIndicator.getViewEncodingAsStr());
+    structure.setDefaultNullIndicatorUnit(nullIndicatorUnitPanel.getUnit().getValue());
+    extHexPanelNullIndicator.fillDefinition();
     structure.setDefaultItemSeparator(extHexPanelItemSeparator.getValue());
-    structure.setDefaultItemSeparatorViewType(extHexPanelItemSeparator.getViewEncodingAsStr());
 
     //Str
     structure.setDefaultStrEncoding(encodingPanelStrField.getEncoding().getValue());
@@ -1161,6 +1372,9 @@ private void save() {
     structure.setDefaultStrPadChar(strPadPanel.getString());
     structure.setDefaultCharSetType(charSetPanel.getCharSet().getValue());
     structure.setDefaultCharSetExp(charSetExp.getText());
+    
+    structure.setDefaultXmlBadCharAction(xmlBadCharActionPanel.getAction().getValue());
+    
     charSetExp.setVisible(charSetPanel.getCharSet() == EStrCharSet.User);
     jLabel34.setVisible(charSetPanel.getCharSet() == EStrCharSet.User);
 
@@ -1169,7 +1383,6 @@ private void save() {
     structure.setDefaultBinAlign(alignPanelBin.getAlign().getValue());
     structure.setDefaultBinUnit(unitBinPanel.getUnit().getValue());
     structure.setDefaultBinPad(extHexBinPanel.getValue());
-    structure.setDefaultBinPadViewType(extHexBinPanel.getViewEncodingAsStr());
 
     //BCH
     structure.setDefaultBCHAlign(alignBCHPanel.getAlign().getValue());
@@ -1179,6 +1392,10 @@ private void save() {
     structure.setDefaultDateTimeEncoding(encodingDateTimePanel.getEncoding().getValue());
     structure.setDefaultDateTimeFormat(dateTimeFormatPanel.getFormat().getValue());
     structure.setDefaultDateTimePattern(dateTimePatternPanel.getString());
+    structure.setDefaultTimeZoneType(timeZonePanel.getValue());
+    final String timeZoneId = (String) specifedTimeZoneIdPanel.getValue();
+    structure.setSpecifiedTimeZoneId(!Utils.emptyOrNull(timeZoneId) ? (String) specifedTimeZoneIdPanel.getValue() : null);
+    structure.setDefaultDateLenientParse(lenientPanel.getValue());
 
     //Int,Num Fields
     structure.setDefaultIntNumEncoding(encodingIntNumPanel.getEncoding().getValue());
@@ -1192,65 +1409,59 @@ private void save() {
     structure.setDefaultUnit(unitFixedLenPanel.getUnit().getValue());
     structure.setAlign(alignFixedLenPanel.getAlign().getValue());
     structure.setPadBin(padBinFixedLenPanel.getValue());
-    structure.setPadViewType(padBinFixedLenPanel.getViewEncodingAsStr());
     structure.setPadChar(padCharFixedLenPanel.getString());
 
     //Separated
     structure.setStartSeparator(startSepPanel.getValue());
-    structure.setStartSeparatorViewType(startSepPanel.getViewEncodingAsStr());
     structure.setEndSeparator(endSepPanel.getValue());
-    structure.setEndSeparatorViewType(endSepPanel.getViewEncodingAsStr());
-    structure.setShield(shieldPanel.getValue());
-    structure.setShieldViewType(shieldPanel.getViewEncodingAsStr());
+    structure.setShield(shieldHexPanel.getValue());
     structure.setShieldedFormat(schieldedFormatPanel.getShieldedFormat().getValue());
 
     //EmbeddedLen
     structure.setIsSelfInclusive(selfInclusivePanel.getSelfInclusive().getValue());
 
-    fieldModel.setModified();
 }
 
 @Override
 public void update() {
     isOpened = false;
     
-    boolean rootMsdl = fieldModel.isRootMsdlScheme();
+    final boolean rootMsdl = fieldModel.isRootMsdlScheme();
+    
+    updateEncodingPanels(rootMsdl);
     
     //Common
-    encodingPanelCommon.setEncoding(EEncoding.getInstance(structure.getDefaultEncoding()),
-                                    EEncoding.getInstance(fieldModel.getEncoding(false)));
-    extHexPanelNullIndicator.setValue(structure.getDefaultNullIndicator(),
-            fieldModel.getNullIndicator(false),
-            EEncoding.getInstanceForHexViewType(structure.getDefaultNullIndicatorViewType()),
-            EEncoding.getInstanceForHexViewType(fieldModel.getNullIndicatorViewType(false)));
+    final EUnit nullIndicatorUnit = EUnit.getInstance(structure.getDefaultNullIndicatorUnit());
+    EUnit parentValue = EUnit.getInstance(fieldModel.getUnit(false, 
+            new MsdlUnitContext(MsdlUnitContext.EContext.NULL_INDICATOR)));
+    parentValue = parentValue == null || parentValue == EUnit.NOTDEFINED ? EUnit.BYTE : parentValue;
+    nullIndicatorUnitPanel.setUnit(nullIndicatorUnit, parentValue);
+    extHexPanelNullIndicator.fillWidgets();
+        
     extHexPanelItemSeparator.setValue(structure.getDefaultItemSeparator(),
-            fieldModel.getItemSeparator(false),
-            EEncoding.getInstanceForHexViewType(structure.getDefaultItemSeparatorViewType()),
-            EEncoding.getInstanceForHexViewType(fieldModel.getItemSeparatorViewType(false)));
+            fieldModel.getItemSeparator(false));
+    shieldHexPanel.setValue(structure.getShield(), fieldModel.getShield(false));
 
     //Str    
-    encodingPanelStrField.setEncoding(EEncoding.getInstance(structure.getDefaultStrEncoding()),
-                          EEncoding.getInstance(fieldModel.getStrEncoding(rootMsdl)));
-    
     alignPanelStr.setAlign(EAlign.getInstance(structure.getDefaultStrAlign()),
                           EAlign.getInstance(fieldModel.getStrAlign(false)));
     strPadPanel.setString(structure.getDefaultStrPadChar(), fieldModel.getStrPadChar(false));
     charSetPanel.setCharSet(EStrCharSet.getInstance(structure.getDefaultCharSetType()),
                           EStrCharSet.getInstance(fieldModel.getCharSetType(false)));
+    
+    xmlBadCharActionPanel.setAction(EXmlBadCharAction.getInstance(structure.getDefaultXmlBadCharAction()),
+                          EXmlBadCharAction.getInstance(fieldModel.getXmlBadCharAction(false)));
+    
     charSetExp.setText(structure.getDefaultCharSetExp());
     charSetExp.setVisible(charSetPanel.getCharSet() == EStrCharSet.User);
     jLabel34.setVisible(charSetPanel.getCharSet() == EStrCharSet.User);
     
     //Bin
-    encodingPanelBin.setEncoding(EEncoding.getInstance(structure.getDefaultBinEncoding()),
-                                 EEncoding.getInstance(fieldModel.getBinEncoding(rootMsdl)));
     alignPanelBin.setAlign(EAlign.getInstance(structure.getDefaultBinAlign()),
                            EAlign.getInstance(fieldModel.getBinAlign(false)));
     unitBinPanel.setUnit(EUnit.getInstance(structure.getDefaultBinUnit()),
                          EUnit.getInstance(fieldModel.getBinUnit(false)));
-    extHexBinPanel.setValue(structure.getDefaultBinPad(), fieldModel.getBinPad(false), 
-            EEncoding.getInstanceForHexViewType(structure.getDefaultBinPadViewType()),
-            EEncoding.getInstanceForHexViewType(fieldModel.getBinPadViewType(false)));
+    extHexBinPanel.setValue(structure.getDefaultBinPad(), fieldModel.getBinPad(false));
 
     //BCH
     alignBCHPanel.setAlign(EAlign.getInstance(structure.getDefaultBCHAlign()),
@@ -1258,15 +1469,14 @@ public void update() {
     extCharBCHPanel.setString(structure.getDefaultBCHPadChar(), fieldModel.getBCHPad(false));
 
 
-    encodingDateTimePanel.setEncoding(EEncoding.getInstance(structure.getDefaultDateTimeEncoding()),
-                                    EEncoding.getInstance(fieldModel.getDateTimeEncoding(rootMsdl)));
     dateTimeFormatPanel.setFormat(EDateTimeFormat.getInstance(structure.getDefaultDateTimeFormat()),
                                     EDateTimeFormat.getInstance(fieldModel.getDateTimeFormat(false)));
     dateTimePatternPanel.setPattern(structure.getDefaultDateTimePattern(),
                                     fieldModel.getDateTimePattern(false));
+    timeZonePanel.setValue(structure.getDefaultTimeZoneType(), fieldModel.getTimeZoneType(false));
+    specifedTimeZoneIdPanel.setValue(structure.getSpecifiedTimeZoneId());
+    lenientPanel.setValue(structure.getDefaultDateLenientParse(), fieldModel.getDateTimeLenientParse(false));
 
-    encodingIntNumPanel.setEncoding(EEncoding.getInstance(structure.getDefaultIntNumEncoding()),
-                                    EEncoding.getInstance(fieldModel.getIntEncoding(rootMsdl)));
     alignIntNumPanel.setAlign(EAlign.getInstance(structure.getDefaultIntNumAlign()),
                            EAlign.getInstance(fieldModel.getIntNumAlign(false)));
 
@@ -1281,23 +1491,16 @@ public void update() {
 
     alignFixedLenPanel.setAlign(EAlign.getInstance(structure.getAlign()),
                            EAlign.getInstance(fieldModel.getAlign(false)));
-    padBinFixedLenPanel.setValue(structure.getPadBin(), fieldModel.getBinPad(false), 
-            EEncoding.getInstanceForHexViewType(structure.getPadViewType()),
-            EEncoding.getInstanceForHexViewType(fieldModel.getPadViewType(false)));
+    padBinFixedLenPanel.setValue(structure.getPadBin(), fieldModel.getBinPad(false));
     padCharFixedLenPanel.setString(structure.getPadChar(), fieldModel.getPadChar(false));
 
     //Separated
-    startSepPanel.setValue(structure.getStartSeparator(), fieldModel.getStartSeparator(false),
-            EEncoding.getInstanceForHexViewType(structure.getStartSeparatorViewType()),
-            EEncoding.getInstanceForHexViewType(fieldModel.getStartSeparatorViewType(false)));
-    endSepPanel.setValue(structure.getEndSeparator(), fieldModel.getEndSeparator(false),
-            EEncoding.getInstanceForHexViewType(structure.getEndSeparatorViewType()),
-            EEncoding.getInstanceForHexViewType(fieldModel.getEndSeparatorViewType(false)));
+    startSepPanel.setValue(structure.getStartSeparator(), fieldModel.getStartSeparator(false));
+    endSepPanel.setValue(structure.getEndSeparator(), fieldModel.getEndSeparator(false));
     schieldedFormatPanel.setShieldedFormat(EShieldedFormat.getInstance(structure.getShieldedFormat()),
                                            EShieldedFormat.getInstance(fieldModel.getShieldedFormat(false)));
-    shieldPanel.setValue(structure.getShield(), fieldModel.getShield(false),
-            EEncoding.getInstanceForHexViewType(structure.getShieldViewType()),
-            EEncoding.getInstanceForHexViewType(fieldModel.getShieldViewType(false)));
+    shieldPanel.setValue(structure.getShield(), fieldModel.getShield(false));
+    shieldPanel.setEnabled(false);
 
     //EmbeddedLen
     selfInclusivePanel.setSelfInclusive(ESelfInclusive.getInstance(structure.getIsSelfInclusive()),
@@ -1305,6 +1508,29 @@ public void update() {
     isOpened = true;
     super.update();
 }
+
+    private void updateEncodingPanels(final boolean rootMsdl) {
+        encodingPanelCommon.setEncoding(EEncoding.getInstance(structure.getDefaultEncoding()),
+                EEncoding.getInstance(fieldModel.getEncoding(false)));
+
+        final EEncoding defaultRootEncoding = rootMsdl ? EEncoding.getInstance(structure.getDefaultEncoding()) : null;
+        encodingPanelStrField.setEncoding(
+                EEncoding.getInstance(structure.getDefaultStrEncoding()),
+                getParentEncoding(defaultRootEncoding, EEncoding.getInstance(fieldModel.getStrEncoding(false))));
+        encodingPanelBin.setEncoding(
+                EEncoding.getInstance(structure.getDefaultBinEncoding()),
+                getParentEncoding(defaultRootEncoding, EEncoding.getInstance(fieldModel.getBinEncoding(false))));
+        encodingDateTimePanel.setEncoding(
+                EEncoding.getInstance(structure.getDefaultDateTimeEncoding()),
+                getParentEncoding(defaultRootEncoding, EEncoding.getInstance(fieldModel.getDateTimeEncoding(false))));
+        encodingIntNumPanel.setEncoding(
+                EEncoding.getInstance(structure.getDefaultIntNumEncoding()),
+                getParentEncoding(defaultRootEncoding, EEncoding.getInstance(fieldModel.getIntEncoding(false))));
+    }
+    
+    private EEncoding getParentEncoding(EEncoding defaultEncoding, EEncoding encoding) {
+        return defaultEncoding != null ? defaultEncoding : encoding;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.AlignPanel alignBCHPanel;
@@ -1326,7 +1552,7 @@ public void update() {
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtCharPanel extCharBCHPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel extHexBinPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel extHexPanelItemSeparator;
-    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel extHexPanelNullIndicator;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel extHexPanelNullIndicator;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtCharPanel fractPointPanel;
     private javax.swing.JComboBox jComboBoxFieldsFormatType;
     private javax.swing.JLabel jLabel1;
@@ -1380,18 +1606,30 @@ public void update() {
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JLabel lbLenient;
+    private javax.swing.JLabel lbSpecifedTimeZoneId;
+    private javax.swing.JLabel lbUtc;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtBoolPanel lenientPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtCharPanel minusSigngPanel;
+    private javax.swing.JLabel nullIndicatorUnitLabel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel nullIndicatorUnitPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel padBinFixedLenPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtCharPanel padCharFixedLenPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtCharPanel padIntNumPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtCharPanel plusSignPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ShieldedFormatPanel schieldedFormatPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.SelfInclusivePanel selfInclusivePanel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel shieldHexPanel;
+    private javax.swing.JLabel shieldLabel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel shieldPanel;
+    private org.radixware.kernel.common.components.ExtendableTextField specifedTimeZoneIdPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel startSepPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtCharPanel strPadPanel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimeZonePanel timeZonePanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel unitBinPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel unitFixedLenPanel;
+    private javax.swing.JLabel xmlBadCharActionLabel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.XmlBadCharActionPanel xmlBadCharActionPanel;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -1400,5 +1638,67 @@ public void update() {
             return;
         }
         save();
+    }
+
+    @Override
+    public void onEvent(MsdlField.MsdlFieldStructureChangedEvent e) {
+        isOpened = false;
+        try {
+            if (e.getType() != MsdlField.MsdlFieldStructureChangedEvent.EType.TYPE_CHANGED) {
+                updateEncodingPanels(fieldModel.isRootMsdlScheme());
+            }
+        } finally {
+            isOpened = true;
+        }
+    }
+    
+    
+    private class StructureNullIndicator implements IUnitValueStructure {
+        
+        private final Structure xDef;
+        private final AbstractFieldModel model;
+        private final UnitPanel unitPanel;
+        
+        public StructureNullIndicator(Structure xDef, AbstractFieldModel model, UnitPanel unitPanel) {
+            this.xDef = xDef;
+            this.model = model;
+            this.unitPanel = unitPanel;
+        }
+
+        @Override
+        public String getPadChar() {
+            return xDef.getDefaultNullIndicatorChar();
+        }
+ 
+        @Override
+        public String getExtPadChar() {
+            return model.getNullIndicatorChar(false);
+        }
+
+        @Override
+        public void setPadChar(String chars) {
+            xDef.setDefaultNullIndicatorChar(chars);
+        }
+
+        @Override
+        public byte[] getPadBin() {
+            return xDef.getDefaultNullIndicator();
+        }
+
+        @Override
+        public byte[] getExtPadBin() {
+            return model.getNullIndicator(false);
+        }
+
+        @Override
+        public void setPadBin(byte[] bytes) {
+            xDef.setDefaultNullIndicator(bytes);
+        }
+
+        @Override
+        public EUnit getViewedUnit() {
+            return unitPanel.getViewedUnit();
+        }
+        
     }
 }

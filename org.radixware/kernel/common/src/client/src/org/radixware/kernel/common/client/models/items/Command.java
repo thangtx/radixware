@@ -53,9 +53,9 @@ public class Command extends ModelItem {
         this.def = def;
         visible = def.isVisible();
         if (owner instanceof EntityModel) {
-            enabled = !((EntityModel) owner).getRestrictions().getIsCommandRestricted(def.getId());
+            enabled = !((EntityModel) owner).getRestrictions().getIsCommandRestricted(def);
         } else if (owner instanceof GroupModel) {
-            enabled = !((GroupModel) owner).getRestrictions().getIsCommandRestricted(def.getId());
+            enabled = !((GroupModel) owner).getRestrictions().getIsCommandRestricted(def);
         } else {
             enabled = true;
         }
@@ -169,7 +169,7 @@ public class Command extends ModelItem {
                         } else {
                             valTableId = null;
                         }
-                        property.setValueObject(ValueConverter.easPropXmlVal2ObjVal(item, property.getDefinition().getType(), valTableId));
+                        property.setValueObject(ValueConverter.easPropXmlVal2ObjVal(item, property.getDefinition().getType(), valTableId, getEnvironment().getDefManager()));
                     }
                 }
             }
@@ -297,7 +297,7 @@ public class Command extends ModelItem {
     }
 
     public final void setEnabled(final boolean enabled) {
-        if (enabled == isEnabled()) {
+        if (enabled == this.enabled) {
             return;
         }
         if (!serverEnabled) {

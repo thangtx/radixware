@@ -64,7 +64,6 @@ public class RadClassPresentationDef extends NamedDefinition {
     private final boolean isEntityClassPresentation;
     private final Restrictions restrictions;
     private final Id iconId;
-    private final Id classTitleId;
     private final Id grpTitleId;
     private final Id objTitleId;
     private final Id baseClassId;
@@ -100,14 +99,12 @@ public class RadClassPresentationDef extends NamedDefinition {
             this.selPresentationId = defaultSelectorPresentationId;
             this.grpTitleId = grpTitleId;
             this.objTitleId = objTitleId;
-            this.classTitleId = objTitleId;
             this.iconId = iconId;
             this.restrictions = Restrictions.Factory.newInstance(ERestriction.fromBitField(restrictionsMask), null);
         } else {
             this.selPresentationId = null;
-            this.grpTitleId = null;
-            this.objTitleId = objTitleId;
-            this.classTitleId = classTitleId;
+            this.grpTitleId = grpTitleId;
+            this.objTitleId = classTitleId;
             this.iconId = null;
             this.restrictions = null;
         }
@@ -617,70 +614,51 @@ public class RadClassPresentationDef extends NamedDefinition {
      * Если заголовок получить не удается возвращается <No Title>
      */
     public String getGroupTitle() {
-        if (isEntityClassPresentation) {
-            try {
-                if (grpTitleId != null) {
-                    return getDefManager().getMlStringValue(getId(), grpTitleId);
-                } else {
-                    return getApplication().getMessageProvider().translate("ExplorerItem", "<No Title>");
-                }
-            } catch (DefinitionError err) {
+        if (grpTitleId==null){
+            return baseClassDef==null ? getSimpleName() : baseClassDef.getGroupTitle();
+        }else{
+            try{
+                return getDefManager().getMlStringValue(getId(), grpTitleId);
+            }catch (DefinitionError err) {
                 final String mess = getApplication().getMessageProvider().translate("TraceMessage", "Cannot get group title #%s for presentation class %s #%s");
                 getApplication().getTracer().error(String.format(mess, grpTitleId, getName(), getId()), err);
-                return getApplication().getMessageProvider().translate("ExplorerItem", "<No Title>");
             }
-        } else {
-            return baseClassDef.getGroupTitle();
+            return getSimpleName();
         }
     }
 
     public boolean hasGroupTitle() {
-        if (isEntityClassPresentation) {
-            if (grpTitleId != null) {
-                try {
-                    return !getDefManager().getMlStringBundleDef(getId()).get(grpTitleId).isEmpty();
-                } catch (DefinitionError err) {
-                    final String mess = getApplication().getMessageProvider().translate("TraceMessage", "Cannot get group title #%s for presentation class %s #%s");
-                    getApplication().getTracer().error(String.format(mess, grpTitleId, getName(), getId()), err);
-                }
+        if (grpTitleId==null){
+            return baseClassDef==null ? false : baseClassDef.hasGroupTitle();
+        }else{
+            try {
+                return !getDefManager().getMlStringBundleDef(getId()).get(grpTitleId).isEmpty();
+            } catch (DefinitionError err) {
+                final String mess = getApplication().getMessageProvider().translate("TraceMessage", "Cannot get group title #%s for presentation class %s #%s");
+                getApplication().getTracer().error(String.format(mess, grpTitleId, getName(), getId()), err);
             }
             return false;
-        } else {
-            return baseClassDef.hasGroupTitle();
         }
     }
 
     public String getClassTitle() {
-        if (!isEntityClassPresentation) {
-            try {
-                if (classTitleId != null) {
-                    return getDefManager().getMlStringValue(getId(), classTitleId);
-                } else {
-                    return "";
-                }
-            } catch (DefinitionError err) {
-                final String mess = getApplication().getMessageProvider().translate("TraceMessage", "Cannot get class title  #%s for presentation class %s");
-                getApplication().getTracer().error(String.format(mess, classTitleId, getDefinitionDebugInfo()), err);
-                return "";
-            }
-        } else {
-            return "";
+        if (hasObjectTitle()){
+            return getObjectTitle();
+        }else{
+            return getGroupTitle();
         }
     }
 
     public boolean hasObjectTitle() {
-        final Id titleId = isEntityClassPresentation ? objTitleId : classTitleId;
-        if (titleId != null) {
+        if (objTitleId==null){
+            return baseClassDef==null ? false : baseClassDef.hasObjectTitle();
+        }else{
             try {
-                return !getDefManager().getMlStringValue(getId(), titleId).isEmpty();
+                return !getDefManager().getMlStringValue(getId(), objTitleId).isEmpty();
             } catch (DefinitionError err) {
                 final String mess = getApplication().getMessageProvider().translate("TraceMessage", "Cannot get entity title #%s for presentation class %s");
-                getApplication().getTracer().error(String.format(mess, titleId, getDefinitionDebugInfo()), err);
+                getApplication().getTracer().error(String.format(mess, objTitleId, getDefinitionDebugInfo()), err);                
             }
-            return false;
-        } else if (baseClassDef != null) {
-            return baseClassDef.hasObjectTitle();
-        } else {
             return false;
         }
     }
@@ -690,20 +668,16 @@ public class RadClassPresentationDef extends NamedDefinition {
      * Если заголовок получить не удается возвращается <No Title>
      */
     public String getObjectTitle() {
-        //RADIX-3460
-        final Id titleId = isEntityClassPresentation ? objTitleId : classTitleId;
-        if (titleId != null) {
+        if (objTitleId==null){
+            return baseClassDef==null ? getSimpleName() : baseClassDef.getObjectTitle();
+        }else{
             try {
-                return getDefManager().getMlStringValue(getId(), titleId);
+                return getDefManager().getMlStringValue(getId(), objTitleId);
             } catch (DefinitionError err) {
                 final String mess = getApplication().getMessageProvider().translate("TraceMessage", "Cannot get entity title #%s for presentation class %s");
-                getApplication().getTracer().error(String.format(mess, titleId, getDefinitionDebugInfo()), err);
-                return getApplication().getMessageProvider().translate("ExplorerItem", "<No Title>");
+                getApplication().getTracer().error(String.format(mess, objTitleId, getDefinitionDebugInfo()), err);                
             }
-        } else if (baseClassDef != null) {
-            return baseClassDef.getObjectTitle();
-        } else {
-            return "";
+            return getSimpleName();
         }
     }
 

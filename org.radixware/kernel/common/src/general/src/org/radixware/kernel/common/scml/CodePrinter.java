@@ -11,17 +11,26 @@
 
 package org.radixware.kernel.common.scml;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.radixware.kernel.common.enums.EDatabaseType;
 import org.radixware.kernel.common.types.Id;
 
 
-public abstract class CodePrinter {
+public abstract class CodePrinter implements Closeable {
+    public static final String DATABASE_TYPE = "databaseType";
 
     private final Map<Object, Object> properties = new HashMap<>();
-
+    private final CodePrinter container;
+    
+    @Override
+    public void close() throws IOException{
+        
+    }
+    
     public class Monitor {
-
         private int localOffset;
         private int globalOffset;
         private int activation;
@@ -49,73 +58,187 @@ public abstract class CodePrinter {
     }
 
     public static final class Factory {
-
         private Factory() {
+        }
+        
+        public static CodePrinter newJavaHumanReadablePrinter() {
+            return new JavaHumanReadeablePrinter();
         }
 
         public static CodePrinter newJavaPrinter() {
             return new JavaPrinter();
+        }
+        
+        public static CodePrinter newJavaPrinter(CodePrinter container){
+            return (container instanceof IHumanReadablePrinter) ? CodePrinter.Factory.newJavaHumanReadablePrinter() : CodePrinter.Factory.newJavaPrinter();
         }
 
         public static CodePrinter newNullPrinter() {
             return new NullCodePrinter();
         }
 
+        public static CodePrinter newStringPrinter() {
+            return new JavaPrinter();
+        }
+        
         public static CodePrinter newSqlPrinter() {
-            return new SqlPrinter();
+            return new SqlPrinter4ORACLE(false);
+        }
+
+        public static CodePrinter newSqlPrinter(EDatabaseType databaseType) {
+            if (databaseType == null) {
+                throw new IllegalArgumentException("Database type can't be null");
+            }
+            else {
+                switch (databaseType) {
+                    case ORACLE : return new SqlPrinter4ORACLE(true);
+                    case ENTERPRISEDB : return new SqlPrinter4PostgresEnterprise();
+                    case POSTGRESQL : return new SqlPrinter4PostgreSQL();
+                    default : throw new UnsupportedOperationException("Database type ["+databaseType+"] is not support yet");
+                }
+            }
+        }
+        
+        public static CodePrinter newSqlPrinter(CodePrinter container, EDatabaseType databaseType) {
+            if (container == null) {
+                throw new IllegalArgumentException("Container can't be null");
+            }
+            else if (databaseType == null) {
+                throw new IllegalArgumentException("Database type can't be null");
+            }
+            else if (container instanceof ScmlCodePrinter) {
+                return newSqlPrinter((ScmlCodePrinter)container, databaseType);
+            }
+            else {
+                switch (databaseType) {
+                    case ORACLE : return new NestedSqlPrinter4ORACLE(container);
+                    case ENTERPRISEDB : return new NestedSqlPrinter4PostgresEnterprise(container);
+                    case POSTGRESQL : return new NestedSqlPrinter4PostgreSQL(container);
+                    default : throw new UnsupportedOperationException("Database type ["+databaseType+"] is not support yet");
+                }
+            }
+        }
+
+        public static ScmlCodePrinter newSqlPrinter(ScmlCodePrinter container, EDatabaseType databaseType) {
+            if (container == null) {
+                throw new IllegalArgumentException("Container can't be null");
+            }
+            else if (databaseType == null) {
+                throw new IllegalArgumentException("Database type can't be null");
+            }
+            else {
+                switch (databaseType) {
+                    case ORACLE : return new NestedScmlPrinter4ORACLE(container);
+                    case ENTERPRISEDB : return new NestedScmlPrinter4PostgresEnterprise(container);
+                    case POSTGRESQL : return new NestedScmlPrinter4PostgreSQL(container);
+                    default : throw new UnsupportedOperationException("Database type ["+databaseType+"] is not support yet");
+                }
+            }
         }
     }
+    
     private LineMatcher clm = new LineMatcher();
     private LineMatcher root = clm;
 
     protected CodePrinter() {
+        this.container = null;
     }
 
+    protected CodePrinter(CodePrinter container) {
+        if (container == null) {
+            throw new IllegalArgumentException("Container can't be null");
+        }
+        else {
+            this.container = container;
+            this.properties.putAll(container.properties);
+        }
+    }
+    
+    public boolean hasContainer(){
+        return container != null;
+    }
+
+    public CodePrinter getContainer(){
+        return container;
+    }
+    
     public void reset() {
+        if (hasContainer()) {
+            container.reset();
+        }
     }
 
     public void clear() {
+        if (hasContainer()) {
+            container.clear();
+        }
     }
 
     public void enterCodeSection(LineMatcher.ILocationDescriptor sectionName) {
-        synchronized (this) {
-            clm = clm.addChild(sectionName);
+        if (hasContainer()) {
+            synchronized (container) {
+                container.clm = container.clm.addChild(sectionName);
+            }
+        }
+        else {
+            synchronized (this) {
+                clm = clm.addChild(sectionName);
+            }
         }
     }
 
     public void leaveCodeSection() {
-        synchronized (this) {
-            LineMatcher matcher = clm.getParent();
-            assert matcher != null;
-            clm = matcher;
+        if (hasContainer()) {
+            synchronized (container) {
+                LineMatcher matcher = container.clm.getParent();
+                assert matcher != null;
+                container.clm = matcher;
+            }
+        }
+        else {
+            synchronized (this) {
+                LineMatcher matcher = clm.getParent();
+                assert matcher != null;
+                clm = matcher;
+            }
         }
     }
 
     public LineMatcher getLineMatcher() {
-        return root;
+        if (hasContainer()) {
+            return container.root;
+        }
+        else {
+            return root;
+        }
     }
 
     protected LineMatcher getCurrentLineMatcher() {
-        return clm;
+        if (hasContainer()) {
+            return container.clm;
+        }
+        else {
+            return clm;
+        }
     }
 
     public abstract char charAt(int index);
 
-    public abstract void print(Id id);
+    public abstract CodePrinter print(Id id);
 
-    public abstract void print(char c);
+    public abstract CodePrinter print(char c);
 
-    public abstract void print(boolean b);
+    public abstract CodePrinter print(boolean b);
 
-    public abstract void print(CharSequence text);
+    public abstract CodePrinter print(CharSequence text);
 
-    public abstract void print(char[] text);
+    public abstract CodePrinter print(char[] text);
 
-    public abstract void println(char[] text);
+    public abstract CodePrinter println(char[] text);
 
-    public abstract void print(long l);
+    public abstract CodePrinter print(long l);
 
-    public abstract void print(int l);
+    public abstract CodePrinter print(int l);
 
     public abstract int length();
 
@@ -125,26 +248,48 @@ public abstract class CodePrinter {
     private Monitor activeMonitor;
 
     public void activateMonitor(Monitor m) {
-        synchronized (this) {
-            this.activeMonitor = m;
-            this.activeMonitor.activate();
+        if (hasContainer()) {
+            synchronized (container) {
+                container.activeMonitor = m;
+                container.activeMonitor.activate();
+            }
+        }
+        else {
+            synchronized (this) {
+                this.activeMonitor = m;
+                this.activeMonitor.activate();
+            }
         }
     }
 
     private void resetMonitor() {
-        synchronized (this) {
-            this.activeMonitor = null;
+        if (hasContainer()) {
+            synchronized (container) {
+                container.activeMonitor = null;
+            }
+        }
+        else {
+            synchronized (this) {
+                this.activeMonitor = null;
+            }
         }
     }
 
     protected Monitor getActiveMonitor() {
-        synchronized (this) {
-            return activeMonitor;
+        if (hasContainer()) {
+            synchronized (container) {
+                return container.activeMonitor;
+            }
+        }
+        else {
+            synchronized (this) {
+                return activeMonitor;
+            }
         }
     }
 
-    public final void println() {
-        print('\n');
+    public final CodePrinter println() {
+        return print('\n');
     }
 
     /**
@@ -153,86 +298,100 @@ public abstract class CodePrinter {
      * inside of text item by offset in generated code
      */
     protected final void applyIndentation() {
-        synchronized (this) {
-            Monitor m = activeMonitor;
-            activeMonitor = null;
-            if (dept > 0) {
-                for (int i = 0; i < dept; i++) {
-                    print('\t');
+        if (hasContainer()) {
+            synchronized (container) {
+                Monitor m = container.activeMonitor;
+                container.activeMonitor = null;
+                if (dept > 0) {
+                    for (int i = 0; i < dept; i++) {
+                        print('\t');
+                    }
                 }
+                container.activeMonitor = m;
             }
-            activeMonitor = m;
+        }
+        else {
+            synchronized (this) {
+                Monitor m = activeMonitor;
+                activeMonitor = null;
+                if (dept > 0) {
+                    for (int i = 0; i < dept; i++) {
+                        print('\t');
+                    }
+                }
+                activeMonitor = m;
+            }
         }
     }
 
-    public final void println(char c) {
-        print(c);
-        println();
+    public final CodePrinter println(char c) {
+        return print(c).println();
     }
 
-    public final void println(String text) {
-        print(text);
-        println();
+    public final CodePrinter println(String text) {
+        return print(text).println();
     }
 
-    public final void println(long l) {
-        print(l);
-        println();
+    public final CodePrinter println(long l) {
+        return print(l).println();
     }
 
-    public final void printComma() {
-        print(',');
+    public final CodePrinter printComma() {
+        return print(',');
     }
 
-    public final void printMinus() {
-        print('-');
+    public final CodePrinter printMinus() {
+        return print('-');
     }
 
-    public final void printColon() {
-        print(':');
+    public final CodePrinter printColon() {
+        return print(':');
     }
 
-    public final void printSpace() {
-        print(' ');
+    public final CodePrinter printSpace() {
+        return print(' ');
     }
 
-    public void printlnSemicolon() {
-        println(';');
+    public CodePrinter printlnSemicolon() {
+        return println(';');
     }
 
-    public abstract void printStringLiteral(String text);
+    public abstract CodePrinter printStringLiteral(String text);
 
-    public abstract void printCommandSeparator();
+    public abstract CodePrinter printCommandSeparator();
 
-    public void printCommand(String command) {
+    public CodePrinter printCommand(String command) {
         if (command != null && !command.isEmpty()) {
             print(command);
             printCommandSeparator();
         }
+        return this;
     }
 
-    public final void printError() {
-        print("???");
+    public final CodePrinter printError() {
+        return print("???");
     }
     private int dept = 0;
 
-    public void enterBlock(int dept) {
+    public CodePrinter enterBlock(int dept) {
         this.dept += dept;
+        return this;
     }
 
-    public final void enterBlock() {
-        enterBlock(1);
+    public final CodePrinter enterBlock() {
+        return enterBlock(1);
     }
 
-    public void leaveBlock(int dept) {
+    public CodePrinter leaveBlock(int dept) {
         this.dept -= dept;
         if (this.dept < 0) {
             this.dept = 0;
         }
+        return this;
     }
 
-    public final void leaveBlock() {
-        leaveBlock(1);
+    public final CodePrinter leaveBlock() {
+        return leaveBlock(1);
     }
 
     public abstract char[] getContents();
@@ -244,6 +403,14 @@ public abstract class CodePrinter {
     }
 
     public Object getProperty(Object property) {
-        return properties.get(property);
+        if (properties.containsKey(property)) {
+            return properties.get(property);
+        }
+        else if (hasContainer()) {
+            return container.properties.get(property);
+        }
+        else {
+            return null;
+        }
     }
 }

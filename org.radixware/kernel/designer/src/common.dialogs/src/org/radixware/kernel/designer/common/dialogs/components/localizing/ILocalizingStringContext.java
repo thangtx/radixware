@@ -43,6 +43,8 @@ public interface ILocalizingStringContext {
     boolean commit();
 
     boolean isProxy();
+    
+    boolean isReadOnly();
 
     /**
      * Gets map of descriptions.

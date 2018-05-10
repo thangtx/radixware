@@ -19,6 +19,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportGroup;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSummaryCell;
 import org.radixware.kernel.common.enums.EReportSummaryCellType;
+import org.radixware.kernel.common.utils.Utils;
 
 
 public class SummaryPanel extends javax.swing.JPanel {
@@ -88,8 +89,15 @@ public class SummaryPanel extends javax.swing.JPanel {
 
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (!updating)
-                    SummaryPanel.this.cell.setSummaryType((EReportSummaryCellType)summaryTypeComboBox.getSelectedItem()); 
+                if (!updating){
+                    EReportSummaryCellType oldSummaryType = SummaryPanel.this.cell.getSummaryType();
+                    EReportSummaryCellType newSummaryType = (EReportSummaryCellType)summaryTypeComboBox.getSelectedItem();
+                    if (!Utils.equals(oldSummaryType, newSummaryType)) {
+                        SummaryPanel.this.cell.setSummaryType(newSummaryType);
+                        firePropertyChange(AdsReportWidgetNamePanel.CHANGE_NAME, false, true);
+                    }
+                }
+                     
                 
             }
         });

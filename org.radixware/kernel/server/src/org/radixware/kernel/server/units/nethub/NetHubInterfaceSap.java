@@ -55,7 +55,7 @@ final class NetHubInterfaceSap extends Sap {
     private final NetHubUnit unit;
 
     public NetHubInterfaceSap(final NetHubUnit unit) {
-        super(unit.getDispatcher(), unit.getTrace().newTracer(unit.getEventSource(), COMP_NAME), 100, 30);
+        super(unit.getDispatcher(), unit.getTrace().newTracer(unit.getEventSource(), COMP_NAME), 100, 30, unit.getResourceKeyPrefix() + "/nhusap");
         this.unit = unit;
     }
     Map<Bin, ServiceServerSeance> seansesByMess = new HashMap<Bin, ServiceServerSeance>();

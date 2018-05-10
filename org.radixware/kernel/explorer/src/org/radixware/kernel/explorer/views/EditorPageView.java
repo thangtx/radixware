@@ -18,6 +18,7 @@ import com.trolltech.qt.gui.QWidget;
 import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef;
 import org.radixware.kernel.common.client.models.CleanModelController;
 import org.radixware.kernel.common.client.models.Model;
@@ -25,7 +26,9 @@ import org.radixware.kernel.common.client.models.ModelWithPages;
 import org.radixware.kernel.common.client.models.items.EditorPageModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.ViewRestrictions;
+import org.radixware.kernel.common.client.views.AbstractViewController;
 import org.radixware.kernel.common.client.views.IEditorPageView;
+import org.radixware.kernel.common.client.views.IEmbeddedView;
 import org.radixware.kernel.common.client.views.IView;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
@@ -33,9 +36,29 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.widgets.ExplorerWidget;
 import org.radixware.kernel.common.client.widgets.IModifableComponent;
 import org.radixware.kernel.common.client.widgets.IModificationListener;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.QWidgetProxy;
 
 public abstract class EditorPageView extends ExplorerWidget implements IExplorerView, IModificationListener, IEditorPageView {
+    
+    private final static class EditorPageViewController extends AbstractViewController{
+        
+        private EditorPageView pageView;
+        
+        public EditorPageViewController(final IClientEnvironment environment, final EditorPageView pageView){
+            super(environment,pageView);
+            this.pageView = pageView;
+        }
+        
+        @Override
+        protected List<IEmbeddedView> findChildrenViews() {
+            return WidgetUtils.findExplorerViews(pageView);
+        }
+        
+        public void close(){
+            closeEmbeddedViews();
+        }
+    }
 
     private ModelWithPages model;
     private final Id pageId;
@@ -44,6 +67,7 @@ public abstract class EditorPageView extends ExplorerWidget implements IExplorer
     protected IExplorerView parentView;
     final public Signal1<QWidget> opened = new Signal1<>();
     final public Signal0 closed = new Signal0();
+    private boolean wasClosed;
 
     protected EditorPageView(IClientEnvironment environment, final IExplorerView parentView, final RadEditorPageDef page) {
         super(environment);
@@ -78,21 +102,28 @@ public abstract class EditorPageView extends ExplorerWidget implements IExplorer
 
     @Override
     public boolean close(final boolean forced) {
-        close();
         closed.emit();
+        close();
         return true;
     }
 
     @Override
     protected void closeEvent(final QCloseEvent event) {
+        wasClosed = true;
         if (parentView instanceof Editor) {
             ((Editor) parentView).modifiedStateChanged.disconnect(this);
         }
+        closeEmbeddedViews();
         parentView = null;
-        restrictions = null;        
+        restrictions = null;
         children.clear();
         super.closeEvent(event);
     }
+    
+    protected void closeEmbeddedViews(){
+        //to protect from mistakes in application code
+        new EditorPageViewController(getEnvironment(), this).close();
+    }    
 
     @Override
     public void finishEdit() {
@@ -204,11 +235,15 @@ public abstract class EditorPageView extends ExplorerWidget implements IExplorer
 
     @Override
     public boolean hasUI() {
-        return asQWidget() != null && asQWidget().nativePointer() != null;
+        return !wasClosed && asQWidget() != null && asQWidget().nativePointer() != null;
     }
 
     @Override
     public boolean isDisabled() {
         return !asQWidget().isEnabled();
+    }
+    
+    public final EWidgetMarker getWidgetMarker(){
+        return EWidgetMarker.EDITOR_PAGE;
     }
 }

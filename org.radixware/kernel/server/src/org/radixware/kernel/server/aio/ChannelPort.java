@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -23,6 +23,7 @@ import org.radixware.kernel.common.enums.EClientAuthentication;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.ELdapX500AttrType;
+import org.radixware.kernel.common.enums.EPortSecurityProtocol;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.ssl.CertificateUtils;
 import org.radixware.kernel.common.trace.LocalTracer;
@@ -200,7 +201,7 @@ public abstract class ChannelPort implements EventHandler {
         if (mode == ECloseMode.GRACEFUL && hasRemainingDataToSend()) { //wait for remaining data to be sent
             return;
         }
-
+        
         final SelectableChannel inChannel = getSelectableInChannel();
         if (inChannel != null) {
             dispatcher.unsubscribe(inChannel);
@@ -240,7 +241,7 @@ public abstract class ChannelPort implements EventHandler {
 
     abstract SelectableChannel getSelectableOutChannel();
 
-    abstract SelectableChannel getSelectableInChannel();
+    public abstract SelectableChannel getSelectableInChannel();
 
     public void send(final byte[] packet, final Map<String, String> frameAttrs) throws IOException {
         if (isClosed || closeRequested()) {
@@ -353,7 +354,7 @@ public abstract class ChannelPort implements EventHandler {
                 res = ((ReadableByteChannel) event.getSource()).read(recvBuffer.getForWrite(16 * 1024));
                 if (res < 0) {
                     tracer.put(EEventSeverity.DEBUG, "EOF from " + getShortDescription(), null, null, false);
-                    close();
+                    close(ECloseMode.FORCED);
                     return;
                 }
                 if (isDebugLoggingEnabled()) {
@@ -540,8 +541,8 @@ public abstract class ChannelPort implements EventHandler {
         //template method
     }
 
-    public void initSsl(final SSLContext sslContext, boolean isClientMode, final EClientAuthentication clientAuth, final Collection<String> cipherSuites) throws IOException {
-        initSsl(new SslParams(sslContext, isClientMode, clientAuth, cipherSuites, true));
+    public void initSsl(final SSLContext sslContext, boolean isClientMode, final EClientAuthentication clientAuth, final Collection<String> cipherSuites, EPortSecurityProtocol securityProtocol) throws IOException {
+        initSsl(new SslParams(sslContext, isClientMode, clientAuth, cipherSuites, true, securityProtocol));
     }
 
     public void initSsl(final SslParams sslParams) throws IOException {
@@ -560,9 +561,9 @@ public abstract class ChannelPort implements EventHandler {
             }
         }
         
-        SslUtils.excludeSslV3(sslEngine, sslParams.isClientMode());
+        SslUtils.ensureTlsVersion(sslParams.getSecurityProtocol(), sslEngine, sslParams.isClientMode());
 
-        final String[] enabledCipherSuites = SslUtils.calculateCipherSuites(sslParams.getCipherSuites(), Arrays.asList(sslEngine.getSupportedCipherSuites()));
+        final String[] enabledCipherSuites = SslUtils.calculateCipherSuites(sslParams.getSecurityProtocol(), sslParams.getCipherSuites(), Arrays.asList(sslEngine.getSupportedCipherSuites()));
 
         if (enabledCipherSuites == null || enabledCipherSuites.length == 0) {
             throw new IOException("None of the configured cipher suites are supported {" + getShortDescription() + "}");
@@ -618,7 +619,13 @@ public abstract class ChannelPort implements EventHandler {
     private void pushSsl() throws IOException {
         if (hasRemainingDataToSend() || sslEngine.getHandshakeStatus() == SSLEngineResult.HandshakeStatus.NEED_WRAP) {
             if (flushEncryptedSendBuffer()) {
-                final SSLEngineResult result = sslEngine.wrap(sendBuffer.getForRead(), encryptedSendBuffer.getForWrite(sslEngine.getSession().getPacketBufferSize()));
+                SSLEngineResult result = null;
+                try {
+                    result = sslEngine.wrap(sendBuffer.getForRead(), encryptedSendBuffer.getForWrite(sslEngine.getSession().getPacketBufferSize()));
+                } catch (RuntimeException ex) {
+                    throw new IOException("SSL engine error", ex);
+                }
+
                 if (result.bytesConsumed() > 0) {
                     logDataSentIfNecessary(result.bytesConsumed());//not actually sent, but log anyway
                 }
@@ -650,7 +657,7 @@ public abstract class ChannelPort implements EventHandler {
 
     private void pullSsl() throws IOException {
         int bytesRead;
-        if (getInChannel().isOpen()) {
+        if (getInChannel() != null && getInChannel().isOpen()) {
             bytesRead = getInChannel().read(encryptedRecvBuffer.getForWrite(sslEngine.getSession().getApplicationBufferSize()));
         } else {
             bytesRead = -1;
@@ -668,8 +675,12 @@ public abstract class ChannelPort implements EventHandler {
 
             sslState.setInboundTerminated(true);
         }
-
-        final SSLEngineResult result = sslEngine.unwrap(encryptedRecvBuffer.getForRead(), recvBuffer.getForWrite(sslEngine.getSession().getApplicationBufferSize()));
+        SSLEngineResult result = null;
+        try {
+            result = sslEngine.unwrap(encryptedRecvBuffer.getForRead(), recvBuffer.getForWrite(sslEngine.getSession().getApplicationBufferSize()));
+        } catch (RuntimeException ex) {
+            throw new IOException("SSL engine error", ex);
+        }
 
         if (result.bytesProduced() > 0) {
             logDataReceivedIfNecessary(result.bytesProduced());
@@ -729,6 +740,9 @@ public abstract class ChannelPort implements EventHandler {
      */
     private boolean flushEncryptedSendBuffer() throws IOException {
         try {
+            if (getOutChannel() == null) {
+                throw new IOException("out channel is null");
+            }
             getOutChannel().write(encryptedSendBuffer.getForRead());
         } catch (IOException e) {
             close(ECloseMode.FORCED);
@@ -1006,13 +1020,15 @@ public abstract class ChannelPort implements EventHandler {
         private EClientAuthentication clientAuth;
         private Collection<String> cipherSuites;
         private boolean ignoreSSlExOnEOF;
+        private final EPortSecurityProtocol securityProtocol;
 
-        public SslParams(SSLContext sslContext, boolean isClientMode, EClientAuthentication clientAuth, Collection<String> cipherSuites, boolean ignoreSSlExOnEOF) {
+        public SslParams(SSLContext sslContext, boolean isClientMode, EClientAuthentication clientAuth, Collection<String> cipherSuites, boolean ignoreSSlExOnEOF, EPortSecurityProtocol securityProtocol) {
             this.sslContext = sslContext;
             this.clientMode = isClientMode;
             this.clientAuth = clientAuth;
             this.cipherSuites = cipherSuites;
             this.ignoreSSlExOnEOF = ignoreSSlExOnEOF;
+            this.securityProtocol = Utils.nvlOf(securityProtocol, EPortSecurityProtocol.SSL);
         }
 
         public SSLContext getSslContext() {
@@ -1053,6 +1069,10 @@ public abstract class ChannelPort implements EventHandler {
 
         public void setIgnoreSSlExOnEOF(boolean ignoreSSlExOnEOF) {
             this.ignoreSSlExOnEOF = ignoreSSlExOnEOF;
+        }
+
+        public EPortSecurityProtocol getSecurityProtocol() {
+            return securityProtocol;
         }
     }
 }

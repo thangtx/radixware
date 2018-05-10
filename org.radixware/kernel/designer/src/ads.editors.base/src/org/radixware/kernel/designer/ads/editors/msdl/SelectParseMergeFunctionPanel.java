@@ -16,10 +16,18 @@
  */
 package org.radixware.kernel.designer.ads.editors.msdl;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComboBox;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import org.radixware.kernel.common.defs.RadixObject.EEditState;
 import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
 import org.radixware.kernel.common.design.msdleditor.Messages;
@@ -47,10 +55,27 @@ public class SelectParseMergeFunctionPanel extends javax.swing.JPanel {
         DefaultComboBoxModel modelParse= new DefaultComboBoxModel();
         DefaultComboBoxModel modelMerge = new DefaultComboBoxModel();
         PreprocessorFunctionItem notDefined = new PreprocessorFunctionItem(Messages.NOT_DEFINED, null);
+        final ListCellRenderer renderer = new FunctionListRenderer();
+        final ItemListener itemSelected = new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    changeSelectedItemColor((JComboBox) e.getSource(), (PreprocessorFunctionItem) e.getItem());
+                }
+            }
+        };
+        
         modelParse.addElement(notDefined);
         modelMerge.addElement(notDefined);
         jComboBoxParseFunction.setModel(modelParse);
         jComboBoxMergeFunction.setModel(modelMerge);
+        
+        jComboBoxParseFunction.addItemListener(itemSelected);
+        jComboBoxMergeFunction.addItemListener(itemSelected);
+        
+        jComboBoxParseFunction.setRenderer(renderer);
+        jComboBoxMergeFunction.setRenderer(renderer);
+        
         jComboBoxParseFunction.setSelectedItem(notDefined);
         jComboBoxMergeFunction.setSelectedItem(notDefined);
         DefaultComboBoxModel modelAdvisor = null;
@@ -58,6 +83,8 @@ public class SelectParseMergeFunctionPanel extends javax.swing.JPanel {
             modelAdvisor = new DefaultComboBoxModel();
             modelAdvisor.addElement(notDefined);
             advisorFunctionCombo.setModel(modelAdvisor);
+            advisorFunctionCombo.setRenderer(renderer);
+            advisorFunctionCombo.addItemListener(itemSelected);
             advisorFunctionCombo.setSelectedItem(notDefined);
             isChoice = true;
         }
@@ -70,6 +97,9 @@ public class SelectParseMergeFunctionPanel extends javax.swing.JPanel {
             jComboBoxMergeFunction.setEnabled(true);
             jComboBoxParseFunction.setEnabled(true);
             ArrayList<PreprocessorFunctionItem> list = support.getFunctionList();
+            final String mergeFuncName = field.getFieldModel().getField().getMergeFunctionName();
+            final String parseFuncName = field.getFieldModel().getField().getParseFunctionName();
+            final String choiceFuncName = isChoice ? ((ChoiceField)fieldModel.getField()).getSelectorAdvisorFunctionName() : null;
             PreprocessorFunctionItem write = null;
             PreprocessorFunctionItem read = null;
             PreprocessorFunctionItem advice = null;
@@ -102,12 +132,10 @@ public class SelectParseMergeFunctionPanel extends javax.swing.JPanel {
                     modelMerge.addElement(cur);
                 }
             }
-            if (write != null)
-                jComboBoxMergeFunction.setSelectedItem(write);
-            if (read != null)
-                jComboBoxParseFunction.setSelectedItem(read);
-            if(advice != null)
-                advisorFunctionCombo.setSelectedItem(advice);
+            
+            fillFunctionComboBox(modelMerge, write, mergeFuncName);
+            fillFunctionComboBox(modelParse, read, parseFuncName);
+            fillFunctionComboBox(modelAdvisor, advice, choiceFuncName);            
         }
         else {
             jComboBoxMergeFunction.setEnabled(false);
@@ -115,7 +143,43 @@ public class SelectParseMergeFunctionPanel extends javax.swing.JPanel {
         }
         opened = true;
     }
+    
+    private void changeSelectedItemColor(JComboBox comboBox, PreprocessorFunctionItem funcItem) {
+        if (funcItem.failed) {
+            comboBox.setForeground(Color.red);
+        } else {
+            comboBox.setForeground(Color.black);
+        }
+    }
+    
+    private static void fillFunctionComboBox(DefaultComboBoxModel model, PreprocessorFunctionItem selectedItem, String funcName) {
+        if (selectedItem != null) {
+            model.setSelectedItem(selectedItem);
+        } else if (funcName != null) {
+            final PreprocessorFunctionItem notFoundItem = new PreprocessorFunctionItem(null, funcName);
+            model.addElement(notFoundItem);
+            model.setSelectedItem(notFoundItem);
+        }
+    }
+    
+    private static class FunctionListRenderer extends DefaultListCellRenderer {
+        
+        @Override
+        public Component getListCellRendererComponent(JList<?> list,
+                Object value,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus) {
 
+            final Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            final PreprocessorFunctionItem funcItem = (PreprocessorFunctionItem) value;
+            if (funcItem.failed) {
+                c.setForeground(Color.red);
+            }
+            return c;
+        }
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -130,7 +194,6 @@ public class SelectParseMergeFunctionPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         advisorLabel = new javax.swing.JLabel();
         advisorFunctionCombo = new javax.swing.JComboBox();
 
@@ -156,50 +219,42 @@ public class SelectParseMergeFunctionPanel extends javax.swing.JPanel {
 
         jLabel3.setText(bundle1.getString("SelectParseMergeFunctionPanel.jLabel3.text")); // NOI18N
 
-        jLabel4.setText(bundle1.getString("SelectParseMergeFunctionPanel.jLabel4.text")); // NOI18N
-
         advisorLabel.setText(org.openide.util.NbBundle.getMessage(SelectParseMergeFunctionPanel.class, "SelectParseMergeFunctionPanel.advisorLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(advisorLabel))
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(39, 39, 39)
-                                .addComponent(jComboBoxMergeFunction, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap())
+                                .addComponent(jLabel1)
+                                .addGap(7, 7, 7)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jComboBoxParseFunction, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jComboBoxMergeFunction, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(10, 10, 10)
-                        .addComponent(jComboBoxParseFunction, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(advisorLabel))
-                        .addContainerGap(193, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(advisorFunctionCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(advisorFunctionCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jLabel3)
-                .addGap(0, 0, 0)
-                .addComponent(jLabel4)
-                .addGap(5, 5, 5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBoxParseFunction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
@@ -248,6 +303,5 @@ public class SelectParseMergeFunctionPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     // End of variables declaration//GEN-END:variables
 }

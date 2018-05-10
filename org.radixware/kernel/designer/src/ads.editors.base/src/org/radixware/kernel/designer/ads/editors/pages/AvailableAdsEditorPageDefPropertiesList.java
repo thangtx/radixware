@@ -171,18 +171,19 @@ class AvailableAdsEditorPageDefPropertiesList extends RadixObjectChooserCommonCo
     public void addAllItems(Object[] objects) {
         RadixObjectsListModel model = (RadixObjectsListModel) list.getModel();
         for (Object obj : objects) {
-            assert (obj instanceof Id);
-            AdsDefinition prop = editorPage.getUsedProperties().getReference((Id) obj).findProperty();
-            if (prop != null) {
-                if (prop instanceof IAdsPresentableProperty) {
-                    IAdsPresentableProperty presProp = (IAdsPresentableProperty) prop;
-                    if (presProp.getPresentationSupport() != null
-                            && presProp.getPresentationSupport().getPresentation() != null
-                            && presProp.getPresentationSupport().getPresentation().isPresentable()) {
+            if (obj instanceof Id){
+                AdsDefinition prop = editorPage.getUsedProperties().getReference((Id) obj).findProperty();
+                if (prop != null) {
+                    if (prop instanceof IAdsPresentableProperty) {
+                        IAdsPresentableProperty presProp = (IAdsPresentableProperty) prop;
+                        if (presProp.getPresentationSupport() != null
+                                && presProp.getPresentationSupport().getPresentation() != null
+                                && presProp.getPresentationSupport().getPresentation().isPresentable()) {
+                            model.addElement((Id) obj);
+                        }
+                    } else {
                         model.addElement((Id) obj);
                     }
-                } else {
-                    model.addElement((Id) obj);
                 }
             }
         }

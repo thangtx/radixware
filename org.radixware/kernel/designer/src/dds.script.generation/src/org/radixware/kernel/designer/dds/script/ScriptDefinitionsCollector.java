@@ -83,19 +83,27 @@ public class ScriptDefinitionsCollector {
 
     /**
      * Собрать дефиниции в пределах указанного контекста.
+     * @param context
+     * @param scriptDefinitions
      */
     public static void collect(RadixObject context, Collection<DdsDefinition> scriptDefinitions) {
-        VisitorProvider provider = new ScriptDefinitionsCollector.VisitorProvider();
-        Visitor visitor = new ScriptDefinitionsCollector.Visitor(scriptDefinitions);
+        final VisitorProvider provider = new ScriptDefinitionsCollector.VisitorProvider();
+        final Visitor visitor = new ScriptDefinitionsCollector.Visitor(scriptDefinitions);
+        
         context.visit(visitor, provider);
     }
 
     /**
      * Собрать модифицированные и захваченные дефиниции DDS моделей указанного модуля.
+     * @param module
+     * @param fixedScriptDefinitions
+     * @param modifiedScriptDefinitions
+     * @throws java.io.IOException
      */
     public static void collect(DdsModule module, Collection<DdsDefinition> fixedScriptDefinitions, Collection<DdsDefinition> modifiedScriptDefinitions) throws IOException {
-        DdsModelDef model = module.getModelManager().getModel();
-        DdsModelDef fixedModel = module.getModelManager().getFixedModel();
+        final DdsModelDef model = module.getModelManager().getModel();
+        final DdsModelDef fixedModel = module.getModelManager().getFixedModel();
+        
         if (model != null && fixedModel != null && model != fixedModel) {
             // собираются только дефиниции захваченных моделей, у остальных ничего не поменялось, скрипт модификаций будет пустой
             // если SQML ссылается на переименованную дефиниции, будет ошибка проверки (sql устареет), прийдется захватить.
@@ -106,6 +114,10 @@ public class ScriptDefinitionsCollector {
 
     /**
      * Собрать модифицированные и захваченные дефиниции DDS моделей указанного сегмента (без подсегментов).
+     * @param segment
+     * @param fixedScriptDefinitions
+     * @param modifiedScriptDefinitions
+     * @throws java.io.IOException
      */
     public static void collect(DdsSegment segment, Collection<DdsDefinition> fixedScriptDefinitions, Collection<DdsDefinition> modifiedScriptDefinitions) throws IOException {
         for (DdsModule ddsModule : segment.getModules()) {

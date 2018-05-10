@@ -1,0 +1,14 @@
+
+public class Test {
+
+    public Num getProp() {
+	return 3;
+    }
+
+    public Num method(Num val) {
+	if (val == null) {
+	    return null;
+	}
+	return val.setScale(Prop.intValue(), Num.ROUND_HALF_UP); //round(1.5)=2, round(-1.5)=-2
+    }
+}

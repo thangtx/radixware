@@ -141,6 +141,16 @@ public abstract class FilteredGroupModel extends ProxyGroupModel {
         }
         return -1;
     }
+    
+    public final boolean contains(final EntityModel entityModel){
+        if (entityModel.getContext() instanceof IContext.SelectorRow==false ||
+            ((IContext.SelectorRow)entityModel.getContext()).parentGroupModel!=getSourceGroupModel()
+           ){
+            return false;
+        }
+        final int indexInSourceGroupModel = getSourceGroupModel().findEntityByPid(entityModel.getPid());
+        return indexInSourceGroupModel>=0 && entityIndexes.contains(indexInSourceGroupModel);
+    }
 
     @Override
     public void reset() {

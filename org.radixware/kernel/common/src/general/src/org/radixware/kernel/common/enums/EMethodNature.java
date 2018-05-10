@@ -8,14 +8,12 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.enums;
 
 import java.util.List;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.types.IKernelIntEnum;
 import org.radixware.kernel.common.types.Id;
-
 
 public enum EMethodNature implements IKernelIntEnum {
 
@@ -27,11 +25,12 @@ public enum EMethodNature implements IKernelIntEnum {
     COMMAND_HANDLER(1),
     PRESENTATION_SLOT(2),
     USER_DEFINED(0),
-    RPC(21);
+    RPC(21),
+    EXTERNAL(666);//Methods of this kind belongs to dark side...
     private final Long val;
 
     private EMethodNature(long val) {
-        this.val = Long.valueOf(val);
+        this.val = val;
     }
 
     @Override

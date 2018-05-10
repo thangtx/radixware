@@ -16,10 +16,13 @@ import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
 import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameters;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
+import org.radixware.kernel.common.html.Html;
+import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.Parameter_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
 import org.radixware.schemas.xscml.Sqml;
@@ -39,8 +42,12 @@ public class SqmlTag_Parameter extends SqmlTag {
         parameters = params;
         this.parameter = parameter;
         parameterItem = Parameter.Factory.newInstance();
-        if(parameter!=null)
+        if (parameter!=null){
             parameterItem.setParamId(parameter.getId());
+            if (parameter.getType().isArrayType()){
+                parameterItem.setExpressionList(true);
+            }
+        }
         this.contextTable = contextTable;
         setDisplayedInfo(displayMode);
     }
@@ -52,7 +59,7 @@ public class SqmlTag_Parameter extends SqmlTag {
         parameterItem = (Parameter) xmlParameter.copy();
         parameter = parameters.getParameterById(xmlParameter.getParamId());
         if (parameter == null || parameter.getType()==null) {
-            valid = false;
+            setValid(false);
             setDisplayedInfo(null, "::???" + xmlParameter.getParamId() + "???");
         } else {
             setIsDeprecated(parameter.isDeprecated());
@@ -77,7 +84,7 @@ public class SqmlTag_Parameter extends SqmlTag {
         strBuilder.append("<b>");
         strBuilder.append(parameterStr);
         strBuilder.append(":</b><br>&nbsp;&nbsp;&nbsp;&nbsp;");
-        strBuilder.append(parameter.getTitle());
+        strBuilder.append(Html.string2HtmlString(parameter.getTitle()));
         strBuilder.append("</br>");
         if (parameter.getBasePropertyId() != null && contextTable!=null) {
             final ISqmlColumnDef column = contextTable.getColumns().getColumnById(parameter.getBasePropertyId());
@@ -86,14 +93,14 @@ public class SqmlTag_Parameter extends SqmlTag {
                 strBuilder.append(basePropertyStr);
                 strBuilder.append(":</b></br><br>&nbsp;&nbsp;&nbsp;&nbsp;");
                 if (displayMode == EDefinitionDisplayMode.SHOW_TITLES) {
-                    strBuilder.append(column.getTitle());
+                    strBuilder.append(Html.string2HtmlString(column.getTitle()));
                 } else {
-                    strBuilder.append(column.getShortName());
+                    strBuilder.append(Html.string2HtmlString(column.getShortName()));
                 }
                 strBuilder.append("</br>");
             }
         }
-        if (!valid){
+        if (!isValid()){
             strBuilder.append("<br><b>");
             strBuilder.append(valueTypeStr);
             strBuilder.append(":</b></br><br>&nbsp;&nbsp;&nbsp;&nbsp;");
@@ -124,23 +131,50 @@ public class SqmlTag_Parameter extends SqmlTag {
     public final boolean setDisplayedInfo(final EDefinitionDisplayMode showMode) {
         if (parameter != null && parameters != null) {
             if (parameters.getParameterById(parameter.getId()) == null) {
-                valid = false;
+                setValid(false);
                 final String idAsStr = parameter.getId() == null ? "" : parameter.getId().toString();
                 setDisplayedInfo(null, "::???" + idAsStr + "???");
                 return true;
             }
-            final String prefix;
+            final StringBuilder displayBuilder = new StringBuilder();
+            final boolean isExpressionList = parameterItem!=null && parameterItem.isSetExpressionList();
+            if (isExpressionList){
+                displayBuilder.append("( ");
+            }
             if (parameter.getPersistentValue() != null) {
                 final Object obj = parameter.getPersistentValue().getValObject();
-                prefix = obj == null ? "::null" : "::" + parameter.getEditMask().toStr(environment,obj);
+                appendValueTitle(displayBuilder, obj, parameter.getEditMask());
+                if (isExpressionList){
+                    displayBuilder.append(" )");
+                }
             } else {
-                prefix = "::" + parameter.getDisplayableText(showMode);
+                displayBuilder.append("::");
+                displayBuilder.append(parameter.getDisplayableText(showMode));
+                if (isExpressionList){
+                    displayBuilder.append(",...)");
+                }
             }
-            setDisplayedInfo(calculateToolTip(showMode), prefix);
+            setDisplayedInfo(calculateToolTip(showMode), displayBuilder.toString());
             return true;
         }
         return false;
     }
+    
+    private void appendValueTitle(final StringBuilder builder, final Object value, final EditMask mask){
+        if (value instanceof Arr){
+            boolean firstItem=true;
+            for (Object item: (Arr)value){
+                if (firstItem){
+                    firstItem = false;                    
+                }else{
+                    builder.append(", ");
+                }
+                appendValueTitle(builder, item, mask);
+            }
+        }else{
+            builder.append(value==null ? "null" : mask.toStr(environment, value) );
+        }
+    }    
 
     @Override
     public void addTagToSqml(XmlObject itemTag) {

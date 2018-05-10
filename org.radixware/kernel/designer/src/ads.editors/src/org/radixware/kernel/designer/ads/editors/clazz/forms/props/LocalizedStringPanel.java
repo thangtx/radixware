@@ -145,11 +145,7 @@ public class LocalizedStringPanel extends JPanel implements PropertyChangeListen
             }
 
             editor.setValue(prop);
-            try {
-                ((UIPropertySupport) editor.getSource()).setValue(prop);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Logger.getLogger(LocalizedStringPanel.class.getName()).log(Level.INFO, null, ex);
-            }
+            ((UIPropertySupport) editor.getSource()).setValue(prop);
         }
     }
 }

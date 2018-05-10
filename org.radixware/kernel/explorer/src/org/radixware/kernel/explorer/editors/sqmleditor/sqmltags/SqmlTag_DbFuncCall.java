@@ -51,7 +51,7 @@ public class SqmlTag_DbFuncCall extends SqmlTag {
             final String message = msgProvider.translate("TraceMessage", "Data base function #%s was not found");
             environment.getTracer().error(String.format(message, funcCall.getFuncId()));
             setDisplayedInfo(null, "???" + funcCall.getFuncId() + "()???");
-            valid = false;
+            setValid(false);
             xmlFuncCall = null;
         } else {
             setIsDeprecated(dbFunction.isDeprecated());
@@ -62,7 +62,7 @@ public class SqmlTag_DbFuncCall extends SqmlTag {
                         final String message = msgProvider.translate("TraceMessage", "Function parameter #%s was not found in '%s'"); 
                         environment.getTracer().error(String.format(message, param.getParamId(), dbFunction.getTitle()));
                         setDisplayedInfo(null, dbFunction.getFullName() + "(???" + param.getParamId() + "???)");
-                        valid = false;
+                        setValid(false);
                         xmlFuncCall = null;
                         return;
                     } else {

@@ -1,0 +1,35 @@
+
+class A {
+
+    class B {
+
+	String getV() {
+	    return null;
+	}
+
+	void setV(String v) {
+	    System.out.println("Result: " + v);
+	}
+    }
+
+    B getb() {
+	return new B();
+    }
+}
+
+class E extends A {
+
+    void ff() {
+	if (this.b.V == null) {
+	    this.b.V = "a";
+	}
+    }
+}
+
+public class Test {
+
+    public void f() {
+	E a = new E();
+	a.ff();
+    }
+}

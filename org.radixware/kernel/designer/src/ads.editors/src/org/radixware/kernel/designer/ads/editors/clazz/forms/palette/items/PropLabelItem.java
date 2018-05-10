@@ -35,18 +35,18 @@ public class PropLabelItem extends Item {
 
     @Override
     public Dimension adjustHintSize(RadixObject node, Dimension defaultSize) {
-        return super.adjustHintSize(node, defaultSize);
+        return LabelItem.DEFAULT.adjustHintSize(node, defaultSize, findLabel(node));
     }
 
     @Override
     public void paintBackground(Graphics2D gr, Rectangle r, RadixObject node) {
     }
-
-    @Override
-    public void paintWidget(Graphics2D gr, Rectangle r, RadixObject node) {
+    
+    protected String findLabel(RadixObject node) {
         AdsUIProperty.PropertyRefProperty property_prop = (AdsUIProperty.PropertyRefProperty) AdsUIUtil.getUiProperty(node, "property");
         IModelPublishableProperty property = property_prop.findProperty();
-        String label = NbBundle.getMessage(PropLabelItem.class, "Title_Not_Specified");
+        String defaultLabel = NbBundle.getMessage(PropLabelItem.class, "Title_Not_Specified");
+        String label = defaultLabel;
         if (property instanceof AdsPropertyPresentationPropertyDef && ((AdsPropertyPresentationPropertyDef) property).isLocal()) {
             property = ((AdsPropertyPresentationPropertyDef) property).findServerSideProperty();
         }
@@ -58,7 +58,12 @@ public class PropLabelItem extends Item {
                 label = ps.getPresentation().getTitle(getLanguage());
             }
         }
-        LabelItem.DEFAULT.paint(gr, r, node, label);
+        return label == null ? defaultLabel : label;
+    }
+
+    @Override
+    public void paintWidget(Graphics2D gr, Rectangle r, RadixObject node) {
+        LabelItem.DEFAULT.paint(gr, r, node, findLabel(node));
 
     }
 }

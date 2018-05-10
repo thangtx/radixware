@@ -20,18 +20,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipFile;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.api.Usages2APIComparator;
-import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.lang.ClassLinkageAnalyzer;
 import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
 import org.radixware.kernel.common.svn.utils.Utils.LayerInfo;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.Pair;
+import org.radixware.kernel.common.utils.ReleaseUtilsCommon;
 import org.radixware.schemas.adsdef.APIDocument;
 import org.radixware.schemas.adsdef.AdsUserFuncDefinitionDocument;
 import org.radixware.schemas.adsdef.ClassDefinition;
@@ -39,8 +42,16 @@ import org.radixware.schemas.adsdef.UsagesDocument;
 import org.radixware.schemas.adsdef.UsagesDocument.Usages;
 
 
-public abstract class Usages2APIVerifier extends Usages2APIComparator implements NoizyVerifier {
+public abstract class Usages2APIVerifier extends Usages2APIComparator implements NoizyVerifier, IContextVerifier, IDefinitionNameResolver {
 
+    private final BranchHolderParams branchParams;
+    private IVerifyContext context;
+    private boolean verbose = false;
+    private BranchHolder holder;
+    private boolean stopOnFirstError = true;
+    private final Set<Utils.ModuleInfo> modulesWithoutAPI = new HashSet<>();
+    private final Map<Id, CacheDefInfo> defId2InfoCache = new HashMap<>();
+    
     private static class SVNLookup {
 
         Usages2APIVerifier verifier;
@@ -53,11 +64,21 @@ public abstract class Usages2APIVerifier extends Usages2APIComparator implements
                 return (Utils.ModuleInfo) layer.findModule(moduleId);
             }
         }
+        
+        public boolean isExpired(String layerUri, String expirationRelease) throws IOException {
+            final LayerInfo layer = verifier.holder.layers.get(layerUri);
+            if (layer == null) {
+                throw new IOException("Layer info for uri: " + layerUri);
+            } else {
+                return ReleaseUtilsCommon.isExpired(layer.getReleaseNumber(), expirationRelease);
+            }
+        }
+        
     }
 
     private static class SVNApiLookup extends SVNLookup implements Usages2APIComparator.APILookup {
 
-        private final Map<Utils.ModuleInfo, APIDocument> loadedAPIs = new HashMap<Utils.ModuleInfo, APIDocument>();
+        private final Map<Utils.ModuleInfo, APIDocument> loadedAPIs = new HashMap<>();
 
         @Override
         public APIDocument lookup(String layerUri, Id moduleId) throws IOException {
@@ -127,55 +148,59 @@ public abstract class Usages2APIVerifier extends Usages2APIComparator implements
 
     private static class VerifierReporter implements Usages2APIComparator.Reporter {
 
-        private NoizyVerifier verifier;
+        private Usages2APIVerifier verifier;
 
         public VerifierReporter() {
         }
 
         @Override
-        public void message(String message) {
-            verifier.error(message);
+        public void message(EEventSeverity severity, String message) {
+            verifier.processMessage(severity, message);
         }
     }
-    private final SVNRepositoryAdapter repository;
-    private final String branchPath;
-    private final ZipFile zipFile;
-    private final String zipFilePath;
-    private final boolean skipDevelopmentLayers;
-    private final String predefinedBaseDevLayerURI;
-    private boolean verbose = false;
-    private BranchHolder holder;
-
-    public Usages2APIVerifier(SVNRepositoryAdapter repository, String branchPath, ZipFile zipFile, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI) {
-        this(repository, branchPath, new SVNApiLookup(), new SVNUsagesLookup(), new VerifierReporter(), skipDevelopmentLayers, predefinedBaseDevLayerURI, zipFile, null);
+    
+    public Usages2APIVerifier(SVNRepositoryAdapter curRepository, String curBranchPath, ZipFile upgradeFile, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI) {
+        this(new BranchHolderParams(curRepository, curBranchPath, null, upgradeFile, null, skipDevelopmentLayers, predefinedBaseDevLayerURI));
     }
-
-    public Usages2APIVerifier(SVNRepositoryAdapter repository, String branchPath, String zipFilePath, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI) {
-        this(repository, branchPath, new SVNApiLookup(), new SVNUsagesLookup(), new VerifierReporter(), skipDevelopmentLayers, predefinedBaseDevLayerURI, null, zipFilePath);
+    
+    public Usages2APIVerifier(BranchHolderParams branchParams) {
+        this(branchParams, new SVNApiLookup(), new SVNUsagesLookup(), new VerifierReporter());
     }
-
-    Usages2APIVerifier(SVNRepositoryAdapter repository, String branchPath, ZipFile zipFile, String zipFilePath, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI) {
-        this(repository, branchPath, new SVNApiLookup(), new SVNUsagesLookup(), new VerifierReporter(), skipDevelopmentLayers, predefinedBaseDevLayerURI, zipFile, zipFilePath);
-    }
-
-    private Usages2APIVerifier(SVNRepositoryAdapter repository, String branchPath, SVNApiLookup apiLookup, SVNUsagesLookup usagesLookup, VerifierReporter reporter, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI, ZipFile zipFile, String zipFilePath) {
+        
+    private Usages2APIVerifier(BranchHolderParams branchParams, SVNApiLookup apiLookup, SVNUsagesLookup usagesLookup, VerifierReporter reporter) {
         super(apiLookup, usagesLookup, reporter);
         reporter.verifier = this;
         apiLookup.verifier = this;
         usagesLookup.verifier = this;
-        this.repository = repository;
-        this.branchPath = branchPath;
-        this.skipDevelopmentLayers = skipDevelopmentLayers;
-        this.zipFile = zipFile;
-        this.zipFilePath = zipFilePath;
-        this.predefinedBaseDevLayerURI = predefinedBaseDevLayerURI;
+        this.branchParams = branchParams;
     }
-
+    
+    
+    @Override
+    public String resolveName(Id id) {
+        if (!defId2InfoCache.containsKey(id)) {
+            final Set<LayerInfo> processedLayers = new HashSet<>();
+            CacheDefInfo def = null;
+            for (LayerInfo topLayer : holder.getTopLayers()) {
+                def = processLayerForUfVerify(topLayer, processedLayers, id, true);
+            }
+            if (def == null) {
+                def = new CacheDefInfo(id.toString(), null);
+            }
+            defId2InfoCache.put(id, def);
+        }
+        return defId2InfoCache.get(id).name;
+    }
+    
+    protected void processMessage(EEventSeverity severity, String message) {
+        error(message);
+    }
+    
     @Override
     public boolean verify() {
         BranchHolder h = new BranchHolder(this, verbose);
         try {
-            h.initialize(repository, branchPath, zipFile, zipFilePath, predefinedBaseDevLayerURI, skipDevelopmentLayers);
+            h.initialize(branchParams);
             return verifyExternalHolder(h);
         } finally {
             h.finish();
@@ -200,24 +225,31 @@ public abstract class Usages2APIVerifier extends Usages2APIComparator implements
     public boolean verifyUserFunctions(final Connection c) {
         BranchHolder h = new BranchHolder(this, verbose);
         try {
-            h.initialize(repository, branchPath, zipFile, zipFilePath, predefinedBaseDevLayerURI, skipDevelopmentLayers);
+            h.initialize(branchParams);
             return verifyUserFunctions(c, h);
         } finally {
             h.finish();
         }
     }
-
-    class UserFuncInfo {
-    }
-
-    private LayerInfo processLayerForUfVerify(LayerInfo topLayer, LayerInfo layer, Set<LayerInfo> processedLayers, Id classId) {
+    
+    private CacheDefInfo processLayerForUfVerify(LayerInfo topLayer, LayerInfo layer, Set<LayerInfo> processedLayers, Id classId) {
         if (!processedLayers.contains(layer)) {
             for (Utils.ModuleInfo module : layer.modules.values()) {
+                if (modulesWithoutAPI.contains(module)) {
+                    continue;
+                }
                 try {
                     APIDocument xApiDoc = apiLookup.lookup(layer.getURI(), module.getId());
-                    ClassDefinition xClassDef = findUserFuncClass(xApiDoc.getAPI(), classId);
-                    if (xClassDef != null) {
-                        return topLayer;
+                    if (xApiDoc != null) {
+                        ClassDefinition xClassDef = findUserFuncClass(xApiDoc.getAPI(), classId);
+                        if (xClassDef != null) {
+                            final CacheDefInfo defInfo = new CacheDefInfo(xClassDef.getName(), new Pair<>(topLayer, module));
+                            defId2InfoCache.put(classId, defInfo);
+                            return defInfo;
+                        }
+                    } else {
+                        error("Not found api.xml for module: " + module.getDisplayName());
+                        modulesWithoutAPI.add(module);
                     }
                 } catch (IOException ex) {
                 }
@@ -227,22 +259,26 @@ public abstract class Usages2APIVerifier extends Usages2APIComparator implements
         return null;
     }
 
-    private LayerInfo processLayerForUfVerify(LayerInfo topLayer, Set<LayerInfo> processedLayers, Id classId, boolean rootMode) {
+    private CacheDefInfo processLayerForUfVerify(LayerInfo topLayer, Set<LayerInfo> processedLayers, Id classId, boolean rootMode) {
         if (rootMode) {
-            LayerInfo top = processLayerForUfVerify(topLayer, topLayer, processedLayers, classId);
+            if (defId2InfoCache.containsKey(classId)) {
+                return defId2InfoCache.get(classId);
+            }
+            
+            CacheDefInfo top = processLayerForUfVerify(topLayer, topLayer, processedLayers, classId);
             if (top != null) {
                 return top;
             }
         }
         List<ClassLinkageAnalyzer.LayerInfo> prevs = topLayer.findPrevLayer();
         for (ClassLinkageAnalyzer.LayerInfo info : prevs) {
-            LayerInfo top = processLayerForUfVerify(topLayer, (LayerInfo) info, processedLayers, classId);
+            CacheDefInfo top = processLayerForUfVerify(topLayer, (LayerInfo) info, processedLayers, classId);
             if (top != null) {
                 return top;
             }
         }
         for (ClassLinkageAnalyzer.LayerInfo info : prevs) {
-            LayerInfo top = processLayerForUfVerify((LayerInfo) info, processedLayers, classId, false);
+            CacheDefInfo top = processLayerForUfVerify((LayerInfo) info, processedLayers, classId, false);
             if (top != null) {
                 return top;
             }
@@ -253,67 +289,108 @@ public abstract class Usages2APIVerifier extends Usages2APIComparator implements
 
     boolean verifyUserFunctions(final Connection c, BranchHolder holder) {
         this.holder = holder;
-
-        try {
-            PreparedStatement stmt = c.prepareStatement("select javasrc,classguid,updefid,upownerentityid,upownerpid from rdx_userfunc where javaruntime is not null");
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                if (wasCancelled())
-                    return false;
-                String javaSrc = rs.getString(1);
-                Id classId = Id.Factory.loadFrom(rs.getString(2));
-                String updefid = rs.getString(3);
-                String upownerid = rs.getString(4);
-                String upownerpid = rs.getString(5);
-                String userFuncName = upownerid + ":" + upownerpid + ":" + updefid;
-                if (javaSrc != null) {
-                    try {
-                        if (wasCancelled())
-                            return false;
-                        AdsUserFuncDefinitionDocument xDoc = AdsUserFuncDefinitionDocument.Factory.parse(javaSrc);
-                        List<LayerInfo> topLayerInfos = Utils.topLayers(holder.layers.values());
-                        Set<LayerInfo> processedLayers = new HashSet<>();
-                        LayerInfo userFuncTopLayer = null;
-                        boolean userFuncFound = false;
-                        for (LayerInfo info : topLayerInfos) {
-                            if (wasCancelled())
-                                return false;
-                            userFuncTopLayer = processLayerForUfVerify(info, processedLayers, classId, true);
-                            if (userFuncTopLayer != null) {
-                                userFuncFound = true;
-                            }
-                            if (userFuncFound) {
-                                break;
-                            }
-                        }
-                        if (userFuncFound) {
-                            Usages xUsages = xDoc.getAdsUserFuncDefinition().getUsages();
-                            if (xUsages != null) {
-                                if (!isUsagesCompatible(xUsages, userFuncTopLayer.getURI(), Id.Factory.newInstance(EDefinitionIdPrefix.MODULE))) {
-                                    return false;
-                                }
-                            } else {
-                                error("Warning: no usages information found for user function " + userFuncName);
-                            }
-                        } else {
-                            if (holder.developmentLayers.isEmpty()) {
-                                error("Base class not found for user function: " + userFuncName);
-                                return false;
-                            } else {
-                                error("Warning: base class not found for user function: " + userFuncName + ". Base class in development layer?");
-                            }
-
-                        }
-                    } catch (XmlException ex) {
-                        error(new RadixError("Invalid format of user function " + userFuncName, ex));
+        try (PreparedStatement stmt = c.prepareStatement("select javasrc,classguid,updefid,upownerentityid,upownerpid, id from rdx_userfunc where javaruntime is not null order by id desc")) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<String> ufWithoutUsages = new LinkedList<>();
+                while (rs.next()) {
+                    if (wasCancelled()) {
                         return false;
                     }
+                    String javaSrc = rs.getString(1);
+                    Id classId = Id.Factory.loadFrom(rs.getString(2));
+                    String updefid = rs.getString(3);
+                    String upownerid = rs.getString(4);
+                    String upownerpid = rs.getString(5);
+                    final int ufId = rs.getInt(6);
+                    String userFuncName = upownerid + ":" + upownerpid + ":" + updefid;
+                    if (javaSrc != null) {
+                        try {
+                            setContext(new UserFuncContext(ufId, upownerid, upownerpid, updefid, classId));
+                            if (wasCancelled()) {
+                                return false;
+                            }
+                            AdsUserFuncDefinitionDocument xDoc = AdsUserFuncDefinitionDocument.Factory.parse(javaSrc);
+                            List<LayerInfo> topLayerInfos = Utils.topLayers(holder.layers.values());
+                            Set<LayerInfo> processedLayers = new HashSet<>();
+                            CacheDefInfo userFuncLayerAndModule = null;
+                            boolean userFuncFound = false;
+                            for (LayerInfo info : topLayerInfos) {
+                                if (wasCancelled()) {
+                                    return false;
+                                }
+                                userFuncLayerAndModule = processLayerForUfVerify(info, processedLayers, classId, true);
+                                userFuncFound = userFuncLayerAndModule != null && userFuncLayerAndModule.path != null;
+                                if (userFuncLayerAndModule != null) {
+                                    break;
+                                }
+                            }
+                            if (userFuncFound) {
+                                Usages xUsages = xDoc.getAdsUserFuncDefinition().getUsages();
+                                if (xUsages != null) {
+                                    if (!isUsagesCompatible(xUsages, userFuncLayerAndModule.path.getFirst().getURI(), userFuncLayerAndModule.path.getSecond().id)) {
+                                        if (stopOnFirstError) {
+                                            return false;
+                                        }
+                                    }
+                                } else {
+                                    ufWithoutUsages.add(userFuncName);
+                                }
+                            } else {
+                                final String errMsg = String.format("Base class %s not found for user function %s", classId.toString(), userFuncName);
+                                if (holder.developmentLayers.isEmpty()) {
+                                    error(errMsg);
+                                    if (stopOnFirstError) {
+                                        return false;
+                                    }
+                                } else {
+                                    error(errMsg + ". Base class in development layer?");
+                                }
+
+                            }
+                        } catch (XmlException ex) {
+                            error(new RadixError("Invalid format of user function " + userFuncName, ex));
+                            return false;
+                        } finally {
+                            leaveContext();
+                        }
+                    }
                 }
+                return true;
             }
-            return true;
         } catch (SQLException e) {
             error(new RadixError("Database error", e));
             return false;
         }
+    }
+
+    public void setStopOnFirstError(boolean stopOnFirstError) {
+        this.stopOnFirstError = stopOnFirstError;
+    }
+
+    @Override
+    public void setContext(IVerifyContext ctx) {
+        this.context = ctx;
+    }
+
+    @Override
+    public void leaveContext() {
+        this.context = null;
+    }
+    
+    @Override
+    public IVerifyContext getContext() {
+        return context;
+    }
+    
+    private static class CacheDefInfo {
+        
+        final String name;
+        final Pair<LayerInfo, Utils.ModuleInfo> path;
+
+        public CacheDefInfo(String name, Pair<LayerInfo, Utils.ModuleInfo> pair) {
+            this.name = name;
+            this.path = pair;
+        }
+        
     }
 }

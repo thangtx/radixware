@@ -112,7 +112,7 @@ public final class NamingService {
         if (postfix != null) {
             sb.append(postfix);
         }
-        sb.append("</html></body>");
+        sb.append("</body></html>");
         return sb.toString();
     }
 

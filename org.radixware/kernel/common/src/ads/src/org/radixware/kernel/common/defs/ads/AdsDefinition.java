@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads;
 
 import java.io.File;
@@ -20,12 +19,15 @@ import org.radixware.kernel.common.check.RadixProblem.ProblemFixSupport;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.HierarchyWalker.Controller;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.module.AdsPath;
+import org.radixware.kernel.common.defs.doc.IRadixDocObject;
+import org.radixware.kernel.common.defs.ads.localization.IAdsLocalizedDef;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.*;
 import org.radixware.kernel.common.exceptions.DefinitionError;
@@ -39,19 +41,19 @@ import org.radixware.kernel.common.utils.events.RadixEventSource;
 import org.radixware.schemas.adsdef.AccessRules;
 import org.radixware.schemas.adsdef.AdsDefinitionElementType;
 import org.radixware.schemas.adsdef.DescribedAdsDefinition;
-import org.radixware.schemas.adsdef.DescribedAdsDefinition.Domains.Domain;
+import org.radixware.schemas.adsdef.MixableAdsDefinition.Domains.Domain;
 import org.radixware.schemas.adsdef.UsageDescription;
 import org.radixware.schemas.commondef.DescribedDefinition;
 import org.radixware.schemas.commondef.NamedDefinition;
 import org.radixware.kernel.common.defs.localization.ILocalizedDef;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
-import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
+import org.radixware.schemas.adsdef.MixableAdsDefinition;
 
 /**
  * Base interface for ADS Provides {@linkplain Definition}
  *
  */
-public abstract class AdsDefinition extends Definition implements ILocalizedDef, IEnvDependent, ICompilable, IFileBasedDef, ILocalizedDescribable {
+public abstract class AdsDefinition extends Definition implements ILocalizedDef, IEnvDependent, ICompilable, IFileBasedDef, ILocalizedDescribable, IRadixDocObject, IAdsLocalizedDef {
 
     public static class AccessChangedEvent extends RadixEvent {
 
@@ -403,8 +405,8 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
     protected boolean isOverwrite;
     private AccessChangeSupport accChangeSupport = null;
     private final Object definitionLock = new Object();
-    //
 
+    //
     public static abstract class EnvlopeInfo {
 
         /**
@@ -438,6 +440,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
     private Id idSourceItemId = null;
     private int[] compilerWarnings;
     private Id descriptionId;
+    private Id[] mixTo;
 
     protected AdsDefinition(Id id) {
         super(id);
@@ -490,6 +493,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         } else {
             this.isPublished = true;
         }
+        loadMixinInfo(xDef);
         loadCompilerWarnings(xDef);
 
         if (xDef.isSetDescriptionId()) {
@@ -510,10 +514,23 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         }
     }
 
+    private void loadMixinInfo(org.radixware.schemas.adsdef.MixableAdsDefinition xDef) {
+        if (xDef.isSetMixTo()) {
+            List<Id> ids = xDef.getMixTo();
+            if (ids != null) {
+                this.mixTo = ids.toArray(new Id[ids.size()]);
+            }
+        }
+
+    }
+
     protected AdsDefinition(DescribedDefinition xDef) {
         super(xDef.getId(), xDef.getName(), xDef.getDescription());
         this.isOverwrite = xDef.isSetIsOverwrite() ? xDef.getIsOverwrite() : false;
         this.runtimeUploadMode = EDefinitionUploadMode.ON_DEMAND;
+        if (xDef instanceof MixableAdsDefinition) {
+            loadMixinInfo((MixableAdsDefinition) xDef);
+        }
         loadCompilerWarnings(xDef);
     }
 
@@ -521,15 +538,34 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         super(xDef.getId());
         this.isOverwrite = xDef.isSetIsOverwrite() ? xDef.getIsOverwrite() : false;
         this.runtimeUploadMode = EDefinitionUploadMode.ON_DEMAND;
+        if (xDef instanceof MixableAdsDefinition) {
+            loadMixinInfo((MixableAdsDefinition) xDef);
+        }
         loadCompilerWarnings(xDef);
+    }
+
+    private DefinitionLink<Definition> mixinLink = new DefinitionLink<Definition>() {
+
+        @Override
+        protected Definition search() {
+            AdsPath path = new AdsPath(mixTo);
+            return path.resolve(AdsDefinition.this).get();
+        }
+    };
+
+    public boolean isMixin() {
+        return mixTo != null;
+    }
+
+    public Definition findMixinTarget() {
+        if (mixTo == null) {
+            return null;
+        }
+        return mixinLink.find();
     }
 
     @Override
     public boolean isPublished() {
-//        EAccess acc = getAccessMode();
-//        if (acc == EAccess.PRIVATE || acc == EAccess.DEFAULT) {
-//            return false;
-//        }
         return isPublished;
     }
 
@@ -539,11 +575,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
 
     public void setPublished(boolean isPublished) {
         if (isPublished != this.isPublished) {
-            //if (isPublished) {
-//                if (getAccessMode() == EAccess.DEFAULT || getAccessMode() == EAccess.PRIVATE) {
-//                    return;
-//                }
-            //}
+
             this.isPublished = isPublished;
             setEditState(EEditState.MODIFIED);
             synchronized (this) {
@@ -812,10 +844,12 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         return new DefaultHierarchy<>();
     }
 
+    @Override
     public final AdsLocalizingBundleDef findExistingLocalizingBundle() {
         return findLocalizingBundleImpl(false);
     }
 
+    @Override
     public final AdsLocalizingBundleDef findLocalizingBundle() {
         return findLocalizingBundleImpl(true);
     }
@@ -844,6 +878,16 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
             return bundle.getStrings().findById(stringId, EScope.ALL).get();
         }
         return null;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return this.getUsageEnvironment();
     }
 
     public AdsDefinition findTopLevelDef() {
@@ -977,7 +1021,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
             }
             if (canChangeAccessMode()) {
                 EAccess acc = getAccessMode();
-                boolean isf = isFinal;
+                boolean isf = isFinal();
                 if (acc != getDefaultAccess() || isf != getDefaultIsFinal() || !isPublished()) {
                     AccessRules rules = xDef.getAccessRules();
                     if (rules == null) {
@@ -1109,6 +1153,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         return ownerDefinition instanceof AdsModule;
     }
 
+    @Override
     public String getLocalizedStringValue(EIsoLanguage language, Id stringId) {
         if (stringId == null) {
             return null;
@@ -1259,7 +1304,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
     public File getFile() {
         final Definition ownerDefinition = getOwnerDefinition();
         if (ownerDefinition instanceof AdsModule) {
-            return ((AdsModule) ownerDefinition).getDefinitions().getSourceFile(this, getSaveMode());
+            return ((AdsModule) ownerDefinition).getSourceFile(this);
         } else {
             return super.getFile();
         }
@@ -1273,7 +1318,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         }
         Definition ownerDefinition = getOwnerDefinition();
         if (ownerDefinition instanceof AdsModule) {
-            ((AdsModule) ownerDefinition).getDefinitions().save(this, getSaveMode());
+            ((AdsModule) ownerDefinition).save(this);
         } else {
             super.save();
         }
@@ -1286,9 +1331,13 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         File file = null;
 
         AdsLocalizingBundleDef bundle = null;
+        File preview = null;
         if (ownerDefinition instanceof AdsModule) {
             if (this.getDefinitionType() != EDefType.LOCALIZING_BUNDLE) {
                 file = getFile();
+                if (AdsUtils.isEnableHumanReadable(this)) {
+                    preview = AdsUtils.calcHumanReadableFile(file);
+                }
                 bundle = this.findExistingLocalizingBundle();
             }
         } //else {
@@ -1309,6 +1358,14 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
 
         if (bundle != null) {
             bundle.delete();
+        }
+        
+        if (preview != null) {
+            try {
+                FileUtils.deleteFileExt(preview);
+            } catch (IOException cause) {
+                throw new DefinitionError("Unable to delete preview file.", this, cause);
+            }
         }
         return true;
     }
@@ -1384,8 +1441,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
                 public EMultilingualStringKind getKind() {
                     return EMultilingualStringKind.DESCRIPTION;
                 }
-                
-                
+
             });
         }
     }
@@ -1399,6 +1455,7 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         return null;
     }
 
+    @Override
     public Id getLocalizingBundleId() {
         AdsDefinition topLevel = findTopLevelDef();
         Id id;
@@ -1407,7 +1464,9 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         } else {
             id = topLevel.getId();
         }
-        return Id.Factory.loadFrom(EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + id.toString());
+        StringBuilder sb = new StringBuilder(Id.DEFAULT_ID_AS_STR_LENGTH + 3);
+        sb.append(EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue()).append(id.toString());
+        return Id.Factory.loadFrom(sb.toString());
     }
 
     @Override
@@ -1477,51 +1536,6 @@ public abstract class AdsDefinition extends Definition implements ILocalizedDef,
         xDef.setDefinitionType(getDefinitionType());
         xDef.setPath(Arrays.asList(getIdPath()));
         xDef.setQName(getQualifiedName());
-    }
-
-    public static String getLocalizedDescriptionForToolTip(ILocalizedDescribable describable) {
-        return getLocalizedDescriptionForToolTip(describable, EIsoLanguage.ENGLISH);
-    }
-
-    public static String getLocalizedDescriptionForToolTip(ILocalizedDescribable describable, EIsoLanguage language) {
-        String description;
-
-        if (describable.getDescriptionId() != null) {
-            description = describable.getDescription(language);
-            if (description != null && !description.isEmpty()) {
-                return description;
-            }
-
-            final Definition descriptionLocation = describable.getDescriptionLocation();
-            if (descriptionLocation != null && descriptionLocation.getLayer() != null) {
-                final EIsoLanguage defaultLanguage = descriptionLocation.getLayer().getDefaultLanguage();
-                if (defaultLanguage != null) {
-                    description = describable.getDescription(defaultLanguage);
-                    if (description != null && !description.isEmpty()) {
-                        return description;
-                    }
-                }
-
-                final IMultilingualStringDef localizedString = descriptionLocation.findLocalizedString(describable.getDescriptionId());
-                if (localizedString != null) {
-                    final Iterator<EIsoLanguage> iterator = localizedString.getLanguages().iterator();
-                    while (iterator.hasNext()) {
-                        description = describable.getDescription(iterator.next());
-                        if (description != null && !description.isEmpty()) {
-                            return description;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (describable instanceof IDescribable) {
-            description = ((IDescribable) describable).getDescription();
-            if (description != null && !description.isEmpty()) {
-                return description;
-            }
-        }
-        return null;
     }
 
     @Override

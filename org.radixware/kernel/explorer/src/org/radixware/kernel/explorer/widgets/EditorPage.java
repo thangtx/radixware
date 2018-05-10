@@ -23,6 +23,7 @@ import org.radixware.kernel.common.client.views.IEditorPageView;
 import org.radixware.kernel.common.client.views.IEditorPageWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.views.ErrorView;
 import org.radixware.kernel.explorer.views.StandardEditorPage;
 
@@ -65,42 +66,56 @@ public class EditorPage extends ExplorerWidget implements IExplorerModelWidget, 
             throw new IllegalStateException("Editor page was not defined");
         }
         QWidget w = null;
-        try {
-            if (errWidget != null) {
-                errWidget.hide();
-            }            
-            pageView = page.getView();
-            if (pageView==null){
-                pageView = page.createView();
-            }
-            w = (QWidget) pageView;
-            w.setParent(this);
-            layout.addWidget(w);
-            pageView.open(page.getOwner());
-            page.getOwner().afterOpenEditorPageView(page.getId());
-        } catch (Exception ex) {
-            getEnvironment().getTracer().put(ex);
-            if (pageView != null) {
-                if (w != null) {
-                    w.hide();
-                }
-                pageView.close(true);
-                if (w != null) {
-                    w.disposeLater();
-                }
-                pageView = null;
-            }            
-            final String message = getEnvironment().getMessageProvider().translate("ExplorerError", "Can't open editor page '%s'");            
-            getErrorView().setError(String.format(message, page.getTitle()), ex);
-            getErrorView().show();            
-            return;
+        final String modelTitle = page.getTitle();
+        final long time = System.currentTimeMillis();
+        {
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Start opening editor page \'%1$s\'");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle));
         }
-        page.subscribe(this);
-        refresh(page);
-        setFocusProxy(w);
+        try{
+            try {
+                if (errWidget != null) {
+                    errWidget.hide();
+                }            
+                pageView = page.getView();
+                if (pageView==null){
+                    pageView = page.createView();
+                }
+                w = (QWidget) pageView;
+                w.setParent(this);
+                layout.addWidget(w);
+                pageView.open(page.getOwner());
+                page.getOwner().afterOpenEditorPageView(page.getId());
+            } catch (Exception ex) {
+                getEnvironment().getTracer().put(ex);
+                if (pageView != null) {
+                    if (w != null) {
+                        w.hide();
+                    }
+                    pageView.close(true);
+                    if (w != null) {
+                        w.disposeLater();
+                    }
+                    pageView = null;
+                }            
+                final String message = getEnvironment().getMessageProvider().translate("ExplorerError", "Can't open editor page '%s'");            
+                getErrorView().setError(String.format(message, page.getTitle()), ex);
+                getErrorView().show();            
+                return;
+            }
+            page.subscribe(this);
+            refresh(page);
+            setFocusProxy(w);
+        }finally{
+            final long elapsedTime = System.currentTimeMillis()-time;        
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Opening editor page \'%1$s\' finished. Elapsed time: %2$s ms");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle, elapsedTime));            
+        }
     }
 
-    public void setEditorPage(EditorPageModelItem modelItem) {
+    public void setEditorPage(final EditorPageModelItem modelItem) {
         if (page != null) {
             page.unsubscribe(this);
         }
@@ -111,6 +126,10 @@ public class EditorPage extends ExplorerWidget implements IExplorerModelWidget, 
             layout.removeWidget((QWidget) pageView);
         }
         page = modelItem;
+    }
+    
+    public Id getPageId(){
+        return page==null ? null : page.getId();
     }
 
     @Override
@@ -163,8 +182,8 @@ public class EditorPage extends ExplorerWidget implements IExplorerModelWidget, 
     @Override
     public boolean setFocus(Property property) {
         if (pageView instanceof StandardEditorPage) {
-            IModelWidget w = ((StandardEditorPage) pageView).getWidget();
-            return w.setFocus(property);
+            final IModelWidget w = ((StandardEditorPage) pageView).getWidget();            
+            return w==null ? false : w.setFocus(property);
         }
         return false;
     }
@@ -183,5 +202,9 @@ public class EditorPage extends ExplorerWidget implements IExplorerModelWidget, 
                 pageView.getModel().showException(e);
             }
         }
+    }
+    
+    public IEditorPageView getView(){
+        return pageView;
     }
 }

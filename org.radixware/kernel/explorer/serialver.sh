@@ -1,1 +1,1 @@
-serialver -classpath bin/explorer.jar:../common/bin/client.jar:../common/bin/general.jar:../common/bin/msdl_editor.jar:../common/bin/xb_soap.jar:../../bin/xb_groupsettings.jar:../common/bin/xb_eas.jar:../common/lib/xbean.jar org.radixware.kernel.explorer.$1
+serialver -classpath bin/explorer.jar:../common/bin/client.jar:../common/bin/general.jar:../common/bin/msdl_editor.jar:../common/bin/xb_soap.jar:../../bin/xb_groupsettings.jar:../common/bin/xb_eas.jar:../common/lib/xbean.jar:../common/lib/json_simple-1.1.jar org.radixware.kernel.explorer.$1

@@ -8,14 +8,12 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.sc;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
-import java.util.Map;
 import javax.net.ssl.SSLContext;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.enums.ETimingSection;
@@ -30,13 +28,16 @@ import org.radixware.kernel.common.ssl.CertificateUtils;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.server.aio.ServiceManifestServerLoader;
 import org.radixware.kernel.server.arte.Arte;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
+import org.radixware.kernel.common.enums.EAadcMember;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.server.soap.CxfClientFactory;
 import org.radixware.kernel.server.soap.ICxfClientContext;
 import org.radixware.kernel.server.soap.ServerSoapUtils;
 
 public class ServerServicesClient extends ServiceClient {
 
+    private static final long SLEEP_ON_ALL_BUSY_MILLIS = SystemPropUtils.getLongSystemProp("rdx.arte.sleep.on.saps.busy.millis", 100);
     private final Arte arte;
     private final ServiceManifestServerLoader manifestLoader;
 
@@ -67,7 +68,7 @@ public class ServerServicesClient extends ServiceClient {
         if (arte.needBreak()) {
             throw new ServiceCallSendException("ARTE service request aborted by client");
         }
-        super.onAllSapsBusy(availableButBusyCount);
+        Thread.sleep(SLEEP_ON_ALL_BUSY_MILLIS);
     }
 
     @Override
@@ -81,17 +82,17 @@ public class ServerServicesClient extends ServiceClient {
     }
 
     @Override
-    public XmlObject invokeService(RadixSoapMessage message) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
-        arte.markInactive();
+    public XmlObject invokeService(RadixSoapMessage message, EAadcMember aadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        arte.markInactive("invoke service");
         try {
             arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_SC_INVOKE);
             try {
-                return super.invokeService(message);
+                return super.invokeService(message, aadcMember);
             } finally {
                 arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_SC_INVOKE);
             }
         } finally {
-            arte.markActive();
+            arte.markActive("end invoke service");
         }
     }
 

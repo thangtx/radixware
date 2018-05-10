@@ -12,6 +12,7 @@
 package org.radixware.kernel.explorer.editors.scmleditor.sqml.tags.translator;
 
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
+import org.radixware.kernel.common.html.Html;
 
 
 public class ThisTableSqlNameTranslator extends SqmlTagTranslator{
@@ -32,7 +33,7 @@ public class ThisTableSqlNameTranslator extends SqmlTagTranslator{
     public String getToolTip() {
         if (isValid) {
             final String tableName = presentationClassDef.getFullName();
-            final String tableTitle = presentationClassDef.getTitle().replaceAll("<", "&#60;");
+            final String tableTitle = Html.string2HtmlString(presentationClassDef.getTitle());
             return "Table <b>" + tableName + "</b> with title " + tableTitle;
         } 
         return  "???ThisTableName???";

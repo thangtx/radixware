@@ -20,7 +20,6 @@ import org.radixware.kernel.common.sqml.tags.*;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.exceptions.RadixObjectError;
 import org.radixware.kernel.common.repository.DbOptionValue;
-import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.scml.Scml;
 
 /**
@@ -143,6 +142,10 @@ class SqmlLoader {
                 final org.radixware.schemas.xscml.Sqml.Item.EntityRefParameter xParameterTag = xItem.getEntityRefParameter();
                 EntityRefParameterTag parameterTag = load(xParameterTag);
                 item = parameterTag;
+            } else if (xItem.isSetParamValCount()){
+                final org.radixware.schemas.xscml.Sqml.Item.ParamValCount xParamValCountTag = xItem.getParamValCount();
+                ParamValCountTag paramValCountTag = load(xParamValCountTag);
+                item = paramValCountTag;
             } else if (xItem.isSetEntityRefValue()) {
                 final org.radixware.schemas.xscml.Sqml.Item.EntityRefValue xValueTag = xItem.getEntityRefValue();
                 EntityRefValueTag tag = load(xValueTag);
@@ -327,7 +330,19 @@ class SqmlLoader {
             parameterTag.setPropId(xParameterTag.getPropId());
         }
 
+        if (xParameterTag.isSetExpressionList()) {
+            parameterTag.setExpressionList(xParameterTag.getExpressionList());
+        }
         return parameterTag;
+    }
+    
+    private static ParamValCountTag load(final org.radixware.schemas.xscml.Sqml.Item.ParamValCount xPraramValCountTag){
+        final ParamValCountTag paramValCountTag = ParamValCountTag.Factory.newInstance();
+        
+        final Id paramId = xPraramValCountTag.getParamId();
+        paramValCountTag.setParameterId(paramId);
+        
+        return paramValCountTag;
     }
 
     private static ParentConditionTag load(final org.radixware.schemas.xscml.Sqml.Item.ParentCondition xParentConditionTag) {
@@ -416,6 +431,13 @@ class SqmlLoader {
         tag.setReferencedTableId(xTag.getReferencedTableId());
         tag.setPidTranslationSecondaryKeyId(xTag.getPidTranslationSecondaryKeyId());
         tag.setPidTranslationMode(xTag.getPidTranslationMode());
+        
+        if (xTag.isSetLiteral()){
+            tag.setLiteral(xTag.getLiteral());
+        }
+        if (xTag.isSetExpressionList()){
+            tag.setExpressionList(xTag.getExpressionList());
+        }
         return tag;
     }
 

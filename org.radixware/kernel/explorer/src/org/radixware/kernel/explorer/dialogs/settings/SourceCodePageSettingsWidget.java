@@ -21,10 +21,11 @@ import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.explorer.env.Application;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 
 
-public class SourceCodePageSettingsWidget extends SettingsWidget {
+final class SourceCodePageSettingsWidget extends SettingsWidget {
+    
     public final static String DEFAULT = "DFLT";
     private final ArrayList<SettingsWidget> settingsArrayList = new ArrayList<>();
     private boolean isDefault;
@@ -101,7 +102,7 @@ public class SourceCodePageSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
         getPropertySettingsWidget().readSettings(src);
         CheckBoxSettingsWidget checkBox=getCheckBoxSettingsWidget();
         if(checkBox!=null)
@@ -109,7 +110,7 @@ public class SourceCodePageSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         for (SettingsWidget w : settingsArrayList) {
             w.writeSettings(dst);
         }

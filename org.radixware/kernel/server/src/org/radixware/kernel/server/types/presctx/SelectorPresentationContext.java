@@ -11,12 +11,13 @@
 
 package org.radixware.kernel.server.types.presctx;
 
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.server.types.EntityGroup;
 
 
 public final class SelectorPresentationContext extends PresentationContext {
     
-    public SelectorPresentationContext(final EntityGroup group){
-        super(group);
+    public SelectorPresentationContext(final EntityGroup group, final Id selectorPresentationId){
+        super(group, selectorPresentationId);
     }    
 }

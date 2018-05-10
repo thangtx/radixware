@@ -15,6 +15,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.defs.ClipboardSupport;
 import org.radixware.kernel.common.defs.RadixObjectIcon;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EParamDirection;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
@@ -173,5 +174,10 @@ public class DdsParameterDef extends DdsDefinition implements IDdsDbDefinition {
     @Override
     public ClipboardSupport<? extends DdsParameterDef> getClipboardSupport() {
         return new DdsParameterClipboardSupport();
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.PACKAGE_FUNC_PARAMETER;
     }
 }

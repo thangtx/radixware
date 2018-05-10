@@ -17,7 +17,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitions;
@@ -32,8 +34,11 @@ import org.radixware.kernel.common.client.views.IParameterCreationWizard;
 import org.radixware.kernel.common.client.views.IParameterEditorDialog;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.exceptions.AppError;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.common.utils.XmlObjectProcessor;
+import org.radixware.schemas.groupsettings.CustomFilter;
 
 
 public final class RadFilterParameters implements ISqmlParameters {
@@ -43,6 +48,7 @@ public final class RadFilterParameters implements ISqmlParameters {
     private final Id classId;
     private final Map<Id, Object> persistentValues = new HashMap<>();
     private final boolean allowPersistentValues;
+    private final boolean isPersistentValuesReadOnly;
     
     private final static ISqmlParameterFactory PERSONAL_FILTER_PARAMETER_FACTORY = new ISqmlParameterFactory() {
 
@@ -90,76 +96,56 @@ public final class RadFilterParameters implements ISqmlParameters {
         }                
     }
 
-    //Конструктор для предопределенного фильтра
+    //Predefined filter parameters
     RadFilterParameters(final RadFilterParamDef[] parameters, final Id ownerClassId) {
         classId = ownerClassId;
         if (parameters != null) {
             this.parameters.addAll(Arrays.asList(parameters));
         }
-        allowPersistentValues = true;
-    }
-
-    //Конструктор для пользовательского фильтра
-    RadFilterParameters(final IClientEnvironment environment, final org.radixware.schemas.groupsettings.CustomFilter xmlFilter, final RadFilterDef baseFilter, final Id ownerClassId) {
-        classId = ownerClassId;
-        if (baseFilter != null) {
-            for (ISqmlParameter parameter : baseFilter.getParameters().getAll()) {
-                parameters.add(new RadFilterInheritedParamDef((RadFilterParamDef) parameter));
-            }
-        }
-        if (xmlFilter != null) {
-            final org.radixware.schemas.groupsettings.FilterParameters params =
-                    xmlFilter.getParameters();
-            if (params != null && params.getParameterList() != null) {
-                RadFilterUserParamDef customParameter;
-                for (org.radixware.schemas.groupsettings.FilterParameters.Parameter parameter : params.getParameterList()) {
-                    customParameter = RadFilterUserParamDef.Factory.loadFromXml(environment, parameter, true);
-                    customParameterIds.add(customParameter.getId());
-                    parameters.add(customParameter);
-                }
-            }
-            final org.radixware.schemas.groupsettings.CustomFilter.PersistentValues persistentVals =
-                    xmlFilter.getPersistentValues();
-            if (persistentVals != null && persistentVals.getPersistentValueList() != null) {
-                final List<org.radixware.schemas.groupsettings.CustomFilter.PersistentValues.PersistentValue> valuesList =
-                        persistentVals.getPersistentValueList();
-                Id parameterId;
-                ISqmlParameter parameter;
-                for (org.radixware.schemas.groupsettings.CustomFilter.PersistentValues.PersistentValue paramValue : valuesList) {
-                    parameterId = paramValue.getParamId();
-                    parameter = getParameterById(parameterId);
-                    if (parameter != null && 
-                        (parameter instanceof RadFilterUserParamDef==false || ((RadFilterUserParamDef)parameter).isValid())
-                       ) {
-                        final FilterParameterPersistentValue value =
-                                FilterParameterPersistentValue.loadFromXml(environment, parameter, paramValue);
-                        if (value != null) {
-                            parameter.setPersistentValue(value);
-                            persistentValues.put(parameter.getId(), value);
-                        }
-                    }
-                }
-            }
-        }
+        isPersistentValuesReadOnly = false;
         allowPersistentValues = true;
     }
     
-    //Конструктор для общего фильтра
+    //User filter parameters
+    RadFilterParameters(final IClientEnvironment environment, final org.radixware.schemas.groupsettings.CustomFilter xmlFilter, final RadFilterDef baseFilter, final Id ownerClassId) {
+        this(environment,
+              xmlFilter.getParameters(),
+              xmlFilter.getPersistentValues(),
+              baseFilter,
+              ownerClassId);
+    }
+
+    //User filter parameters
+    RadFilterParameters(final IClientEnvironment environment, 
+                                   final XmlObject xmlParameters, 
+                                   final CustomFilter.PersistentValues persistentVals,
+                                   final RadFilterDef baseFilter, 
+                                   final Id ownerClassId) {
+        classId = ownerClassId;
+        if (baseFilter != null) {
+            for (ISqmlParameter parameter : baseFilter.getParameters().getAll()) {
+                parameters.add(new RadFilterInheritedParamDef((RadFilterParamDef) parameter, true));
+            }
+        }
+        if (xmlParameters != null) {
+            if (importFromXml(xmlParameters, environment) && persistentVals != null) {
+                loadPersistentValues(persistentVals.getPersistentValueList(), environment);
+            }
+        }
+        isPersistentValuesReadOnly = false;
+        allowPersistentValues = true;
+    }
+    
+    //Common filter parameters
     private RadFilterParameters(final IClientEnvironment environment, final org.radixware.schemas.groupsettings.FilterParameters params, final RadFilterDef baseFilter, final Id ownerTableId) {
         classId = ownerTableId;
         if (baseFilter != null) {
             for (ISqmlParameter parameter : baseFilter.getParameters().getAll()) {
-                parameters.add((RadFilterParamDef) parameter);
+                parameters.add(new RadFilterInheritedParamDef((RadFilterParamDef) parameter, false));
             }
         }
-        if (params != null && params.getParameterList() != null) {
-            RadFilterUserParamDef customParameter;
-            for (org.radixware.schemas.groupsettings.FilterParameters.Parameter parameter : params.getParameterList()) {
-                customParameter = RadFilterUserParamDef.Factory.loadFromXml(environment, parameter, false);
-                customParameterIds.add(customParameter.getId());
-                parameters.add(customParameter);
-            }
-        }
+        isPersistentValuesReadOnly = true;
+        importImpl(params, environment);
         allowPersistentValues = false;
     }
 
@@ -217,37 +203,27 @@ public final class RadFilterParameters implements ISqmlParameters {
         customParameterIds.clear();
         for (ISqmlParameter parameter : getAll()) {
             if (parameter instanceof RadFilterUserParamDef) {
-                if (parameter instanceof ISqmlModifiableParameter) {
-                    ((RadFilterUserParamDef) parameter).writeToXml(xmlParameters);
-                    customParameterIds.add(parameter.getId());
-                }
+                ((RadFilterUserParamDef) parameter).writeToXml(xmlParameters);
+                customParameterIds.add(parameter.getId());
             }
         }
         return xmlParameters;
     }
     
-    public org.radixware.schemas.groupsettings.CustomFilter.PersistentValues writePersistentValuesToXml(org.radixware.schemas.groupsettings.CustomFilter.PersistentValues xml){
-        final org.radixware.schemas.groupsettings.CustomFilter.PersistentValues xmlParamValues;
-        if (xml==null){
-            xmlParamValues = org.radixware.schemas.groupsettings.CustomFilter.PersistentValues.Factory.newInstance();
-        }else{
-            xmlParamValues = xml;
-        }
-        org.radixware.schemas.groupsettings.CustomFilter.PersistentValues.PersistentValue xmlParamValue;
+    void writePersistentValuesToXml(org.radixware.schemas.groupsettings.FilterParameters.Values xml){
+        org.radixware.schemas.groupsettings.FilterParameterValue xmlParamValue;
         for (ISqmlParameter parameter : getAll()) {
             if (parameter.getPersistentValue() != null) {
-                xmlParamValue = xmlParamValues.addNewPersistentValue();
+                xmlParamValue = xml.addNewPersistentValue();
                 xmlParamValue.setParamId(parameter.getId());
                 final String valAsStr = parameter.getPersistentValue().getValAsStr();
-                if (valAsStr != null) {
-                    xmlParamValue.setValAsStr(valAsStr);
-                }
+                xmlParamValue.setValueAsStr(valAsStr);
+                xmlParamValue.setType(parameter.getType());
                 if (parameter.getPersistentValue().getEditorPresentationId() != null) {
                     xmlParamValue.setEditorPresentationId(parameter.getPersistentValue().getEditorPresentationId());
                 }
             }
         }
-        return xmlParamValues;
     }
 
     public final boolean wasModified() {
@@ -401,4 +377,85 @@ public final class RadFilterParameters implements ISqmlParameters {
         }
         return max;
     }
+       
+    @Override
+    public XmlObject exportToXml() {
+        final org.radixware.schemas.groupsettings.FilterParameters xmlParameters =
+            org.radixware.schemas.groupsettings.FilterParameters.Factory.newInstance();
+        for (ISqmlParameter parameter : getAll()) {
+            if (parameter instanceof RadFilterUserParamDef) {
+                ((RadFilterUserParamDef) parameter).writeToXml(xmlParameters);
+            }else{
+                RadFilterParamDef.writeToXml(parameter, xmlParameters);
+            }
+        }
+        return xmlParameters;
+    }
+    
+    private void importImpl(final org.radixware.schemas.groupsettings.FilterParameters params, 
+                                        final IClientEnvironment environment){
+        if (params != null && params.getParameterList() != null) {
+            RadFilterUserParamDef customParameter;
+            for (org.radixware.schemas.groupsettings.FilterParameters.Parameter parameter : params.getParameterList()) {
+                customParameter = RadFilterUserParamDef.Factory.loadFromXml(environment, parameter, true);
+                final ISqmlParameter existingParameter = getParameterById(customParameter.getId());
+                if (existingParameter==null){
+                    parameters.add(customParameter);
+                    customParameterIds.add(customParameter.getId());
+                }else if (existingParameter instanceof ISqmlModifiableParameter){
+                    parameters.remove(existingParameter);
+                    parameters.add(customParameter);
+                }
+            }
+            if (params.getValues()!=null){
+                loadPersistentValues(params.getValues().getPersistentValueList(), environment);
+            }
+        }
+    }
+    
+    private void loadPersistentValues(final List<org.radixware.schemas.groupsettings.FilterParameterValue> valuesList,
+                                                       final IClientEnvironment environment){
+        if (valuesList!=null && !valuesList.isEmpty()){
+            Id parameterId;
+            ISqmlParameter parameter;
+            for (org.radixware.schemas.groupsettings.FilterParameterValue paramValue : valuesList) {
+                parameterId = paramValue.getParamId();
+                parameter = getParameterById(parameterId);
+                if (parameter != null
+                    && (parameter instanceof RadFilterUserParamDef==false || ((RadFilterUserParamDef)parameter).isValid())
+                    && !persistentValues.containsKey(parameterId)
+                   ) {
+                    final FilterParameterPersistentValue value =
+                        FilterParameterPersistentValue.loadFromXml(environment, parameter, paramValue, isPersistentValuesReadOnly);
+                    if (value != null) {
+                        parameter.setPersistentValue(value);
+                        persistentValues.put(parameterId, value);
+                    }
+                }
+            }//for (org.radixware.schemas.groupsettings.FilterParameterValue paramValue : valuesList)
+        }//if (valuesList!=null && !valuesList.isEmpty())
+    }
+
+    @Override
+    public boolean importFromXml(XmlObject xml, final IClientEnvironment environment) {
+        if (xml==null){
+            return true;
+        }
+        if (xml instanceof org.radixware.schemas.groupsettings.FilterParameters){
+            importImpl((org.radixware.schemas.groupsettings.FilterParameters)xml,environment);
+            return true;
+        }else{
+            final org.radixware.schemas.groupsettings.FilterParameters params;
+            try{
+                params = 
+                    XmlObjectProcessor.cast(RadFilterParameters.class.getClassLoader(), xml, org.radixware.schemas.groupsettings.FilterParameters.class);
+            }catch(AppError error){
+                final String exceptionStack = ClientException.exceptionStackToString(error);
+                environment.getTracer().debug(error.getMessage()+"\n"+exceptionStack);
+                return false;
+            }
+            importImpl(params, environment);
+            return true;
+        }
+    }        
 }

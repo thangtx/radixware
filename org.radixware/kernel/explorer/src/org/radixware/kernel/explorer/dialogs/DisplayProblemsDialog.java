@@ -13,8 +13,6 @@ package org.radixware.kernel.explorer.dialogs;
 
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QFrame;
 import com.trolltech.qt.gui.QHBoxLayout;
@@ -28,6 +26,7 @@ import com.trolltech.qt.gui.QTextOption;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
+import java.awt.Dimension;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dialogs.IDisplayProblemsDialog;
 import org.radixware.kernel.common.client.env.ClientIcon;
@@ -37,6 +36,7 @@ import org.radixware.kernel.common.client.exceptions.StandardProblemHandler;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
 public final class DisplayProblemsDialog extends ExplorerDialog implements IDisplayProblemsDialog{
@@ -204,9 +204,10 @@ public final class DisplayProblemsDialog extends ExplorerDialog implements IDisp
         content.adjustSize();
         
         final QSize sizeHint = sizeHint();//NOPMD 
-        final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();        
-        final int heightHardLimit = screenSize.height() * 3 / 4;
-        final int widthHardLimit = screenSize.width() * 3 / 4;
+        final Dimension hardLimitSize = WidgetUtils.getWndowMaxSize();        
+        final int heightHardLimit = hardLimitSize.height;
+        final int widthHardLimit = hardLimitSize.width;
+        
         final int height,width;                
         if (sizeHint.width()>widthHardLimit){
             saContent.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn);

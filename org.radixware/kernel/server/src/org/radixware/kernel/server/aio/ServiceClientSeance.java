@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -13,17 +13,21 @@ package org.radixware.kernel.server.aio;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.UnresolvedAddressException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.ssl.SSLContext;
 import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EHttpParameter;
-import org.radixware.kernel.common.enums.EPortSecurityProtocol;
 import org.radixware.kernel.common.exceptions.*;
 import org.radixware.kernel.common.sc.SapClientOptions;
+import org.radixware.kernel.common.sc.ServiceClient;
 import org.radixware.kernel.common.soap.IClientMessageProcessorFactory;
 import org.radixware.kernel.common.soap.IClientSoapMessageProcessor;
 import org.radixware.kernel.common.soap.ProcessException;
@@ -36,15 +40,16 @@ import org.radixware.kernel.common.utils.net.ClientChannel;
 import org.radixware.kernel.common.utils.net.JmsClientChannel;
 import org.radixware.kernel.common.utils.net.PipeClientChannel;
 import org.radixware.kernel.common.utils.net.SocketClientChannel;
+import org.radixware.kernel.server.instance.aadc.AadcMemberBinding;
 import org.radixware.kernel.server.units.Messages;
+import org.radixware.kernel.server.units.UnitThread;
 
 /**
- * Cеанс клиента сервиса. Возникает при вызове ServiceClient.invoke. При
+  * Cеанс клиента сервиса. Возникает при вызове ServiceClient.invoke. При
  * получении ответа или ошибке генерирует событие ResponseEvent. Закрывается при
  * разрыве соединения, ошибках, а также при получении ответа, если не
  * keepConnect. Если после получения ответа connected()==true, то в сеансе можно
- * посылать следующий запрос (см. invoke)
- *
+ * посылать следующий запрос (см. invoke) *
  *
  */
 public class ServiceClientSeance implements EventHandler {
@@ -66,6 +71,7 @@ public class ServiceClientSeance implements EventHandler {
         KEEP_CONNECTION_MILLIS = keepConnectionTimeout == null || keepConnectionTimeout.isEmpty() ? 4000 : Integer.parseInt(keepConnectionTimeout);
     }
     private static final long MAX_DELAY_BEFORE_RETRY_MILLIS = SystemPropUtils.getLongSystemProp("rdx.sc.async.max.delay.before.retry.millis", 5000);
+    private static final long DEBUG_LOAD_BALANCING_UNIT_ID = SystemPropUtils.getLongSystemProp("rdx.sc.async.debug.load.balancing.unit.id", 0);
     private static int KEEP_CONNECTION_MILLIS;
     private static final int MAX_VALUE_OF_CONNECT_ATTEMPTS = 100;
     private final AsyncServiceClient parent;
@@ -73,7 +79,7 @@ public class ServiceClientSeance implements EventHandler {
     private Class resultClass;
     private Map<String, String> additionalRequestAttrs;
     private boolean keepConnect;
-    private long maxFinishTime;
+    private long startTime, maxFinishTime;
     private ClientChannel clientChannel;
     private ChannelPort port;
     private SapClientOptions sap;
@@ -84,6 +90,10 @@ public class ServiceClientSeance implements EventHandler {
     private int reconnectAttempts = 0;
     private long invokeTimeMillis = 0;
     private long lastSendTimeMillis = 0;
+    private AadcAffinity aadcAffinity;
+    private Integer targetAadcMemberId;
+    private AadcMemberBinding aadcMemberBinding;
+    private boolean wasUnblock = false;
 
     public ServiceClientSeance(AsyncServiceClient parent) {
         this.parent = parent;
@@ -96,6 +106,10 @@ public class ServiceClientSeance implements EventHandler {
     }
 
     public void invoke(XmlObject rqEvBodyDoc_, Class resultClass_, Map<String, String> requestParams, boolean keepConnect_, int timeoutMillis) {
+        invoke(rqEvBodyDoc_, resultClass_, requestParams, keepConnect_, timeoutMillis, null);
+    }
+
+    public void invoke(XmlObject rqEvBodyDoc_, Class resultClass_, Map<String, String> requestParams, boolean keepConnect_, int timeoutMillis, AadcAffinity aadcAffinity) {
         busy = true;
         rqEnvBodyDoc = rqEvBodyDoc_;
         resultClass = resultClass_;
@@ -105,6 +119,37 @@ public class ServiceClientSeance implements EventHandler {
         this.additionalRequestAttrs = requestParams;
         invokeTimeMillis = System.currentTimeMillis();
         lastSendTimeMillis = 0;
+        if (parent.getAadcManager() != null && parent.getAadcManager().isInAadc()) {
+            this.aadcAffinity = aadcAffinity;
+            if (aadcAffinity != null) {
+                if (aadcAffinity.getForcedMemberId() != null) {
+                    targetAadcMemberId = aadcAffinity.getForcedMemberId();
+                    aadcMemberBinding = null;
+                } else {
+                    aadcMemberBinding = parent.getAadcManager().getMemberForObject(aadcAffinity);
+                    targetAadcMemberId = aadcMemberBinding == null ? null : aadcMemberBinding.getAadcMemberId();
+                }
+            } else {
+                aadcMemberBinding = null;
+                targetAadcMemberId = null;
+            }
+
+            if (this.aadcAffinity != null) {
+                if (this.aadcAffinity.getForcedMemberId() != null) {
+                    parent.tracer.debug("Using forced AADC member #" + targetAadcMemberId, false);
+                } else {
+                    parent.tracer.debug("Selected AADC member " + targetAadcMemberId + " (confirmed=" + (aadcMemberBinding == null ? false : aadcMemberBinding.isConfirmed()) + ") for affinity key " + aadcAffinity.getAffinityKey(), false);
+                }
+            }
+            if (targetAadcMemberId != null && port != null && !Objects.equals(sap.getAadcMemberId(), targetAadcMemberId)) {
+                close(EGenerateDisonnect.NO, ERemoveFromParent.NO);
+            }
+        } else {
+            this.aadcAffinity = null;
+            this.targetAadcMemberId = null;
+            this.aadcMemberBinding = null;
+        }
+        wasUnblock = false;
         if (port == null) {
             connect(true);
         } else {
@@ -184,20 +229,40 @@ public class ServiceClientSeance implements EventHandler {
         if (port != null || clientChannel != null) {
             throw new RadixError("Client seance already connected");
         }
-
+        if (enableBlockedSaps) {
+            wasUnblock = true;
+        }
         while (true) {
             SapClientOptions oldSap = sap;
-            sap = parent.getSap(enableBlockedSaps);
+            sap = parent.getSap(enableBlockedSaps, targetAadcMemberId);
             if (sap == null) {
-                if (enableBlockedSaps) {
+                final boolean useForcedAadcMember = aadcAffinity != null && aadcAffinity.getForcedMemberId() != null;
+                if (enableBlockedSaps && (targetAadcMemberId == null || useForcedAadcMember)) {
                     close(EGenerateDisonnect.NO, ERemoveFromParent.YES);
                     responseNotify(new NoSapsAvailableException("There are no available SAPs"));
                 } else {
+                    long curTime = System.currentTimeMillis();
+                    if (targetAadcMemberId != null && !useForcedAadcMember) {
+                        if (aadcMemberBinding.isConfirmed()) {
+                            if (curTime - startTime < 30000) { //некоторое время пытаться переконнектиться к подтвержденному узлу
+                                ;
+                            } else { //потом попробовать подключиться к любому
+                            parent.tracer.put(EEventSeverity.WARNING, "There are no available SAPs on confirmed target AADC member #" + targetAadcMemberId + ", trying to search SAP on any AADC member", null, null, false);
+                                targetAadcMemberId = null;
+                                continue;
+                            }
+                        } else { //если узел неподтвержден - подключиться к любому
+                            parent.tracer.put(EEventSeverity.DEBUG, "There are no available SAPs on non-confirmed target AADC member #" + targetAadcMemberId + ", trying to search SAP on any AADC member", null, null, false);
+                        targetAadcMemberId = null;
+                            continue;
+                    }
+                    }
+
                     if (reconnectAttempts < MAX_VALUE_OF_CONNECT_ATTEMPTS) {
                         reconnectAttempts++;
                     }
                     parent.tracer.debug("All SAPs are blocked, retry after delay", false);
-                    parent.dispatcher.waitEvent(new EventDispatcher.TimerEvent(), this, System.currentTimeMillis() + getDelayMillisBeforeNextRetry());
+                    parent.dispatcher.waitEvent(new EventDispatcher.TimerEvent(), this, curTime + getDelayMillisBeforeNextRetry());
                 }
                 break;
             }
@@ -271,7 +336,33 @@ public class ServiceClientSeance implements EventHandler {
         return Math.min(delayMillis, Math.max(0, maxFinishTime - System.currentTimeMillis()));
     }
 
+    private static final Map<Long, AtomicInteger> statsMap = new TreeMap<>();
+    private static final Map<Long, Integer> loadMap = new HashMap<>();
+    private static long lastWriteTimeMillis = 0;
+
     private void call() {
+        if (DEBUG_LOAD_BALANCING_UNIT_ID > 0) {
+            if (Thread.currentThread() instanceof UnitThread && ((UnitThread) Thread.currentThread()).getUnit().getId() == DEBUG_LOAD_BALANCING_UNIT_ID) {
+                AtomicInteger stat = statsMap.get(sap.getId());
+                if (stat == null) {
+                    stat = new AtomicInteger(1);
+                    statsMap.put(sap.getId(), stat);
+                    loadMap.put(sap.getId(), sap.getLoadPercent());
+                } else {
+                    stat.incrementAndGet();
+                }
+                if (System.currentTimeMillis() - lastWriteTimeMillis > 5000) {
+                    final StringBuilder sb = new StringBuilder();
+                    for (Map.Entry<Long, AtomicInteger> entry : statsMap.entrySet()) {
+                        sb.append(" " + entry.getKey() + "=" + entry.getValue().get() + " (" + loadMap.get(entry.getKey()) + ");");
+                    }
+                    System.out.println(new Date() + ": " + Thread.currentThread().getId() + ": " + sb.toString());
+                    statsMap.clear();
+                    loadMap.clear();
+                    lastWriteTimeMillis = System.currentTimeMillis();
+                }
+            }
+        }
         try {
             try {
                 messageProcessor = processorFactory.createProcessor();
@@ -318,7 +409,7 @@ public class ServiceClientSeance implements EventHandler {
     }
 
     private void afterConnect() throws IOException {
-        boolean isSsl = sap.getSecurityProtocol() == EPortSecurityProtocol.SSL;
+        boolean isSsl = sap.getSecurityProtocol().isTls();
         parent.tracer.debug("SAP '" + sap.getName() + "' connected over " + (isSsl ? "secure" : "plaintext") + " connection (" + clientChannel + ")", false);
         reconnectAttempts = 0;
         if (clientChannel instanceof SocketClientChannel) {
@@ -330,7 +421,7 @@ public class ServiceClientSeance implements EventHandler {
                     throw new IOException(Messages.ERR_CANT_CREATE_SSLCONTEXT + e.toString(), e);
                 }
                 port = new SocketChannelPort(parent.dispatcher, parent.tracer, (SocketChannel) clientChannel.getSelectableChannel(), ChannelPort.FRAME_HTTP_RS, ChannelPort.FRAME_HTTP_RQ);
-                port.initSsl(sslContext, true, null, sap.getCipherSuites());
+                port.initSsl(sslContext, true, null, sap.getCipherSuites(), sap.getSecurityProtocol());
             } else {
                 port = new SocketChannelPort(parent.dispatcher, parent.tracer, (SocketChannel) clientChannel.getSelectableChannel(), ChannelPort.FRAME_HTTP_RS, ChannelPort.FRAME_HTTP_RQ);
             }
@@ -396,6 +487,10 @@ public class ServiceClientSeance implements EventHandler {
                     if (keepConnect && frame.attrs != null) {
                         doKeepConnect = HttpFormatter.getKeepConnectionAlive(frame.attrs);
                     }
+                    if (frame.attrs != null) {
+                        int loadPercent = HttpFormatter.getRadixLoadFromHeaders(frame.attrs);
+                        currentSap.setLoadPercent(loadPercent);
+                    }
 
                     try {
                         final XmlObject rs = unwrapMessage(frame);
@@ -409,6 +504,7 @@ public class ServiceClientSeance implements EventHandler {
                         final long curMillis = System.currentTimeMillis();
                         parent.tracer.debug("Received response from " + sap.getName() + "(" + portSnapshot.getShortDescription() + ", spent in AAS: " + (curMillis - lastSendTimeMillis) + " ms, spent on busy processing: " + (lastSendTimeMillis - invokeTimeMillis), false);
                         wasRealResponce = true;
+                        updateAffinityBinding();
                         responseNotify(rs);
                     } catch (ServiceCallException e) {
                         close(EGenerateDisonnect.NO, ERemoveFromParent.YES);
@@ -416,8 +512,8 @@ public class ServiceClientSeance implements EventHandler {
                     } catch (ServiceCallFault e) {
                         boolean isRetryIndicator = false;
                         if (e.getFaultCode() != null) {
-                            if (e.getFaultCode().equals(ServiceProcessFault.FAULT_CODE_SERVER_BUSY)) {
-                                parent.notifySapUnusable(sap.getName(), "busy");
+                            if (e.getFaultCode().startsWith(ServiceProcessFault.FAULT_CODE_SERVER_BUSY)) {
+                                parent.notifySapUnusable(sap.getName(), getReasonFromBusyFault(e.getFaultCode()));
                                 isRetryIndicator = true;
                             } else if (e.getFaultCode().equals(ServiceProcessFault.FAULT_CODE_SERVER_SHUTDOWN)) {
                                 parent.notifySapUnusable(sap.getName(), "shutting down");
@@ -429,13 +525,16 @@ public class ServiceClientSeance implements EventHandler {
                                 close(EGenerateDisonnect.NO, ERemoveFromParent.YES);
                             }
                             wasRealResponce = true;
+                            if (aadcAffinity != null) {
+                                updateAffinityBinding();
+                            }
                             responseNotify(e);
                         } else {
                             if (doKeepConnect) {
                                 keepConnection();
                             }
                             close(EGenerateDisonnect.NO, ERemoveFromParent.NO);
-                            sap.blockOnBusy(); //short block
+                            sap.blockOnBusy(e.getFaultCode(), ServiceClient.extractAvailableVersion(e.getDetail())); //short block
                             connect(false, (ChannelPort) event.getSource()); //retry
                         }
                     }
@@ -451,6 +550,22 @@ public class ServiceClientSeance implements EventHandler {
         } else {
             throw new RadixError("Invalid event " + event);
         }
+    }
+
+    private void updateAffinityBinding() {
+        if (aadcAffinity != null && aadcAffinity.getForcedMemberId() == null && sap.getAadcMemberId() != null) {
+            aadcMemberBinding = parent.getAadcManager().registerMemberForObject(aadcAffinity, sap.getAadcMemberId());
+            if (aadcMemberBinding != null && aadcMemberBinding.isChangedBeforeExpiration()) {
+                parent.tracer.put(EEventSeverity.WARNING, "Confirmed binding for affinity key " + aadcAffinity.getAffinityKey() + " has been overridden to member #" + aadcMemberBinding.getAadcMemberId() + ", AADC locks are possible", null, null, false);
+            }
+        }
+    }
+
+    private String getReasonFromBusyFault(final String faultCode) {
+        if (faultCode.length() <= ServiceProcessClientFault.FAULT_CODE_SERVER_BUSY.length()) {
+            return "busy";
+        }
+        return "busy (" + faultCode.substring(ServiceProcessFault.FAULT_CODE_SERVER_BUSY.length() + 1) + ")";
     }
 
     private void keepConnection() {

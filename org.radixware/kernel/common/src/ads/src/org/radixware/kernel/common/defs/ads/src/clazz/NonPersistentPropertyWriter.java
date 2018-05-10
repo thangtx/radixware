@@ -17,6 +17,7 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 
 
 final class NonPersystentPropertyWriter extends AdsPropertyWriter<AdsPropertyDef> {
@@ -28,8 +29,13 @@ final class NonPersystentPropertyWriter extends AdsPropertyWriter<AdsPropertyDef
     }
 
     private void printValueStorage(CodePrinter printer) {
+        if (printer instanceof IHumanReadablePrinter) {
+            printer.print(getProperty().getName());
+        } 
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.print(propId);
         printer.print(TEXT_VALUE_STORAGE_SUFFIX);
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 
     private boolean printInitialValue(CodePrinter printer) {

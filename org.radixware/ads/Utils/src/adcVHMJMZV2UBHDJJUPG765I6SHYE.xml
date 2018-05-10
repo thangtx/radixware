@@ -54,6 +54,7 @@ public </xsc:Java>
           <Src>
             <xsc:Item>
               <xsc:Java>final org.radixware.kernel.common.builder.api.IBuildProblemHandler delegate = problemHandler;
+final String TRACE_MSG_TEMPLATE = "at %s : %s";
 
 org.radixware.kernel.common.builder.api.IBuildProblemHandler workerHandle = new org.radixware.kernel.common.builder.api.IBuildProblemHandler() {
     private boolean wasErrors = false;
@@ -71,31 +72,39 @@ org.radixware.kernel.common.builder.api.IBuildProblemHandler workerHandle = new 
             delegate.accept(problem);
         }
         boolean isError = problem.getSeverity() == org.radixware.kernel.common.check.RadixProblem.ESeverity.ERROR;
-        String message = "at " + problem.getSource().getQualifiedName() + ": " + problem.getMessage();
+        String message = String.format(TRACE_MSG_TEMPLATE, problem.getSource().getQualifiedName(), problem.getMessage());
         if (isError) {
             wasErrors = true;
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, message, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -103,25 +112,33 @@ org.radixware.kernel.common.builder.api.IBuildProblemHandler workerHandle = new 
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Warning</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, message, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -129,66 +146,85 @@ org.radixware.kernel.common.builder.api.IBuildProblemHandler workerHandle = new 
     }
 };
 
+final org.radixware.kernel.common.defs.ads.AdsDefinition compileDef = definition;
 BuildActionExecutor executor = new BuildActionExecutor(new org.radixware.kernel.common.builder.api.DefaultBuildEnvironment(BuildActionExecutor.EBuildActionType.COMPILE_SINGLE, workerHandle) {
     @Override
     public org.radixware.kernel.common.defs.ads.build.IFlowLogger getFlowLogger() {
         return new org.radixware.kernel.common.builder.console.ConsoleFlowLogger() {
             @Override
-            protected void printError(String stirng) {
+            protected void printError(String string) {
                 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>, stirng, </xsc:Java>
+              <xsc:Java>, String.format(TRACE_MSG_TEMPLATE, compileDef.getQualifiedName(), string), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
             }
 
             @Override
-            protected void printMessage(String stirng) {
-                </xsc:Java>
+            protected void printMessage(String string) {
+                if (!string.trim().isEmpty()) {
+                    </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Event</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>, stirng, </xsc:Java>
+              <xsc:Java>, String.format(TRACE_MSG_TEMPLATE, compileDef.getQualifiedName(), string), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
+                }
             }
 
             @Override
@@ -196,37 +232,49 @@ BuildActionExecutor executor = new BuildActionExecutor(new org.radixware.kernel.
                 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>, </xsc:Java>
+              <xsc:Java>, String.format(TRACE_MSG_TEMPLATE, compileDef.getQualifiedName(), "\n" + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U">
+                <xsc:Presentation>ExceptionTextFormatter</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(e), </xsc:Java>
+              <xsc:Java>(e)), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -238,16 +286,19 @@ BuildActionExecutor executor = new BuildActionExecutor(new org.radixware.kernel.
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> compiledDefId = definition.Id;
-final org.radixware.kernel.common.defs.ads.AdsDefinition compileDef = definition;
 
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI">
+                <xsc:Presentation>ResultRequestor</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> requestorRef = requestor;
@@ -258,7 +309,9 @@ executor.execute(new RadixObject[]{
     public void acceptUserDefinitionRuntime(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> id, java.io.File jarFile) {
@@ -278,51 +331,67 @@ executor.execute(new RadixObject[]{
                     requestorRef.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI mthHRITJYJNM5DGFPMRZH5EFY56II" Invoke="true"/>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE aicZ6I4SRQKMBFQRPNHAQ3Y4M67SI mthHRITJYJNM5DGFPMRZH5EFY56II" Invoke="true">
+                <xsc:Presentation>accept</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(org.radixware.kernel.common.utils.FileUtils.readBinaryFile(jarFile), runtimeLocalClassName);
+              <xsc:Java>(org.radixware.kernel.common.utils.FileUtils.readBinaryFile(jarFile), runtimeLocalClassName, compileDef);
                 } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> ex) {
                     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U">
+                <xsc:Presentation>ExceptionTextFormatter</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ex), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -335,13 +404,17 @@ executor.execute(new RadixObject[]{
     public void acceptBuildTarget(Definition def, java.util.Map&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> idsMap) {
@@ -506,13 +579,17 @@ if (shared) {
         repo = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44">
+                <xsc:Presentation>UDSRepositoryBridge</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44 mth6QGRH4OT3JBDDG5F2A4RJTS4WY" Invoke="true"/>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44 mth6QGRH4OT3JBDDG5F2A4RJTS4WY" Invoke="true">
+                <xsc:Presentation>createRepositoryForReports</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -525,13 +602,17 @@ if (shared) {
     repo = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44">
+                <xsc:Presentation>UDSRepositoryBridge</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44 mth6QGRH4OT3JBDDG5F2A4RJTS4WY" Invoke="true"/>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE adcCSPITT6NUFAWNJ3KLXYFKAWC44 mth6QGRH4OT3JBDDG5F2A4RJTS4WY" Invoke="true">
+                <xsc:Presentation>createRepositoryForReports</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -555,25 +636,33 @@ try {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Debug</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, "No definitions found for user-defined report: #" + reportId, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -586,7 +675,9 @@ try {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE mthUHEIC6SZ4FCNBPXXBGVBM3UWPM" Invoke="true"/>
+              <xsc:IdReference Path="adcVHMJMZV2UBHDJJUPG765I6SHYE mthUHEIC6SZ4FCNBPXXBGVBM3UWPM" Invoke="true">
+                <xsc:Presentation>compile</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(report, new org.radixware.kernel.common.builder.api.IBuildProblemHandler() {
@@ -669,6 +760,9 @@ try {
               <Parameter Name="mainClassLocalName" Id="mprGHD4XXGM6NGDXBN7ZN75Y2QY2I">
                 <Type TypeId="21"/>
               </Parameter>
+              <Parameter Name="compileDef" Id="mpr6SEDIGL5AFDG5G25BXRB2CIV2I">
+                <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.AdsDefinition"/>
+              </Parameter>
             </Parameters>
             <Sources>
               <Src/>
@@ -701,13 +795,17 @@ try {
     branch = </xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                    <xsc:Presentation>Arte::Arte</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>.</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+                  <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                    <xsc:Presentation>getDefManager</xsc:Presentation>
+                  </xsc:IdReference>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>().ReleaseCache.Release.Repository.getBranch();
@@ -718,19 +816,25 @@ try {
     final Class&lt;?> clazz = </xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                    <xsc:Presentation>Arte::Arte</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>.</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+                  <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                    <xsc:Presentation>getInstance</xsc:Presentation>
+                  </xsc:IdReference>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>().DefManager.getClass(</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:IdReference Path="adcBV4ORSQZB5DSDNY5AZVM76QXGY" Soft="true"/>
+                  <xsc:IdReference Path="adcBV4ORSQZB5DSDNY5AZVM76QXGY" Soft="true">
+                    <xsc:Presentation>Acs::UDSAppRoleLoader</xsc:Presentation>
+                  </xsc:IdReference>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>);
@@ -738,13 +842,17 @@ try {
         </xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY">
+                    <xsc:Presentation>UDSDefCustomLoader</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java> loader = (</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY">
+                    <xsc:Presentation>UDSDefCustomLoader</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>) clazz.newInstance();
@@ -752,20 +860,40 @@ try {
     } catch (</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                    <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java> ex) {
-        return null;
+        throw new </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                    <xsc:Presentation>AppError</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>("Error on create repository for roles", ex);
     }
 } catch (</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                    <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java> e) {
-    return null;
+    throw new </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                    <xsc:Presentation>AppError</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>("Error on create repository for roles", e);
 }
 </xsc:Java>
                 </xsc:Item>
@@ -783,13 +911,17 @@ try {
     branch = </xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                    <xsc:Presentation>Arte::Arte</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>.</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+                  <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                    <xsc:Presentation>getDefManager</xsc:Presentation>
+                  </xsc:IdReference>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>().ReleaseCache.Release.Repository.getBranch();
@@ -799,7 +931,9 @@ try {
         </xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY">
+                    <xsc:Presentation>UDSDefCustomLoader</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java> loader = externalLoader;
@@ -807,26 +941,34 @@ try {
             final Class&lt;?> clazz = </xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                    <xsc:Presentation>Arte::Arte</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>.</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+                  <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                    <xsc:Presentation>getInstance</xsc:Presentation>
+                  </xsc:IdReference>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>().DefManager.getClass(</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:IdReference Path="adcAET7DTMA5VE47NWVW22BPT27FQ" Soft="true"/>
+                  <xsc:IdReference Path="adcAET7DTMA5VE47NWVW22BPT27FQ" Soft="true">
+                    <xsc:Presentation>Reports.User::UDSUserReportLoader</xsc:Presentation>
+                  </xsc:IdReference>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>);
             loader = (</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="aicL25TZFEZONEQJJWZHDTE3THUJY">
+                    <xsc:Presentation>UDSDefCustomLoader</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java>) clazz.newInstance();
@@ -839,20 +981,40 @@ try {
     } catch (</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                    <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java> ex) {
-        return null;
+        throw new </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                    <xsc:Presentation>AppError</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>("Error on create repository for reports", ex);
     }
 } catch (</xsc:Java>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                  <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                    <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+                  </xsc:TypeDeclaration>
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Java> e) {
-    return null;
+    throw new </xsc:Java>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                    <xsc:Presentation>AppError</xsc:Presentation>
+                  </xsc:IdReference>
+                </xsc:Item>
+                <xsc:Item>
+                  <xsc:Java>("Error on create repository for reports", e);
 }
 </xsc:Java>
                 </xsc:Item>

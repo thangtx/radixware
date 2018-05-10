@@ -49,9 +49,12 @@ public class SQLScriptException extends SQLException {
 
     @Override
     public String toString() {
-        if (position != null)
+        if (position != null) {
             return super.toString().trim() + " : " + position.toString();
-        return super.toString();
+        }
+        else {
+            return super.toString();
+        }
     }
 
 }

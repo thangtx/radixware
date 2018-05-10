@@ -12,44 +12,62 @@
 
 package org.radixware.wps.settings;
 
-import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.SettingNames;
+import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
+import org.radixware.wps.DefaultSettings;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.WpsSettings;
 import org.radixware.wps.rwt.Container;
 import org.radixware.wps.rwt.UIObject;
 
 
-public abstract class SettingsWidget extends Container {
+abstract class SettingsWidget extends Container {
 
-    final IClientEnvironment e;
-    public String subGroup, group, name;
-    protected Object defaultValue;
+    private final WpsEnvironment environment;
+    protected String subGroup, group, name;
+    private final String settingsConfigName;
 
-    public SettingsWidget(WpsEnvironment env, UIObject parent, String group, String subGroup, String name, Object defaultValue) {
+    public SettingsWidget(final WpsEnvironment env, 
+                          final UIObject parent, 
+                          final String group, 
+                          final String subGroup, 
+                          final String name) {
         super();
         this.setParent(parent);
-        this.e = env;
+        environment = env;
         this.group = group;
         this.subGroup = subGroup;
         this.name = name;
+        final StringBuilder cfgNameBuilder = new StringBuilder(SettingNames.SYSTEM);
+        cfgNameBuilder.append('/');
+        cfgNameBuilder.append(group);
+        cfgNameBuilder.append('/');
+        if (subGroup != null && !subGroup.isEmpty()){
+            cfgNameBuilder.append(subGroup);
+            cfgNameBuilder.append('/');
+        }
+        cfgNameBuilder.append(name);
+        settingsConfigName = cfgNameBuilder.toString();        
+    }
+    
+    protected final WpsEnvironment getWpsEnvironment(){
+        return environment;
     }
 
-    public String getSettingCfgName() {
-        if (subGroup == null || subGroup.isEmpty()) {
-            return SettingNames.SYSTEM + "/" + group + "/" + name;
-        } else {
-            return SettingNames.SYSTEM + "/" + group + "/" + subGroup + "/" + name;
-        }
+    public final String getSettingCfgName() {
+        return settingsConfigName;
     }
-    
-    
+/*        
     protected void setDefaultValue(Object val) {
         this.defaultValue = val;
     }
 
     protected Object getDefaultValue() {
         return defaultValue;
+    }*/
+    
+    protected final String readDefaultValue(){
+        return DefaultSettings.getInstance().getValue(getSettingCfgName());
     }
     
 
@@ -59,4 +77,8 @@ public abstract class SettingsWidget extends Container {
     public abstract void writeSettings(WpsSettings dst);
 
     public abstract void restoreDefaults();
+    
+    public boolean validate() {
+        return true;
+    }
 }

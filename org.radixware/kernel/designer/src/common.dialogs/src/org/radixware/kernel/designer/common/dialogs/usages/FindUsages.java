@@ -300,6 +300,7 @@ public class FindUsages extends RadixObjectsLookuper {
 
 
         for (final Definition dependence : dependencies) {
+            if (dependence == null) continue;
             if (definition == dependence || (Utils.equals(definition.getId(), dependence.getId())
                     && (getBaseOver(dependence) == definition || getMirror(definition) == dependence))
                     || (definition != dependence && getSubstitution(definition) == dependence)) {

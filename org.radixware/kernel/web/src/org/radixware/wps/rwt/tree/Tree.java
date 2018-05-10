@@ -14,24 +14,14 @@ import java.awt.Color;
 import java.util.*;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EKeyboardModifier;
-import org.radixware.kernel.common.client.enums.EMouseButton;
-import org.radixware.kernel.common.client.meta.RadSortingDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
-import org.radixware.kernel.common.client.views.IDialog;
-import org.radixware.kernel.common.client.widgets.selector.SelectorSortUtils;
-import org.radixware.kernel.common.enums.EDialogButtonType;
+import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.enums.EEditMaskType;
 import org.radixware.kernel.common.html.Div;
 import org.radixware.kernel.common.html.Html;
-import org.radixware.kernel.common.html.Table;
-import org.radixware.wps.icons.WpsIcon;
 import org.radixware.wps.rwt.Alignment;
-import org.radixware.wps.rwt.CheckBox;
-import org.radixware.wps.rwt.Dialog;
-import org.radixware.wps.rwt.Events;
+import org.radixware.wps.rwt.Grid;
 import org.radixware.wps.rwt.IGrid;
-import org.radixware.wps.rwt.Label;
-import org.radixware.wps.rwt.LabeledEditGrid;
 import org.radixware.wps.rwt.UIObject;
 import org.radixware.wps.rwt.ValueEditor;
 import org.radixware.wps.rwt.tree.Node.Cell;
@@ -54,6 +44,59 @@ public class Tree extends UIObject implements IGrid {
     public interface ICellEditorProvider {
 
         INodeCellEditor newCellEditor(Node node, int columnIndex);
+    }
+    
+    public static interface INodeVisitor{
+        void visit(Node node, boolean isRootNode);
+        boolean interrupt(Node node, boolean isRootNode);
+        boolean ignoreChildren(Node node, boolean isRootNode);
+    }
+    
+    public static abstract class AbstractNodeVisitor implements INodeVisitor{
+
+        @Override
+        public boolean interrupt(final Node node, final boolean isRootNode) {
+            return false;
+        }
+
+        @Override
+        public boolean ignoreChildren(final Node node, final boolean isRootNode) {
+            return false;
+        }        
+    }
+    
+    private static class MaxLevelCalculator implements INodeVisitor{
+        
+        private int maxLevel = 0;
+        private final boolean processRootNode;
+        
+        public MaxLevelCalculator(final boolean processRoot){
+            processRootNode = processRoot;
+        }
+
+        @Override
+        public void visit(final Node node, final boolean isRootNode) {
+            if ((!isRootNode || processRootNode) && node.isNodeVisible()){                
+                if (node.lastComputedLevel < 0) {
+                    node.updateLevel();
+                }
+                maxLevel = Math.max(maxLevel, node.lastComputedLevel);
+            }            
+        }
+
+        @Override
+        public boolean interrupt(final Node node, final boolean isRootNode) {
+            return false;
+        }
+
+        @Override
+        public boolean ignoreChildren(final Node node, final boolean isRootNode) {
+            return !node.isNodeVisible();
+        }       
+        
+        public int getMaxLevel(){
+            return maxLevel;
+        }
     }
 
     public static class EditMaskRenderer implements INodeCellRenderer {
@@ -167,199 +210,6 @@ public class Tree extends UIObject implements IGrid {
         }
     }
 
-    public static class EditingOptions implements IEditingOptions {
-
-        private ECellEditingMode mode;
-        private final Cell cell;
-        private final Column column;
-        private EditMask mask = null;
-
-        EditingOptions(Cell cell) {
-            mode = null;
-            this.cell = cell;
-            this.column = null;
-        }
-
-        EditingOptions(Column col) {
-            mode = ECellEditingMode.NULL_VALUE_ACCEPTED;
-            this.cell = null;
-            this.column = col;
-        }
-
-        @Override
-        public EditMask getEditMask() {
-            if (mask == null) {
-                return null;
-            }
-            return EditMask.newCopy(mask);
-        }
-
-        @Override
-        public ECellEditingMode getEditingMode() {
-            return mode;
-        }
-
-        @Override
-        public void setEditMask(EditMask editMask) {
-            if (mask == null && editMask == null) {
-                return;
-            }
-            mask = EditMask.newCopy(editMask);
-            if (cell != null) {
-                cell.updateCurrentState();
-            }
-            if (column != null) {
-                column.updateCellsAtColumn();
-            }
-        }
-
-        @Override
-        public void setEditingMode(ECellEditingMode editMode) {
-            if (editMode == null) {
-                mode = ECellEditingMode.NULL_VALUE_ACCEPTED;
-            }
-            if (editMode == mode) {
-                return;
-            }
-            this.mode = editMode;
-
-            if (cell != null) {
-                cell.updateCurrentState();
-            }
-            if (column != null) {
-                column.updateCellsAtColumn();
-            }
-        }
-    }
-
-    private class Header extends UIObject {
-
-        private Table table = new Table();
-        private Table.Row row = table.addRow();
-        private Map<Html, Column> columns = new HashMap<>();
-
-        public Header() {
-            super(new Div());
-            html.setCss("overflow", "hidden");
-            html.add(table);
-            this.table.setCss("cellspacing", "0px");
-            this.table.setCss("cellpadding", "0px");
-            this.table.setCss("border-collapse", "collapse");
-            this.table.setCss("border", "none");
-
-            html.setCss("width", "100%");
-            html.setCss("position", "relative");
-            html.setAttr("role", "header");
-            html.setCss("height", "20px");
-            html.addClass("rwt-grid-header-panel");
-            this.table.setCss("position", "relative");
-        }
-
-        public void addColumn(int index, Column column) {
-            Table.DataCell cell = row.addCell(index);
-            cell.addClass("rwt-grid-row-cell");
-            cell.setCss("border-top", "none");
-            cell.setCss("border-bottom", "none");
-            cell.setCss("padding", "0");
-            cell.add(column.getHtml());
-
-            column.setParent(this);
-            columns.put(cell, column);
-            headerAlign(getHeaderAlignment());
-            cell.setAttr(IGrid.IColumn.SIZE_POLISY_ATTR_NAME, column.getSizePolicy().getHtmlAttrValue());            
-        }
-
-        public void removeColumn(int index) {
-            if (header.getColumnCount() > index) {
-                Column c = getColumn(index);
-                c.setParent(null);
-                row.remove(row.getCell(index));
-                columns.remove(c.getHtml());
-            }
-        }
-
-        public void headerAlign(Alignment a) {
-            if (a != null) {
-                String align;
-                switch (a) {
-                    case RIGHT:
-                        align = "right";
-                        break;
-                    case CENTER:
-                        align = "center";
-                        break;
-                    case LEFT:
-                        align = "left";
-                        break;
-                    default:
-                        align = "center";
-                        break;
-                }
-
-                if (columns != null && !columns.isEmpty()) {
-                    for (Column c : columns.values()) {
-                        c.getHtml().setCss("text-align", align);
-                    }
-                }
-            }
-        }
-
-        public int getColumnCount() {
-            return row.cellCount();
-        }
-
-        public Column getColumn(int index) {
-            return columns.get(row.getCell(index));
-        }
-
-        public Column getTreeColumn() {
-            return getColumn(0);
-        }
-
-        @Override
-        public void visit(Visitor visitor) {
-            super.visit(visitor);
-            if (columns != null) {
-                for (Column c : columns.values()) {
-                    c.visit(visitor);
-                }
-            }
-        }
-
-        @Override
-        public UIObject findObjectByHtmlId(String id) {
-            UIObject result = super.findObjectByHtmlId(id);
-            if (result != null) {
-                return result;
-            }
-            if (columns != null) {
-                for (Column c : columns.values()) {
-                    result = c.findObjectByHtmlId(id);
-                    if (result != null) {
-                        return result;
-                    }
-                }
-            }
-            if (Objects.equals(id, table.getId())){
-                return this;//process resizeAction
-            }
-            return null;
-        }
-
-        @Override
-        public void processAction(final String actionName, final String actionParam) {
-            if (IGrid.RESIZE_ACTION_NAME.equals(actionName) && actionParam != null) {
-                headerSettings = actionParam;
-            }else{
-                super.processAction(actionName, actionParam);
-            }
-        }
-        
-        Html getCell(final int columnIndex){
-            return row.getCell(columnIndex);
-        }
-    }        
-
     protected List<ColumnDescriptor> getAllColumnDescriptors() {
         return null;
     }
@@ -367,114 +217,40 @@ public class Tree extends UIObject implements IGrid {
     protected List<ColumnDescriptor> getVisibleColumnDescriptors(List<ColumnDescriptor> all) {
         return null;
     }
-
-    private class SetupColumnVisibilityDialog extends Dialog {
-
-        private class VCheckBox extends CheckBox {
-
-            ColumnDescriptor desc;
-
-            VCheckBox(ColumnDescriptor desc) {
-                setText(desc.getTitle());
-                this.desc = desc;
-            }
-        }
-
-        public SetupColumnVisibilityDialog(final IClientEnvironment env) {
-            super(env, null);
-            this.setWindowTitle(getEnvironment().getMessageProvider().translate("Tree", "Columns Visibility"));
-            List<ColumnDescriptor> all = getAllColumnDescriptors();
-            if (all == null) {
-                return;
-            }
-            List<ColumnDescriptor> visible = getVisibleColumnDescriptors(all);
-            if (visible == null) {
-                return;
-            }
-            this.getHtml().setAttr("dlgId", "visibleColumns");
-            this.setWidth(300);
-            this.setHeight(300);
-            LabeledEditGrid grid = createLabeledEditGrid();
-            this.add(grid);
-            List<SetupColumnVisibilityDialog.VCheckBox> cbss = fillColumnDescription(all, visible, grid);
-
-            grid.setTop(3);
-            grid.setLeft(3);
-            grid.getAnchors().setRight(new Anchors.Anchor(1, -3));
-            grid.getAnchors().setBottom(new Anchors.Anchor(1, -3));
-            this.addCloseAction(EDialogButtonType.OK);
-            this.addCloseAction(EDialogButtonType.CANCEL);
-
-            if (this.execDialog() == IDialog.DialogResult.ACCEPTED) {
-                List<ColumnDescriptor> descriptor = new LinkedList<>();
-                for (SetupColumnVisibilityDialog.VCheckBox cb : cbss) {
-                    if (cb.isSelected()) {
-                        descriptor.add(cb.desc);
-                    }
-                }
-                updateColumnsVisibility(descriptor);
-                Tree.this.updateColumnsResizingMode();
-            }
-        }
-
-        private LabeledEditGrid createLabeledEditGrid() {
-            return new LabeledEditGrid(new LabeledEditGrid.AbstractEditor2LabelMatcher() {
-                @Override
-                protected UIObject createLabelComonent(UIObject editorComponent) {
-                    return new Label();
-                }
-            });
-        }
-
-        private List<SetupColumnVisibilityDialog.VCheckBox> fillColumnDescription(List<ColumnDescriptor> all, final List<ColumnDescriptor> visible, LabeledEditGrid grid) {
-            final List<SetupColumnVisibilityDialog.VCheckBox> cbss = new LinkedList<>();
-            for (ColumnDescriptor desc : all) {
-                SetupColumnVisibilityDialog.VCheckBox cb = new SetupColumnVisibilityDialog.VCheckBox(desc);
-                grid.addEditor(cb, 0, -1);
-                cb.setSelected(visible.contains(desc));
-                cbss.add(cb);
-                if (visible.size() == 1) {
-                    cb.setEnabled(!visible.contains(desc));
-                }
-                cb.addSelectionStateListener(new CheckBox.SelectionStateListener() {
-                    @Override
-                    public void onSelectionChange(CheckBox cb) {
-                        int j = 0;
-                        for (int i = 0; i < cbss.size(); i++) {
-                            if (!cbss.get(i).isSelected()) {
-                                j++;
-                            }
-                            int index = findUncheckedItemIndex(cbss);
-                            cbss.get(i).setEnabled(i != index && i != 0);
-                            cbss.get(index).setEnabled(!(j == cbss.size() - 1) && index != 0);
-                        }
-                    }
-                });
-            }
-            cbss.get(0).setEnabled(false);//root node always visble
-            return cbss;
-        }
-
-        private int findUncheckedItemIndex(List<SetupColumnVisibilityDialog.VCheckBox> cbss) {
-            for (SetupColumnVisibilityDialog.VCheckBox cb : cbss) {
-                if (cb.isSelected()) {
-                    return cbss.indexOf(cb);
-                }
-            }
-            return cbss.size() - 1;
-        }
+    
+    protected boolean showRestoreDefaultColumnSettingsButton(){
+        return false;
     }
+    
+    protected void restoreDefaultColumnSettings(){
+        
+    }    
 
     private void setupColumnsVisiblity() {
-        Dialog dlg = new SetupColumnVisibilityDialog(getEnvironment());
-        dlg.execDialog(null);
+        final List<ColumnDescriptor> allColumns = getAllColumnDescriptors();
+        if (allColumns==null){
+            return;
+        }
+        final List<ColumnDescriptor> visibleColumns = getVisibleColumnDescriptors(allColumns);
+        if (visibleColumns==null){
+            return;
+        }
+        final IGrid.SetupColumnVisibilityDialog dialog = 
+            new IGrid.SetupColumnVisibilityDialog(getEnvironment(), allColumns,  visibleColumns, true, showRestoreDefaultColumnSettingsButton());
+        if (dialog.execDialog(this)==DialogResult.ACCEPTED){
+            updateColumnsVisibility(dialog.getSelectedColumns());
+            updateColumnsResizingMode();            
+        }else if (dialog.needToRestoreDefaultSettings()){
+            restoreDefaultColumnSettings();
+            updateColumnsResizingMode();           
+        }
     }
-
+    
     protected void updateColumnsVisibility(List<ColumnDescriptor> visibleColumns) {
         if (visibleColumns == null) {//default behaviour
-            boolean visible[] = new boolean[header.columns.size()];
+            boolean visible[] = new boolean[header.getColumnsCount()];
             int i = 0;
-            for (Column c : header.columns.values()) {
+            for (Column c : header) {
                 visible[i] = c.isVisible();
                 i++;
             }
@@ -488,100 +264,25 @@ public class Tree extends UIObject implements IGrid {
         }
     }
 
-    public class Column extends UIObject implements IColumn {
+    public class Column extends IGrid.AbstractColumn {
 
-        private Html label = new Html("label");
-        private Html srtDirectionIndicator, srtSequenceIndicator;
         private ICellRendererProvider rendererProvider;
         private ICellEditorProvider editorProvider;
-        private Object userData;
-        private final IEditingOptions editOpts = new EditingOptions(this);
-        private boolean isEditable = true;
-        private EColumnSizePolicy policy;
-        private Html handle = new Html("span");
-        private WpsIcon icon;
-        private Div imageContainer;
 
-        @Override
-        public IEditingOptions getEditingOptions() {
-            return editOpts;
-        }
-
-        private Column(String title) {
-            super(new Div());
-            html.setCss("overflow", "hidden");
-            html.add(label);
-            label.setInnerText(title);
-            html.setCss("padding-top", "3px");
-            html.setCss("height", "17px");
-            label.setCss("white-space", "nowrap");
-            html.addClass("header-cell");
-            html.setCss("vertical-align", "middle");
-            handle.setCss("width", "1px");
-            handle.setCss("height", "100%");
-            handle.setCss("float", "right");
-            handle.setCss("padding-left", "0");
-            handle.setCss("padding-top", "0");
-            handle.addClass("header-handle");
-            html.add(handle);
-            html.setAttr("onclick", "$RWT.tree.onHeaderClick");
-            html.setAttr("oncontextmenu", "$RWT.tree.onContextMenu");
-            setSizePolicyImpl(EColumnSizePolicy.INTERACTIVE);            
+        private Column(final AbstractColumnHeaderCell cell) {
+            super(cell, "$RWT.tree.onHeaderClick", "$RWT.tree.onContextMenu");
         }
 
         @Override
-        public void processAction(final String actionName, final String actionParam) {
-            if (Events.EVENT_NAME_ONCLICK.equals(actionName)) {
-                if (actionParam == null || actionParam.isEmpty()) {
-                    processClickEvent(0);
-                } else {
-                    final int keyModifiers;
-                    try {
-                        keyModifiers = Integer.parseInt(actionParam);
-                    } catch (NumberFormatException exception) {
-                        processClickEvent(0);
-                        return;
-                    }
-                    processClickEvent(keyModifiers);
-                }
-            } else {
-                super.processAction(actionName, actionParam);
-            }
-        }
-
-        @Override
-        public void setTitle(String title) {
-            label.setInnerText(title);
-        }
-
-        @Override
-        public String getTitle() {
-            return label.getInnerText();
-        }
-
-        protected void updateCellsAtColumn() {
-            if (getRootNode() != null) {
-                final Stack<Node> nodes = new Stack<>();
-                nodes.push(getRootNode());
-                Node node;
-                while (!nodes.isEmpty()) {
-                    node = nodes.pop();
+        public void updateCellsRenderer() {
+            visitNodes(new AbstractNodeVisitor() {
+                @Override
+                public void visit(final Node node, final boolean isRootNode) {
                     if (!node.getCells().isEmpty() && getColumnCount() > getIndex()) {
-                        node.getCells().get(getIndex()).updateCurrentState();
-                    }
-                    for (Node childNode : node.getChildNodes().getNodes()) {
-                        nodes.push(childNode);
+                        node.getCells().get(getIndex()).updateRenderer();
                     }
                 }
-            }
-        }
-
-        public boolean isEditable() {
-            return isEditable;
-        }
-
-        public void setEditable(boolean editable) {
-            this.isEditable = editable;
+            }, true);
         }
 
         public ICellRendererProvider getCellRendererProvider() {
@@ -616,12 +317,36 @@ public class Tree extends UIObject implements IGrid {
             }
         }
 
-        public void setCellRendererProvider(ICellRendererProvider renderer) {
-            rendererProvider = renderer;
+        public void setCellRendererProvider(final ICellRendererProvider renderer) {
+            if (renderer!=rendererProvider){
+                rendererProvider = renderer;
+                final int index = getIndex();
+                visitNodes(new AbstractNodeVisitor() {
+                    @Override
+                    public void visit(final Node node, final boolean isRootNode) {
+                        final Cell cell = node.getCells().get(index);
+                        if (!cell.isEditMode()){
+                            cell.update(index, false);
+                        }
+                    }
+                }, true);
+            }
         }
 
-        public void setCellEditorProvider(ICellEditorProvider editor) {
-            editorProvider = editor;
+        public void setCellEditorProvider(final ICellEditorProvider editor) {
+            if (editorProvider!=editor){
+                editorProvider = editor;                
+                final int index = getIndex();
+                visitNodes(new AbstractNodeVisitor() {
+                    @Override
+                    public void visit(final Node node, final boolean isRootNode) {
+                        final Cell cell = node.getCells().get(index);
+                        if (cell.isEditMode()){
+                            cell.update(index, true);
+                        }
+                    }
+                }, true);                
+            }            
         }
 
         int getIndex() {
@@ -634,249 +359,43 @@ public class Tree extends UIObject implements IGrid {
         }
 
         @Override
-        public int getFixedWidth() {
-            String attr = getHeaderCell().getAttr(IGrid.IColumn.FIXED_WIDTH_ATTR_NAME);
-            if (attr != null) {
-                try {
-                    return Integer.parseInt(attr);
-                } catch (NumberFormatException e) {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        }
-
-        @Override
-        public boolean isSetFixedWidth() {
-            return getHeaderCell().getAttr(IGrid.IColumn.FIXED_WIDTH_ATTR_NAME) != null;
-        }
-
-        @Override
-        public void setFixedWidth(final int fw) {
-            getHeaderCell().setAttr(IGrid.IColumn.FIXED_WIDTH_ATTR_NAME, fw);
-            setSizePolicy(IGrid.EColumnSizePolicy.FIXED);
-        }
-        
-        
-
-        @Override
-        public void setIcon(final WpsIcon icon) {
-            if (!Objects.equals(icon, this.icon)) {
-                this.icon = icon;
-            }
-            if (icon == null) {
-                if (imageContainer != null) {
-                    imageContainer.remove();
-                    imageContainer = null;
-                }
-            } else {
-                final Html image;
-                if (imageContainer == null) {
-                    imageContainer = new Div();
-                    image = new Html("img");
-                    imageContainer.add(image);
-                    image.setCss("width", "12px");
-                    image.setCss("height", "12px");
-
-                    imageContainer.setCss("vertical-align", "middle");
-                    imageContainer.setCss("padding-top", "3px");
-                    imageContainer.setCss("display", "inline");
-                    imageContainer.setCss("margin-right", "3px");
-
-                    html.add(0, imageContainer);
-                } else {
-                    image = imageContainer.getChildAt(0);
-                }
-                final String imageUri = getIcon().getURI(this);
-                if (!Objects.equals(image.getAttr("src"), imageUri)) {
-                    image.setAttr("src", imageUri);
-                }
-            }
-        }
-
-        @Override
-        public WpsIcon getIcon() {
-            return icon;
-        }
-
-        @Override
-        public void unsetFixedWidth() {
-            getHeaderCell().setAttr(IGrid.IColumn.FIXED_WIDTH_ATTR_NAME, null);
-            setSizePolicy(IGrid.EColumnSizePolicy.INTERACTIVE);
-        }
-
-        @Override
-        public int getInitialWidth() {
-            String attr = getHeaderCell().getAttr(IGrid.IColumn.INITIAL_WIDTH_ATTR_NAME);
-            if (attr != null) {
-                try {
-                    return Integer.parseInt(attr);
-                } catch (NumberFormatException e) {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        }
-
-        @Override
-        public boolean isSetInitialWidth() {
-            return getHeaderCell().getAttr(IGrid.IColumn.INITIAL_WIDTH_ATTR_NAME) != null;
-        }
-
-        @Override
-        public void setInitialWidth(int iw) {
-            getHeaderCell().setAttr(IGrid.IColumn.INITIAL_WIDTH_ATTR_NAME, iw);
-        }
-
-        @Override
-        public void unsetInitialWidth() {
-            getHeaderCell().setAttr(IGrid.IColumn.INITIAL_WIDTH_ATTR_NAME, null);
-        }
-
-        @Override
-        public int getWidth() {
-            return super.getWidth();
-        }
-
-        @Override
-        public final void setWidth(int w) {
-            this.html.setCss("width", String.valueOf(w) + "px");
-            this.html.setAttr("width", w);
-        }
-
-        @Override
-        public Object getUserData() {
-            return userData;
-        }
-
-        @Override
-        public void setUserData(Object object) {
-            this.userData = object;
-        }
-
-        private void processClickEvent(final int keyModifiers) {
-            final EnumSet<EMouseButton> mouseButtons = EMouseButton.fromAwtBitMask(keyModifiers);
-            if (mouseButtons.contains(EMouseButton.LEFT)) {
-                Tree.this.notifyHeaderClick(this, EKeyboardModifier.fromAwtBitMask(keyModifiers));
-            } else if (mouseButtons.contains(EMouseButton.RIGHT)) {
-                Tree.this.setupColumnsVisiblity();
-            }
-        }
-
-        @Override
-        public void showSortingIndicator(final RadSortingDef.SortingItem.SortOrder direction,
-                final int sequenceNumber) {
-            if (sequenceNumber > 0) {
-                if (srtSequenceIndicator == null) {
-                    initSrtSequenceIndicator();
-                }
-                srtSequenceIndicator.setCss("visibility", null);
-                srtSequenceIndicator.setInnerText(String.valueOf(sequenceNumber));
-            } else if (srtSequenceIndicator != null) {
-                srtSequenceIndicator.setCss("visibility", "hidden");
-            }
-            if (srtDirectionIndicator == null) {
-                initSrtDirectionIndicator();
-            }
-            if (direction == RadSortingDef.SortingItem.SortOrder.ASC) {
-                srtDirectionIndicator.setInnerText(SelectorSortUtils.ASC_ARROW);
-            } else {
-                srtDirectionIndicator.setInnerText(SelectorSortUtils.DESC_ARROW);
-            }
-            srtDirectionIndicator.setCss("visibility", null);
-        }
-
-        @Override
-        public void hideSortingIndicator() {
-            if (srtDirectionIndicator != null) {
-                srtDirectionIndicator.setCss("visibility", "hidden");
-            }
-            if (srtSequenceIndicator != null) {
-                srtSequenceIndicator.setCss("visibility", "hidden");
-            }
-        }
-
-        @Override
-        public boolean isSortingIndicatorVisible() {
-            return srtDirectionIndicator != null && !"hidden".equals(srtDirectionIndicator.getCss("visibility"));
-        }
-
-        private void initSrtSequenceIndicator() {
-            srtSequenceIndicator = createSrtIndicatorLabel();
-            srtSequenceIndicator.setCss("font-size", "10px");
-        }
-
-        private void initSrtDirectionIndicator() {
-            srtDirectionIndicator = createSrtIndicatorLabel();
-            srtDirectionIndicator.setCss("font-size", "14px");
-        }
-
-        private Html createSrtIndicatorLabel() {
-            final Html srtIndicator = new Html("label");
-            html.add(srtIndicator);
-            srtIndicator.addClass("rwt-ui-element");
-            srtIndicator.setCss("white-space", "nowrap");
-            srtIndicator.setCss("float", "right");
-            srtIndicator.setCss("color", "dimgray");
-            srtIndicator.setCss("font-weight", "bold");
-            srtIndicator.setCss("height", "100%");
-            return srtIndicator;
-        }
-        
-        void setSizePolicyImpl(final EColumnSizePolicy newSizePolicy){
-            if (getParent() instanceof Header){
-                getHeaderCell().setAttr(IGrid.IColumn.SIZE_POLISY_ATTR_NAME, newSizePolicy.getHtmlAttrValue());
-            }            
-            policy = newSizePolicy;            
-        }
-
-        @Override
-        public void setSizePolicy(final EColumnSizePolicy newSizePolicy) {
-            if (policy!=newSizePolicy){
-                if (newSizePolicy==EColumnSizePolicy.FIXED && !isSetFixedWidth()){
-                    return;
-                }
-                setSizePolicyImpl(newSizePolicy);
-                Tree.this.updateColumnsResizingMode();
-            }
-        }
-
-        @Override
-        public EColumnSizePolicy getSizePolicy() {
-            return policy;
-        }
-
-        @Override
-        public boolean isVisible() {
-            return super.isVisible();
-        }
-
-        @Override
         public void setVisible(boolean isVisible) {
             super.setVisible(isVisible);
             updateColumnsVisibility(null);
             Tree.this.updateColumnsResizingMode();
         }
         
-        private Html getHeaderCell(){
-            return header.getCell(getIndex());
-        }
-
-        @Override
-        public String getPersistenceKey() {
-            return getHeaderCell().getAttr("ccid");
-        }
-
-        @Override
-        public void setPersistenceKey(final String key) {
-            getHeaderCell().setAttr("ccid", key);
-        }                
-        
         private void setCanResize(final boolean isResizable){
-            handle.setAttr(IGrid.IColumn.RESIZABLE_ATTR_NAME, isResizable);
+            getHeaderCell().setResizable(isResizable);
+            final int nextColumnIndex = getIndex()+1;
+            if (nextColumnIndex<getColumnCount()){
+                getColumn(nextColumnIndex).getHeaderCell().setPrevCellResizable(isResizable);
+            }            
         }
+        
+        private void setResizingColumnIdx(final int idx){
+            getHeaderCell().getHtml().setAttr(IGrid.IColumn.RESIZE_COLUMN_INDEX_ATTR_NAME, idx);            
+            getHeaderCell().setResizable(idx>=0);
+            final int nextColumnIndex = getIndex()+1;
+            if (nextColumnIndex<getColumnCount()){
+                getColumn(nextColumnIndex).getHeaderCell().setPrevCellResizable(idx>=0);
+            }
+        }        
+
+        @Override
+        protected void afterChangeSizePolicy() {
+            Tree.this.updateColumnsResizingMode();
+        }
+
+        @Override
+        protected void notifyColumnHeaderClick(final EnumSet<EKeyboardModifier> modifiers) {
+            Tree.this.notifyHeaderClick(this, modifiers);
+        }
+
+        @Override
+        protected void setupColumnsVisiblity() {
+            Tree.this.setupColumnsVisiblity();
+        }                
     }
     
 
@@ -885,22 +404,16 @@ public class Tree extends UIObject implements IGrid {
         void afterExpand(final Node node);        
         
         void afterCollapse(final Node node);
-    }
-    
-    public interface FilterListener{        
-        void afterApplyFilter(final String filter);                
-    }
+    }    
     
     private void updateColumnsResizingMode(){
         final IGrid.EColumnSizePolicy[] actualSizePolicy = columnsResizeController.calcFinalSizePolicy();                    
         for (int i=0,count=getColumnCount(); i<count; i++){
-            getColumn(i).setSizePolicyImpl(actualSizePolicy[i]);
+            getColumn(i).applySizePolicy(actualSizePolicy[i]);
         }
         for (int i=0,count=getColumnCount(); i<count; i++){
             final int resizingColumnIdx = columnsResizeController.findSectionToResize(i);
-            final Column column = getColumn(i);
-            column.getHtml().setAttr(IGrid.IColumn.RESIZE_COLUMN_INDEX_ATTR_NAME, resizingColumnIdx);
-            column.setCanResize(resizingColumnIdx>=0);
+            getColumn(i).setResizingColumnIdx(resizingColumnIdx);
         }
     }
 
@@ -915,7 +428,7 @@ public class Tree extends UIObject implements IGrid {
     }
 
     @Override
-    public void removeColumn(int index) {
+    public void removeColumn(final int index) {
         final Node selected;
         if (getSelectedNode() != null
                 && !getSelectedNode().isSpanned()) {
@@ -925,32 +438,34 @@ public class Tree extends UIObject implements IGrid {
         }
         header.removeColumn(index);        
 
-        if (getRootNode() != null) {
-            final Stack<Node> nodes = new Stack<>();
-            nodes.push(getRootNode());
-            Node node;
-            while (!nodes.isEmpty()) {
-                node = nodes.pop();
+        visitNodes(new AbstractNodeVisitor() {
+            @Override
+            public void visit(final Node node, final boolean isRootNode) {
                 node.removeCell(index);
-                for (Node childNode : node.getChildNodes().getCreatedNodes()) {
-                    nodes.push(childNode);
-                }
             }
-        }
+        }, true);
         updateColumnsResizingMode();
-        //update borders
     }
 
     @Override
     public Column addColumn(final int index, final String title) {
-        Column c = new Column(title);
-        header.addColumn(index, c);
+        return addColumn(index, title, null);
+    }
+
+    @Override
+    public Column addColumn(final String title, final AbstractColumnHeaderCell columnHeaderCell) {
+        return addColumn(-1, title, columnHeaderCell);
+    }
+
+    @Override
+    public Column addColumn(final int index, final String title, final AbstractColumnHeaderCell columnHeaderCell) {
+        final Column c = header.addColumn(index, title, columnHeaderCell);
         if (root != null) {
             root.ensureColumnCount(index, getColumnCount());
         }
         updateColumnsResizingMode();
         return c;
-    }
+    }        
 
     public interface DoubleClickListener {
 
@@ -960,22 +475,183 @@ public class Tree extends UIObject implements IGrid {
     public interface HeaderClickListener {
 
         void onClick(final Column column, final EnumSet<EKeyboardModifier> keyboardModifiers);
+    }        
+    
+    public interface RowHeaderClickListener{
+        void onClick(final Node node, final EnumSet<EKeyboardModifier> keyboardModifiers);
     }
+    
+    public interface RowHeaderDoubleClickListener{
+        void onDoubleClick(final Node node, final EnumSet<EKeyboardModifier> keyboardModifiers);
+    }    
+        
+    private static final class RowHeader extends IGrid.AbstractRowHeader{
+        
+        private List<RowHeaderClickListener> clickListeners;
+        private List<RowHeaderDoubleClickListener> dblClickListeners;        
+        
+        private final Map<AbstractRowHeaderCell, VerticalHeaderCell> rowCell2HeaderCell = new HashMap<>();
+        private final Map<VerticalHeaderCell, Node> headerCell2Node = new HashMap<>();
+        private final List<Node> nodesInPlainOrder = new ArrayList<>();
+        
+        public RowHeader(final UIObject owner){
+            super(owner); 
+        }
+        
+        public void addClickListener(final RowHeaderClickListener listener){
+            if (listener!=null){
+                if (clickListeners==null){
+                    clickListeners = new LinkedList<>();
+                    getHtml().setAttr("onclick", "$RWT.gridLayout.onVerticalHeaderCellClick");
+                }
+                if (!clickListeners.contains(listener)){
+                    clickListeners.add(listener);
+                }
+            }
+        }
+        
+        public void removeClickListener(final RowHeaderClickListener listener){
+            if (clickListeners!=null && !clickListeners.isEmpty() && listener!=null){
+                clickListeners.remove(listener);
+                if (clickListeners.isEmpty()){
+                    clickListeners = null;
+                    getHtml().setAttr("onclick", null);
+                }
+            }
+        }        
+
+        @Override
+        protected void notifyClick(final VerticalHeaderCell vHeaderCell, final EnumSet<EKeyboardModifier> modifiers) {
+            if (clickListeners!=null){
+                final Node node = headerCell2Node.get(vHeaderCell);
+                if (node!=null){
+                    final List<RowHeaderClickListener> listeners = new LinkedList<>(clickListeners);
+                    for (RowHeaderClickListener listener: listeners){
+                        listener.onClick(node, modifiers);
+                    }
+                }
+            }
+        }
+        
+        public void addDoubleClickListener(final RowHeaderDoubleClickListener listener){
+            if (listener!=null){
+                if (dblClickListeners==null){
+                    dblClickListeners = new LinkedList<>();
+                    getHtml().setAttr("ondblclick", "$RWT.gridLayout.onVerticalHeaderCellDblClick");
+                }
+                if (!dblClickListeners.contains(listener)){
+                    dblClickListeners.add(listener);
+                }
+            }
+        }
+        
+        public void removeDoubleClickListener(final RowHeaderDoubleClickListener listener){
+            if (dblClickListeners!=null && !dblClickListeners.isEmpty() && listener!=null){
+                dblClickListeners.remove(listener);
+                if (dblClickListeners.isEmpty()){
+                    dblClickListeners = null;
+                    getHtml().setAttr("ondblclick", null);
+                }
+            }
+        }        
+
+        @Override
+        protected void notifyDoubleClick(final VerticalHeaderCell vHeaderCell, final EnumSet<EKeyboardModifier> modifiers) {
+            if (dblClickListeners!=null){
+                final Node node = headerCell2Node.get(vHeaderCell);
+                if (node!=null){
+                    final List<RowHeaderDoubleClickListener> listeners = new LinkedList<>(dblClickListeners);
+                    for(RowHeaderDoubleClickListener listener: listeners){
+                        listener.onDoubleClick(node, modifiers);
+                    }
+                }
+            }
+        }
+        
+        public void addRow(final int index, final Node node){
+            final AbstractRowHeaderCell rowHeaderCell = node.getRowHeaderCell();
+            final VerticalHeaderCell headerCell = new VerticalHeaderCell(this, rowHeaderCell);            
+            addHeaderCell(index, headerCell);
+            node.setVerticalHeaderCell(headerCell);
+            rowCell2HeaderCell.put(rowHeaderCell, headerCell);
+            headerCell2Node.put(headerCell, node);            
+            if (index<0 || index>=nodesInPlainOrder.size()){
+                nodesInPlainOrder.add(node);
+            }else{
+                nodesInPlainOrder.add(index,node);
+            }            
+        }
+        
+        public void removeAllRows(){
+            clearHeaderCells();
+            rowCell2HeaderCell.clear();
+            headerCell2Node.clear();
+            for (Node node: nodesInPlainOrder){
+                node.setVerticalHeaderCell(null);
+            }            
+            nodesInPlainOrder.clear();
+        }
+        
+        public void removeRow(final Node node){
+            final AbstractRowHeaderCell rowHeaderCell = node.getRowHeaderCell();
+            final VerticalHeaderCell headerCell = rowCell2HeaderCell.get(rowHeaderCell);
+            if (headerCell!=null){
+                removeHeaderCell(headerCell);
+                rowCell2HeaderCell.remove(rowHeaderCell);
+                headerCell2Node.remove(headerCell);                
+                node.setVerticalHeaderCell(null);
+            }
+            nodesInPlainOrder.remove(node);
+        }
+        
+        public boolean isEmpty(){
+            return nodesInPlainOrder.isEmpty();
+        }
+        
+        @Override
+        public UIObject findObjectByHtmlId(final String id) {
+            UIObject result = super.findObjectByHtmlId(id);
+            if (result != null) {
+                return result;
+            }
+            for (VerticalHeaderCell cell: headerCell2Node.keySet()) {
+                result = cell.findObjectByHtmlId(id);
+                if (result!=null){
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public void visit(final Visitor visitor) {            
+            for (VerticalHeaderCell cell: headerCell2Node.keySet()) {
+                cell.visit(visitor);
+            }
+            super.visit(visitor);
+        }           
+    }
+    
     private Node root;
     private Node selectedNode = null;
     private boolean isRootVisible = true;
-    private Html content = new Html("tbody");
+    private Html content = new Html("tbody");    
     private Html table = new Html("table");
     private final Column treeColumn;
-    private Header header = new Header();
+    private final IGrid.AbstractHorizontalHeader<Tree.Column> header = new IGrid.AbstractHorizontalHeader<Tree.Column>(){
+        @Override
+        public Column createColumn(final AbstractColumnHeaderCell headerCell) {
+            return new Column(headerCell);
+        }        
+    };
+    
     private IGrid.ColumnsResizeController columnsResizeController = new IGrid.ColumnsResizeController(this);
-    private String headerSettings = "";
-    private Div data = new Div();
+    private final Div data = new Div();
     private boolean borderShown = false;
     private boolean browserFocusFrameEnabled = true;
     private Color currentNodeFrameColor = Color.decode("#3399ff");
     private Color currentCellFrameColor = Color.decode("#404040");
-    private ValStrEditorController filterEditor;
+    private final IGrid.FilterEditorController filterController;
     private final ValueEditor.ValueChangeListener<String> filterChangeListener = 
             new ValueEditor.ValueChangeListener<String>(){
                     @Override
@@ -983,27 +659,35 @@ public class Tree extends UIObject implements IGrid {
                         applyFilter(newValue);
                     }        
             };
+    private final RowHeader rowHeader = new RowHeader(this);
+    private boolean isVerticalHeaderVisible;
     private EnumSet<IGrid.ESelectionStyle> selectionStyle = EnumSet.of(IGrid.ESelectionStyle.BACKGROUND_COLOR);
     private boolean blockBranchListeners;
     private String currentFilter;
     private List<BranchListener> branchListeners;
-    private List<FilterListener> filterListeners;
     private final List<DoubleClickListener> listeners = new LinkedList<>();
     private final List<NodeListener> selectionListeners = new LinkedList<>();
     private final IGrid.RowFrame currentNodeFrame;
     private final IGrid.CellFrame currentCellFrame;
+    private final Html outerContainer = new Div();//contains data and hHeader
 
     public Tree() {
         super(new Div());
-        this.html.add(data);
+        
+        outerContainer.addClass("rwt-grid-outer-container");
+        outerContainer.setCss("overflow", "none");
+        outerContainer.add(data);
+        
+        this.html.add(outerContainer);
         this.html.setCss("overflow", "hidden");
         this.data.setAttr("role", "data");
-        this.data.setCss("position", "absolute");
+        //this.data.setCss("position", "absolute");
         this.data.setCss("overflow", "auto");
+        this.data.addClass("rwt-grid-data-panel");
         this.data.addClass("rwt-tree");
         this.data.add(this.table);
 
-        this.data.setCss("width", "100%");
+        //this.data.setCss("width", "100%");
         this.table.add(this.content);
         this.table.setCss("border-collapse", "collapse");
         this.table.setCss("border-spacing", "0px 0px");
@@ -1019,7 +703,8 @@ public class Tree extends UIObject implements IGrid {
         currentNodeFrame = new IGrid.RowFrame(data, "rowFrame");
         currentNodeFrame.setColor(currentNodeFrameColor);
         currentCellFrame = new IGrid.CellFrame(data, "cellFrame");
-        currentCellFrame.setColor(currentCellFrameColor);        
+        currentCellFrame.setColor(currentCellFrameColor);
+        filterController = new IGrid.FilterEditorController(getHtml(), filterChangeListener);
     }
 
     public void setBackgroundColor(String hexColor) {
@@ -1033,22 +718,20 @@ public class Tree extends UIObject implements IGrid {
     public final void showHeader(boolean show) {
         if (show) {
             if (header.getHtml().getParent() == null) {
-                this.getHtml().add(0, header.getHtml());
+                outerContainer.add(0, header.getHtml());
                 header.setVisible(true);
             }
         } else {
             header.setVisible(false);
         }
-    }
-    private Alignment headerAlignment;
+    }    
 
-    public void setHeaderAlignment(Alignment a) {
-        this.headerAlignment = a;
-        header.headerAlign(a);
+    public void setHeaderAlignment(final Alignment a) {        
+        header.setTextAlignment(a);
     }
 
     public Alignment getHeaderAlignment() {
-        return headerAlignment;
+        return header.getTextAlignment();
     }
 
     public Node getRootNode() {
@@ -1078,29 +761,12 @@ public class Tree extends UIObject implements IGrid {
 
     @Override
     public String getHeaderSettings() {
-        return headerSettings;
+        return header.getSettings();
     }
 
     @Override
     public void setHeaderSettings(String settings) {
-        if (settings != null && !settings.isEmpty() && !settings.equals(headerSettings)) {
-            this.headerSettings = settings;
-            String[] hs = settings.split(";");
-            if (hs != null && hs.length > 0) {
-                for (int i = 0; i < hs.length; i++) {
-                    String id = hs[i].split(":")[0];
-                    int width = Integer.parseInt(hs[i].split(":")[1].split(",")[0]);
-                    for (int j = 0; j < getColumnCount(); j++) {
-                        Column column = getColumn(j);
-                        if (column.isVisible()
-                            && column.getPersistenceKey().equals(id) 
-                            && column.getSizePolicy()==IGrid.EColumnSizePolicy.INTERACTIVE) {
-                            column.setInitialWidth(width);
-                        }
-                    }
-                }
-            }
-        }
+        header.setSettings(settings);
     }
 
     public void setRootNode(Node root) {
@@ -1191,6 +857,9 @@ public class Tree extends UIObject implements IGrid {
         if (res == null) {
             res = header.findObjectByHtmlId(id);
         }
+        if (res == null){
+            res = rowHeader.findObjectByHtmlId(id);
+        }
         return res;
     }
 
@@ -1222,7 +891,6 @@ public class Tree extends UIObject implements IGrid {
             }
         }
     }    
-    
 
     final void dblClickNode(Node node) {
         synchronized (listeners) {
@@ -1274,17 +942,36 @@ public class Tree extends UIObject implements IGrid {
             }
         }
     }
+    
+    public void addRowHeaderClickListener(final RowHeaderClickListener l){
+        rowHeader.addClickListener(l);
+    }
+    
+    public void removeRowHeaderClickListener(final RowHeaderClickListener l){
+        rowHeader.removeClickListener(l);
+    }
+    
+    public void addRowHeaderDoubleClickListener(final RowHeaderDoubleClickListener l){
+        rowHeader.addDoubleClickListener(l);
+    }
+    
+    public void removeRowHeaderDoubleClickListener(final RowHeaderDoubleClickListener l){
+        rowHeader.removeDoubleClickListener(l);
+    }    
 
     void attachNode(Node node) {
         if (node.getTree() != this) {
             return;
         }
         if (node.getHtml().getParent() != content) {
+            for (Cell cell: node.getCells()){
+                cell.update(cell.getIndex(), false);
+            }
             if (node.getHtml().getParent() != null) {
                 node.getHtml().remove();
             }
             if (node == root) {
-                content.add(node.getHtml());
+                addNodeToTable(-1, node);
             } else {
                 Node parentNode = node.getParentNode();
                 if (parentNode == null) {
@@ -1329,11 +1016,32 @@ public class Tree extends UIObject implements IGrid {
                     }
                 }
 
-                content.add(realIndex, node.getHtml());
+                addNodeToTable(realIndex, node);                
             }
         }
+    }        
+    
+    void dettachNode(final Node node){
+        removeNodeFromTable(node);
+        node.setParent(null);
+    }
+    
+    private void addNodeToTable(final int index, final Node node){
+        content.add(index, node.getHtml());
+        rowHeader.addRow(index, node); 
+        updateVerticalHeaderVisibility();
+    }
+    
+    private void removeNodeFromTable(final Node node){
+        rowHeader.removeRow(node);
+        updateVerticalHeaderVisibility();
+        content.remove(node.getHtml());
     }
 
+    public final void scrollToNode(Node node) {
+        this.getHtml().setAttr("scrolledToNode", node.getHtmlId());
+    }
+    
     public final void setSelectedNode(Node node) {
         synchronized (this) {
             final Node oldSelectedNode = selectedNode;
@@ -1380,36 +1088,46 @@ public class Tree extends UIObject implements IGrid {
             node.expand();
             node = node.getParentNode();
         }
-    }
+    }        
 
     public void expandAllNodes() {
-        if (getRootNode() != null) {
-            final Stack<Node> nodes = new Stack<>();
-            nodes.push(getRootNode());
-            Node node;
-            while (!nodes.isEmpty()) {
-                node = nodes.pop();
+        visitNodes(new INodeVisitor() {
+            @Override
+            public void visit(final Node node, final boolean isRootNode) {
                 node.expand();
-                for (Node childNode : node.getChildNodes().getNodes()) {
-                    nodes.push(childNode);
-                }
             }
-        }
+
+            @Override
+            public boolean interrupt(final Node node, final boolean isRootNode) {
+                return false;
+            }
+
+            @Override
+            public boolean ignoreChildren(final Node node, final boolean isRootNode) {
+                return false;
+            }
+            
+        }, false);
     }
 
     public void collapseAllNodes() {
-        if (getRootNode() != null) {
-            final Stack<Node> nodes = new Stack<>();
-            nodes.push(getRootNode());
-            Node node;
-            while (!nodes.isEmpty()) {
-                node = nodes.pop();
+        visitNodes(new INodeVisitor() {
+            @Override
+            public void visit(final Node node, final boolean isRootNode) {
                 node.collapse();
-                for (Node childNode : node.getChildNodes().getCreatedNodes()) {
-                    nodes.push(childNode);
-                }
             }
-        }
+            
+            @Override
+            public boolean interrupt(final Node node, boolean isRootNode) {
+                return false;
+            }
+
+            @Override
+            public boolean ignoreChildren(final Node node, boolean isRootNode) {
+                return false;
+            }            
+            
+        }, true);        
     }
 
     public void clearTree() {
@@ -1478,37 +1196,13 @@ public class Tree extends UIObject implements IGrid {
 
     @Override
     public int getColumnCount() {
-        return header.getColumnCount();
+        return header.getColumnsCount();
     }
 
     void updateMaxLevel() {
-        int level[] = new int[]{0};
-        if (root != null) {
-            if (isRootVisible()){
-                compiteMaxLevel(root, level);
-            }else{
-                for (Node node : root.getChildNodes().getCreatedNodes()) {
-                    compiteMaxLevel(node, level);
-                }             
-            }
-        }
-        data.setAttr("max-level", level[0] * 20);
-    }
-
-    void compiteMaxLevel(Node root, int[] level) {
-        if (root.isNodeVisible()) {
-            int l = root.lastComputedLevel;
-            if (l < 0) {
-                root.updateLevel();
-            }
-            l = root.lastComputedLevel;
-            if (level[0] < l) {
-                level[0] = l;
-            }
-            for (Node node : root.getChildNodes().getCreatedNodes()) {
-                compiteMaxLevel(node, level);
-            }
-        }
+        final MaxLevelCalculator calculator = new MaxLevelCalculator(isRootVisible());
+        visitNodes(calculator, true);
+        data.setAttr("max-level", calculator.getMaxLevel() * 20);
     }
     
     void updateFrames(){
@@ -1522,8 +1216,14 @@ public class Tree extends UIObject implements IGrid {
                 currentNodeFrame.setOffsetLeft(offsetX);
             }
             if (selectedNode.getCurrentCell()!=null && getSelectionStyle().contains(IGrid.ESelectionStyle.CELL_FRAME)){
-                final int index = selectedNode.getCurrentCell().getIndex();                
-                currentCellFrame.setCell(selectedNode, index);
+                final int index = selectedNode.getCurrentCell().getIndex();
+                int visibleCellIndex = index;
+                for (int i=0,count=getColumnCount();i<index && i<count;i++){
+                    if (!getColumn(i).isVisible()){
+                        visibleCellIndex--;
+                    }
+                }
+                currentCellFrame.setCell(selectedNode, visibleCellIndex);
                 currentCellFrame.setOffsetLeft(index==0 ? offsetX : 0);
             }
         }
@@ -1541,8 +1241,9 @@ public class Tree extends UIObject implements IGrid {
     @Override
     public void visit(Visitor visitor) {
         super.visit(visitor);
-        this.header.visit(visitor);   
-    }
+        this.header.visit(visitor);
+        rowHeader.visit(visitor);
+    }        
     
     @Override
     public void setBrowserFocusFrameEnabled(boolean enabled){
@@ -1561,22 +1262,14 @@ public class Tree extends UIObject implements IGrid {
         return browserFocusFrameEnabled;
     }
     
+    @Override
     public final void setFilterEditor(final ValStrEditorController editor){
-        if (filterEditor!=editor){
-            if (filterEditor!=null){
-                filterEditor.removeValueChangeListener(filterChangeListener);
-            }
-            filterEditor = editor;
-            final UIObject editorUI = editor==null ? null : (UIObject)editor.getValEditor();
-            getHtml().setAttr("filterEditor", editorUI==null ? null : editorUI.getHtmlId());
-            if (filterEditor!=null){
-                filterEditor.addValueChangeListener(filterChangeListener);
-            }
-        }
+        filterController.setFilterEditor(editor);
     }
     
+    @Override
     public final ValStrEditorController getFilterEditor(){
-        return filterEditor; 
+        return filterController.getFilterEditor();
     }    
     
     @Override
@@ -1587,6 +1280,30 @@ public class Tree extends UIObject implements IGrid {
             super.processAction(actionName, actionParam);
         }
     }
+    
+    public final void setRowHeaderVisible(final boolean isVisible){
+        if (isVisible!=isVerticalHeaderVisible){
+            isVerticalHeaderVisible = isVisible;
+            updateVerticalHeaderVisibility();
+        }
+    }
+    
+    public final boolean isRowHeaderVisible(){
+        return isVerticalHeaderVisible;
+    }   
+    
+    private void updateVerticalHeaderVisibility(){
+        final boolean currentVisibility = getHtml().getChildAt(0)==rowHeader.getHtml();
+        final boolean vHeaderActualVisibility = isVerticalHeaderVisible && !rowHeader.isEmpty();
+        if (currentVisibility!=vHeaderActualVisibility){
+            if (vHeaderActualVisibility){
+                rowHeader.getHtml().renew();
+                getHtml().add(0, rowHeader.getHtml());
+            }else{
+                getHtml().remove(rowHeader.getHtml());
+            }            
+        }
+    }    
     
     public final void addBranchListener(final BranchListener listener){
         if (listener!=null){
@@ -1622,52 +1339,23 @@ public class Tree extends UIObject implements IGrid {
     }   
     
     public final void addFilterListener(final FilterListener listener){
-        if (listener!=null){
-            if (filterListeners==null){
-                filterListeners = new LinkedList<>();
-            }
-            if (!filterListeners.contains(listener)){
-                filterListeners.add(listener);
-            }
-        }
+        filterController.addFilterListener(listener);
     }
     
     public final void removeFilterListener(final FilterListener listener){
-        if (listener!=null && filterListeners!=null){
-            filterListeners.remove(listener);
-            if (filterListeners.isEmpty()){
-                filterListeners = null;
-            }
-        }
+        filterController.removeFilterListener(listener);
     }
     
     private void notifyFilterListeners(final String filter){
-        if (filterListeners!=null){
-            final List<FilterListener> copy = new LinkedList<>(filterListeners);
-            for (FilterListener listener: copy){
-                listener.afterApplyFilter(filter);
-            }
-        }
+        filterController.notifyFilterListeners(filter);
     }
     
     private void applyFilter(final String filter){
         if (!Objects.equals(currentFilter, filter)){
-            blockBranchListeners = true;
-            try{
-                if (isRootVisible()){
-                    applyFilter(getRootNode(), filter);
-                }else{
-                    for (Node node: getRootNode().getChildNodes().getNodes()){
-                        applyFilter(node, filter);
-                    }
-                }
-            }finally{
-                blockBranchListeners = false;
-            }
             currentFilter = filter;
-            notifyFilterListeners(filter);
+            applyCurrentFilter();
         }
-    }
+    }        
     
     private boolean applyFilter(final Node node, final String filter){
         boolean isVisible = false;
@@ -1693,5 +1381,53 @@ public class Tree extends UIObject implements IGrid {
         }
         node.setVisible(isVisible);
         return isVisible;        
+    }
+    
+    @Override
+    public void applyCurrentFilter(){
+        blockBranchListeners = true;
+        try{
+            if (isRootVisible()){
+                applyFilter(getRootNode(), currentFilter);
+            }else{
+                for (Node node: getRootNode().getChildNodes().getNodes()){
+                    applyFilter(node, currentFilter);
+                }
+            }
+        }finally{
+            blockBranchListeners = false;
+        }        
+        notifyFilterListeners(currentFilter);
+    }    
+    
+    public void visitNodes(final INodeVisitor visitor, final boolean createdNodesOnly){
+        final Node rootNode = getRootNode();
+        if ( rootNode != null) {
+            final Stack<Node> nodes = new Stack<>();
+            nodes.push(rootNode);
+            Node node;
+            boolean isRoot = true;
+            while (!nodes.isEmpty()) {
+                node = nodes.pop();
+                if (visitor.interrupt(node, isRoot)){
+                    break;
+                }
+                visitor.visit(node, isRoot);
+                if (!visitor.ignoreChildren(node, isRoot)){
+                    final Collection<Node> childNodes;
+                    if (createdNodesOnly){
+                        childNodes = node.getChildNodes().getCreatedNodes();                    
+                    }else{
+                        childNodes = node.getChildNodes().getNodes();
+                    }
+                    for (Node childNode : childNodes) {
+                        nodes.push(childNode);
+                    }
+                }
+                if (isRoot){
+                    isRoot = false;
+                }                
+            }
+        }      
     }
 }

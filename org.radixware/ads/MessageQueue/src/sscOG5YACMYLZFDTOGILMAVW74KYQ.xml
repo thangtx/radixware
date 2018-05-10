@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="sscOG5YACMYLZFDTOGILMAVW74KYQ" Name="DeleteStoredMqMessageAutonomousStmt" Type="9">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeadersscOG5YACMYLZFDTOGILMAVW74KYQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodysscOG5YACMYLZFDTOGILMAVW74KYQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgBUDH3FOSXFFOVE3OATAHEVILYI" Name="Root"/>
+    <PropertyGroup Id="cpg4IIVRDRR6VHWXFXTDWTXK5YLWI" Name="Root"/>
+    <Properties>
+      <Property Id="prmJKGYXDJEFVH5ZH6PT3EGQ2EH7I" Name="pId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pId" Id="mprJKGYXDJEFVH5ZH6PT3EGQ2EH7I">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType/>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+    PRAGMA AUTONOMOUS_TRANSACTION;
+begin
+    delete from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4" PropId="colDLITJLCB6ZBLNBTVPZCHRM3BJI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmJKGYXDJEFVH5ZH6PT3EGQ2EH7I"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+    commit;
+end;
+    </xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.Statement"/>
+  </AdsClassDefinition>
+</AdsDefinition>

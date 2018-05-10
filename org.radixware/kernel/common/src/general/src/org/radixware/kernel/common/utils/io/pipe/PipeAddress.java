@@ -14,44 +14,95 @@ package org.radixware.kernel.common.utils.io.pipe;
 
 public class PipeAddress {
 
+    public static final int LOCAL_INSTANCE_ID = -1;
     private final String address;
+    private final int localInstanceId;
+    private final int remoteInstanceId;
+    private final String remoteHost;
+    private final int remotePort;
 
     public PipeAddress(final PipeAddress addr) {
         this.address = addr.address;
+        this.localInstanceId = addr.localInstanceId;
+        this.remoteInstanceId = addr.remoteInstanceId;
+        this.remoteHost = addr.remoteHost;
+        this.remotePort = addr.remotePort;
     }
-
+    
     public PipeAddress(final String address) {
-        this.address = address;
+    	this(address, LOCAL_INSTANCE_ID, LOCAL_INSTANCE_ID, null, 0);
     }
 
+    public PipeAddress(final String address, final int localInstanceId, final int remoteInstanceId, final String remoteHost, final int remotePort) {
+        this.address = address;
+    	this.localInstanceId = localInstanceId;
+    	this.remoteInstanceId = remoteInstanceId;
+        this.remoteHost = remoteHost;
+        this.remotePort = remotePort;
+    }
+
+    public int getLocalInstanceId() {
+        return localInstanceId;
+    }
+    
+    public int getRemoteInstanceId() {
+        return remoteInstanceId;
+    }
+    
     public String getAddress() {
         return address;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((address == null) ? 0 : address.hashCode());
+        result = prime * result + localInstanceId;
+        result = prime * result + remoteInstanceId;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PipeAddress other = (PipeAddress) obj;
-        if ((this.address == null) ? (other.address != null) : !this.address.equals(other.address)) {
+        PipeAddress other = (PipeAddress) obj;
+        if (localInstanceId != other.localInstanceId) {
+            return false;
+        }
+        if (remoteInstanceId != other.remoteInstanceId) {
+            return false;
+        }
+        if (address == null) {
+            if (other.address != null) {
+                return false;
+            }
+        } else if (!address.equals(other.address)) {
             return false;
         }
         return true;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + (this.address != null ? this.address.hashCode() : 0);
-        return hash;
+    public String toString() {
+        return "PipeAddress{" + (localInstanceId==LOCAL_INSTANCE_ID?"local":localInstanceId) + ":" + 
+                (remoteInstanceId==LOCAL_INSTANCE_ID?"local":remoteInstanceId) + ":" + address + "}";
     }
 
-    @Override
-    public String toString() {
-        return "PipeAddress{" + address + "}";
+    public int getRemotePort() {
+        return remotePort;
     }
+
+    public String getRemoteHost() {
+        return remoteHost;
+    }
+
 }

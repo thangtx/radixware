@@ -107,7 +107,20 @@
     <Sql IsReadOnly="true">
       <Source>
         <xsc:Item>
-          <xsc:Sql>select
+          <xsc:Sql>select * from (
+select /*+ index_desc(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbName Path="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ idxI4BBBWE5CFEKZLRTNZLOAVQR2Q"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) */
     </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
@@ -267,12 +280,38 @@ where
         </xsc:Item>
         <xsc:Item>
           <xsc:Sql>
+order by </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accRXZT4AH5DVESHJIA6XIOITS2NI" PropId="prfZ6TXTVJQYJBAJKZ427OUTVIREI" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> desc, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accRXZT4AH5DVESHJIA6XIOITS2NI" PropId="prf7WCG6OJAKZAWROG53NRTWO7AUA" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> desc
+)
 
-union
+union all
 
 select  *
 from (
-    select
+    select /*+ index_desc(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbName Path="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ idxI4BBBWE5CFEKZLRTNZLOAVQR2Q"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) */
         </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
@@ -426,21 +465,7 @@ from (
         <xsc:Item>
           <xsc:Sql> desc
 )
-where rownum &lt; 2
-
-order by </xsc:Sql>
-        </xsc:Item>
-        <xsc:Item>
-          <xsc:PropSqlName TableId="accRXZT4AH5DVESHJIA6XIOITS2NI" PropId="prfZ6TXTVJQYJBAJKZ427OUTVIREI" Owner="THIS"/>
-        </xsc:Item>
-        <xsc:Item>
-          <xsc:Sql> desc, </xsc:Sql>
-        </xsc:Item>
-        <xsc:Item>
-          <xsc:PropSqlName TableId="accRXZT4AH5DVESHJIA6XIOITS2NI" PropId="prf7WCG6OJAKZAWROG53NRTWO7AUA" Owner="THIS"/>
-        </xsc:Item>
-        <xsc:Item>
-          <xsc:Sql> desc</xsc:Sql>
+where rownum &lt; 2</xsc:Sql>
         </xsc:Item>
       </Source>
       <UsedTables>

@@ -52,23 +52,25 @@ import org.radixware.wps.views.RwtAction;
 
 public class SettingsDialog extends Dialog {
 
-    private ToolButton previewBtn = new ToolButton();
-    private ToolButton restoreBtn = new ToolButton();
-    private ToolButton loadBtn = new ToolButton();
-    private ToolButton saveBtn = new ToolButton();
-    private ListBox listItemsWidget = new ListBox();
+    private final ToolButton previewBtn = new ToolButton();
+    private final  ToolButton restoreBtn = new ToolButton();
+    private final  ToolButton loadBtn = new ToolButton();
+    private final  ToolButton saveBtn = new ToolButton();
+    private final  ListBox listItemsWidget = new ListBox();
     private TableLayout.Row.Cell tabSetCell;
     private ExplorerSettingsWidget explorerTreeTabs;
     private EditorSettingsWidget editorTabs;
     private SelectorSettingsWidget selectorTabs;
+    private FormatSettingsWidget formatTabs;
     //private SourceCodeSettingsWidget srcCodeTabs;
-    private LinkedList<TabLayout> tabsList;
-    private ListBox.ListBoxItem explorerTreeItem = new ListBox.ListBoxItem();
-    private ListBox.ListBoxItem editorItem = new ListBox.ListBoxItem();
-    private ListBox.ListBoxItem selectorItem = new ListBox.ListBoxItem();
+    private LinkedList<UIObject> tabsList;
+    private final  ListBox.ListBoxItem explorerTreeItem = new ListBox.ListBoxItem();
+    private final  ListBox.ListBoxItem editorItem = new ListBox.ListBoxItem();
+    private final  ListBox.ListBoxItem selectorItem = new ListBox.ListBoxItem();
+    private final  ListBox.ListBoxItem formatItem = new ListBox.ListBoxItem();
     //private ListBox.ListBoxItem sourceCodeItem = new ListBox.ListBoxItem();
     private final String previewFileName = "preview.ini";
-    private WpsSettings previewSettings;
+    private final  WpsSettings previewSettings;
     private WpsSettings backedupSettings;
     private final File previewFile;//preview settings store in radix loader temporary dir
     private final IClientEnvironment env;
@@ -77,8 +79,9 @@ public class SettingsDialog extends Dialog {
     private final ArrayList<SettingsWidget> settingsArrayList = new ArrayList<>(); // ArrayList
     private PreviewWidget previewWidget;
     private final HashMap<ESelectorRowStyle, StylePageSettingsWidget> stylePageWidgets = new LinkedHashMap<>();
-    private ListBox listBox = new ListBox();
+    private final  ListBox listBox = new ListBox();
     private static final LinkedHashMap<ESelectorRowStyle, String> stylesHashMap;
+    private boolean validate = true;
 
     static {
         stylesHashMap = new LinkedHashMap<>();
@@ -112,6 +115,7 @@ public class SettingsDialog extends Dialog {
         private final static Icons PREVIEW = new Icons("classpath:images/preview.svg");
         //private final static Icons SRC_EDITOR_SETTINGS = new Icons("classpath:images/srcedit.svg");
         private final static Icons APPEARANCE_SETTINGS = new Icons("classpath:images/appearance_settings.svg");
+        private final static Icons FORMAT_SETTINGS = new Icons("classpath:images/format_settings.svg");
     }
 
     public SettingsDialog(IClientEnvironment env) {
@@ -120,6 +124,7 @@ public class SettingsDialog extends Dialog {
         this.e = (WpsEnvironment) env;
 
         this.messageProvider = e.getApplication().getMessageProvider();
+        this.setAdjustSizeEnabled(false);
         previewFile = RadixLoader.getInstance().createTempFileWithExactName(previewFileName);
         readAllSettings((WpsSettings) getEnvironment().getConfigStore());
 
@@ -145,6 +150,17 @@ public class SettingsDialog extends Dialog {
             w.writeSettings(dst);
         }
     }
+    
+    private boolean validateAllSettings() {
+        for (SettingsWidget w : settingsArrayList) {
+            if (!w.validate()) {
+                validate = false;
+                return false;
+            }
+        }
+        validate = true;
+        return true;
+    }
 
     private void readAllSettings(final WpsSettings src) {
         for (SettingsWidget w : settingsArrayList) {
@@ -154,53 +170,55 @@ public class SettingsDialog extends Dialog {
     }
 
     public void saveSettingsToFile() {
-        FileOutputStream output = null;
-        File f = null;
-        try {
-            File dir = RadixLoader.getInstance().createTempFile("PropertyValueStore");
-            boolean isDir = dir.mkdir();
-            String fileName = "wpsSettings.ini";
-            if (isDir && dir.isDirectory() && dir.exists()) {
+        if (validateAllSettings()) { 
+            FileOutputStream output = null;
+            File f = null;
+            try {
+                File dir = RadixLoader.getInstance().createTempFile("PropertyValueStore");
+                boolean isDir = dir.mkdir();
+                String fileName = "wpsSettings.ini";
+                if (isDir && dir.isDirectory() && dir.exists()) {
 
-                f = new File(dir, fileName);
-                f.createNewFile();
-                output = new FileOutputStream(f);
+                    f = new File(dir, fileName);
+                    f.createNewFile();
+                    output = new FileOutputStream(f);
 
-                StringBuilder strSett = new StringBuilder();
-                WpsSettings saveSettings = new WpsSettings();
-                writeAllSettings(saveSettings);
-                for (SettingsWidget s : settingsArrayList) {
-                    String settingName = s.getSettingCfgName();
-                    Object widgetSetting = saveSettings.getValue(settingName);
-                    if (widgetSetting != null) {
-                        strSett.append(settingName).append("=").append(widgetSetting).append("\n");
+                    StringBuilder strSett = new StringBuilder();
+                    WpsSettings saveSettings = new WpsSettings();
+                    writeAllSettings(saveSettings);
+                    for (SettingsWidget s : settingsArrayList) {
+                        String settingName = s.getSettingCfgName();
+                        Object widgetSetting = saveSettings.getValue(settingName);
+                        if (widgetSetting != null) {
+                            strSett.append(settingName).append("=").append(widgetSetting).append("\n");
+                        }
                     }
-                }
-                try {
-                    FileUtils.writeString(output, strSett.toString(), FileUtils.XML_ENCODING);
-                } catch (IOException ex) {
-                    Logger.getLogger(SettingsDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if (f.exists() && f.isFile()) {
-                    e.sendFileToTerminal(f.getName(), f, null, false, false);//send file to terminal
+                    try {
+                        FileUtils.writeString(output, strSett.toString(), FileUtils.XML_ENCODING);
+                    } catch (IOException ex) {
+                        Logger.getLogger(SettingsDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if (f.exists() && f.isFile()) {
+                        e.sendFileToTerminal(f.getName(), f, null, false, false);//send file to terminal
+                    } else {
+                        throw new FileNotFoundException("Could not create file for webUI settings storing.");
+                    }
                 } else {
-                    throw new FileNotFoundException("Could not create file for webUI settings storing.");
+                    throw new FileNotFoundException("Could not create temporary directory for webUI settings storing.");
                 }
-            } else {
-                throw new FileNotFoundException("Could not create temporary directory for webUI settings storing.");
-            }
-        } catch (FileNotFoundException ex) {
-            String mess = String.format("File not found \n%s", f);
-            getEnvironment().processException(mess, ex);
-        } catch (IOException ex) {
-            String mess = String.format("Failed to save settings %s to a file\n%s", f);
-            getEnvironment().processException(mess, ex);
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException ex) {
-                    getEnvironment().getTracer().error(ex);
+            } catch (FileNotFoundException ex) {
+                String mess = String.format("File not found \n%s", f);
+                getEnvironment().processException(mess, ex);
+            } catch (IOException ex) {
+                String mess = String.format("Failed to save settings %s to a file\n%s", f);
+                getEnvironment().processException(mess, ex);
+            } finally {
+                if (output != null) {
+                    try {
+                        output.close();
+                    } catch (IOException ex) {
+                        getEnvironment().getTracer().error(ex);
+                    }
                 }
             }
         }
@@ -218,8 +236,10 @@ public class SettingsDialog extends Dialog {
     }
 
     public void preview() {
-        writeAllSettings(previewSettings);
-        e.applySettings(previewSettings);
+        if (validateAllSettings()) {
+            writeAllSettings(previewSettings);
+            e.applySettings(previewSettings);
+        }
     }
 
     public void abortSettings() {
@@ -229,26 +249,14 @@ public class SettingsDialog extends Dialog {
     }
 
     public void applySettings() {
-        // собираем все настройки с SettingsWidget-ов, применяем их и сохраняем
-        // в файл
-        writeAllSettings(backedupSettings);
-        e.applySettings(backedupSettings);
-        // обновляем файл настроек
-        if (getEnvironment().getConfigStore().isWritable()) {
-            getEnvironment().getConfigStore().sync();
-        }
 
-        if (e.getMainWindow() != null) {
-            //do stuff
-        }
-        //do stuff
     }
 
     private void setupUI() {
         setWindowTitle(messageProvider.translate("Settings Dialog", "Appearance Settings"));
         setWindowIcon(env.getApplication().getImageManager().getIcon(Icons.APPEARANCE_SETTINGS));
-        setWidth(550);
-        setHeight(550);
+        setWidth(560);
+        setHeight(655);
         //this.setResizable(false);
         //getHtml().setCss("overflow", "auto");
 
@@ -260,16 +268,16 @@ public class SettingsDialog extends Dialog {
         TableLayout.Row firstRow = layout.addRow();
         layout.addVerticalSpace();
         TableLayout.Row.Cell buttonsCell = firstRow.addCell();
-        buttonsCell.add(createButtonsContainer());
-        buttonsCell.getHtml().setAttr("buttonsCell", true);
+        buttonsCell.add(createButtonsContainer());        
+        buttonsCell.getHtml().setAttr("colspan","3");
 
         TableLayout.Row secondRow = layout.addRow();
         TableLayout.Row.Cell listCell = secondRow.addCell();
         secondRow.addSpace();
 
         listCell.setWidth(75);
+        listItemsWidget.setWidth(75);
         listCell.add(listItemsWidget);
-        listCell.getHtml().setAttr("width", "75");
         listCell.getHtml().setAttr("listCell", true);
         listCell.getHtml().getParent().setCss("vertical-align", "top");
         listCell.getHtml().setCss("box-shadow", "2px 2px 2px");
@@ -304,6 +312,11 @@ public class SettingsDialog extends Dialog {
 
         selectorTabs = new SelectorSettingsWidget();
         tabsList.add(selectorTabs);
+        
+        formatTabs = new FormatSettingsWidget((WpsEnvironment) getEnvironment());
+        tabsList.add(formatTabs);
+        settingsArrayList.add(formatTabs);
+        
         /*srcCodeTabs = new SourceCodeSettingsWidget();
          tabsList.add(srcCodeTabs);*/
         listItemsWidget.addCurrentItemListener(new ListBox.CurrentItemListener() {
@@ -401,6 +414,34 @@ public class SettingsDialog extends Dialog {
             }
         });
     }
+
+    @Override
+    protected DialogResult onClose(String action, DialogResult actionResult) {
+        if (actionResult == DialogResult.ACCEPTED) {
+            if (validateAllSettings()) {
+                // собираем все настройки с SettingsWidget-ов, применяем их и сохраняем
+                // в файл
+                writeAllSettings(backedupSettings);
+                e.applySettings(backedupSettings);
+                // обновляем файл настроек
+                if (getEnvironment().getConfigStore().isWritable()) {
+                    getEnvironment().getConfigStore().sync();
+                }
+
+                if (e.getMainWindow() != null) {
+                    //do stuff
+                }
+                //do stuff
+                return super.onClose(action, actionResult);
+            } else {
+                return null;
+            }
+        } else {
+            return super.onClose(action, actionResult);
+        }
+    }
+    
+    
 
     private TableLayout createButtonsContainer() {
         TableLayout box = new TableLayout();
@@ -511,7 +552,7 @@ public class SettingsDialog extends Dialog {
         ExplorerSettingsWidget() {
             super();
             drawExplorerSettingsTabs();
-            this.setHeight(450);
+            this.setHeight(550);
         }
 
         private void drawExplorerSettingsTabs() {
@@ -530,7 +571,7 @@ public class SettingsDialog extends Dialog {
 
             Tab tabudiSettings = addTab(4, messageProvider.translate("Settings Dialog", "User-Defined Item"));
             tabudiSettings.add(udiSettings = new TabInners());
-
+            
             drawParagraph();
             drawGeneral();
             drawSelector();
@@ -543,8 +584,7 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget backGroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.USER_GROUP,
-                    SettingNames.ExplorerTree.Common.BACKGROUND_COLOR,
-                    "#ffffff");
+                    SettingNames.ExplorerTree.Common.BACKGROUND_COLOR);
 
             udiSettings.addSettingWidget(backGroundColor, title1);
 
@@ -552,8 +592,7 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget foreGroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.USER_GROUP,
-                    SettingNames.ExplorerTree.Common.FOREGROUND_COLOR,
-                    "#0000ff");
+                    SettingNames.ExplorerTree.Common.FOREGROUND_COLOR);
 
             udiSettings.addSettingWidget(foreGroundColor, title2);
 
@@ -562,8 +601,7 @@ public class SettingsDialog extends Dialog {
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.USER_GROUP,
                     SettingNames.ExplorerTree.Common.SHOW_ICONS,
-                    title3,
-                    true);
+                    title3);
 
             udiSettings.addSettingWidget(showIcons, title3);
         }
@@ -573,8 +611,7 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget backGroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.EDITOR_GROUP,
-                    SettingNames.ExplorerTree.Common.BACKGROUND_COLOR,
-                    "#ffffff");
+                    SettingNames.ExplorerTree.Common.BACKGROUND_COLOR);
 
             editorSettings.addSettingWidget(backGroundColor, t0);
 
@@ -582,28 +619,25 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget foreGroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.EDITOR_GROUP,
-                    SettingNames.ExplorerTree.Common.FOREGROUND_COLOR,
-                    "#000000");
+                    SettingNames.ExplorerTree.Common.FOREGROUND_COLOR);
 
             editorSettings.addSettingWidget(foreGroundColor, t1);
 
             String t2 = messageProvider.translate("SettingDialog", "Show icons");
-            CheckBoxSettingsWidget showIcons = new CheckBoxSettingsWidget(e, this,
+            final CheckBoxSettingsWidget showIcons = new CheckBoxSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.EDITOR_GROUP,
                     SettingNames.ExplorerTree.Common.SHOW_ICONS,
-                    t2,
-                    true);
+                    t2);
 
             editorSettings.addSettingWidget(showIcons, t2);
 
             String t3 = messageProvider.translate("SettingDialog", "Open editor after inserting object into tree");
-            CheckBoxSettingsWidget openEditor = new CheckBoxSettingsWidget(e, this,
+            final CheckBoxSettingsWidget openEditor = new CheckBoxSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.EDITOR_GROUP,
                     SettingNames.ExplorerTree.Editor.EDIT_AFTER_INSERT,
-                    t3,
-                    false);
+                    t3);
 
             editorSettings.addSettingWidget(openEditor, t3);
         }
@@ -613,8 +647,7 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget backGroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.SELECTOR_GROUP,
-                    SettingNames.ExplorerTree.Common.BACKGROUND_COLOR,
-                    "#ffffff");
+                    SettingNames.ExplorerTree.Common.BACKGROUND_COLOR);
 
             selectorSettings.addSettingWidget(backGroundColor, t0);
 
@@ -623,8 +656,7 @@ public class SettingsDialog extends Dialog {
                     this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.SELECTOR_GROUP,
-                    SettingNames.ExplorerTree.Common.FOREGROUND_COLOR,
-                    "#000000");
+                    SettingNames.ExplorerTree.Common.FOREGROUND_COLOR);
 
             selectorSettings.addSettingWidget(foreGroundColor, t1);
 
@@ -633,8 +665,7 @@ public class SettingsDialog extends Dialog {
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.SELECTOR_GROUP,
                     SettingNames.ExplorerTree.Common.SHOW_ICONS,
-                    t2,
-                    true);
+                    t2);
 
             selectorSettings.addSettingWidget(showIcons, t2);
         }
@@ -644,8 +675,7 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget backGroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.PARAGRAPH_GROUP,
-                    SettingNames.ExplorerTree.Common.BACKGROUND_COLOR,
-                    "#ffffff");
+                    SettingNames.ExplorerTree.Common.BACKGROUND_COLOR);
             paragraphSettings.addSettingWidget(backGroundColor, t0);
 
             String t1 = messageProvider.translate("Settings Dialog", "Foreground color");
@@ -653,16 +683,14 @@ public class SettingsDialog extends Dialog {
                     this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.PARAGRAPH_GROUP,
-                    SettingNames.ExplorerTree.Common.FOREGROUND_COLOR,
-                    "#000068");
+                    SettingNames.ExplorerTree.Common.FOREGROUND_COLOR);
             paragraphSettings.addSettingWidget(foreGroundColor, t1);
 
             String t2 = messageProvider.translate("SettingDialog", "Show icons");
             CheckBoxSettingsWidget showIcons = new CheckBoxSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP, SettingNames.ExplorerTree.PARAGRAPH_GROUP,
                     SettingNames.ExplorerTree.Common.SHOW_ICONS,
-                    t2,
-                    true);
+                    t2);
             paragraphSettings.addSettingWidget(showIcons, t2);
 
         }
@@ -671,8 +699,7 @@ public class SettingsDialog extends Dialog {
             String t0 = messageProvider.translate("Settings Dialog", "Background color");
             ColorSettingsWidget backGroundColor = new ColorSettingsWidget(e, this, SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.COMMON_GROUP,
-                    SettingNames.ExplorerTree.Common.TREE_BACKGROUND,
-                    "#ffffff");
+                    SettingNames.ExplorerTree.Common.TREE_BACKGROUND);
             //csw.setLabel(messageProvider.translate("AppearanceSettingsDialog", "Background Color"));
             generalSettings.addSettingWidget(backGroundColor, t0);
 
@@ -680,15 +707,13 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget treeItemFontColor = new ColorSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.COMMON_GROUP,
-                    SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_FONT_COLOR,
-                    "#000000");
+                    SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_FONT_COLOR);
             generalSettings.addSettingWidget(treeItemFontColor, t1);
 
             String t2 = messageProvider.translate("Settings Dialog", "Tree selected item background color");
             ColorSettingsWidget treeItemBackColor = new ColorSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP, SettingNames.ExplorerTree.COMMON_GROUP,
-                    SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_BACKGROUND,
-                    "#3399ff");
+                    SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_BACKGROUND);
             generalSettings.addSettingWidget(treeItemBackColor, t2);
 
             String t5 = messageProvider.translate("Settings Dialog", "Position");
@@ -699,16 +724,14 @@ public class SettingsDialog extends Dialog {
             aligns.add(Alignment.BOTTOM);
             AlignmentSettingsWidget position = new AlignmentSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP, SettingNames.ExplorerTree.COMMON_GROUP,
-                    SettingNames.ExplorerTree.Common.TREE_AREA, aligns,
-                    Alignment.LEFT);
+                    SettingNames.ExplorerTree.Common.TREE_AREA, aligns);
             generalSettings.addSettingWidget(position, t5);
 
             String t3 = messageProvider.translate("Settings Dialog", "Remember current item");
             CheckBoxSettingsWidget rememberCurrent = new CheckBoxSettingsWidget(e, this,
                     SettingNames.EXPLORER_TREE_GROUP, SettingNames.ExplorerTree.COMMON_GROUP,
                     SettingNames.ExplorerTree.Common.RESTORE_POSITION,
-                    t3,
-                    false);
+                    t3);
             generalSettings.addSettingWidget(rememberCurrent, t3);
 
             String t4 = messageProvider.translate("Settings Dialog", "Save user-defined items");
@@ -716,8 +739,7 @@ public class SettingsDialog extends Dialog {
                     SettingNames.EXPLORER_TREE_GROUP,
                     SettingNames.ExplorerTree.COMMON_GROUP,
                     SettingNames.ExplorerTree.Common.KEEP_USER_EI,
-                    t4,
-                    true);
+                    t4);
             generalSettings.addSettingWidget(saveUDI, t4);
         }
     }
@@ -731,7 +753,7 @@ public class SettingsDialog extends Dialog {
         public SelectorSettingsWidget() {
             super();
             drawSelectorSettingsTabs();
-            this.setHeight(450);
+            this.setHeight(550);
         }
 
         private void drawSelectorSettingsTabs() {
@@ -791,7 +813,6 @@ public class SettingsDialog extends Dialog {
                             SettingNames.Selector.STYLES_GROUP,
                             pair.getKey().getValue());
                     stylePageWidgets.put(style, stylePage);
-                    setDefaults(style);
 
                     //settingsArrayList.add(stylePage);
                     settingsArrayList.addAll(stylePage.getReadonlyPropertySettingsWidget().getPropertyWidgets());
@@ -828,75 +849,15 @@ public class SettingsDialog extends Dialog {
             listBox.setCurrentRow(0);
         }
 
-        private void updateStyleWidget(final HashMap<String, String> map, final ESelectorRowStyle style) {
-            StylePageSettingsWidget stylePage = stylePageWidgets.get(style);
-
-            SelectorSettingWidget pswReadOnly = stylePage.getReadonlyPropertySettingsWidget();
-            pswReadOnly.setDefaultValue(map);
-
-            PropertySettingsWidget pswMandatory = stylePage.getMandatoryPropertySettingsWidget();
-            pswMandatory.setDefaultValue(map);
-
-            SelectorSettingWidget pswOther = stylePage.getOtherPropertySettingsWidget();
-            pswOther.setDefaultValue(map);
-        }
-
-        private void setDefaults(final ESelectorRowStyle style) {
-            HashMap<String, String> mapp = new HashMap<>();
-            switch (style) {
-                case BAD:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#ffffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#be0000");
-                    break;
-                case FAVORITE:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#ffffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#00007f");
-                    break;
-                case GOOD:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#ffffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#007800");
-                    break;
-                case IMPORTANT:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#ffffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#000000");
-                    break;
-                case NORMAL:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#ffffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#000000");
-                    break;
-                case POOR:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#ffffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#000000");
-                    break;
-                case RATHER_GOOD:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#ffffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#007864");
-                    break;
-                case UNIMPORTANT:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#ffffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#555555");
-                    break;
-                case VERY_BAD:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#fff7cd");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#be0000");
-                    break;
-                case VERY_GOOD:
-                    mapp.put(SettingNames.TextOptions.BCOLOR, "#beffff");
-                    mapp.put(SettingNames.TextOptions.FCOLOR, "#007800");
-                    break;
-            }
-            updateStyleWidget(mapp, style);
-        }
-
         private void drawGeneral() {
-            String t0 = messageProvider.translate("Settings Dialog", "Remember current filter");
+            String rememeberFilterLabel = messageProvider.translate("Settings Dialog", "Remember current filter");
             CheckBoxSettingsWidget rememeberFilter = new CheckBoxSettingsWidget(e, this, SettingNames.SELECTOR_GROUP,
                     SettingNames.Selector.COMMON_GROUP,
                     SettingNames.Selector.Common.SAVE_FILTER,
-                    t0, true);
-            generalSettings.addSettingWidget(rememeberFilter, t0);
+                    rememeberFilterLabel);
+            generalSettings.addSettingWidget(rememeberFilter, rememeberFilterLabel);
 
-            String t1 = messageProvider.translate("Settings Dialog", "Header alignment");
+            String headersAlignLabel = messageProvider.translate("Settings Dialog", "Header alignment");
             LinkedList<Alignment> aligns = new LinkedList<>();
 
             aligns.add(Alignment.CENTER);
@@ -906,25 +867,38 @@ public class SettingsDialog extends Dialog {
             AlignmentSettingsWidget headersAlign = new AlignmentSettingsWidget(e,
                     this, SettingNames.SELECTOR_GROUP,
                     SettingNames.Selector.COMMON_GROUP,
-                    SettingNames.Selector.Common.TITLES_ALIGNMENT, aligns, Alignment.CENTER);
-            generalSettings.addSettingWidget(headersAlign, t1);
+                    SettingNames.Selector.Common.TITLES_ALIGNMENT, aligns);
+            generalSettings.addSettingWidget(headersAlign, headersAlignLabel);
 
-            String t2 = messageProvider.translate("Settings Dialog", "Current cell frame color");
+            String currentCellFrameLabel = messageProvider.translate("Settings Dialog", "Current cell frame color");
             ColorSettingsWidget currentCellFrame = new ColorSettingsWidget(e, this, SettingNames.SELECTOR_GROUP,
                     SettingNames.Selector.COMMON_GROUP,
-                    SettingNames.Selector.Common.FRAME_COLOR, "#404040");
-            generalSettings.addSettingWidget(currentCellFrame, t2);
+                    SettingNames.Selector.Common.FRAME_COLOR);
+            generalSettings.addSettingWidget(currentCellFrame, currentCellFrameLabel);
             
-            String t3 = messageProvider.translate("Settings Dialog", "Current row frame color");
+            String currentRowFrameLabel = messageProvider.translate("Settings Dialog", "Current row frame color");
             ColorSettingsWidget currentRowFrame = new ColorSettingsWidget(e, this, SettingNames.SELECTOR_GROUP,
                     SettingNames.Selector.COMMON_GROUP,
-                    SettingNames.Selector.Common.ROW_FRAME_COLOR, "#3399ff");
-            generalSettings.addSettingWidget(currentRowFrame, t3);            
+                    SettingNames.Selector.Common.ROW_FRAME_COLOR);
+            generalSettings.addSettingWidget(currentRowFrame, currentRowFrameLabel);            
+            
+            String selectionBackgroundLabel = messageProvider.translate("Settings Dialog", "Selected object background color");
+            ColorSettingsWidget selectionBackground = new ColorSettingsWidget(e, this, SettingNames.SELECTOR_GROUP,
+                    SettingNames.Selector.COMMON_GROUP,
+                    SettingNames.Selector.Common.SELECTED_ROW_COLOR);
+            generalSettings.addSettingWidget(selectionBackground, selectionBackgroundLabel);
+            
+            String multipleSelectionByDefaultLabel = messageProvider.translate("Settings Dialog", "Enable multiple selection mode by default");
+            CheckBoxSettingsWidget multipleSelectionByDefault = new CheckBoxSettingsWidget(e, this, SettingNames.SELECTOR_GROUP,
+                    SettingNames.Selector.COMMON_GROUP,
+                    SettingNames.Selector.Common.MULTIPLE_SELECTION_MODE_ENABLED_BY_DEFAULT,
+                    multipleSelectionByDefaultLabel);
+            generalSettings.addSettingWidget(multipleSelectionByDefault, multipleSelectionByDefaultLabel);
 
-            String t4 = messageProvider.translate("Settings Dialog", "Alternative Background color");
+            String alternativeBackgroundLabel = messageProvider.translate("Settings Dialog", "Alternative Background color");
             AlternativeBackgroundWidget alternativeBackground = new AlternativeBackgroundWidget(e, this, SettingNames.SELECTOR_GROUP,
                     SettingNames.Selector.COMMON_GROUP,
-                    SettingNames.Selector.Common.SLIDER_VALUE, t4, 4);
+                    SettingNames.Selector.Common.SLIDER_VALUE, alternativeBackgroundLabel);
             generalSettings.addSettingWidget(alternativeBackground);
         }
     }
@@ -1020,7 +994,7 @@ public class SettingsDialog extends Dialog {
 
         public EditorSettingsWidget() {
             super();
-            this.setHeight(450);
+            this.setHeight(550);
             drawEditorSettingsTabs();
         }
 
@@ -1033,26 +1007,51 @@ public class SettingsDialog extends Dialog {
             //tabpropertiesSettings.getHtml().getParent().setCss("height", "350px");
             drawEditorPropertiesSettingsTabs(propertiesInnerTabs);
             tabpropertiesSettings.add(propertiesInnerTabs);
-
+            
             drawGeneral();
         }
 
         private void drawGeneral() {
-            String t0 = messageProvider.translate("Settings Dialog", "Remember current tab");
-            CheckBoxSettingsWidget rememberTab = new CheckBoxSettingsWidget(e, this,
-                    SettingNames.EDITOR_GROUP,
-                    SettingNames.Editor.COMMON_GROUP,
-                    SettingNames.Editor.Common.RESTORE_TAB,
-                    t0, false);
-            generalSettings.addSettingWidget(rememberTab, t0);
-            
-            String t1 = messageProvider.translate("Settings Dialog", "Warn about undefined value for mandatory property when closing editor");
-            CheckBoxSettingsWidget swWarnAboutMandatory = new CheckBoxSettingsWidget(e, this,
-                    SettingNames.EDITOR_GROUP,
-                    SettingNames.Editor.COMMON_GROUP,
-                    SettingNames.Editor.Common.CHECK_MANDATORY_ON_CLOSE,
-                    t1, true);
-            generalSettings.addSettingWidget(swWarnAboutMandatory, t1);
+            {
+                final String title = messageProvider.translate("Settings Dialog", "Field name alignment");
+                final LinkedList<Alignment> aligns = new LinkedList<>();
+                aligns.add(Alignment.LEFT);
+                aligns.add(Alignment.RIGHT);
+                AlignmentSettingsWidget position = new AlignmentSettingsWidget(e, this,
+                        SettingNames.EDITOR_GROUP, SettingNames.Editor.COMMON_GROUP,
+                        SettingNames.Editor.Common.TITLES_ALIGNMENT, aligns);            
+                generalSettings.addSettingWidget(position, title);
+            }
+            {
+                final String title = messageProvider.translate("Settings Dialog", "Maximum number of items in drop-down list");
+                final IntSettingsWidget settingsWidget = 
+                    new IntSettingsWidget(e,                            
+                                                       this, 
+                                                       SettingNames.EDITOR_GROUP,
+                                                       SettingNames.Editor.COMMON_GROUP,
+                                                       SettingNames.Editor.Common.DROP_DOWN_LIST_ITEMS_LIMIT,
+                                                       0,
+                                                       Integer.MAX_VALUE);
+                generalSettings.addSettingWidget(settingsWidget, title);
+            }
+            {
+                final String title = messageProvider.translate("Settings Dialog", "Remember current tab");
+                CheckBoxSettingsWidget rememberTab = new CheckBoxSettingsWidget(e, this,
+                        SettingNames.EDITOR_GROUP,
+                        SettingNames.Editor.COMMON_GROUP,
+                        SettingNames.Editor.Common.RESTORE_TAB,
+                        title);
+                generalSettings.addSettingWidget(rememberTab, title);
+            }
+            {
+                final String title = messageProvider.translate("Settings Dialog", "Warn about undefined value for mandatory property when closing editor");
+                CheckBoxSettingsWidget swWarnAboutMandatory = new CheckBoxSettingsWidget(e, this,
+                        SettingNames.EDITOR_GROUP,
+                        SettingNames.Editor.COMMON_GROUP,
+                        SettingNames.Editor.Common.CHECK_MANDATORY_ON_CLOSE,
+                        title);
+                generalSettings.addSettingWidget(swWarnAboutMandatory, title);
+            }
         }
 
         private void drawEditorPropertiesSettingsTabs(TabLayout layout) {
@@ -1079,44 +1078,41 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget foregroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_TITLES_GROUP,
-                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR, "#000000");
+                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR);
             readonlySettings.addToNameBox(foregroundColor, t0);
 
             String t1 = messageProvider.translate("Settings Dialog", "Background color");
             ColorSettingsWidget backgroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.BCOLOR, "#f0f0f0");
+                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.BCOLOR);
             readonlySettings.addToValueBox(backgroundColor, t1);
 
             String t2 = messageProvider.translate("Settings Dialog", "Own");
             ColorSettingsWidget own = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP, SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR, "#000000");
+                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR);
             readonlySettings.addToForegroundBox(own, t2);
 
             String t3 = messageProvider.translate("Settings Dialog", "Inherited");
             ColorSettingsWidget inhherited = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.INHERITED,
-                    "#aaaaff");
+                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.INHERITED);
             readonlySettings.addToForegroundBox(inhherited, t3);
 
             String t4 = messageProvider.translate("Settings Dialog", "Overriden");
             ColorSettingsWidget overrriden = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.OVERRIDED,
-                    "#0055ff");
+                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.OVERRIDED);
             readonlySettings.addToForegroundBox(overrriden, t4);
 
             String t5 = messageProvider.translate("Settings Dialog", "Undefined");
             ColorSettingsWidget undeffined = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED,
-                    "#b3b2b1");
+                    SettingNames.Properties.READONLY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED);
             readonlySettings.addToForegroundBox(undeffined, t5);
         }
 
@@ -1125,45 +1121,42 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget foregroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_TITLES_GROUP,
-                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR,
-                    "#000000");
+                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR);
             mandatorySettings.addToNameBox(foregroundColor, t0);
 
             String t1 = messageProvider.translate("Settings Dialog", "Background color");
             ColorSettingsWidget backgroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.BCOLOR, "#ffffff");
+                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.BCOLOR);
             mandatorySettings.addToValueBox(backgroundColor, t1);
 
             String t2 = messageProvider.translate("Settings Dialog", "Own");
             ColorSettingsWidget own = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR, "#000000");
+                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR);
             mandatorySettings.addToForegroundBox(own, t2);
 
             String t3 = messageProvider.translate("Settings Dialog", "Inherited");
             ColorSettingsWidget inhherited = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.INHERITED, "#aaaaff");
+                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.INHERITED);
             mandatorySettings.addToForegroundBox(inhherited, t3);
 
             String t4 = messageProvider.translate("Settings Dialog", "Overriden");
             ColorSettingsWidget overrriden = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.OVERRIDED,
-                    "#0055ff");
+                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.OVERRIDED);
             mandatorySettings.addToForegroundBox(overrriden, t4);
 
             String t5 = messageProvider.translate("Settings Dialog", "Undefined");
             ColorSettingsWidget undeffined = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED,
-                    "#b3b2b1");
+                    SettingNames.Properties.MANDATORY_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED);
             mandatorySettings.addToForegroundBox(undeffined, t5);
         }
 
@@ -1172,49 +1165,43 @@ public class SettingsDialog extends Dialog {
             ColorSettingsWidget foregroundColor = new ColorSettingsWidget(e,
                     this, SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_TITLES_GROUP,
-                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR,
-                    "#000000");
+                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR);
             otherSettings.addToNameBox(foregroundColor, t0);
 
             String t1 = messageProvider.translate("Settings Dialog", "Background color");
             ColorSettingsWidget backgroundColor = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.BCOLOR,
-                    "#ffffff");
+                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.BCOLOR);
             otherSettings.addToValueBox(backgroundColor, t1);
 
             String t2 = messageProvider.translate("Settings Dialog", "Own");
             ColorSettingsWidget own = new ColorSettingsWidget(e, this,
                     SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR,
-                    "#000000");
+                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR);
             otherSettings.addToForegroundBox(own, t2);
 
             String t3 = messageProvider.translate("Settings Dialog", "Inherited");
             ColorSettingsWidget inhherited = new ColorSettingsWidget(e, this, SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.INHERITED,
-                    "#aaaaff");
+                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.INHERITED);
             otherSettings.addToForegroundBox(inhherited, t3);
 
             String t4 = messageProvider.translate("Settings Dialog", "Overriden");
             ColorSettingsWidget overrriden = new ColorSettingsWidget(e, this, SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.OVERRIDED,
-                    "#0055ff");
+                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.OVERRIDED);
             otherSettings.addToForegroundBox(overrriden, t4);
 
             String t5 = messageProvider.translate("Settings Dialog", "Undefined");
             ColorSettingsWidget undeffined = new ColorSettingsWidget(e, this, SettingNames.EDITOR_GROUP,
                     SettingNames.Editor.PROPERTY_VALUES_GROUP,
-                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED,
-                    "#b3b2b1");
+                    SettingNames.Properties.OTHER_PROPERTY + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED);
             otherSettings.addToForegroundBox(undeffined, t5);
         }
     }
-
+    
     /* private class SourceCodeSettingsWidget extends TabLayout {
 
      public SourceCodeSettingsWidget() {
@@ -1235,7 +1222,10 @@ public class SettingsDialog extends Dialog {
                 showEditorSettings();
             } else if (item.equals(selectorItem)) {
                 showSelectorSettings();
-            } /*else if (item.equals(sourceCodeItem)) {
+            } else if (item.equals(formatItem)) {
+                showFormatSettings();
+            }
+            /*else if (item.equals(sourceCodeItem)) {
              showSourceCodeSettings();
              }*/
         }
@@ -1280,18 +1270,21 @@ public class SettingsDialog extends Dialog {
     private void showEditorSettings() {
         enableTabs(editorTabs);
     }
+    
+    private void showFormatSettings() {
+        enableTabs(formatTabs);
+    }
 
     /*    private void showSourceCodeSettings() {
      enableTabs(srcCodeTabs);
      }
      */
-    private void enableTabs(TabLayout tabb) {
+    private void enableTabs(UIObject tabb) {
         if (tabb != null && tabsList != null && tabsList.contains(tabb)) {
             tabb.setVisible(true);
             tabb.setEnabled(true);
             tabSetCell.add(tabb);
-            tabb.adjustToContent(false);
-            for (TabLayout t : tabsList) {
+            for (UIObject t : tabsList) {
                 if (!t.equals(tabb)) {
                     t.setVisible(false);
                     t.setEnabled(false);
@@ -1315,7 +1308,10 @@ public class SettingsDialog extends Dialog {
         selectorItem.setText(messageProvider.translate("Settings Dialog", "Selector"));
         list.add(selectorItem);
 
-
+        formatItem.setIcon(env.getApplication().getImageManager().getIcon(Icons.FORMAT_SETTINGS));
+        formatItem.setText(messageProvider.translate("Settings Dialog", "Number and Date/ Time Formats"));
+        list.add(formatItem);
+        
         /*        sourceCodeItem.setIcon(getApplication().getImageManager().getIcon(Icons.SRC_EDITOR_SETTINGS));
          sourceCodeItem.setText(messageProvider.translate("AppereanceSettingsDialog", "Source Code"));
          list.add(sourceCodeItem);

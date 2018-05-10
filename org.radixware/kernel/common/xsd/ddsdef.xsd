@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:ads="http://schemas.radixware.org/adsdef.xsd" xmlns:this="http://schemas.radixware.org/ddsdef.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:common="http://schemas.radixware.org/commondef.xsd" targetNamespace="http://schemas.radixware.org/ddsdef.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:utils="http://schemas.radixware.org/utils.xsd" xmlns:ads="http://schemas.radixware.org/adsdef.xsd" xmlns:this="http://schemas.radixware.org/ddsdef.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:common="http://schemas.radixware.org/commondef.xsd" targetNamespace="http://schemas.radixware.org/ddsdef.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef-min.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/utils.xsd" schemaLocation="utils.xsd"/>
     <xs:annotation>
         <xs:documentation>---------- Common Types ----------</xs:documentation>
     </xs:annotation>
@@ -178,7 +179,7 @@
     </xs:complexType>
     <xs:complexType name="Trigger">
         <xs:complexContent>
-            <xs:extension base="common:NamedDefinition">
+            <xs:extension base="common:DescribedDefinition">
                 <xs:sequence>
                     <xs:element name="Body" type="xscml:Sqml"/>
                 </xs:sequence>
@@ -367,6 +368,7 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:attribute>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -385,6 +387,7 @@
                 <xs:attribute name="MaxValue" type="xs:long" use="optional"/>
                 <xs:attribute name="Order" type="xs:boolean" use="required"/>
                 <xs:attribute name="Cache" type="xs:long" use="optional"/>
+                <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

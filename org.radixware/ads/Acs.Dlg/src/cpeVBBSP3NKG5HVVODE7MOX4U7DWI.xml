@@ -30,12 +30,8 @@
           <xsc:Item>
             <xsc:Java>import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.gui.QWidget;
-import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 import org.radixware.kernel.common.client.env.*;
-import com.trolltech.qt.core.Qt.WindowFlags;
-import com.trolltech.qt.core.Qt.WindowType;
-import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QListWidgetItem;
 import com.trolltech.qt.gui.QCheckBox;
 </xsc:Java>
@@ -45,140 +41,23 @@ import com.trolltech.qt.gui.QCheckBox;
       <Bodies>
         <Src Name="BodyadcGGPKMHTXFRGLHN4KLH27U2IZNE" Environment="explorer">
           <xsc:Item>
-            <xsc:Java>private class ChooseRoleForm extends com.trolltech.qt.gui.QDialog {
-
-    QWidget parentWidget;
-    com.trolltech.qt.gui.QListWidget list;
-    String guid = null;
-    String title = null;
-    java.util.List&lt;String> rolesGuids = new java.util.ArrayList&lt;String>();
-    com.trolltech.qt.gui.QDialogButtonBox bottomDialogButtonBox = null;
-    boolean appRoleSelected = false;
-
-    ChooseRoleForm(QWidget parentWidget) {
-        super();
-        this.parentWidget = parentWidget;
-        setWindowFlags(WidgetUtils.WINDOW_FLAGS_FOR_DIALOG);
-        //this.setTitle("");
-        com.trolltech.qt.gui.QVBoxLayout layout = new com.trolltech.qt.gui.QVBoxLayout(this);
-        layout.setContentsMargins(9, 9, 9, 9);
-        layout.setSpacing(6);
-
-        list = new com.trolltech.qt.gui.QListWidget(parentWidget);
-        list.setObjectName("list");
-        list.doubleClicked.connect(this, "listDoubleClicked(com.trolltech.qt.core.QModelIndex)");
-        layout.addWidget(list);
-
-        layout.addWidget(</xsc:Java>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:Java>.</xsc:Java>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mth4T7NV26O6FAV7LNJDBGAGODNQE" Invoke="true"/>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:Java>());
-
-        //QDialogButtonBox
-        bottomDialogButtonBox = new com.trolltech.qt.gui.QDialogButtonBox(parentWidget);
-        bottomDialogButtonBox.setObjectName("bottomDialogButtonBox");
-        layout.addWidget(bottomDialogButtonBox);
-        bottomDialogButtonBox.setStandardButtons(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok, com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel);
-        bottomDialogButtonBox.accepted.connect(this, "accepted()");
-        bottomDialogButtonBox.rejected.connect(this, "rejected()");
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public boolean isAppRoleSelected() {
-        return appRoleSelected;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    @SuppressWarnings("unused")
-    public void listDoubleClicked(com.trolltech.qt.core.QModelIndex index) {
-        accepted();
-    }
-
-    public void accepted() {
-        if (list.currentItem() == null)
-            return;
-        guid = (String) list.currentItem().data(3);
-        title = list.currentItem().text();
-        appRoleSelected = list.currentItem().data(com.trolltech.qt.core.Qt.ItemDataRole.UserRole + 1) != null;
-        close();
-    }
-
-    @SuppressWarnings("unused")
-    public void rejected() {
-        close();
-    }
-
-    public void fill(java.util.List&lt;String> rolesTitles, java.util.List&lt;String> rolesGuids, java.util.List&lt;Boolean> isAppRole) {
-        this.rolesGuids = rolesGuids;
-        int i = 0;
-        for (String title : rolesTitles) {
-            QListWidgetItem item = new QListWidgetItem(title);
-            item.setData(3, this.rolesGuids.get(i));
-            if (isAppRole != null &amp;&amp; isAppRole.get(i) == Boolean.TRUE) {
-                item.setData(com.trolltech.qt.core.Qt.ItemDataRole.UserRole + 1, Boolean.TRUE);
-                </xsc:Java>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:Java>.</xsc:Java>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mthKJPAOBS27JHUNESSUGG3AEMP5I" Invoke="true"/>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:Java>(item, true);
-            }
-            list.addItem(item);
-            if (i == 0) {
-                list.setCurrentItem(item);
-            }
-            i++;
-        }
-        if (i == 0)
-            bottomDialogButtonBox.setStandardButtons(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel);
-    }
-
-    @Override
-    public int exec() {
-        final WindowFlags f = new WindowFlags();
-        f.set(new WindowType[]{WindowType.Dialog, WindowType.WindowSystemMenuHint});
-        setWindowFlags(f);
-        //WidgetUtils.centerDialog(this);
-        WidgetUtils.centerDialog((QDialog) parentWidget);
-        return super.exec();
-    }
-}
-
-void addRole(Boolean x) {
+            <xsc:Java>void addRole(Boolean x) {
     // make free role list
     if (roleListDocument == null) {
         </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU">
+              <xsc:Presentation>Explorer.Models::CommandModel</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> cmd = getCommand(</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="clcKPRAHIUWSPORDID2ABQAQH3XQ4"/>
+            <xsc:IdReference Path="clcKPRAHIUWSPORDID2ABQAQH3XQ4">
+              <xsc:Presentation>GetRoleListCmd</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>);
@@ -188,7 +67,9 @@ void addRole(Boolean x) {
         sortRoleList = new java.util.ArrayList&lt;</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role">
+              <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList.Role</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java><![CDATA[>();
@@ -205,7 +86,9 @@ void addRole(Boolean x) {
     for (]]></xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role">
+              <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList.Role</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> role : sortRoleList) {
@@ -217,56 +100,175 @@ void addRole(Boolean x) {
         }
     }
 
-    ChooseRoleForm chooseRoleForm = new ChooseRoleForm(parentWidget);
-    chooseRoleForm.setParent(parentWidget);
+    </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4">
+              <xsc:Presentation>RoleEditorDlg</xsc:Presentation>
+            </xsc:TypeDeclaration>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> chooseRoleForm = new </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4">
+              <xsc:Presentation>RoleEditorDlg</xsc:Presentation>
+            </xsc:TypeDeclaration>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(getEnvironment());
+    chooseRoleForm.getModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 mthGDEIHMXMXJAEPF3G6K2O47LTEA" Invoke="true">
+              <xsc:Presentation>setMultipleChoiceEnabled</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(true);
+    chooseRoleForm.getModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 mth6MZMEZ3ZQZCZLBHFKDBKBVFYDQ" Invoke="true">
+              <xsc:Presentation>setRestrictedIds</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(rolesGuids);
+    chooseRoleForm.setParent(this.parentWidget);
     chooseRoleForm.setWindowIcon(</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA">
+              <xsc:Presentation>Explorer.Icons::ExplorerIcon</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>.getQIcon(getEnvironment().getDefManager().getImage(</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="imgRWDDDR2YBZED5B3BUYIQRTLAQQ"/>
+            <xsc:IdReference Path="imgRWDDDR2YBZED5B3BUYIQRTLAQQ">
+              <xsc:Presentation>Acs::role</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>)));
-    chooseRoleForm.setWindowTitle(</xsc:Java>
+    </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:LocalizedString StringId="mls4NKTMIMCUJF7HF5E33Y4JNXW4Q"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I">
+              <xsc:Presentation>Client.Views::DialogResult</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
-            <xsc:Java>);
-    chooseRoleForm.fill(rolesTitles, rolesGuids2, isAppRole);
-    chooseRoleForm.exec();
-    if (chooseRoleForm != null &amp;&amp; chooseRoleForm.getGuid() != null) {
-        rolesGuids.add(chooseRoleForm.getGuid());
-        QListWidgetItem newItem = new QListWidgetItem(chooseRoleForm.getTitle());
-        </xsc:Java>
+            <xsc:Java> dialogResult = chooseRoleForm.execDialog();
+    if (dialogResult == </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I">
+              <xsc:Presentation>Client.Views::DialogResult</xsc:Presentation>
+            </xsc:TypeDeclaration>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.ACCEPTED &amp;&amp; chooseRoleForm.getModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 prdFVM54B6H7VBYFIQNBOTAQCEHH4" Invoke="true">
+              <xsc:Presentation>selectedRoles</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java> != null) {
+        for (</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4">
+              <xsc:Presentation>RoleEditorUtils</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>.</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mthKJPAOBS27JHUNESSUGG3AEMP5I" Invoke="true"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 adc3YFUTBXVAVGIFIBTRUUARITQTI">
+              <xsc:Presentation>RoleData</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
-            <xsc:Java>(newItem, chooseRoleForm.isAppRoleSelected());
-        list.addItem(newItem);
-        list.setCurrentRow(rolesGuids.size() - 1);
+            <xsc:Java> roleData : chooseRoleForm.getModel().</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="cpe2ATLT7MVSPORDID2ABQAQH3XQ4 arm2ATLT7MVSPORDID2ABQAQH3XQ4 prdFVM54B6H7VBYFIQNBOTAQCEHH4" Invoke="true">
+              <xsc:Presentation>selectedRoles</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>) {
+            String roleId = roleData.</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 adc3YFUTBXVAVGIFIBTRUUARITQTI prdTDYT3AUVWZEK5NEIKM5XNNBDRE" Invoke="true">
+              <xsc:Presentation>data</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>;
+            this.rolesGuids.add(roleId);
+            String roleTitle = roleData.</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 adc3YFUTBXVAVGIFIBTRUUARITQTI prdMPVLYCEQGBGYFNC766SL5T2VBU" Invoke="true">
+              <xsc:Presentation>realFullName</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>;
+            QListWidgetItem newItem = new QListWidgetItem(roleTitle);
+            </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4">
+              <xsc:Presentation>RoleEditorUtils</xsc:Presentation>
+            </xsc:TypeDeclaration>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>.</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mthKJPAOBS27JHUNESSUGG3AEMP5I" Invoke="true">
+              <xsc:Presentation>applyStyle</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+              <xsc:Presentation>getEnvironment</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(), newItem, roleData.</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 adc3YFUTBXVAVGIFIBTRUUARITQTI prdLLK3KBM72JHDBCL7LD3UECNYTY" Invoke="true">
+              <xsc:Presentation>isAppRole</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>);
+            this.list.addItem(newItem);
+        }
+        this.list.setCurrentRow(this.rolesGuids.size() - 1);
         setButtonState();
     }
 }
 
 void delRole(Boolean x) {
     int index = list.currentRow();
-    if (index &lt; 0)
+    if (index &lt; 0) {
         return;
+    }
     list.takeItem(index);
     rolesGuids.remove(index);
     setButtonState();
@@ -276,13 +278,17 @@ void clearRole(Boolean x) {
     if (rolesGuids == null || rolesGuids.size() == 0 || !</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+              <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>.</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mth7VFWAR64ENC3HGS6LTPSILZI3I" Invoke="true"/>
+            <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mth7VFWAR64ENC3HGS6LTPSILZI3I" Invoke="true">
+              <xsc:Presentation>messageConfirmation</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>(</xsc:Java>
@@ -297,8 +303,9 @@ void clearRole(Boolean x) {
             <xsc:LocalizedString StringId="mlsMGAAFPHFIZBIVFEHPU6PWLGYHE"/>
           </xsc:Item>
           <xsc:Item>
-            <xsc:Java>))
+            <xsc:Java>)) {
         return;
+    }
     rolesGuids.clear();
     list.clear();
     setButtonState();
@@ -308,13 +315,9 @@ void setButtonState() {
     boolean isEnabled = !</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mth7UWTWB24FVASZBR3RCXXWXC4PU" Invoke="true"/>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:Java>().</xsc:Java>
-          </xsc:Item>
-          <xsc:Item>
-            <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthRW4PMU4LZZBPHNXA6VCQA6DQNQ" Invoke="true"/>
+            <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthPJADQB3HBZC4TEHFPWCTXQKXDU" Invoke="true">
+              <xsc:Presentation>isReadOnly</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java><![CDATA[();
@@ -327,25 +330,32 @@ void setButtonState() {
 
 public void checkBoxClicked(Boolean x) {
     if (x.booleanValue()) {
-        if (rolesGuids == null)
+        if (rolesGuids == null) {
             rolesGuids = new ]]></xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="221"/>
+            <xsc:TypeDeclaration TypeId="221">
+              <xsc:Presentation>ArrStr</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>();
+        }
     } else {
         if (rolesGuids != null &amp;&amp; rolesGuids.size() > 0 &amp;&amp; !</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+              <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>.</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mth7VFWAR64ENC3HGS6LTPSILZI3I" Invoke="true"/>
+            <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mth7VFWAR64ENC3HGS6LTPSILZI3I" Invoke="true">
+              <xsc:Presentation>messageConfirmation</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>(</xsc:Java>
@@ -371,123 +381,215 @@ public void checkBoxClicked(Boolean x) {
 }
 
 public void listDoubleClicked(com.trolltech.qt.core.QModelIndex index) {
-    accepted();
+    if (</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthPJADQB3HBZC4TEHFPWCTXQKXDU" Invoke="true">
+              <xsc:Presentation>isReadOnly</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>()) {
+        accepted();
+    }
 }
 
 public void accepted() {
-    if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+    if (</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+            <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthPJADQB3HBZC4TEHFPWCTXQKXDU" Invoke="true">
+              <xsc:Presentation>isReadOnly</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>()) {
+        </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true">
+              <xsc:Presentation>rejectDialog</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>();
+    }
+
+    if (</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthFKHYRWIKE5D6XKB46D6EI7U2QY" Invoke="true">
+              <xsc:Presentation>getPropEditorContext</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>().property.</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthG5DA2K63DVFQ7CUN6MYKDCGHQQ" Invoke="true">
+              <xsc:Presentation>getType</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>() == </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciSZ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+              <xsc:Presentation>Meta::ValType:ArrStr</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>) {
         </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+            <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthFKHYRWIKE5D6XKB46D6EI7U2QY" Invoke="true">
+              <xsc:Presentation>getPropEditorContext</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>().property.</xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true">
+              <xsc:Presentation>setValueObject</xsc:Presentation>
+            </xsc:IdReference>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>(rolesGuids);
+    } else {
+        if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU">
+              <xsc:Presentation>Acs::IArrRoleHolder</xsc:Presentation>
+            </xsc:TypeDeclaration>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Java>) {
+            </xsc:Java>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU">
+              <xsc:Presentation>Acs::IArrRoleHolder</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> arrRoleHolder = (</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+            <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU">
+              <xsc:Presentation>Acs::IArrRoleHolder</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>) this.getPropEditorContext().getHolderModel();
 
-        String title = null;
-        if (rolesGuids != null) {
-            title = "";
-            for (int i = 0; i &lt;= list.count(); i++) {
-                if (list.item(i) != null) {
-                    if (title.length() > 0)
-                        title += "; ";
-                    title += list.item(i).text();
+            String title = null;
+            if (rolesGuids != null) {
+                title = "";
+                for (int i = 0; i &lt;= list.count(); i++) {
+                    if (list.item(i) != null) {
+                        if (title.length() > 0)
+                            title += "; ";
+                        title += list.item(i).text();
+                    }
                 }
             }
-        }
 
-        </xsc:Java>
+            </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcG4LPCCZWKFAYDPURZEU7GOHAWY">
+              <xsc:Presentation>Explorer.Models.Properties::PropertyStr</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> propRoleTitlesProp = arrRoleHolder.</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthP773EUAWSFGYNF4QD3ACXVIKFM" Invoke="true"/>
+            <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthP773EUAWSFGYNF4QD3ACXVIKFM" Invoke="true">
+              <xsc:Presentation>getRolesTitlesProp</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>(getPropEditorContext().property.Id);
-        if (propRoleTitlesProp == null) {
-            </xsc:Java>
+            if (propRoleTitlesProp == null) {
+                </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+              <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>.messageError(</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:LocalizedString StringId="mlsZSDQHZ4PQVFYLI4UPYKEOFFCK4"/>
+            <xsc:LocalizedString StringId="mlsQ2XPZGHA6VARBH3LEPFS4YJE24"/>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>, </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:LocalizedString StringId="mlsBEI4Q3S4XBENBN66T6N563DEHA"/>
+            <xsc:LocalizedString StringId="mlsTEOJOAIGFRBVJGYJZBVCKBS2UI"/>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>);
-            return;
-        }
-        propRoleTitlesProp.setValueObject(title);
+                return;
+            }
+            propRoleTitlesProp.setValueObject(title);
 
-        </xsc:Java>
+            </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA">
+              <xsc:Presentation>Explorer.Models.Properties::PropertyArrStr</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> propRoleIdsProp = arrRoleHolder.</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthACJJVIPBDRH7RD7ESZLJ3SYRAI" Invoke="true"/>
+            <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthACJJVIPBDRH7RD7ESZLJ3SYRAI" Invoke="true">
+              <xsc:Presentation>getRolesIdsProp</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>(getPropEditorContext().property.Id);
-        if (propRoleIdsProp == null) {
-            </xsc:Java>
+            if (propRoleIdsProp == null) {
+                </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+              <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>.messageError(</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:LocalizedString StringId="mls6H4OXBJ2C5CVJLYKN7FHKL34PM"/>
+            <xsc:LocalizedString StringId="mlsV27TVNFTP5FG3MAKJYDOGRYC3U"/>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>, </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:LocalizedString StringId="mlsOYIGA4OCXVDONBWWDL2WFE7LCI"/>
+            <xsc:LocalizedString StringId="mlsCNPBTOVOBFDXBBYQ4WCESTRD6Q"/>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>);
-            return;
-        }
+                return;
+            }
+            propRoleIdsProp.setValueObject(rolesGuids);
 
-        propRoleIdsProp.setValueObject(rolesGuids);
-
-    } else {
-        </xsc:Java>
+        } else {
+            </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+            <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+              <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>.messageError(</xsc:Java>
@@ -503,12 +605,15 @@ public void accepted() {
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>);
-        return;
+            return;
+        }
     }
     </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mth7EFAYV56HBHZTJRSCD227GZ2ZA" Invoke="true"/>
+            <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mth7EFAYV56HBHZTJRSCD227GZ2ZA" Invoke="true">
+              <xsc:Presentation>acceptDialog</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>();
@@ -518,7 +623,9 @@ public void rejected() {
     </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+            <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true">
+              <xsc:Presentation>rejectDialog</xsc:Presentation>
+            </xsc:IdReference>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>();
@@ -528,7 +635,9 @@ public void rejected() {
 class RolesComparator implements java.util.Comparator&lt;</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role">
+              <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList.Role</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>> {
@@ -536,14 +645,18 @@ class RolesComparator implements java.util.Comparator&lt;</xsc:Java>
     public int compare(</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role">
+              <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList.Role</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> role1,
             </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role">
+              <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList.Role</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> role2) {
@@ -555,21 +668,27 @@ class RolesComparator implements java.util.Comparator&lt;</xsc:Java>
 </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument">
+              <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> roleListDocument = null;
 </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument">
+              <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> roleListDocument2 = null;
 java.util.ArrayList&lt;</xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+            <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role">
+              <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList.Role</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java>> sortRoleList = null;
@@ -577,7 +696,9 @@ QWidget parentWidget = null;
 </xsc:Java>
           </xsc:Item>
           <xsc:Item>
-            <xsc:TypeDeclaration TypeId="221"/>
+            <xsc:TypeDeclaration TypeId="221">
+              <xsc:Presentation>ArrStr</xsc:Presentation>
+            </xsc:TypeDeclaration>
           </xsc:Item>
           <xsc:Item>
             <xsc:Java> rolesGuids = null;
@@ -585,8 +706,7 @@ com.trolltech.qt.gui.QListWidget list = null;
 com.trolltech.qt.gui.QPushButton btAdd = null;
 com.trolltech.qt.gui.QPushButton btRemove = null;
 com.trolltech.qt.gui.QPushButton btClear = null;
-QCheckBox checkBox = null;
-</xsc:Java>
+QCheckBox checkBox = null;</xsc:Java>
           </xsc:Item>
         </Src>
       </Bodies>
@@ -595,7 +715,7 @@ QCheckBox checkBox = null;
       <Properties/>
       <Methods>
         <Method Id="mthSUFOELL5P5H75K4LOGHWKEKFTE" Name="propEditorDialog_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="window" Id="mprZO4JLXKX7BHLFN6ETWOT4ADFLA">
               <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
@@ -608,18 +728,21 @@ QCheckBox checkBox = null;
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.explorer.views.PropEditorDialog"/>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.explorer.views.PropEditorDialog">
+                  <xsc:Presentation>org.radixware.kernel.explorer.views.PropEditorDialog</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java> dlg =
-        (</xsc:Java>
+                <xsc:Java> dlg
+        = (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.explorer.views.PropEditorDialog"/>
+                <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.explorer.views.PropEditorDialog">
+                  <xsc:Presentation>org.radixware.kernel.explorer.views.PropEditorDialog</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>)window;
-
+                <xsc:Java>) window;
 
 dlg.setWindowTitle(</xsc:Java>
               </xsc:Item>
@@ -632,17 +755,15 @@ com.trolltech.qt.gui.QVBoxLayout layout = new com.trolltech.qt.gui.QVBoxLayout(w
 layout.setContentsMargins(9, 9, 9, 9);
 layout.setSpacing(6);
 
-com.trolltech.qt.gui.QToolBar toolBar  = new com.trolltech.qt.gui.QToolBar(window);
+com.trolltech.qt.gui.QToolBar toolBar = new com.trolltech.qt.gui.QToolBar(window);
 toolBar.setObjectName("toolBar");
 layout.addWidget(toolBar);
 toolBar.setFloatable(true);
-
 
 btAdd = new com.trolltech.qt.gui.QPushButton(toolBar);
 btAdd.setObjectName("btAdd");
 btAdd.setText("");
 toolBar.addWidget(btAdd);
-
 
 btRemove = new com.trolltech.qt.gui.QPushButton(toolBar);
 btRemove.setObjectName("btRemove");
@@ -657,20 +778,21 @@ btClear.setText("");
 toolBar.addWidget(btClear);
 
 final ClientSettings settings = Environment.getConfigStore();
-settings.beginGroup(SettingNames.SYSTEM    );
+settings.beginGroup(SettingNames.SYSTEM);
 settings.beginGroup(SettingNames.EDITOR_GROUP);
 settings.beginGroup(SettingNames.Editor.COMMON_GROUP);
-final QSize iconSize =  ((</xsc:Java>
+final QSize iconSize = ((</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcUVAVMB4YXZHB3JRWLAI2DXDSAU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcUVAVMB4YXZHB3JRWLAI2DXDSAU">
+                  <xsc:Presentation>Explorer.Env::ExplorerSettings</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>) settings).readQSize( SettingNames.Editor.Common.ICON_SIZE_IN_TOOLBARS);
+                <xsc:Java>) settings).readQSize(SettingNames.Editor.Common.ICON_SIZE_IN_TOOLBARS);
 settings.endGroup();
 settings.endGroup();
 settings.endGroup();
-
 
 btAdd.setFixedSize(iconSize);
 btRemove.setFixedSize(iconSize);
@@ -678,10 +800,12 @@ btClear.setFixedSize(iconSize);
 
 this.setIcon(
         getEnvironment().getDefManager().getImage(
-        </xsc:Java>
+                </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="imgRWDDDR2YBZED5B3BUYIQRTLAQQ"/>
+                <xsc:IdReference Path="imgRWDDDR2YBZED5B3BUYIQRTLAQQ">
+                  <xsc:Presentation>Acs::role</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>
@@ -691,15 +815,19 @@ btAdd.clicked.connect(this, "addRole(Boolean)");
 btAdd.setIcon(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA">
+                  <xsc:Presentation>Explorer.Icons::ExplorerIcon</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.getQIcon(
         getEnvironment().getDefManager().getImage(
-        </xsc:Java>
+                </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="imgDH5JZKQNGREJBB6YH4YYJ54DHU"/>
+                <xsc:IdReference Path="imgDH5JZKQNGREJBB6YH4YYJ54DHU">
+                  <xsc:Presentation>add</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>
@@ -715,15 +843,19 @@ btAdd.setToolTip(</xsc:Java>
 btRemove.setIcon(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA">
+                  <xsc:Presentation>Explorer.Icons::ExplorerIcon</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.getQIcon(
         getEnvironment().getDefManager().getImage(
-        </xsc:Java>
+                </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="imgTGXV5P5GONAXZLZ3JBDBMO4FY4"/>
+                <xsc:IdReference Path="imgTGXV5P5GONAXZLZ3JBDBMO4FY4">
+                  <xsc:Presentation>delete</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>
@@ -740,15 +872,19 @@ btRemove.setToolTip(</xsc:Java>
 btClear.setIcon(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA">
+                  <xsc:Presentation>Explorer.Icons::ExplorerIcon</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.getQIcon(
         getEnvironment().getDefManager().getImage(
-        </xsc:Java>
+                </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="imgYHTVMMFW4VHVZJRUDLRALGGYXI"/>
+                <xsc:IdReference Path="imgYHTVMMFW4VHVZJRUDLRALGGYXI">
+                  <xsc:Presentation>delete_all</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>
@@ -783,117 +919,229 @@ layout.addWidget(list);
 layout.addWidget(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4">
+                  <xsc:Presentation>RoleEditorUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mth4T7NV26O6FAV7LNJDBGAGODNQE" Invoke="true"/>
+                <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mth4T7NV26O6FAV7LNJDBGAGODNQE" Invoke="true">
+                  <xsc:Presentation>createLegendWidget</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>());
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), false));
 
 com.trolltech.qt.gui.QDialogButtonBox bottomDialogButtonBox = new com.trolltech.qt.gui.QDialogButtonBox(window);
 bottomDialogButtonBox.setObjectName("bottomDialogButtonBox");
 layout.addWidget(bottomDialogButtonBox);
-bottomDialogButtonBox.setStandardButtons(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok, com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel);
+
+if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthPJADQB3HBZC4TEHFPWCTXQKXDU" Invoke="true">
+                  <xsc:Presentation>isReadOnly</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()) {
+    bottomDialogButtonBox.setStandardButtons(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel);
+} else {
+    bottomDialogButtonBox.setStandardButtons(com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Ok, com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Cancel);
+}
+
 bottomDialogButtonBox.accepted.connect(this, "accepted()");
 bottomDialogButtonBox.rejected.connect(this, "rejected()");
 list.doubleClicked.connect(this, "listDoubleClicked(com.trolltech.qt.core.QModelIndex)");
 
-
-if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthFKHYRWIKE5D6XKB46D6EI7U2QY" Invoke="true">
+                  <xsc:Presentation>getPropEditorContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().property.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthG5DA2K63DVFQ7CUN6MYKDCGHQQ" Invoke="true">
+                  <xsc:Presentation>getType</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciSZ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Meta::ValType:ArrStr</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
-    </xsc:Java>
+    rolesGuids = (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthFKHYRWIKE5D6XKB46D6EI7U2QY" Invoke="true">
+                  <xsc:Presentation>getPropEditorContext</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java> arrRoleHolder = (</xsc:Java>
+                <xsc:Java>().property.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU"/>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true">
+                  <xsc:Presentation>getValueObject</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>)this.getPropEditorContext().getHolderModel();
-    
-    </xsc:Java>
+                <xsc:Java>() == null) ? null : new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java> rolePropIds =
-            arrRoleHolder.</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthACJJVIPBDRH7RD7ESZLJ3SYRAI" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>(getPropEditorContext().property.Id);
-    if (rolePropIds!=null)
-        if (rolePropIds.</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>()==null)
-            rolesGuids = null;
-        else
-            rolesGuids = new </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TypeDeclaration TypeId="221"/>
+                <xsc:TypeDeclaration TypeId="221">
+                  <xsc:Presentation>ArrStr</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>((</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="221"/>
+                <xsc:TypeDeclaration TypeId="221">
+                  <xsc:Presentation>ArrStr</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>)rolePropIds.</xsc:Java>
+                <xsc:Java>) </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true"/>
+                <xsc:IdReference Path="adcIGHXUXORMFFNXGVBAEOQKN3Q6Y mthFKHYRWIKE5D6XKB46D6EI7U2QY" Invoke="true">
+                  <xsc:Presentation>getPropEditorContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().property.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true">
+                  <xsc:Presentation>getValueObject</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>());
+} else {
+    if (this.getPropEditorContext().getHolderModel() instanceof </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU">
+                  <xsc:Presentation>Acs::IArrRoleHolder</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcHEXT6TMJ2FAXJGCQHFISLL36AA">
+                  <xsc:Presentation>Explorer.Models.Properties::PropertyArrStr</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> rolePropIds = ((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU">
+                  <xsc:Presentation>Acs::IArrRoleHolder</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) this.getPropEditorContext().getHolderModel()).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicAUVGCLZTRVF3HCQZMNDXDYV4MU mthACJJVIPBDRH7RD7ESZLJ3SYRAI" Invoke="true">
+                  <xsc:Presentation>getRolesIdsProp</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(getPropEditorContext().property.Id);
+        if (rolePropIds != null) {
+            rolesGuids = (rolePropIds.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true">
+                  <xsc:Presentation>getValueObject</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() == null) ? null : new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="221">
+                  <xsc:Presentation>ArrStr</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="221">
+                  <xsc:Presentation>ArrStr</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) rolePropIds.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true">
+                  <xsc:Presentation>getValueObject</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+        }
+    }
 }
-if (rolesGuids != null)
+
+if (rolesGuids != null) {
     checkBox.setChecked(true);
+}
 
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cpeVBBSP3NKG5HVVODE7MOX4U7DWI armVBBSP3NKG5HVVODE7MOX4U7DWI mthZILY6BOK75GEXP2CHTLESTHMYU" Invoke="true"/>
+                <xsc:IdReference Path="cpeVBBSP3NKG5HVVODE7MOX4U7DWI armVBBSP3NKG5HVVODE7MOX4U7DWI mthZILY6BOK75GEXP2CHTLESTHMYU" Invoke="true">
+                  <xsc:Presentation>fill</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
+
 setButtonState();
 
 dlg.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthV3IR3VETJZCM7B5CFFTU2KQH7E" Invoke="true"/>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthV3IR3VETJZCM7B5CFFTU2KQH7E" Invoke="true">
+                  <xsc:Presentation>geometry</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>().moveTo(0,0);
-</xsc:Java>
+                <xsc:Java>().moveTo(0, 0);</xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>
         </Method>
         <Method Id="mthZILY6BOK75GEXP2CHTLESTHMYU" Name="fill" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Sources>
             <Src>
               <xsc:Item>
@@ -903,14 +1151,18 @@ dlg.</xsc:Java>
 roleListDocument2 = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument">
+                  <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.Factory.newInstance();
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList">
+                  <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> roleList = roleListDocument2.addNewRoleList();
@@ -918,36 +1170,63 @@ if (rolesGuids.size()>0) {
     for (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="21"/>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> guid : rolesGuids) {
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role">
+                  <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList.Role</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> role = roleList.addNewRole();
         role.Id = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                  <xsc:Presentation>Types::Id</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.Factory.loadFrom(guid);
+        role.IsApplicationRole = role.getId().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthC7F2QKANMFBQTB24S6XOYKQHEY" Invoke="true">
+                  <xsc:Presentation>getPrefix</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsHL2QKDVQX5FARACANDWKNIZ5OU aci5LR64HT7LFFZDHOXXZY3VWJ2BI" Invoke="true">
+                  <xsc:Presentation>Meta::DefinitionIdPrefix:APPLICATION_ROLE</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
     }
     int inputSize = rolesGuids.size();
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU">
+                  <xsc:Presentation>Explorer.Models::CommandModel</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> cmd = getCommand(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="clcPPJBWPUZDBAOBG7VYPZWDSWM74"/>
+                <xsc:IdReference Path="clcPPJBWPUZDBAOBG7VYPZWDSWM74">
+                  <xsc:Presentation>FillNamesAtRoleListCmd</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -958,7 +1237,9 @@ if (rolesGuids.size()>0) {
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                  <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.messageError(</xsc:Java>
@@ -979,7 +1260,9 @@ if (rolesGuids.size()>0) {
     for (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role"/>
+                <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="RoleListDocument.RoleList.Role">
+                  <xsc:Presentation>Meta::AdsDefXsd:RoleListDocument.RoleList.Role</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> role : roleList.RoleList) {
@@ -987,16 +1270,28 @@ if (rolesGuids.size()>0) {
         </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4">
+                  <xsc:Presentation>RoleEditorUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mthKJPAOBS27JHUNESSUGG3AEMP5I" Invoke="true"/>
+                <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 mthKJPAOBS27JHUNESSUGG3AEMP5I" Invoke="true">
+                  <xsc:Presentation>applyStyle</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(item, role.IsApplicationRole == Boolean.TRUE);
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), item, role.IsApplicationRole == Boolean.TRUE);
         rolesGuids.add(role.Id.toString());
         list.addItem(item);
     }
@@ -1007,7 +1302,7 @@ if (rolesGuids.size()>0) {
           </Sources>
         </Method>
         <Method Id="mthclcKPRAHIUWSPORDID2ABQAQH3XQ4" Name="getRoleListCmd" Nature="1" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="command" Id="mprHWJMZZ2D4JAVRIHU35BP6DEOIU">
               <Type TypeId="411" Path="clcKPRAHIUWSPORDID2ABQAQH3XQ4"/>
@@ -1016,8 +1311,7 @@ if (rolesGuids.size()>0) {
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:Java>
-try {
+                <xsc:Java>try {
     roleListDocument = command.send();
 } catch(Exception e) {
     showException(e);
@@ -1027,7 +1321,7 @@ try {
           </Sources>
         </Method>
         <Method Id="mthclcPPJBWPUZDBAOBG7VYPZWDSWM74" Name="fillNamesAtRoleListCmd" Nature="1" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="command" Id="mprB6H2LYLA6BFJLBPWWH2SS5LJSY">
               <Type TypeId="411" Path="clcPPJBWPUZDBAOBG7VYPZWDSWM74"/>
@@ -1036,8 +1330,7 @@ try {
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:Java>
-try {
+                <xsc:Java>try {
     roleListDocument2 = command.send(roleListDocument2);
 } catch(Exception e) {
     showException(e);

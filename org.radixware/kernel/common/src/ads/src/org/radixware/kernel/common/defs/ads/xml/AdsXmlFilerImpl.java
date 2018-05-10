@@ -31,7 +31,7 @@ public class AdsXmlFilerImpl implements Filer {
 
     private class WriterImpl extends Writer {
 
-        private StringBuilder content = new StringBuilder();
+        private StringBuilder content = new StringBuilder(50000);
         private String fileName;
         private OutputStream out;
 

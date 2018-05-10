@@ -21,9 +21,9 @@ import org.radixware.kernel.common.defs.ads.explorerItems.AdsExplorerItemDef;
 import org.radixware.kernel.common.defs.ads.explorerItems.AdsParentRefExplorerItemDef;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIProperty;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIUtil;
-import org.radixware.kernel.common.defs.ads.ui.AdsWidgetDef;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegistration;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIItemDef;
 import org.radixware.kernel.common.types.Id;
 
@@ -66,6 +66,7 @@ public class AdsUIPropertyChecker extends RadixObjectChecker<AdsUIProperty> {
                         error(prop, problemHandler, "Referenced property must be parent reference or object property");
                     }
                 }
+                ReleaseUtils.checkExprationRelease(property, p, problemHandler);
             }
             if (property instanceof AdsUIProperty.EmbeddedEditorOpenParamsProperty) {
                 AdsUIProperty.EmbeddedEditorOpenParamsProperty prop2 = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) property;

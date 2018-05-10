@@ -496,7 +496,9 @@ try {
               <xsc:Java>String title = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q mthSMNSZBQXJRHUFFTGFFK5FUAZNQ" Invoke="true"/>
+              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q mthSMNSZBQXJRHUFFTGFFK5FUAZNQ" Invoke="true">
+                <xsc:Presentation>showTitleInputDialog</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -504,7 +506,9 @@ if (title != null) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q mthT5U6PZ44VZELLKHWX2Z52GQOEE" Invoke="true"/>
+              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q mthT5U6PZ44VZELLKHWX2Z52GQOEE" Invoke="true">
+                <xsc:Presentation>rejectDialog</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -512,13 +516,17 @@ if (title != null) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument">
+                <xsc:Presentation>DashboardXsd:DashboardDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> newDashConfig = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument.Factory"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdGVYAU63UXJD2FJUYRDFP5U32OU" extStr="DashboardDocument.Factory">
+                <xsc:Presentation>DashboardXsd:DashboardDocument.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.newInstance();
@@ -529,39 +537,51 @@ if (title != null) {
     if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q prdZ4D4STT4CVGKRO2XFSVRYTXBZM" Invoke="true"/>
+              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q prdZ4D4STT4CVGKRO2XFSVRYTXBZM" Invoke="true">
+                <xsc:Presentation>dashboard</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc77LUZ7TCNVHLNN5DJ2KGXPUXFE mthAXFZX5PINBH6VBO5UQYERKJBEE" Invoke="true"/>
+              <xsc:IdReference Path="adc77LUZ7TCNVHLNN5DJ2KGXPUXFE mthAXFZX5PINBH6VBO5UQYERKJBEE" Invoke="true">
+                <xsc:Presentation>isCurrentUserViewer</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) {
         new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM mth52GFBK3KO5DDLNBOGVIFMQC52A" Invoke="true"/>
+              <xsc:IdReference Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM mthVG75HTXOVNDYJCLMO2IFZXIZIU" Invoke="true">
+                <xsc:Presentation>DashContainer</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(org.radixware.kernel.common.utils.Guid.generateGuid(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q prdZ4D4STT4CVGKRO2XFSVRYTXBZM" Invoke="true"/>
+              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q prdZ4D4STT4CVGKRO2XFSVRYTXBZM" Invoke="true">
+                <xsc:Presentation>dashboard</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>).</xsc:Java>
+              <xsc:Java>, false).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM mthPQKMORFY7FGZDJXTAZUR6MWOMA" Invoke="true"/>
+              <xsc:IdReference Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM mthPQKMORFY7FGZDJXTAZUR6MWOMA" Invoke="true">
+                <xsc:Presentation>store</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(newDashConfig.Dashboard.addNewRootContainer());
         isConfigCreated = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q mthFNMCTA72RRCPXGFPSVTEX2Y4JE" Invoke="true"/>
+              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q mthFNMCTA72RRCPXGFPSVTEX2Y4JE" Invoke="true">
+                <xsc:Presentation>createTabReference</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(newDashConfig);
@@ -569,19 +589,25 @@ if (title != null) {
         new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM mth52GFBK3KO5DDLNBOGVIFMQC52A" Invoke="true"/>
+              <xsc:IdReference Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM mth52GFBK3KO5DDLNBOGVIFMQC52A" Invoke="true">
+                <xsc:Presentation>DashContainer</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(org.radixware.kernel.common.utils.Guid.generateGuid(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q prdZ4D4STT4CVGKRO2XFSVRYTXBZM" Invoke="true"/>
+              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q prdZ4D4STT4CVGKRO2XFSVRYTXBZM" Invoke="true">
+                <xsc:Presentation>dashboard</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM mthPQKMORFY7FGZDJXTAZUR6MWOMA" Invoke="true"/>
+              <xsc:IdReference Path="adcRVWLRZ4A7NHYNKFVO2W4I4YWZM mthPQKMORFY7FGZDJXTAZUR6MWOMA" Invoke="true">
+                <xsc:Presentation>store</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(newDashConfig.Dashboard.addNewRootContainer());
@@ -591,19 +617,25 @@ if (title != null) {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q prdZ4D4STT4CVGKRO2XFSVRYTXBZM" Invoke="true"/>
+              <xsc:IdReference Path="adcFZKLXBP7YNEJTPS4LUXTIULN3Q prdZ4D4STT4CVGKRO2XFSVRYTXBZM" Invoke="true">
+                <xsc:Presentation>dashboard</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc77LUZ7TCNVHLNN5DJ2KGXPUXFE mthFC22OPS5I5GP7H4E5AZ6BMVZTM" Invoke="true"/>
+              <xsc:IdReference Path="adc77LUZ7TCNVHLNN5DJ2KGXPUXFE mthFC22OPS5I5GP7H4E5AZ6BMVZTM" Invoke="true">
+                <xsc:Presentation>loadNewConfig</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(newDashConfig, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsMMIPCHGRXVDK3JCBPX6NRSCRIY aciE3JKVWUTJJGDRMH5NG7J7OFQ2I" Invoke="true"/>
+              <xsc:IdReference Path="acsMMIPCHGRXVDK3JCBPX6NRSCRIY aciE3JKVWUTJJGDRMH5NG7J7OFQ2I" Invoke="true">
+                <xsc:Presentation>DashConfigType:Local</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, true);

@@ -26,7 +26,9 @@ import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 import org.apache.xmlrpc.server.RequestProcessorFactoryFactory;
 import org.apache.xmlrpc.server.RequestProcessorFactoryFactory.RequestProcessorFactory;
 import org.apache.xmlrpc.server.XmlRpcStreamServer;
+import org.apache.xmlrpc.server.XmlRpcErrorLogger;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.trace.ClientTracer;
 import org.radixware.kernel.common.rpc.XmlRpcRadixTypeConverterFactory;
 import org.radixware.kernel.common.rpc.XmlRpcRadixTypeFactory;
 import org.radixware.schemas.eas.ClientMethodInvocationRq;
@@ -100,10 +102,30 @@ public final class RadixRpcServer {
     
     private final  static TypeConverterFactory TYPE_CONVERTER_FACTORY = new XmlRpcRadixTypeConverterFactory();
     
+    private final static class RpcLogger extends XmlRpcErrorLogger{
+        
+        private final ClientTracer tracer;
+        
+        public RpcLogger(final ClientTracer clientTracer){
+            super();
+            tracer = clientTracer;
+        }
+
+        @Override
+        public void log(final String pMessage) {
+            tracer.debug(pMessage);
+        }
+
+        @Override
+        public void log(final String pMessage, final Throwable pThrowable) {
+            tracer.debug(pMessage, pThrowable);
+        }        
+    }
+    
     private final IClientEnvironment environment;
     private final XmlRpcStreamServer server;
     private final XmlRpcRadixRequestProcessorFactory requestProcessorFactory;
-    private XmlRpcRadixMapping mapping;                
+    private XmlRpcRadixMapping mapping;
     
     public RadixRpcServer(final IClientEnvironment env){
         environment = env;        
@@ -111,6 +133,7 @@ public final class RadixRpcServer {
         server = new XmlRpcStreamServer() {};        
         server.setTypeFactory(new XmlRpcRadixTypeFactory(server,environment.getDefManager().getClassLoader()));
         server.setTypeConverterFactory(TYPE_CONVERTER_FACTORY);
+        server.setErrorLogger(new RpcLogger(env.getTracer()));
         initHandlerMapping();
     }
     
@@ -118,7 +141,7 @@ public final class RadixRpcServer {
         mapping = new XmlRpcRadixMapping(environment, TYPE_CONVERTER_FACTORY);
         mapping.setRequestProcessorFactoryFactory(new RequestProcessorFactoryFactory(){
                 @Override
-                public RequestProcessorFactory getRequestProcessorFactory(Class type) throws XmlRpcException {
+                public RequestProcessorFactory getRequestProcessorFactory(final Class type) throws XmlRpcException {
                     return requestProcessorFactory;
                 }
             

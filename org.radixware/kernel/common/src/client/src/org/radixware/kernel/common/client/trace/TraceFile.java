@@ -17,15 +17,14 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.exceptions.FileException;
-import org.radixware.kernel.common.trace.TraceItem;
 
 public final class TraceFile {
 
     private final OutputStreamWriter out;
-    private String traceFileName = "";
+    private final String traceFileName;
     private final IClientEnvironment environment;
 
-    public TraceFile(final IClientEnvironment environment, final String encoding) throws FileException {
+    public TraceFile(final IClientEnvironment environment, final String encoding, final boolean append) throws FileException {
         traceFileName = environment.getTraceFile();
         this.environment = environment;
         File traceFile = new File(traceFileName);
@@ -42,9 +41,9 @@ public final class TraceFile {
         }
         try {
             if (encoding != null) {
-                out = new OutputStreamWriter(new FileOutputStream(traceFile), encoding);
+                out = new OutputStreamWriter(new FileOutputStream(traceFile, append), encoding);
             } else {
-                out = new OutputStreamWriter(new FileOutputStream(traceFile));
+                out = new OutputStreamWriter(new FileOutputStream(traceFile, append));
             }
         } catch (Exception e) {
             throw new FileException(environment, FileException.EExceptionCode.CANT_CREATE, traceFileName, e);
@@ -53,7 +52,9 @@ public final class TraceFile {
 
     public void put(IClientTraceItem item) throws FileException {
         try {
-            out.write(item.getFormattedMessage() + "\n");
+            item.toWriter(out);
+            //out.write(item.getFormattedMessage());
+            out.write("\n");
             out.flush();
         } catch (IOException e) {
             throw new FileException(environment, FileException.EExceptionCode.CANT_WRITE, traceFileName, e);

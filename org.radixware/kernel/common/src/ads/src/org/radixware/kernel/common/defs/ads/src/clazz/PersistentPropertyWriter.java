@@ -114,9 +114,27 @@ abstract class PersistentPropertyWriter<T extends AdsPropertyDef> extends AdsPro
                     } else {
                         printer.print("Reader");
                     }
-                    printer.print(" stream = null;");
+                    printer.println(" stream = null;");
                     printer.println("try{");
                     printer.enterBlock();
+                    
+                    printer.print("if(");
+                    if (realType == EValType.CLOB) {
+                        printer.print("((java.sql.Clob)");
+                    } else {
+                        printer.print("((java.sql.Blob)");
+                    }
+                    printer.print(varName);
+                    printer.println(").length() == 0) {");
+                    printer.enterBlock();
+                    printer.print(varName);
+                    printer.print(" = ");
+                    WriterUtils.writeNull(printer);
+                    printer.printlnSemicolon();
+                    printer.leaveBlock();
+                    printer.println("} else {");
+                    printer.enterBlock();
+                    
                     printer.print("stream = ");
                     if (realType == EValType.CLOB) {
                         printer.print("((java.sql.Clob)");
@@ -137,6 +155,8 @@ abstract class PersistentPropertyWriter<T extends AdsPropertyDef> extends AdsPro
                     printer.printComma();
                     printer.print(varName);
                     printer.println(",false);");
+                    printer.leaveBlock();
+                    printer.println("}");
                     printer.leaveBlock();
                     printer.println("}catch(java.sql.SQLException e){");
                     printer.println("   throw new org.radixware.kernel.server.exceptions.DatabaseError(\"Unable to parse xml data\",e);");

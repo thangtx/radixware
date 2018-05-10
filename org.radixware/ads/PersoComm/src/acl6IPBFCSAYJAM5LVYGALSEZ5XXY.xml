@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl6IPBFCSAYJAM5LVYGALSEZ5XXY" Name="UserFunc.NotificationSender.ArgsPreparation" Type="2" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="Headeracl6IPBFCSAYJAM5LVYGALSEZ5XXY">
+        <xsc:Item>
+          <xsc:Java>import java.util.Map;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyacl6IPBFCSAYJAM5LVYGALSEZ5XXY"/>
+    </Bodies>
+    <MethodGroup Id="cmgQTWXLAEKPNB2RFRZFAERP2BWTE" Name="Root"/>
+    <PropertyGroup Id="cpgJPFNHCVA2RGJVG2IZTNGBXH2DI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5RG6OBJLY5E7HD6M4WBUZ7OOSE" Name="prepareArgs" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="event" Id="mprSWHU5ZDIE5BYTHZYAATUNEJY3E">
+            <Type TypeId="411" Path="adcLO6HCBGBARGDVL5ABX6KMIUQWQ"/>
+          </Parameter>
+          <Parameter Name="message" Id="mprJ43R2WOPFRDFNAGSLFPEUDB4AI">
+            <Type TypeId="411" Path="aecGBOAYN4PUTOBDANVABIFNQAABA"/>
+          </Parameter>
+          <Parameter Name="user" Id="mprCEF2LN2OMJHTXIKVU462PVPMBY">
+            <Type TypeId="411" Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return (Map&lt;Str, Object>)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthTPAFKDKW4TOBDIECAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>invoke</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new Object[]{ event, message, user });
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    if (e instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI">
+                <xsc:Presentation>Exceptions::RuntimeException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)
+        throw (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcXJP5J6GEPZCERMRA74CCVXC3HI">
+                <xsc:Presentation>Exceptions::RuntimeException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) e;
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcWYWATQSPTFGLVAJPCFEERQFAFY mth2WATDQIFTFEU3KUT2DYGDYORUA" Invoke="true">
+                <xsc:Presentation>UserFuncError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, "'Args preparation' user function error", e);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Name="getMethodId" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl6IPBFCSAYJAM5LVYGALSEZ5XXY mth5RG6OBJLY5E7HD6M4WBUZ7OOSE">
+                <xsc:Presentation>UserFunc.NotificationSender.ArgsPreparation:prepareArgs</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsVIMN6HV37VFA5LVYQQDNNRZDQE"/>
+    <Extends TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

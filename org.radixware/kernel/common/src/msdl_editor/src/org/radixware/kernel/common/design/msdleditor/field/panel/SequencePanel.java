@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
 import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
@@ -30,7 +30,7 @@ import org.radixware.kernel.common.msdl.fields.SequenceFieldModel;
 import org.radixware.schemas.msdl.SequenceField;
 
 
-public class SequencePanel extends AbstractEditItem implements ActionListener {
+public class SequencePanel extends AbstractMsdlPanel implements ActionListener {
 
     private SequenceField field;
     private AbstractFieldModel fieldModel;
@@ -47,7 +47,7 @@ public class SequencePanel extends AbstractEditItem implements ActionListener {
     }
 
     public void open(SequenceFieldModel fieldModel) {
-        super.open(fieldModel.getMsdlField());
+        super.open(fieldModel, fieldModel.getMsdlField());
         this.field = (SequenceField)fieldModel.getField();
         this.fieldModel = fieldModel;
         separatorPanel.addActionListener(this);
@@ -56,16 +56,13 @@ public class SequencePanel extends AbstractEditItem implements ActionListener {
 
     @Override
     public void update() {
-        separatorPanel.setValue(field.getItemSeparator(), fieldModel.getItemSeparator(false),
-                EEncoding.getInstanceForHexViewType(field.getItemSeparatorViewType()),
-                EEncoding.getInstanceForHexViewType(fieldModel.getItemSeparatorViewType(false)));
+        separatorPanel.setValue(field.getItemSeparator(), fieldModel.getItemSeparator(false));
         super.update();
     }
 
-    private void save() {
+    @Override
+    protected void doSave() {
         field.setItemSeparator(separatorPanel.getValue());
-        field.setItemSeparatorViewType(separatorPanel.getViewEncodingAsStr());
-        fieldModel.setModified();
     }
 
     /** This method is called from within the constructor to

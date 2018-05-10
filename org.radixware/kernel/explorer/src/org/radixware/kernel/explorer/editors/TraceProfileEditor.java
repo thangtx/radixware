@@ -25,7 +25,6 @@ import com.trolltech.qt.gui.QComboBox;
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QHeaderView;
 import com.trolltech.qt.gui.QIcon;
-import com.trolltech.qt.gui.QInputDialog;
 import com.trolltech.qt.gui.QItemDelegate;
 import com.trolltech.qt.gui.QStyleOptionViewItem;
 import com.trolltech.qt.gui.QStyledItemDelegate;
@@ -34,14 +33,12 @@ import com.trolltech.qt.gui.QTreeWidgetItem;
 import com.trolltech.qt.gui.QWidget;
 import com.trolltech.qt.QSignalEmitter;
 import com.trolltech.qt.gui.QCheckBox;
-import com.trolltech.qt.gui.QDialog;
-import com.trolltech.qt.gui.QDialogButtonBox;
 import com.trolltech.qt.gui.QFormLayout;
-import com.trolltech.qt.gui.QLabel;
-import com.trolltech.qt.gui.QLayout;
+import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QSpinBox;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,11 +48,12 @@ import java.util.Objects;
 import java.util.Stack;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.editors.traceprofile.ITraceProfileEditor;
+import org.radixware.kernel.common.client.editors.traceprofile.ITraceProfileEventSourceOptionsEditor;
 import org.radixware.kernel.common.client.editors.traceprofile.ITraceProfileTreePresenter;
 import org.radixware.kernel.common.client.editors.traceprofile.TraceProfileTreeController;
 import org.radixware.kernel.common.client.editors.traceprofile.TraceProfileTreeNode;
 import org.radixware.kernel.common.client.localization.MessageProvider;
-import org.radixware.kernel.common.client.views.IDialog;
+import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.IPeriodicalTask;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.client.widgets.TimerEventHandler;
@@ -98,7 +96,9 @@ public final class TraceProfileEditor extends ExplorerWidget implements ITracePr
             return (ProfileTree) treeWidget();
         }
 
-        public void update(final TraceProfileTreeNode<ProfileTreeItem> node, final String inheritanceTitle, final QSize iconSize) {
+        public void update(final TraceProfileTreeNode<ProfileTreeItem> node, 
+                                    final String inheritanceTitle, 
+                                    final QSize iconSize) {
 
             setText(0, node.getTitle());
             setToolTip(node.getEventSource());
@@ -114,9 +114,8 @@ public final class TraceProfileEditor extends ExplorerWidget implements ITracePr
                 setData(1, Qt.ItemDataRole.UserRole, eventSeverity.getValue());
                 setIcon(1, eventSeverityIcon);
                 setForeground(1, BLACK);
-            }
-            final boolean eventSourceHasOptions = EEventSource.ARTE_DB.getValue().equals(node.getEventSource());
-            if (eventSourceHasOptions) {
+            }            
+            if (TraceProfileTreeController.eventSourceHasExtOptions(node.getEventSource())) {
                 if (node.eventSeverityWasInherited() || !EEventSeverity.DEBUG.getName().equals(node.getEventSeverity().getValue())) {
                     setForeground(2, GRAY);
                     setText(2, getProfileTree().messageProvider.translate("TraceDialog", "<set 'Debug' level explicitly to define>"));
@@ -130,7 +129,6 @@ public final class TraceProfileEditor extends ExplorerWidget implements ITracePr
                     setText(2, node.getOptions().toString());
                     setData(2, Qt.ItemDataRole.UserRole, node.getOptions().toString());
                 }
-
             } else {
                 setText(2, "");
                 setData(2, Qt.ItemDataRole.UserRole, TraceProfileTreeController.OPTOINS_ARE_UNSUPPORTED);
@@ -354,82 +352,151 @@ public final class TraceProfileEditor extends ExplorerWidget implements ITracePr
             if (TraceProfileTreeController.OPTOINS_ARE_UNSUPPORTED.equals(optsStrObject)) {
                 return null;
             }
-            final Object severityObj = index.sibling(index.row(), 1).data(Qt.ItemDataRole.UserRole);
-            if (severityObj == null || !EEventSeverity.DEBUG.getName().equals(severityObj.toString())) {
-                return null;
-            }
-            final TraceProfile.EventSourceOptions opts = new TraceProfile.EventSourceOptions(optsStrObject == null ? "" : optsStrObject.toString());
-            final TraceProfile.EventSourceOptions newOpts = editOptions(opts);
-            if (!Objects.equals(opts.toString(), newOpts.toString())) {
-                ((TraceProfileEditor) profileTree.parent()).onChangeEventSeverety((String) index.sibling(index.row(), 0).data(Qt.ItemDataRole.UserRole), (String) index.sibling(index.row(), 1).data(Qt.ItemDataRole.UserRole), newOpts.toString());
+            final Object eventSourceObj = index.sibling(index.row(), 0).data(Qt.ItemDataRole.UserRole);
+            if (eventSourceObj instanceof String){
+                profileTree.getController().editExtOptions((String)eventSourceObj);
             }
             return null;
         }
-
-        private TraceProfile.EventSourceOptions editOptions(TraceProfile.EventSourceOptions opts) {
-            final Object curMinLoggableDbOpDurationMs = opts.getOption(RadixTraceOptions.MIN_LOGGABLE_DB_OPERATION_DURATION_MILLIS);
-
-            final ExplorerDialog dialog = new ExplorerDialog(profileTree.getEnvironment(), profileTree, profileTree.messageProvider.translate("TraceDialog", "Edit Options")) {
-
-            };
-            final QFormLayout formLayout = new QFormLayout();
-
-            final QLabel lbMinLogDbDuration = new QLabel(profileTree.messageProvider.translate("TraceDialog", "Minimum duration of loggable database operation (ms)"), dialog);
-            final QSpinBox spMinLogDbDuration = new QSpinBox(dialog);
-            spMinLogDbDuration.setMinimum(-1);
-            spMinLogDbDuration.setMaximum(999999);
-            spMinLogDbDuration.setValue(curMinLoggableDbOpDurationMs == null ? -1 : ((Long) curMinLoggableDbOpDurationMs).intValue());
-
-            formLayout.addRow(lbMinLogDbDuration, spMinLogDbDuration);
-
-            final QLabel lbLogPlan = new QLabel(profileTree.messageProvider.translate("TraceDialog", "Log plan"), dialog);
-            final QCheckBox cbLogPlan = new QCheckBox("", dialog);
-            cbLogPlan.setChecked(opts.hasOption(RadixTraceOptions.LOG_PLAN));
-
-            formLayout.addRow(lbLogPlan, cbLogPlan);
-            
-            final QLabel lbLogStack = new QLabel(profileTree.messageProvider.translate("TraceDialog", "Log thread stack"), dialog);
-            final QCheckBox cbLogStack = new QCheckBox("", dialog);
-            cbLogStack.setChecked(opts.hasOption(RadixTraceOptions.LOG_STACK));
-
-            formLayout.addRow(lbLogStack, cbLogStack);
-
-            dialog.dialogLayout().addLayout(formLayout);
-            
-            dialog.addButtons(EnumSet.of(EDialogButtonType.CANCEL, EDialogButtonType.OK), true);
-            
-            dialog.dialogLayout().setSizeConstraint(QLayout.SizeConstraint.SetFixedSize);
-
-            if (dialog.execDialog() == IDialog.DialogResult.ACCEPTED) {
-                final Map<String, Object> newOptMap = new HashMap<>();
-                if (spMinLogDbDuration.value() >= 0) {
-                    newOptMap.put(RadixTraceOptions.MIN_LOGGABLE_DB_OPERATION_DURATION_MILLIS, spMinLogDbDuration.value());
-                }
-                if (cbLogPlan.isChecked()) {
-                    newOptMap.put(RadixTraceOptions.LOG_PLAN, null);
-                }
-                if (cbLogStack.isChecked()) {
-                    newOptMap.put(RadixTraceOptions.LOG_STACK, null);
-                }
-                return new TraceProfile.EventSourceOptions(newOptMap);
-            } else {
-                return opts;
-            }
-        }
-
         @Override
         public void setModelData(final QWidget editor, final QAbstractItemModel model, final QModelIndex index) {
         }
 
         @Override
         public void setEditorData(final QWidget editor, final QModelIndex index) {
-            //
         }
 
         @Override
         public void updateEditorGeometry(final QWidget editor, final QStyleOptionViewItem option, final QModelIndex index) {
             editor.setGeometry(option.rect());
         }
+    }
+    
+    private final static class DbTraceExtOptions extends ExplorerDialog implements ITraceProfileEventSourceOptionsEditor{
+        
+        final QSpinBox spMinLogDbDuration = new QSpinBox(this);
+        final QLineEdit leQryMask = new QLineEdit("", this);
+        final QCheckBox cbLogPlan = new QCheckBox("", this);
+        final QCheckBox cbLogStack = new QCheckBox("", this);
+        TraceProfile.EventSourceOptions resultOptions;
+        
+        public DbTraceExtOptions(final TraceProfile.EventSourceOptions options, 
+                                                final IClientEnvironment environment,
+                                                final QWidget parent){
+            super(environment, parent, false);            
+            setupUI();
+            readOptions(options);
+            resultOptions = new TraceProfile.EventSourceOptions(options.toString());
+        }
+        
+        private void setupUI(){
+            final MessageProvider mp = getEnvironment().getMessageProvider();
+            setWindowTitle(mp.translate("TraceDialog", "Edit Options"));
+            final QFormLayout formLayout = new QFormLayout();
+
+            spMinLogDbDuration.setMinimum(-1);
+            spMinLogDbDuration.setMaximum(999999);
+            formLayout.addRow(mp.translate("TraceDialog", "Minimum duration of loggable database operation (ms)"), spMinLogDbDuration);
+                        
+            leQryMask.setPlaceholderText("<*>");
+            formLayout.addRow(mp.translate("TraceDialog", "Query mask (* - any characters)"), leQryMask);
+
+            formLayout.addRow(mp.translate("TraceDialog", "Log plan"), cbLogPlan);
+            formLayout.addRow(mp.translate("TraceDialog", "Log thread stack"), cbLogStack);
+            
+            dialogLayout().addLayout(formLayout);
+
+            addButton(EDialogButtonType.OK).addClickHandler(new IButton.ClickHandler(){
+
+                @Override
+                public void onClick(final IButton source) {
+                    resultOptions = writeOptions();
+                    accept();
+                }
+                
+            });
+            addButtons(EnumSet.of(EDialogButtonType.CANCEL), true);
+            
+            setAutoSize(true);
+            setDisposeAfterClose(true);
+        }
+        
+        private void readOptions(final TraceProfile.EventSourceOptions opts){
+            final Object curMinLoggableDbOpDurationMs = opts.getOption(RadixTraceOptions.MIN_LOGGABLE_DB_OPERATION_DURATION_MILLIS);
+            spMinLogDbDuration.setValue(curMinLoggableDbOpDurationMs == null ? -1 : ((Long) curMinLoggableDbOpDurationMs).intValue());            
+            final Object maskObj = opts.getOption(RadixTraceOptions.DB_QRY_MASK);
+            leQryMask.setText(maskObj == null ? "" : maskObj.toString());
+            cbLogPlan.setChecked(opts.hasOption(RadixTraceOptions.LOG_PLAN));
+            cbLogStack.setChecked(opts.hasOption(RadixTraceOptions.LOG_STACK));
+        }
+        
+        private TraceProfile.EventSourceOptions writeOptions(){
+            final Map<String, Object> newOptMap = new HashMap<>();
+            if (spMinLogDbDuration.value() >= 0) {
+                newOptMap.put(RadixTraceOptions.MIN_LOGGABLE_DB_OPERATION_DURATION_MILLIS, spMinLogDbDuration.value());
+            }
+            if (cbLogPlan.isChecked()) {
+                newOptMap.put(RadixTraceOptions.LOG_PLAN, null);
+            }
+            if (cbLogStack.isChecked()) {
+                newOptMap.put(RadixTraceOptions.LOG_STACK, null);
+            }
+            if (leQryMask.text() != null && leQryMask.text().length() > 0) {
+                newOptMap.put(RadixTraceOptions.DB_QRY_MASK, leQryMask.text());
+            }
+            return new TraceProfile.EventSourceOptions(newOptMap);
+        }
+
+        @Override
+        public TraceProfile.EventSourceOptions getOptions() {
+            return resultOptions;
+        }
+    }
+    
+    private final static class EasTraceExtOptions extends ExplorerDialog implements ITraceProfileEventSourceOptionsEditor{
+        
+        final QCheckBox cbLogPresentCalc = new QCheckBox(this);
+        TraceProfile.EventSourceOptions resultOptions;
+        
+        public EasTraceExtOptions(final TraceProfile.EventSourceOptions options, 
+                                                final IClientEnvironment environment,
+                                                final QWidget parent){
+            super(environment, parent, false);
+            setupUI();
+            cbLogPresentCalc.setChecked(options.hasOption(RadixTraceOptions.LOG_PRES_CALC));
+            resultOptions = new TraceProfile.EventSourceOptions(options.toString());
+        }
+        
+        private void setupUI(){
+            final MessageProvider mp = getEnvironment().getMessageProvider();
+            setWindowTitle(mp.translate("TraceDialog", "Edit Options"));
+            cbLogPresentCalc.setText(mp.translate("TraceDialog", "Log calculation of editor presentation"));
+            dialogLayout().addWidget(cbLogPresentCalc);
+            addButton(EDialogButtonType.OK).addClickHandler(new IButton.ClickHandler(){
+                @Override
+                public void onClick(final IButton source) {
+                    if (cbLogPresentCalc.isChecked()){
+                        resultOptions = 
+                            new TraceProfile.EventSourceOptions(Collections.singletonMap(RadixTraceOptions.LOG_PRES_CALC, null));
+                    }else{
+                        resultOptions = 
+                            new TraceProfile.EventSourceOptions(Collections.<String,Object>emptyMap());
+                    }
+                    accept();
+                }
+            });
+            
+            addButtons(EnumSet.of(EDialogButtonType.CANCEL), true);
+            
+            setAutoSize(true);
+            setDisposeAfterClose(true);            
+        }
+
+        @Override
+        public TraceProfile.EventSourceOptions getOptions() {
+            return resultOptions;
+        }
+        
     }
 
     private final static class ProfileTree extends QTreeWidget implements ITraceProfileTreePresenter<ProfileTreeItem> {
@@ -439,9 +506,11 @@ public final class TraceProfileEditor extends ExplorerWidget implements ITracePr
         private final MessageProvider messageProvider;
         private final static int DEFAULT_HEIGHT = 260;
         private final IClientEnvironment environment;
+        private final TraceProfileEditor editor;
 
-        public ProfileTree(final QWidget parent, final IClientEnvironment environment) {
-            super(parent);
+        public ProfileTree(final TraceProfileEditor editor, final IClientEnvironment environment) {
+            super(editor);
+            this.editor = editor;
             this.environment = environment;
             this.messageProvider = environment.getMessageProvider();
             regularFont.setBold(false);
@@ -467,11 +536,15 @@ public final class TraceProfileEditor extends ExplorerWidget implements ITracePr
                     return null;
                 }
             });
-            setItemDelegateForColumn(2, new OptionsTreeItemDelegate(parent, this));
+            setItemDelegateForColumn(2, new OptionsTreeItemDelegate(editor, this));
         }
 
         public IClientEnvironment getEnvironment() {
             return environment;
+        }
+        
+        public TraceProfileTreeController<ProfileTreeItem> getController(){
+            return editor.getController();
         }
 
         @Override
@@ -533,6 +606,23 @@ public final class TraceProfileEditor extends ExplorerWidget implements ITracePr
             return size;
         }
 
+        @Override
+        public ITraceProfileEventSourceOptionsEditor createEventSourceOptionsEditor(final EEventSource eventSource, 
+                                                                                                                             final EEventSeverity eventSeverity, 
+                                                                                                                             final TraceProfile.EventSourceOptions options) {
+            if (eventSeverity==EEventSeverity.DEBUG){
+                switch(eventSource){
+                    case ARTE_DB:
+                        return new DbTraceExtOptions(options, environment, this);
+                    case EAS:
+                        return new EasTraceExtOptions(options, environment, this);
+                    default:
+                        return null;
+                }
+            }else{
+                return null;
+            }
+        }       
     }
 
     private final ProfileTree profileTree;
@@ -575,6 +665,10 @@ public final class TraceProfileEditor extends ExplorerWidget implements ITracePr
                 = new ProfileTreeItemDelegate(profileTree, TraceProfileTreeController.getEventSeverityItemsByOrder(getEnvironment()), getEnvironment().getMessageProvider());
         profileTree.setItemDelegateForColumn(1, itemDelegate);
         itemDelegate.eventSeverityChanged.connect(this, "onChangeEventSeverety(String,String,String)");
+    }
+    
+    TraceProfileTreeController<ProfileTreeItem> getController(){
+        return controller;
     }
 
     @SuppressWarnings("unused")

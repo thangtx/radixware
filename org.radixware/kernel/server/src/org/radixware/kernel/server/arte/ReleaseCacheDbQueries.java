@@ -11,15 +11,30 @@
 package org.radixware.kernel.server.arte;
 
 import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
 import org.radixware.kernel.common.enums.ETimingSection;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 
 final class ReleaseCacheDbQueries {
 
+    private static final String qryAreVersionIndicesDeployedStmtSQL = "begin ?:= RDX_ADS_META.areVersionIndicesDeployed(?); end;";
+    private static final Stmt qryAreVersionIndicesDeployedStmt = new Stmt(new Stmt(qryAreVersionIndicesDeployedStmtSQL,Types.BIGINT,Types.BIGINT),1);
+
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
     private final ReleaseCache release;
 
+    private ReleaseCacheDbQueries() {
+        this.release = null;
+    }
+    
     ReleaseCacheDbQueries(final ReleaseCache release) {
         this.release = release;
     }
@@ -31,7 +46,7 @@ final class ReleaseCacheDbQueries {
         if (qryVersionIndicesDeployed == null) {
             release.getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
             try {
-                qryVersionIndicesDeployed = release.getArte().getDbConnection().get().prepareCall("begin ?:= RDX_ADS_META.areVersionIndicesDeployed(?); end;");
+                qryVersionIndicesDeployed = ((RadixConnection)release.getArte().getDbConnection().get()).prepareCall(qryAreVersionIndicesDeployedStmt);
                 qryVersionIndicesDeployed.registerOutParameter(1, java.sql.Types.INTEGER);
             } finally {
                 release.getArte().getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);

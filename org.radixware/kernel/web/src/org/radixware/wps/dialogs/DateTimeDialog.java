@@ -59,7 +59,7 @@ public class DateTimeDialog extends Dialog implements IDateTimeDialog {
     public DateTimeDialog(final WpsEnvironment env, final EditMaskDateTime editMask, final Timestamp initial) {
         super(env.getDialogDisplayer(), "", false);
         this.editMask = editMask;
-        showTime = editMask.timeFieldPresent(env.getLocale());
+        showTime = editMask.timeFieldPresent(env);
         calendarWidget = new CalendarWidget(env);        
         if (showTime){
             timeEditorController = new ValTimeEditorController(env){
@@ -70,7 +70,7 @@ public class DateTimeDialog extends Dialog implements IDateTimeDialog {
                     if (editMask==null){
                         return inputText;
                     }
-                    if (editMask.halfDayFieldPresent(getEnvironment().getLocale())){
+                    if (editMask.halfDayFieldPresent(getEnvironment())){
                         return inputText.substring(0, inputText.length()-3);
                     }else{
                         return inputText;
@@ -81,7 +81,7 @@ public class DateTimeDialog extends Dialog implements IDateTimeDialog {
                 protected String getDisplayString(final Long value) {
                     final String text = super.getDisplayString(value);
                     final EditMaskDateTime editMask = getEditMask();
-                    if (editMask!=null && value!=null && editMask.halfDayFieldPresent(getEnvironment().getLocale())){
+                    if (editMask!=null && value!=null && editMask.halfDayFieldPresent(env)){
                         return text.substring(0, text.length()-3);
                     }else{
                         return text;
@@ -90,7 +90,7 @@ public class DateTimeDialog extends Dialog implements IDateTimeDialog {
                 
                 @Override
                 protected Long parseInput(final String inputText) throws InputBox.InvalidStringValueException {
-                    if (getEditMask()!=null && getEditMask().halfDayFieldPresent(getEnvironment().getLocale())){
+                    if (getEditMask()!=null && getEditMask().halfDayFieldPresent(env)){
                         return super.parseInput(inputText+" "+ampmEditorController.getValue());
                     }else{
                         return super.parseInput(inputText);
@@ -255,7 +255,7 @@ public class DateTimeDialog extends Dialog implements IDateTimeDialog {
     }
     
     private boolean isAmPm(){
-        return editMask.halfDayFieldPresent(getEnvironment().getLocale());
+        return editMask.halfDayFieldPresent(getEnvironment());
     }
     
     private void updateAmPm(){

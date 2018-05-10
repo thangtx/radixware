@@ -43,4 +43,9 @@ public class DdsDefinitions<T extends DdsDefinition> extends Definitions<T> {
         }
         return CanPasteResult.YES;
     }
+
+    @Override
+    public String toString() {
+        return "DdsDefinitions{}: "+super.toString();
+    }
 }

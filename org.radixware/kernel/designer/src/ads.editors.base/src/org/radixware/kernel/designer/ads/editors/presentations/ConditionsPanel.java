@@ -21,8 +21,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.JTabbedPane;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.ads.common.IConditionProvider;
+import org.radixware.kernel.common.defs.ads.common.Prop2ValueMap;
+import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.designer.common.editors.sqml.SqmlEditorPanel;
 
 public class ConditionsPanel extends javax.swing.JPanel {
@@ -43,10 +49,12 @@ public class ConditionsPanel extends javax.swing.JPanel {
 
         //  fromPanel.setBorder(BorderFactory.createEtchedBorder());
         //   wherePanel.setBorder(BorderFactory.createEtchedBorder());
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.add(NbBundle.getMessage(ConditionsPanel.class, "ConditionFrom"), fromPanel);
+        tabs = new JTabbedPane();
         tabs.add(NbBundle.getMessage(ConditionsPanel.class, "ConditionWhere"), wherePanel);
+        tabs.add(NbBundle.getMessage(ConditionsPanel.class, "ConditionFrom"), fromPanel);
         tabs.add(NbBundle.getMessage(ConditionsPanel.class, "ConditionProps"), propValMapPanel);
+        fromPanel.getPane().getDocument().addDocumentListener(docListener);
+        wherePanel.getPane().getDocument().addDocumentListener(docListener);
         // tabs.setBorder(BorderFactory.createEmptyBorder());
 
         GroupLayout layout = new GroupLayout(this);
@@ -94,6 +102,30 @@ public class ConditionsPanel extends javax.swing.JPanel {
     private ConditionPropValMapPanel propValMapPanel = new ConditionPropValMapPanel();
     private Color defaultForeground;
     private IConditionProvider presentation;
+    private JTabbedPane tabs;
+    private final DocumentListener docListener = new DocumentListener() {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            update();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            update();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            update();
+        }
+        
+        private void update(){
+            if (presentation != null) {
+                updateColor();
+            }
+        }
+    };
 
     public void open(final IConditionProvider presentation) {
         this.presentation = presentation;
@@ -127,6 +159,27 @@ public class ConditionsPanel extends javax.swing.JPanel {
         isUpdate = false;
     }
     private boolean externalReadOnly = false;
+    
+    private void updateColor(){
+        Sqml sqml = presentation.getCondition().getFrom();
+        if (sqml == null || sqml.getItems().isEmpty()){
+            tabs.setForegroundAt(1, Color.GRAY);
+        } else {
+            tabs.setForegroundAt(1, tabs.getForeground());
+        }
+        sqml = presentation.getCondition().getWhere();
+        if (sqml == null || sqml.getItems().isEmpty()){
+            tabs.setForegroundAt(0, Color.GRAY);
+        } else {
+            tabs.setForegroundAt(0, tabs.getForeground());
+        }
+        Prop2ValueMap prop2ValueMap = presentation.getCondition().getProp2ValueMap();
+        if (prop2ValueMap == null || prop2ValueMap.getItems().isEmpty()){
+            tabs.setForegroundAt(2, Color.GRAY);
+        } else {
+            tabs.setForegroundAt(2, tabs.getForeground());
+        }
+    }
 
     private void updateConditions() {
         fromPanel.open(presentation.getCondition().getFrom());
@@ -138,6 +191,7 @@ public class ConditionsPanel extends javax.swing.JPanel {
         if (!propValMapPanel.setReadOnly(reaonly || inherited)) {
             propValMapPanel.update();
         }
+        updateColor();
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -158,6 +212,15 @@ public class ConditionsPanel extends javax.swing.JPanel {
     public String getName() {
         return NbBundle.getMessage(ConditionsPanel.class, "ConditionLabel");
     }
+
+    @Override
+    public void removeNotify() {
+        fromPanel.getPane().getDocument().removeDocumentListener(docListener);
+        wherePanel.getPane().getDocument().removeDocumentListener(docListener);
+        super.removeNotify();
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

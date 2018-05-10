@@ -586,13 +586,13 @@ class JmlCompletionProviderText implements ScmlCompletionProvider {
                     contextNodes.addAll(dds);
                 }
 
-                acceptContextNodes(contextNodes, searchName.substring(colon + 1), requestor, invoke, isSlotRequest, start, end);
+                acceptContextNodes(contextNodes, searchName.substring(colon + 1), requestor, invoke, isSlotRequest, tokenStart, start, end);
             } else {//no context any name match is available
                 if (contextNodes.isEmpty()) {//no context to expand
                     contextNodes.addAll(lookupModules());
                 }
                 final String localNamePart = colon >= 0 ? searchName.substring(0, colon) : searchName;
-                acceptContextNodes(contextNodes, localNamePart, requestor, invoke, isSlotRequest, start, end);
+                acceptContextNodes(contextNodes, localNamePart, requestor, invoke, isSlotRequest, tokenStart, start, end);
                 // return;
             }
             //acceptContextNodes(contextNodes, searchName.substring(colon + 1), requestor, invoke, start, end);
@@ -610,7 +610,7 @@ class JmlCompletionProviderText implements ScmlCompletionProvider {
 
     public void acceptContextNodes(final List<RadixObject> contextNodes, final String lookupName,
             final CompletionRequestor requestor,
-            final boolean invoke, final boolean isSlot, final int start, final int end) {
+            final boolean invoke, final boolean isSlot, final int tokenStart, final int replaceStartOff, final int replaceEndOff) {
         final String localNamePart = lookupName.toLowerCase();
         final ERuntimeEnvironmentType contextEnv = jml.getUsageEnvironment();
         for (RadixObject node : contextNodes) {
@@ -623,11 +623,7 @@ class JmlCompletionProviderText implements ScmlCompletionProvider {
                         if (prev instanceof JmlTagTypeDeclaration) {
                             //check there no whitespace symbols between current position and prev item
                             boolean refine = true;
-                            int ts = start + end-1;
-                            if(ts >= item.getText().length()){
-                                ts = item.getText().length()-1;
-                            }
-                            for (int i = ts; i >= 0; i--) {
+                            for (int i = tokenStart - 1; i >= 0; i--) {
                                 char c = item.getText().charAt(i);
                                 if (c == ' ' || c == '\n' || c == '\t') {
                                     refine = false;
@@ -653,7 +649,7 @@ class JmlCompletionProviderText implements ScmlCompletionProvider {
                 for (String type : types) {
                     String t = type.toLowerCase();
                     if (t.startsWith(match) && !t.equals(match)) {
-                        requestor.accept(new ItemImpl((Definition) node, invoke, isSlot, true, type, start, end));
+                        requestor.accept(new ItemImpl((Definition) node, invoke, isSlot, true, type, replaceStartOff, replaceEndOff));
                     }
                 }
                 continue;
@@ -676,12 +672,12 @@ class JmlCompletionProviderText implements ScmlCompletionProvider {
                     @Override
                     public void accept(final RadixObject object) {
                         final boolean isType = invoke && object instanceof IAdsTypeSource;
-                        requestor.accept(new ItemImpl((Definition) object, invoke, isSlot, isType, null, start, end));
+                        requestor.accept(new ItemImpl((Definition) object, invoke, isSlot, isType, null, replaceStartOff, replaceEndOff));
                         if (isType) {
                             if (object instanceof AdsClassDef) {
                                 Collection<AdsMethodDef> constructors = ((AdsClassDef) object).getConstructors();
                                 for (AdsMethodDef m : constructors) {
-                                    requestor.accept(new ItemImpl(m, invoke, isSlot, false, null, start, end));
+                                    requestor.accept(new ItemImpl(m, invoke, isSlot, false, null, replaceStartOff, replaceEndOff));
                                 }
                             }
                         }

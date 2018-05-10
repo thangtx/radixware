@@ -20,8 +20,8 @@ public class ReportPropertyPresentationContext extends PropertyPresentationConte
     
     private final Report report;
     
-    public ReportPropertyPresentationContext(final Report report, final Id propertyId, final EntityGroup group){
-        super(propertyId, group);
+    public ReportPropertyPresentationContext(final Report report, final Id propertyId, final EntityGroup group, final Id selectorPresentationId){
+        super(propertyId, group, selectorPresentationId);
         this.report = report;
     }
     

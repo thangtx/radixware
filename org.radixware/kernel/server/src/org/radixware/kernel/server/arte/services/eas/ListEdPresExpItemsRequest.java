@@ -19,6 +19,9 @@ import org.radixware.kernel.common.exceptions.ServiceProcessFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessServerFault;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.types.Entity;
+import org.radixware.kernel.server.types.PresentationEntityAdapter;
+import org.radixware.kernel.server.types.Restrictions;
+import org.radixware.kernel.server.types.presctx.PresentationContext;
 import org.radixware.schemas.eas.ListEdPresVisibleExpItemsMess;
 import org.radixware.schemas.eas.ListEdPresVisibleExpItemsRq;
 import org.radixware.schemas.eas.ListEdPresVisibleExpItemsRs;
@@ -38,12 +41,19 @@ final class ListEdPresExpItemsRequest extends ObjectRequest {
         final PresentationOptions presOptions = getPresentationOptions(rqParams, classDef, false, false, rqParams.getPresentation());
         getArte().switchToReadonlyTransaction();//it's readonly request
         final Entity entity = getObject(classDef, rqParams);
-        presOptions.assertEdPresIsAccessibile(entity);
+        presOptions.assertEdPresIsAccessible(entity);
+        
+        
 
         final ListEdPresVisibleExpItemsDocument res = ListEdPresVisibleExpItemsDocument.Factory.newInstance();
         final ListEdPresVisibleExpItemsRs rsStruct = res.addNewListEdPresVisibleExpItems().addNewListEdPresVisibleExpItemsRs();
         
-        writeAccessibleExplorerItems(entity, presOptions.editorPresentation, rsStruct.addNewVisibleExplorerItems());
+        final PresentationEntityAdapter presEntAdapter = getArte().getPresentationAdapter(entity);
+        final PresentationContext presCtx = getPresentationContext(getArte(), presOptions.context, null);
+        presEntAdapter.setPresentationContext(presCtx);
+        presOptions.assertEdPresIsAccessible(presEntAdapter);
+        final Restrictions additionalRestrictions = presEntAdapter.getAdditionalRestrictions(presOptions.editorPresentation);
+        writeAccessibleExplorerItems(entity, presOptions.editorPresentation, additionalRestrictions, rsStruct.addNewVisibleExplorerItems());
                 
         return res;
     }
@@ -51,13 +61,18 @@ final class ListEdPresExpItemsRequest extends ObjectRequest {
     
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((ListEdPresVisibleExpItemsMess) rqXml).getListEdPresVisibleExpItemsRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final ListEdPresVisibleExpItemsDocument doc = process((ListEdPresVisibleExpItemsMess) rq);
-        postProcess(rq, doc.getListEdPresVisibleExpItems().getListEdPresVisibleExpItemsRs());
+        ListEdPresVisibleExpItemsDocument doc = null;
+        try{
+            doc = process((ListEdPresVisibleExpItemsMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getListEdPresVisibleExpItems().getListEdPresVisibleExpItemsRs());
+        }
         return doc;
     }
 }

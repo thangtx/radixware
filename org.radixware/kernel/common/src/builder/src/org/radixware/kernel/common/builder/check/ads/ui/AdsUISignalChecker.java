@@ -31,7 +31,7 @@ public class AdsUISignalChecker<T extends AdsUISignalDef> extends DefinitionChec
     public void check(T signal, IProblemHandler problemHandler) {
         super.check(signal, problemHandler);
         for (AdsTypeDeclaration type : signal.getTypes()) {
-            type.check(signal, problemHandler);
+            type.check(signal, problemHandler, getHistory().getMap());
         }
     }
 }

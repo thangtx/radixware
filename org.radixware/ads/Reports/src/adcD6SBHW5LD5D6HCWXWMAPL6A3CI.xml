@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcD6SBHW5LD5D6HCWXWMAPL6A3CI" Name="ReportExportParameters" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.reports.ReportExportParameters"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcD6SBHW5LD5D6HCWXWMAPL6A3CI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcD6SBHW5LD5D6HCWXWMAPL6A3CI"/>
+    </Bodies>
+    <MethodGroup Id="cmgDXNCZCFBKJAVZLSCWZBLQ4QTSI" Name="Root"/>
+    <PropertyGroup Id="cpgTGHRUPSAC5FTJJN2WGUK6FD2SI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthCN3UXCD5TJBCLI7BUODSAOPYUA" Name="ReportExportParameters" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.server.reports.IReportFileController;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="controller" Id="mprJXBTMBEMD5D2ZBNIAMD7NUBTFQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.reports.IReportFileController"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFEBQNKWUTJBOREDTOPTKES2G2M" Name="ReportExportParameters" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.io.OutputStream;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="stream" Id="mprIXAXKJO7CFEEBN7I5ZL57GRLRM">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3HTIPBBWIVHDTD4CCBDET4CX2U" Name="getColumnSettings" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getColumnSettings()Lorg.radixware.schemas.reports.ColumnSettings;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.reports.ColumnSettings"/>
+      </Method>
+      <Method Id="mthLVIHVTN2XVD6HOTGBBVLUQB5CE" Name="getController" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getController()Lorg.radixware.kernel.server.reports.IReportFileController;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.reports.IReportFileController"/>
+      </Method>
+      <Method Id="mthBHVJ6VQGBJBVLKV72OFRV56N5I" Name="getReportWriter" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getReportWriter()Lorg.radixware.kernel.server.reports.xml.IReportWriter;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.reports.xml.IReportWriter"/>
+      </Method>
+      <Method Id="mthVKXYSBH5KBAE7KMTR5NGCDSEWA" Name="getMaxResultSetCacheSizeKb" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getMaxResultSetCacheSizeKb()Ljava.lang.Integer;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Integer"/>
+      </Method>
+      <Method Id="mthZ756Z2K5VZDIBCV5RZ5JKGIPZY" Name="getExportFormats" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getExportFormats()Ljava.util.List&lt;Lorg.radixware.kernel.common.enums.EReportExportFormat;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EReportExportFormat"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthBO3RCEN55NAORDZR2K6253RY4A" Name="getParamId2Value" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getParamId2Value()Ljava.util.Map&lt;Lorg.radixware.kernel.common.types.Id;Ljava.lang.Object;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthHWQ3R55TI5DFTN6KBYE7QOR6PY" Name="getStream" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getStream()Ljava.io.OutputStream;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.io.OutputStream"/>
+      </Method>
+      <Method Id="mthSWZD453V65EBJLUUOBXUVJZBUI" Name="getExportFormat" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getExportFormat()Lorg.radixware.kernel.common.enums.EReportExportFormat;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EReportExportFormat"/>
+      </Method>
+      <Method Id="mthJ2Z5TIYWMJAOVP4DEJDE7APLAU" Name="getReportMsdl" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getReportMsdl()Lorg.radixware.schemas.reports.ReportMsdlType;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.reports.ReportMsdlType"/>
+      </Method>
+      <Method Id="mthCQ22HXQ7GFB6XAZXXFXZ7FZ5FI" Name="getEncoding" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEncoding()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthPOZPTHINVZGCLGLVJDXVE7CPDA" Name="setColumnSettings" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setColumnSettings(Lorg.radixware.schemas.reports.ColumnSettings;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="columnSettings" Id="mprJXFTYLR2JBG4TEQLY4CSPDRYHU">
+            <Type TypeId="400" extStr="org.radixware.schemas.reports.ColumnSettings"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthDFE5CCCRTNCENAEWCX53IL4IVY" Name="setEncoding" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEncoding(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="encoding" Id="mpr5H4HVG7OAJAHNLJINB2PW3BUYM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPNW2EOFK3VAD5H2OIUV7MY3H7I" Name="setExportFormat" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setExportFormat(Lorg.radixware.kernel.common.enums.EReportExportFormat;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exportFormat" Id="mprOUI47PH6RBEEZIKCCQ7B42XTKI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EReportExportFormat"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5HZD7KMDSRATBKGC4FNFGPTDKA" Name="setExportFormats" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setExportFormats(Ljava.util.List&lt;Lorg.radixware.kernel.common.enums.EReportExportFormat;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exportFormats" Id="mpr36GN5F7C2BCKFCZ27S43XOBVXI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EReportExportFormat"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVSZS7IYLGBBS3NKJCCCQS23IN4" Name="setMaxResultSetCacheSizeKb" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMaxResultSetCacheSizeKb(Ljava.lang.Integer;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="maxResultSetCacheSizeKb" Id="mprWEMPNUIVKJH6VPVYBLWE24ASBQ">
+            <Type TypeId="400" extStr="java.lang.Integer"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLX25YSOMABBDNHIJSFH2E37SXI" Name="setParamId2Value" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setParamId2Value(Ljava.util.Map&lt;Lorg.radixware.kernel.common.types.Id;Ljava.lang.Object;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="paramId2Value" Id="mpr7VVGALKEDFEWDPIRSJYD35WZKM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTPEJG5FS3JCI3ANBLJLJPUTGDI" Name="setReportMsdl" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setReportMsdl(Lorg.radixware.schemas.reports.ReportMsdlType;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reportMsdl" Id="mprHPLJJJT33NGC3F6RFUIFZN6HRY">
+            <Type TypeId="400" extStr="org.radixware.schemas.reports.ReportMsdlType"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth5LQJ2SF4SJDRTPV777AW2IGJPY" Name="setReportWriter" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setReportWriter(Lorg.radixware.kernel.server.reports.xml.IReportWriter;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="reportWriter" Id="mprC3Z7CYE5FZEJFNXL5XHDS2AKHE">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.reports.xml.IReportWriter"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

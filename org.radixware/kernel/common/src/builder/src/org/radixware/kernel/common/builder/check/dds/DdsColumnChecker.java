@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.builder.check.dds;
 
+import javax.swing.JOptionPane;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsColumnTemplateDef;
 import org.radixware.kernel.common.defs.dds.DdsSequenceDef;
@@ -21,7 +22,9 @@ import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.dds.utils.DbTypeUtils;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegistration;
+import org.radixware.kernel.common.defs.dds.utils.DbNameUtils;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.repository.Layer;
 
 
 @RadixObjectCheckerRegistration
@@ -39,6 +42,17 @@ public class DdsColumnChecker<T extends DdsColumnDef> extends DdsColumnTemplateC
     public void check(T column, IProblemHandler problemHandler) {
         super.check(column, problemHandler);
 
+        final String    dbName = column.getDbName();
+        
+        if (!DbNameUtils.isCorrectDbName(dbName)) {
+            warning(column, problemHandler, "Column database name illegal ("+dbName+") : #" + String.valueOf(column.getDbName()));
+        }
+        for (Layer.TargetDatabase item : column.getLayer().getTargetDatabases()) {
+            if (!DdsColumnDef.testCanUseAsDbName(dbName,item.getDatabaseType())) {
+                warning(column, problemHandler, "Column database name ("+dbName+") intersects with ["+item.getDatabaseType()+"] reserved SQL keywords: #" + String.valueOf(column.getDbName()));
+            }
+        }
+        
         if (column.getTemplateId() != null) {
             DdsColumnTemplateDef columnTemplate = column.findTemplate();
             if (columnTemplate != null) {

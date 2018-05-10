@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.designer.ads.editors.property;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsInnateColumnPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsParentRefPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsServerSidePropertyDef;
@@ -34,6 +36,7 @@ import org.radixware.kernel.common.defs.ads.type.AdsClassType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.type.ParentRefType;
+import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EPropInitializationPolicy;
@@ -297,6 +300,18 @@ public class AdsValueInheritancePanel extends javax.swing.JPanel {
         }
         if (model.getSize() > 0) {
             jListInhVal.setSelectedIndex(0);
+        }
+        
+        if (prop instanceof AdsInnateColumnPropertyDef && prop.getValueInheritanceRules().getInheritable()) {
+            final DdsColumnDef column = ((AdsInnateColumnPropertyDef) prop).getColumnInfo().findColumn();
+            if (column != null && column.isNotNull()) {
+                ValAsStr valAsStr = prop.getValueInheritanceRules().getInheritanceMark();
+                if (valAsStr == null) {
+                    propertyValueEditPanel.setForeground(Color.RED);
+                } else {
+                    propertyValueEditPanel.setForeground(Color.BLACK);
+                }
+            }
         }
 
         fillValueInheritanceRulesStateDisabled();

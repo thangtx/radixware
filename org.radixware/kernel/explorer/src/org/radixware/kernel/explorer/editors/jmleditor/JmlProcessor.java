@@ -17,6 +17,7 @@ import com.trolltech.qt.gui.QTextCharFormat.UnderlineStyle;
 import com.trolltech.qt.gui.QTextCursor;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,7 +70,8 @@ import org.radixware.schemas.xscml.JmlType;
 
 public class JmlProcessor extends TagProcessor {
 
-    private Map<Scml.Tag, TagInfo> tagMap;
+    private Map<Scml.Tag, TagInfo> tagInfoByJmlTagMap;
+    private WeakReference<List<TagInfo>> tagListForWhichCalculatedMap = new WeakReference<>(null);
     private final JmlEditor editor;
     private final JmlTag_DbEntity.IDbEntityTitleProvider titleProvider = new JmlTag_DbEntity.IDbEntityTitleProvider() {
         @Override
@@ -77,6 +79,14 @@ public class JmlProcessor extends TagProcessor {
             return editor.getActionProvider().getObjectFromOptimizerCache(tableId.toString() + "~" + pidAsStr);
         }
     };
+    
+    private final JmlTag_DbEntity.IDbEntityTitleProvider ownerTitleProvider = new JmlTag_DbEntity.IDbEntityTitleProvider() {
+        @Override
+        public String getTitle(Id tableId, String pidAsStr) {
+            return editor.getActionProvider().getOwnerTitle();
+        }
+    };
+    
 
     public JmlProcessor(final JmlEditor editor) {
         super(editor.getEnvironment());
@@ -94,7 +104,7 @@ public class JmlProcessor extends TagProcessor {
     @Override
     public void open(final Scml javaSrc) {
         super.open(javaSrc);
-        tagMap = new HashMap<>();
+        tagInfoByJmlTagMap = new HashMap<>();
 
     }
 
@@ -181,7 +191,12 @@ public class JmlProcessor extends TagProcessor {
     TagInfo createTagDbEntity(final Id entityId, final String pidAsStr, final int pos, final RadixObjects<Item> items, final boolean owner) {
         final JmlTagDbEntity tag = owner ? JmlTagDbEntity.Factory.newInstanceForUFOwner(entityId, pidAsStr) : JmlTagDbEntity.Factory.newInstance(entityId, pidAsStr, false);
         items.add(tag);
-        JmlTag_DbEntity newTag = new JmlTag_DbEntity(environment, tag, pos, showMode, titleProvider, editor.isReadOnly());
+        final JmlTag_DbEntity newTag;
+        if (owner && pidAsStr==null){
+            newTag = new JmlTag_DbEntity(environment, tag, pos, showMode, ownerTitleProvider, editor.isReadOnly());            
+        }else{
+            newTag = new JmlTag_DbEntity(environment, tag, pos, showMode, titleProvider, editor.isReadOnly());
+        }
         if (!newTag.isValid()) {
             //  String mess = Application.translate("SqmlEditor", "Can not actualize entity for #%s");
             //   editor.addValidateProblem(String.format(mess, pidAsStr), newTag);
@@ -299,7 +314,11 @@ public class JmlProcessor extends TagProcessor {
                             if (dbEntityTag.isUFOwnerRef() && editor.getUserFunc() != null) {
                                 dbEntityTag.update(editor.getUserFunc().getOwnerClassId(), editor.getUserFunc().getOwnerPid());
                             }
-                            tag = new JmlTag_DbEntity(environment, dbEntityTag, textCursorPosition, showMode, titleProvider, editor.isReadOnly());
+                            if (dbEntityTag.isUFOwnerRef() && editor.getUserFunc() != null && editor.getUserFunc().getOwnerPid()==null){                                
+                                tag = new JmlTag_DbEntity(environment, dbEntityTag, textCursorPosition, showMode, ownerTitleProvider, editor.isReadOnly());
+                            }else{
+                                tag = new JmlTag_DbEntity(environment, dbEntityTag, textCursorPosition, showMode, titleProvider, editor.isReadOnly());
+                            }
                             /*if (!((JmlTag_DbEntity) tag).isValid()) {
                                 String mess = Application.translate("SqmlEditor", "Can not actualize entity for #%s");
                                 String pidAsStr = ((JmlTagDbEntity) jmlTag).getPidAsStr();
@@ -417,15 +436,29 @@ public class JmlProcessor extends TagProcessor {
      int end=s.indexOf(subStr,start);
      return new int[]{start,end};
      }*/
+    
+    StringBuilder createTextForFormatter(final String plaintText, final QTextCursor tc) {
+        toXml(plaintText, tc);
+        final StringBuilder result = new StringBuilder();
+        for (Item item : sourceCode.getItems()) {
+            if (item instanceof Scml.Text) {
+                result.append(((Scml.Text) item).getText());
+            } else {
+                result.append(getTagReplacement((Scml.Tag) item));
+            }
+        }
+        return result;
+    }
+    
+    private char[] getTagReplacement(Scml.Tag tag) {
+        final TagInfo wrapper = getTagInfoFromMap(tag);
+        final char[] replacement = new char[wrapper.getDisplayName().length()];
+        Arrays.fill(replacement, 'T');
+        return replacement;
+    }
+    
     public Jml toXml(final String plaintText, final QTextCursor tc) {
-        List<TagInfo> tagList = null;
-        if (tagListHystory.size() > 0) {
-            tagList = getCurrentTagList();
-        }
-        if (tagList == null) {
-            tagList = new ArrayList<>();
-        }
-        return toXml((Jml) sourceCode, plaintText, tagList, tc, 0, plaintText.length());
+        return toXml((Jml) sourceCode, plaintText, getCurrentTagList(), tc, 0, plaintText.length());
     }
 
     public Jml toXml(final Jml jml, final String plaintText, final List<TagInfo> tagList, final QTextCursor tc, final int pos, final int endpos) {
@@ -513,12 +546,12 @@ public class JmlProcessor extends TagProcessor {
     @Override
     public void updateTagsPos(final String plaintText, final QTextCursor tc, final boolean isUndoRedo) {
         if ((tagListHystory != null) && (tagListHystory.size() > 0)) {
+            tagListForWhichCalculatedMap.clear();
             final List<TagInfo> tagList = getCurrentTagList();
             if (tagList == null) {
                 return;
             }
             QTextCharFormat f;
-            tagMap.clear();
             int endPosForTag = 0, startPosForTag;
             for (int i = 0; i < tagList.size(); i++) {
                 final JmlTag tag = (JmlTag) tagList.get(i);
@@ -537,7 +570,6 @@ public class JmlProcessor extends TagProcessor {
                     } else {
                         tag.calcTagPos(startPosForTag);
                     }
-                    tagMap.put(tag.getTag(), tag);
                 } while (!(f.underlineStyle() == UnderlineStyle.SingleUnderline || f.underlineStyle() == UnderlineStyle.SpellCheckUnderline));
                 endPosForTag = (int) tag.getEndPos() - 1;
             }
@@ -546,17 +578,19 @@ public class JmlProcessor extends TagProcessor {
     }
 
     public TagInfo getTagInfoFromMap(final Scml.Tag item) {
-        return tagMap.get(item);
+        final List<TagInfo> curList = getCurrentTagList();
+        if (tagListForWhichCalculatedMap.get() != curList) {
+            recalcTagInfoMap(curList);
+        }
+        return tagInfoByJmlTagMap.get(item);
     }
 
-    public void setTagInfoMap() {
-        if ((tagListHystory != null) && (tagListHystory.size() > 0)) {
-            final List<TagInfo> tagList = getCurrentTagList();
-            tagMap.clear();
-            for (int i = 0; i < tagList.size(); i++) {
-                JmlTag tag = (JmlTag) tagList.get(i);
-                tagMap.put(tag.getTag(), tag);
-            }
+    private void recalcTagInfoMap(List<TagInfo> tagList) {
+        tagInfoByJmlTagMap.clear();
+        for (TagInfo tagInfo : tagList) {
+            JmlTag tag = (JmlTag) tagInfo;
+            tagInfoByJmlTagMap.put(tag.getTag(), tag);
         }
+        tagListForWhichCalculatedMap = new WeakReference<>(tagList);
     }
 }

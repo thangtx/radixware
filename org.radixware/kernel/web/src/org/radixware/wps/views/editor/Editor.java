@@ -15,15 +15,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.exceptions.ModelException;
+import org.radixware.kernel.common.client.models.BrokenEntityModel;
 import org.radixware.kernel.common.client.models.CleanModelController;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.ViewRestrictions;
+import org.radixware.kernel.common.client.views.IDialog;
 import org.radixware.kernel.common.client.views.IEditor;
 import org.radixware.kernel.common.client.views.IEmbeddedView;
 import org.radixware.kernel.common.client.views.IView;
@@ -32,7 +35,9 @@ import org.radixware.kernel.common.client.widgets.IModifableComponent;
 import org.radixware.kernel.common.client.widgets.IModificationListener;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.client.widgets.actions.IToolBar;
+import org.radixware.kernel.common.enums.EDialogIconType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.html.Div;
 import org.radixware.kernel.common.types.Id;
@@ -40,6 +45,8 @@ import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.dialogs.AuditLogDialog;
 import org.radixware.wps.rwt.AbstractContainer;
 import org.radixware.wps.rwt.Container;
+import org.radixware.wps.rwt.RwtMenu;
+import org.radixware.wps.rwt.RwtMenuBar;
 import org.radixware.wps.rwt.ToolBar;
 import org.radixware.wps.rwt.UIObject;
 
@@ -47,10 +54,11 @@ import org.radixware.wps.views.CommandToolBar;
 import org.radixware.wps.views.ComponentModificationRegistrator;
 import org.radixware.wps.views.ViewSupport;
 import org.radixware.wps.views.RwtAction;
+import org.radixware.wps.views.selector.RwtPresentationInfoDialog;
 
 
 public abstract class Editor extends Container implements IEditor, IModificationListener {
-    
+
     public static interface IModificationStateListener{
         void onModificationStateChanged(final boolean inModificationState);
     }
@@ -63,12 +71,12 @@ public abstract class Editor extends Container implements IEditor, IModification
 
         @Override
         protected Action createAction(ClientIcon icon, String title) {
-            RwtAction action = new RwtAction(Editor.this.getEnvironment().getApplication().getImageManager().getIcon(icon));
+            RwtAction action = new RwtAction(Editor.this.getEnvironment().getApplication().getImageManager().getIcon(icon), title);
             action.setToolTip(title);
             return action;
         }
-    }        
-    
+    }
+
     private final List<CloseHandler> closeHandlers = new LinkedList<>();
     private List<IModificationStateListener> modificationListeners;
     private final ViewSupport<Editor> viewSupport;
@@ -106,6 +114,13 @@ public abstract class Editor extends Container implements IEditor, IModification
             protected void execAuditLogDialog(IClientEnvironment env, IEditor editor, Id tableId, Pid pid, String title) {
                 AuditLogDialog.execAuditLogDialog(env, tableId, pid, title);
             }
+
+            @Override
+            protected void execPresentationInfoDialog(String title, String classId, String className, String presentationId, String presentationName, String explorerItemId, String pid) {
+                RwtPresentationInfoDialog dlg = new RwtPresentationInfoDialog(title, classId, className, presentationId, presentationName, explorerItemId, pid);
+                dlg.execDialog();
+            }
+            
         };
         this.actions = new Editor.ActionsImpl(actionController);
         this.editorUIController = new EditorUIController(this) {
@@ -127,8 +142,9 @@ public abstract class Editor extends Container implements IEditor, IModification
 
             @Override
             protected void putTextToSystemClipboard(final String text) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }                        
+                IDialog dlg = getEnvironment().getApplication().getDialogFactory().newMessageWithDetailsDialog(env, null, "Information", text, null, EDialogIconType.INFORMATION);
+                dlg.execDialog();
+            }
 
             @Override
             protected void applySettings(IClientEnvironment env, IToolBar toolBar, ICommandToolBar commandToolBar) {
@@ -166,6 +182,7 @@ public abstract class Editor extends Container implements IEditor, IModification
             protected List<IEmbeddedView> findChildrenViews() {
                 return viewSupport.findEmbeddedViews();
             }
+                        
         };
     }
 
@@ -217,7 +234,7 @@ public abstract class Editor extends Container implements IEditor, IModification
     void addToolBarComponent(int index, UIObject c) {
         add(0, c);
     }
-
+    
     @Override
     public Actions getActions() {
         return actions;
@@ -246,7 +263,7 @@ public abstract class Editor extends Container implements IEditor, IModification
     @Override
     public ViewRestrictions getRestrictions() {
         return getController().getViewRestrictions();
-    }        
+    }
 
     @Override
     public void refresh() {
@@ -287,6 +304,8 @@ public abstract class Editor extends Container implements IEditor, IModification
             closeHandlers.remove(handler);
         }
     }
+
+    protected IMenu editorMenu;
     private boolean isToolBarHidden;
     private boolean isCommandBarHidden;
 
@@ -302,15 +321,52 @@ public abstract class Editor extends Container implements IEditor, IModification
     }
 
     @Override
+    public void setMenu(IMenu menu) {
+        clearEditorMenu();
+        editorMenu = menu;
+        if (getEntityModel() != null) {//was opened
+//            QApplication.postEvent(this, new SetupMenu());
+            setupMenu();
+        }
+    }
+
+    private void clearEditorMenu() {
+        if (editorMenu instanceof RwtMenu) {
+            editorMenu.clear();
+        }
+    }
+
+    private void setupMenu() {
+        if (editorMenu instanceof RwtMenu) {
+            final RwtMenu asRWTMenu = (RwtMenu) editorMenu;
+            if (asRWTMenu.getParent() == null) {
+                final RwtMenuBar menuBar = new RwtMenuBar(this);
+                asRWTMenu.setParent(menuBar);
+            }
+            editorMenu.clear();
+            editorMenu.addAction(actions.getDeleteAction());
+            editorMenu.addAction(actions.getCopyAction());
+            editorMenu.addAction(actions.getUpdateAction());
+            editorMenu.addAction(actions.getCancelChangesAction());
+            editorMenu.addAction(actions.getRereadAction());
+            if (RunParams.isDevelopmentMode()) {
+                editorMenu.insertSeparator((Action) null);
+                editorMenu.addAction(actions.getCopyEditorPresIdAction());
+            }
+            editorMenu.setEnabled(true);
+        }
+    }
+
+    @Override
     public void open(Model model) {
         getController().open(model);
-        fireOpened();
+        setObjectName("rx_editor_view_#"+model.getDefinition().getId());
     }
-    
+
     public void open(final Model model_, final ComponentModificationRegistrator registrator) {
         open(model_);
         getController().setModificationRegistractor(registrator);
-    }    
+    }
 
     protected void fireOpened() {
         defaulOpenHandler.afterOpen();
@@ -408,6 +464,7 @@ public abstract class Editor extends Container implements IEditor, IModification
 
         @Override
         public void afterOpen() {
+            setupMenu();
             final List<OpenHandler> ls;
             synchronized (openHandlers) {
                 ls = new ArrayList<>(openHandlers);
@@ -468,8 +525,8 @@ public abstract class Editor extends Container implements IEditor, IModification
     @Override
     public void childComponentWasClosed(final IModifableComponent childComponent) {
         getController().childComponentWasClosed(childComponent);
-    }        
-    
+    }
+
     public void addModificationStateListener(final IModificationStateListener listener){
         if (modificationListeners==null){
             modificationListeners = new LinkedList<>();
@@ -478,13 +535,13 @@ public abstract class Editor extends Container implements IEditor, IModification
             modificationListeners.add(listener);
         }
     }
-    
+
     public void removeModificationStateListener(final IModificationStateListener listener){
         if (modificationListeners!=null){
             modificationListeners.remove(listener);
         }
     }
-    
+
     private void notifyModificationStateListeners(final boolean inModificationState){
         if (modificationListeners!=null){
             final List<IModificationStateListener> listenersList = new LinkedList<>(modificationListeners);
@@ -493,6 +550,6 @@ public abstract class Editor extends Container implements IEditor, IModification
             }
         }
     }
-    
+
     
 }

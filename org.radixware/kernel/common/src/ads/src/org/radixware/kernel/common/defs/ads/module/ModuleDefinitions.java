@@ -15,12 +15,14 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.radixware.kernel.common.defs.ClipboardSupport.CanPasteResult;
@@ -30,25 +32,38 @@ import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.Definitions;
 import org.radixware.kernel.common.defs.IVisitor;
 import org.radixware.kernel.common.defs.Module;
-import org.radixware.kernel.common.defs.RadixObject.EEditState;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition.ESaveMode;
 import org.radixware.kernel.common.defs.ads.AdsDefinitions;
+import org.radixware.kernel.common.defs.ads.IDefinitionContainer;
+import org.radixware.kernel.common.defs.ads.IEnvDependent;
+import org.radixware.kernel.common.defs.ads.ITopContainer;
+import org.radixware.kernel.common.defs.ads.ITransparency;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
+import org.radixware.kernel.common.defs.ads.doc.AdsDocDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
+import org.radixware.kernel.common.defs.ads.localization.IAdsLocalizedDef;
 import org.radixware.kernel.common.defs.ads.platform.BuildPath;
 import org.radixware.kernel.common.defs.ads.platform.IPlatformClassPublisher;
+import org.radixware.kernel.common.defs.ads.src.IJavaSource;
+import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.xml.IXmlDefinition;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.ads.AdsSegment;
 import org.radixware.kernel.common.repository.ads.fs.FSRepositoryAdsDefinition;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsLocaleDefinition;
+import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsLocalizedDefinition;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsModule;
+import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.Utils;
@@ -59,7 +74,7 @@ import org.radixware.schemas.adsdef.AdsDefinitionDocument;
 import org.radixware.schemas.adsdef.AdsDefinitionElementType;
 import org.radixware.schemas.adsdef.UsagesDocument.Usages;
 
-public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
+public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> implements ITopContainer, IDefinitionContainer {
 
     protected ModuleDefinitions(AdsModule owner, boolean upload) {
         super(owner);
@@ -128,12 +143,7 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
         return def;
     }
 
-    /**
-     * Try to load definition from its file and replace the current definition,
-     * if succesfull.
-     *
-     * @return loaded definition.
-     */
+    @Override
     public AdsDefinition reload(AdsDefinition oldDef) throws IOException {
         assert oldDef.getContainer() == this;
         final IRepositoryAdsDefinition definitionRepository = recreateRepository(oldDef);
@@ -166,18 +176,26 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
         synchronized (this) {
             loading = true;
             try {
-                AdsLocalizingBundleDef bundle = findLocalizingBundleDef(oldDef, false);
-                if (bundle != null) {
-                    this.strings.remove(bundle);
-                }
+                removeBundle(oldDef);
                 this.remove(oldDef);
-                this.stringLoadFailures.remove(oldDef.getLocalizingBundleId());
+                refreshStringsCache(oldDef);
                 super.add(newDef);
                 newDef.setUploadMode(uploadMode);
             } finally {
                 loading = false;
             }
         }
+    }
+
+    public void removeBundle(AdsDefinition oldDef) {
+        AdsLocalizingBundleDef bundle = findLocalizingBundleDef(oldDef, false);
+        if (bundle != null) {
+            this.strings.remove(bundle);
+        }
+    }
+
+    public void refreshStringsCache(AdsDefinition def) {
+        this.stringLoadFailures.remove(def.getLocalizingBundleId());
     }
 
     void reload() {
@@ -312,18 +330,28 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
     }
     private final MLStrings strings = new MLStrings();
 
-    private static class LoadFailure {
+    public static class LoadFailure {
 
         Id id;
+        File file;
         long fileTime;
 
         public LoadFailure(Id id, File file) {
             this.id = id;
+            this.file = file;
             if (file != null) {
                 fileTime = file.lastModified();
             } else {
                 fileTime = -1;
             }
+        }
+
+        public File getFile() {
+            return file;
+        }
+
+        public Id getId() {
+            return id;
         }
     }
     private volatile Map<Id, LoadFailure> stringLoadFailures = new HashMap<Id, LoadFailure>(1);
@@ -346,7 +374,7 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
         }
     }
 
-    private AdsLocalizingBundleDef loadLocalizingBundle(AdsDefinition owner) {
+    private AdsLocalizingBundleDef loadLocalizingBundle(IAdsLocalizedDef owner) {
 
         if (loadFailed(owner.getLocalizingBundleId())) {
             return null;
@@ -357,8 +385,17 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
         if (moduleRep == null) {
             return null;
         }
-
-        final IRepositoryAdsDefinition definitionRepository = moduleRep.getDefinitionRepository(owner);
+        final IRepositoryAdsLocalizedDefinition definitionRepository;
+        if (owner instanceof AdsDefinition) {
+            definitionRepository = moduleRep.getDefinitionRepository((AdsDefinition) owner);
+        } else {
+            if (owner instanceof AdsModule) {
+                moduleRep.setModule((AdsModule) owner);
+                definitionRepository = moduleRep;
+            } else {
+                definitionRepository = null;
+            }
+        }
         if (definitionRepository == null) {
             return null;
         }
@@ -378,12 +415,29 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
             }
         } catch (IOException ex) {
             //moduleRep.processException(ex);String might not exist
-            failOnStringLoading(owner.getLocalizingBundleId(), mlsRepository.getFile());
+            File f = tryExtractFileFromEx(ex);
+            if (f == null) {
+                f = mlsRepository.getFile();
+            }
+            failOnStringLoading(owner.getLocalizingBundleId(), f);
             return null; // TODO: throw exception
         }
     }
 
-    public AdsLocalizingBundleDef findLocalizingBundleDef(AdsDefinition owner, boolean createIfNotExists) {
+    public File tryExtractFileFromEx(Throwable ex) {
+        Throwable t = ex.getCause();
+        if (t == null) {
+            return null;
+        }
+
+        if (t instanceof Loader.LoadDefFromFileExcepion) {
+            return ((Loader.LoadDefFromFileExcepion) t).getFile();
+        }
+
+        return tryExtractFileFromEx(t);
+    }
+
+    public AdsLocalizingBundleDef findLocalizingBundleDef(IAdsLocalizedDef owner, boolean createIfNotExists) {
         if (owner instanceof AdsLocalizingBundleDef) {
             return null;
         }
@@ -406,7 +460,7 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
                 def.getStrings().updateStringsByLanguages();
                 // Follwing string def.setUploadMode(owner.getSaveMode()); is commented to solve issue with
                 // attempt to save strings to localizing layer in case when source string set belongs to read only layer
-                
+
                 // def.setUploadMode(owner.getSaveMode());
                 if (save) {
                     try {
@@ -500,7 +554,11 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
             if (def.getDefinitionType() != EDefType.IMAGE) {
                 def.appendTo(xDef.addNewDefinition(), ESaveMode.API);
             }
-            ids.add(def.getId().toString());
+
+            boolean isDocDef = Arrays.asList(EDefType.TECHNICAL_DOCUMENTATION_TOPIC, EDefType.TECHNICAL_DOCUMENTATION_MAP).contains(def.getDefinitionType());
+            if (!isDocDef) {
+                ids.add(def.getId().toString());
+            }
         }
         /*List<AdsLocalizingBundleDef> stringDefs = this.strings.list();
         
@@ -526,6 +584,7 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
         support.saveUsages(null, xDef);
     }
 
+    @Override
     public void save(AdsDefinition def, ESaveMode saveMode) throws IOException {
         assert def.getOwnerDefinition() == getModule();
 
@@ -571,13 +630,13 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
                         IRepositoryAdsDefinition rep = ((IRepositoryAdsLocaleDefinition) defRep).getRepositories().get(lang);
                         if (rep != null) {
                             file = rep.getFile();// new File(langDir, def.getId().toString() + ".xml"); 
-                            if (!layerLangs.contains(lang) && file != null){
+                            if (!layerLangs.contains(lang) && file != null) {
                                 FileUtils.deleteFile(file.getParentFile());
                                 file = null;
                             }
                         }
                     }
-                    
+
                     if (file == null) {
                         file = findFileForLang(localDef, lang, sourceFile);
                     }
@@ -656,10 +715,24 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
             if (saveMode == ESaveMode.NORMAL) {
                 def.setFileLastModifiedTime(sourceFile.lastModified());
             }
+            savePreview(def);
         }
         def.setEditState(EEditState.NONE);
     }
 
+    public void savePreview(AdsDefinition def) {
+        File sourceFile = getSourceFile(def, ESaveMode.NORMAL);
+        if (def != null && def.getSaveMode() == ESaveMode.NORMAL) {
+            if (AdsUtils.isEnableHumanReadable(def)) {
+                File file = AdsUtils.calcHumanReadableFile(sourceFile);
+                if (file != null) {
+                    saveHumanReadable(def, file);
+                }
+            }
+        }
+    }
+
+    @Override
     public File getSourceFile(AdsDefinition def, ESaveMode saveMode) {
         assert def.getOwnerDefinition() == getModule();
         if (saveMode == null) {
@@ -713,16 +786,26 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
     public void visitChildren(IVisitor visitor, VisitorProvider provider) {
         super.visitChildren(visitor, provider);
         if (!this.isEmpty()) {
-            for (AdsDefinition def : this) {
-                AdsLocalizingBundleDef bundle = findLocalizingBundleDef(def, false);
-                if (bundle != null) {
-                    bundle.visit(visitor, provider);
+
+            if (provider.isClassContainer(AdsLocalizingBundleDef.class)) {
+                if (getModule() != null) {
+                    visitAdsLocalizingBundleDef(getModule().findExistingLocalizingBundle(), visitor, provider);
+                }
+
+                for (AdsDefinition def : this) {
+                    visitAdsLocalizingBundleDef(findLocalizingBundleDef(def, false), visitor, provider);
                 }
             }
         } else if (getLayer() != null && getLayer().isLocalizing()) {
             for (AdsLocalizingBundleDef bundle : strings) {
                 bundle.visit(visitor, provider);
             }
+        }
+    }
+
+    private void visitAdsLocalizingBundleDef(AdsLocalizingBundleDef bundle, IVisitor visitor, VisitorProvider provider) {
+        if (bundle != null) {
+            bundle.visit(visitor, provider);
         }
     }
 
@@ -740,4 +823,124 @@ public class ModuleDefinitions extends AdsDefinitions<AdsDefinition> {
         }
         return CanPasteResult.YES;
     }
+
+    public ArrayList<LoadFailure> getStringLoadFailure() {
+        return new ArrayList<>(stringLoadFailures.values());
+    }
+
+    private void saveHumanReadable(AdsDefinition def, File sourceFile) {
+        try {
+            if (def instanceof ITransparency && ((ITransparency) def).getTransparence() != null
+                    && ((ITransparency) def).getTransparence().isTransparent()
+                    && !((ITransparency) def).getTransparence().isExtendable()) {
+                return;
+            }
+            if (!(def instanceof IJavaSource)) {
+                Logger.getLogger(getClass().getName()).log(Level.INFO, "Attempt to save definition without java source");
+            }
+
+            final CodePrinter printer = CodePrinter.Factory.newJavaHumanReadablePrinter();
+            print((IJavaSource) def, printer);
+            def.visitChildren(new IVisitor() {
+
+                @Override
+                public void accept(RadixObject radixObject) {
+                    print((IJavaSource) radixObject, printer);
+                }
+            }, new AdsVisitorProvider() {
+
+                @Override
+                public boolean isTarget(RadixObject radixObject) {
+                    return radixObject instanceof IJavaSource;
+                }
+            });
+            AdsLocalizingBundleDef bundle = def.findExistingLocalizingBundle();
+            if (bundle != null) {
+                printer.println();
+                printer.println("/* " + bundle.getQualifiedName() + " */");
+                JavaSourceSupport support = bundle.getJavaSourceSupport();
+                for (JavaSourceSupport.CodeType ct : support.getSeparateFileTypes(ERuntimeEnvironmentType.COMMON)) {
+                    support.getCodeWriter(JavaSourceSupport.UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, ct)).writeCode(printer);
+                }
+            }
+
+            try {
+                FileUtils.mkDirs(sourceFile.getParentFile());
+                FileUtils.writeString(sourceFile, printer.toString(), "UTF-8");
+            } catch (IOException ex) {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+        }
+    }
+
+    private void print(IJavaSource javaSource, CodePrinter printer) {
+        JavaSourceSupport support = javaSource.getJavaSourceSupport();
+        final ERuntimeEnvironmentType usageEnvironment;
+        if (javaSource instanceof IEnvDependent) {
+            usageEnvironment = ((IEnvDependent) javaSource).getUsageEnvironment();
+        } else {
+            usageEnvironment = null;
+        }
+        ArrayList<ERuntimeEnvironmentType> list = new ArrayList(support.getSupportedEnvironments());
+        Collections.sort(list, new EnviromentProvider(usageEnvironment));
+        for (ERuntimeEnvironmentType environment : list) {
+            Set<JavaSourceSupport.CodeType> codeTypes = support.getSeparateFileTypes(environment);
+            if (codeTypes == null) {
+                continue;
+            }
+            for (JavaSourceSupport.CodeType ct : codeTypes) {
+                printer.println();
+                printer.println("/* " + ((RadixObject) javaSource).getQualifiedName() + " - " + environment.getName() + " " + ct.getName() + "*/");
+                support.getCodeWriter(JavaSourceSupport.UsagePurpose.getPurpose(environment, ct)).writeCode(printer);
+            }
+        }
+    }
+
+    private class EnviromentProvider implements Comparator<ERuntimeEnvironmentType> {
+
+        private ERuntimeEnvironmentType usageEnvironment;
+
+        public EnviromentProvider(ERuntimeEnvironmentType environmentType) {
+            this.usageEnvironment = environmentType;
+        }
+
+        @Override
+        public int compare(ERuntimeEnvironmentType o1, ERuntimeEnvironmentType o2) {
+            if (o1 == o2) {
+                return 0;
+            }
+            if (usageEnvironment != null) {
+                if (o1 == usageEnvironment) {
+                    return -1;
+                }
+                if (o2 == usageEnvironment) {
+                    return 1;
+                }
+            }
+            switch (o1) {
+                case SERVER:
+                    return -1;
+                case COMMON:
+                    if (o2 == ERuntimeEnvironmentType.SERVER) {
+                        return 1;
+                    }
+                    return -1;
+                case COMMON_CLIENT:
+                    if (o2 == ERuntimeEnvironmentType.SERVER || o2 == ERuntimeEnvironmentType.COMMON) {
+                        return 1;
+                    }
+                    return -1;
+                case EXPLORER:
+                    if (o2 == ERuntimeEnvironmentType.SERVER || o2 == ERuntimeEnvironmentType.COMMON || o2 == ERuntimeEnvironmentType.COMMON_CLIENT) {
+                        return 1;
+                    }
+                    return -1;
+                default:
+                    return 1;
+            }
+        }
+    };
+
 }

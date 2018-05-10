@@ -97,6 +97,7 @@ public abstract class RwtForm extends Dialog implements IFormView {
         if (form.getFormDef().getDefaultHeight() > 0) {
             setHeight(form.getFormDef().getDefaultHeight());
         }
+        setObjectName("rx_form_view_#"+model.getDefinition().getId());
     }
 
     @Override

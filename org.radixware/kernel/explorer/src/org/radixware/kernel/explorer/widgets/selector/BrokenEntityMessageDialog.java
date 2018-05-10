@@ -28,6 +28,7 @@ import org.radixware.kernel.common.client.models.BrokenEntityModel;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.explorer.dialogs.ExplorerDialog;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
 class BrokenEntityMessageDialog extends ExplorerDialog{
@@ -37,10 +38,7 @@ class BrokenEntityMessageDialog extends ExplorerDialog{
         @Override
         public QSize sizeHint() {
             final QSize textSize = document().documentLayout().documentSize().toSize();
-            final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();
-            final int height = Math.min(textSize.height(), screenSize.height()*3/4);
-            final int width = Math.min(textSize.width(), screenSize.width()*3/4);
-            return new QSize(width, height);
+            return WidgetUtils.shrinkWindowSize(textSize.width(), textSize.height());
         }            
     };
     

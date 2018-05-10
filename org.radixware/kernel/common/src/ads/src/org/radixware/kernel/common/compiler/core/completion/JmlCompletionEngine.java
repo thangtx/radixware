@@ -10,11 +10,13 @@
  */
 package org.radixware.kernel.common.compiler.core.completion;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,6 +88,7 @@ import org.eclipse.jdt.internal.compiler.lookup.VariableBinding;
 import org.eclipse.jdt.internal.compiler.util.ObjectVector;
 
 import org.radixware.kernel.common.compiler.CompilerUtils;
+import org.radixware.kernel.common.compiler.IWorkspaceProvider;
 import org.radixware.kernel.common.compiler.core.ast.JMLQualifiedNameReference;
 import org.radixware.kernel.common.compiler.core.ast.JMLSingleNameReference;
 import org.radixware.kernel.common.compiler.core.ast.RadixObjectLocator;
@@ -97,7 +100,7 @@ import org.radixware.kernel.common.defs.HierarchyWalker;
 import org.radixware.kernel.common.defs.IFilter;
 import org.radixware.kernel.common.defs.IVisitor;
 import org.radixware.kernel.common.defs.RadixObject;
-import org.radixware.kernel.common.defs.VisitorProviderFactory;
+import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.IEnvDependent;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
@@ -105,6 +108,7 @@ import org.radixware.kernel.common.defs.ads.clazz.AdsEmbeddedClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.AdsEnumClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.enumeration.AdsFieldParameterDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsEnumClassFieldDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
@@ -120,12 +124,14 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.xml.XBeansInterface;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.type.IAdsTypeSource;
-import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
+import org.radixware.kernel.common.defs.ads.userfunc.IUserFuncDef;
 import org.radixware.kernel.common.defs.ads.xml.AbstractXmlDefinition;
+import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.ads.AdsSegment;
+import org.radixware.kernel.common.repository.dds.DdsSegment;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.scml.ScmlCompletionProvider;
@@ -133,9 +139,8 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.CharOperations;
 import org.radixware.kernel.common.utils.Utils;
 
-
 public class JmlCompletionEngine {
-
+    
     final static AdsProblemReporter completionReporter = new AdsProblemReporter();
     final AdsCompletionParser parser = new AdsCompletionParser(completionReporter, true);
     static final char[] classField = "class".toCharArray();
@@ -204,6 +209,10 @@ public class JmlCompletionEngine {
             return false;
         }
     }
+    
+    public static AdsProblemReporter getReporter() {
+        return completionReporter;
+    }
 
     public void complete(final Scml.Item context, final int offset, ScmlCompletionProvider.CompletionRequestor requestor) {
         final Scml scml = context.getOwnerScml();
@@ -242,7 +251,7 @@ public class JmlCompletionEngine {
                 }
             } else if (def instanceof AdsContextlessCommandDef) {
                 return def;
-            } else if (def instanceof AdsUserFuncDef) {
+            } else if (def instanceof IUserFuncDef) {
                 return def;
             } else {
                 def = def.getOwnerDef();
@@ -251,12 +260,16 @@ public class JmlCompletionEngine {
         return null;
     }
     AdsWorkspace ws;
-
+        
     private void assist(Definition cuOwner, ERuntimeEnvironmentType env, Jml jml, Scml.Item context, int offset) {
 
         contextLayer = cuOwner.getLayer();
         contextEnv = env;
-        ws = new AdsWorkspace(contextLayer, env, completionReporter, false, true);
+        if (requestor instanceof IWorkspaceProvider) {
+            ws = ((IWorkspaceProvider)  requestor).getWorkspace(contextLayer, env);
+        } else {
+            ws = new AdsWorkspace(contextLayer, env, completionReporter, false, true);
+        }
         final JavaSourceSupport.UsagePurpose up = JavaSourceSupport.UsagePurpose.getPurpose(env, JavaSourceSupport.CodeType.EXCUTABLE);
         final AdsCompilationUnit unit = new AdsCompilationUnit(cuOwner, up);
         final CodePrinter printer = CodePrinter.Factory.newJavaPrinter();
@@ -545,6 +558,91 @@ public class JmlCompletionEngine {
 //        // the distance is the cost for transforming all letters in both strings        
 //        return cost[len0 - 1];
 //    }
+    /**
+     * Test matching of name with completion filter in a way that
+     * JmlCompletionEngine matches filter JmCo
+     *
+     */
+    public static boolean nameMatchesCamelCaseIgnoringDots(final String name, final String filter) {
+        if (Objects.equals(name, filter)) {
+            return true;
+        }
+        if (name == null || filter == null) {
+            return false;
+        }
+
+        if (startsWithIgnoreCaseAndDots(name, filter)) {
+            return true;
+        }
+        
+        return splitToWordsAndCheckForPrefix(name, filter);
+    }
+    
+    private static boolean startsWithIgnoreCaseAndDots(final String name, final String filter) {
+        if (name.isEmpty()) {
+            return filter.isEmpty();
+        }
+        int i = 0;
+        int j = 0;        
+        for (; i < filter.length(); i++, j++) {
+            if (j >= name.length()) {
+                return false;
+            }
+            while (name.charAt(j) == '.') {
+                j++;
+                if (j >= name.length()) {
+                    return false;
+                }
+            }
+            if (Character.toLowerCase(filter.charAt(i)) != Character.toLowerCase(name.charAt(j))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private static boolean splitToWordsAndCheckForPrefix(final String name, final String filter) {
+        if (name.isEmpty()) {
+            return filter.isEmpty();
+        }
+        int i = 0;
+        int j = 0;
+        for (; i < filter.length(); i++, j++) {
+            if (j >= name.length()) {
+                    return false;
+            }
+            if (i != 0 && Character.isUpperCase(filter.charAt(i))) {
+                while(!Character.isUpperCase(name.charAt(j))) {
+                    j++;
+                    if (j >= name.length()) {
+                        return false;
+                    }
+                }
+            }
+            if (filter.charAt(i) != name.charAt(j)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String[] splitToSubWords(final String str) {
+        final List<String> result = new ArrayList<>();
+        if (str != null && !str.equals("")) {
+            int curWordStart = 0;
+            for (int i = 1; i <= str.length(); i++) {
+                if (i == str.length() || isWordStart(str.charAt(i))) {
+                    result.add(str.substring(curWordStart, i));
+                    curWordStart = i;
+                }
+            }
+        }
+        return result.toArray(new String[result.size()]);
+    }
+
+    private static boolean isWordStart(final char c) {
+        return Character.isUpperCase(c);
+    }
 
     private int nameRelevance(String name, String filter) {
         if (filter.isEmpty()) {
@@ -553,20 +651,11 @@ public class JmlCompletionEngine {
         if (name.equals(filter)) {
             return 100;
         }
-        
-        String name_l = name.toLowerCase();
-        if (name_l.startsWith(filter.toLowerCase())) {
-//            float part = ((float) filter.length()) / ((float) name.length());
-//           
-//            
-//            return Math.round(part * 100);
+
+        if (nameMatchesCamelCaseIgnoringDots(name, filter)) {
             return 70;
         }
         return -1;
-    }
-
-    private boolean nameMatchesImpl(String name, String filter) {
-        return name.toLowerCase().startsWith(filter.toLowerCase());
     }
 
     private void findTypesAndPackages(char[] token) {
@@ -652,7 +741,26 @@ public class JmlCompletionEngine {
                             }
                         }
                     }
-                }, VisitorProviderFactory.createDefaultVisitorProvider());
+                }, new VisitorProvider() {
+
+                    @Override
+                    public boolean isTarget(RadixObject radixObject) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean isContainer(RadixObject radixObject) {
+                        return !(radixObject instanceof DdsSegment);
+                    }
+
+                    @Override
+                    public boolean isClassContainer(Class c) {
+                        if (ILocalizingBundleDef.class.isAssignableFrom(c)) {
+                            return false;
+                        }
+                        return super.isClassContainer(c);
+                    }
+                });
             }
         });
 
@@ -686,9 +794,9 @@ public class JmlCompletionEngine {
                 if (index > 0) {
                     String partName = classNameAsString.substring(index + 1);
                     if (partName.length() > 0 && Character.isDigit(partName.charAt(0))) {
-                        return false;
+                            return false;
+                        }
                     }
-                }
                 int nameRelevance = nameRelevance(classNameAsString, tokenAsStr);
                 if (nameRelevance >= 0) {
                     requestor.accept(new JmlTypeCompletionItem(className, packageName, false, nameRelevance + 1, completionPosition - startPosition, endPosition - completionPosition));
@@ -726,6 +834,12 @@ public class JmlCompletionEngine {
 
     private void acceptXbeansInterface(IAdsTypeSource ts, int relevance, XBeansInterface iface, String tokenAsStr) {
         int nameRelevance = nameRelevance(iface.getName(), tokenAsStr);
+        boolean foundByOwnerSchemeName = false;
+        if (nameRelevance < 0) {
+            final String ownerName = ((RadixObject) ts).getName();
+            nameRelevance = nameRelevance(ownerName + iface.getName(), tokenAsStr);
+            foundByOwnerSchemeName = true;
+        }
         if (nameRelevance >= 0) {
             boolean add;
             if (expectedBaseType != null) {
@@ -738,12 +852,17 @@ public class JmlCompletionEngine {
                 add = true;
             }
             if (add) {
-                requestor.accept(new AdsTypeCompletionItem(ts, iface, false, relevance + nameRelevance, completionPosition - startPosition, endPosition - completionPosition));
+                final AdsTypeCompletionItem item = new AdsTypeCompletionItem(ts, iface, false, relevance + nameRelevance, completionPosition - startPosition, endPosition - completionPosition);
+                if (foundByOwnerSchemeName) {
+                    item.sortText = ((RadixObject) ts).getName() + ":" + item.sortText;
+                }
+                requestor.accept(item);
             }
         }
         if (iface.getInnerInterfaces() != null) {
+            final int rel = relevance + (foundByOwnerSchemeName ? 0 : 1);
             for (XBeansInterface inner : iface.getInnerInterfaces()) {
-                acceptXbeansInterface(ts, relevance + nameRelevance, inner, tokenAsStr);
+                acceptXbeansInterface(ts, rel, inner, tokenAsStr);
             }
         }
     }
@@ -1223,7 +1342,7 @@ public class JmlCompletionEngine {
         return definition;
     }
 
-    private void checkMethod(AdsClassDef clazz, boolean isPub, boolean lookForProperty, boolean lookForMethod, MethodBinding method, String tokenAsStr, int relevance, Set<String> addedMethods) {
+    private void checkMethod(AdsClassDef clazz, boolean isPub, boolean lookForFields, boolean lookForProperty, boolean lookForMethod, MethodBinding method, String tokenAsStr, int relevance, Set<String> addedMethods) {
         if (method.isConstructor()) {
             return;
         }
@@ -1285,8 +1404,26 @@ public class JmlCompletionEngine {
                         if (property != null && isAccessible(property)) {
                             int nameRelevance = nameRelevance(property.getName(), tokenAsStr);
                             if (nameRelevance >= 0) {
-                                requestor.accept(new AdsPropertyCompletionItem(property, relevance + nameRelevance, completionPosition - startPosition, endPosition - completionPosition,contextEnv));
+                                requestor.accept(new AdsPropertyCompletionItem(property, relevance + nameRelevance, completionPosition - startPosition, endPosition - completionPosition, contextEnv));
                                 accepted = true;
+                            }
+                        }
+                    }
+                }
+                
+                if (lookForFields) {
+                    if (clazz instanceof AdsEnumClassDef) {
+                        if (CharOperation.prefixEquals("get".toCharArray(), method.selector)) {
+                            id = Id.Factory.loadFrom(String.valueOf(method.selector, 3, method.selector.length - 3));
+                            AdsEnumClassDef enumClassDef = (AdsEnumClassDef) clazz;
+                            AdsFieldParameterDef field = enumClassDef.getFieldStruct().findById(id, ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE).get();
+                            if (field != null && isAccessible(field)) {
+                                int nameRelevance = nameRelevance(field.getName(), tokenAsStr);
+                                if (nameRelevance >= 0) {
+                                    String name = field.getName();
+                                    requestor.accept(new JmlFieldCompletionItem(name.toCharArray(), method.isStatic(), true, field, clazz.getQualifiedName(), relevance + 2 + nameRelevance, completionPosition - startPosition, endPosition - completionPosition));
+                                    accepted = true;
+            }
                             }
                         }
                     }
@@ -1442,7 +1579,7 @@ public class JmlCompletionEngine {
                     }
                 }
 
-                if (lookForProps || lookForMethods) {
+                if (lookForProps || lookForMethods || lookForFields) {
                     final MethodBinding[] methods = type.methods();
                     for (int i = 0; i < methods.length; i++) {
                         final MethodBinding method = methods[i];
@@ -1455,7 +1592,7 @@ public class JmlCompletionEngine {
                         if (!method.canBeSeenBy(invocationSite, scope)) {
                             //continue;
                         }
-                        checkMethod(clazz, isPub, lookForProps, lookForMethods, method, tokenAsStr, relevance, signs);
+                        checkMethod(clazz, isPub, lookForFields, lookForProps, lookForMethods, method, tokenAsStr, relevance, signs);
                     }
                 }
                 if (lookForFields) {
@@ -1481,7 +1618,7 @@ public class JmlCompletionEngine {
                                 char[] fieldSign = CharOperation.concat(field.name, sign);
                                 AdsPropertyDef property = clazz.getProperties().findBySignature(fieldSign, ExtendableDefinitions.EScope.ALL);
                                 if (property != null) {
-                                    requestor.accept(new AdsPropertyCompletionItem(property, relevance, completionPosition - startPosition, endPosition - completionPosition,contextEnv));
+                                    requestor.accept(new AdsPropertyCompletionItem(property, relevance, completionPosition - startPosition, endPosition - completionPosition, contextEnv));
                                     continue;
                                 }
                             }

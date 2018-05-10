@@ -22,6 +22,8 @@ import java.util.List;
 import javax.swing.JScrollPane;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils.SelectionInfo;
 import org.radixware.kernel.designer.ads.localization.RowString;
 import org.radixware.kernel.designer.ads.localization.source.MlsTablePanel;
 import org.radixware.kernel.designer.ads.localization.translation.ITranslationPanel;
@@ -62,8 +64,9 @@ public class PhraseBookTranslationPanel extends javax.swing.JPanel implements IT
             panel.setReadOnly(true);
         } else {
             //setReadOnly(readOnly);
-            //panel.setReadOnly(readOnly);
-            panel.setRowString(rowString, setFocusOnTranslation, MlsTablePanel.NONE);
+            //panel.setReadOnly(readOnly); 
+            panel.setRowString(rowString);
+            panel.selectFirstPanel();
         }
         this.validate();
         this.repaint();
@@ -190,5 +193,9 @@ public class PhraseBookTranslationPanel extends javax.swing.JPanel implements IT
     @Override
     public JScrollPane getTranslationPanelScrollPane() {
         return null;
+    }
+
+    @Override
+    public void fireChange(String key) {
     }
 }

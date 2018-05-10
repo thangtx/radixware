@@ -20,7 +20,7 @@ import org.radixware.kernel.common.repository.fs.IRepositoryDefinition;
 import org.radixware.kernel.common.types.Id;
 
 
-public interface IRepositoryAdsDefinition extends IRepositoryDefinition<AdsDefinition> {
+public interface IRepositoryAdsDefinition extends IRepositoryDefinition<AdsDefinition>, IRepositoryAdsLocalizedDefinition {
 
     @Override
     Id getId();
@@ -35,6 +35,7 @@ public interface IRepositoryAdsDefinition extends IRepositoryDefinition<AdsDefin
 
     AdsDefinition.ESaveMode getUploadMode();
 
+    @Override
     IRepositoryAdsDefinition getMlsRepository();
 
     ERuntimeEnvironmentType getEnvironment();

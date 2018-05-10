@@ -41,6 +41,7 @@ import org.radixware.schemas.aasWsdl.InvokeDocument;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.schemas.nethub.OnRecvRsDocument.OnRecvRs;
 
 
@@ -174,13 +175,13 @@ public final class NetHubUnit extends AsyncEventHandlerUnit implements EventHand
                     + "}";
         }
     }
-    private final DbQueries nhDbQueries;
+    private final NetHubDbQueries nhDbQueries;
     private final ExtPort extPort;
     private volatile NetHubInterfaceSap service = null;
 
     public NetHubUnit(final Instance instModel, final Long id, final String title) throws UnsupportedUnitTypeException {
         super(instModel, id, title);
-        nhDbQueries = new DbQueries(this);
+        nhDbQueries = new NetHubDbQueries(this);
         extPort = new ExtPort(this);
     }
 
@@ -299,7 +300,7 @@ public final class NetHubUnit extends AsyncEventHandlerUnit implements EventHand
     }
 
     @Override
-    protected void setDbConnection(final Connection dbConnection) {
+    protected void setDbConnection(final RadixConnection dbConnection) {
         nhDbQueries.closeAll();
         if (service != null) {
             service.setDbConnection(dbConnection);
@@ -331,7 +332,7 @@ public final class NetHubUnit extends AsyncEventHandlerUnit implements EventHand
         }
     }
 
-    DbQueries getNetHubDbQueries() {
+    NetHubDbQueries getNetHubDbQueries() {
         return nhDbQueries;
     }
 

@@ -24,6 +24,7 @@ import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.connections.ConnectionOptions;
@@ -198,6 +199,16 @@ public class ConnectionsManager extends ExplorerDialog {
 
     public ConnectionOptions getCurrentConnection() {
         return (ConnectionOptions) ui.connectionsList.currentItem().data(Qt.ItemDataRole.UserRole);
+    }
+    
+    public boolean setCurrentConnection(final ConnectionOptions opts) {
+        for (int i = 0; i < ui.connectionsList.count(); i++) {
+            if (Objects.equals(opts, ui.connectionsList.item(i).data(Qt.ItemDataRole.UserRole))) {
+                ui.connectionsList.setCurrentRow(i);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -13,7 +13,8 @@
     
     <xs:complexType name="SqmlTranRq">
         <xs:sequence>
-            <xs:element name="Sqml" type="xscml:Sqml" />
+            <xs:element name="Sqml" type="xscml:Sqml" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AdditionalFrom" type="xscml:Sqml" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <!--xs:attribute name="Sqml" type="xscml:Sqml" -->
         <xs:attribute name="TableId" type="t:Id" />

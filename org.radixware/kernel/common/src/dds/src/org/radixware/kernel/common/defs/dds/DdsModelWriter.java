@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.radixware.kernel.common.check.RadixProblem;
 
 import org.radixware.kernel.common.defs.Definitions;
 import org.radixware.kernel.common.types.Id;
@@ -519,6 +520,17 @@ class DdsModelWriter {
                 xItem.setParentColumnId(parentColumnId != null ? parentColumnId.toString() : "");
             }
         }
+        
+        RadixProblem.WarningSuppressionSupport wss = reference.getWarningSuppressionSupport(false);
+        if (wss != null && !wss.isEmpty()) {
+
+            int[] warnings = wss.getSuppressedWarnings();
+            List<Integer> list = new ArrayList<>(warnings.length);
+            for (int w : warnings) {
+                list.add(w);
+            }
+            xReference.setSuppressedWarnings(list);
+        }
     }
 
     public static void writeSequence(DdsSequenceDef sequence, org.radixware.schemas.ddsdef.Sequence xSequence) {
@@ -557,6 +569,17 @@ class DdsModelWriter {
             xSequence.setCache(cache.longValue());
         }
         writePlacement(sequence.getPlacement(), xSequence.addNewPlacement());
+        
+        RadixProblem.WarningSuppressionSupport wss = sequence.getWarningSuppressionSupport(false);
+        if (wss != null && !wss.isEmpty()) {
+
+            int[] warnings = wss.getSuppressedWarnings();
+            List<Integer> list = new ArrayList<Integer>(warnings.length);
+            for (int w : warnings) {
+                list.add(Integer.valueOf(w));
+            }
+            xSequence.setSuppressedWarnings(list);
+        }
     }
 
     public static void writeColumnTemplate(DdsColumnTemplateDef columnTemplate, org.radixware.schemas.ddsdef.ColumnTemplate xColumnTemplate) {
@@ -727,7 +750,7 @@ class DdsModelWriter {
     }
 
     public static void writeTrigger(DdsTriggerDef trigger, org.radixware.schemas.ddsdef.Trigger xTrigger) {
-        writeIdAndName(trigger, xTrigger);
+        writeIdNameDescription(trigger, xTrigger);
 
         if (trigger.isOverwrite()) {
             xTrigger.setIsOverwrite(true);
@@ -882,7 +905,7 @@ class DdsModelWriter {
     public static void writeView(DdsViewDef view, org.radixware.schemas.ddsdef.View xView) {
         writeTable(view, xView);
 
-        final Sqml query = view.getQuery();
+        final Sqml query = view.getSqml();
         final org.radixware.schemas.xscml.Sqml xQuery = xView.addNewQuery();
         query.appendTo(xQuery);
 

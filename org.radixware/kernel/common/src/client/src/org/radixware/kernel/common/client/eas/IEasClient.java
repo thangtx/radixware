@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.eas;
 
 import org.apache.xmlbeans.XmlObject;
+import org.radixware.kernel.common.client.utils.ISecretStore;
 import org.radixware.kernel.common.exceptions.CertificateUtilsException;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
 import org.radixware.kernel.common.exceptions.ServiceCallException;
@@ -22,15 +23,19 @@ import org.radixware.kernel.common.exceptions.ServiceClientException;
 
 public interface IEasClient {       
 
-    XmlObject sendRequest(final XmlObject request, final String scpName, final long definitionVersion, final int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, ServiceClientException, InterruptedException;
+    XmlObject sendRequest(final XmlObject request, 
+                                        final String scpName, 
+                                        final long definitionVersion, 
+                                        final int timeoutSec,
+                                        final IAadcMemberSwitchController handler) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, ServiceClientException, InterruptedException;
 
     XmlObject sendCallbackResponse(final XmlObject response, final int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, ServiceClientException, InterruptedException;
 
-    XmlObject sendFaultMessage(final String message, final Throwable error, final int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, ServiceClientException, InterruptedException;    
+    XmlObject sendFaultMessage(final String message, 
+                                                final Throwable error, 
+                                                final int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, ServiceClientException, InterruptedException;
     
-    void renewSslContext(final char[] keyStorePwd) throws KeystoreControllerException, CertificateUtilsException;
-
-    void close();
+    void renewSslContext(final ISecretStore secretStore) throws KeystoreControllerException, CertificateUtilsException;
     
-    
+    void close();        
 }

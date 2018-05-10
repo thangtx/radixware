@@ -16,7 +16,6 @@ import java.io.Reader;
 
 
 public class SQLReader implements ISQLReader {
-
     private final Reader reader;
     private SQLPosition pos;
     private SQLPosition posBefore;
@@ -24,18 +23,27 @@ public class SQLReader implements ISQLReader {
     private int preReadChar;
     private int prevLineLen;
 
-    public SQLReader(Reader pReader, String pSrcName) throws IOException {
-        reader = pReader;
-        reader.mark(0);
-        pos = new SQLPosition(0, 1, 1, 1, pSrcName);
-        preRead = false;
-        prevLineLen = 0;
+    public SQLReader(final Reader pReader, final String pSrcName) throws IOException {
+        if (pReader == null) {
+            throw new IllegalArgumentException("Reader can't be null");
+        }
+        else if (!pReader.markSupported()) {
+            throw new IllegalArgumentException("Reader not supports marks. Use another reader");
+        }
+        else {
+            this.reader = pReader;
+            this.reader.mark(1);   // ! was 0 - size before resettion 'undo' buffer
+            this.pos = new SQLPosition(0, 1, 1, 1, pSrcName);
+            this.preRead = false;
+            this.prevLineLen = 0;
+        }
     }
 
     @Override
     public int read() throws IOException {
         int ch;
         posBefore = pos.fork();
+        
         if (preRead) {
             ch = preReadChar;
             preRead = false;
@@ -47,6 +55,7 @@ public class SQLReader implements ISQLReader {
         }
         pos.setIndex(pos.getIndex() + 1);
         pos.setColumn(pos.getColumn() + 1);
+        
         if (ch == '\n') {
             prevLineLen = pos.getColumn();
             pos.setColumn(1);
@@ -74,15 +83,25 @@ public class SQLReader implements ISQLReader {
     }
 
     @Override
-    public void setPosition(SQLPosition pPos) throws IOException {
-        pos = pPos;
-        reader.reset();
-        reader.skip(pos.getIndex());
-        preRead = false;
+    public void setPosition(final SQLPosition pPos) throws IOException {
+        if (pPos == null) {
+            throw new IllegalArgumentException("New position can't be null");
+        }
+        else {
+            pos = pPos;
+            reader.reset();
+            reader.skip(pos.getIndex());
+            preRead = false;
+        }
     }
 
     @Override
     public SQLPosition getPosition() {
         return pos;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLReader{" + "reader=" + reader + ", pos=" + pos + ", posBefore=" + posBefore + ", preRead=" + preRead + ", preReadChar=" + preReadChar + ", prevLineLen=" + prevLineLen + '}';
     }
 }

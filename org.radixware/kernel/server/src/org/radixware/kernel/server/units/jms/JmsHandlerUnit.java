@@ -34,6 +34,7 @@ import org.radixware.kernel.server.aio.*;
 import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.exceptions.UnsupportedUnitTypeException;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.units.AsyncEventHandlerUnit;
 import org.radixware.kernel.server.units.Messages;
 import org.radixware.kernel.server.units.UnitView;
@@ -167,11 +168,11 @@ public final class JmsHandlerUnit extends AsyncEventHandlerUnit implements Event
                     + "}";
         }
     }
-    private final DbQueries nhDbQueries;
+    private final JmsDbQueries nhDbQueries;
 
     public JmsHandlerUnit(final Instance instModel, final Long id, final String title) throws UnsupportedUnitTypeException {
         super(instModel, id, title);
-        nhDbQueries = new DbQueries(this);
+        nhDbQueries = new JmsDbQueries(this);
     }
 
     @Override
@@ -264,7 +265,7 @@ public final class JmsHandlerUnit extends AsyncEventHandlerUnit implements Event
     }
 
     @Override
-    protected void setDbConnection(final Connection dbConnection) {
+    protected void setDbConnection(final RadixConnection dbConnection) {
         nhDbQueries.closeAll();
         if (service != null) {
             service.setDbConnection(dbConnection);
@@ -298,7 +299,7 @@ public final class JmsHandlerUnit extends AsyncEventHandlerUnit implements Event
         }
     }
 
-    final DbQueries getNetHubDbQueries() {
+    final JmsDbQueries getNetHubDbQueries() {
         return nhDbQueries;
     }
 

@@ -349,7 +349,7 @@ final class SqmlColumnDefImpl extends SqmlDefinitionImpl implements ISqmlColumnD
     @Override
     public Id getSelectorPresentationClassId() {
         final RadSelectorPresentationDef selectorPresentation = findSelectorPresentationDef();
-        return selectorPresentation == null ? null : selectorPresentation.getId();
+        return selectorPresentation == null ? null : selectorPresentation.getOwnerClassId();
     }
 
     @Override

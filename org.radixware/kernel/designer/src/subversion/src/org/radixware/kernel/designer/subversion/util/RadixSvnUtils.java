@@ -8,11 +8,11 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.subversion.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import org.netbeans.modules.subversion.FileInformation;
 import org.netbeans.modules.subversion.FileStatusCache;
 import org.netbeans.modules.subversion.Subversion;
@@ -24,14 +24,17 @@ import org.radixware.kernel.common.repository.Branch;
 import org.tigris.subversion.svnclientadapter.ISVNStatus;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
 
-
 public class RadixSvnUtils {
 
     public static final class Factory {
 
         public static final RadixSvnUtils newInstance(Branch branch) throws SVNClientException {
             final File dir = branch.getDirectory();
-            final SvnClient client = findClient(dir);
+            return newInstance(dir);
+        }
+        
+        public static final RadixSvnUtils newInstance(File branchDir) throws SVNClientException {
+            final SvnClient client = findClient(branchDir);
             if (client == null) {
                 return null;
             } else {
@@ -53,7 +56,6 @@ public class RadixSvnUtils {
         if (!(versioningSystem instanceof SubversionVCS)) {
             return null; // not supported VCS
         }
-
         return Subversion.getInstance().getClient(file);
     }
 
@@ -61,6 +63,13 @@ public class RadixSvnUtils {
      * @return true if versioning status of specified file or folder (recursive)
      * is up to date or it is not under SVN, false otherwise.
      */
+    private final int STATUS_CHECK_MASK = FileInformation.STATUS_REMOTE_CHANGE
+            | FileInformation.STATUS_VERSIONED_CONFLICT
+            | FileInformation.STATUS_VERSIONED_NEWINREPOSITORY
+            | FileInformation.STATUS_VERSIONED_REMOVEDINREPOSITORY
+            | FileInformation.STATUS_VERSIONED_MODIFIEDINREPOSITORY;
+    private final int STATUS_NEW = FileInformation.STATUS_VERSIONED_ADDEDLOCALLY | FileInformation.STATUS_NOTVERSIONED_NEWLOCALLY;
+
     public boolean isUpToDate(final File file) throws IOException, SVNClientException {
         final FileStatusCache fileStatusCache = Subversion.getInstance().getStatusCache();
 
@@ -69,27 +78,34 @@ public class RadixSvnUtils {
                  */, false /*
                  * extra information
                  */, true /*
-                 * contact server
-                 */);
+         * contact server
+         */);
         for (ISVNStatus repositoryStatus : repositoryStatuses) {
             final File subFile = repositoryStatus.getFile();
             FileStatusCache.RepositoryStatus statusInfo = new FileStatusCache.RepositoryStatus(repositoryStatus, null);
             final FileInformation info = fileStatusCache.refresh(subFile, statusInfo);
             final int status = info.getStatus();
-            if ((status & FileInformation.STATUS_REMOTE_CHANGE) != 0 || (status & FileInformation.STATUS_VERSIONED_CONFLICT) != 0) {
+
+            if ((status & STATUS_CHECK_MASK) != 0) {
                 return false;
             }
         }
         return true;
+    }
+    
+    public boolean isNewFile(final File file) {
+        final FileStatusCache fileStatusCache = Subversion.getInstance().getStatusCache();
+        return (fileStatusCache.getStatus(file).getStatus() & STATUS_NEW) != 0;
     }
 
     public static void refreshStatus(File... files) {
         final FileStatusCache statusCache = Subversion.getInstance().getStatusCache();
         statusCache.refreshAsync(files);
     }
-//    public void addFile(final File file) throws SVNClientException {
-//        client.addFile(file);
-//    }
+    
+    public void addFile(final File file) throws SVNClientException {
+        client.addFile(file);
+    }
 //
 //    public void revert(final File file) throws SVNClientException {
 //        client.revert(file, false /*recursive*/);
@@ -109,9 +125,9 @@ public class RadixSvnUtils {
 //        client.setIgnoredPatterns(dir, patterns);
 //    }
 //
-//    public void addDirectory(final File dir) throws SVNClientException {
-//        client.addDirectory(dir, true /*recursive*/);
-//    }
+    public void addDirectory(final File dir) throws SVNClientException {
+        client.addDirectory(dir, true /*recursive*/);
+    }
 //
 //    /**
 //     * @return last changed revision of specified file or -1 if impossible to determine

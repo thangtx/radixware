@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,8 +34,10 @@ import org.radixware.kernel.server.reports.DefaultReportFileController;
 import org.radixware.kernel.server.reports.IReportFileController;
 import org.radixware.kernel.server.reports.ReportGenerationException;
 import org.radixware.kernel.server.reports.ReportStateInfo;
-import org.radixware.kernel.server.reports.fo.AdjustedCell;
-import org.radixware.kernel.server.reports.fo.CellContents;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.AdjustedCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellContents;
+import org.radixware.kernel.common.enums.EReportBandType;
+import org.radixware.kernel.server.reports.ReportColumnsAdjuster;
 import org.radixware.kernel.server.types.Report;
 
 /**
@@ -45,13 +49,18 @@ public class TxtReportGenerator extends AbstractReportGenerator {
     private PrintStream writer = System.out;
     private int curPageHeight = 0;
     private int pageHeight = 0;
+    private boolean isFirstPage = true;
+    private final String encoding;
+    private TxtFooterWriter footerWriter;
+    
 
-    public TxtReportGenerator(Report report, ReportStateInfo stateInfo) {
+    public TxtReportGenerator(Report report, String encoding, ReportStateInfo stateInfo) {
         super(report, EReportExportFormat.TXT, AdsReportForm.Mode.TEXT, stateInfo);
+        this.encoding = encoding;
     }
 
     public TxtReportGenerator(Report report) {
-        this(report, null);
+        this(report, null, null);
     }
 
     @Override
@@ -64,8 +73,11 @@ public class TxtReportGenerator extends AbstractReportGenerator {
         final CellsAdjuster cellsAdjuster = new CellsAdjuster();
 
         cellsAdjuster.adjustCellContent(band);
-        cellsAdjuster.adjustCellsHeight(band);
+        int height = cellsAdjuster.adjustCellsHeight(band);
 
+        if (band.isAutoHeight()) {
+            band.setHeightRows(height);
+        }
         return cellsAdjuster.getAdjustedCellContents();
     }
 
@@ -81,7 +93,7 @@ public class TxtReportGenerator extends AbstractReportGenerator {
     }
 
     @Override
-    protected void viewBand(List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents) throws ReportGenerationException {
+    protected void viewBand(List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents, ReportGenData currentGenData) throws ReportGenerationException {
 
         List<AdsReportWidget> widgets = band.getWidgets().list();
         List<AdsReportCell> matchedWidgets = new ArrayList<>();
@@ -113,11 +125,10 @@ public class TxtReportGenerator extends AbstractReportGenerator {
                     return o1.getLeftColumn() > o2.getLeftColumn() ? 1 : o1.getLeftColumn() < o2.getLeftColumn() ? -1 : 0;
                 }
             });
-
+            int currHeight = getCurHeightRows();
             if (!matchedWidgets.isEmpty()) {
                 if (band.isMultiPage()) {
-                    int currHeight = getCurHeightRows();
-                    if (currHeight + currentRowInPage - 1 > getPageHeight()) {
+                    if (currHeight + currentRowInPage >= getPageHeight(band)) {
                         currentRowInPage = 0;
                         finishPage(genDataList);
                         newPage(genDataList);
@@ -125,14 +136,11 @@ public class TxtReportGenerator extends AbstractReportGenerator {
                 }
             }
             //if (currentRowInPage > 0/* || matchedWidgets.isEmpty()*/) {
-
-            //}
-            if (matchedWidgets.isEmpty()) {
-                //  if (!newLineStarted) {
+            if (matchedWidgets.isEmpty() || currentRowInPage != 0) {
                 println();
-                //        newLineStarted = false;
-                //    }
-            } else {
+            }
+            //}
+            if (!matchedWidgets.isEmpty()) {
                 //     if (!newLineStarted) {
                 //  println();
                 //        newLineStarted = false;
@@ -146,23 +154,29 @@ public class TxtReportGenerator extends AbstractReportGenerator {
                     int lineInCell = currentRow - cell.getTopRow();
                     AdjustedCell adjusted = adjustedCellContents == null ? null : adjustedCellContents.get(cell);
                     String content = "";
-                    if (adjusted == null || adjusted.getLineCount() <= lineInCell) {
+                    
+                    if (adjusted == null || adjusted.getLinesCount() <= lineInCell) {
                         if (lineInCell == 0) {
                             content = cell.getRunTimeContent();
                         }
                     } else {
-                        List<CellContents> listOfContents = adjusted.getContentsByLine(lineInCell);
+                        List<CellContents> listOfContents = adjusted.getContentByLineInCell(lineInCell);
                         StringBuilder sb = new StringBuilder();
                         for (CellContents sc : listOfContents) {
                             sb.append(sc.getText());
                         }
                         content = sb.toString();
                     }
+                    content = content.replaceAll("[\r\n]", ""); //npopov (RADIX-11761): trim line-separators 
                     if (content.length() > cell.getWidthCols()) {
                         content = content.substring(0, cell.getWidthCols());
                     }
                     EReportCellHAlign align = cell.getHAlign();
                     int diff = cell.getWidthCols() - content.length();
+                    if (!cell.isUseTxtPadding()) {
+                        diff = 0;
+                        align = EReportCellHAlign.LEFT;
+                    }
                     StringBuilder result = new StringBuilder();
                     switch (align) {
                         case CENTER:
@@ -198,9 +212,7 @@ public class TxtReportGenerator extends AbstractReportGenerator {
                     col += content.length();
                 }
                 matchedWidgets.clear();
-                println();
             }
-            //    println();
         }
     }
 
@@ -251,7 +263,15 @@ public class TxtReportGenerator extends AbstractReportGenerator {
             @Override
             public void afterCreateFile(Report report, File file, OutputStream output) throws ReportGenerationException {
                 super.afterCreateFile(report, file, output);
-                writer = new PrintStream(debug = new DebugStream(output));
+                if (encoding == null) {
+                    writer = new PrintStream(debug = new DebugStream(output));
+                } else {
+                    try {
+                        writer = new PrintStream(debug = new DebugStream(output), false, encoding);
+                    } catch (UnsupportedEncodingException ex) {
+                        writer = new PrintStream(debug = new DebugStream(output));
+                    }
+                }
                 writeNewLine = false;
             }
 
@@ -295,39 +315,107 @@ public class TxtReportGenerator extends AbstractReportGenerator {
         writer.print(str);
     }
 
-    private int getPageHeight() {
+    private int getPageHeight(final AdsReportBand band) {
+        if (band.getType() == EReportBandType.PAGE_FOOTER) {
+            return getRootForm().getPageHeightRows();
+        }
         if (pageHeight == 0) {
-            int footerHeight = 0;
-            for (final AdsReportBand footer : getRootForm().getPageFooterBands()) {
-                footerHeight += (footer != null && footer.isVisible() ? footer.getHeightRows() : 0);
-            }
-            pageHeight = getRootForm().getPageHeightRows() - getRootForm().getMargin().getBottomRows() - footerHeight;
+            pageHeight = getRootForm().getPageHeightRows() - getCurPageFooterHeightRows();
         }
         return pageHeight;
     }
 
     @Override
     protected void newPage(final List<ReportGenData> genDataList) throws ReportGenerationException {
+        if (!isFirstPage) {
+            print('\f');
+        } else {
+            isFirstPage = false;
+        }
         curPageHeight = 0;
         pageHeight = 0;
         super.newPage(genDataList);
+        adjustFooter(genDataList);
     }
+
+    @Override
+    protected void buildPageFooter(List<ReportGenData> genDataList) throws ReportGenerationException {
+        if (footerWriter == null) {
+            super.buildPageFooter(genDataList);
+        } else {
+            String footer = footerWriter.toString();
+            if (!footer.isEmpty()) {
+                print(footer);
+            }
+        }
+    }
+    
+    
 
     @Override
     protected void finishPage(List<ReportGenData> genDataList) throws ReportGenerationException {
         if (!genDataList.isEmpty()) {
-            int footerSize = 0;
-            for (AdsReportBand footer : genDataList.get(genDataList.size() - 1).form.getPageFooterBands()) {
-                if (footer != null && footer.isVisible()) {
-                    footerSize = footer.getHeightRows();
-                }
-            }
+            int footerSize = getCurPageFooterHeightRows();
             while (curPageHeight + footerSize < getRootForm().getPageHeightRows()) {
                 println();
             }
         }
-        super.finishPage(genDataList);
+        super.finishPage(genDataList); 
         writeNewLine = false;
+        if (footerWriter != null) {
+            footerWriter.close();
+            footerWriter = null;
+        }
     }
 
+    @Override
+    protected void adjustCellsToColumns(AdsReportBand container) {
+        ReportColumnsAdjuster adjuster = new ReportColumnsAdjuster(container, columnsSettings, new TxtCellWrapperFactory());
+        adjuster.adjustColumnsBySettings();
+    }
+
+    @Override
+    protected boolean isFlowDependent() {
+        return super.isFlowDependent(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    protected void adjustFooter(List<ReportGenData> genDataList) {
+        PrintStream curWriter = writer;
+        int curHeight = getCurHeightRows();
+        int cPageHeight = curPageHeight;
+        int height = pageHeight;
+        boolean newLine = writeNewLine;
+        try {
+            if (encoding == null) {
+                writer = TxtFooterWriter.Factory.newInstance();
+            } else {
+                try {
+                    writer = TxtFooterWriter.Factory.newInstance(encoding);
+                } catch (UnsupportedEncodingException ex) {
+                    writer = TxtFooterWriter.Factory.newInstance();
+                }
+            }
+            super.buildPageFooter(genDataList);
+        } catch (Throwable t) {
+        } finally {
+            footerWriter = (TxtFooterWriter) writer;
+            setFooterHeight(curPageHeight, 0);
+            footerWriter.flush();
+            writer = curWriter;
+            setCurHeightRows(curHeight);
+            curPageHeight = cPageHeight;
+            pageHeight = height;
+            writeNewLine = newLine;
+        }
+    }
+
+    @Override
+    protected void closeAllResources() {
+        super.closeAllResources();
+        if (footerWriter != null) {
+            footerWriter.close();
+        }
+    }
+    
+    
 }

@@ -13,12 +13,18 @@ package org.radixware.kernel.designer.ads.editors.clazz.forms.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.text.EditorKit;
 import org.netbeans.api.editor.mimelookup.MimeLookup;
+import org.netbeans.editor.Utilities;
 import org.netbeans.modules.editor.NbEditorDocument;
+import org.openide.text.CloneableEditorSupport;
 
 
 public class JavaScriptPanel extends JPanel {
@@ -26,31 +32,51 @@ public class JavaScriptPanel extends JPanel {
     private Component editor;
     private NbEditorDocument document;
     private JEditorPane editorPane;
+    JToolBar tb;
 
     public JavaScriptPanel() {
         setLayout(new BorderLayout());
+        
+        String mimeType = "text/javascript"; // NOI18N
 
+        editorPane = new JEditorPane();
+        editorPane.setContentType(mimeType);
+//        editorPane.setEditorKit(MimeLookup.getLookup(mimeType).lookup(EditorKit.class));
+        document = new NbEditorDocument(mimeType);
+        tb = document.createToolbar(editorPane);
+        editor = document.createEditor(editorPane);
+        add(tb, BorderLayout.NORTH);
+        add(editor, BorderLayout.CENTER);
+//        add(editorPane, BorderLayout.CENTER);
     }
 
     public void open(String code) {
 
-        String mimeType = "text/javascript"; // NOI18N
-
-        editorPane = new JEditorPane();
-
-        editorPane.setContentType(mimeType);
-        editorPane.setEditorKit(MimeLookup.getLookup(mimeType).lookup(EditorKit.class));
-        document = new NbEditorDocument(mimeType);
-        JToolBar tb = document.createToolbar(editorPane);
-        editor = document.createEditor(editorPane);
-        add(tb, BorderLayout.NORTH);
-        add(editor, BorderLayout.CENTER);
         // EditorUI ui = Utilities.getEditorUI(editorPane);
         editorPane.setText(code);
-
     }
 
     public String getCode() {
         return editorPane == null ? null : editorPane.getText();
     }
+
+    @Override
+    protected void validateTree() {
+        super.validateTree();
+        update();
+    }
+
+    private void update(){
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                editor.revalidate();
+                editor.repaint();
+                tb.revalidate();
+                tb.repaint();
+            }
+        });
+    }
+   
 }

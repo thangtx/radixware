@@ -43,7 +43,6 @@ import org.radixware.kernel.common.defs.ads.clazz.members.ParentDeletionOptions;
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
 import org.radixware.kernel.common.defs.ads.localization.AdsEventCodeDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
-import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.module.AdsImageDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.platform.IPlatformClassPublisher;
@@ -53,6 +52,7 @@ import org.radixware.kernel.common.defs.ads.type.AdsDefinitionType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.xml.IXmlDefinition;
+import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDeleteMode;
@@ -374,10 +374,10 @@ public class DefinitionsDistributor {
                     }
                     if (def instanceof AdsLocalizingBundleDef) {
                         AdsLocalizingBundleDef bundle = (AdsLocalizingBundleDef) def;
-                        final List<AdsMultilingualStringDef> strings = bundle.getStrings().get(EScope.LOCAL);
+                        final List<IMultilingualStringDef> strings = bundle.getUsedStrings(EScope.LOCAL);
                         if (strings != null) {
                             final Definition.EventCodes eventCodes = xDef.addNewEventCodes();
-                            for (AdsMultilingualStringDef string : strings) {
+                            for (IMultilingualStringDef string : strings) {
                                 if (string instanceof AdsEventCodeDef) {
                                     final AdsEventCodeDef codeDef = (AdsEventCodeDef) string;
                                     final Definition.EventCodes.EventCode xCode = eventCodes.addNewEventCode();
@@ -442,7 +442,7 @@ public class DefinitionsDistributor {
                 }
             });
 
-            final String imagePathPrefix = new String(CharOperations.merge(JavaSourceSupport.getPackageNameComponents(module, JavaSourceSupport.UsagePurpose.COMMON_EXECUTABLE), '/'));
+            final String imagePathPrefix = new String(CharOperations.merge(JavaSourceSupport.getPackageNameComponents(module, false, JavaSourceSupport.UsagePurpose.COMMON_EXECUTABLE), '/'));
             for (AdsImageDef image : module.getImages()) {
                 if (image.getImageFile() != null) {
                     final Definition xDef = Definition.Factory.newInstance();

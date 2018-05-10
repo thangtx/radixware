@@ -44,6 +44,7 @@ public class UnitController extends WindowAdapter {
             public void run() {
                 try {
                     setName("UnitController start");
+                    view.getUnit().getInstance().getTrace().clearLastFloodMessageTime(view.getUnit().getPostponedDueToDuplicateFloodKey());
                     view.getUnit().start("command from GUI");
                 } catch (Throwable e) {
                     messageError(ExceptionTextFormatter.getExceptionMess(e));
@@ -86,11 +87,11 @@ public class UnitController extends WindowAdapter {
         }.start();
     }
 
-    public void interrupt() {
-        if (!messageConfirmation(String.format(Messages.CONFIRM_UNIT_INTERRUPT, view.getUnit().getFullTitle()) + "?")) {
+    public void abort() {
+        if (!messageConfirmation(String.format(Messages.CONFIRM_UNIT_ABORT, view.getUnit().getFullTitle()) + "?")) {
             return;
         }
-        view.getUnit().interrupt();
+        view.getUnit().abortAndUnload("GUI command");
     }
 
     void startServerSideTraceOptionsDialog() {

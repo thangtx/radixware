@@ -10,7 +10,9 @@
  */
 package org.radixware.kernel.common.compiler.core.lookup.locations;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.compiler.core.AdsLookup;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.fs.IJarDataProvider;
 import org.radixware.kernel.common.repository.fs.IRepositoryModule;
@@ -32,7 +35,7 @@ public class KernelModulePackageLocation extends JarBasedPackageLocation {
 
     private static long lastUsageTime = 0;
     private static long MAX_INACTIVE_INTERVAL = 60000;
- 
+
     public static void resetCaches() {
         synchronized (cache) {
             cache.clear();
@@ -103,7 +106,15 @@ public class KernelModulePackageLocation extends JarBasedPackageLocation {
                 if (moduleRepo == null) {
                     return Collections.emptyList();
                 } else {
-                    return moduleRepo.getBinaries();
+                    List<IJarDataProvider> fullList = moduleRepo.getBinaries();
+
+//                    ERuntimeEnvironmentType moduleEnv = module.getMainEnvironmentType();
+//                    if (moduleEnv == env || moduleEnv == ERuntimeEnvironmentType.COMMON) {
+//                        return fullList;
+//                    } else {
+//                        return filterXsdJars(fullList);
+//                    }
+                    return fullList;
                 }
             } else {
                 return Collections.emptyList();
@@ -111,6 +122,18 @@ public class KernelModulePackageLocation extends JarBasedPackageLocation {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    private List<IJarDataProvider> filterXsdJars(List<IJarDataProvider> xsds) {
+        List<IJarDataProvider> filtered = new ArrayList<>();
+        for (IJarDataProvider provider : xsds) {
+            String name = provider.getName();
+            File pathname = new File(name);
+            if (pathname.getName().startsWith("xb_")) {
+                filtered.add(provider);
+            }
+        }
+        return filtered;
     }
 
     private abstract class RadixTypeRetriever {

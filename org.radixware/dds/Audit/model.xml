@@ -3,8 +3,8 @@
   <Tables>
     <Table Id="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" Name="AuditLog" DescriptionId="mlsFDWDBJWL5FDKJGY4S637DZL54A" DbName="RDX_AU_AUDITLOG">
       <Columns>
-        <Column Id="col5GIY6YTLMLNBDKV7ABINU7DB2Q" Name="id" ValType="2" Length="12" DbType="NUMBER(12,0)" NotNull="true" DbName="ID" SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q"/>
         <Column Id="col5KIY6YTLMLNBDKV7ABINU7DB2Q" Name="eventTime" DescriptionId="mls7BYXJPP7OFFTPPFNKGW252I75M" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="EVENTTIME"/>
+        <Column Id="col5GIY6YTLMLNBDKV7ABINU7DB2Q" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q"/>
         <Column Id="col5UFKW7TLMLNBDKV7ABINU7DB2Q" Name="storeDuration" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="true" DbName="STOREDURATION">
           <DefaultVal Type="ValAsStr">
             <com:Value>1</com:Value>
@@ -72,7 +72,7 @@
         </Columns>
         <UniqueConstraint Id="unqJBWGL34ATTNBDPK5ABQJO5ADDQ" DbName="PK_RDX_AU_SCHEME" Rely="true"/>
       </PrimaryKey>
-      <Placement PosX="33" PosY="22"/>
+      <Placement PosX="130" PosY="65"/>
     </Table>
     <Table Id="tblFEIALUQDMPNBDKV7ABINU7DB2Q" Name="SchemeItem" DbName="RDX_AU_SCHEMEITEM">
       <Columns>
@@ -110,7 +110,7 @@
   </References>
   <Sequences>
     <Sequence Id="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Name="AuditLogId" DbName="SQN_RDX_AU_AUDITLOGID" StartWith="1" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
-      <Placement PosX="254" PosY="52"/>
+      <Placement PosX="355" PosY="138"/>
     </Sequence>
   </Sequences>
   <Packages>
@@ -251,15 +251,6 @@
         <Item>
           <Prototype Id="dprHOV3AQP7PVEZBIXLLW6VCX7NYI" FunctionId="dfnUAPXVXUF6NFLXJCDEBCEEFMX2A"/>
         </Item>
-        <Item>
-          <CustomText Id="dtxGJ7P544SMFDBZE25PAJENKVOYE" Name="DefaultAuditScheme">
-            <Text>
-              <xsc:Item>
-                <xsc:Sql>DEFAULTAUDITSCHEME varchar2(50);</xsc:Sql>
-              </xsc:Item>
-            </Text>
-          </CustomText>
-        </Item>
       </Header>
       <Body>
         <Item>
@@ -270,6 +261,7 @@
   dayName   varchar2(100);
   NOT_EXIST exception;   PRAGMA EXCEPTION_INIT(NOT_EXIST, -2149);
   THE_ONLY exception;    PRAGMA EXCEPTION_INIT(THE_ONLY, -14758);
+  THE_ONLY_2 exception;    PRAGMA EXCEPTION_INIT(THE_ONLY_2, -14083);
   THE_ONLY_SUB exception;    PRAGMA EXCEPTION_INIT(THE_ONLY_SUB, -14629);
   INVALID_SUB exception;    PRAGMA EXCEPTION_INIT(INVALID_SUB, -14702);
 begin
@@ -283,7 +275,7 @@ begin
       begin    
          EXECUTE IMMEDIATE 'alter table RDX_AU_AUDITLOG drop partition for (to_date(''' || dayName || ''', ''YYYY_MM_DD''))';
       exception 
-        when THE_ONLY or NOT_EXIST then 
+        when THE_ONLY or THE_ONLY_2 or NOT_EXIST then 
           return false;
       end;
    end;
@@ -2462,6 +2454,19 @@ end;</xsc:Sql>
           </Function>
         </Item>
       </Body>
+    </Package>
+    <Package Id="pkgEEDRZVMBNZAGVGNRAXM4G2IRIE" Name="RDX_AUDIT_Vars" PurityLevelMask="1">
+      <Header>
+        <Item>
+          <CustomText Id="dtxIJC7AFUX2JGUBDNMHSMBWXYQWQ" Name="DefaultAuditScheme">
+            <Text>
+              <xsc:Item>
+                <xsc:Sql>DefaultAuditScheme varchar2(50);</xsc:Sql>
+              </xsc:Item>
+            </Text>
+          </CustomText>
+        </Item>
+      </Header>
     </Package>
   </Packages>
 </Model>

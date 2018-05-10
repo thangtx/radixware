@@ -29,7 +29,12 @@ public class AdsReportDbImageCell extends AdsReportCell {
     private Id mimeTypePropertyId = null;
     private double adjustHeightMm;
     private double adjustWidthMm;
+    private String mimeType;
     private EImageScaleType scaleType = EImageScaleType.CROP;
+    
+    //----------------RADIX-14249----------------
+    private boolean isResizeImage = true;    
+    //-------------------------------------------
 
     protected AdsReportDbImageCell() {
         super();
@@ -61,6 +66,9 @@ public class AdsReportDbImageCell extends AdsReportCell {
         if (xCell.isSetImageScaleType()) {
             scaleType = xCell.getImageScaleType();
         }
+        if (xCell.isSetIsResizeImage()) {
+            isResizeImage = xCell.getIsResizeImage();
+        }
     }
 
     public double getAdjustHeightMm() {
@@ -79,6 +87,25 @@ public class AdsReportDbImageCell extends AdsReportCell {
         this.adjustWidthMm = adjustWidthMm;
     }
 
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public boolean isResizeImage() {
+        return isResizeImage;
+    }
+
+    public void setIsResizeImage(boolean isResizeImage) {
+        if (this.isResizeImage != isResizeImage) {
+            this.isResizeImage = isResizeImage;
+            setEditState(EEditState.MODIFIED);
+        }        
+    }
+
     protected AdsReportDbImageCell(org.radixware.schemas.adsdef.ReportBand.Cells.Cell xCell) {
         super(xCell);
 
@@ -90,6 +117,9 @@ public class AdsReportDbImageCell extends AdsReportCell {
         }
         if (xCell.isSetImageScaleType()) {
             scaleType = xCell.getImageScaleType();
+        }
+        if (xCell.isSetIsResizeImage()) {
+            isResizeImage = xCell.getIsResizeImage();
         }
     }
 
@@ -107,6 +137,7 @@ public class AdsReportDbImageCell extends AdsReportCell {
         if (scaleType != EImageScaleType.CROP) {
             xCell.setImageScaleType(scaleType);
         }
+        xCell.setIsResizeImage(isResizeImage);
     }
 
     public Id getDataPropertyId() {

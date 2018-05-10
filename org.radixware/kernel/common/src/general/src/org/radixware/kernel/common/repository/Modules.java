@@ -144,6 +144,8 @@ public class Modules<T extends Module> extends Definitions<T> {
             if (this.findById(module.getId()) != null) {
                 throw new IllegalStateException("Module with identifier '" + module.getId() + "' is already loaded.");
             }
+            
+            moduleRepo.setModule(module);
         } catch (IOException | IllegalStateException cause) {
             throw new IOException("Unable to load module from '" + moduleRepo.getPath() + "'", cause);
         }

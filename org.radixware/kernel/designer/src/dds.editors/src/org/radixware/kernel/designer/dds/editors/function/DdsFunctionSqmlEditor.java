@@ -35,7 +35,7 @@ import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.editors.sqml.SqmlEditorPanel;
 import org.radixware.kernel.designer.common.general.editors.EditorsManager;
 import org.radixware.kernel.designer.dds.script.IScriptGenerationHandler;
-import org.radixware.kernel.designer.dds.script.defs.DdsScriptGeneratorUtils;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 
 public class DdsFunctionSqmlEditor extends SqmlEditorPanel {
 

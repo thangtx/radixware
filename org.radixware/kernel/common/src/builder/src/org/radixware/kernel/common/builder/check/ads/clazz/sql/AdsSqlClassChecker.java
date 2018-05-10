@@ -241,7 +241,7 @@ public class AdsSqlClassChecker<T extends AdsSqlClassDef> extends AdsClassChecke
 
     private void checkFieldUsagePolicy(T sqlClass, IProblemHandler problemHandler) {
         if (sqlClass instanceof AdsCursorClassDef || sqlClass instanceof AdsReportClassDef) {
-            Sqml sqml = sqlClass.getSource();
+            Sqml sqml = sqlClass.getSqml();
             if (sqml != null) {
                 final CommentsAnalizer commentsAnalizer = CommentsAnalizer.Factory.newSqlCommentsAnalizer();
                 Map<Id, PropSqlNameTag> props = new HashMap<>();

@@ -1,0 +1,2898 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" Id="prjZXCEKUXXTFDUHM2SQTUFQFBVT4" DbNamePrefix="RDX_TST">
+  <Tables>
+    <Table Id="tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA" Name="Parent" DbName="RDX_TST_PARENT" AuditMask="7" AuditReferenceId="refFHD2TR22YBHP3OSTTHKHNHVTBM" UserExtMask="32">
+      <Columns>
+        <Column Id="colDVQJX56PLVEIHAGJAGM5PGF7ZM" Name="AuditScheme" ValType="21" Length="50" DbType="VARCHAR2(50 char)" NotNull="false" DbName="AUDITSCHEME"/>
+        <Column Id="colYVRONPVHI5H7DIARFWV6HIKPFU" Name="colClobAsXml" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="COLCLOBASXML"/>
+        <Column Id="colSMGQNI2XJJB3JIUX63F57YFYHI" Name="Id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID">
+          <InitialValues>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+          </InitialValues>
+        </Column>
+        <Column Id="col5CSHYC3NZFBLJBXEPEFH4MGBRA" Name="Title" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="TITLE">
+          <InitialValues>
+            <Value>Parent One</Value>
+            <Value>Parent Two</Value>
+            <Value>Parent Three</Value>
+            <Value>Parent Four</Value>
+          </InitialValues>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idxWS3QRCD7QRDIXLHTL4PJN26VZY" Name="PrimaryKey" DbName="PK_RDX_TST_PARENT" Unique="true">
+        <Columns>
+          <Column ColumnId="colSMGQNI2XJJB3JIUX63F57YFYHI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqGNRCVEBNAFAZ7FMEYLYJ7X2KPY" DbName="PK_RDX_TST_PARENT" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgZTU4KTS7C5F5NJIPWX2Y5KLLNA" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiJ5AGLYGB6RGKNJ36XBBX5AZ4ZA" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:new.ID;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'I',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgKMI7THYK3ZG5JLNJ45E6SJN52Y" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuJ5AGLYGB6RGKNJ36XBBX5AZ4ZA" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:old.ID;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'U',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trg7FNLV6XBXJDJBIMYPHS6EW5MA4" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdJ5AGLYGB6RGKNJ36XBBX5AZ4ZA" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      if vSchemeId IS NULL then 
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:old.ID;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'D',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trg4WIL7SE2IBB7VL6LYMODJ3CHF4" Name="UserPropOwn" DbName="UPO_J5AGLYGB6RGKNJ36XBBX5AZ4ZA" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="106" PosY="403"/>
+    </Table>
+    <Table Id="tblB6QEDVV5BNEWZHKZRTVR67TKOY" Name="Child" DbName="RDX_TST_CHILD" AuditMask="7" AuditReferenceId="refGRWCN5HJCBDL3IKBE3VH3VUBPM" UserExtMask="32">
+      <Columns>
+        <Column Id="colDUDO2TJWP5GX3AFU7LLHKP2NW4" Name="AuditScheme" ValType="21" Length="9" DbType="VARCHAR2(9 char)" NotNull="false" DbName="AUDITSCHEME">
+          <InitialValues>
+            <Value/>
+            <Value/>
+            <Value/>
+            <Value/>
+            <Value/>
+            <Value/>
+          </InitialValues>
+        </Column>
+        <Column Id="colZWTMK2FUIVHQHFVTADHDUHYWJQ" Name="Id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID">
+          <InitialValues>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+            <Value>6</Value>
+          </InitialValues>
+        </Column>
+        <Column Id="colRLMSOMVQ3VBDBHDRRWGBATJCHA" Name="ParentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PARENTID">
+          <InitialValues>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>3</Value>
+            <Value>3</Value>
+          </InitialValues>
+        </Column>
+        <Column Id="col4QNVS32PUBDN5FOQVHEUYPX624" Name="Title" ValType="21" Length="9" DbType="VARCHAR2(9 char)" NotNull="true" DbName="TITLE">
+          <InitialValues>
+            <Value>Child 1.1</Value>
+            <Value>Child 2.2</Value>
+            <Value>Child 2.2</Value>
+            <Value>Child 3.1</Value>
+            <Value>Child 3.2</Value>
+            <Value>Child 3.3</Value>
+          </InitialValues>
+        </Column>
+        <Column Id="col6OTOT3XC7BHKVIE3Y6WRX4O2OY" Name="ChildType" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="CHILDTYPE" AuditMask="7"/>
+        <Column Id="colZDX2SYK7TJAFTJENP6ATORQOTI" Name="colBool" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="false" DbName="COLBOOL" AuditMask="7"/>
+        <Column Id="col5MPEYBORVVHJ3CNR42Z2XE65DM" Name="colInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="COLINT"/>
+        <Column Id="colVTKWXW5C7RHLVACWBAAOZ3XJGY" Name="colChar" ValType="3" Length="1" Precision="1" DbType="CHAR(1 char)" NotNull="false" DbName="COLCHAR" AuditMask="7"/>
+        <Column Id="colHYXTFXRDBFFO7BTLQCI5PA7VW4" Name="colNum" ValType="11" Length="9" Precision="3" DbType="NUMBER(9,3)" NotNull="false" DbName="COLNUM"/>
+        <Column Id="col7CYI2GEMAJA5LNUWSJ27NVIUZ4" Name="colDateTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="COLDATETIME" AuditMask="7"/>
+        <Column Id="col7H5JDXACMZGJVKTZHZUQKNPCRU" Name="colStr" ValType="21" Length="9" DbType="VARCHAR2(9 char)" NotNull="false" DbName="COLSTR"/>
+        <Column Id="colKL44DI627ZGCRKIAYPXPE5LOUY" Name="colBin" ValType="22" Length="2000" DbType="RAW(2000)" NotNull="false" DbName="COLBIN"/>
+        <Column Id="colYAZ2V7BNNZHJTJLMGA6JZUJFQ4" Name="colClob" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="COLCLOB"/>
+        <Column Id="colRABZQGSV3BHHFJEB4H3BEAAPII" Name="colClobAsXml" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="COLCLOBASXML"/>
+        <Column Id="colHELAHZF5BJEWPKKPTS3HKWHTQM" Name="colBlob" ValType="28" Length="0" DbType="BLOB" NotNull="false" DbName="COLBLOB"/>
+        <Column Id="colCPKXUIF6MRHFLITTPV37HR5HSE" Name="colArrBool" ValType="201" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRBOOL"/>
+        <Column Id="colS5P6GKK2DRFKHKZRMLIFVUUMZA" Name="colArrInt" ValType="202" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRINT"/>
+        <Column Id="colGXZY5LOSDBFMXOXWMKVP5QCJ2Q" Name="colArrChar" ValType="203" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRCHAR"/>
+        <Column Id="colMGQ6K5EMCVFEFFYTKW7CF33TEU" Name="colArrNum" ValType="211" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRNUM"/>
+        <Column Id="colGYUQDNULWJBINDEMPBN4VJSPFU" Name="colArrDateTime" ValType="212" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRDATETIME"/>
+        <Column Id="col37737JBJBRCDTJUCW74RYUCFBM" Name="colArrBin" ValType="222" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRBIN"/>
+        <Column Id="colQPIIILCVLNFK3JSJVMZQPTN2OE" Name="colArrStr" ValType="221" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRSTR"/>
+        <Column Id="colKLAAJQKA55DNJJRTGLFPUI64WY" Name="ValType" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="VALTYPE">
+          <InitialValues>
+            <Value>2</Value>
+            <Value>21</Value>
+            <Value/>
+            <Value/>
+            <Value/>
+            <Value/>
+          </InitialValues>
+        </Column>
+        <Column Id="colMFGU7H7UBVARPI7EYXY53CMLTU" Name="DefinitionIdPrefix" ValType="21" Length="64" DbType="VARCHAR2(64 char)" NotNull="false" DbName="DEFINITIONIDPREFIX">
+          <InitialValues>
+            <Value>tbl</Value>
+            <Value>col</Value>
+            <Value/>
+            <Value/>
+            <Value/>
+            <Value/>
+          </InitialValues>
+        </Column>
+      </Columns>
+      <PrimaryKey Id="idx2YQY2XRIHZGMDH223KCPSUZ46M" Name="PrimaryKey" DbName="PK_RDX_TST_CHILD" Unique="true">
+        <Columns>
+          <Column ColumnId="colZWTMK2FUIVHQHFVTADHDUHYWJQ" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqD4QCGAR5TNF3XAQLDR7OFQCI6E" DbName="PK_RDX_TST_CHILD" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgSABJ7ZPQQFDFRKJATXUPOQMG6M" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuB6QEDVV5BNEWZHKZRTVR67TKOY" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col6OTOT3XC7BHKVIE3Y6WRX4O2OY colZDX2SYK7TJAFTJENP6ATORQOTI colVTKWXW5C7RHLVACWBAAOZ3XJGY col7CYI2GEMAJA5LNUWSJ27NVIUZ4" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:old.ID;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfn5WOW6KKZRBAC3MFHWD3KNPIZVU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:old.CHILDTYPE,:new.CHILDTYPE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfn5WOW6KKZRBAC3MFHWD3KNPIZVU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colZDX2SYK7TJAFTJENP6ATORQOTI',:old.COLBOOL,:new.COLBOOL);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M">
+                <xsc:Sql>RDX_AUDIT.addChangedValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colVTKWXW5C7RHLVACWBAAOZ3XJGY',:old.COLCHAR,:new.COLCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnVCIU2LTOBZCS3K4H324KCMG6WA">
+                <xsc:Sql>RDX_AUDIT.addChangedValueDateTime</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:old.COLDATETIME,:new.COLDATETIME);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'U',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgZJICFW5UTFH67ECZMF35TF7EJY" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiB6QEDVV5BNEWZHKZRTVR67TKOY" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:new.ID;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:new.CHILDTYPE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colZDX2SYK7TJAFTJENP6ATORQOTI',:new.COLBOOL);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colVTKWXW5C7RHLVACWBAAOZ3XJGY',:new.COLCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:new.COLDATETIME);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'I',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgTBM6WDBG3FF5DCQI4B4J7EZSHU" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdB6QEDVV5BNEWZHKZRTVR67TKOY" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      if vSchemeId IS NULL then 
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:old.ID;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:old.CHILDTYPE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colZDX2SYK7TJAFTJENP6ATORQOTI',:old.COLBOOL);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colVTKWXW5C7RHLVACWBAAOZ3XJGY',:old.COLCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:old.COLDATETIME);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'D',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgZBTHKKULLNDLPAJXEMML75RMIY" Name="UserPropOwn" DbName="UPO_B6QEDVV5BNEWZHKZRTVR67TKOY" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblB6QEDVV5BNEWZHKZRTVR67TKOY', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="267" PosY="217"/>
+    </Table>
+    <Table Id="tblP4J5I7EXBFBEND2UG7UHGJISEE" Name="Images" DbName="RDX_TST_IMAGES">
+      <Columns>
+        <Column Id="col4M5TIJ6C7JDP7GHFWSJBMGOEWI" Name="Id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID"/>
+        <Column Id="colQSXDS57LTBEXRFWEQ7D2T7JJCA" Name="Data" ValType="28" Length="0" DbType="BLOB" NotNull="true" DbName="DATA"/>
+        <Column Id="colCNWLYWVBWJFIXPIOJYKEH5LA7Q" Name="MimeType" ValType="21" Length="64" DbType="VARCHAR2(64 char)" NotNull="true" DbName="MIMETYPE"/>
+      </Columns>
+      <PrimaryKey Id="idxXPUEUZ2RZRAGLDAKN6ZONQ2UGQ" Name="PrimaryKey" DbName="PK_RDX_TST_IMAGES" Unique="true">
+        <Columns>
+          <Column ColumnId="col4M5TIJ6C7JDP7GHFWSJBMGOEWI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqVGSWPK5XZZE6PEMKO4ED7KH3GE" DbName="PK_RDX_TST_IMAGES" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="429" PosY="215"/>
+    </Table>
+    <Table Id="tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA" Name="AuditMaster" DbName="RDX_TST_AUDITMASTER" AuditMask="7" UserExtMask="65568">
+      <Columns>
+        <Column Id="colD22JEPQGTBCWXMSA3OPK7QFRAQ" Name="PkColInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PKCOLINT" SequenceId="sqnRCVLIQVY4RHI5KOJM4BLPWKKNY"/>
+        <Column Id="col5YD5OPHOGNBUZDIJHO2ZX4SMCE" Name="PkColChar" ValType="3" Length="1" DbType="CHAR(1 char)" NotNull="true" DbName="PKCOLCHAR">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>C</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="col24X4VKBUFNDNFODTQ6PKN6DC44" Name="PkColNum" ValType="11" Length="0" DbType="NUMBER" NotNull="true" DbName="PKCOLNUM">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>123.456</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colND3RMLRWDRBHXA6SG4IZCWFIXM" Name="PkColDate" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="PKCOLDATE">
+          <DefaultVal Type="SysDate"/>
+        </Column>
+        <Column Id="colHBYPDPTCFFF4NJ4WVD5EKNLTIU" Name="PkColTimestamp" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="PKCOLTIMESTAMP">
+          <DefaultVal Type="SysTimestamp"/>
+        </Column>
+        <Column Id="colKW27ZCV64RAU5L2V6KZCOC6D6Y" Name="PkColStr" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="PKCOLSTR">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>Some String</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="col67TEKGVN45GJPDYHNSJP46C7DA" Name="ClassGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CLASSGUID"/>
+        <Column Id="colIY54HRUWQRC5LI4AMLNJDHNCAU" Name="ColInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="COLINT" AuditMask="7"/>
+        <Column Id="colSW4DJGZ5LRCLFJCYZLQZGDNAME" Name="ColChar" ValType="3" Length="1" DbType="CHAR(1 char)" NotNull="false" DbName="COLCHAR" AuditMask="7"/>
+        <Column Id="col6WWL3SC5TZBMZGHZSPPPJVV2BQ" Name="ColNum" ValType="11" Length="0" DbType="NUMBER" NotNull="false" DbName="COLNUM" AuditMask="7"/>
+        <Column Id="colJ7FU6BTM75HQTCIAKYQDRXDY5U" Name="ColDate" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="COLDATE" AuditMask="7"/>
+        <Column Id="col4TWPKWPOL5EB3GHUIUL6UFRHWQ" Name="ColTimestamp" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="COLTIMESTAMP" AuditMask="7"/>
+        <Column Id="colV5EPQ4QOLREEZOV2UUHUWZHYEE" Name="ColStr" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="COLSTR" AuditMask="7"/>
+        <Column Id="colTGVNWDGLGNBI3N5BYXZLI5RXQQ" Name="ColBin" ValType="22" Length="2000" DbType="RAW(2000)" NotNull="false" DbName="COLBIN" AuditMask="7"/>
+        <Column Id="colFDVZCLAYD5HZRN2JGORFYFA3NE" Name="ColBlob" ValType="28" Length="0" DbType="BLOB" NotNull="false" DbName="COLBLOB" AuditMask="7" AuditOnUpdate="false"/>
+        <Column Id="colL76ZGR3OPVHQFHYKDPWUIZQA34" Name="ColClob" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="COLCLOB" AuditMask="7" AuditOnUpdate="false"/>
+        <Column Id="col4O6RSJKND5EPFLKQUWZOO5WMRM" Name="ColArrBool" ValType="201" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRBOOL" AuditMask="7" AuditOnUpdate="false"/>
+        <Column Id="colI7RDFSIDUZE4PPBNSJFU4RCEIM" Name="ColArrInt" ValType="202" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="COLARRINT" AuditMask="7" AuditOnUpdate="false"/>
+        <Column Id="colGAR4IF3GRVAFLA4DTQXPQGCSME" Name="ColArrChar" ValType="203" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRCHAR" AuditMask="7" AuditOnUpdate="false"/>
+        <Column Id="colY5PXD2VKE5FBTFGVSCPTLGE46U" Name="ColArrStr" ValType="221" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRSTR" AuditMask="7" AuditOnUpdate="false"/>
+        <Column Id="colE3SYXVPOCVEIFEEYBEIFXY66XQ" Name="ColArrNum" ValType="211" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="COLARRNUM" AuditMask="7"/>
+        <Column Id="colYZYQHXB75VHEVG2BTGNGPNJZEA" Name="ColArrDateTime" ValType="212" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRDATETIME" AuditMask="7" AuditOnUpdate="false"/>
+        <Column Id="col54URWAVOAVE4ZFLUZI7QEQYCDM" Name="ColArrBin" ValType="222" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRBIN" AuditMask="7" AuditOnUpdate="false"/>
+        <Column Id="colD6G6MRNNKVGJFGSYHPF3DFQ66Y" Name="ColArrParentRef" ValType="231" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRPARENTREF" AuditMask="7" AuditOnUpdate="false"/>
+      </Columns>
+      <PrimaryKey Id="idxARZGDVN6PNHSDDRPVF4T7G3UGU" Name="PrimaryKey" DbName="PK_RDX_TST_AUDITMASTER" Unique="true">
+        <Columns>
+          <Column ColumnId="colD22JEPQGTBCWXMSA3OPK7QFRAQ" Order="Asc"/>
+          <Column ColumnId="col5YD5OPHOGNBUZDIJHO2ZX4SMCE" Order="Asc"/>
+          <Column ColumnId="col24X4VKBUFNDNFODTQ6PKN6DC44" Order="Asc"/>
+          <Column ColumnId="colND3RMLRWDRBHXA6SG4IZCWFIXM" Order="Asc"/>
+          <Column ColumnId="colKW27ZCV64RAU5L2V6KZCOC6D6Y" Order="Asc"/>
+          <Column ColumnId="colHBYPDPTCFFF4NJ4WVD5EKNLTIU" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqJMOUF7QWTRBZBJCEZCLM32ZOGI" DbName="PK_RDX_TST_AUDITMASTER" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgA5LJ7WUXI5BKLDZNICDFRMKEKA" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atu4UBCGVD5ZZF6ZIJN4J3YISPFZA" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colIY54HRUWQRC5LI4AMLNJDHNCAU colSW4DJGZ5LRCLFJCYZLQZGDNAME col6WWL3SC5TZBMZGHZSPPPJVV2BQ colJ7FU6BTM75HQTCIAKYQDRXDY5U col4TWPKWPOL5EB3GHUIUL6UFRHWQ colV5EPQ4QOLREEZOV2UUHUWZHYEE colTGVNWDGLGNBI3N5BYXZLI5RXQQ colE3SYXVPOCVEIFEEYBEIFXY66XQ" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfn5WOW6KKZRBAC3MFHWD3KNPIZVU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colIY54HRUWQRC5LI4AMLNJDHNCAU',:old.COLINT,:new.COLINT);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M">
+                <xsc:Sql>RDX_AUDIT.addChangedValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colSW4DJGZ5LRCLFJCYZLQZGDNAME',:old.COLCHAR,:new.COLCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMECGK3G2QRHZ7AIE2B6FNZ3SEE">
+                <xsc:Sql>RDX_AUDIT.addChangedValueNum</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:old.COLNUM,:new.COLNUM);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnVCIU2LTOBZCS3K4H324KCMG6WA">
+                <xsc:Sql>RDX_AUDIT.addChangedValueDateTime</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colJ7FU6BTM75HQTCIAKYQDRXDY5U',:old.COLDATE,:new.COLDATE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnVCIU2LTOBZCS3K4H324KCMG6WA">
+                <xsc:Sql>RDX_AUDIT.addChangedValueDateTime</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:old.COLTIMESTAMP,:new.COLTIMESTAMP);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M">
+                <xsc:Sql>RDX_AUDIT.addChangedValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colV5EPQ4QOLREEZOV2UUHUWZHYEE',:old.COLSTR,:new.COLSTR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfn35IR2YZLPVFMRGV4RJG46NG5JI">
+                <xsc:Sql>RDX_AUDIT.addChangedValueRaw</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:old.COLBIN,:new.COLBIN);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnXOLIGZFXLRDSVOEWXDULS4F574">
+                <xsc:Sql>RDX_AUDIT.addChangedValueBlob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colFDVZCLAYD5HZRN2JGORFYFA3NE',:old.COLBLOB,:new.COLBLOB);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colL76ZGR3OPVHQFHYKDPWUIZQA34',:old.COLCLOB,:new.COLCLOB);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M">
+                <xsc:Sql>RDX_AUDIT.addChangedValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colI7RDFSIDUZE4PPBNSJFU4RCEIM',:old.COLARRINT,:new.COLARRINT);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colGAR4IF3GRVAFLA4DTQXPQGCSME',:old.COLARRCHAR,:new.COLARRCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colY5PXD2VKE5FBTFGVSCPTLGE46U',:old.COLARRSTR,:new.COLARRSTR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M">
+                <xsc:Sql>RDX_AUDIT.addChangedValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colE3SYXVPOCVEIFEEYBEIFXY66XQ',:old.COLARRNUM,:new.COLARRNUM);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colYZYQHXB75VHEVG2BTGNGPNJZEA',:old.COLARRDATETIME,:new.COLARRDATETIME);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'col54URWAVOAVE4ZFLUZI7QEQYCDM',:old.COLARRBIN,:new.COLARRBIN);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:old.COLARRPARENTREF,:new.COLARRPARENTREF);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := :old.CLASSGUID;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'U',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trg6M2PZMA2FVHOZIBM53IZGFKZ7Q" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="ati4UBCGVD5ZZF6ZIJN4J3YISPFZA" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:new.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLCHAR)||'~'||Replace(:new.PKCOLNUM, ',', '.')||'~'||to_char(:new.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLSTR)||'~'||to_char(:new.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colIY54HRUWQRC5LI4AMLNJDHNCAU',:new.COLINT);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colSW4DJGZ5LRCLFJCYZLQZGDNAME',:new.COLCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfn32HNHTZNX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueNum</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:new.COLNUM);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colJ7FU6BTM75HQTCIAKYQDRXDY5U',:new.COLDATE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:new.COLTIMESTAMP);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colV5EPQ4QOLREEZOV2UUHUWZHYEE',:new.COLSTR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnTGD6QCQLZNCORMEEO6BUPWA7BM">
+                <xsc:Sql>RDX_AUDIT.addValueRaw</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:new.COLBIN);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU">
+                <xsc:Sql>RDX_AUDIT.addValueBlob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colFDVZCLAYD5HZRN2JGORFYFA3NE',:new.COLBLOB);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colL76ZGR3OPVHQFHYKDPWUIZQA34',:new.COLCLOB);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colI7RDFSIDUZE4PPBNSJFU4RCEIM',:new.COLARRINT);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colGAR4IF3GRVAFLA4DTQXPQGCSME',:new.COLARRCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colY5PXD2VKE5FBTFGVSCPTLGE46U',:new.COLARRSTR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colE3SYXVPOCVEIFEEYBEIFXY66XQ',:new.COLARRNUM);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colYZYQHXB75VHEVG2BTGNGPNJZEA',:new.COLARRDATETIME);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.col54URWAVOAVE4ZFLUZI7QEQYCDM',:new.COLARRBIN);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:new.COLARRPARENTREF);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := :new.CLASSGUID;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'I',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgOBPZCS2TR5D75IQAAVGOWVP3JM" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atd4UBCGVD5ZZF6ZIJN4J3YISPFZA" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      if vSchemeId IS NULL then 
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colIY54HRUWQRC5LI4AMLNJDHNCAU',:old.COLINT);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colSW4DJGZ5LRCLFJCYZLQZGDNAME',:old.COLCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfn32HNHTZNX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueNum</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:old.COLNUM);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colJ7FU6BTM75HQTCIAKYQDRXDY5U',:old.COLDATE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueDate</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:old.COLTIMESTAMP);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colV5EPQ4QOLREEZOV2UUHUWZHYEE',:old.COLSTR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnTGD6QCQLZNCORMEEO6BUPWA7BM">
+                <xsc:Sql>RDX_AUDIT.addValueRaw</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:old.COLBIN);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnIPL6KBI26RCE3PIBZJK2EBHGBU">
+                <xsc:Sql>RDX_AUDIT.addValueBlob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colFDVZCLAYD5HZRN2JGORFYFA3NE',:old.COLBLOB);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colL76ZGR3OPVHQFHYKDPWUIZQA34',:old.COLCLOB);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colI7RDFSIDUZE4PPBNSJFU4RCEIM',:old.COLARRINT);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colGAR4IF3GRVAFLA4DTQXPQGCSME',:old.COLARRCHAR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colY5PXD2VKE5FBTFGVSCPTLGE46U',:old.COLARRSTR);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colE3SYXVPOCVEIFEEYBEIFXY66XQ',:old.COLARRNUM);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colYZYQHXB75VHEVG2BTGNGPNJZEA',:old.COLARRDATETIME);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.col54URWAVOAVE4ZFLUZI7QEQYCDM',:old.COLARRBIN);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnLRRREOFYJRBR5PIELHOKPQ42XM">
+                <xsc:Sql>RDX_AUDIT.addValueClob</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:old.COLARRPARENTREF);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := :old.CLASSGUID;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'D',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgCMP2HWSJARA4XEQ6XTV4IDGOWA" Name="UserPropOwn" DbName="UPO_4UBCGVD5ZZF6ZIJN4J3YISPFZA" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', :old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF'));
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="570" PosY="174"/>
+    </Table>
+    <Table Id="tblS4NVQKVQI5HLTG33G43UK5QMXU" Name="AuditDetail" DbName="RDX_TST_AUDITDETAIL" AuditMask="7">
+      <Columns>
+        <Column Id="colKIXGB62HZZBFVEYXCZA6SKH56I" Name="PkColInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PKCOLINT"/>
+        <Column Id="col4DLFFUDKF5G3TEWEXBLUUQFLXU" Name="PkColChar" ValType="3" Length="1" DbType="CHAR(1 char)" NotNull="true" DbName="PKCOLCHAR"/>
+        <Column Id="colK3BN3EZAARAFNOAW6NLHGG6VY4" Name="PkColNum" ValType="11" Length="0" DbType="NUMBER" NotNull="true" DbName="PKCOLNUM"/>
+        <Column Id="colT24PEKRT4JBUZKM44UFQ7AL34M" Name="PkColDate" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="PKCOLDATE"/>
+        <Column Id="col3MWPYPQ6JNEYTGAZTS6JYB7NWA" Name="PkColTimestamp" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="PKCOLTIMESTAMP"/>
+        <Column Id="colA4UXXF74ZNHCNOCPSVJL7VCTMU" Name="PkColStr" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="PKCOLSTR"/>
+        <Column Id="colB7LCJXCMXVFF7PZ7UH3YBVJXOQ" Name="Title" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="TITLE" AuditMask="7"/>
+      </Columns>
+      <PrimaryKey Id="idx2G7STTYP3BFYHKMWFR3RBSHBNA" Name="PrimaryKey" DbName="PK_RDX_TST_AUDITDETAIL" Unique="true">
+        <Columns>
+          <Column ColumnId="colKIXGB62HZZBFVEYXCZA6SKH56I" Order="Asc"/>
+          <Column ColumnId="col4DLFFUDKF5G3TEWEXBLUUQFLXU" Order="Asc"/>
+          <Column ColumnId="colK3BN3EZAARAFNOAW6NLHGG6VY4" Order="Asc"/>
+          <Column ColumnId="colT24PEKRT4JBUZKM44UFQ7AL34M" Order="Asc"/>
+          <Column ColumnId="colA4UXXF74ZNHCNOCPSVJL7VCTMU" Order="Asc"/>
+          <Column ColumnId="col3MWPYPQ6JNEYTGAZTS6JYB7NWA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqKECU5OD3NVFV5C3NEYJZ72TVVE" DbName="PK_RDX_TST_AUDITDETAIL" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgJEKYSWBJUJEADH5YFLLKOZSYNQ" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuS4NVQKVQI5HLTG33G43UK5QMXU" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colB7LCJXCMXVFF7PZ7UH3YBVJXOQ" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M">
+                <xsc:Sql>RDX_AUDIT.addChangedValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:old.TITLE,:new.TITLE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   begin</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+       select CLASSGUID into vClassGuid from RDX_TST_AUDITMASTER M</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+       where </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLINT=:old.PKCOLINT</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLCHAR=:old.PKCOLCHAR</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLNUM=:old.PKCOLNUM</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLDATE=:old.PKCOLDATE</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLSTR=:old.PKCOLSTR</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLTIMESTAMP=:old.PKCOLTIMESTAMP</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>;
+   exception</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+      when no_data_found then null;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'U',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trg7YHIYCOOJFGDNB5VFO6PVMPL2I" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiS4NVQKVQI5HLTG33G43UK5QMXU" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:new.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLCHAR)||'~'||Replace(:new.PKCOLNUM, ',', '.')||'~'||to_char(:new.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLSTR)||'~'||to_char(:new.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:new.TITLE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   begin</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+       select CLASSGUID into vClassGuid from RDX_TST_AUDITMASTER M</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+       where </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLINT=:new.PKCOLINT</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLCHAR=:new.PKCOLCHAR</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLNUM=:new.PKCOLNUM</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLDATE=:new.PKCOLDATE</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLSTR=:new.PKCOLSTR</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> and </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>M.PKCOLTIMESTAMP=:new.PKCOLTIMESTAMP</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>;
+   exception</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+      when no_data_found then null;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end;</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'I',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trgHJIMBXNLMJGD3HEZAKRLB4FEXY" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdS4NVQKVQI5HLTG33G43UK5QMXU" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   begin
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      if vSchemeId IS NULL then 
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      from RDX_AU_SCHEMEITEM
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   exception
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>      when no_data_found then return;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   end;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueStr</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'old.colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:old.TITLE);</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   end if;
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   vClassGuid := 'aecS4NVQKVQI5HLTG33G43UK5QMXU';</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+   insert into </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TableSqlName TableId="tblXXXFKJLLMLNBDKV7ABINU7DB2Q">
+                <xsc:Sql>RDX_AU_AUDITLOG</xsc:Sql>
+              </xsc:TableSqlName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql> (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>   values(</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:SequenceDbName SequenceId="sqn2FY3TI3TMXNBDKV7ABINU7DB2Q" Postfix="NONE">
+                <xsc:Sql>SQN_RDX_AU_AUDITLOGID</xsc:Sql>
+              </xsc:SequenceDbName>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>.NextVal,SYSTIMESTAMP,vStoreDuration,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnI4SB4XOXCTOBDCKFAAMPGXSZKU">
+                <xsc:Sql>RDX_Arte.getStationName</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'D',vChangeData);
+</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="746" PosY="419"/>
+    </Table>
+    <Table Id="tblIOIXD5DJVVD53KTA2RNHOYYJGY" Name="UserParentSimple" DbName="RDX_TST_USERPARENTSIMPLE" UserExtMask="128">
+      <Columns>
+        <Column Id="col3DJGSMJLKNEFHDQX7K7IVXTCHI" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID"/>
+      </Columns>
+      <PrimaryKey Id="idxFRUSTZ44Q5DEFDZWBZNQQUVHS4" Name="PrimaryKey" DbName="PK_RDX_TST_USERPARENTSIMPLE" Unique="true">
+        <Columns>
+          <Column ColumnId="col3DJGSMJLKNEFHDQX7K7IVXTCHI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqVMYN4PDUJRA7XC5M6FA7EUNX3E" DbName="PK_RDX_TST_USERPARENTSIMPLE" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgPXMRS6MNLJGCHEWTSKKJECTXRU" Name="UserPropValue" DbName="UPV_IOIXD5DJVVD53KTA2RNHOYYJGY" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+    RDX_ENTITY.userPropOnDelValue('tblIOIXD5DJVVD53KTA2RNHOYYJGY', :old.ID);
+end;
+</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="1048" PosY="214"/>
+    </Table>
+    <Table Id="tblOIKKJ54YSNFLTMVHR4R6DKTYBQ" Name="UserParentComplex" DbName="RDX_TST_USERPARENTCOMPLEX" UserExtMask="128">
+      <Columns>
+        <Column Id="colAH4WWXZNGFCDRLJWRZTN2QADM4" Name="pk_int" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PK_INT"/>
+        <Column Id="colU2FPEUCHKJGJ5CPIDPJJ5FNZN4" Name="pk_char" ValType="3" Length="1" DbType="CHAR(1 char)" NotNull="true" DbName="PK_CHAR"/>
+        <Column Id="col3XXTUTMNCZCFPCI3VAO4IBWHZI" Name="pk_date" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="PK_DATE"/>
+        <Column Id="colMCHRHK4S5FEQZNOJMITW57C2NM" Name="pk_str" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="PK_STR"/>
+      </Columns>
+      <PrimaryKey Id="idxDYXMZ6RVEBCCNO34UTXBGLQWJY" Name="PrimaryKey" DbName="PK_RDX_TST_USERPARENTCOMPLEX" Unique="true">
+        <Columns>
+          <Column ColumnId="colAH4WWXZNGFCDRLJWRZTN2QADM4" Order="Asc"/>
+          <Column ColumnId="colU2FPEUCHKJGJ5CPIDPJJ5FNZN4" Order="Asc"/>
+          <Column ColumnId="col3XXTUTMNCZCFPCI3VAO4IBWHZI" Order="Asc"/>
+          <Column ColumnId="colMCHRHK4S5FEQZNOJMITW57C2NM" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq64DOECVTCFFW7MOZD27LTM5DEM" DbName="PK_RDX_TST_USERPARENTCOMPLEX" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgHTAFJVORI5EOREMH6MU4ICGDCA" Name="UserPropValue" DbName="UPV_OIKKJ54YSNFLTMVHR4R6DKTYBQ" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+    RDX_ENTITY.userPropOnDelValue('tblOIKKJ54YSNFLTMVHR4R6DKTYBQ', :old.PK_INT||'~'||RDX_ENTITY.PackPIDStr(:old.PK_CHAR)||'~'||to_char(:old.PK_DATE,'yyyy-mm-dd hh24:mi:ss.FF6')||'~'||RDX_ENTITY.PackPIDStr(:old.PK_STR));
+end;
+</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="1135" PosY="293"/>
+    </Table>
+    <Table Id="tblFW5F7B7PS5DVXPQS2XAUUSITJQ" Name="UserChild" DbName="RDX_TST_USERCHILD" UserExtMask="32">
+      <Columns>
+        <Column Id="colSU6DYJLO35HN3KPDDFXKB4ZQ74" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID"/>
+      </Columns>
+      <PrimaryKey Id="idxJ2YUOLWR7JA5FPMDUAYVMTO7QY" Name="PrimaryKey" DbName="PK_RDX_TST_USERCHILD" Unique="true">
+        <Columns>
+          <Column ColumnId="colSU6DYJLO35HN3KPDDFXKB4ZQ74" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqPRED3P3BKFE4ZI4JTGVKJPCWHE" DbName="PK_RDX_TST_USERCHILD" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgO4MA2FPTNFAENDN7F5RTFCDYOM" Name="UserPropOwn" DbName="UPO_FW5F7B7PS5DVXPQS2XAUUSITJQ" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblFW5F7B7PS5DVXPQS2XAUUSITJQ', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="994" PosY="314"/>
+    </Table>
+    <Table Id="tblRRUNIOXPJJDFJODOO3W76OYHAI" Name="TestPair" DbName="RDX_TST_TESTPAIR" UserExtMask="65536">
+      <Columns>
+        <Column Id="colVK7PXMH6VVAOTPK7PG4BXFHWWY" Name="key" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="KEY"/>
+        <Column Id="colYV55BWKNEBHODPMJH3JBJNGVOE" Name="value" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="VALUE"/>
+        <Column Id="colXJKRMUZ6GVAFVCVY6XPXAU6DDY" Name="ClassGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CLASSGUID"/>
+      </Columns>
+      <PrimaryKey Id="idxPJPBBJFYHVGHLPJSNXURRNXQ5A" Name="PrimaryKey" DbName="PK_RDX_TST_TESTPAIR" Unique="true">
+        <Columns>
+          <Column ColumnId="colVK7PXMH6VVAOTPK7PG4BXFHWWY" Order="Asc"/>
+          <Column ColumnId="colYV55BWKNEBHODPMJH3JBJNGVOE" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqLZOPARTDRJBJHAJ4OX2Z3KI4QQ" DbName="PK_RDX_TST_TESTPAIR" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="1007" PosY="517"/>
+    </Table>
+    <Table Id="tblKPUY4CMANZH3XDOZZB7FXKHWEY" Name="DmTest" DbName="RDX_TST_DMTEST" UserExtMask="32">
+      <Columns>
+        <Column Id="colJ6WR3DLVLNDOTPIDZWJ35IX4WY" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqn2VXIXAB5BBARJB5V3XIHZ3FH3U"/>
+        <Column Id="col2O7XOLNS5REDZF6BUVXGUUHPYI" Name="keyInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="KEYINT"/>
+        <Column Id="col3AKO7XWXVBD4BGKSSG7RWMMYYE" Name="keyStr" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="KEYSTR"/>
+        <Column Id="colVCU56KXMXNH4PFG4UK73NH3SDY" Name="title" ValType="21" Length="9" DbType="VARCHAR2(9 char)" NotNull="true" DbName="TITLE"/>
+        <Column Id="colKWLK7EIMONCOZJUW7DLEGBQVN4" Name="colBool" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="false" DbName="COLBOOL" AuditMask="7"/>
+        <Column Id="colZ5PPFA3CKBCAFPB3LMS2T7WAXA" Name="colInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="COLINT"/>
+        <Column Id="colCSTHQGKY2RCAXHUSCPFWYZRCVY" Name="colChar" ValType="3" Length="1" Precision="1" DbType="CHAR(1 char)" NotNull="false" DbName="COLCHAR" AuditMask="7"/>
+        <Column Id="colM5ISG432SNE4HEGXEDWRZTU7YY" Name="colNum" ValType="11" Length="9" Precision="3" DbType="NUMBER(9,3)" NotNull="false" DbName="COLNUM"/>
+        <Column Id="colOJIQE5FN75GE3CH3LFQ5YVHOD4" Name="colDateTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="COLDATETIME" AuditMask="7"/>
+        <Column Id="colJPNLJDHCYNCI7LKULGN7BEJ7OA" Name="colStr" ValType="21" Length="9" DbType="VARCHAR2(9 char)" NotNull="false" DbName="COLSTR"/>
+        <Column Id="colH43KVULMCFCOLEL7U3TNIRMDDQ" Name="colBin" ValType="22" Length="2000" DbType="RAW(2000)" NotNull="false" DbName="COLBIN"/>
+        <Column Id="colO75MDDHFHJCUBEE76MM77IEN3Y" Name="colClob" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="COLCLOB"/>
+        <Column Id="colAAPBA2A54ZDCRFTINVK6CX5LMA" Name="colBlob" ValType="28" Length="0" DbType="BLOB" NotNull="false" DbName="COLBLOB"/>
+        <Column Id="colS3MBLR3BN5AGJM33ZFO3WRCJZA" Name="colArrBool" ValType="201" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRBOOL"/>
+        <Column Id="colQQ3IA4O5IZHQVBVOSVACCE6SAM" Name="colArrInt" ValType="202" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRINT"/>
+        <Column Id="colKIHTSAJN7FER7PRH77QW4AZHQY" Name="colArrChar" ValType="203" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRCHAR"/>
+        <Column Id="colYME7HN4LCZH25OTBU7J4QPBJMY" Name="colArrNum" ValType="211" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRNUM"/>
+        <Column Id="colXJYM2AOY2FAW5KBGWOHORASQ5U" Name="colArrDateTime" ValType="212" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRDATETIME"/>
+        <Column Id="colI4BM7HLHYFBXLAZSSBWR2FAGBI" Name="colArrBin" ValType="222" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRBIN"/>
+        <Column Id="colONNDXIZQ6ZGJ7GIS65EKXJPER4" Name="colArrStr" ValType="221" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRSTR"/>
+        <Column Id="colJAXHCRLRWBHJHISV3Z7SAZGXDE" Name="valType" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="VALTYPE"/>
+      </Columns>
+      <PrimaryKey Id="idxYDMTJJ3BUJGZFM4U4AQ7RGV7EA" Name="PrimaryKey" DbName="PK_RDX_TST_DMTEST" Unique="true">
+        <Columns>
+          <Column ColumnId="colJ6WR3DLVLNDOTPIDZWJ35IX4WY" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqRBEGGIIMUVFJZJBBB4CCCOZQVA" DbName="PK_RDX_TST_DMTEST" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trg4ZYFNCVIARHSRGDAHZEPDRNIDA" Name="UserPropOwn" DbName="UPO_KPUY4CMANZH3XDOZZB7FXKHWEY" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblKPUY4CMANZH3XDOZZB7FXKHWEY', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="293" PosY="891"/>
+    </Table>
+    <Table Id="tblCJ53NERF4VBJDEDGNHBFXRNNC4" Name="DmTestA" DbName="RDX_TST_DMTESTA" UserExtMask="65568">
+      <Columns>
+        <Column Id="colV4Y2WNZYZBHODMGL6IYZGVY2JM" Name="pkInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PKINT"/>
+        <Column Id="colNSAONCQ7CBBPTKPNVIZODZ5EPE" Name="pkStr" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="PKSTR"/>
+        <Column Id="colDG3DOTUKTVHOZBHV74YJNYV5YE" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="CLASSGUID"/>
+        <Column Id="colYKGRW6YLUFERHLWNSTRLXY75ZE" Name="title" ValType="21" Length="9" DbType="VARCHAR2(9 char)" NotNull="true" DbName="TITLE"/>
+      </Columns>
+      <PrimaryKey Id="idxVA4QXX4WC5AWFIMC4JO2OMXQTM" Name="PrimaryKey" DbName="PK_RDX_TST_DMTESTA" Unique="true">
+        <Columns>
+          <Column ColumnId="colV4Y2WNZYZBHODMGL6IYZGVY2JM" Order="Asc"/>
+          <Column ColumnId="colNSAONCQ7CBBPTKPNVIZODZ5EPE" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqC2Y4PEJC7BDV3DM2PK4EOZIU7M" DbName="PK_RDX_TST_DMTESTA" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trg55FANUWAYJEYLBUE7CI72V2YAI" Name="UserPropOwn" DbName="UPO_CJ53NERF4VBJDEDGNHBFXRNNC4" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblCJ53NERF4VBJDEDGNHBFXRNNC4', :old.PKINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKSTR));
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="140" PosY="1036"/>
+    </Table>
+    <Table Id="tblFZPLNQD2OFEFXD4PHGYU7EOTXA" Name="DmTestB" DbName="RDX_TST_DMTESTB">
+      <Columns>
+        <Column Id="colNFJVGOJTONHWJEFSZVSQ5DSN4Y" Name="pkInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="PKINT"/>
+        <Column Id="colS3GS2FVOU5CKBPY3OVBEY4D36I" Name="pkStr" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="PKSTR"/>
+        <Column Id="colPTWLFDUMLBAPXH5AZMATUHFRQY" Name="title" ValType="21" Length="9" DbType="VARCHAR2(9 char)" NotNull="true" DbName="TITLE"/>
+      </Columns>
+      <PrimaryKey Id="idx4KUOK3M2HFDVLLCLE7T3O4GVIU" Name="PrimaryKey" DbName="PK_RDX_TST_DMTESTB" Unique="true">
+        <Columns>
+          <Column ColumnId="colNFJVGOJTONHWJEFSZVSQ5DSN4Y" Order="Asc"/>
+          <Column ColumnId="colS3GS2FVOU5CKBPY3OVBEY4D36I" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq4ESKUA2VRVAVVPT7BEABTRDVNY" DbName="PK_RDX_TST_DMTESTB" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="35" PosY="1056"/>
+    </Table>
+    <Table Id="tblZ7C7LFLBNJAMHMDNYM42PPFEXA" Name="DmTestChild" DbName="RDX_TST_DMTESTCHILD">
+      <Columns>
+        <Column Id="colEAEYV73KD5CJDFNHKHO3SDZ5A4" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnPELCHYW63FCABHNJR7EOKOMXG4"/>
+        <Column Id="colCJ54F2ADPNBEJFHETANG3IWXBQ" Name="keyId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="KEYID"/>
+        <Column Id="colXVPZUKNRGBDNBEYLU5YPN7B24U" Name="title" ValType="21" Length="9" DbType="VARCHAR2(9 char)" NotNull="true" DbName="TITLE"/>
+      </Columns>
+      <PrimaryKey Id="idx6LCW56NAVFHB5HODRETSLH5JLA" Name="PrimaryKey" DbName="PK_RDX_TST_DMTESTCHILD" Unique="true">
+        <Columns>
+          <Column ColumnId="colEAEYV73KD5CJDFNHKHO3SDZ5A4" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqTFKOTAIQEZEOPABFYERLRE4PKI" DbName="PK_RDX_TST_DMTESTCHILD" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="457" PosY="1054"/>
+    </Table>
+    <Table Id="tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE" Name="TEDCParent" DbName="RDX_TST_TEDCPARENT" UserExtMask="65696">
+      <Columns>
+        <Column Id="colCHVPDUW5EFEY5C3ZPOMQVYELXY" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnDST5U44ZPNAUVBW5E55GVLGJAE"/>
+        <Column Id="colXVELGQ7EEND5BPLMYS2Z3YWMDY" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colRBUYWQQTLNBGVB4YBY2UTMBQYI" Name="notes" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="NOTES"/>
+      </Columns>
+      <PrimaryKey Id="idxH6XOVL44LVDZZB4JHXNHMRRYVI" Name="PrimaryKey" DbName="PK_RDX_TST_TEDCPARENT" Unique="true">
+        <Columns>
+          <Column ColumnId="colCHVPDUW5EFEY5C3ZPOMQVYELXY" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqBEFGA2EDE5FMXCFJCKMZHJ2ECM" DbName="PK_RDX_TST_TEDCPARENT" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trgZWM4STAH2NGPXAOHKBLOA2RV2E" Name="UserPropValue" DbName="UPV_XD3B6CBJ4BFIDJ2LUNLMJ4CXOE" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+    RDX_ENTITY.userPropOnDelValue('tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE', :old.ID);
+end;
+</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trg3XSWRNWNLNEWFCANHFUFCASVXE" Name="UserPropOwn" DbName="UPO_XD3B6CBJ4BFIDJ2LUNLMJ4CXOE" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="826" PosY="897"/>
+    </Table>
+    <Table Id="tbl73I26X3GUNGMPDAF3YPGJE272Y" Name="TEDCChild" DbName="RDX_TST_TEDCCHILD" UserExtMask="65696">
+      <Columns>
+        <Column Id="colZVSVJWX55BGZ7OKKOVBYNHB4YA" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnGLMU5V7U6BFL3EO7GK5MPLADFU"/>
+        <Column Id="colVYZI5QIAJ5D7BPQOSO7IDMMGWI" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colKCH5PANXSBHZ3L2DZELNGY2V5A" Name="parentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTID"/>
+        <Column Id="colN6C3Z6QULREVVOW7FPEHHSAR4A" Name="notes" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="NOTES"/>
+      </Columns>
+      <PrimaryKey Id="idxNGMENGJ3VJCERFXXRGGUQZ5U5E" Name="PrimaryKey" DbName="PK_RDX_TST_TEDCCHILD" Unique="true">
+        <Columns>
+          <Column ColumnId="colZVSVJWX55BGZ7OKKOVBYNHB4YA" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqT4WUSYSIXFAYNFD5UTATHD64GM" DbName="PK_RDX_TST_TEDCCHILD" Rely="true"/>
+      </PrimaryKey>
+      <Triggers>
+        <Trigger Id="trg25M3OLUGAZFSDBZ4V7DXPRMRQ4" Name="UserPropOwn" DbName="UPO_73I26X3GUNGMPDAF3YPGJE272Y" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tbl73I26X3GUNGMPDAF3YPGJE272Y', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+        <Trigger Id="trg452AOXK3OZFA7IRKW25K4SSHEI" Name="UserPropValue" DbName="UPV_73I26X3GUNGMPDAF3YPGJE272Y" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+    RDX_ENTITY.userPropOnDelValue('tbl73I26X3GUNGMPDAF3YPGJE272Y', :old.ID);
+end;
+</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
+      <Placement PosX="1160" PosY="890"/>
+    </Table>
+    <Table Id="tbl4O4HPFJFYNBMLFRA5LLNYQMVLU" Name="TEDCChildDetail" DbName="RDX_TST_TEDCCHILDDETAIL">
+      <Columns>
+        <Column Id="colTYKPRAJA5BHYVDOBLKF5QWPBHM" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID"/>
+        <Column Id="colPHX3RFBNGRGFVO46XGBSKUVISM" Name="detailParentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="DETAILPARENTID"/>
+      </Columns>
+      <PrimaryKey Id="idxRWLWWNPJE5DY7PQIHD5IXATJTM" Name="PrimaryKey" DbName="PK_RDX_TST_TEDCCHILDDETAIL" Unique="true">
+        <Columns>
+          <Column ColumnId="colTYKPRAJA5BHYVDOBLKF5QWPBHM" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqVXJSV4LFNNBGNB5VEMRZHIFEIE" DbName="PK_RDX_TST_TEDCCHILDDETAIL" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="1141" PosY="1060"/>
+    </Table>
+    <Table Id="tblOLTF5INQ6FH55KRXWIOP3Q64GU" Name="TableWithDatePk" DbName="RDX_TST_TABLEWITHDATEPK">
+      <Columns>
+        <Column Id="colG3RIDFMRUVHF5HLGU3236IYZPU" Name="datepk" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="DATEPK"/>
+        <Column Id="col6XIN5577QREIZIXUVARGJQ5WGY" Name="intvalue" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="INTVALUE"/>
+      </Columns>
+      <PrimaryKey Id="idxIAFOHBGL3ZDMNDZGY2KX2HJRY4" Name="PrimaryKey" DbName="PK_RDX_TST_TABLEWITHDATEPK" Unique="true">
+        <Columns>
+          <Column ColumnId="colG3RIDFMRUVHF5HLGU3236IYZPU" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqDRSOFBWPUJCLFOVYI7GCGKLY5A" DbName="PK_RDX_TST_TABLEWITHDATEPK" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="1136" PosY="528"/>
+    </Table>
+    <Table Id="tblPMQ4RAJPDRHURAMR4OJE365D4M" Name="InheritanceNode" DbName="RDX_TST_INHERITANCENODE">
+      <Columns>
+        <Column Id="colXW7M4ZN5GZEYZPIWG6AULVUGWY" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnALYHOD3K3FE35P5VUMWNDBEXXE"/>
+        <Column Id="colO6B5VNFX5ZG7XO7OBK63W2PVCE" Name="colClob" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="COLCLOB"/>
+        <Column Id="col46J3OSAQYJHIPOR2IHDQMPHLNA" Name="colBlob" ValType="28" Length="0" DbType="BLOB" NotNull="false" DbName="COLBLOB"/>
+        <Column Id="colNJYGG7PJSZBVRJAQ7A5ZJDETDE" Name="colInt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="COLINT"/>
+        <Column Id="col3JGI4R2HZFBC7P3DJVSCBX3U4Y" Name="colArrParentRef" ValType="231" Length="0" DbType="CLOB" NotNull="false" DbName="COLARRPARENTREF"/>
+        <Column Id="colN73ANLDFPZCARCF46OKCLYPFIU" Name="parentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTID"/>
+      </Columns>
+      <PrimaryKey Id="idxWQCMQZDJVRHDFAHNUCTS7L57FY" Name="PrimaryKey" DbName="PK_RDX_TST_INHERITANCENODE" Unique="true">
+        <Columns>
+          <Column ColumnId="colXW7M4ZN5GZEYZPIWG6AULVUGWY" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unq2WIFARYI3ZGATA3TBFYFROGQY4" DbName="PK_RDX_TST_INHERITANCENODE" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="1406" PosY="292"/>
+    </Table>
+    <Table Id="tblEYWOB4T6DVAZVHSCGSERAQZXRU" Name="NewTable" DbName="RDX_TST_NEWTABLE">
+      <Columns>
+        <Column Id="colXEALWCCP2ZGH3ASLDQDVFVYTEQ" Name="NewColumn" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="NEWCOLUMN"/>
+      </Columns>
+      <PrimaryKey Id="idx3S4UJBAKPRGY7I2QFXGJ4M5KCA" Name="PrimaryKey" DbName="PK_RDX_TST_NEWTABLE" Unique="true">
+        <Columns>
+          <Column ColumnId="colXEALWCCP2ZGH3ASLDQDVFVYTEQ" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqHXX6KWT62FBCRJUYG6XUJUNLIY" DbName="PK_RDX_TST_NEWTABLE" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="412" PosY="103"/>
+    </Table>
+  </Tables>
+  <ExtTables>
+    <ExtTable Id="tbeVK3UGX6CY5B4TEM2F6QOIZHBA4" TableId="tblJBWGL34ATTNBDPK5ABQJO5ADDQ">
+      <Placement PosX="114" PosY="255"/>
+    </ExtTable>
+  </ExtTables>
+  <References>
+    <Reference Id="refGRWCN5HJCBDL3IKBE3VH3VUBPM" DbName="FK_RDX_TST_CHILD_PARENT" Type="LINK" ChildTableId="tblB6QEDVV5BNEWZHKZRTVR67TKOY" ParentTableId="tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqGNRCVEBNAFAZ7FMEYLYJ7X2KPY">
+      <Columns>
+        <Item ChildColumnId="colRLMSOMVQ3VBDBHDRRWGBATJCHA" ParentColumnId="colSMGQNI2XJJB3JIUX63F57YFYHI"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refFHD2TR22YBHP3OSTTHKHNHVTBM" DbName="FK_RDX_TST_PARENT_SCHEME" Type="LINK" ChildTableId="tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA" ParentTableId="tblJBWGL34ATTNBDPK5ABQJO5ADDQ" ExtParentTableId="tbeVK3UGX6CY5B4TEM2F6QOIZHBA4" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqJBWGL34ATTNBDPK5ABQJO5ADDQ">
+      <Columns>
+        <Item ChildColumnId="colDVQJX56PLVEIHAGJAGM5PGF7ZM" ParentColumnId="colAB22MAMBTTNBDPK5ABQJO5ADDQ"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref5JQYWO62MRDVLN4URUST3BBLPA" DbName="FK_RDX_TST_AUDITDETAIL_AUDITMA" Type="MASTER_DETAIL" ChildTableId="tblS4NVQKVQI5HLTG33G43UK5QMXU" ParentTableId="tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqJMOUF7QWTRBZBJCEZCLM32ZOGI">
+      <Columns>
+        <Item ChildColumnId="colKIXGB62HZZBFVEYXCZA6SKH56I" ParentColumnId="colD22JEPQGTBCWXMSA3OPK7QFRAQ"/>
+        <Item ChildColumnId="col4DLFFUDKF5G3TEWEXBLUUQFLXU" ParentColumnId="col5YD5OPHOGNBUZDIJHO2ZX4SMCE"/>
+        <Item ChildColumnId="colK3BN3EZAARAFNOAW6NLHGG6VY4" ParentColumnId="col24X4VKBUFNDNFODTQ6PKN6DC44"/>
+        <Item ChildColumnId="colT24PEKRT4JBUZKM44UFQ7AL34M" ParentColumnId="colND3RMLRWDRBHXA6SG4IZCWFIXM"/>
+        <Item ChildColumnId="colA4UXXF74ZNHCNOCPSVJL7VCTMU" ParentColumnId="colKW27ZCV64RAU5L2V6KZCOC6D6Y"/>
+        <Item ChildColumnId="col3MWPYPQ6JNEYTGAZTS6JYB7NWA" ParentColumnId="colHBYPDPTCFFF4NJ4WVD5EKNLTIU"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refW3BEPABCQ5EDBAOWED5J2INGL4" DbName="FK_RDX_TST_DMTEST_DMTESTA" Type="LINK" ChildTableId="tblKPUY4CMANZH3XDOZZB7FXKHWEY" ParentTableId="tblCJ53NERF4VBJDEDGNHBFXRNNC4" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqC2Y4PEJC7BDV3DM2PK4EOZIU7M">
+      <Columns>
+        <Item ChildColumnId="col2O7XOLNS5REDZF6BUVXGUUHPYI" ParentColumnId="colV4Y2WNZYZBHODMGL6IYZGVY2JM"/>
+        <Item ChildColumnId="col3AKO7XWXVBD4BGKSSG7RWMMYYE" ParentColumnId="colNSAONCQ7CBBPTKPNVIZODZ5EPE"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref6YWK2O6TT5CTZNAW6GJ4WUIDVM" DbName="FK_RDX_TST_DMTESTCHILD_DMTEST" Type="LINK" ChildTableId="tblZ7C7LFLBNJAMHMDNYM42PPFEXA" ParentTableId="tblKPUY4CMANZH3XDOZZB7FXKHWEY" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqRBEGGIIMUVFJZJBBB4CCCOZQVA">
+      <Columns>
+        <Item ChildColumnId="colCJ54F2ADPNBEJFHETANG3IWXBQ" ParentColumnId="colJ6WR3DLVLNDOTPIDZWJ35IX4WY"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refDSYVFORX2VGBPLKZAGVMZIPDME" DbName="FK_RDX_TST_TEDCCHILD_TEDCPAREN" Type="LINK" ChildTableId="tbl73I26X3GUNGMPDAF3YPGJE272Y" ParentTableId="tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE" ConfirmDelete="true" DeleteMode="RESTRICT" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqBEFGA2EDE5FMXCFJCKMZHJ2ECM">
+      <Columns>
+        <Item ChildColumnId="colKCH5PANXSBHZ3L2DZELNGY2V5A" ParentColumnId="colCHVPDUW5EFEY5C3ZPOMQVYELXY"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refRV5SRH342VAI3P5COYNVTQYMWM" AutoDbName="false" DbName="FK_RDX_TST_TEDCCHILDDTL_TEDCLD" Type="MASTER_DETAIL" ChildTableId="tbl4O4HPFJFYNBMLFRA5LLNYQMVLU" ParentTableId="tbl73I26X3GUNGMPDAF3YPGJE272Y" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqT4WUSYSIXFAYNFD5UTATHD64GM">
+      <Columns>
+        <Item ChildColumnId="colTYKPRAJA5BHYVDOBLKF5QWPBHM" ParentColumnId="colZVSVJWX55BGZ7OKKOVBYNHB4YA"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refJWBKZUBIA5ENNBDYLAFLNEVUOE" AutoDbName="false" DbName="FK_RDX_TST_TEDCCHILDDTL_TED_P" Type="LINK" ChildTableId="tbl4O4HPFJFYNBMLFRA5LLNYQMVLU" ParentTableId="tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE" ConfirmDelete="true" DeleteMode="RESTRICT" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqBEFGA2EDE5FMXCFJCKMZHJ2ECM">
+      <Columns>
+        <Item ChildColumnId="colPHX3RFBNGRGFVO46XGBSKUVISM" ParentColumnId="colCHVPDUW5EFEY5C3ZPOMQVYELXY"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refYL3LUL2GMFGXFAX2ET4HIXIEQU" DbName="FK_RDX_TST_INHERITANCENODE_INH" Type="LINK" ChildTableId="tblPMQ4RAJPDRHURAMR4OJE365D4M" ParentTableId="tblPMQ4RAJPDRHURAMR4OJE365D4M" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq2WIFARYI3ZGATA3TBFYFROGQY4">
+      <Columns>
+        <Item ChildColumnId="colN73ANLDFPZCARCF46OKCLYPFIU" ParentColumnId="colXW7M4ZN5GZEYZPIWG6AULVUGWY"/>
+      </Columns>
+    </Reference>
+  </References>
+  <Sequences>
+    <Sequence Id="sqnRCVLIQVY4RHI5KOJM4BLPWKKNY" Name="Audit" DbName="SQN_RDX_TST_AUDIT" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="594" PosY="103"/>
+    </Sequence>
+    <Sequence Id="sqn2VXIXAB5BBARJB5V3XIHZ3FH3U" Name="DmTestId" DbName="SQN_RDX_TST_DMTESTID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="308" PosY="825"/>
+    </Sequence>
+    <Sequence Id="sqnPELCHYW63FCABHNJR7EOKOMXG4" Name="DmTestChildId" DbName="SQN_RDX_TST_DMTESTCHILDID" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="453" PosY="987"/>
+    </Sequence>
+    <Sequence Id="sqnDST5U44ZPNAUVBW5E55GVLGJAE" Name="SqnTEDCParent" DbName="SQN_RDX_TST_SQNTEDCPARENT" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="808" PosY="820"/>
+    </Sequence>
+    <Sequence Id="sqnGLMU5V7U6BFL3EO7GK5MPLADFU" Name="SqnTEDCChild" DbName="SQN_RDX_TST_SQNTEDCCHILD" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="1138" PosY="816"/>
+    </Sequence>
+    <Sequence Id="sqnALYHOD3K3FE35P5VUMWNDBEXXE" Name="InheritanceNodeSeq" DbName="SQN_RDX_TST_INHERITANCENODESEQ" Cycle="false" Order="true" Cache="20">
+      <Placement PosX="1393" PosY="245"/>
+    </Sequence>
+  </Sequences>
+  <Labels>
+    <Label Id="lbl63NPFEZYGZCKDKABGLTGDJZ2SI">
+      <Placement PosX="160" PosY="747"/>
+      <Font Bold="false" Italic="false" Size="36"/>
+      <Text>Testing Data Movement</Text>
+    </Label>
+    <Label Id="lbl52ACZ2YLD5C43NTWMPA6XPZLFE">
+      <Placement PosX="929" PosY="735"/>
+      <Font Bold="false" Italic="false" Size="36"/>
+      <Text>Test EAS Delete Checks</Text>
+    </Label>
+    <Label Id="lblYFV623V3WZC7TDBLP7OQZF3ZHA">
+      <Placement PosX="1402" PosY="171"/>
+      <Font Bold="true" Italic="false" Size="18"/>
+      <Text>Inheritance Testing</Text>
+    </Label>
+    <Label Id="lblO2FJRXS7AVGMTIQAS4H7KLN6QQ">
+      <Placement PosX="1061" PosY="162"/>
+      <Font Bold="true" Italic="false" Size="18"/>
+      <Text>User constraints</Text>
+    </Label>
+  </Labels>
+</Model>

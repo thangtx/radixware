@@ -11,35 +11,33 @@
 
 package org.radixware.kernel.common.client.widgets.propertiesgrid;
 
+import java.util.EnumMap;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.propertiesgrid.IPropertiesGridCell.ELinkageDirection;
 
 
-abstract class AbstractLinkableCell<L extends IModelWidget, E extends IModelWidget> implements IPropertiesGridCell<L,E>{
-    private IPropertiesGridCell<L,E> stickedLeft, stickedRight;
+abstract class AbstractLinkableCell<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> implements IPropertiesGridCell<L,E,G>{
+        
+    private final EnumMap<ELinkageDirection, IPropertiesGridCell<L,E,G>> stickedCells = new EnumMap<>(ELinkageDirection.class);
     
     public AbstractLinkableCell(){        
     }
     
-    protected AbstractLinkableCell(final AbstractLinkableCell<L,E> copy){
-        stickedLeft = copy.stickedLeft;
-        stickedRight = copy.stickedRight;
+    protected AbstractLinkableCell(final AbstractLinkableCell<L,E,G> copy){
+        stickedCells.putAll(copy.stickedCells);
     }
     
     @Override
     public boolean isEmpty() {
-        if (getProperty().isVisible()){
+        if (getModelItem()!=null && isModelItemVisible()){
             return false;
-        }
-        else{
-            for (IPropertiesGridCell cell=stickedLeft; cell!=null; cell=cell.getLinkedCell(ELinkageDirection.LEFT)){
-                if (cell.isVisible()){
-                    return false;
-                }
-            }
-            for (IPropertiesGridCell cell=stickedRight; cell!=null; cell=cell.getLinkedCell(ELinkageDirection.RIGHT)){
-                if (cell.isVisible()){
-                    return false;
+        } else {
+            for (ELinkageDirection direction: ELinkageDirection.values()){
+                for (IPropertiesGridCell cell=getLinkedCell(direction); cell!=null; cell=cell.getLinkedCell(direction)){
+                    if (cell.isVisible()){
+                        return false;
+                    }
                 }
             }
             return true;
@@ -48,43 +46,28 @@ abstract class AbstractLinkableCell<L extends IModelWidget, E extends IModelWidg
 
     @Override
     public boolean isLinked(final ELinkageDirection direction) {
-        return direction==ELinkageDirection.LEFT ? stickedLeft!=null : stickedRight!=null;
-    }        
+        return stickedCells.containsKey(direction);
+    }
     
     @Override
-    public IPropertiesGridCell<L, E> getLinkedCell(final ELinkageDirection direction) {
-        return direction==ELinkageDirection.LEFT ? stickedLeft : stickedRight;
+    public IPropertiesGridCell<L, E, G> getLinkedCell(final ELinkageDirection direction) {
+        return stickedCells.get(direction);
     }
 
     @Override
-    public void linkWith(final IPropertiesGridCell<L, E> cell, final ELinkageDirection direction) {
-        if (direction==ELinkageDirection.LEFT){
-            stickedLeft = cell;
-        }
-        else{
-            stickedRight = cell;
-        }
+    public void linkWith(final IPropertiesGridCell<L, E, G> cell, final ELinkageDirection direction) {
+        stickedCells.put(direction, cell);
     }
 
     @Override
     public int getLinkedCellsCount(final ELinkageDirection direction) {
         int length = 0;
-        if (direction==ELinkageDirection.LEFT){            
-            for (IPropertiesGridCell cell=stickedLeft; cell!=null; cell=cell.getLinkedCell(ELinkageDirection.LEFT)){
-                length++;
-            }  
-            return length;
-        }
-        else{
-            for (IPropertiesGridCell cell=stickedRight; cell!=null; cell=cell.getLinkedCell(ELinkageDirection.RIGHT)){
-                length++;
-            }
+        for (IPropertiesGridCell cell=getLinkedCell(direction); cell!=null; cell=cell.getLinkedCell(direction)){
+            length++;
         }
         return length;
     }
-    
-    
-
+        
     @Override
     public String toString() {
         return getDescription(null);

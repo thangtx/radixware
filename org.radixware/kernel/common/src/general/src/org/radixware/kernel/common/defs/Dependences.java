@@ -92,7 +92,9 @@ public class Dependences extends RadixObject implements Iterable<Dependences.Dep
 
         private void doFindDependenceModule(Module contextModule, List<Module> resultSet) {
             final Modules modules = (Modules) contextModule.getContainer();
-            modules.findById(segmentType, dependenceModuleId, false, resultSet);
+            if (modules != null) {
+                modules.findById(segmentType, dependenceModuleId, false, resultSet);
+            }
         }
 
         public void appendTo(org.radixware.schemas.product.Module.Dependences xDependences) {

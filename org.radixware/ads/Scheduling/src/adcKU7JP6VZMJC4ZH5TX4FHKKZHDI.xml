@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI" Name="SyslogUploader" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcKU7JP6VZMJC4ZH5TX4FHKKZHDI">
+        <xsc:Item>
+          <xsc:Java>import java.net.InetAddress;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.ArrayList;
+import org.apache.log4j.net.SyslogAppender;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcKU7JP6VZMJC4ZH5TX4FHKKZHDI"/>
+    </Bodies>
+    <MethodGroup Id="cmgIKKTRLD3UBAUTDANZSVK4S4ML4" Name="Root">
+      <Group Id="cmgG4DVG2RSVNHDTCLTLXCS3FXNSU" Name="Methods" Members="mthODABPR7GRRGRXD24AH4RT66KHQ mthOK3L64UHQFDR5FHGUSM4WRM2HA mthEPCR7FESI5BFPBYDOSRCV7K22I mthDZJYOLDKCFEUDDS4QSZHW2QFXY mthUVFWJWUCINE3VHP67FRZBWFR4M mthD6R44PD7ZJEKDFH5CMXZ2Z3D7M mthDF4NAEQAYNGY5MAKU7IAHWWQ3U mthG2YIZDGGVZA3TKH3XUFCEWYUII mthO7HVQWUA6ZC6ZPNJWHLHRXLEAU"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgEXGQW2E33JHXHIJGLQQWDYJHC4" Name="Root">
+      <Group Id="cpgU4LTS42G75H2VOBHUOGKOVWGWY" Name="Props" Members="prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ prdELX3QJFK5REH7FSWKNEXGL4QEM prd27XNCHAZSBBPVI3ZUXACUBGHKI prdQA26JQZPENDFNPWNKLUMJKKAPE prd7ZTCEKZ4SRA6FGEAVSUZF7YPDQ prd2LU3AB7GVVEAZNFFTXEUBURE2Y"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Name="appenders" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="400" extStr="org.apache.log4j.net.SyslogAppender" Dimension="1"/>
+      </Property>
+      <Property Id="prdELX3QJFK5REH7FSWKNEXGL4QEM" Name="availAddresses" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+      <Property Id="prd27XNCHAZSBBPVI3ZUXACUBGHKI" Name="cachingSectionId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prdQA26JQZPENDFNPWNKLUMJKKAPE" Name="uploadConditionFalseCount" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="401" extStr="int"/>
+      </Property>
+      <Property Id="prd7ZTCEKZ4SRA6FGEAVSUZF7YPDQ" Name="uploadConditionTrueCount" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="401" extStr="int"/>
+      </Property>
+      <Property Id="prd2LU3AB7GVVEAZNFFTXEUBURE2Y" Name="uploadedCount" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="401" extStr="int"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthODABPR7GRRGRXD24AH4RT66KHQ" Name="SyslogUploader" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="addresses" Id="mprEMCXF3HF7BGPFPSSDKD3232C3U">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final String[] allAddresses = addresses.split(";");
+final List&lt;String> availAddresses = new ArrayList&lt;>(allAddresses.length);
+for (String address: allAddresses) {
+    try {
+        address = address.trim();
+        InetAddress.getByName(address);
+        availAddresses.add(address);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc626BDLTPARFUJAUDHH4BWXTNOU">
+                <xsc:Presentation>Exceptions::UnknownHostException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(MessageFormat.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls64N7R7AXMFEG5KQ5B3A56BV5FU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, address), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciN2VHAOVOQZDNVHXKVMQMGRENZA" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:Task</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+if (availAddresses.isEmpty()) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUR73RC2PTVGHHEBWY3CZLX3U5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdELX3QJFK5REH7FSWKNEXGL4QEM" Invoke="true">
+                <xsc:Presentation>availAddresses</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = availAddresses;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOK3L64UHQFDR5FHGUSM4WRM2HA" Name="canUpload" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="uploadConditionResult" Id="mprGZ54OU3OV5DQBE6MNGVXATA6CQ">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (uploadConditionResult != null) {
+    if (uploadConditionResult == false) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdQA26JQZPENDFNPWNKLUMJKKAPE" Invoke="true">
+                <xsc:Presentation>uploadConditionFalseCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>++;
+        return false;
+    } else {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prd7ZTCEKZ4SRA6FGEAVSUZF7YPDQ" Invoke="true">
+                <xsc:Presentation>uploadConditionTrueCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>++;
+    }
+}
+return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEPCR7FESI5BFPBYDOSRCV7K22I" Name="enterCachingSection" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prd27XNCHAZSBBPVI3ZUXACUBGHKI" Invoke="true">
+                <xsc:Presentation>cachingSectionId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth5JI4ZZQGR3OBDCWOAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>enterCachingSession</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDZJYOLDKCFEUDDS4QSZHW2QFXY" Name="leaveCachingSection" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthYFY5PGIHR3OBDCWOAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>leaveCachingSession</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prd27XNCHAZSBBPVI3ZUXACUBGHKI" Invoke="true">
+                <xsc:Presentation>cachingSectionId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUVFWJWUCINE3VHP67FRZBWFR4M" Name="normalizeMessage" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="message" Id="mpr5RTNC4KC5VGIFJL3JPSDX63IBA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>message = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU">
+                <xsc:Presentation>Utils::Nvl</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFTLY2XIEXLOBDA6IAAMPGXSZKU mthE3AHJYYEXLOBDA6IAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>get</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(message, "");
+message = message.replace("\n", "\\n");
+message = message.replace("\r", "\\r");
+return message;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthD6R44PD7ZJEKDFH5CMXZ2Z3D7M" Name="start" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final org.apache.log4j.PatternLayout layout = new org.apache.log4j.PatternLayout(
+            "%d{ISO8601} %-5p %m%n" //see http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html
+            /*org.apache.log4j.PatternLayout.DEFAULT_CONVERSION_PATTERN*/);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Invoke="true">
+                <xsc:Presentation>appenders</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new SyslogAppender[</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdELX3QJFK5REH7FSWKNEXGL4QEM" Invoke="true">
+                <xsc:Presentation>availAddresses</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.size()];
+
+for (int i = 0; i &lt; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Invoke="true">
+                <xsc:Presentation>appenders</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.length; ++i) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Invoke="true">
+                <xsc:Presentation>appenders</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[i] = new SyslogAppender();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Invoke="true">
+                <xsc:Presentation>appenders</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[i].setSyslogHost(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdELX3QJFK5REH7FSWKNEXGL4QEM" Invoke="true">
+                <xsc:Presentation>availAddresses</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(i));
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Invoke="true">
+                <xsc:Presentation>appenders</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[i].setLayout(layout);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDF4NAEQAYNGY5MAKU7IAHWWQ3U" Name="upload" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="timeMillis" Id="mprF4YS4VFLKJEXDGW4NKEXM2KWAU">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="severity" Id="mprRELFWRFR2ZHU7NZUIGHCASPXPE">
+            <Type TypeId="400" extStr="org.apache.log4j.Level"/>
+          </Parameter>
+          <Parameter Name="message" Id="mprYFUSHFHXU5CHBCPFBPNAQBKJAQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (SyslogAppender appender: </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Invoke="true">
+                <xsc:Presentation>appenders</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    appender.append(
+        new org.apache.log4j.spi.LoggingEvent(
+            RadMeta.Name,
+            org.apache.log4j.Logger.RootLogger,
+            timeMillis,
+            severity,
+            message,
+            null));
+}
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prd2LU3AB7GVVEAZNFFTXEUBURE2Y" Invoke="true">
+                <xsc:Presentation>uploadedCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>++;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthG2YIZDGGVZA3TKH3XUFCEWYUII" Name="finish" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Invoke="true">
+                <xsc:Presentation>appenders</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    for (SyslogAppender appender: </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKU7JP6VZMJC4ZH5TX4FHKKZHDI prdKBUD7PDMRJAPNNDZ4SAQHTU3FQ" Invoke="true">
+                <xsc:Presentation>appenders</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        if (appender != null) {
+            appender.close();
+        }
+    }
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthO7HVQWUA6ZC6ZPNJWHLHRXLEAU" Name="subtractSeconds" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="time" Id="mprOPS52H33BNCJ5OYHTIGW4KOBR4">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="seconds" Id="mprJY4VG7OQBZB5PPQASVZWNZD3LU">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="12"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (seconds == null || seconds == 0) {
+    return time;
+}
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(time.Time - seconds.longValue() * 1000);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

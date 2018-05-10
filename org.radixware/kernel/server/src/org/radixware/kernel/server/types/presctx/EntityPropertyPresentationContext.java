@@ -20,8 +20,11 @@ public final class EntityPropertyPresentationContext extends PropertyPresentatio
     
     private final Entity childEntity;
     
-    public EntityPropertyPresentationContext(final Entity childEntity, final Id propertyId, final EntityGroup group){
-        super(propertyId,group);
+    public EntityPropertyPresentationContext(final Entity childEntity, 
+                                                                   final Id propertyId, 
+                                                                   final EntityGroup group,
+                                                                   final Id selectorPresentationId){
+        super(propertyId,group, selectorPresentationId);
         this.childEntity = childEntity;
     }
     

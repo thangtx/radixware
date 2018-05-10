@@ -313,10 +313,11 @@ final class XmlTree extends Tree implements IXmlTree {
     public void setColumns(final String[] titles) {
         for (int i = 0; i < titles.length; i++) {
             if (i == 0) {
-                getColumn(i).setTitle(titles[i]);
-                getColumn(i).setWidth(400);
+                getColumn(0).setTitle(titles[0]);
+                getColumn(0).setSizePolicy(EColumnSizePolicy.INTERACTIVE);
+                getColumn(0).setInitialWidth(400);
             } else {
-                addColumn(titles[i]);
+                addColumn(titles[i]).setSizePolicy(EColumnSizePolicy.STRETCH);                
             }
         }
         setHeaderAlignment(Alignment.CENTER);

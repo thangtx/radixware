@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcMV6FK7IVRBGY3KKYVXY3YAPDUA" Name="MsdlStreamReader" Type="3" Environment="common">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.msdl.MsdlStreamReader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcMV6FK7IVRBGY3KKYVXY3YAPDUA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcMV6FK7IVRBGY3KKYVXY3YAPDUA"/>
+    </Bodies>
+    <MethodGroup Id="cmgNGKG5HZ5BJD55LFBX5HMY7MBMM" Name="Root"/>
+    <PropertyGroup Id="cpgEZKCVRA2BBAGFAW52IKAYS5Y7I" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth6DNVY477CRAH3BK4FMHCDOY4CU" Name="getRootMsdlScheme" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getRootMsdlScheme()Lorg.radixware.kernel.common.msdl.RootMsdlScheme;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.msdl.RootMsdlScheme"/>
+      </Method>
+      <Method Id="mthVXZEQCCVFFCRXPWOGHJGIEVY54" Name="hasAvailable" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasAvailable()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthWHQOALPSLFAGZAN337F62WVBX4" Name="MsdlStreamReader" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Ljava.io.InputStream;Lorg.radixware.kernel.common.msdl.RootMsdlScheme;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="is" Id="mprZEP2VWSSFRD6ZMRXEWPTJQQMXA">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="scheme" Id="mprLEFAWWPCYRAWHCEHHR2AH7WQ6E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.msdl.RootMsdlScheme"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth4OQHOFCKXRG45KAQ6PGLK2CZYE" Name="readStructuredMessage" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="readStructuredMessage(Lorg.apache.xmlbeans.XmlObject;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="obj" Id="mpr2W4OHSNG2JD4ZGNCHF3SNECBSY">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthFDWLCUMBVND6FCN26H3K6ZWSCU" Name="setFictiveParentStructure" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setFictiveParentStructure(Lorg.radixware.schemas.msdl.Structure;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="defaults" Id="mprNDMFLCCJRBCIRK2TTLKY6LPI4A">
+            <Type TypeId="400" extStr="org.radixware.schemas.msdl.Structure"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthGBADK5DK5NEHPPFP4EPKHBD26Q" Name="setForcedUseFictiveParentStructure" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setForcedUseFictiveParentStructure(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="use" Id="mprROIGOJABRVCUBFCQMSGGUF3AJQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

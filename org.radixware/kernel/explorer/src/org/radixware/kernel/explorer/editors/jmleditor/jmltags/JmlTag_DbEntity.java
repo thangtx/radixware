@@ -11,13 +11,17 @@
 
 package org.radixware.kernel.explorer.editors.jmleditor.jmltags;
 
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QMouseEvent;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
+import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
 import org.radixware.kernel.common.client.meta.RadClassPresentationDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.types.Pid;
+import org.radixware.kernel.common.client.utils.DialogUtils;
 import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.jml.JmlTagDbEntity;
@@ -31,7 +35,7 @@ import org.radixware.kernel.explorer.utils.WidgetUtils;
 public class JmlTag_DbEntity extends JmlTag {
 
     private static final String PATH = "org.radixware.explorer/S_E/SYNTAX_JML/JML_TAG_DB_ENTITY";
-    private IDbEntityTitleProvider titleProvider;
+    private IDbEntityTitleProvider titleProvider;    
 
     private JmlTag_DbEntity(final IClientEnvironment environment, final JmlTag_DbEntity source) {
         super(environment, source);
@@ -46,7 +50,7 @@ public class JmlTag_DbEntity extends JmlTag {
     }  
 
     public JmlTag_DbEntity(final IClientEnvironment environment,final JmlTagDbEntity tag, final long pos, final EDefinitionDisplayMode showMode, IDbEntityTitleProvider titleProvider, final boolean isReadOnly) {
-        super(environment, pos, false); 
+        super(environment, pos, false);         
         this.titleProvider = titleProvider;
         updateTag(tag, showMode, !isReadOnly);
     }
@@ -54,7 +58,7 @@ public class JmlTag_DbEntity extends JmlTag {
     private void updateTag(final JmlTagDbEntity tag, final EDefinitionDisplayMode showMode, final boolean isActualizeNeeded){ 
         this.tag = tag;
         if(tag.getTitle() == null || isActualizeNeeded) {
-            tag.setTitle(actualize(tag.getTableId(),  tag.getPidAsStr()));
+            tag.setTitle(actualize(tag.getTableId(),  tag.getPidAsStr(), tag.isUFOwnerRef()));
         }
         final StringBuilder sb=new StringBuilder();
         if(tag.getTitle() != null){ 
@@ -65,10 +69,10 @@ public class JmlTag_DbEntity extends JmlTag {
         }
     }
     
-    private String actualize(final Id tableId, final String pidAsStr){
+    private String actualize(final Id tableId, final String pidAsStr, final boolean isOwnerEntityRef){
         String res=null;
         try{
-            if (tableId != null && pidAsStr != null) {
+            if (tableId != null && (pidAsStr != null || isOwnerEntityRef)) {
                 if (titleProvider != null && titleProvider.getTitle(tableId, pidAsStr) != null) {
                     res = titleProvider.getTitle(tableId, pidAsStr);
                 } else {
@@ -78,7 +82,7 @@ public class JmlTag_DbEntity extends JmlTag {
             }
         } catch (InterruptedException ex) {
         } catch (ServiceClientException ex) {
-            valid=false;
+            setValid(false);
             //environment.processException(ex);
             //final String mess = Application.translate("SqmlEditor", "Can not actualize entity for #%s");
             //environment.getTracer().warning(String.format(mess, pidAsStr));
@@ -86,11 +90,6 @@ public class JmlTag_DbEntity extends JmlTag {
         return res;
     }
        
-    @Override
-    public boolean isValid(){
-        return valid;
-    }
-
     @Override
     public boolean setDisplayedInfo(final EDefinitionDisplayMode showMode) {
         String name = fullName;
@@ -144,4 +143,35 @@ public class JmlTag_DbEntity extends JmlTag {
     public void setTitleProvider(IDbEntityTitleProvider titleProvider) {
         this.titleProvider = titleProvider;
     }
+
+    @Override
+    public void onMouseReleased(QMouseEvent e, IClientEnvironment env) {
+        //ctrl + click, event was checked in XscmlEditor
+        Id tableId = null;
+        String pidAsStr = null;
+        if (tag instanceof JmlTagDbEntity) {
+            final JmlTagDbEntity dbTag = (JmlTagDbEntity) tag;
+            tableId = dbTag.getTableId();
+            pidAsStr = dbTag.getPidAsStr();
+        }
+        if (tableId != null && pidAsStr != null) {
+            try {
+                DialogUtils.showEntityEditor(tableId, pidAsStr, env);
+            } catch (InterruptedException | ServiceClientException ex) {
+                final String cause;
+                if (ex instanceof ObjectNotFoundError) {
+                    cause = "Object not found:\n" + ex.getMessage();
+                } else {
+                    cause = ex.getClass().getName() + "\n" + ex.getMessage();
+                }
+                environment.messageError("Can not open editor dialog. " + cause);
+            }
+        }
+    }
+    
+    @Override
+    public Qt.CursorShape getCursorShape(QMouseEvent e) {
+        return Qt.CursorShape.PointingHandCursor;
+    }
+    
 }

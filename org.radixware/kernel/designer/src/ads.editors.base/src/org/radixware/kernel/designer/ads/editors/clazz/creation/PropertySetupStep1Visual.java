@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.clazz.creation;
 
 import java.awt.CardLayout;
@@ -20,6 +19,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsDetailColumnPropertyDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsDynamicPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsExpressionPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsInnateColumnPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
@@ -27,7 +27,6 @@ import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyPresentatio
 import org.radixware.kernel.common.enums.EPropNature;
 import static org.radixware.kernel.common.enums.EPropNature.PROPERTY_PRESENTATION;
 import org.radixware.kernel.designer.ads.editors.base.EnvSelectorPanel;
-
 
 class PropertySetupStep1Visual extends javax.swing.JPanel {
 
@@ -240,6 +239,7 @@ class PropertySetupStep1Visual extends javax.swing.JPanel {
         typeEditPanel.removeChangeListener(typeListener);
         refEditPanel.removeChangeListener(refListener);
     }
+    
     private ChangeSupport changeSupport = new ChangeSupport(this);
 
     public final void addChangeListener(ChangeListener l) {

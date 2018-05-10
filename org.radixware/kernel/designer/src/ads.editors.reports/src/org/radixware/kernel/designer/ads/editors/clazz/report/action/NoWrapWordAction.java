@@ -24,7 +24,7 @@ public class NoWrapWordAction extends AbstractAction {
     private final AdsReportFormDiagram diagram;
 
     public NoWrapWordAction(final AdsReportFormDiagram diagram) {
-        super("Do not wrap word",RadixWareIcons.EDIT.NO_ICON.getIcon());
+        super("Do not Wrap Word",RadixWareIcons.EDIT.NO_ICON.getIcon());
         this.diagram = diagram;
     }
 

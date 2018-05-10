@@ -20,7 +20,9 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils.SelectionInfo;
 import org.radixware.kernel.designer.ads.localization.RowString;
+import org.radixware.kernel.designer.ads.localization.phrase_book.PhraseBookTranslationPanel;
 import org.radixware.kernel.designer.ads.localization.source.MlsTablePanel;
 
 
@@ -29,15 +31,15 @@ public class TranslateArea {
     private LangPanel currentLangPanel;
     private ITranslationPanel panel;
     private JPanel translationPane;
-    private boolean isTargetLangPanel;
+    private boolean isTranslatedPanel;
     private List<EIsoLanguage> langs;
     private List<EIsoLanguage> sourceLangs;
 
     /** Creates new form TranslationPanel */
-    public TranslateArea(final ITranslationPanel panel, final JPanel translationPane, final boolean isTargetLangPanel) {
+    public TranslateArea(final ITranslationPanel panel, final JPanel translationPane, final boolean isTranslatedPanel) {
         this.translationPane=translationPane;
         this.panel=panel;
-        this.isTargetLangPanel=isTargetLangPanel;
+        this.isTranslatedPanel = isTranslatedPanel;
         createUI();
         this.translationPane.validate();
         this.translationPane.repaint();
@@ -73,13 +75,12 @@ public class TranslateArea {
             translationPane.add(langPanel);
             langPanels.add(langPanel);
         }
-        if(!langPanels.isEmpty())
-            currentLangPanel=langPanels.get(0);
+        selectFirstPanel();
         drawBorder();
     }
 
     private void drawBorder(){
-        if(!isTargetLangPanel)return ;
+        if(!isTranslatedPanel)return ;
         for(int i=0;i<langPanels.size();i++){
             if(langPanels.get(i).equals(currentLangPanel)){
                 langPanels.get(i).setBorder(true);
@@ -88,71 +89,159 @@ public class TranslateArea {
             }
         }
     }
-
-    public void goToNextTranslation(final LangPanel langPanel){
-        int index=langPanels.indexOf(langPanel)+1;
-        if(index<langPanels.size()){
-            setCurrentLangPanel( index);
-        }else{
-            currentLangPanel=langPanels.get(0);
-            panel.setNextRowSting();
+ 
+    public boolean selectFirstPanel(){
+        if(!langPanels.isEmpty()){
+            return setCurrentLangPanel(0);
         }
-    }
-
-    public void goToPreviousTranslation(final LangPanel langPanel){
-        int index=langPanels.indexOf(langPanel)-1;
-        if(index>=0){
-            setCurrentLangPanel( index);
-        }else{
-            currentLangPanel=langPanels.get(langPanels.size()-1);
-            panel.setPrevRowSting();
-        }
+        return false;
     }
     
-    public void goToNextUncheckedTranslation(final LangPanel langPanel){
+    public boolean selectFirstUncheckedPanel(){
+        if(!langPanels.isEmpty()){
+            return goToNextUncheckedTranslation(0);
+        }
+        return false;
+    }
+    
+    public boolean selectLastPanel(){
+        if(!langPanels.isEmpty()){
+            return setCurrentLangPanel(langPanels.size() - 1);
+        }
+        return false;
+    }
+    
+    public boolean selectLastUncheckedPanel(){
+        if(!langPanels.isEmpty()){
+            return goToPreviousUncheckedTranslation(langPanels.size() - 1);
+        }
+        return false;
+    }
+    
+    public boolean selectFirstEditablePanel(){
+        if(!langPanels.isEmpty()){
+            return goToNextEditableTranslation(0);
+        }
+        return false;
+    }
+    
+    public boolean selectLastEditablePanel(){
+        if(!langPanels.isEmpty()){
+            return goToPreviousEditableTranslation(langPanels.size() - 1);
+        }
+        return false;
+    }
+
+    public boolean goToNextTranslation(){
+        LangPanel langPanel = getCurrentLangPanel();
         int index=langPanels.indexOf(langPanel)+1;
-        while((index<langPanels.size())&&(!langPanels.get(index).getStatus())){
+        while(index < langPanels.size()){
+            if (setCurrentLangPanel(index)){
+               return true; 
+            }
             index++;
         }
-        if(index<langPanels.size()){
-            setCurrentLangPanel( index);
-        }else{
-            currentLangPanel=langPanels.get(0);
-            panel.setNextUncheckedRowSting();
-        }
-
+        
+        return false;
     }
-
-    public void goToPreviousUncheckedTranslation(final LangPanel langPanel){
+    
+    public boolean goToPreviousTranslation(){
+        LangPanel langPanel = getCurrentLangPanel();
         int index=langPanels.indexOf(langPanel)-1;
-        while((index>=0)&&(!langPanels.get(index).getStatus())){
+        while (index >= 0){
+           if (setCurrentLangPanel(index)) {
+               return true;
+           }
+           index--;
+        }
+        return false;
+    }
+    
+    public boolean goToNextUncheckedTranslation(int index){
+        while(index<langPanels.size()){
+            if(langPanels.get(index).getStatus()){
+                if (setCurrentLangPanel(index)){
+                    return true;
+                }
+            }
+            index++;
+        }
+        return false;
+    }
+    
+    public boolean goToNextUncheckedTranslation(){
+        LangPanel langPanel = getCurrentLangPanel();
+        int index=langPanels.indexOf(langPanel) + 1;
+        return goToNextUncheckedTranslation(index);
+    }
+    
+    private boolean goToPreviousUncheckedTranslation(int index){
+        while(index >= 0){
+            if (langPanels.get(index).getStatus()){
+                if (setCurrentLangPanel(index)){
+                    return true;
+                }
+            }
             index--;
         }
-        if(index>=0){
-            setCurrentLangPanel( index);
-        }else{
-            currentLangPanel=langPanels.get(langPanels.size()-1);
-            panel.setPrevUncheckedRowSting();
+        return false;
+    }
+    
+    public boolean goToPreviousUncheckedTranslation(){
+        LangPanel langPanel = getCurrentLangPanel();
+        int index = langPanels.indexOf(langPanel)-1;
+        return goToPreviousUncheckedTranslation(index);
+    }
+    
+    public boolean goToPreviousEditableTranslation(){
+        LangPanel langPanel = getCurrentLangPanel();
+        int index = langPanels.indexOf(langPanel) - 1;
+        return goToPreviousEditableTranslation(index);
+    }
+    
+    private boolean goToPreviousEditableTranslation(int index){
+        while(index >= 0){
+            if (!langPanels.get(index).isReadOnly()){
+                if (setCurrentLangPanel(index)){
+                    return true;
+                }
+            }
+            index--;
         }
+        return false;
+    }
+    
+    public boolean goToNextEditableTranslation(){
+        LangPanel langPanel = getCurrentLangPanel();
+        int index = langPanels.indexOf(langPanel) + 1;
+        return goToNextEditableTranslation(index);
+    }
+    
+    private boolean goToNextEditableTranslation(int index){
+        while(index < langPanels.size()){
+            if(!langPanels.get(index).isReadOnly()){
+                if (setCurrentLangPanel(index)){
+                    return true;
+                }
+            }
+            index++;
+        }
+        return false;
     }
 
-    public void setCursorOnNextTranslation(final LangPanel langPanel){
-        if((!langPanel.getStatus())&& langPanel.canChangeStatus()){
-            translationWasEdited(langPanel.getLanguage());
-        }
-        goToNextTranslation(langPanel);
-    }
-
-    //public void setCursorOnPrevTranslation(LangPanel langPanel){
-    //    translationWasEdited(langPanel.getLanguage());
-    //    goToPreviousTranslation(langPanel);
-    //}
-
-    private void setCurrentLangPanel(final int index){
+    
+    
+    private boolean setCurrentLangPanel(final int index){
         currentLangPanel=langPanels.get(index);
-        currentLangPanel.setFocus();
-        translationPane.scrollRectToVisible(currentLangPanel.getBounds());
-        
+        setFocus();
+        return true;
+    }
+    
+    public void setFocus() {
+        if (currentLangPanel != null){
+            currentLangPanel.setFocus();
+            translationPane.scrollRectToVisible(currentLangPanel.getBounds());
+        }
     }
 
     public void updateScrollPanel(){
@@ -163,20 +252,22 @@ public class TranslateArea {
         return panel.getTranslationPanelScrollPane();
     }
 
-    public void setRowString(final RowString rowString,final boolean setFocusOnTranslation,int selectUncheckedTranslation){
-        for(int i=0;i<langPanels.size();i++){
-           langPanels.get(i).setRowString(rowString,panel.isReadOnly());
-           //langPanels.get(i).hightlightTranslation();
-           if((selectUncheckedTranslation!=MlsTablePanel.NONE)&&(langPanels.get(i).getStatus())){
-               currentLangPanel=langPanels.get(i);
-               if(selectUncheckedTranslation==MlsTablePanel.UNCHECK_NEXT)
-                    selectUncheckedTranslation=MlsTablePanel.NONE;
-           }
+    public void setRowString(final RowString rowString){
+        for (LangPanel langPanel : langPanels) {
+            if (!(panel instanceof PhraseBookTranslationPanel)) {
+                langPanel.setAgreedVisible(true);
+            }
+            langPanel.setRowString(rowString, panel.isReadOnly());
         }
-        if(setFocusOnTranslation){
-            currentLangPanel.setFocus();
-            translationPane.scrollRectToVisible(currentLangPanel.getBounds());
+    }
+    
+    public boolean checkAll(){
+        for (LangPanel langPanel : langPanels) {
+            if (!langPanel.checkString(false)){
+                return false;
+            }
         }
+        return true;
     }
 
     public void clearPanel(final boolean setFocusOnTranslation){
@@ -240,11 +331,15 @@ public class TranslateArea {
         for(int i=0;i<langPanels.size();i++){
            langPanels.get(i).setIcon(rowString);
         }
-        if(!isTargetLangPanel)
+        if(!isTranslatedPanel)
             panel.updateTargetLangsStatus(rowString);
      }
 
      public void save(){
         panel.save();
      }
+     
+    public void fireChange(String key){
+        panel.fireChange(key);
+    }
 }

@@ -33,8 +33,6 @@ import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDe
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsProcedureClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
-import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef.UsedTable;
-import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef.UsedTables;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsStatementClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
@@ -49,6 +47,9 @@ import org.radixware.kernel.common.defs.dds.DdsPlSqlObjectDef;
 import org.radixware.kernel.common.defs.dds.DdsPlSqlObjectItemDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTable;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTables;
 import org.radixware.kernel.common.sqml.providers.SqmlVisitorProviderFactory;
 import org.radixware.kernel.designer.ads.common.sql.AdsSqlClassVisitorProviderFactory;
 import org.radixware.kernel.designer.ads.editors.clazz.sql.AdsSqlClassTree.Group;
@@ -72,16 +73,16 @@ public class DefaultNodeFactory implements AdsSqlClassTree.NodeFactory {
 
     @Override
     public Node create(Object object, AdsSqlClassTree tree) {
-        if (object instanceof AdsSqlClassDef) {
-            return createClassNode((AdsSqlClassDef) object);
+        if (object instanceof ISqlDef) {
+            return createMainNode((ISqlDef) object);
         } else if (object instanceof AdsParameterPropertyDef) {
             return createParameterNode((AdsParameterPropertyDef) object);
         } else if (object instanceof DdsColumnDef) {
             return createColumnNode((DdsColumnDef) object);
         } else if (object instanceof DdsIndexDef) {
             return createIndexNode((DdsIndexDef) object);
-        } else if (object instanceof UsedTable) {
-            return createTableNode((UsedTable) object);
+        } else if (object instanceof IUsedTable) {
+            return createTableNode((IUsedTable) object, tree.getSqlDef());
         } else if (object instanceof DdsReferenceDef) {
             return createReferenceNode((DdsReferenceDef) object);
         } else if (object instanceof DdsPlSqlObjectDef) {
@@ -92,21 +93,23 @@ public class DefaultNodeFactory implements AdsSqlClassTree.NodeFactory {
 
     }
 
-    private Node createClassNode(AdsSqlClassDef sqlClass) {
-        NodeInfo objectInfo = infoFactory.create(sqlClass);
+    private Node createMainNode(ISqlDef sqlDef) {
+        NodeInfo objectInfo = infoFactory.create(sqlDef);
         Node node = new Node(objectInfo);
 
-        node.add(createParametersNode(sqlClass));
+        if (sqlDef instanceof AdsSqlClassDef){
+            AdsSqlClassDef sqlClassDef = (AdsSqlClassDef) sqlDef;
+            node.add(createParametersNode(sqlClassDef));
 
-        if (!(sqlClass instanceof AdsStatementClassDef || sqlClass instanceof AdsProcedureClassDef)) {
-            node.add(createFieldsNode(sqlClass));
+            if (!(sqlDef instanceof AdsStatementClassDef || sqlDef instanceof AdsProcedureClassDef)) {
+                node.add(createFieldsNode(sqlClassDef));
+            }
+
+            if (sqlDef instanceof AdsReportClassDef) {
+                node.add(createDynamicPropertiesNode(sqlClassDef));
+            }
         }
-
-        if (sqlClass instanceof AdsReportClassDef) {
-            node.add(createDynamicPropertiesNode(sqlClass));
-        }
-
-        node.add(createTablesNode(sqlClass));
+        node.add(createTablesNode(sqlDef));
 
         return node;
     }
@@ -187,7 +190,7 @@ public class DefaultNodeFactory implements AdsSqlClassTree.NodeFactory {
         return node;
     }
 
-    private DefaultMutableTreeNode createTablesNode(AdsSqlClassDef sqlClass) {
+    private DefaultMutableTreeNode createTablesNode(ISqlDef sqlDef) {
         String text = NbBundle.getMessage(AdsSqlClassTree.class, "tables-node-text");
         String toolTip = NbBundle.getMessage(AdsSqlClassTree.class, "tables-node-tooltip");
         Icon icon = DdsDefinitionIcon.TABLE.getIcon();
@@ -198,22 +201,21 @@ public class DefaultNodeFactory implements AdsSqlClassTree.NodeFactory {
         NodeInfo info = infoFactory.create(group);
         Node node = new Node(info);
 
-        UsedTables usedTables = sqlClass.getUsedTables();
-        for (UsedTable usedTable : usedTables) {
-            node.add(createTableNode(usedTable));
+        for (IUsedTable usedTable : sqlDef.getUsedTables().list()) {
+            node.add(createTableNode(usedTable, sqlDef));
         }
 
         return node;
     }
 
-    private Node createTableNode(UsedTable table) {
+    private Node createTableNode(IUsedTable table, ISqlDef sqlDef) {
         NodeInfo info = infoFactory.create(table);
         Node node = new Node(info);
         DdsTableDef tableDef = table.findTable();
 
         if (tableDef != null) {
             node.add(createReferencesNode(tableDef));
-            node.add(createColumnsNode(tableDef));
+            node.add(createColumnsNode(tableDef, sqlDef));
             node.add(createIndicesNode(tableDef));
         }
         return node;
@@ -235,7 +237,7 @@ public class DefaultNodeFactory implements AdsSqlClassTree.NodeFactory {
         return node;
     }
 
-    private DefaultMutableTreeNode createColumnsNode(DdsTableDef table) {
+    private DefaultMutableTreeNode createColumnsNode(DdsTableDef table, ISqlDef sqlDef) {
         String text = NbBundle.getMessage(AdsSqlClassTree.class, "properties-node-text");
         String toolTip = NbBundle.getMessage(AdsSqlClassTree.class, "properties-node-tooltip");
         Icon icon = DdsDefinitionIcon.COLUMN.getIcon();
@@ -245,13 +247,17 @@ public class DefaultNodeFactory implements AdsSqlClassTree.NodeFactory {
         Node node = new Node(info);
 
         for (DdsColumnDef column : getColumns(table)) {
-            node.add(createColumnNode(column));
+            if (sqlDef instanceof AdsSqlClassDef || column.isGeneratedInDb()){
+                node.add(createColumnNode(column));
+            }
         }
-
-        for (AdsExpressionPropertyDef propertyDef : getExpressionProperties(table)) {
-            node.add(createExpressionPropertyNode(propertyDef));
+        
+        if (sqlDef instanceof AdsSqlClassDef){
+            for (AdsExpressionPropertyDef propertyDef : getExpressionProperties(table)) {
+                node.add(createExpressionPropertyNode(propertyDef));
+            }
         }
-
+        
         return node;
     }
 

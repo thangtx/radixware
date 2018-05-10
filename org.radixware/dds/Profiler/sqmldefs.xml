@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlZX6M73ZCMVC63KW6EABEG475EU" QualifiedName="Radix::Profiler">
+  <TableDef Id="tbl7KEBDLAYLVHQDMHFSJTZSLRZJA" Name="ProfilerLog">
+    <Indexes>
+      <Index Id="idxY352OIMATBHDBKJDABD66G3DDA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colQK4QT6WMAJFWTHFTKYWP4SSUGU"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refVOHJY2IABZHLRHKGUVLBFMJESY" Name="ProfilerLog=>Instance (instanceId=>id)" ReferencedTableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E" ChildColumnNames="instanceId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colQK4QT6WMAJFWTHFTKYWP4SSUGU" Name="Id" ValType="2" Length="12" Precision="0" NotNull="true"/>
+      <Column Id="colD6UBRQ763RA6XIT2RNYMNIEWGQ" Name="instanceId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colK2QWAL7JHNGY5OL2IATMC6F7DU" Name="sectionId" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colWP5GZKZHYNFETENC2QN2NQXLPM" Name="periodEndTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colYZ7INGYPRVCYFJV5USAMHXITWI" Name="context" ValType="21" Length="2000" Precision="0"/>
+      <Column Id="colHLLRSGR27FEDPBWIAGRKMOQB2Q" Name="duration" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colBFSWD6V7WJFLBAC44WJERV7FTE" Name="minDuration" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colKZRY2TT4CBD27B7A2BA3KWFLCQ" Name="maxDuration" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colFGXNUCRJ75A5BGSNISBYIC255Y" Name="count" ValType="2" Length="18" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblZOBMZ3SMVRDXFBYDYF6DKD6OYQ" Name="PeriodsView">
+    <Indexes>
+      <Index Id="idxYCIUND44RVFIRCUGGCAXTRTV74" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colMFQFDPL2LVBHPBJSCGSHBZJ5CU col4MPPNUSDM5H5HDSSWUTEPLISPU"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colMFQFDPL2LVBHPBJSCGSHBZJ5CU" Name="instanceId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col4MPPNUSDM5H5HDSSWUTEPLISPU" Name="periodEndTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

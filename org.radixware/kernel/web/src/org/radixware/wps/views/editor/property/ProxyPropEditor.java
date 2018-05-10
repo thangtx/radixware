@@ -11,371 +11,259 @@
 
 package org.radixware.wps.views.editor.property;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.EnumSet;
+import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.editors.property.PropEditorOptions;
-import org.radixware.kernel.common.client.editors.property.PropertyProxy;
+import org.radixware.kernel.common.client.editors.property.ProxyPropEditorController;
+import org.radixware.kernel.common.client.enums.EReferenceStringFormat;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
-import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
+import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.models.items.properties.Property;
-import org.radixware.kernel.common.client.models.items.properties.PropertyArr;
-import org.radixware.kernel.common.client.models.items.properties.SimpleProperty;
-import org.radixware.kernel.common.client.text.ITextOptionsProvider;
-import org.radixware.kernel.common.client.types.CommonEditingHistory;
-import org.radixware.kernel.common.client.types.IEditingHistory;
-import org.radixware.kernel.common.client.utils.ValueConverter;
-import org.radixware.kernel.common.client.widgets.IButton;
-import org.radixware.kernel.common.defs.value.ValAsStr;
-import org.radixware.kernel.common.enums.EPropertyValueStorePossibility;
-import static org.radixware.kernel.common.enums.EPropertyValueStorePossibility.FILE_LOAD;
-import static org.radixware.kernel.common.enums.EPropertyValueStorePossibility.FILE_SAVE;
-import static org.radixware.kernel.common.enums.EPropertyValueStorePossibility.FILE_SAVE_AND_LOAD;
-import static org.radixware.kernel.common.enums.EPropertyValueStorePossibility.NONE;
-import org.radixware.kernel.common.enums.ESelectorRowStyle;
+import org.radixware.kernel.common.client.utils.IValAsStrConverter;
+import org.radixware.kernel.common.client.views.IPropLabel;
+import org.radixware.kernel.common.client.views.IProxyPropEditor;
 import org.radixware.kernel.common.enums.EValType;
-import org.radixware.wps.WpsEnvironment;
-import org.radixware.wps.rwt.UIObject;
-import org.radixware.wps.rwt.ValueEditor;
-import org.radixware.wps.rwt.uploading.IUploadedDataReader;
-import org.radixware.wps.rwt.uploading.LoadFileAction;
-import org.radixware.wps.settings.ISettingsChangeListener;
-import org.radixware.wps.text.WpsTextOptions;
-import org.radixware.wps.views.RwtAction;
+import org.radixware.kernel.common.types.Arr;
+import org.radixware.wps.rwt.Label;
+import org.radixware.wps.views.editors.valeditors.ExceptionViewController;
 import org.radixware.wps.views.editors.valeditors.IValEditor;
-import org.radixware.wps.views.editors.valeditors.InputBoxController;
+import org.radixware.wps.views.editors.valeditors.LabelFactory;
+import org.radixware.wps.views.editors.valeditors.ValArrEditorController;
+import org.radixware.wps.views.editors.valeditors.ValDateTimeEditorController;
 import org.radixware.wps.views.editors.valeditors.ValEditorController;
 import org.radixware.wps.views.editors.valeditors.ValEditorFactory;
 
 
-public  class ProxyPropEditor extends AbstractPropEditor {
+public  class ProxyPropEditor extends PropEditor implements IProxyPropEditor{
+    
+    private static class InternalLabelFactory extends LabelFactory{
+        
+        private final Property property;
+        
+        public InternalLabelFactory(final Property property){
+            this.property = property;
+        }
 
-    private final Property property;
-    private ValEditorController proxyValEditor;
+        @Override
+        public Label createLabel() {
+            IPropLabel label = property.createPropertyLabel();
+            if (label instanceof PropLabel == false) {
+                label = new PropLabel(property);
+            }
+            label.bind();
+            return (PropLabel) label;
+        }
+    }
+    
+    private static class InternalValEditorFactory extends ValEditorFactory{
+        
+        private final EValType valType;
+        private final EditMask editMask;
+        private final ValEditorFactory delegate;
+        private final Throwable exception;
+        final LabelFactory labelFactory;
+        private final String value;
+                
+        
+        public InternalValEditorFactory(final EValType valType, final EditMask editMask, final Property property){
+            this.valType = valType;
+            this.editMask = editMask;
+            labelFactory = null;
+            delegate = new ValEditorFactory.DefaultValEditorFactory(new InternalLabelFactory(property));
+            exception = null;
+            value = null;
+        }
+        
+        public InternalValEditorFactory(final Throwable exception, final String value, final Property property){
+            this.valType = null;
+            this.editMask = null;
+            delegate = null;
+            labelFactory = new InternalLabelFactory(property);
+            this.exception = exception;
+            this.value = value;            
+        }
+
+        @Override
+        public IValEditor<?, ?> createValEditor(final EValType valType, final EditMask editMask, final IClientEnvironment env) {
+            if (exception==null){
+                return delegate.createValEditor(this.valType, this.editMask, env);
+            }else{
+                final ExceptionViewController exceptionView = new ExceptionViewController(env,labelFactory);
+                exceptionView.setValue(exception);
+                exceptionView.setStringToShow(value);
+                exceptionView.setExceptionDetailsBtnVisible(false);
+                exceptionView.setValidationResult(ValidationResult.Factory.newInvalidResult(InvalidValueReason.Factory.createForWrongFormatValue(env)));
+                return exceptionView.getValEditor();
+            }
+        }        
+    }
+
     private EditMask editMask;
     private EValType evalType;
-    private PropertyProxy proxyProp;
-    private final WpsEnvironment env;
-    private final ISettingsChangeListener settingsChangeListener = new ISettingsChangeListener() {
-        @Override
-        public void onSettingsChanged() {
-            updateSettings();
-        }
-    };
-    private final ValueEditor.ValueChangeListener valueChangeListener = new ValueEditor.ValueChangeListener() {
-        @Override
-        public void onValueChanged(Object oldValue, Object newValue) {
-            if (newValue != null) {
-                String valAsString = ValAsStr.toStr(newValue, evalType);
-                getProperty().setValueObject(valAsString);
-            } else {
-                getProperty().setValueObject(null);
-            }
-        }
-    };
-
-    private WpsTextOptions getTextOptions(final EnumSet<ETextOptionsMarker> valEditorMarkers, final ESelectorRowStyle style) {
-        EnumSet<ETextOptionsMarker> markers = getTextOptionsMarkers(valEditorMarkers);
-        Property.PropertyTextOptions propertyValueTextOptions = getProperty().getValueTextOptions();
-        WpsTextOptions editorOptions = (WpsTextOptions) propertyValueTextOptions.getOptions(markers);
-
-        return editorOptions;
-    }
-
-    protected EnumSet<ETextOptionsMarker> getTextOptionsMarkers(final EnumSet<ETextOptionsMarker> valEditorMarkers) {
-        final EnumSet<ETextOptionsMarker> propertyMarkers = getProperty().getTextOptionsMarkers();
-        if (!valEditorMarkers.contains(ETextOptionsMarker.UNDEFINED_VALUE)) {
-            propertyMarkers.remove(ETextOptionsMarker.UNDEFINED_VALUE);
-        }
-        if (!valEditorMarkers.contains(ETextOptionsMarker.INVALID_VALUE)) {
-            propertyMarkers.remove(ETextOptionsMarker.INVALID_VALUE);
-        }
-        return propertyMarkers;
-    }
-
-    private class PropertyValueTextOptionsProvider implements ITextOptionsProvider {
-
-        @Override
-        public WpsTextOptions getOptions(EnumSet<ETextOptionsMarker> markers, ESelectorRowStyle style) {
-            return getTextOptions(markers, style);
-        }
-    }
-
-    private class InternalValEditorFactory extends ValEditorFactory {
-
-        @Override
-        public IValEditor createValEditor(EValType valType, EditMask editMask, IClientEnvironment env) {
-            return getDefault().createValEditor(valType, editMask, env);
-        }
-    }
-
-    private class InternalPropertyProxy extends PropertyProxy {
-
-        private final EditMask proxyEditMask;
-        private final Property prop;
-        private final EValType proxyType;
-
-        public InternalPropertyProxy(final Property prop, EditMask proxyEditMask, EValType type) {
-            super(prop);
-            this.proxyEditMask = proxyEditMask;
-            this.prop = prop;
-            this.proxyType = type;
-        }
-
-        @Override
-        public EditMask getPropertyEditMask() {
-            return proxyEditMask;
-        }
-
-        @Override
-        public Object getPropertyInitialValue() {
-            final Object value = super.getPropertyInitialValue();
-            if (value != null) {
-                return ValAsStr.Factory.newInstance(prop.getInitialValue(), proxyType);
-            } else {
-                return null;
-            }
-        }
-
-        @Override
-        public Object getPropertyValue() {
-            final Object value = super.getPropertyValue();
-            if (value != null) {
-                return ValAsStr.fromStr(prop.getValueAsString(), proxyType);
-            }
-            return null;
-        }
-    }
-
+    private boolean wasBinded;
+    private final ProxyPropEditorController proxyPropEditorController;
+    
     @SuppressWarnings("unchecked")
-    public ProxyPropEditor(final Property prop, final EValType type, final EditMask mask) {
-        super(prop);
-        if (prop == null) {
-            throw new IllegalArgumentException("Property cannot be null.");
-        }
-        if (!prop.getType().equals(EValType.BLOB) && !prop.getType().equals(EValType.STR)) {
-            throw new IllegalArgumentException("Cannot create proxy editor for type: " + prop.getType() + ". Property type must be one of EValType.STR or EValType.BLOB.");
-        }
-        this.property = prop;
-        this.evalType = type;
-        this.editMask = mask;
+    private ProxyPropEditor(final Property prop, 
+                            final EValType type, 
+                            final EditMask mask,
+                            final IValAsStrConverter converter,
+                            final EReferenceStringFormat format) {
+        super(prop, new InternalValEditorFactory(type, mask, prop));
+        evalType = type;
+        editMask = EditMask.newCopy(mask);        
+        proxyPropEditorController = new ProxyPropEditorController(getEnvironment(), this, converter, format) {
+            
+            @Override
+            protected void updateErrorView(final Throwable error, final String value) {
+                final ExceptionViewController editor = (ExceptionViewController)getValEditor();
+                editor.setStringToShow(value);
+                editor.setValue(error);
+            }
+            
+            @Override
+            protected void switchToErrorView(final Throwable error, final String value) {
+                changeValEditor(new InternalValEditorFactory(error, value, getProperty()));                
+            }
+            
+            @Override
+            protected void switchToEditor(final EValType valType, final EditMask mask) {
+                changeValEditor(new InternalValEditorFactory(valType, mask, getProperty()));
+            }
+            
+            @Override
+            protected void setEditMask(final EditMask mask) {
+                editMask = EditMask.newCopy(mask);
+            }
+            
+            @Override
+            protected void setValueType(final EValType valueType) {
+                evalType = valueType;
+            }
+            
+            @Override
+            protected Object getCurrentValueInEditor() {
+                return ProxyPropEditor.this.getCurrentValueInEditor();
+            }
 
-        this.proxyProp = new InternalPropertyProxy(property, editMask, evalType);
-        IValEditor editor = new InternalValEditorFactory().createValEditor(evalType, editMask, getEnvironment());
-        this.proxyValEditor = editor.getController();
+            @Override
+            protected boolean wasBinded() {
+                return wasBinded;
+            }                        
+        };
+    }
+    
+    public ProxyPropEditor(final Property prop, final EValType type, final EditMask mask){
+        this(prop,type,mask,null,null);
+    }
+    
+    public ProxyPropEditor(final Property prop, final EValType type, final EditMask mask, final IValAsStrConverter converter){
+        this(prop,type,mask,converter,null);
+    }    
+    
+    public ProxyPropEditor(final Property prop, final EValType type, final EditMask mask, final EReferenceStringFormat format){
+        this(prop,type,mask,null,format);
+    }
 
-        setEditorWidget((UIObject) editor);
-        ((UIObject) editor).setHeight(getPreferredHeight());
-        setClientHandler("requestFocus", "$RWT.propEditor.requestFocus");
-        proxyValEditor.setTextOptionsProvider(new PropertyValueTextOptionsProvider());
-        proxyValEditor.addValueChangeListener(valueChangeListener);
-        addStandardButtons();
-        if (getProperty().getDefinition().storeHistory()) {
-            final StringBuilder settingPath = new StringBuilder(getProperty().getOwner().getDefinition().getId().toString());
-            settingPath.append("/");
-            settingPath.append(SettingNames.SYSTEM);
-            settingPath.append("/");
-            settingPath.append(getProperty().getDefinition().getId().toString());
-            enableEditingHistory(settingPath.toString());
-        }
-        if (getProperty() != null && getProperty() instanceof SimpleProperty) {
-            EPropertyValueStorePossibility ps = getProperty().getPropertyValueStorePossibility();
-            if (ps != null) {
-                switch (ps) {
-                    case FILE_LOAD:
-                        addLoadFromFileButton();
-                        break;
-                    case FILE_SAVE:
-                        addSaveToFileButton();
-                        break;
-                    case FILE_SAVE_AND_LOAD:
-                        addLoadFromFileButton();
-                        addSaveToFileButton();
-                        break;
-                    case NONE:
-                        break;
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void updateEditor(final Object value, final Object initialValue, final PropEditorOptions options) {// value - String
+        final List<Object> values = proxyPropEditorController.updateEditor(value, initialValue, options);
+        if (values!=null){
+            super.updateEditor(values.get(0), values.get(1), options);
+            if (getValueType().isArrayType() && getValEditor() instanceof ValArrEditorController){
+                final ValArrEditorController editorController = (ValArrEditorController) getValEditor();
+                editorController.setItemEditMask(getEditMask());                
+                if (options.isReadOnly()) {
+                    final Arr currentValue = (Arr)editorController.getValue();
+                    editorController.setEditButtonVisible(currentValue != null
+                            && !currentValue.isEmpty()
+                            && !getProperty().isCustomEditOnly());
+                } else {
+                    editorController.setEditButtonVisible(true);
                 }
             }
-        }
-        this.env = (WpsEnvironment) getEnvironment();
-        this.env.addSettingsChangeListener(settingsChangeListener);
-    }
-
-    protected ValEditorController getProxyValEditor() {
-        return proxyValEditor;
-    }
-
-    @Override
-    protected void closeEditor() {
-        ValEditorController editor = getProxyValEditor();
-        if (editor != null) {
-            editor.close();
+            updateDialogTitle();
         }
     }
-
-    protected PropertyProxy getPropertyProxy() {
-        return proxyProp;
-    }
-
-    protected void enableEditingHistory(final String settingPath) {
-        setEditingHistory(new CommonEditingHistory(getEnvironment(), settingPath));
-    }
-
-    public void setEditingHistory(final IEditingHistory history) {
-        ValEditorController c = getProxyValEditor();
-        if (c instanceof InputBoxController && !(getProperty() instanceof PropertyArr)) {
-            InputBoxController ib = (InputBoxController) c;
-            EValType type = ValueConverter.serverValType2ClientValType(getProperty().getDefinition().getType());
-            ib.setEditHistory(history, type);
+    
+    private void updateDialogTitle(){
+        final ValEditorController editor = getValEditor();
+        if (editor instanceof ValArrEditorController){
+            ((ValArrEditorController)editor).setDialogTitle(getProperty().getTitle());
+        }else if (editor instanceof ValDateTimeEditorController){
+            ((ValDateTimeEditorController)editor).setDialogTitle(getProperty().getTitle());
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void setEditMask(final EditMask mask) {
-        if (mask != null) {
-            this.editMask = mask;
-            this.proxyProp = new InternalPropertyProxy(property, editMask, evalType);
-            IValEditor editor = new InternalValEditorFactory().createValEditor(evalType, editMask, getEnvironment());
-            this.html.remove(((UIObject) proxyValEditor.getValEditor()).getHtml());
-            this.proxyValEditor = editor.getController();
-            proxyValEditor.addValueChangeListener(valueChangeListener);
-            
-            setEditorWidget((UIObject) editor);
-            addStandardButtons();
-            proxyValEditor.refresh();
-             
-        }
-    }
-
-    public final EditMask getEditMask() {
-        return editMask;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void setType(final EValType type) {
-        if (type != null) {
-            this.evalType = type;
-            this.proxyProp = new InternalPropertyProxy(property, editMask, evalType);
-            IValEditor editor = new InternalValEditorFactory().createValEditor(evalType, editMask, getEnvironment());
-            this.html.remove(((UIObject) proxyValEditor.getValEditor()).getHtml());
-            this.proxyValEditor = editor.getController();
-            proxyValEditor.addValueChangeListener(valueChangeListener);
-            setEditorWidget((UIObject) editor);
-            addStandardButtons();
-            proxyValEditor.refresh();
-        }
-    }
-
-    public final EValType getType() {
-        return evalType;
-    }
-
-    @Override
-    protected void updateSettings() {
-        final Property finalProperty = getPropertyProxy().getProperty();
-        final ValidationResult state = finalProperty.getOwner().getPropertyValueState(finalProperty.getId());
-        getProxyValEditor().setValidationResult(state);
-        getProxyValEditor().refreshTextOptions();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void updateEditor(Object currentValue, Object initialValue, PropEditorOptions options) {
-        final ValEditorController finalValEditor = getProxyValEditor();
-        finalValEditor.setToolTip(options.getTooltip());
-        if (currentValue != null) {
-
-            finalValEditor.setValue(ValAsStr.fromStr((String) currentValue, evalType));
-        } else {
-            finalValEditor.setValue(null);
-        }
-        finalValEditor.setMandatory(options.isMandatory());
-        finalValEditor.setReadOnly(options.isReadOnly());
-
-        if (initialValue != null) {
-            finalValEditor.setInitialValue(ValAsStr.fromStr((String) initialValue, evalType));
-        } else {
-
-            finalValEditor.setInitialValue(null);
-        }
-        finalValEditor.refresh();
     }
 
     @Override
     protected Object getCurrentValueInEditor() {
-        if (getProperty().getValueObject() != null) {
-            return getProperty().getValueAsString();
-        }
-        return null;
-    }
-
-    @Override
-    public void addButton(IButton button) {
-        if (getProxyValEditor() != null) {
-            getProxyValEditor().addButton(button);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void addLoadFromFileButton() {//load
-        IButton loadBtn = controller.getLoadFromFileButton();
-        if (loadBtn != null) {
-            addButton(loadBtn);
-            final Property prop = getProperty();
-            IUploadedDataReader reader = new IUploadedDataReader() {
-                @Override
-                public void readData(InputStream stream, String fileName, long fileSize) {
-                    try {
-                        SimpleProperty property = (SimpleProperty) prop;
-                        Object val = property.loadFromStream(stream);
-                        //prop.setValueObject(val);
-                        getProxyValEditor().setValue(editMask.toStr(env, val));//load as object of evalType
-                    } catch (IOException ex) {
-                        String mess = String.format("Failed to load value of property %s from file\n%s", getProperty(), fileName);
-                        getEnvironment().processException(mess, ex);
-                    } finally {
-                        if (stream != null) {
-                            try {
-                                stream.close();
-                            } catch (IOException ex) {
-                                getEnvironment().getTracer().error(ex);
-                            }
-                        }
-                    }
-                }
-            };
-            LoadFileAction action = new LoadFileAction(getEnvironment(), reader);
-            action.addActionPresenter((RwtAction.IActionPresenter) loadBtn);
-            loadBtn.addAction(action);
-        }
-    }
-
-    protected void addSaveToFileButton() {
-        IButton saveBtn = controller.getSaveToFileButton();
-        if (saveBtn != null) {
-            addButton(saveBtn);
+        if (isInErrorMode()){
+            return ((ExceptionViewController)getValEditor()).getStringToShow();
+        }else{
+            return proxyPropEditorController.writeValueToString(super.getCurrentValueInEditor());
         }
     }
 
     @Override
-    public void setLabelVisible(boolean visible) {
-        ValEditorController c = getProxyValEditor();
-        if (c instanceof InputBoxController) {
-            InputBoxController ib = (InputBoxController) c;
-            ib.setLabelVisible(visible);
+    public void bind() {
+        wasBinded = true;
+        super.bind();
+    }
+    
+    @Override
+    public final void changeValueType(final EValType newValType, final EditMask newMask){
+        proxyPropEditorController.changeValueType(newValType, newMask);
+    }
+    
+    @Override
+    protected EnumSet<ETextOptionsMarker> getTextOptionsMarkers(final EnumSet<ETextOptionsMarker> valEditorMarkers) {
+        final EnumSet<ETextOptionsMarker> markers =  super.getTextOptionsMarkers(valEditorMarkers);
+        return proxyPropEditorController==null ? markers : proxyPropEditorController.getTextOptionsMarkers(markers);
+    }    
+    
+    @Override
+    protected void updateSettings() {
+        if (!isInErrorMode()){
+            super.updateSettings();
         }
+    }    
+        
+    @Override
+    public EditMask getEditMask() {
+        return EditMask.newCopy(editMask);
     }
 
     @Override
-    public boolean getLabelVisible() {
-        ValEditorController c = getProxyValEditor();
-        if (c instanceof InputBoxController) {
-            InputBoxController ib = (InputBoxController) c;
-            return ib.isLabelVisible();
-        }
-        return false;
+    public EValType getValueType() {
+        return evalType;
     }
+    
+    @Override
+    public final boolean isInErrorMode(){
+        return proxyPropEditorController.isInErrorMode();
+    }
+    
+    @Override
+    public final IValAsStrConverter getValueConverter() {
+        return proxyPropEditorController.getValueConverter();
+    }
+
+    @Override
+    public final void setValueConverter(final IValAsStrConverter converter) {
+        proxyPropEditorController.setValueConverter(converter);
+    }
+
+    @Override
+    public final EReferenceStringFormat getReferenceValueFormat() {
+        return proxyPropEditorController.getReferenceFormat();
+    }
+
+    @Override
+    public final void setReferenceValueFormat(final EReferenceStringFormat format) {
+        proxyPropEditorController.setReferenceFormat(format);
+    }    
 }

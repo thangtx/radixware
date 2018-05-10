@@ -32,7 +32,7 @@ import org.radixware.kernel.explorer.widgets.ExplorerMenu;
 public class ExplorerViewManager extends QMainWindow implements IViewManager {
 
     private final static String VIEW_AREA_SETTING_NAME = "viewArea";
-    private final ExplorerMenu selectorMenu, editorMenu;
+    private ExplorerMenu selectorMenu, editorMenu;
     private final List<ViewHolder> viewHolders = new ArrayList<ViewHolder>();
     private ViewHolder activeHolder;
     private IExplorerTreeNode currentNode;
@@ -161,5 +161,10 @@ public class ExplorerViewManager extends QMainWindow implements IViewManager {
 
     public boolean canSafetyClose() {
         return activeHolder != null ? activeHolder.canSafetyClose() : true;
+    }
+    
+    public void setMenu(ExplorerMenu selectorMenu, ExplorerMenu editorMenu) {
+        this.selectorMenu = selectorMenu;
+        this.editorMenu = editorMenu;
     }
 }

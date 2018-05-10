@@ -16,17 +16,21 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 
 
 public class SQLScriptStatement extends SQLParseStatement {
-
+    private final Vector<SQLToken> tokens = new Vector<>();
     private int index;
-    private Vector<SQLToken> tokens = new Vector<SQLToken>();
 
-    public SQLScriptStatement(SQLPosition pPosition) {
+    public SQLScriptStatement(final SQLPosition pPosition) {
         super(pPosition, StatementType.ST_SCRIPT);
         index = 0;
     }
 
-    public void appendToken(SQLToken token) {
-        tokens.add(token);
+    public void appendToken(final SQLToken token) {
+        if (token == null) {
+            throw new IllegalArgumentException("Token to add can't be null");
+        }
+        else {
+            tokens.add(token);
+        }
     }
 
     public boolean hasMoreTokens() {
@@ -37,14 +41,18 @@ public class SQLScriptStatement extends SQLParseStatement {
         if (index >= tokens.size()) {
             throw new SQLScriptException("SQL script statement : no more tokens", getPosition());
         }
-        return tokens.get(index++);
+        else {
+            return tokens.get(index++);
+        }
     }
 
     public SQLToken seeToken() throws SQLScriptException {
         if (index >= tokens.size()) {
             throw new SQLScriptException("SQL script statement : no more tokens", getPosition());
         }
-        return tokens.get(index);
+        else {
+            return tokens.get(index);
+        }
     }
 
     public Vector<SQLToken> getTokens() {
@@ -55,7 +63,12 @@ public class SQLScriptStatement extends SQLParseStatement {
         return index;
     }
 
-    void setIndex(int pIndex) {
+    void setIndex(final int pIndex) {
         index = pIndex;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLScriptStatement{" + "tokens=" + tokens + ", index=" + index + '}';
     }
 }

@@ -29,10 +29,10 @@ import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
 import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
 import org.radixware.kernel.common.client.meta.mask.EditMaskInt;
 import org.radixware.kernel.common.client.meta.mask.EditMaskList;
-import org.radixware.kernel.common.client.meta.mask.EditMaskNone;
 import org.radixware.kernel.common.client.meta.mask.EditMaskBool;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNum;
 import org.radixware.kernel.common.client.meta.mask.EditMaskStr;
+import org.radixware.kernel.common.enums.EDateTimeStyle;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.types.Arr;
@@ -52,7 +52,7 @@ class XValueArray extends ValEditor<String> {
 
     private QDialog dialog = null;
     private EditMask m = null;
-    private String dialogTitle = null;
+    
     private EValType array_type = null;
     private SchemaType[] members = null;
     private SchemaType currentMember = null;
@@ -63,6 +63,7 @@ class XValueArray extends ValEditor<String> {
         array_type = getValType(m);
         QAction callDialog = new QAction(null, Application.translate("XmlEditor", "Array Dialog"), this);
         callDialog.triggered.connect(this, "callEditorDialog()");
+        callDialog.setObjectName("edit");
         this.addButton("", callDialog);
     }
 
@@ -71,11 +72,8 @@ class XValueArray extends ValEditor<String> {
         members = m;
         QAction callDialog = new QAction(null, Application.translate("XmlEditor", "Element Types"), this);
         callDialog.triggered.connect(this, "callUnionDialog()");
+        callDialog.setObjectName("edit");
         this.addButton("", callDialog);
-    }
-
-    public void setDialogTitle(final String title) {
-        dialogTitle = title;
     }
 
     private EditMask getEditMaskByType(SchemaType type) {
@@ -157,10 +155,14 @@ class XValueArray extends ValEditor<String> {
             case SchemaType.BTC_G_MONTH_DAY:
             case SchemaType.BTC_G_YEAR:
             case SchemaType.BTC_G_YEAR_MONTH: {
-                Timestamp max = XEditorTools.getMaxDateTime(type);
-                Timestamp min = XEditorTools.getMinDateTime(type);
-                String display = XEditorTools.getDateTimePattern(type, getEnvironment().getLocale());
-                mask = new EditMaskDateTime(display, min, max);
+                final Timestamp max = XEditorTools.getMaxDateTime(type);
+                final Timestamp min = XEditorTools.getMinDateTime(type);
+                final String display = XEditorTools.getDateTimePattern(type);
+                if (display==null || display.isEmpty()){
+                    mask = new EditMaskDateTime(EDateTimeStyle.DEFAULT, EDateTimeStyle.DEFAULT, min, max);
+                }else{
+                    mask = new EditMaskDateTime(display, min, max);
+                }
             }
             break;
             case SchemaType.BTC_BYTE:
@@ -418,7 +420,7 @@ class XValueArray extends ValEditor<String> {
 
     private Arr stringToArr(String s) {
         if (!s.isEmpty()) {
-            QRegExp expression = new QRegExp();
+            final QRegExp expression = new QRegExp();
             Arr res = ArrayEditor.createEmptyArr(array_type);
             if (array_type == EValType.ARR_DATE_TIME) {
                 expression.setPattern("[0-9]{4,4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9][.][0-5][0-9]?");
@@ -450,6 +452,9 @@ class XValueArray extends ValEditor<String> {
             expression.setPattern("[^ ]+ ?");
         }
         int index = expression.indexIn(s);
+        if (index<0){
+            return "";
+        }
         int l = expression.matchedLength();
         String item = s.substring(index, index + l);
         s = l == s.length() ? "" : s.substring(index + l, s.length());
@@ -509,6 +514,7 @@ class XValueArray extends ValEditor<String> {
         arrayEditor.setCurrentValue(val);
         arrayEditor.setEditMask(mask);
         dialog = arrayEditor;
+        final String dialogTitle = getDialogTitle();
         if (dialogTitle != null) {
             dialog.setWindowTitle(dialogTitle);
         }
@@ -517,6 +523,7 @@ class XValueArray extends ValEditor<String> {
 
     private void makeNewUnionDialog(final String v) {
         dialog = new XUnionDialog(getEnvironment(), members, currentMember, v, this, isReadOnly());
+        final String dialogTitle = getDialogTitle();
         if (dialogTitle != null) {
             dialog.setWindowTitle(dialogTitle);
         }

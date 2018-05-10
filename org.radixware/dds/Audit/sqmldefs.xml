@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlJEJTFELIMLNBDKV7ABINU7DB2Q" QualifiedName="Radix::Audit">
+  <PackageDef Id="pkgEEDRZVMBNZAGVGNRAXM4G2IRIE" Name="RDX_AUDIT_Vars"/>
+  <PackageDef Id="pkgEH5ZRMFFQHNBDKWJABINU7DB2Q" Name="RDX_AUDIT">
+    <Function Id="dfn3JMPT34LPVFVNFDLZM6PL3OYRU" Name="dailyMaintenance" ResultDbType=""/>
+    <Function Id="dfn2GW5D2DIGBDWBOBGA2XCMRQYFQ" Name="updateTableAuditState" ResultDbType="">
+      <Parameter Id="dfpRTPCH3SGTFDJPIBSRDWZATRDZQ" Name="tableGuid" DbName="tableGuid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpOY2IDTDEGFGIJJJBFRPI64QCB4" Name="tableParentGuid" DbName="tableParentGuid" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn2SHTYL7XYNBVRDNOM5UXROVEB4" Name="enableTrigger" ResultDbType="">
+      <Parameter Id="dfpI3RSPACMF5AVTMQ3DQJZUMJGXU" Name="pId" DbName="pId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpINJ5TPK3SVF7LKZELV5BNCUBAM" Name="pType" DbName="pType" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn5EEF7AQGKZFS7JCBH4BFF24PC4" Name="disableTrigger" ResultDbType="">
+      <Parameter Id="dfpVBB4IAL2JVA3HLRRF3SJYGXMSU" Name="pTableid" DbName="pTableid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZGPFER245NCMNIFTYYW667XXT4" Name="pType" DbName="pType" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpT3I2W6USHNGPDEGEUNVFS3MND4" Name="pParentTableid" DbName="pParentTableid" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn32HNHTZNX3NBDPLKABQJO5ADDQ" Name="addValueNum" ResultDbType="">
+      <Parameter Id="dfpSBBPKJI6O5EPXLFYMKE43NI4LU" Name="pData" DbName="pData" DbType="clob" ValType="27" Direction="2"/>
+      <Parameter Id="dfpSYJK3HNBJFGERAZWEEMKZQ45QA" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSBF2GSDYKBBGTIZR3RCQIFHWMM" Name="pValue" DbName="pValue" DbType="number" ValType="11" Direction="0"/>
+    </Function>
+    <Function Id="dfnRAERWTZSX3NBDPLKABQJO5ADDQ" Name="addValueInt" ResultDbType="">
+      <Parameter Id="dfp2V5NNCOO3FAKZMFC7L5SDDL7QM" Name="pData" DbName="pData" DbType="clob" ValType="27" Direction="2"/>
+      <Parameter Id="dfpJQAANMUVMBGGVCDRO7LWOWV5BU" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQFAEBR4VMNAEHMHTRIQZNHPWKM" Name="pValue" DbName="pValue" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnPQ3VCQBSX3NBDPLKABQJO5ADDQ" Name="addValueStr" ResultDbType="">
+      <Parameter Id="dfp7HFRABZHN5BUXFAZONE6IWR6ZA" Name="pData" DbName="pData" DbType="clob" ValType="27" Direction="2"/>
+      <Parameter Id="dfpMLZ3FY4VIZFJNPE5SKLT25GQQQ" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpTEAW3EX3IZGJZG5DF4YVDTIF4M" Name="pValue" DbName="pValue" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnYH6DZCBSX3NBDPLKABQJO5ADDQ" Name="addValueDate" ResultDbType="">
+      <Parameter Id="dfpAVCMMIZK5NCDLKK4RB4NKOOJFE" Name="pData" DbName="pData" DbType="clob" ValType="27" Direction="2"/>
+      <Parameter Id="dfpXWGQO6SKQ5HZHFTBGPTPUOHCZA" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7C55YORHJVBIJFIMWRQVYMVKTE" Name="pValue" DbName="pValue" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnSVTVVVYVCJHKJI5GKIOYWKYQCQ" Name="regPropNumUpdate" ResultDbType="">
+      <Parameter Id="dfp5DMXPLUPKFE7FN23SDJN2567DM" Name="schemeId" DbName="schemeId" DbType="number" ValType="11" Direction="0"/>
+      <Parameter Id="dfpKHM6F65GF5HKNML7G2M2NJHCDQ" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpNXH4HS43RBF4DKOEIVN6AA7M3E" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpTIXRNYDHZ5BVZFJY5M6JAZSH6E" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpR3D77HFRPBAAHJCOSO3NI6YTN4" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp5DF7IGJA4ZGUXJ43YHFHQUFUU4" Name="oldVal" DbName="oldVal" DbType="number" ValType="11" Direction="0"/>
+      <Parameter Id="dfp7RLBW6527VHIZGWSQ5WCXNV5WU" Name="newVal" DbName="newVal" DbType="number" ValType="11" Direction="0"/>
+    </Function>
+    <Function Id="dfnHSGPBPW5BNF5NCO2SCHOGHQMAU" Name="regPropStrUpdate" ResultDbType="">
+      <Parameter Id="dfp5URS74BC2BBY3P2OPONQ5733IY" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpRGCQ42Q5YBFWHFWH2UVUYIACRU" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMKA7DPR3FJFTTMMS5OJNFVB77A" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSSMKSOS6WVAJHDYKRI3XFWCQMI" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpYOLLEQMYZBFXVAQ7RSRVWQXSEE" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPICKHSOXTRBSJKPJ7DSLQJBM4M" Name="oldVal" DbName="oldVal" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpDEQ3JM4FYJGFZECYXRLWVAYHDE" Name="newVal" DbName="newVal" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn5J3XXHOFE5F7XJQJ372H2EXPHM" Name="regPropBoolUpdate" ResultDbType="">
+      <Parameter Id="dfpRSCVZOU77NDAVJJFAPT3E7KVVQ" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpKMOR2YFFXFFONHACICOL7YA3PM" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPTSSOBJYDFBTRCALUK7ZFSYES4" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpXBP6COO2HVCYDDJSCNIAT4D3R4" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpCSIOJAURQNGD7E4CSWD5OWXHEY" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZNDHFENTKZDDVNOU7TILREZDTY" Name="oldVal" DbName="oldVal" DbType="boolean" ValType="1" Direction="0"/>
+      <Parameter Id="dfpEJBVQIUH7ZDOZCEJBMKUPM6ZPM" Name="newVal" DbName="newVal" DbType="boolean" ValType="1" Direction="0"/>
+    </Function>
+    <Function Id="dfnOTYDVWMTOZF7PN4327HMLY7WJM" Name="regPropDateTimeUpdate" ResultDbType="">
+      <Parameter Id="dfpVLQWTGT7E5DRPBEQLXNYAKUQ4Q" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpUR44SWOYMFFNHJQPKRZM4X4GZY" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpY5OWUHMQ5VFWTMFZ34BUFP7IKM" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp5Y6SVUK5H5FDVLFDPAOYSXB57Y" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2E4TWJ7GEJBNZFD3DFIZMYDS4M" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpETRJ2W4G25GKPCLS5G4KANTYBY" Name="oldVal" DbName="oldVal" DbType="date" ValType="12" Direction="0"/>
+      <Parameter Id="dfpQWAPW7G5E5FI7MVYUQV3ITE7MQ" Name="newVal" DbName="newVal" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnPWZL6CVFIJGWRFV4UMHBUAFTBY" Name="regPropClobUpdate" ResultDbType="">
+      <Parameter Id="dfp3SOP73UYQNDB3M5ARAMQJC6LFY" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSI2DZUC5WJDMLAJKWR23PTQLGU" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSYCQ3MEQDZBMHBIGLEBZFUOBO4" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpYGNSAN24BNA6FG7A7D7JFG4XCE" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpI37XHA4QJNE5LKBTV4J6SBUKIA" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWRJXKN5R6NFRTANXC7D5LZ3POI" Name="oldVal" DbName="oldVal" DbType="CLOB" ValType="50" Direction="0"/>
+      <Parameter Id="dfpG56CF23YINEAJDQI35E5GBY2VI" Name="newVal" DbName="newVal" DbType="CLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnIFDY2D66YJFDJD755VNAYV7HQU" Name="regPropBlobUpdate" ResultDbType="">
+      <Parameter Id="dfpF7VKDR22K5ALZGGI6PLDZ3XBKI" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpCHXKY5BFFNCHBG7OXO5H6KSUMI" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZQJB4GCHYBDVXM4DGNUPQ7LTDI" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2MFRHHDRX5FRNHFGFNW6ZHTENQ" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpTNHL66XRX5A47CN2KK5QPPYSRY" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpA6RDL5FEHNDD3GPQGB2FTLXLHQ" Name="oldVal" DbName="oldVal" DbType="BLOB" ValType="50" Direction="0"/>
+      <Parameter Id="dfpSRGFBKB5ERDN3BW4VWSB4EN2LY" Name="newVal" DbName="newVal" DbType="BLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfn4VEAWVF45JE2HIK4UI6E2YXHDE" Name="regPropRawUpdate" ResultDbType="">
+      <Parameter Id="dfpRU5CNZ4ZCZBL7HX7QPHCHH74LY" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpNHZBQMK65ND4FFJ6GXGVOVWUNQ" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMVAQC23L2JEEBBG7DLYLQZSPJ4" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpAC33HX6OKZGIBPPH24XVQH5EAI" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpO4ZGRHYEIBEAHJCXZ5TIDNIM24" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpNVBAEDY5FRDMTC3GHG5ZT5OAIQ" Name="oldVal" DbName="oldVal" DbType="RAW" ValType="50" Direction="0"/>
+      <Parameter Id="dfpWEERCB5GPVCJPPDFVNLT6ZQVLE" Name="newVal" DbName="newVal" DbType="RAW" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnCG7WOFIAF5HFZB2NLAVCXU77F4" Name="regPropIntUpdate" ResultDbType="">
+      <Parameter Id="dfp4WH4AT752BHAFPUFGIJPZY7FZE" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp3ZWTJT2JN5ECNGRBXJ3S7AJ7RQ" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpDZS3JR5SWNBRPDPCJ3FILZ663E" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpB736BK5GSNHJ7EUZSW56XKHI6A" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpYMMA2LESERF77GDWKK5GC42SOQ" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2EXFMNVXYZBBHHQA5B7NFDDUJM" Name="oldVal" DbName="oldVal" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp3VIV54E5LVHINLLJ23EDKCC5PU" Name="newVal" DbName="newVal" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnLRRREOFYJRBR5PIELHOKPQ42XM" Name="addValueClob" ResultDbType="">
+      <Parameter Id="dfpP2JAKYO66RDU3IZ467AVQEL7LQ" Name="pData" DbName="pData" DbType="clob" ValType="27" Direction="2"/>
+      <Parameter Id="dfpZBY55RCZNBFJDMUGZ6FPF4TDQI" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp57NH5H5YVRGXBNKV4USJSITAGM" Name="pValue" DbName="pValue" DbType="CLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnIPL6KBI26RCE3PIBZJK2EBHGBU" Name="addValueBlob" ResultDbType="">
+      <Parameter Id="dfpRFKE5ENJ2RAZTG4MQP53QHXLIE" Name="pData" DbName="pData" DbType="clob" ValType="27" Direction="2"/>
+      <Parameter Id="dfpZKGQ7JM7IJEEBNG6OMINEN3WRU" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpUDBTWURIHNCTLKDV2W6MOWCMCA" Name="pValue" DbName="pValue" DbType="BLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnTGD6QCQLZNCORMEEO6BUPWA7BM" Name="addValueRaw" ResultDbType="">
+      <Parameter Id="dfpR4BSFKJWDREVLHJ7QEIEDBDYXE" Name="pData" DbName="pData" DbType="clob" ValType="27" Direction="2"/>
+      <Parameter Id="dfpCLF5JW4BLZDGXBD3E6PCPZAJ3I" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpLWHMK5EN5JFAZOUL7WVPSHQJSQ" Name="pValue" DbName="pValue" DbType="RAW" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfn443YVYYXUVFWZPSRK3XDQY4MGM" Name="addValueBool" ResultDbType="">
+      <Parameter Id="dfpR5JFLQEWZVEYRI5UAM7JV4KD5Y" Name="pData" DbName="pData" DbType="clob" ValType="27" Direction="2"/>
+      <Parameter Id="dfpEC2YRXMXDFGNXDH6PC6UJTZKE4" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpFHMWC3JAFBB47EBCKGI42KHOV4" Name="pValue" DbName="pValue" DbType="boolean" ValType="1" Direction="0"/>
+    </Function>
+    <Function Id="dfnKRZVDTDHI5E7ZA3SKNQTJVAUBM" Name="regPropNumCreated" ResultDbType="">
+      <Parameter Id="dfpI2JBICAZ2RFVRBQDZUMYDVG4QI" Name="schemeId" DbName="schemeId" DbType="number" ValType="11" Direction="0"/>
+      <Parameter Id="dfpOQPPNLEQN5D65BM5AKM54N365Q" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpUSSIM2WRS5HGBDH2LJSTJPTXUY" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQUB7WXQWDJFF3GHDBRL5KPNQI4" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpKGT7QSLY4RDZ7CIQ3WH25QUC6U" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpG5QZS2SVBFEY5CH5BYJM47OOYQ" Name="val" DbName="val" DbType="number" ValType="11" Direction="0"/>
+    </Function>
+    <Function Id="dfnW2HAJL53XJH2LLH253HS53UNPU" Name="regPropStrCreated" ResultDbType="">
+      <Parameter Id="dfpO7YRSZEXDBDEFASH67C4BJS5CQ" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPYELJJQGMVCHPNVU2DMGGU3FPA" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPZGLHHPZQZHA3JZJ4ZNQAI7RYI" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp6VJXYTNBUBGCLDYA7QONN7V7TY" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMEX5JVZRNRALDKEZEG3IBPZ2TE" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpEF7JDMXAGNEA3F4ZDEIDYKHRIY" Name="val" DbName="val" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnSFHXBHK2AJEZDLTRYWBJOCVH6I" Name="regPropBoolCreated" ResultDbType="">
+      <Parameter Id="dfpOXVGJPMPTRAUNENPRJSFOHDRVY" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpIHOXWRMSMBAWPAMEHQCMBTNKRQ" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpB7ZGAM3QBRHGFPZ2JCTUYSILJY" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpTCHKOHDBKVBK7J3GAAVYV3CR7Y" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpUURX4SBEHZAERBK3X56GRLDCWQ" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpY33AV234CNF4HLG46ORQXRDN6E" Name="val" DbName="val" DbType="boolean" ValType="1" Direction="0"/>
+    </Function>
+    <Function Id="dfn7VGENQES3VD6HDKCQLKUOPTVEA" Name="regPropDateTimeCreated" ResultDbType="">
+      <Parameter Id="dfpJQ6XGQ2EGJE3LJ2HMAZAABKUOA" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpC6G52VGBSBCNHPET6BWUFKZQIQ" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp5K64LSCXG5EZXMKAMMHKDNB5TA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpF6AC4RONANDFJNZDZMWIMQRK7I" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpTQNH5UAG2REQDLOXXDOSWI33EE" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpGMSHPUJIAFAXTIND2DAAANAEYE" Name="val" DbName="val" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnYBDP6LUCEFGDHD3NAKJRZQEZGY" Name="regPropClobCreated" ResultDbType="">
+      <Parameter Id="dfp6W3RD2KFQNHH3ATMTG4WXZMZQY" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMUKJQIIRLRB33K3BTROZBJPSDA" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpR4ZVHAV3JVBTRMEJ4HSQNM2FEU" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpOEC4BJFXBVDSTJOEU7SMVPQGE4" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp24U2YXLXLVFERF5IOR5OAWX6TA" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpHC4HPZ3WYRE4ZDKIXW5PNHOMJM" Name="val" DbName="val" DbType="CLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnUIXWSLKYOJACZLUT7R7T6P2KRU" Name="regPropBlobCreated" ResultDbType="">
+      <Parameter Id="dfp45DP7ZP5JFCJDNDAUF6ASUUQRU" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpOWHAFRCLO5FMREZCWBSGXZNVJY" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPJZTL7QNTZBRRPXFL7NJQYF7YQ" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPKVYH7IWBBEA7PSZG2ERWCHMM4" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpVZAZABBSH5FVVOTPRPLFC5MBIY" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMMB5CZV23BHMDJVJS7YI546VDM" Name="val" DbName="val" DbType="BLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnHOK4ALPJCZHZHDB3N7RETGZCSU" Name="regPropRawCreated" ResultDbType="">
+      <Parameter Id="dfp4YTT43VKZZFTTMARZL3ZIRBYVM" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpOZBIHR3IGRHTHA5FEBIK55MPN4" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpXPL757ZJSRE73J7NBO3NFJC3R4" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7A4O3ACPL5H77KSO3WTFI23APM" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp35SVMNDUZZE5LDIKGO5KDB7INI" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpD56LEKKFJFFW5N552KGS2O5YVY" Name="val" DbName="val" DbType="RAW" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnW73MYQ7YPZATLIN65XFFWXZ2VM" Name="regPropIntCreated" ResultDbType="">
+      <Parameter Id="dfpTPPFEOPF2VEL7EGNVXQ32ZXDSU" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpHQ7M5HWEFZBTFF3MLLPE5YEU3Y" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp34UKTIJCQ5EZLJ4SKC3MNORVQA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpGIB6X66CL5EDJLKPSYVBA2S43Q" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSKGTRVPD4BGWNDU3FWIZ2P56RQ" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpAZ3KEOHZ3JBXBLDE7GCW6HT6TU" Name="val" DbName="val" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnJN7PODYPUFBSXKQK4IFL6I4CUI" Name="regPropNumDeleted" ResultDbType="">
+      <Parameter Id="dfpY2JRYEE27ZFLXBIYO2Z42S77YA" Name="schemeId" DbName="schemeId" DbType="number" ValType="11" Direction="0"/>
+      <Parameter Id="dfpZD33ZQX7LVEP3D3ABYJU6LPY2Y" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpJXXLYDAVXREAHB62EXKX5UDSLA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMURHNJYLJVAC5K37KMIRYURUE4" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpA4ZBZPNT75GSPAEEH3475SA2NY" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWCO6WSN455DVPPFSRWCRCR4RCM" Name="val" DbName="val" DbType="number" ValType="11" Direction="0"/>
+    </Function>
+    <Function Id="dfnQMGCORSJPVAZ7DFGMHEFSDL2EU" Name="regPropStrDeleted" ResultDbType="">
+      <Parameter Id="dfpLE5S7ILJ3VFU3HFZK65KWQ456A" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpOQNP2UR34BBPXM72Q4DZKKQPCY" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpD4QKEQO44FFFRMHFWDXQOA7MRQ" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpOJUDLEQ5NVEDVNJ4GHU43U5U5U" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpK5N7DXBTFJA7ZHKLYNQ4CR7VE4" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpLJ2YTMTVEVHJLLHCA7HWZGQ3NQ" Name="val" DbName="val" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnKTBFDHZKYNHKPLNUWQGRQXK7KI" Name="regPropBoolDeleted" ResultDbType="">
+      <Parameter Id="dfpDSA37AMVHZAAJD32H7RE4ELHIA" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSOWJANU3DJDB7FJ5XCMKWWUDQI" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2TTHZOV4OZGWLDIOSQZ3R7Y7WA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2NJD35ZIUZEODA2TKGJJ6ACRGQ" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSSMEOUWRXZHIVJPBWQBPFOAQVQ" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpGMT3CPV7JVD7DBIFLC2EAC7YT4" Name="val" DbName="val" DbType="boolean" ValType="1" Direction="0"/>
+    </Function>
+    <Function Id="dfn7RNXA4VYD5HE3M7A3INLHMZHQA" Name="regPropDateTimeDeleted" ResultDbType="">
+      <Parameter Id="dfp6NWZRVEQBZDEZPONGVYXLCW7DU" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWMJLDUN3MBEOHP2C2GQYFCZC5U" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7PGZ5VUY4RBQXDU5GUJ2P3MPME" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZFQ3HNPB3NH5ZCBDCM7KBTNS2Q" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpLFV33JDUKBGHPOVTAGMHXRRYDU" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMXP5VMYIZVF2NPFQ6UT3PPMFG4" Name="val" DbName="val" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnO4ACAAM3FZCQXASY5ZT47OGRZM" Name="regPropClobDeleted" ResultDbType="">
+      <Parameter Id="dfpEY5QXJIXDBCJJE35UHUWQQASKI" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpB7ARVIIO2VARRFP2KG7MMFYGSQ" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp4UHSS56DFFA5RHFEXBZPAL474A" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpBFQREE4DB5AF3EQ5Z6YOLABGVM" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpRMAQRSRHPNAIJMUWM6QRKM6E2Q" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp4I2ZDFZ24RDLPKTOAYQAVHVHJA" Name="val" DbName="val" DbType="CLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnLHY7E5X7DRELRORGHFKLP7SXIQ" Name="regPropBlobDeleted" ResultDbType="">
+      <Parameter Id="dfpBKTZWB2XJFEVHJBL55D6HOZ4FU" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZDARDUNC5JBRTHM4ZJG73UN7BI" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpBZ45LN63L5BOREF7Q2D6HW7CSA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpRFRJT37V6FGFXCRXDRR54NY4IU" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZJUSGCJP65G3BFWCGU5LGD5WTY" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQMKCOIVKYJFHDF2SMQKM27SKQY" Name="val" DbName="val" DbType="BLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnVP5MM4B63NFQXHWJCFZ6IXKCP4" Name="regPropRawDeleted" ResultDbType="">
+      <Parameter Id="dfpU6HGE2QEPBEEJH5B64SS5DLWEM" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp64EUS3KKPJDJ3LKCLRIEHZFDHM" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPYJ6M6BVKFASTP7OJZ2USGM3VM" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7ITYCHFIINHZ3NPUVEAHESXX6E" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp4GLE4EADGREOLJCXIBTOS2VUXE" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp6MZQWUMLLBCMPFM7O3S3XUVHK4" Name="val" DbName="val" DbType="RAW" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnCGPLI4LGKNGAFD3MTQDZY7ULPU" Name="regPropIntDeleted" ResultDbType="">
+      <Parameter Id="dfpM7VSZIGY5BB67N3IQWPBEOMDD4" Name="schemeId" DbName="schemeId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpKE6IBMOPYVCDBI2RYBAPKBB7Z4" Name="tableId" DbName="tableId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpKFORASZR5JFXXFRUHHNKSPMYZE" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMAJ7O56RUVGJNIIEQGW4IG3OKU" Name="propId" DbName="propId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPJVTWLSVSVEODM4SBOAFPMEU7E" Name="pid" DbName="pid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpG3GLNM6NA5FXZL6C2YSY3BV5MU" Name="val" DbName="val" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfn5WOW6KKZRBAC3MFHWD3KNPIZVU" Name="addChangedValueInt" ResultDbType="">
+      <Parameter Id="dfpM565GUFEONDYJKXVTK5DGLGPNY" Name="pChangeData" DbName="pChangeData" DbType="CLOB" ValType="50" Direction="2"/>
+      <Parameter Id="dfp4ACX4S3BIRCLBNWV5DMQC54UUY" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpIIUF4DAUBRHZDJJADMJEVVAINE" Name="pOldValue" DbName="pOldValue" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpLMXQNFRPQRF27O2XRQ6NTI4EJQ" Name="pNewValue" DbName="pNewValue" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnMECGK3G2QRHZ7AIE2B6FNZ3SEE" Name="addChangedValueNum" ResultDbType="">
+      <Parameter Id="dfp7OKGVXYLJ5HRNNX3EH63BCWZPY" Name="pChangeData" DbName="pChangeData" DbType="CLOB" ValType="50" Direction="2"/>
+      <Parameter Id="dfpP33O2H4OTRAXXH3FXY4LE57RRY" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpXEYPS5DRCVCIXMSRLQW7AGXFW4" Name="pOldValue" DbName="pOldValue" DbType="number" ValType="11" Direction="0"/>
+      <Parameter Id="dfpEGJBMR7CBRBFFPDB23ZYCDTHUE" Name="pNewValue" DbName="pNewValue" DbType="number" ValType="11" Direction="0"/>
+    </Function>
+    <Function Id="dfnJONV5RBXWZC4BC2VEYK4OQJBDA" Name="addChangedValueBool" ResultDbType="">
+      <Parameter Id="dfpKRWMJ33F5FCQ5JK2N6B3MZNORY" Name="pChangeData" DbName="pChangeData" DbType="CLOB" ValType="50" Direction="2"/>
+      <Parameter Id="dfp4ZZEOHAHDRETTKVQSATJ6V5XJI" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp75KMN74CAFCRNOMSHVJESSVV7I" Name="pOldValue" DbName="pOldValue" DbType="boolean" ValType="1" Direction="0"/>
+      <Parameter Id="dfpS5BQJIQ4B5FPLF3GA5B64AA6YE" Name="pNewValue" DbName="pNewValue" DbType="boolean" ValType="1" Direction="0"/>
+    </Function>
+    <Function Id="dfnMTT5CAY2LBE4LP7GHG3E6RBO3M" Name="addChangedValueStr" ResultDbType="">
+      <Parameter Id="dfpTENU7LDJSFBNHKC4ST56UXZQXI" Name="pChangeData" DbName="pChangeData" DbType="CLOB" ValType="50" Direction="2"/>
+      <Parameter Id="dfpPUM2ZCLNDZCQXDX4K4AWWX5OKM" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWXSEYCNWJVFURO6CRH5YPYFE7A" Name="pOldValue" DbName="pOldValue" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSGBYPBZOGBEE3MU3SFGD2LBMMM" Name="pNewValue" DbName="pNewValue" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnGCKTYCNAVJHDXKG7F7L3UGQXBU" Name="addChangedValueClob" ResultDbType="">
+      <Parameter Id="dfp23D6FVHTV5BYZMHRLJLC4ZRMD4" Name="pChangeData" DbName="pChangeData" DbType="CLOB" ValType="50" Direction="2"/>
+      <Parameter Id="dfpZYCNGPXDWZFORLPKAUQZMLUXL4" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpTTW5KJFN3ZBJPLUA2L4TAQLBM4" Name="pOldValue" DbName="pOldValue" DbType="CLOB" ValType="50" Direction="0"/>
+      <Parameter Id="dfpQVDT5MGU3RDCRC6DVN5RDH43XY" Name="pNewValue" DbName="pNewValue" DbType="CLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnVCIU2LTOBZCS3K4H324KCMG6WA" Name="addChangedValueDateTime" ResultDbType="">
+      <Parameter Id="dfp2ET42RTT2ZFYNATU5QC3QFJB2U" Name="pChangeData" DbName="pChangeData" DbType="CLOB" ValType="50" Direction="2"/>
+      <Parameter Id="dfpXM3E73VYF5F75N7BGYGT4S3544" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp22EU7IA4ZZHJJPEJZILUQ35G2U" Name="pOldValue" DbName="pOldValue" DbType="date" ValType="12" Direction="0"/>
+      <Parameter Id="dfp7224XAYRPRDKJFG6SKAMWE2UHU" Name="pNewValue" DbName="pNewValue" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfn35IR2YZLPVFMRGV4RJG46NG5JI" Name="addChangedValueRaw" ResultDbType="">
+      <Parameter Id="dfpHGULSSAZVFHO5E5FIVEV3JTEDM" Name="pChangeData" DbName="pChangeData" DbType="CLOB" ValType="50" Direction="2"/>
+      <Parameter Id="dfpTD54AZ35BZHEZEUEGEEN2RHKOI" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpDWJFK7IAYBBFVDDMXZGTQ6M2EQ" Name="pOldValue" DbName="pOldValue" DbType="RAW" ValType="50" Direction="0"/>
+      <Parameter Id="dfpYXJ5XLXA5NB6HKDBTIDPERGU2U" Name="pNewValue" DbName="pNewValue" DbType="RAW" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnXOLIGZFXLRDSVOEWXDULS4F574" Name="addChangedValueBlob" ResultDbType="">
+      <Parameter Id="dfpTUPQHT752NCN5JFQLAEDWPO3RA" Name="pChangeData" DbName="pChangeData" DbType="CLOB" ValType="50" Direction="2"/>
+      <Parameter Id="dfpBEMSL4U5YNAZLIBQRHFPPGU7YI" Name="pName" DbName="pName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpN2MDL2AYLVDSVMJJ7L4R54VUM4" Name="pOldValue" DbName="pOldValue" DbType="BLOB" ValType="50" Direction="0"/>
+      <Parameter Id="dfpANY43NFWTVDGHPAWD7XLGBAXJY" Name="pNewValue" DbName="pNewValue" DbType="BLOB" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnUAPXVXUF6NFLXJCDEBCEEFMX2A" Name="updateTableAuditStateEventType" ResultDbType="">
+      <Parameter Id="dfp76CIP3PEKJDCDF3FODBNQOKJ4E" Name="pTableGuid" DbName="pTableGuid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPMWN5N5TJVAB3FAMC376XCGSHE" Name="pEventType" DbName="pEventType" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpB7GUAKHB6NDPLILUVJFV2ICJK4" Name="pParentTableGuid" DbName="pParentTableGuid" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <TableDef Id="tblFEIALUQDMPNBDKV7ABINU7DB2Q" Name="SchemeItem">
+    <Indexes>
+      <Index Id="idxFEIALUQDMPNBDKV7ABINU7DB2Q" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colHOZ6HWIDMPNBDKV7ABINU7DB2Q colZMHWLZADMPNBDKV7ABINU7DB2Q colL7E3H7ADMPNBDKV7ABINU7DB2Q"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref2BK6GSWQF5GT5GN2JH4XOI3ZFA" Name="SchemeItem=>Scheme (schemeGuid=>guid)" ReferencedTableId="tblJBWGL34ATTNBDPK5ABQJO5ADDQ" ChildColumnNames="schemeGuid"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colHOZ6HWIDMPNBDKV7ABINU7DB2Q" Name="schemeGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colZMHWLZADMPNBDKV7ABINU7DB2Q" Name="tableId" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colL7E3H7ADMPNBDKV7ABINU7DB2Q" Name="eventType" ValType="21" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colWNMPOZQEMPNBDKV7ABINU7DB2Q" Name="saveData" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colAUV5IYAEMPNBDKV7ABINU7DB2Q" Name="storeDuration" ValType="2" Length="1" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblJBWGL34ATTNBDPK5ABQJO5ADDQ" Name="Scheme">
+    <Indexes>
+      <Index Id="idxJBWGL34ATTNBDPK5ABQJO5ADDQ" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colAB22MAMBTTNBDPK5ABQJO5ADDQ"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colAB22MAMBTTNBDPK5ABQJO5ADDQ" Name="guid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="col7ZEWKKYLT3NBDPK7ABQJO5ADDQ" Name="title" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colJRJ3R3ABQBAGHPX43MTLJIKYQQ" Name="notes" ValType="21" Length="4000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblXXXFKJLLMLNBDKV7ABINU7DB2Q" Name="AuditLog">
+    <Indexes>
+      <Index Id="idxXXXFKJLLMLNBDKV7ABINU7DB2Q" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col5KIY6YTLMLNBDKV7ABINU7DB2Q col5GIY6YTLMLNBDKV7ABINU7DB2Q col5UFKW7TLMLNBDKV7ABINU7DB2Q"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col5KIY6YTLMLNBDKV7ABINU7DB2Q" Name="eventTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="col5GIY6YTLMLNBDKV7ABINU7DB2Q" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="col5UFKW7TLMLNBDKV7ABINU7DB2Q" Name="storeDuration" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colE6QAXC3LMLNBDKV7ABINU7DB2Q" Name="userName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="col3EONLF3LMLNBDKV7ABINU7DB2Q" Name="stationName" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colDCVRSSAY4BAC5CFU7PVGD4SFMQ" Name="tableId" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colCUJB6QBJ35EF7LTIDU5M3ZCDTY" Name="classId" ValType="21" Length="50" Precision="0"/>
+      <Column Id="colFKOCBVAOMPNBDKV7ABINU7DB2Q" Name="pid" ValType="21" Length="4000" Precision="0" NotNull="true"/>
+      <Column Id="colX5YHTXQOMPNBDKV7ABINU7DB2Q" Name="eventType" ValType="21" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colWGY7XZYOMPNBDKV7ABINU7DB2Q" Name="eventData" ValType="27" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

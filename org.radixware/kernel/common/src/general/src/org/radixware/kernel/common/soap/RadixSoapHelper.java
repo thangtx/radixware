@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.soap;
 
 import java.io.IOException;
@@ -17,8 +16,6 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.enums.EEventSeverity;
@@ -28,6 +25,7 @@ import static org.radixware.kernel.common.enums.ESoapMessageType.CALLBACK_RESPON
 import static org.radixware.kernel.common.enums.ESoapMessageType.FAULT;
 import static org.radixware.kernel.common.enums.ESoapMessageType.REQUEST;
 import org.radixware.kernel.common.enums.ESoapOption;
+import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.exceptions.ServiceCallRecvException;
 import org.radixware.kernel.common.exceptions.ServiceCallSendException;
 import org.radixware.kernel.common.exceptions.ServiceCallTimeout;
@@ -37,26 +35,14 @@ import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.HttpFormatter;
 import org.radixware.kernel.common.utils.SoapFormatter;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.common.utils.XmlObjectProcessor;
-
+import org.w3c.dom.Node;
+import org.xmlsoap.schemas.soap.envelope.Detail;
 
 public class RadixSoapHelper {
 
-    private static final int MIN_RECEIVE_TIMEOUT_MILLIS;
-    private static final String MIN_RECEIVE_TIMEOUT_PROP_NAME = "radix.soap.min.receive.timeout";
-
-    static {
-        int minReceiveTimeoutMillis = -1;
-        final String prop = System.getProperty(MIN_RECEIVE_TIMEOUT_PROP_NAME);
-        if (prop != null) {
-            try {
-                minReceiveTimeoutMillis = Integer.parseInt(prop);
-            } catch (Exception ex) {
-                Logger.getLogger(RadixSoapHelper.class.getName()).log(Level.FINE, ex.getMessage(), ex);
-            }
-        }
-        MIN_RECEIVE_TIMEOUT_MILLIS = minReceiveTimeoutMillis <= 0 ? 100 : minReceiveTimeoutMillis;
-    }
+    private static final int MIN_RECEIVE_TIMEOUT_MILLIS = SystemPropUtils.getIntSystemProp("radix.soap.min.receive.timeout.millis", 500);
 
     /**
      * Sends messageBytes as http frame. Pointer to RadixSoapMessage is used
@@ -70,6 +56,7 @@ public class RadixSoapHelper {
             messageMeta.setAttrs(new HashMap<String, String>());
         }
         messageMeta.getAttrs().put(EHttpParameter.HTTP_HOST_ATTR.getValue(), ServiceClient.getInetConnectionHostAddress(connection));
+        connection.setReadTimeOut(getLeftReceiveTimoutMillis(messageMeta));
         send(messageMeta, messageBytes, os, connection.toString(), tracer, isDirtyDataLoggingEnabled(connection));
     }
 
@@ -90,7 +77,13 @@ public class RadixSoapHelper {
             os.flush();
 
             if (tracer != null && tracer.getMinSeverity() <= EEventSeverity.DEBUG.getValue()) {
-                logMessageSent(messageMeta.getType(), messageMeta.getBodyDocument(), connectionInfo, logDirtyData ? messageBytes : null, tracer);
+                final String http_pragma = messageMeta.getAttrs().get(EHttpParameter.HTTP_PRAGMA.getValue());
+                logMessageSent(messageMeta.getType(), 
+                                         http_pragma==null ? "" : http_pragma,
+                                         messageMeta.getBodyDocument(), 
+                                         connectionInfo, 
+                                         logDirtyData ? messageBytes : null, 
+                                         tracer);
             }
         } catch (IOException ex) {
             throw new RadixSoapIOExceptionOnSend(ex);
@@ -99,13 +92,7 @@ public class RadixSoapHelper {
 
     public static byte[] receiveResponceData(final SyncClientConnection connection, final RadixSoapMessage outMessageMeta, final Map<String, String> responceAttrs, final LocalTracer tracer) throws IOException {
         try {
-            final int receiveTimeoutMillis;
-            if (outMessageMeta.getReceiveTimeoutSec() <= 0) {
-                receiveTimeoutMillis = -1;
-            } else {
-                receiveTimeoutMillis = Math.max(outMessageMeta.getReceiveTimeoutSec() * 1000 - outMessageMeta.getSpentReceiveMillis(), MIN_RECEIVE_TIMEOUT_MILLIS);
-            }
-            connection.setReadTimeOut(receiveTimeoutMillis);
+            connection.setReadTimeOut(getLeftReceiveTimoutMillis(outMessageMeta));
             final byte[] data = HttpFormatter.readMessage(connection.getInputStream(), responceAttrs, tracer);
             if (tracer != null && isDirtyDataLoggingEnabled(connection)) {
                 logDataReceived(ESoapMessageType.RESPONSE, data, connection.toString(), tracer);
@@ -114,6 +101,16 @@ public class RadixSoapHelper {
         } catch (IOException ex) {
             throw new RadixSoapIOExceptionOnReceive(ex);
         }
+    }
+
+    private static int getLeftReceiveTimoutMillis(final RadixSoapMessage message) {
+        final int receiveTimeoutMillis;
+        if (message.getReceiveTimeoutSec() <= 0) {
+            receiveTimeoutMillis = -1;
+        } else {
+            receiveTimeoutMillis = Math.max(message.getReceiveTimeoutSec() * 1000 - message.getSpentReceiveMillis(), MIN_RECEIVE_TIMEOUT_MILLIS);
+        }
+        return receiveTimeoutMillis;
     }
 
     public static void logDataReceived(final ESoapMessageType type, final byte[] data, final String connectionInfo, final LocalTracer tracer) {
@@ -135,14 +132,45 @@ public class RadixSoapHelper {
     }
 
     public static void logMessageSent(final ESoapMessageType type, final XmlObject message, final String connectionInfo, final LocalTracer tracer) {
-        logMessageSent(type, message, connectionInfo, null, tracer);
+        logMessageSent(type, null, message, connectionInfo, null, tracer);
     }
 
     public static void logMessageSent(final ESoapMessageType type, final XmlObject message, final String connectionInfo, final byte[] completeMessage, final LocalTracer tracer) {
-        if (tracer != null && tracer.getMinSeverity() <= EEventSeverity.DEBUG.getValue()) {
-            tracer.debug(type + " (" + getSoapBodyRootElementName(message) + ") sent to " + connectionInfo + ":\nPayload:\n" + XmlObjectProcessor.toSeparateXml(message) + (completeMessage != null ? "\nComplete message: " + Hex.encode(completeMessage) : ""), true);//RADIX-1469
-        }
+        logMessageSent(type, null, message, connectionInfo, completeMessage, tracer);
     }
+    
+    public static void logMessageSent(final ESoapMessageType type, 
+                                                      final String httpPragma,
+                                                      final XmlObject message, 
+                                                      final String connectionInfo, 
+                                                      final byte[] completeMessage, 
+                                                      final LocalTracer tracer) {
+        if (tracer != null && tracer.getMinSeverity() <= EEventSeverity.DEBUG.getValue()) {
+            final StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append(type);
+            messageBuilder.append(" (");
+            messageBuilder.append(getSoapBodyRootElementName(message));
+            messageBuilder.append(") sent to ");
+            messageBuilder.append(connectionInfo);
+            messageBuilder.append(':');
+            if (httpPragma!=null){
+                if (httpPragma.isEmpty()){
+                    messageBuilder.append("\nNo HTTP pragma header defined");
+                }else{
+                    messageBuilder.append("\nHTTP Pragma header: \'");
+                    messageBuilder.append(httpPragma);
+                    messageBuilder.append('\'');
+                }
+            }
+            messageBuilder.append("\nPayload:\n");
+            messageBuilder.append(XmlObjectProcessor.toSeparateXml(message));
+            if (completeMessage!=null){
+                messageBuilder.append("\nComplete message: ");
+                messageBuilder.append(Hex.encode(completeMessage));
+            }
+            tracer.debug(messageBuilder.toString(), true);//RADIX-1469
+        }
+    }    
 
     public static void logMessageReceived(final ESoapMessageType type, final XmlObject rs, final String connectionInfo, final LocalTracer tracer) {
         logMessageReceived(type, rs, connectionInfo, null, tracer);
@@ -151,6 +179,28 @@ public class RadixSoapHelper {
     public static void logMessageReceived(final ESoapMessageType type, final XmlObject rs, final String connectionInfo, final byte[] completeMessage, final LocalTracer tracer) {
         if (tracer != null && tracer.getMinSeverity() <= EEventSeverity.DEBUG.getValue()) {
             tracer.debug(type + " (" + getSoapBodyRootElementName(rs) + ") received from " + connectionInfo + ":\nPayload:\n" + XmlObjectProcessor.toSeparateXml(rs) + (completeMessage != null ? "\nComplete message: " + Hex.encode(completeMessage) : ""), true);//RADIX-1469
+        }
+    }
+    
+    public static void logFaultReceived(final ServiceCallFault fault, final String connectionInfo, final LocalTracer tracer){
+        logFaultReceived(fault.getFaultCode(), fault.getFaultString(), fault.getDetail(), connectionInfo, tracer);
+    }
+    
+    public static void logFaultReceived(final String faultCode, final String faultMessage, final Detail faultDetails, final String connectionInfo, final LocalTracer tracer){
+        if (tracer != null && tracer.getMinSeverity() <= EEventSeverity.DEBUG.getValue()) {
+            final StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append(ESoapMessageType.FAULT);
+            messageBuilder.append(" received from ");
+            messageBuilder.append(connectionInfo);
+            messageBuilder.append(": ");
+            messageBuilder.append(String.valueOf(faultCode));
+            messageBuilder.append('-');
+            messageBuilder.append(String.valueOf(faultMessage));
+            if (faultDetails!=null){
+                messageBuilder.append("\nDetails:\n");
+                messageBuilder.append(XmlObjectProcessor.toSeparateXml(faultDetails));
+            }
+            tracer.debug(messageBuilder.toString(), true);
         }
     }
 
@@ -209,10 +259,15 @@ public class RadixSoapHelper {
             if (xmlObj.getDomNode().getLocalName() != null && !("Body".equals(xmlObj.getDomNode().getLocalName()) && SoapFormatter.SOAP_NS.equals(xmlObj.getDomNode().getNamespaceURI()))) {
                 return xmlObj.getDomNode().getLocalName();//if xmlObj is not document
             }
-            return xmlObj.getDomNode().getChildNodes().item(0).getLocalName();//if xmlObj is document
+            for (int i = 0; i < xmlObj.getDomNode().getChildNodes().getLength(); i++) {
+                if (xmlObj.getDomNode().getChildNodes().item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    return xmlObj.getDomNode().getChildNodes().item(i).getLocalName();
+                }
+            }
         } catch (RuntimeException ex) {
-            return "<unknown>";
+            return "<unknown_err>";
         }
+        return "<unknown>";
     }
 
     public static String createCallTimeoutMessage(final RadixSoapMessage message) {

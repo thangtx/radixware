@@ -146,7 +146,12 @@ public class ListView implements List {
             Iterator self = iterator();
             Object otherItem;
             Object selfItem;
-            do {
+            do { 
+                if(self.hasNext() && !other.hasNext() || !self.hasNext() && other.hasNext()) {
+                    return false;
+                } else if (!self.hasNext() && !other.hasNext()) {
+                    return true;
+                }
                 otherItem = mapper.convertTo(other.next());
                 selfItem = self.next();
                 if (selfItem != null) {

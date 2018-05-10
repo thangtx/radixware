@@ -34,14 +34,20 @@ public class DeleteCascadeConfirmationRequiredException extends RadixPublishedEx
             subDelEntitiesSet = null;
             subNullEntitiesSet = null;
     }        
-
+    
     public DeleteCascadeConfirmationRequiredException(final Arte arte, final Set<String> subDelEntitiesSet, final Set<String> subNullEntitiesSet){
-        super(buildMessage(arte, subDelEntitiesSet, subNullEntitiesSet));
+        this(arte, Collections.<String>emptySet(), subDelEntitiesSet, subNullEntitiesSet);
+    }
+
+    public DeleteCascadeConfirmationRequiredException(final Arte arte, final Set<String> messagesList, final Set<String> subDelEntitiesSet, final Set<String> subNullEntitiesSet){
+        super(buildMessage(arte, messagesList, subDelEntitiesSet, subNullEntitiesSet));
         this.subDelEntitiesSet = subDelEntitiesSet==null || subDelEntitiesSet.isEmpty() ? null : new HashSet<>(subDelEntitiesSet);
         this.subNullEntitiesSet = subNullEntitiesSet==null || subNullEntitiesSet.isEmpty() ? null : new HashSet<>(subNullEntitiesSet);
     }
+    
+    
 
-    private static String buildMessage(final Arte arte, final Set<String> subDelEntitiesSet, final Set<String> subNullEntitiesSet){
+    private static String buildMessage(final Arte arte, final Set<String> messagesSet, final Set<String> subDelEntitiesSet, final Set<String> subNullEntitiesSet){
         final StringBuilder messageBuilder = new StringBuilder();
         final String clearRefsStr = listViaComma(subNullEntitiesSet);
         final String deleteStr = listViaComma(subDelEntitiesSet);
@@ -55,6 +61,14 @@ public class DeleteCascadeConfirmationRequiredException extends RadixPublishedEx
             }
             final String messageTemplate = getMessageString(arte,Messages.MLS_ID_CONFIRM_TO_DELETE_SUBOBJECT);
             messageBuilder.append(MessageFormat.format(messageTemplate, deleteStr));
+        }
+        if (messagesSet!=null){
+            for (String message: messagesSet){
+                if (messageBuilder.length() > 0) {
+                    messageBuilder.append("\n");
+                }
+                messageBuilder.append(message);
+            }
         }
         return messageBuilder.toString();
     }

@@ -13,10 +13,6 @@
     <MethodGroup Id="cmgDG6PPGMJ5VFPRD6UFNXZRKLZ7M" Name="Root"/>
     <PropertyGroup Id="cpgKLYRSDVCCJCBTODDWLRPLF2QSA" Name="Root"/>
     <Properties>
-      <Property Id="prdK52I54XABZF5DL2CSCTBA4CKWM" Name="propId" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules IsFinal="true"/>
-        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-      </Property>
       <Property Id="prd36KWO6X24RHBDCVRQA24WPVH7Y" Name="address" Nature="2" IsConst="false" IsOverride="false">
         <AccessRules IsFinal="true"/>
         <Type TypeId="21"/>
@@ -56,6 +52,10 @@
         <AccessRules/>
         <Type TypeId="221"/>
       </Property>
+      <Property Id="prdNRKJ4RSFOFFFFJDOHRXG7V2WNQ" Name="channelId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+      </Property>
     </Properties>
     <Methods>
       <Method Id="mthBI2RXC45QVAYPC7DWWJJUDIF5I" Name="AddressInfo" Nature="0" IsConstructor="true" IsOverride="false">
@@ -71,7 +71,7 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>this(address, channelType, null, null, null, null);</xsc:Java>
+              <xsc:Java>this(address, channelType, null, null, null, null, null);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -85,9 +85,6 @@
           <Parameter Name="channelType" Id="mprDMMPZEYNWFFSZOX3QLP7FPYRRQ">
             <Type TypeId="21" Path="acsYDEB2YYGTJDEFDQWYPIDMD256I"/>
           </Parameter>
-          <Parameter Name="propId" Id="mprU3ZQN373SVF4BI5VMEUTZ3EWFU">
-            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-          </Parameter>
           <Parameter Name="instanceId" Id="mprULC2K4ME2RHAHCGT5IK2ZFTWFU">
             <Type TypeId="2"/>
           </Parameter>
@@ -100,32 +97,14 @@
           <Parameter Name="sapId" Id="mprI6ZHHC5IQVH3NN5KGUVRG6OLVU">
             <Type TypeId="2"/>
           </Parameter>
-        </Parameters>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>this(address, channelType == null ? null : channelType.Value, propId, instanceId, unitId, sapId, description);</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
-      </Method>
-      <Method Id="mthOP35QW2WWZAYRGVFOJU4G3K3OI" Name="AddressInfo" Nature="0" IsConstructor="true" IsOverride="false">
-        <AccessRules/>
-        <Parameters>
-          <Parameter Name="address" Id="mpr35T36HF3BBFQRDVF2LSVDKD2OY">
-            <Type TypeId="21"/>
-          </Parameter>
-          <Parameter Name="channelType" Id="mpr36AQMDOJTFG75IEMTEJZHOOUBI">
-            <Type TypeId="21" Path="acsYDEB2YYGTJDEFDQWYPIDMD256I"/>
-          </Parameter>
-          <Parameter Name="propId" Id="mpr6SO64HCOSVDXTOZUQ3YJMFXBIE">
-            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          <Parameter Name="channelId" Id="mprUZQG42AZDZBUXHJSOYKDT677HE">
+            <Type TypeId="2"/>
           </Parameter>
         </Parameters>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>this(address, channelType, propId, null, null, null);</xsc:Java>
+              <xsc:Java>this(address, channelType == null ? null : channelType.Value, instanceId, unitId, sapId, description, channelId);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -139,9 +118,6 @@
           <Parameter Name="channelType" Id="mpr6HNSU4YYORFEJJBYA6JORKHYTA">
             <Type TypeId="21" Path="acsYDEB2YYGTJDEFDQWYPIDMD256I"/>
           </Parameter>
-          <Parameter Name="propId" Id="mprBYUXJWLAIRDG3PSPA4FWOBXWTA">
-            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-          </Parameter>
           <Parameter Name="instanceId" Id="mprSBLHOYE2M5GOZD3CR7UF25Q6FI">
             <Type TypeId="2"/>
           </Parameter>
@@ -151,11 +127,15 @@
           <Parameter Name="description" Id="mpr6TSSF7JGIZFLFMIGCWF4MDIMUE">
             <Type TypeId="21"/>
           </Parameter>
+          <Parameter Name="channelId" Id="mprXZEF2J2Q6BF73COVTCYUKICB5M">
+            <Type TypeId="2"/>
+          </Parameter>
         </Parameters>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>this(address, channelType, propId, instanceId, unitId, description, null);</xsc:Java>
+              <xsc:Java>this(address, channelType, instanceId, unitId, description, null, channelId);
+</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -166,52 +146,91 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>StringBuilder sb = new StringBuilder();
+              <xsc:Java>StringBuilder sb = new StringBuilder(); //[Instance#X/Unit#Y/NetChannel#Z/descr]
+
 if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdEAVUNU2IAFFIJMN47MVVBZW55E" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdEAVUNU2IAFFIJMN47MVVBZW55E" Invoke="true">
+                <xsc:Presentation>instanceId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null) {
-    sb.append("inst#");
+    sb.append("Instance#");
     sb.append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdEAVUNU2IAFFIJMN47MVVBZW55E" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdEAVUNU2IAFFIJMN47MVVBZW55E" Invoke="true">
+                <xsc:Presentation>instanceId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
 }
+
 if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd2VJY43ZCUVHJBL6EDRO3EFZHEQ" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd2VJY43ZCUVHJBL6EDRO3EFZHEQ" Invoke="true">
+                <xsc:Presentation>unitId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null) {
     if(sb.length() > 0) {
         sb.append('/');
     }
-    sb.append("unit#");
+    sb.append("Unit#");
     sb.append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd2VJY43ZCUVHJBL6EDRO3EFZHEQ" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd2VJY43ZCUVHJBL6EDRO3EFZHEQ" Invoke="true">
+                <xsc:Presentation>unitId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
 }
+
 if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdNRKJ4RSFOFFFFJDOHRXG7V2WNQ" Invoke="true">
+                <xsc:Presentation>channelId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    if(sb.length() > 0) {
+        sb.append('/');
+    }
+    sb.append("NetChannel#");
+    sb.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdNRKJ4RSFOFFFFJDOHRXG7V2WNQ" Invoke="true">
+                <xsc:Presentation>channelId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+if(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true">
+                <xsc:Presentation>description</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null &amp;&amp; !</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true">
+                <xsc:Presentation>description</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.isEmpty()) {
@@ -221,35 +240,21 @@ if(</xsc:Java>
     sb.append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true">
+                <xsc:Presentation>description</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
 }
-
-if (sb.length() == 0 &amp;&amp; </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> != null) {
-    sb.append("sap#");
-    sb.append(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);
-}
-
 
 if(sb.length() > 0) {
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true">
+                <xsc:Presentation>address</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> + " [" + sb.toString() + "]";
@@ -257,7 +262,9 @@ if(sb.length() > 0) {
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true">
+                <xsc:Presentation>address</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -286,19 +293,25 @@ if(sb.length() > 0) {
     final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E">
+                <xsc:Presentation>Sap</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> sap = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E">
+                <xsc:Presentation>Sap</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(sapId, true);
@@ -306,45 +319,59 @@ if(sb.length() > 0) {
         this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true">
+                <xsc:Presentation>address</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = sap.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colKAQHY523RHWDBRCXAAIT4AGD7E" Invoke="true"/>
+              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colKAQHY523RHWDBRCXAAIT4AGD7E" Invoke="true">
+                <xsc:Presentation>address</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
         this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true">
+                <xsc:Presentation>channelTypeStr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = sap.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colTRHS4NFAJVH7VINHCA5AJ5FNK4" Invoke="true"/>
+              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colTRHS4NFAJVH7VINHCA5AJ5FNK4" Invoke="true">
+                <xsc:Presentation>channelType</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == null ? null : sap.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colTRHS4NFAJVH7VINHCA5AJ5FNK4" Invoke="true"/>
+              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colTRHS4NFAJVH7VINHCA5AJ5FNK4" Invoke="true">
+                <xsc:Presentation>channelType</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value;
         this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdME4UNVMWQZHRXIGGJMQX4CU7NY" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdME4UNVMWQZHRXIGGJMQX4CU7NY" Invoke="true">
+                <xsc:Presentation>scpList</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -352,19 +379,25 @@ if(sb.length() > 0) {
         final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="accUD5K7MLYHBG4VJUX4RSIPSV4BY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="accUD5K7MLYHBG4VJUX4RSIPSV4BY">
+                <xsc:Presentation>SapScpCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> sapScpCur = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="accUD5K7MLYHBG4VJUX4RSIPSV4BY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="accUD5K7MLYHBG4VJUX4RSIPSV4BY">
+                <xsc:Presentation>SapScpCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="accUD5K7MLYHBG4VJUX4RSIPSV4BY mth_stmt_execute_____________" Invoke="true"/>
+              <xsc:IdReference Path="accUD5K7MLYHBG4VJUX4RSIPSV4BY mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>open</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(sapId);
@@ -372,20 +405,26 @@ if(sb.length() > 0) {
             while (sapScpCur.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+                <xsc:Presentation>next</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) {
                 this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdME4UNVMWQZHRXIGGJMQX4CU7NY" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdME4UNVMWQZHRXIGGJMQX4CU7NY" Invoke="true">
+                <xsc:Presentation>scpList</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.add(sapScpCur.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="accUD5K7MLYHBG4VJUX4RSIPSV4BY prfTVHQSQNLFFGZLNEJW3OYSBRJ3A" Invoke="true"/>
+              <xsc:IdReference Path="accUD5K7MLYHBG4VJUX4RSIPSV4BY prfTVHQSQNLFFGZLNEJW3OYSBRJ3A" Invoke="true">
+                <xsc:Presentation>scpName</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -394,7 +433,9 @@ if(sb.length() > 0) {
             sapScpCur.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true">
+                <xsc:Presentation>close</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -402,13 +443,17 @@ if(sb.length() > 0) {
         this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd6VGJUXFPNVHQXONTNQ7ZLGY75A" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd6VGJUXFPNVHQXONTNQ7ZLGY75A" Invoke="true">
+                <xsc:Presentation>serviceUri</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = sap.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colDLZ4FCERW3NRDJLUACQMTAIZT4" Invoke="true"/>
+              <xsc:IdReference Path="aecR7FXMYDVVHWDBROXAAIT4AGD7E colDLZ4FCERW3NRDJLUACQMTAIZT4" Invoke="true">
+                <xsc:Presentation>uri</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -417,21 +462,27 @@ if(sb.length() > 0) {
 this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdEAVUNU2IAFFIJMN47MVVBZW55E" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdEAVUNU2IAFFIJMN47MVVBZW55E" Invoke="true">
+                <xsc:Presentation>instanceId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = instanceId;
 this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd2VJY43ZCUVHJBL6EDRO3EFZHEQ" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd2VJY43ZCUVHJBL6EDRO3EFZHEQ" Invoke="true">
+                <xsc:Presentation>unitId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = unitId;
 this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd3FILHMDXMVHOZJD76U6R4HZXJ4" Invoke="true">
+                <xsc:Presentation>sapId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = sapId;
@@ -450,9 +501,6 @@ this.</xsc:Java>
           <Parameter Name="channelTypeStr" Id="mprEK3UC4DDZJBQLIXXRA6DP37LWU">
             <Type TypeId="21"/>
           </Parameter>
-          <Parameter Name="propId" Id="mprRZ5Q5JANLNFLDGPMNE4TACJ664">
-            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
-          </Parameter>
           <Parameter Name="thisInstanceId" Id="mpr7QPLAQR3OFGSZDH2KR4OKRKWCM">
             <Type TypeId="2"/>
           </Parameter>
@@ -465,39 +513,50 @@ this.</xsc:Java>
           <Parameter Name="description" Id="mprAEUTOFCRFZFVPARC2C5UJSXD7M">
             <Type TypeId="21"/>
           </Parameter>
+          <Parameter Name="channelId" Id="mprX76RVNFLANAEVPTYNKO3FTXRQM">
+            <Type TypeId="2"/>
+          </Parameter>
         </Parameters>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>this(null, null, thisSapId);
+              <xsc:Java>this(thisInstanceId, thisUnitId, thisSapId);
 this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prd36KWO6X24RHBDCVRQA24WPVH7Y" Invoke="true">
+                <xsc:Presentation>address</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = address;
 this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdK52I54XABZF5DL2CSCTBA4CKWM" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> = propId;
-this.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdJQXRJ7TCABDFXO5I4ITJMS42RI" Invoke="true">
+                <xsc:Presentation>description</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = description;
 this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true"/>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdZTBDEJAERVFW5BQ4H54RYWEZ3M" Invoke="true">
+                <xsc:Presentation>channelTypeStr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = channelTypeStr;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4 prdNRKJ4RSFOFFFFJDOHRXG7V2WNQ" Invoke="true">
+                <xsc:Presentation>channelId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = channelId;
 </xsc:Java>
             </xsc:Item>
           </Src>

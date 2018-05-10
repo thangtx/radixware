@@ -84,4 +84,21 @@ public class ProblemAnnotationFactory {
     public static SpellingAnnotation newSpellingAnnotation(String word, EIsoLanguage language) {
         return new SpellingAnnotation(word, language);
     }
+    
+    public static class XmlDocumentationAnnotation implements RadixProblem.IAnnotation {
+        
+        private final String nodeXpath;
+
+        private XmlDocumentationAnnotation(String nodeXpath) {
+            this.nodeXpath = nodeXpath;
+        }
+
+        public String getNodeXpath() {
+            return nodeXpath;
+        }        
+    }
+    
+    public static XmlDocumentationAnnotation newXmlDocumentationAnnotation(String nodeXpath) {
+        return new XmlDocumentationAnnotation(nodeXpath);
+    }
 }

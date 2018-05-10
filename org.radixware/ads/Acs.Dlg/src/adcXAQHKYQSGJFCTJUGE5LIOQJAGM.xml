@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcXAQHKYQSGJFCTJUGE5LIOQJAGM" Name="RoleArrPropEditorWeb" Type="3" Environment="web">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcXAQHKYQSGJFCTJUGE5LIOQJAGM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcXAQHKYQSGJFCTJUGE5LIOQJAGM">
+        <xsc:Item>
+          <xsc:Java>public static class ValEditorFactoryImplArrStr&lt;T extends org.radixware.kernel.common.types.Arr> extends org.radixware.wps.views.editor.property.PropArrEditor.ValEditorFactoryImpl&lt;T> {
+
+    private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcV6GI3FVNNNGTNAFJ2S7FO2DPSI">
+            <xsc:Presentation>Explorer.Models.Properties::PropertyArr</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> prop;
+
+    public ValEditorFactoryImplArrStr(final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcV6GI3FVNNNGTNAFJ2S7FO2DPSI">
+            <xsc:Presentation>Explorer.Models.Properties::PropertyArr</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java><![CDATA[ property) {
+        super(property);
+        this.prop = property;
+    }
+
+    protected org.radixware.wps.rwt.InputBox.DisplayController<T> createDisplayControllerWrapper(final org.radixware.wps.rwt.InputBox.DisplayController<T> defaultController) {
+        return new PropertyDisplayControllerArrStr<T>(defaultController, prop);
+    }
+
+    public class PropertyDisplayControllerArrStr<Type> implements org.radixware.wps.rwt.InputBox.DisplayController<Type> {
+
+        final org.radixware.wps.rwt.InputBox.DisplayController<Type> defaultDisplayController;
+        final ]]></xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcYPRT23KRRVAX7AN3727VBD5VI4">
+            <xsc:Presentation>Explorer.Models.Properties::Property</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> property;
+
+        public PropertyDisplayControllerArrStr(final org.radixware.wps.rwt.InputBox.DisplayController&lt;Type> displayController, final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcYPRT23KRRVAX7AN3727VBD5VI4">
+            <xsc:Presentation>Explorer.Models.Properties::Property</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> property) {
+            defaultDisplayController = displayController;
+            this.property = property;
+        }
+
+        @Override
+        public String getDisplayValue(Type value, boolean isFocused, boolean isReadOnly) {
+            </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="221">
+            <xsc:Presentation>ArrStr</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> guids = (</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="221">
+            <xsc:Presentation>ArrStr</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) value;
+
+            if (guids != null &amp;&amp; !guids.isEmpty()) {
+                return </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4">
+            <xsc:Presentation>RoleEditorUtils</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 adc7EA2KXQSEFBNPDLW7Q3JAOIDV4">
+            <xsc:Presentation>RoleTitleCache</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcXCPDF2MDMVEOPLW2ZFMHVAHJU4 adc7EA2KXQSEFBNPDLW7Q3JAOIDV4 mthORCQYLP4BJEG5EIERWD53OIASY" Invoke="true">
+            <xsc:Presentation>getTitleByGuids</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(guids, getEnvironmentStatic());
+            }
+            
+            final org.radixware.kernel.common.enums.EEditMaskType maskType = property.getEditMask().getType();
+            final boolean isEditMaskCompatible = maskType == org.radixware.kernel.common.enums.EEditMaskType.BOOL || maskType == org.radixware.kernel.common.enums.EEditMaskType.LIST || maskType == org.radixware.kernel.common.enums.EEditMaskType.ENUM;
+            final org.radixware.kernel.common.enums.EValType valType = property.getType();
+            final boolean isValTypeCompatible = valType.isArrayType() || valType == org.radixware.kernel.common.enums.EValType.OBJECT || valType == org.radixware.kernel.common.enums.EValType.XML;
+            final String defaultDisplayString = defaultDisplayController.getDisplayValue(value, isFocused, isReadOnly);
+            if (isEditMaskCompatible || isValTypeCompatible || isReadOnly) {
+                return property.getOwner().getDisplayString(
+                        property.getId(), value, defaultDisplayString, !property.hasOwnValue());
+            } else {
+                return defaultDisplayString;
+            }
+        }
+    }
+}</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgNQMDKNMHLBAYRH7IW7GZFNCXU4" Name="Root"/>
+    <PropertyGroup Id="cpgEYL2VYVDLNHIXASMFXTT6JPFSA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthLSJBUZMSMVBSXJD7ELPEXKJHQE" Name="RoleArrPropEditorWeb" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="property" Id="mpr7GT4NOLZX5H7TO7JDXQBGUEUXI">
+            <Type TypeId="411" Path="adcV6GI3FVNNNGTNAFJ2S7FO2DPSI">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Arr"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(property, new ValEditorFactoryImplArrStr&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>(property));
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcR7J7BDXLTJHNFPJTX7IY42ZF7Q">
+      <xsc:GenericArguments>
+        <xsc:Argument Alias="?">
+          <xsc:Type TypeId="221"/>
+        </xsc:Argument>
+      </xsc:GenericArguments>
+    </Extends>
+  </AdsClassDefinition>
+</AdsDefinition>

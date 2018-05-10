@@ -28,15 +28,16 @@ import org.radixware.kernel.common.enums.EFileSeekOriginType;
 
 public class FileResource implements IFileResource {
 
-    RandomAccessFile file;
+    private RandomAccessFile file;
     private boolean eof = false;
     private final int id;
-    private String fileName;
+    private final String filePath;
 
     public FileResource(final String fileName, final EFileOpenMode openMode, final EFileOpenShareMode share) throws IOException, TerminalResourceException {
         if (fileName == null || fileName.isEmpty()) {
             throw new TerminalResourceException("file name was not defined");
         }
+        filePath = fileName;
         final File f = new File(fileName);
         id = f.hashCode();
         final String mode;
@@ -129,6 +130,10 @@ public class FileResource implements IFileResource {
     @Override
     public boolean isOpened() {
         return file != null;
+    }
+    
+    public String getFilePath(){
+        return filePath;
     }
 
     @Override
@@ -312,5 +317,5 @@ public class FileResource implements IFileResource {
                 out.close();
             }
         }
-    }
+    }    
 }

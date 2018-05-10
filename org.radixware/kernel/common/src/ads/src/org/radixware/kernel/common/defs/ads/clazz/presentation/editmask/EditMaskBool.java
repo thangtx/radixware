@@ -65,12 +65,40 @@ public class EditMaskBool extends EditMask implements ILocalizedDef {
     }
 
     public final void setFalseValue(String val) {
-        this.strFalseValue = ValAsStr.toStr(val, getEvalType());
+        if (getEvalType() == EValType.BOOL){
+            Boolean booolVal = getBoolValueByString(val);
+
+            this.strFalseValue = ValAsStr.toStr(booolVal, getEvalType());
+
+        } else {
+            this.strFalseValue = ValAsStr.toStr(val, getEvalType());
+        }
         modified();
+    }
+        
+    private Boolean getBoolValueByString(String val){
+        if (val == null) {
+            return null;
+        }
+        
+        switch(val){
+            case "1": case "true" : case "Boolean.TRUE":
+                return Boolean.TRUE;
+            case "0" : case "false" : case "Boolean.FALSE":
+                return Boolean.FALSE;
+            default:
+                return null;
+        }
     }
 
     public final void setTrueValue(String val) {
-        this.strTrueValue = ValAsStr.toStr(val, getEvalType());
+        if (getEvalType() == EValType.BOOL){
+            Boolean booolVal = getBoolValueByString(val);
+            
+            this.strTrueValue = ValAsStr.toStr(booolVal, getEvalType());
+        } else {
+            this.strTrueValue = ValAsStr.toStr(val, getEvalType());
+        }
         modified();
     }
 
@@ -102,9 +130,7 @@ public class EditMaskBool extends EditMask implements ILocalizedDef {
         if (isCompatible(type)) {
             switch (valueType) {
                 case DEFAULT:
-                    if ("1".equals(strTrueValue) || "true".equals(strTrueValue) || "Boolean.TRUE".equals(strTrueValue)) {
-                        val = Boolean.TRUE;
-                    }
+                    val = getBoolValueByString(strTrueValue);
                     break;
                 case INT:
                     val = ValAsStr.fromStr(strTrueValue, EValType.INT);
@@ -130,9 +156,7 @@ public class EditMaskBool extends EditMask implements ILocalizedDef {
         if (isCompatible(type)) {
             switch (valueType) {
                 case DEFAULT:
-                    if ("0".equals(strFalseValue) || "false".equals(strFalseValue) || "Boolean.FALSE".equals(strFalseValue)) {
-                        val = Boolean.FALSE;
-                    }
+                    val = getBoolValueByString(strFalseValue);
                     break;
                 case INT:
                     val = ValAsStr.fromStr(strFalseValue, EValType.INT);

@@ -15,6 +15,7 @@ import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.client.types.Reference;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.schemas.xscml.Sqml.Item.ParentCondition.Operator;
 
 
@@ -82,9 +83,7 @@ public class ParentConditionTranslator extends  SqmlTagTranslator{
             } else {
                 toolTip= presentationClassDef.getTitle() + "." + prop.getTitle() + " " + str_operator + str_objTitle;
             }
-            if (toolTip.indexOf('<') != -1) {
-                toolTip = toolTip.replaceAll("<", "&#60;");
-            }
+            toolTip = Html.string2HtmlString(toolTip);
         }else{
             toolTip=getNotValidString();
         }

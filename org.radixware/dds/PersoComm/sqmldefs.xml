@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlL4NHVGEOUTOBDANVABIFNQAABA" QualifiedName="Radix::PersoComm">
+  <PackageDef Id="pkgBNGWU4V545DZFKCOJCEOLDVYQU" Name="RDX_PC_Maintenance">
+    <Function Id="dfnLDGVVV5AXZC5XLDVI6RIGBPTBE" Name="daily" ResultDbType=""/>
+  </PackageDef>
+  <PackageDef Id="pkgLJQYHYB3UFBK5MGOL7HODDBNKM" Name="RDX_PC_Utils">
+    <Function Id="dfn3HEZASVYUNBFTJK5LO3ORZQWA4" Name="findSuitableChannelId" ResultDbType="integer">
+      <Parameter Id="dfpK4AVOBVWKBGYDOGBF72DEKHQMA" Name="pKind" DbName="pKind" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpXNBK2EBD2BE2JAZUF3IQAPDQNI" Name="pAddress" DbName="pAddress" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpCRMAF5RVZ5CHRBLILVQBNOV7EI" Name="pImportance" DbName="pImportance" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpRV2K7ABA7VCABJSGS5YAYKRSZA" Name="pExcludeUnitId" DbName="pExcludeUnitId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp7QMKPNHKIJG77AGYHYQ2IQ6FN4" Name="pPrevPriority" DbName="pPrevPriority" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnKIMG2PDERRDS7I57MFT2WVIRMA" Name="extractActualAddress" ResultDbType="varchar2">
+      <Parameter Id="dfpYDZ2QHC4JZCDXG2QT7XXEMRIOY" Name="kind" DbName="kind" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZRJTKHZIVVAHZBQWLD3DMNC7RU" Name="address" DbName="address" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <TableDef Id="tbl5O3H4DJEVLOBDCLSAALOMT5GDM" Name="Attachment">
+    <Indexes>
+      <Index Id="idx5O3H4DJEVLOBDCLSAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col5W3H4DJEVLOBDCLSAALOMT5GDM col7YNGGGJEVLOBDCLSAALOMT5GDM"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col5W3H4DJEVLOBDCLSAALOMT5GDM" Name="messId" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="col7YNGGGJEVLOBDCLSAALOMT5GDM" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colRXLPGHZEVLOBDCLSAALOMT5GDM" Name="title" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colCQNSWKREVLOBDCLSAALOMT5GDM" Name="mimeType" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="col2Y73MPREVLOBDCLSAALOMT5GDM" Name="data" ValType="28" Length="0" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" Name="ChannelUnit" MasterTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E">
+    <Indexes>
+      <Index Id="idx5WO5N3BEVLOBDCLSAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colUZY3V5REVLOBDCLSAALOMT5GDM"/>
+    </Indexes>
+    <ReferenceToMasterTable Id="refLJSTGVRFVLOBDCLSAALOMT5GDM" Name="ChannelUnit=>Unit (id=>id)"/>
+    <OutgoingReferences>
+      <Reference Id="ref3B3IDEGGWBADLHL5DHOGW4BL3E" Name="ChannelUnit=>Sap (deliveryAckSapId=>id)" ReferencedTableId="tblR7FXMYDVVHWDBROXAAIT4AGD7E" ChildColumnNames="deliveryAckSapId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colUZY3V5REVLOBDCLSAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colB2VQZVZFVLOBDCLSAALOMT5GDM" Name="kind" ValType="21" Length="20" Precision="0" NotNull="true"/>
+      <Column Id="colDS7R3IHBBFBJVGXEA5XTB36HHI" Name="minImportance" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col2TCIGGC4EFA6BGRDSLQGCOLQQ4" Name="maxImportance" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNSHJLYZFVLOBDCLSAALOMT5GDM" Name="sendPeriod" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col6ARRB4BFVLOBDCLSAALOMT5GDM" Name="recvPeriod" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colWASXULBLVLOBDCLSAALOMT5GDM" Name="sendAddress" ValType="21" Length="500" Precision="0" NotNull="true"/>
+      <Column Id="col4UVYQI3O4DOBDAPTABQJO5ADDQ" Name="pop3Address" ValType="21" Length="500" Precision="0"/>
+      <Column Id="colNOHTUMZLVLOBDCLSAALOMT5GDM" Name="recvAddress" ValType="21" Length="500" Precision="0" NotNull="true"/>
+      <Column Id="colPSI5Q6JLVLOBDCLSAALOMT5GDM" Name="messAddressRegexp" ValType="21" Length="500" Precision="0" NotNull="true"/>
+      <Column Id="colVV73PCZLVLOBDCLSAALOMT5GDM" Name="routingPriority" ValType="2" Length="2" Precision="0" NotNull="true"/>
+      <Column Id="colRPM5HGZLVLOBDCLSAALOMT5GDM" Name="encoding" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colHEW6Y7BQVLOBDCLSAALOMT5GDM" Name="smppSystemId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colZM275BJQVLOBDCLSAALOMT5GDM" Name="smppSystemType" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col2KCZRM4VHBC2XNT32CRN5UDKWE" Name="smppSessionType" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col66NFXWMWJ5HDBJFYGSP3WGJZDI" Name="smppSessionTon" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colSXQZYQ3C7JCLFP4XIHFNAS42P4" Name="smppSessionNpi" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colZ5DQRVBQVLOBDCLSAALOMT5GDM" Name="smppPassword" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colAYWB5XRQVLOBDCLSAALOMT5GDM" Name="smppSourceAddress" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colADKKX2RQVLOBDCLSAALOMT5GDM" Name="smppSourceAddressTon" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colK43Q5NBRVLOBDCLSAALOMT5GDM" Name="smppSourceAddressNpi" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colHTZKDXRRVLOBDCLSAALOMT5GDM" Name="smppDestinationTon" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colHPZKDXRRVLOBDCLSAALOMT5GDM" Name="smppDestinationNpi" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colJUHQZ4BRVLOBDCLSAALOMT5GDM" Name="smppInterface" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colZDR3LOG2CFDKDJQ6XT5YNDPWCU" Name="smppEncoding" ValType="21" Length="64" Precision="0"/>
+      <Column Id="colJYHQZ4BRVLOBDCLSAALOMT5GDM" Name="smppMaxLen" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colHR7J6PZSVLOBDCLSAALOMT5GDM" Name="emailLogin" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colVKPD2RZSVLOBDCLSAALOMT5GDM" Name="emailPassword" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colNJYSFS5NYNFS3JK5I57B3JF7VU" Name="emailSecureConnection" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colDSHWAVJSVLOBDCLSAALOMT5GDM" Name="addressTemplate" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col6CT2K2RSVLOBDCLSAALOMT5GDM" Name="subjectTemplate" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colTQE4J6T4NJEWHIDFMFRCFVLYIU" Name="fileFormat" ValType="21" Length="9" Precision="0"/>
+      <Column Id="colS6JTDOKLF5DODKNT3U7JX6NLTE" Name="twitterConsumerToken" ValType="21" Length="32" Precision="0"/>
+      <Column Id="colRNTC7FPZPZHVDC4RGQMHO6CG6E" Name="twitterConsumerSecret" ValType="21" Length="50" Precision="0"/>
+      <Column Id="colXQ24IOUDWVCLRB6HFJBQCW5GNQ" Name="twitterAccessToken" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colXJPBII4DQRGMRKMCVYGODJGIRA" Name="twitterAccessSecret" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colV4JLFAINZBDR3MMLVE36PDT4FA" Name="sendTimeout" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col2JTW5FEG7BGWXJKPY32PJMLZ2Q" Name="apnsKeyAlias" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colD3QM3EOPYZE4LFS5WTLABGGJO4" Name="apnsMaxParallelSendCount" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col6ETTUWW7OJGH3CGULRC2LRVYVA" Name="apnsSuccessfulAfterMillis" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colDHHQU7OBCNCURGLC5CB672NCE4" Name="gcmApiKey" ValType="21" Length="600" Precision="0"/>
+      <Column Id="colESMLS2WYC5G6FGDNC5MAUIXPDI" Name="routingKeyRegexp" ValType="21" Length="500" Precision="0"/>
+      <Column Id="colQYYL4LVVA5CFVMK63MXXWHGJV4" Name="deliveryTrackingPolicy" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colDHUCZH4SC5A6VKLQWEXJLA7AJM" Name="deliveryTrackingPeriod" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colOSQWZLFLI5G3RCM5C7JFSQX6M4" Name="deliveryTrackingRetryPeriod" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col4TEUNP3GBJBMJFVSUIHACL4PZE" Name="forwardDelaySec" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colDOMJ5BIHIRDLBBZX6CMS5BL5OA" Name="wnsClientId" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colD4FMZZ5MN5EZ5LB6Y366GDNJ2I" Name="wnsClientSecret" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colLU4DBVH3ZVFFNHZVGWBDA5WGWE" Name="deliveryAckSapId" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl7HTJAWJXVLOBDCLSAALOMT5GDM" Name="EventSubscription">
+    <Indexes>
+      <Index Id="idx7HTJAWJXVLOBDCLSAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colHWHRNERXVLOBDCLSAALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refAXWFGZZZVLOBDCLSAALOMT5GDM" Name="EventSubscription=>UserGroup (userGroupName=>name)" ReferencedTableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" ChildColumnNames="userGroupName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colHWHRNERXVLOBDCLSAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colKR5TN765CFF3DBX34OOON7AKBU" Name="extGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colVGT4AJJZVLOBDCLSAALOMT5GDM" Name="title" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colDHOISLJZVLOBDCLSAALOMT5GDM" Name="isActive" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colLHS5GRJZVLOBDCLSAALOMT5GDM" Name="userGroupName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="col5OTM5EZZVLOBDCLSAALOMT5GDM" Name="channelKind" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colZQGUBQRZVLOBDCLSAALOMT5GDM" Name="eventSource" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col6MRC5ZR3VLOBDCLSAALOMT5GDM" Name="minEventSeverity" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colJOXDSNJ4VLOBDCLSAALOMT5GDM" Name="subjectTemplate" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colIS5OGPB4VLOBDCLSAALOMT5GDM" Name="bodyTemplate" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colRJPBERR4VLOBDCLSAALOMT5GDM" Name="language" ValType="21" Length="2" Precision="0"/>
+      <Column Id="col3RTQXCB5VLOBDCLSAALOMT5GDM" Name="lowImportanceMaxSev" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colAQICTNR5VLOBDCLSAALOMT5GDM" Name="normalImportanceMaxSev" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colVNCG43RIBREHHI5FFCUATH4PTM" Name="toStoreInHist" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="col4DUQDXN7NRBVVPPE5WTHOZVOSA" Name="limitPeriodKind" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colQQJTGSWPQRGS5LTJG42YEJUHZA" Name="limitCnt" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colVH3DNHSDUBD3JPNV535DVDBYBU" Name="limitMessSubjectTemplate" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col2FJBO5EEGJCW3MOVEG3KLYQCGA" Name="limitMessBodyTemplate" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colAHRGCGAEXRBSFHGEVGOAXJZ4BE" Name="routingKey" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblGBOAYN4PUTOBDANVABIFNQAABA" Name="OutMessage">
+    <Indexes>
+      <Index Id="idxGBOAYN4PUTOBDANVABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col3YNY224PUTOBDANVABIFNQAABA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refNA2RGKBQVXOBDCLUAALOMT5GDM" Name="OutMessage=>Unit (channelId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="channelId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="col3YNY224PUTOBDANVABIFNQAABA" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col5CKW454PUTOBDANVABIFNQAABA" Name="subject" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colDUU5BZMPUTOBDANVABIFNQAABA" Name="body" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colSEJB3YF6WFEZHOX4HX24NF4H4A" Name="maskedBody" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colWBAD4MPNUFFYZCHKSKE4LH6LHI" Name="smppEncoding" ValType="21" Length="64" Precision="0"/>
+      <Column Id="colDYU5BZMPUTOBDANVABIFNQAABA" Name="importance" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colMWTKV4MPUTOBDANVABIFNQAABA" Name="createTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colM2TKV4MPUTOBDANVABIFNQAABA" Name="dueTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colBRWI77EPUTOBDANVABIFNQAABA" Name="expireTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colGBH2JEACTVBTTOIGPJHGZIUROM" Name="histMode" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col4RHX4A4QUTOBDANVABIFNQAABA" Name="channelKind" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colPRIH4IEQUTOBDANVABIFNQAABA" Name="address" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colFLYC2OLNIBEQRMU4HSLQGRFMLA" Name="addressFrom" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="col6STBOLMQUTOBDANVABIFNQAABA" Name="sourceEntityGuid" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colPDVAS7UQUTOBDANVABIFNQAABA" Name="sourcePid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col6LCP3VS5MFBXFIXFRYSR3WJBGM" Name="sourceMsgId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colPIHVQDD6VZBQVMO5CNQ7SP33AU" Name="destEntityGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colHBZLONSMMRDLFPVLUPA36J4GDQ" Name="destPid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colLRRSUR4QUTOBDANVABIFNQAABA" Name="callbackClassName" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="col6R756U4QUTOBDANVABIFNQAABA" Name="callbackMethodName" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colZKRADR2XH5AWHOSJVUP3XFJRLI" Name="inProcess" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colQQY3SX4QUTOBDANVABIFNQAABA" Name="channelId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colED3AUMJRQJBNNEWWF63ENGBGDU" Name="sentTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="col3DAJREKW3NHERCUYZJEOXLZKXQ" Name="failedMessage" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colHIAURDZIHRC7JA5STQBH6PVXUQ" Name="failedTryCount" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col2NMC43PMHRGYBONJZFLS22YQ3E" Name="failedLastSendDate" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colS2LOJTRFBJCDFHYYJEGO5QSN24" Name="failedIsUnrecoverable" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colGSWFU5C55JC6HKXPXQCZIC25LM" Name="routingKey" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colCSFRDRISERF5BCBFNGO7PIVLOI" Name="initialDueTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colJPLR6ALQ7BAQLE63V7E5J4YU2E" Name="storeAttachInHist" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colPWH7EBJHERA7BFZVPMJCJ7SOT4" Name="baseForwardTimeMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colPTZGQXCTHVACRMZEFHIQV3W4EU" Name="lastForwardTimeMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colSTBPUQBGHRBLBNXEY6BL2ZSKOY" Name="isUssd" ValType="1" Length="1" Precision="0"/>
+      <Column Id="colHJPGXALIU5CFFNE3AXBAPQD4XM" Name="ussdServiceOp" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colK5DZH446IRBRVFDGJRBTGYEWEQ" Name="deliveryCallbackClassName" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colP2XZB6FQONDH5GA4ZLDWHO2FVI" Name="deliveryCallbackMethodName" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colG2MGIAWXPJDGZMPJHM4QG6P4QA" Name="deliveryTimeout" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colF4WMZEHSXZDCLLMKZHU73A57PA" Name="stageNo" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colBWUMTS2TWBEIPPXRMTVTPH3ZQY" Name="prevStageMessageId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colNQOCLTUC4BADNMZKWPLKNSRFSM" Name="sendCallbackData" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colHRVJLPPFBNFQ5KLQE3K7P2ND5U" Name="deliveryCallbackData" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colPVLSCIJKHVBZZADGNHKVT57J2I" Name="deliveryExpTimeMillis" ValType="2" Length="18" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblLXLOGLESUTOBDANVABIFNQAABA" Name="RecvMessage">
+    <Indexes>
+      <Index Id="idxLXLOGLESUTOBDANVABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colX3PXDZRCVLOBDCLSAALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref2K7HYMRQVXOBDCLUAALOMT5GDM" Name="RecvMessage=>Unit (channelId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="channelId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colX3PXDZRCVLOBDCLSAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colW53AP6RCVLOBDCLSAALOMT5GDM" Name="importance" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colXF3AP6RCVLOBDCLSAALOMT5GDM" Name="subject" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colXB3AP6RCVLOBDCLSAALOMT5GDM" Name="body" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colNQ6OMXZDVLOBDCLSAALOMT5GDM" Name="sendTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colNU6OMXZDVLOBDCLSAALOMT5GDM" Name="recvTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="col2HVBIVBDVLOBDCLSAALOMT5GDM" Name="channelId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col726AU7BDVLOBDCLSAALOMT5GDM" Name="address" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colUESOPNO7S5DEXMRED7NWYI7IFU" Name="destEntityGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colNJJ6EUBFNNC4RGFO3RDQW4M6UQ" Name="destPid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colW2PIZESMNZHVXOWVZDGB24HSBQ" Name="destMsgId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colMHW5BQRKWNEQHIGODNT4FJOEV4" Name="isUssd" ValType="1" Length="1" Precision="0"/>
+      <Column Id="colMDNDZIZBEJACZGTFJ6UZYLXJV4" Name="ussdServiceOp" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblOA4BGTURUTOBDANVABIFNQAABA" Name="SentMessage">
+    <Indexes>
+      <Index Id="idxOA4BGTURUTOBDANVABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colOI4BGTURUTOBDANVABIFNQAABA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refKKLRUFJQVXOBDCLUAALOMT5GDM" Name="SentMessage=>Unit (channelId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="channelId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colOI4BGTURUTOBDANVABIFNQAABA" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colOM4BGTURUTOBDANVABIFNQAABA" Name="subject" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colOQ4BGTURUTOBDANVABIFNQAABA" Name="body" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colSMQR44I5N5AGHIJMQFF6TUO4RU" Name="maskedBody" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colWRXU6KICKFCKBE5YNLT55VTE54" Name="smppEncoding" ValType="21" Length="64" Precision="0"/>
+      <Column Id="colOU4BGTURUTOBDANVABIFNQAABA" Name="importance" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colOY4BGTURUTOBDANVABIFNQAABA" Name="createTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colO44BGTURUTOBDANVABIFNQAABA" Name="dueTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colPA4BGTURUTOBDANVABIFNQAABA" Name="expireTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colZMZAPRLLXBFCLH7VUIGVA7HOK4" Name="histMode" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colPE4BGTURUTOBDANVABIFNQAABA" Name="channelKind" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colPI4BGTURUTOBDANVABIFNQAABA" Name="address" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colPM4BGTURUTOBDANVABIFNQAABA" Name="sourceEntityGuid" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colPQ4BGTURUTOBDANVABIFNQAABA" Name="sourcePid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colPU4BGTURUTOBDANVABIFNQAABA" Name="sourceMsgId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col6HSMYFOSV5EWPD575PUINSYHEM" Name="destEntityGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colJP4VCQ3UPBA4PIHAITVYDWTEV4" Name="destPid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colPY4BGTURUTOBDANVABIFNQAABA" Name="callbackClassName" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colP44BGTURUTOBDANVABIFNQAABA" Name="callbackMethodName" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colQA4BGTURUTOBDANVABIFNQAABA" Name="channelId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colIE2KOWURUTOBDANVABIFNQAABA" Name="sentTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="col7WEBG24RUTOBDANVABIFNQAABA" Name="sendError" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colBDMFQL73SVFQJIEN2O5QNJLRR4" Name="smppBytesSent" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colT2UDNHX6OBH5NC5HWV3HOJY2BQ" Name="smppCharsSent" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colOIBT34FIG5G2DH6GQ3DBY4VXNQ" Name="smppPartsSent" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colAKIXW6SGNJBTFMGDGNF2DG3FJM" Name="routingKey" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colQXYMWXELEVCX7NF4GACIHMPVL4" Name="storeAttachInHist" ValType="1" Length="1" Precision="0"/>
+      <Column Id="colI3F7THEYXRF35CL4TRW2KAI7QU" Name="deliveryStatus" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colAYKPP3DRG5DSJM6JICMM3UWIT4" Name="lastDeliveryStatusChangeDate" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colR4UDIIE2IFC33IEFMZOEATMYM4" Name="smppMessageId" ValType="21" Length="64" Precision="0"/>
+      <Column Id="colOH42BANGWVAY3EXEMXZZNO7IRM" Name="isUssd" ValType="1" Length="1" Precision="0"/>
+      <Column Id="colLK7JQVGCFRAV3NJTQFYX7VMBYY" Name="ussdServiceOp" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colP36RBYIF2FF75HEYQO3KV23FNA" Name="sendCallbackRequired" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colVTBL3E6TJVGFXK3IZYZAAVN5DU" Name="deliveryCallbackRequired" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colGEUMW2NUSFF3RKAB64DOQLD75M" Name="deliveryExpTimeMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colHBKOTQRWA5H73OKJK7RBV7TF4Y" Name="deliveryCallbackClassName" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colVVKDXIQPMJG7BPPIEW4H3LH7FE" Name="deliveryCallbackMethodName" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colTX7XBMURIZHZPATLJ73F4FXDLM" Name="lastDeliveryCallbackTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colHXFPFBMDIVFBZJX6347JRYIOYA" Name="stageNo" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colT6MBYYMFXVFT7FTATBQSBIMSTI" Name="prevStageMessageId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col6Z74VVJ3NFHBXKE5IS2NIYT3OM" Name="sendCallbackData" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colXYWM73QCI5CMZIENZ7QXRZOWME" Name="deliveryCallbackData" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colFRAX3TBORNG53HB3AVYZJ6TV3Y" Name="addressFrom" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colR7NK5DA6DVGIPANPWCZOVOUTUU" Name="initialDueTime" ValType="12" Length="0" Precision="6"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblOVPOORJSBFAGZERW5IXTRFTWOY" Name="EventLimitAcc">
+    <Indexes>
+      <Index Id="idx7FZYYYOMP5ABXAC3HMJVWUUO6M" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colB5AZ5UEFQZDINJ4GKCTHPEV6FI col5H3EKV6CP5FLPDN22LTWPOYMNQ colI4ECWVW5ZVCRTG4XUB574UYEPY colPDAZ2CAGRVB4RLYBJBTXBU4IDA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refO34Z6OWQUVH5VL5TZGNTFLH3S4" Name="EventLimitAcc=>User (userName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="userName"/>
+      <Reference Id="refVGBPMMU3TZBYZMFDQJDJ4IR3ZQ" Name="EventLimitAcc=>EventSubscription (subscriptionId=>id)" ReferencedTableId="tbl7HTJAWJXVLOBDCLSAALOMT5GDM" ChildColumnNames="subscriptionId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colB5AZ5UEFQZDINJ4GKCTHPEV6FI" Name="subscriptionId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col5H3EKV6CP5FLPDN22LTWPOYMNQ" Name="userName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colI4ECWVW5ZVCRTG4XUB574UYEPY" Name="eventCode" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colPDAZ2CAGRVB4RLYBJBTXBU4IDA" Name="channelKind" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colUOYO2LF6JFB4RFN7DFTMI3WJZI" Name="startTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colF2PPNEYMMJHPPLIGLDUKLXVT5E" Name="cnt" ValType="2" Length="9" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblVKKXVT2NARDUNGRKAOMYB6VWXI" Name="NotificationSender">
+    <Indexes>
+      <Index Id="idxNZ5YHS6OLBC5FB6VTZICU2D2XI" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colC6KU45IE5ZDTJOPL2DDMLU3NX4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refPBH6ZHX4X5GFFLXY3NOHK22EVI" Name="NotificationSender=>UserGroup (userGroupName=>name)" ReferencedTableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" ChildColumnNames="userGroupName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colC6KU45IE5ZDTJOPL2DDMLU3NX4" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colARKLG7SWKREHPGQYQWOU5XVGJI" Name="title" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colFOGZWULAQBCDDOMGLD2JGDR4TU" Name="rid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colDDQIPTWYDVGT3CSRPXZUPZNIZM" Name="extGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colPH5JTQND3VDZTJJ7Q46PRKF7JE" Name="channelKind" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colTGS3PTFC5RGSLAFMQFUSXEJUOI" Name="routingKey" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colEI7GIMO4KFAPRAU4HAVU6BQ3PI" Name="histMode" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colHDP4Q3IHNRGLZFFT6IRB3M3G24" Name="storeAttachInHist" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colYRJIL7ZCM5AK5LDULILF6B2FDA" Name="subjectTemplate" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colLB4DFGLQ7RD6TK65SWSARQVKGA" Name="bodyTemplate" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colXECQRSZBN5F27GJKI242EGT7NA" Name="userGroupName" ValType="21" Length="250" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblWWV5ZOJLAXORDAQBABQJO5ADDQ" Name="ChannelGSMModem">
+    <Indexes>
+      <Index Id="idxWWV5ZOJLAXORDAQBABQJO5ADDQ" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colHUBBHTJLAXORDAQBABQJO5ADDQ colFXZDJVJLAXORDAQBABQJO5ADDQ"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refMXODJ6JLAXORDAQBABQJO5ADDQ" Name="ChannelGSMModem=>Unit (channelUnitId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="channelUnitId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colHUBBHTJLAXORDAQBABQJO5ADDQ" Name="channelUnitId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colFXZDJVJLAXORDAQBABQJO5ADDQ" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col2G24JXJLAXORDAQBABQJO5ADDQ" Name="comPort" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col2K24JXJLAXORDAQBABQJO5ADDQ" Name="speed" ValType="2" Length="9" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblY2BRNTJ5VLOBDCLSAALOMT5GDM" Name="EventSubscriptionCode">
+    <Indexes>
+      <Index Id="idxY2BRNTJ5VLOBDCLSAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col7RGGXVR5VLOBDCLSAALOMT5GDM colYGK4PXB5VLOBDCLSAALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refEH2GXZJ5VLOBDCLSAALOMT5GDM" Name="EventSubscriptionCode=>EventSubscription (subscriptionId=>id)" ReferencedTableId="tbl7HTJAWJXVLOBDCLSAALOMT5GDM" ChildColumnNames="subscriptionId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="col7RGGXVR5VLOBDCLSAALOMT5GDM" Name="subscriptionId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colYGK4PXB5VLOBDCLSAALOMT5GDM" Name="code" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblYDGQACJVVLOBDCLSAALOMT5GDM" Name="ChannelHandler">
+    <Indexes>
+      <Index Id="idxYDGQACJVVLOBDCLSAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colPA42EDZVVLOBDCLSAALOMT5GDM colPE42EDZVVLOBDCLSAALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refJPRLYGJVVLOBDCLSAALOMT5GDM" Name="ChannelHandler=>Unit (unitId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="unitId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colPA42EDZVVLOBDCLSAALOMT5GDM" Name="unitId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colPE42EDZVVLOBDCLSAALOMT5GDM" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colQMAHWLJVVLOBDCLSAALOMT5GDM" Name="classGuid" ValType="21" Length="29" Precision="0" NotNull="true"/>
+      <Column Id="col2Q2OGMZVVLOBDCLSAALOMT5GDM" Name="title" ValType="21" Length="250" Precision="0"/>
+      <Column Id="col2M2OGMZVVLOBDCLSAALOMT5GDM" Name="subjectRegexp" ValType="21" Length="500" Precision="0" NotNull="true"/>
+      <Column Id="colKQYXQWRVVLOBDCLSAALOMT5GDM" Name="bodyRegexp" ValType="21" Length="500" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

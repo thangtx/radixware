@@ -14,21 +14,28 @@ package org.radixware.kernel.designer.dds.script;
 import org.radixware.kernel.common.defs.dds.DdsDefinition;
 
 
-class DefinitionPair {
-
+public class DefinitionPair {
     private final DdsDefinition oldDefinition;
     private final DdsDefinition newDefinition;
     private boolean needToDrop = false, needToAlter = false, needToCreate = false;
 
     public DefinitionPair(DdsDefinition oldDefinition, DdsDefinition newDefinition) {
-        this.oldDefinition = oldDefinition;
-        this.newDefinition = newDefinition;
-        if (oldDefinition == null) {
-            needToCreate = true;
-        } else if (newDefinition == null) {
-            needToDrop = true;
-        } else {
-            needToAlter = true;
+        if (oldDefinition == null && newDefinition == null) {
+            throw new IllegalArgumentException("Both oldDefinition and newDefinition are null");
+        }
+        else if (oldDefinition != null && newDefinition != null && !(oldDefinition.getClass().isAssignableFrom(newDefinition.getClass()) || newDefinition.getClass().isAssignableFrom(oldDefinition.getClass()))) {
+            throw new IllegalArgumentException("Uncompatible types of oldDefinition ["+oldDefinition.getClass()+"] and newDefinition ["+newDefinition.getClass()+"]");
+        }
+        else {
+            this.oldDefinition = oldDefinition;
+            this.newDefinition = newDefinition;
+            if (oldDefinition == null) {
+                this.needToCreate = true;
+            } else if (newDefinition == null) {
+                this.needToDrop = true;
+            } else {
+                this.needToAlter = true;
+            }
         }
     }
 
@@ -70,5 +77,10 @@ class DefinitionPair {
 
     public void setNeedToDrop(boolean needToDrop) {
         this.needToDrop = needToDrop;
+    }
+
+    @Override
+    public String toString() {
+        return "DefinitionPair{" + "oldDefinition=" + oldDefinition + ", newDefinition=" + newDefinition + ", needToDrop=" + needToDrop + ", needToAlter=" + needToAlter + ", needToCreate=" + needToCreate + '}';
     }
 }

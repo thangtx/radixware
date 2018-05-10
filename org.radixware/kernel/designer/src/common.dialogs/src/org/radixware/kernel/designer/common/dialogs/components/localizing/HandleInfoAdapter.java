@@ -15,6 +15,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.ExtendableDefinitions;
+import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 
 
@@ -92,7 +94,9 @@ public class HandleInfoAdapter implements ILocalizingStringContext {
     @Override
     public Map<EIsoLanguage, String> getValueMap() {
         if (hasValue()) {
-            final Set<EIsoLanguage> languages = getHandleInfo().getAdsMultilingualStringDef().getLanguages();
+            IMultilingualStringDef string = getHandleInfo().getAdsMultilingualStringDef();
+            string.getValues(ExtendableDefinitions.EScope.LOCAL);
+            final Set<EIsoLanguage> languages = string.getLanguages();
 
             final Map<EIsoLanguage, String> valueMap = new EnumMap<>(EIsoLanguage.class);
             for (final EIsoLanguage lang : languages) {
@@ -121,6 +125,16 @@ public class HandleInfoAdapter implements ILocalizingStringContext {
 
     @Override
     public ILocalizedStringInfo getStringInfo() {
-        return new LocalizedStringInfo(handleInfo.getAdsMultilingualStringDef());
+        IMultilingualStringDef string = handleInfo.getAdsMultilingualStringDef();
+        if (string != null){
+            return new LocalizedStringInfo(string);
+        }
+        return null;
+    }
+    
+    @Override
+    public boolean isReadOnly() {
+        Definition definition = getAdsDefinition();
+        return definition == null ? true : definition.isReadOnly();
     }
 }

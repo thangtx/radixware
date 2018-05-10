@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcBO5FTBH6ORGXVNPH43JOWSJVK4" Name="MoveJobsFromAadcMemberStmt" Type="10">
+    <AccessRules IsFinal="true" IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderspcBO5FTBH6ORGXVNPH43JOWSJVK4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyspcBO5FTBH6ORGXVNPH43JOWSJVK4"/>
+    </Bodies>
+    <MethodGroup Id="cmg7QUMEVK5UFGZTBNVJ67KJSQJIY" Name="Root"/>
+    <PropertyGroup Id="cpg32JORJUA5BBJ7LFAASLD43ACPI" Name="Root"/>
+    <Properties>
+      <Property Id="prmW6ZUKU5FTZHYHHOIQRLICFUHCA" Name="otherMemberId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prm6JYGVB7L5RCPRMKNR6G5MYCXSU" Name="movedCount" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="otherMemberId" Id="mprW6ZUKU5FTZHYHHOIQRLICFUHCA">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcBO5FTBH6ORGXVNPH43JOWSJVK4"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+    thisMemberId integer;
+    originalId number(18,0);
+    movedCount integer;
+begin
+    if </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmW6ZUKU5FTZHYHHOIQRLICFUHCA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = 1 then
+        thisMemberId := 2;
+    else
+        thisMemberId := 1;
+    end if;
+    
+    movedCount := 0;
+    
+    for jobrec in (select * from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4">
+            <xsc:TableAlias>j</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where
+                (select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="col4W7CE76W7VATBNLH5FLEE3FAVA" Owner="TABLE">
+            <xsc:TableAlias>t</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM">
+            <xsc:TableAlias>t</xsc:TableAlias>
+          </xsc:TableSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colPU65PF7LJPOBDCIUAALOMT5GDM" Owner="TABLE">
+            <xsc:TableAlias>t</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colBMKNBRS6MFDOHOCOER7UVUAKY4" Owner="TABLE">
+            <xsc:TableAlias>j</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) is null 
+                and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colHQPRKNPYGZFVRPPKUDNLNLD5G4" Owner="TABLE">
+            <xsc:TableAlias>j</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>  = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmW6ZUKU5FTZHYHHOIQRLICFUHCA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) 
+    loop
+        originalId := jobrec.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colAAQIIHUMIHNRDJIEACQMTAIZT4" Owner="NONE">
+            <xsc:TableAlias>j</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+        jobrec.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colAAQIIHUMIHNRDJIEACQMTAIZT4" Owner="NONE">
+            <xsc:TableAlias>j</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:SequenceDbName SequenceId="sqn5R6C2L4MIHNRDJIEACQMTAIZT4" Postfix="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>.nextval;
+        jobrec.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colHQPRKNPYGZFVRPPKUDNLNLD5G4" Owner="NONE">
+            <xsc:TableAlias>j</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := thisMemberId;
+        insert into </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> values jobrec;
+        for parrec in (select * from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblPBK5LEENIHNRDJIEACQMTAIZT4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblPBK5LEENIHNRDJIEACQMTAIZT4" PropId="colORJZLHMNIHNRDJIEACQMTAIZT4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = originalId)
+        loop
+            parrec.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblPBK5LEENIHNRDJIEACQMTAIZT4" PropId="colORJZLHMNIHNRDJIEACQMTAIZT4" Owner="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := jobrec.</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colAAQIIHUMIHNRDJIEACQMTAIZT4" Owner="NONE">
+            <xsc:TableAlias>j</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+            insert into </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblPBK5LEENIHNRDJIEACQMTAIZT4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> values parrec;
+        end loop;
+        delete from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colAAQIIHUMIHNRDJIEACQMTAIZT4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = originalId;
+        movedCount := movedCount + 1;
+    END LOOP;
+    
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm6JYGVB7L5RCPRMKNR6G5MYCXSU" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := movedCount;
+end;</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" Alias="j"/>
+        <UsedTable TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" Alias="t"/>
+        <UsedTable TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4"/>
+        <UsedTable TableId="tblPBK5LEENIHNRDJIEACQMTAIZT4"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

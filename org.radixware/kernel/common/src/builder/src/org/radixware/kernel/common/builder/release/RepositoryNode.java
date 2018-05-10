@@ -426,6 +426,10 @@ class RepositoryAdsModule extends RepositoryModule {
         if (defsXml.isFile()) {
             addChild(RepositoryFile.newInstance(parent, defsXml));
         }
+        File sqmlDefsXml = new File(module.getDirectory(), FileUtils.SQML_DEFINITIONS_XML_FILE_NAME);
+        if (sqmlDefsXml.isFile()) {
+            addChild(RepositoryFile.newInstance(parent, sqmlDefsXml));
+        }
         File usagesXml = new File(module.getDirectory(), AdsModule.USAGES_FILE_NAME);
         if (usagesXml.isFile()) {
             addChild(RepositoryFile.newInstance(parent, usagesXml));

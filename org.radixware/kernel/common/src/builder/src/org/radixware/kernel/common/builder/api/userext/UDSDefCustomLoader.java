@@ -12,6 +12,8 @@
 package org.radixware.kernel.common.builder.api.userext;
 
 import java.io.InputStream;
+import java.util.List;
+import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsImageDefinition;
 import org.radixware.kernel.common.types.Id;
@@ -32,6 +34,8 @@ public interface UDSDefCustomLoader {
     IRepositoryAdsImageDefinition[] listImages(UDSAdsModuleRepository module);
 
     InputStream getImageData(UDSAdsModuleRepository module, Id imageId);
+    
+    List<EIsoLanguage> getUdsLanguages();
         
 
 }

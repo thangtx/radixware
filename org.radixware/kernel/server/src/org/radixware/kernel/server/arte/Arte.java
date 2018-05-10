@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -10,6 +10,8 @@
  */
 package org.radixware.kernel.server.arte;
 
+import org.apache.commons.lang.StringUtils;
+import org.radixware.kernel.server.arte.rights.Rights;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -33,6 +35,7 @@ import org.radixware.kernel.server.utils.TransactionLock;
 import java.sql.Connection;
 import java.sql.Types;
 import java.util.*;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.auth.AuthUtils;
 import org.radixware.kernel.common.types.Id;
@@ -54,36 +57,59 @@ import org.radixware.kernel.server.exceptions.ArteInitializationError;
 import org.radixware.kernel.server.exceptions.DatabaseError;
 import org.radixware.kernel.server.exceptions.ServiceProcessBreakException;
 import org.radixware.kernel.common.repository.DbConfiguration;
+import org.radixware.kernel.common.trace.IRadixTrace;
 import org.radixware.kernel.server.instance.Instance;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
+import org.radixware.kernel.common.utils.SystemPropUtils;
+import org.radixware.kernel.server.instance.DiagnosticInfoUtils;
+import org.radixware.kernel.server.instance.InstanceThreadStateRecord;
 import org.radixware.kernel.server.instance.arte.IArteProvider;
 import org.radixware.kernel.server.instance.arte.IArteRequest;
+import org.radixware.kernel.server.jdbc.ARTEReducedInterface;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.IRadixConnectionListener;
+import org.radixware.kernel.server.jdbc.RadixConnection;
+import org.radixware.kernel.server.jdbc.RadixPreparedStatement;
+import org.radixware.kernel.server.jdbc.RadixResultSet;
+import org.radixware.kernel.server.monitoring.ArteWaitStats;
 import org.radixware.kernel.server.trace.TraceProfiles;
 import org.radixware.kernel.server.types.SqlClass.PreparedStatementsCache;
 import org.radixware.kernel.server.utils.KernelLayers;
-import org.radixware.kernel.server.utils.PriorityResourceManager;
+import org.radixware.kernel.server.utils.IPriorityResourceManager;
 import org.radixware.kernel.starter.config.ConfigEntry;
 import org.radixware.kernel.starter.config.ConfigFileAccessor;
 import org.radixware.kernel.starter.config.ConfigFileParseException;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoaderException;
 
-public class Arte implements IRadixEnvironment {
+public class Arte implements IRadixEnvironment, ARTEReducedInterface {
 
-    private static enum ECommitMode {
-
-        FINAL,
-        INTERMEDIATE;
-    }
+    private static final int ARTE_YELD_PERIOD_MILLIS = SystemPropUtils.getIntSystemProp("rdx.arte.yeld.period.millis", 100);
+    //
     private static final int AAS_RECV_TIMEOUT_SEC = 5 * 60;//seconds = 5 min
     private static final int EAS_RECV_TIMEOUT_SEC = 5 * 60;//seconds = 5 min
     private static final String ERR_CANT_INVOKE_METHOD = "Can\'t invoke method: ";
     private static final String APP_PARAMS_SECTION = "App";
-    private static final String INACTIVE_MARKER = " [incactive]";
+    private static final String INACTIVE_MARKER = " [inactive]";
     private static final int MAX_AFTER_COMMIT_ITERATIONS = 10;
+
+    private static final String stmtReadParamsStmtSQL = "select arteDbTraceProfile, arteFileTraceProfile, arteGuiTraceProfile, ARTELANGUAGE, arteCountry, profileMode, profiledPrefixes from RDX_SYSTEM where ID = 1";
+    private static final Stmt stmtReadParamsStmt = new Stmt(stmtReadParamsStmtSQL);
+
+    private static final String qryUnregisterStmtSQL = "begin RDX_ARTE.unregisterSession(?); end;";
+    private static final Stmt qryUnregisterStmt = new Stmt(qryUnregisterStmtSQL, Types.BIGINT);
+
+    private static final String qryRegisterStmtSQL = "begin RDX_Arte.registerSession(?,?,?,?,?,?,?,?); end;";
+    private static final Stmt qryRegisterStmt = new Stmt(qryRegisterStmtSQL, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BIGINT, Types.BIGINT, Types.VARCHAR, Types.VARCHAR);
+
+    private static final String qryReadInstStateHistoryStmtSQL = "select * from RDX_SM_InstanceStateView where instanceId = ? and regTimeMillis > ? order by regTimeMillis, threadId";
+    private static final Stmt qryReadInstStateHistoryStmt = new Stmt(qryReadInstStateHistoryStmtSQL, Types.BIGINT, Types.BIGINT);
     //
     private static volatile IArteProvider FALLBACK_ARTE_PROVIDER;//for tests
     //
+    private final IDbQueries delegate;
     private final ArteProfiler profiler;
     private List<EIsoLanguage> languages = null;
     private final SessionLock sessionLock;
@@ -102,9 +128,10 @@ public class Arte implements IRadixEnvironment {
     private final Cache cache;
     private final ObjectCache objectCache = new ObjectCache();
     private boolean inTransaction = false;
-    private PreparedStatement qryRegister = null;
-    private PreparedStatement qryUnregister = null;
+    private RadixPreparedStatement qryRegister = null;
+    private RadixPreparedStatement qryUnregister = null;
     private PreparedStatement stmtReadParams = null;
+    private RadixPreparedStatement stmtReadInstStateHistory = null;
     private final Rights rights;
     private final DefManager defManager;
     private final JobQueue jobQueue;
@@ -112,7 +139,7 @@ public class Arte implements IRadixEnvironment {
     private boolean serviceRequestBroken;
     private ArteTransactionParams transactionParams;
     private EIsoCountry clientCountry;
-    private EIsoLanguage clientLanguage = EIsoLanguage.ENGLISH;    
+    private EIsoLanguage clientLanguage = EIsoLanguage.ENGLISH;
     private Locale clientLocale;
     private Locale customClientLocale;
     private long lastReadParamsTime = 0;
@@ -123,11 +150,29 @@ public class Arte implements IRadixEnvironment {
     private String systemName = null;
     private final Thread processorThread;
     private long rqProcessingStartMillis = -1;
+    private ArteWaitStats rqProcessingStartStats = null;
     private IArteRequest request;
     private boolean useActiveArteLimits = false;
     private volatile boolean maintenanceReuested;
     private long dbSid;
     private long dbSerial;
+    private boolean needNotifyAfterRequest = false;
+
+    private Arte() {
+        this.instance = null;
+        this.cache = null;
+        this.dbConnection = null;
+        this.defManager = null;
+        this.rights = null;
+        this.trace = null;
+        this.jobQueue = null;
+        this.sessionLock = null;
+        this.tranLock = null;
+        this.profiler = null;
+        this.dbConfiguration = null;
+        this.processorThread = null;
+        this.delegate = new DelegateDbQueries(this, null);
+    }
 
     public Arte(final Instance instance) {
         this.instance = instance;
@@ -142,8 +187,10 @@ public class Arte implements IRadixEnvironment {
         profiler = new ArteProfiler(this);
         dbConfiguration = instance.getDbConfiguration();
         processorThread = Thread.currentThread();
+        this.delegate = new DelegateDbQueries(this, null);
     }
 
+    @Override
     public Thread getProcessorThread() {
         return processorThread;
     }
@@ -165,11 +212,23 @@ public class Arte implements IRadixEnvironment {
     }
 
     public long getExplicitRequestVersion() {
+        if (request == null) {
+            return -1;
+        }
         return request.getVersion();
     }
 
     public IArteRequest getRequest() {
         return request;
+    }
+
+    @Override
+    public String getRequestClientId() {
+        if (getRequest() != null) {
+            return getRequest().getClientId();
+        } else {
+            return null;
+        }
     }
 
     public long getEffectiveRequestVersion() {
@@ -200,6 +259,16 @@ public class Arte implements IRadixEnvironment {
         return trace;
     }
 
+    @Override
+    public IRadixTrace getRadixTrace() {
+        return getInstance().getTrace();
+    }
+
+    @Override
+    public long staticCalcSpNesting(String spId) throws WrongFormatError {
+        return Arte.calcSpNesting(spId);
+    }
+
     public LocalTracer createLocalTracer(final String eventSource) {
         return getTrace().newTracer(eventSource);
     }
@@ -215,6 +284,11 @@ public class Arte implements IRadixEnvironment {
 
     public DbConnection getDbConnection() {
         return dbConnection;
+    }
+
+    @Override
+    public RadixConnection getRadixConnection() {
+        return getDbConnection() != null ? getDbConnection().getRadixConnection() : null;
     }
 
     public long getSeqNumber() {
@@ -252,9 +326,9 @@ public class Arte implements IRadixEnvironment {
                         dbSid = rs.getLong("dbSid");
                         dbSerial = rs.getLong("dbSerial");
                         getTrace().put(EEventSeverity.EVENT, Messages.MLS_ID_TRACE_PROFILE_CHANGED, new ArrStr(arteTraceProfiles.toString()), EEventSource.ARTE.getValue());
-                        traceTargetHandler = getTrace().addTargetLog(arteTraceProfiles.getDbTraceProfile());
+                        traceTargetHandler = getTrace().addTargetLog(arteTraceProfiles.getDbTraceProfile(), "System[1]:Database");
                     } else {
-                        throw new ArteInitializationError("Can't determinate product name etc.\nTable DBP_SYSTEM is invalid.", null);
+                        throw new ArteInitializationError("Can't determinate product name etc.\nTable RDX_SYSTEM has no record with id=1", null);
                     }
                 } finally {
                     rs.close();
@@ -279,6 +353,9 @@ public class Arte implements IRadixEnvironment {
 
             //RADIX-1893: load dds and enums for current version
             getDefManager().setVersion(getActualVersion());
+
+            registerDbListener();
+
             inited = true;
         } catch (SQLException e) {
             getTrace().put(EEventSeverity.ALARM, "Can't init ARTE: " + getTrace().exceptionStackToString(e), EEventSource.ARTE);
@@ -292,6 +369,89 @@ public class Arte implements IRadixEnvironment {
             throw new ArteInitializationError("Can' init ARTE", e);
         }
 
+    }
+
+    private void registerDbListener() {
+        ((RadixConnection) getDbConnection().get()).registerConnectionListener(new IRadixConnectionListener() {
+
+            @Override
+            public void beforeDbCommit() {
+                if (getDefManager() != null && getDefManager().getReleaseCache() != null && getDefManager().getReleaseCache().getArteEventsListeners() != null) {
+                    for (IArteEventListener listener : getDefManager().getReleaseCache().getArteEventsListeners()) {
+                        try {
+                            listener.beforeDbCommit();
+                        } catch (Throwable t) {
+                            getTrace().put(EEventSeverity.ERROR, "Exception on beforeDbCommit notification: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void afterDbCommit() {
+                if (getDefManager() != null && getDefManager().getReleaseCache() != null && getDefManager().getReleaseCache().getArteEventsListeners() != null) {
+                    for (IArteEventListener listener : getDefManager().getReleaseCache().getArteEventsListeners()) {
+                        try {
+                            listener.afterDbCommit();
+                        } catch (Throwable t) {
+                            getTrace().put(EEventSeverity.ERROR, "Exception on afterDbCommit notification: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onDbCommitError(SQLException ex) {
+                if (getDefManager() != null && getDefManager().getReleaseCache() != null && getDefManager().getReleaseCache().getArteEventsListeners() != null) {
+                    for (IArteEventListener listener : getDefManager().getReleaseCache().getArteEventsListeners()) {
+                        try {
+                            listener.onDbCommitError(ex);
+                        } catch (Throwable t) {
+                            getTrace().put(EEventSeverity.ERROR, "Exception on onDbCommitError notification: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void beforeDbRollback(Savepoint sp, String savepointId, long nesting) {
+                if (getDefManager() != null && getDefManager().getReleaseCache() != null && getDefManager().getReleaseCache().getArteEventsListeners() != null) {
+                    for (IArteEventListener listener : getDefManager().getReleaseCache().getArteEventsListeners()) {
+                        try {
+                            listener.beforeDbRollback(sp, savepointId, calcSpNesting(savepointId));
+                        } catch (Throwable t) {
+                            getTrace().put(EEventSeverity.ERROR, "Exception on beforeDbRollback notification: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void afterDbRollback(Savepoint sp, String savepointId, long nesting) {
+                if (getDefManager() != null && getDefManager().getReleaseCache() != null && getDefManager().getReleaseCache().getArteEventsListeners() != null) {
+                    for (IArteEventListener listener : getDefManager().getReleaseCache().getArteEventsListeners()) {
+                        try {
+                            listener.afterDbRollback(sp, savepointId, calcSpNesting(savepointId));
+                        } catch (Throwable t) {
+                            getTrace().put(EEventSeverity.ERROR, "Exception on afterDbRollback notification: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onDbRollbackError(Savepoint sp, String savepointId, long nesting, SQLException ex) {
+                if (getDefManager() != null && getDefManager().getReleaseCache() != null && getDefManager().getReleaseCache().getArteEventsListeners() != null) {
+                    for (IArteEventListener listener : getDefManager().getReleaseCache().getArteEventsListeners()) {
+                        try {
+                            listener.onDbRollbackError(sp, savepointId, calcSpNesting(savepointId), ex);
+                        } catch (Throwable t) {
+                            getTrace().put(EEventSeverity.ERROR, "Exception on onDbRollbackError notification: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void afterUpdate(final Entity entity) {
@@ -364,12 +524,42 @@ public class Arte implements IRadixEnvironment {
             inServiceRequest = true;
             serviceRequestBroken = false;
             useActiveArteLimits = request != null && request.getActiveTicket() != null;
+            notifyListenersBeforeRequestProcessing();
             service.process(arteSocket);
         } catch (RuntimeException e) {
             getTrace().put(EEventSeverity.ERROR, "Unhandled " + getTrace().exceptionStackToString(e), EEventSource.ARTE);
             throw e;
         } finally {
+            if (needNotifyAfterRequest) {
+                needNotifyAfterRequest = false;
+                notifyListenersAfterRequestProcessing();
+            }
             inServiceRequest = false;
+        }
+    }
+
+    private void notifyListenersBeforeRequestProcessing() {
+        if (getDefManager() != null && getDefManager().getReleaseCache() != null && getDefManager().getReleaseCache().getArteEventsListeners() != null) {
+            for (IArteEventListener listener : getDefManager().getReleaseCache().getArteEventsListeners()) {
+                try {
+                    listener.beforeRequestProcessing();
+                } catch (Throwable t) {
+                    getTrace().put(EEventSeverity.ERROR, "Exception on beforeRequestProcessing notification: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE);
+                }
+            }
+        }
+        needNotifyAfterRequest = true;
+    }
+
+    private void notifyListenersAfterRequestProcessing() {
+        if (getDefManager() != null && getDefManager().getReleaseCache() != null && getDefManager().getReleaseCache().getArteEventsListeners() != null) {
+            for (IArteEventListener listener : getDefManager().getReleaseCache().getArteEventsListeners()) {
+                try {
+                    listener.afterRequestProcessing();
+                } catch (Throwable t) {
+                    getTrace().put(EEventSeverity.ERROR, "Exception on afterRequestProcessing notification: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE);
+                }
+            }
         }
     }
 
@@ -381,6 +571,7 @@ public class Arte implements IRadixEnvironment {
         return dbSerial;
     }
 
+    @Override
     public boolean needBreak() {
         if (!inServiceRequest) {
             return false;
@@ -397,7 +588,7 @@ public class Arte implements IRadixEnvironment {
         }
     }
 
-    public long calcSpNesting(final String spId) throws WrongFormatError {
+    public static long calcSpNesting(final String spId) throws WrongFormatError {
         if (spId == null) {
             return 0;
         }
@@ -414,6 +605,21 @@ public class Arte implements IRadixEnvironment {
 
     public Entity getEntityObject(final Pid pid) {
         return getEntityObject(pid, null, false);
+    }
+
+    public Entity getEntityObject(final Pid pid, final String classGuid) {
+        final EntityPropVals vals;
+        if (classGuid != null) {
+            final Id classGuidColId = getCache().getClassGuidColumnId(pid);
+            if (classGuidColId == null) {
+                throw new IllegalStateException("Unable to determine classguid column id when classguid is supplied");
+            }
+            vals = new EntityPropVals();
+            vals.putPropValById(classGuidColId, classGuid);
+        } else {
+            vals = null;
+        }
+        return getEntityObject(pid, vals, false);
     }
 
     public Entity getEntityObject(final Pid pid, final EntityPropVals loadedProps, final boolean checkExistence) {
@@ -434,6 +640,10 @@ public class Arte implements IRadixEnvironment {
 
     public void registerNewEntityObject(final Entity obj) {
         getCache().registerNewEntityObject(obj);
+    }
+
+    public void unregisterFromAfterCommit(final Entity entity) {
+        getCache().unregisterFromAfterCommit(entity);
     }
 
     public void unregisterNewEntityObject(final Entity obj) {
@@ -477,20 +687,20 @@ public class Arte implements IRadixEnvironment {
     }
 
     public final Long getVersion() {
-        return transactionParams==null ? null : transactionParams.getVersion();
+        return transactionParams == null ? null : transactionParams.getVersion();
     }
-    
+
     public final Long getEasSessionId() {
-        return transactionParams==null ? null : transactionParams.getEasSessionId();
-    }    
+        return transactionParams == null ? null : transactionParams.getEasSessionId();
+    }
 
     public final String getUserName() {
-        return transactionParams==null ? null : transactionParams.getUserName();
-    }    
+        return transactionParams == null ? null : transactionParams.getUserName();
+    }
 
     public final String getStationName() {
-        return transactionParams==null ? null : transactionParams.getStationName();
-    }        
+        return transactionParams == null ? null : transactionParams.getStationName();
+    }
 
     @Override
     public final EIsoLanguage getClientLanguage() {
@@ -529,37 +739,37 @@ public class Arte implements IRadixEnvironment {
         } else {
             clientLocale = new Locale(clientLanguage.getValue(), clientCountry.getValue());
         }
-    }    
+    }
 
     public final ERuntimeEnvironmentType getClientEnvironment() {
-        return transactionParams==null ? null : transactionParams.getClientEnvironment();
+        return transactionParams == null ? null : transactionParams.getClientEnvironment();
     }
-    
-    public final boolean isEasSessionKeyAccessible(){
-        return transactionParams!=null && transactionParams.isSessionKeyAccessible();
+
+    public final boolean isEasSessionKeyAccessible() {
+        return transactionParams != null && transactionParams.isSessionKeyAccessible();
     }
-    
-    public final byte[] encryptByEasSessionKey(final byte[] data){
-        if (transactionParams==null || !transactionParams.isSessionKeyAccessible()){
+
+    public final byte[] encryptByEasSessionKey(final byte[] data) {
+        if (transactionParams == null || !transactionParams.isSessionKeyAccessible()) {
             throw new IllegalStateException("EAS session key does not accessible");
         }
         final byte[] sessionKey = transactionParams.getSessionKey();
-        try{
-            return AuthUtils.encrypt(data, sessionKey);
-        }finally{
-            Arrays.fill(sessionKey, (byte)0);
-        }        
+        try {
+            return AuthUtils.encrypt(data, sessionKey, true);
+        } finally {
+            Arrays.fill(sessionKey, (byte) 0);
+        }
     }
-    
-    public final byte[] decryptByEasSessionKey(final byte[] encryptedData){
-        if (transactionParams==null || !transactionParams.isSessionKeyAccessible()){
+
+    public final byte[] decryptByEasSessionKey(final byte[] encryptedData) {
+        if (transactionParams == null || !transactionParams.isSessionKeyAccessible()) {
             throw new IllegalStateException("EAS session key does not accessible");
         }
         final byte[] sessionKey = transactionParams.getSessionKey();
-        try{
-            return AuthUtils.decrypt(encryptedData, sessionKey);
-        }finally{
-            Arrays.fill(sessionKey, (byte)0);
+        try {
+            return AuthUtils.decrypt(encryptedData, sessionKey, true);
+        } finally {
+            Arrays.fill(sessionKey, (byte) 0);
         }
     }
 
@@ -574,7 +784,7 @@ public class Arte implements IRadixEnvironment {
 
     public final String getDatabaseScheme() {
         return databaseScheme;
-    }        
+    }
 
     //write down all changes to database. 
     public final void updateDatabase(final EAutoUpdateReason reason) {
@@ -588,7 +798,7 @@ public class Arte implements IRadixEnvironment {
     //set savepoint.
     public final String setSavepoint() {
         updateDatabase(EAutoUpdateReason.PREPARE_SAVEPOINT);
-        final String id = "spt" + String.valueOf(savepoints.size() + 1);
+        final String id = buildSavePointId(savepoints.size() + 1);
         try {
             savepoints.add(getDbConnection().get().setSavepoint(id));
         } catch (SQLException e) {
@@ -600,21 +810,48 @@ public class Arte implements IRadixEnvironment {
 
     public void beforeRequestProcessing(IArteRequest request) {
         rqProcessingStartMillis = System.currentTimeMillis();
+        rqProcessingStartStats = getProfiler().getWaitStatsSnapshot();
         this.request = request;
     }
 
+    public void yeld() {
+        if (!useActiveArteLimits) {
+            return;
+        }
+        if (request != null
+                && request.getActiveTicket() != null
+                && !request.getActiveTicket().isReleased()
+                && System.currentTimeMillis() - request.getActiveTicket().getCaptureTimeMillis() > ARTE_YELD_PERIOD_MILLIS) {
+            markInactive("yeld");
+            markActive("end yeld");
+        }
+    }
+
+    @Override
     public void markInactive() {
+        markInactive(null);
+    }
+
+    @Override
+    public void markActive() {
+        markActive(null);
+    }
+
+    @Override
+    public void markInactive(final String comment) {
         if (!useActiveArteLimits) {
             return;
         }
         if (request != null && request.getActiveTicket() != null && !request.getActiveTicket().isReleased()) {
             instance.getActiveArteResourceManager().releaseTicket(request.getActiveTicket());
-            Thread.currentThread().setName(Thread.currentThread().getName() + INACTIVE_MARKER);
-            trace.put(EEventSeverity.DEBUG, "ARTE was marked as inactive", EEventSource.ARTE);
+            instance.getInstanceMonitor().arteDeactivated(this);
+            getProcessorThread().setName(getProcessorThread().getName() + INACTIVE_MARKER);
+            trace.put(EEventSeverity.DEBUG, "ARTE was marked as inactive" + (comment == null ? "" : " (" + comment + ")"), EEventSource.ARTE_ACTIVITY);
         }
     }
 
-    public void markActive() {
+    @Override
+    public void markActive(final String comment) {
         if (!useActiveArteLimits) {
             return;
         }
@@ -622,14 +859,15 @@ public class Arte implements IRadixEnvironment {
             try {
                 getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_WAIT_ACTIVE);
                 try {
-                    request.setActiveTicket(instance.getActiveArteResourceManager().requestTicket(request.getRadixPriority(), -1, PriorityResourceManager.EQueuePriority.FIRST));
+                    request.setActiveTicket(instance.getActiveArteResourceManager().requestTicket(request.getRadixPriority(), -1));
                     Thread.currentThread().setName(Thread.currentThread().getName().replace(INACTIVE_MARKER, ""));
+                    getInstance().getInstanceMonitor().arteActivated(this);
                 } finally {
                     getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_WAIT_ACTIVE);
                 }
-                trace.put(EEventSeverity.DEBUG, "ARTE was marked as active", EEventSource.ARTE);
+                trace.put(EEventSeverity.DEBUG, "ARTE was marked as active" + (comment == null ? "" : " (" + comment + ")"), EEventSource.ARTE_ACTIVITY);
             } catch (InterruptedException ex) {
-                getTrace().put(EEventSeverity.WARNING, "Interrupted while acquiring activity ticket", EEventSource.ARTE);
+                getTrace().put(EEventSeverity.WARNING, "Interrupted while acquiring activity ticket", EEventSource.ARTE_ACTIVITY);
             }
         }
     }
@@ -642,12 +880,7 @@ public class Arte implements IRadixEnvironment {
     public final void rollbackToSavepoint(final String id) {
         getCache().beforeRollbackToSavepoint(id);
         getDefManager().sendBatches(false);//rollback to savepoint does not clear batches let's send them
-        int idx;
-        try {
-            idx = Integer.parseInt(id.substring(3)) - 1;
-        } catch (NumberFormatException e) {
-            throw new WrongFormatError("Wrong format of savepoint id: " + id, e);
-        }
+        int idx = (int) getSavePointsNesting(id);
         final Savepoint sp = savepoints.get(idx);
         //deleting this and later savepoints
         savepoints.setSize(idx);  //savepoints.remove(id);
@@ -670,6 +903,7 @@ public class Arte implements IRadixEnvironment {
         this.transactionParams = transactionParams;
         clientLanguage = transactionParams.getClientLanguage() == null ? serverLanguage : transactionParams.getClientLanguage();
         clientCountry = transactionParams.getClientCountry() == null ? serverCountry : transactionParams.getClientCountry();
+        customClientLocale = null;
         updateClientLocale();
         readonlySeance = false;
 
@@ -680,13 +914,15 @@ public class Arte implements IRadixEnvironment {
         final StringBuilder traceMessage = new StringBuilder();
         traceMessage.append("ARTE session started at instance \'");
         traceMessage.append(getInstance().getFullTitle());
-        traceMessage.append("\', ARTE instance number=");
+        traceMessage.append("\', ARTE number=");
         traceMessage.append(String.valueOf(arteInstSeq));
         traceMessage.append(", version=");
         traceMessage.append(String.valueOf(transactionParams.getVersion()));
         getTrace().put(EEventSeverity.DEBUG, traceMessage.toString(), EEventSource.ARTE);
         getProfiler().onBeginTransaction();
+
         actualizeServerParams();//performs db requests, should be called after profiling start
+        notifyListenersBeforeRequestProcessing();
     }
 
     public long getActualVersion() {
@@ -707,7 +943,7 @@ public class Arte implements IRadixEnvironment {
             if (stmtReadParams == null) {
                 getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 try {
-                    stmtReadParams = getDbConnection().get().prepareStatement("select arteDbTraceProfile, arteFileTraceProfile, arteGuiTraceProfile, ARTELANGUAGE, arteCountry, profileMode, profiledPrefixes from RDX_SYSTEM where ID = 1");
+                    stmtReadParams = ((RadixConnection) getDbConnection().get()).prepareStatement(stmtReadParamsStmt);
                 } catch (SQLException e) {
                     throw new ArteInitializationError("Can't prepare server parameters read: " + ExceptionTextFormatter.getExceptionMess(e), e);
                 } finally {
@@ -778,6 +1014,22 @@ public class Arte implements IRadixEnvironment {
         return savepoints.size();
     }
 
+    public long getSavePointsNesting(String id) {
+        try {
+            return Integer.parseInt(id.substring(3)) - 1;
+        } catch (NumberFormatException e) {
+            throw new WrongFormatError("Wrong format of savepoint id: " + id, e);
+        }
+    }
+
+    public final String getSavePointId() {
+        return buildSavePointId(savepoints.size());
+    }
+
+    private static String buildSavePointId(long nesting) {
+        return "spt" + String.valueOf(nesting);
+    }
+
     public void endTransaction(final boolean commit) throws Throwable {
         Throwable error = null;
         if (!getDbConnection().get().isClosed()) {
@@ -803,7 +1055,14 @@ public class Arte implements IRadixEnvironment {
                     try {
                         getDbConnection().get().rollback();
                     } catch (SQLException sqlEx) {
-                        throw new DatabaseError("Can't do rollback: " + ExceptionTextFormatter.getExceptionMess(e), sqlEx);
+                        try {
+                            if (getDbConnection().get() != null && !getDbConnection().get().isClosed()) {
+                                getDbConnection().get().close();
+                            }
+                        } catch (Exception ex) {
+                            LogFactory.getLog(Arte.class).info("Unable to close ARTE's db connection after unsuccessfull rollback");
+                        }
+                        throw new DatabaseError("Can't do rollback, closing db connection: " + ExceptionTextFormatter.getExceptionMess(e), sqlEx);
                     }
                     incDbTranSeq();
                 }
@@ -838,9 +1097,16 @@ public class Arte implements IRadixEnvironment {
         if (isInTransaction()) {
             inTransaction = false;
             getDefManager().clear();
-            getTrace().put(EEventSeverity.DEBUG, "ARTE seance finished, version=" + transactionParams.getVersion() + ", duration=" + (System.currentTimeMillis() - rqProcessingStartMillis) + "ms", EEventSource.ARTE);
+            final ArteWaitStats waitDiff = rqProcessingStartStats == null ? new ArteWaitStats(0, 0, 0, 0, 0) : rqProcessingStartStats.substractFrom(getProfiler().getWaitStatsSnapshot());
+            final long cpuMillis = waitDiff.getCpuNanos() / 1000000;
+            final long dbMillis = waitDiff.getDbNanos() / 1000000;
+            final long extMillis = waitDiff.getExtNanos() / 1000000;
+            final long queueMillis = waitDiff.getQueueNanos() / 1000000;
+            final long totalMillis = cpuMillis + dbMillis + extMillis + queueMillis;
+            final String durationStr = "CPU = " + cpuMillis + "ms, DB = " + dbMillis + " ms, EXT = " + extMillis + " ms, QUEUE = " + queueMillis + " ms (Total " + totalMillis + " ms)";
+            getTrace().put(EEventSeverity.DEBUG, "ARTE #" + getSeqNumber() + " (dbSID=" + getDbSid() + ") seance finished, version=" + transactionParams.getVersion() + ", duration: " + durationStr, EEventSource.ARTE);
         }
-        
+
         transactionParams = null; //RADIX-2490: clear seance info not to be used during future tracing
 
         getProfiler().onEndTransaction();
@@ -891,7 +1157,7 @@ public class Arte implements IRadixEnvironment {
                 if (isInTransaction()) {
                     updateDatabase(EAutoUpdateReason.PREPARE_COMMIT);
                 }
-                if (getDbConnection().getRadixConnection().wereWriteOperations()) {
+                if (((RadixConnection) getDbConnection().get()).wereWriteOperations()) {
                     getTrace().put(EEventSeverity.DEBUG, "Additional commit requested due to changes in afterCommit #" + afterCommitsCount, EEventSource.ARTE);
                 } else {
                     break;
@@ -924,9 +1190,11 @@ public class Arte implements IRadixEnvironment {
 
     public final void discardAllUsedEntities(final boolean bIncludeKeptInCache) {
         getCache().visitAllUsedExistingEntities(null, new Cache.EntityVisitor() {
+            private final long curTimeMillis = System.currentTimeMillis();
+
             @Override
             public void visit(final Entity ent) {
-                if (bIncludeKeptInCache || ent.getCanBeRemovedFromCache()) {
+                if (bIncludeKeptInCache || ent.getCanBeRemovedFromCache(curTimeMillis)) {
                     ent.discard();
                 }
             }
@@ -1206,24 +1474,30 @@ public class Arte implements IRadixEnvironment {
         return tranSeqNum;
     }
 
+    @Override
+    public boolean suppressDbForciblyCloseErrors() {
+        if (getRequest() != null
+                && getRequest().getSapOptions() != null) {
+            if (ExplorerAccessService.SERVICE_WSDL.equals(getRequest().getSapOptions().getServiceUri())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private final void unregisterSession() {
         try {
             if (qryUnregister == null) {
                 getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 try {
-                    qryUnregister = getDbConnection().get().prepareStatement(
-                            "begin RDX_ARTE.unregisterSession(?); end;");
+                    qryUnregister = ((RadixConnection) getDbConnection().get()).prepareStatement(qryUnregisterStmt);
                 } finally {
                     getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 }
             }
             getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
             try {
-                if (getEasSessionId()!= null) {
-                    qryUnregister.setLong(1, getEasSessionId().longValue());
-                } else {
-                    qryUnregister.setNull(1, Types.INTEGER);
-                }
+                qryUnregister.setLong(1, getEasSessionId());
                 qryUnregister.execute();
             } finally {
                 getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
@@ -1233,31 +1507,45 @@ public class Arte implements IRadixEnvironment {
         }
     }
 
-    private final void registerSession() {
+    private void registerSession() {
         try {
             if (qryRegister == null) {
                 getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 try {
-                    qryRegister = getDbConnection().get().prepareStatement("begin RDX_Arte.registerSession(?,?,?,?,?,?,?,?,?); end;");
+                    qryRegister = ((RadixConnection) getDbConnection().get()).prepareStatement(qryRegisterStmt);
                 } finally {
                     getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 }
             }
             getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
             try {
-                qryRegister.setString(1, transactionParams.getUserName());
+                final Long easSessionId = transactionParams.getEasSessionId();
+                final String userName = transactionParams.getUserName();
+                final String remoteAddress = arteSocket.getRemoteAddress();
+                final long unitId = arteSocket.getUnit() == null ? -1 : arteSocket.getUnit().getId();
+
+                String action = "U#" + unitId + "/";
+                if (easSessionId != null) { // EAS request
+                    action += transactionParams.getEasRequestName() + "/" + userName;
+                } else if (getJobQueue().getCurrentJobId() != null) { // AAS (Job)
+                    action += "J#" + getJobQueue().getCurrentJobId()
+                            + (getJobQueue().getRelatedTaskId() == null ? "" : "/T#" + getJobQueue().getRelatedTaskId())
+                            + (getJobQueue().getThreadStr() == null ? "" : "/Th#" + getJobQueue().getThreadStr());
+                } else if (transactionParams.getAasClassName() != null) { // AAS (other)
+                    action += transactionParams.getAasMethodName() + "." + transactionParams.getAasClassName();
+                }
+
+                final String clientInfo = StringUtils.isBlank(remoteAddress) && StringUtils.isBlank(userName)
+                        ? null : remoteAddress + "/" + userName;
+
+                qryRegister.setString(1, userName);
                 qryRegister.setString(2, transactionParams.getStationName());
                 qryRegister.setString(3, clientLanguage.getValue());
                 qryRegister.setString(4, clientCountry.getValue());
-                if (transactionParams.getEasSessionId() != null) {
-                    qryRegister.setLong(5, transactionParams.getEasSessionId().longValue());
-                } else {
-                    qryRegister.setNull(5, java.sql.Types.INTEGER);
-                }
+                qryRegister.setLong(5, easSessionId);
                 qryRegister.setLong(6, transactionParams.getVersion().longValue());
-                qryRegister.setLong(7, arteSocket.getSapId());
-                qryRegister.setString(8, String.valueOf(arteSocket.getRemoteAddress()));
-                qryRegister.setLong(9, arteSocket.getUnit() == null ? -1 : arteSocket.getUnit().getId());
+                qryRegister.setString(7, action);
+                qryRegister.setString(8, clientInfo);
                 qryRegister.execute();
             } finally {
                 getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
@@ -1314,6 +1602,16 @@ public class Arte implements IRadixEnvironment {
         return languages;
     }
 
+    public List<InstanceThreadStateRecord> readInstanceStateHistory(int instanceId, long periodStartTimeMillis) throws SQLException {
+        return DiagnosticInfoUtils.getInstanceStateHistoryRecords(getRadixConnection(), instanceId, periodStartTimeMillis);
+    }
+
+    // Should be called inside ArteProcessor thread only
+    public void addUserNameToProcessorThreadName() {
+        final String threadName = Thread.currentThread().getName() + "; rqUserName='" + getUserName() + "'";
+        Thread.currentThread().setName(threadName);
+    }
+
     public static void setFallbackArteProvider(final IArteProvider provider) {
         FALLBACK_ARTE_PROVIDER = provider;
     }
@@ -1327,5 +1625,11 @@ public class Arte implements IRadixEnvironment {
             return fallbackSnapshot.getArte();
         }
         return null;
+    }
+
+    private static enum ECommitMode {
+
+        FINAL,
+        INTERMEDIATE;
     }
 }

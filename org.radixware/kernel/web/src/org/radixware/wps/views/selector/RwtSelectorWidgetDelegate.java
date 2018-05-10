@@ -34,8 +34,15 @@ public final class RwtSelectorWidgetDelegate implements ISelectorWidgetDelegate 
 
     @Override
     public boolean readMore() {
+        if (model.getEntitiesCount()>controller.getRowCount()){
+            controller.displayLoadedEntities(model);
+            return true;
+        }
         if (canReadMore()) {
             controller.readMore(model);
+            if (model.getEntitiesCount()>controller.getRowCount()){
+                controller.displayLoadedEntities(model);
+            }
             return true;
         } else {
             return false;
@@ -53,8 +60,8 @@ public final class RwtSelectorWidgetDelegate implements ISelectorWidgetDelegate 
     }
 
     @Override
-    public void updateRowsCount(GroupModel g) {
-        
+    public void updateRowsCount(final GroupModel g) {
+        controller.displayLoadedEntities(g);
     }
 
     @Override

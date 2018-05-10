@@ -142,6 +142,8 @@ public class GenericComboBox extends JComboBox<String> {
         public abstract JComponent getComponent();
 
         public abstract Model getModel();
+        
+        public abstract boolean isChanged();
     }
 
     private final MultiselectComboBoxPopup popup;

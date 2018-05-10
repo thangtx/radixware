@@ -427,7 +427,7 @@ public class IndentArrangement {
                            i++;
                            if(i >= n)break;
                            ch=s.charAt(i); 
-                        } while ( ch != '*' && (i+1 < n) && s.charAt(i+1) != '/');
+                        } while ((ch != '*' || s.charAt(i+1) != '/') && (i+1 < n) );
                         if(i+1 < n){
                             i++;
                             ch=s.charAt(i);

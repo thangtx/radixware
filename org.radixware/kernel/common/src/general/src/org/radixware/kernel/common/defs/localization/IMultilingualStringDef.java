@@ -32,6 +32,7 @@ import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ELocalizedStringKind;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchNameError;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.adsdef.LocalizedString;
 
@@ -47,6 +48,12 @@ public interface IMultilingualStringDef {
         private long timeChangeOfStatus;
         private String lastChangeAuthor;
         private String authorChangeOfStatus;
+        private boolean isAgreed = false;
+        private String authorChangeAgreedString;
+        private long timeChangeAgreedString;
+        private long version;
+        private boolean isModified;
+        
 
         public StringStorage(EIsoLanguage lang) {
             this.language = lang;
@@ -70,7 +77,7 @@ public interface IMultilingualStringDef {
             return needsCheck;
         }
 
-        public void setNeedsCheck(boolean needsCheck,String authorName,long dateChangeOfStatus) {
+        public void setNeedsCheck(boolean needsCheck, String authorName,long dateChangeOfStatus) {
             if (this.needsCheck != needsCheck){
                 if (this.needsCheck){
                     this.authorChangeOfStatus = null;
@@ -79,6 +86,7 @@ public interface IMultilingualStringDef {
                     if (getValue() != null && !getValue().isEmpty()){
                         this.authorChangeOfStatus = authorName;
                         this.timeChangeOfStatus = dateChangeOfStatus;
+                        setAgreed(false, authorName, dateChangeOfStatus);
                     }
                 }
             }
@@ -118,32 +126,96 @@ public interface IMultilingualStringDef {
         public String getAuthorChangeOfStatus() {
             return authorChangeOfStatus;
         }
+
+        public boolean isAgreed() {
+            return isAgreed;
+        }
+
+        public void setAgreed(boolean isAgreed, String authorName, long dateChangeOfStatus) {
+            if (this.isAgreed != isAgreed){
+                if (this.isAgreed){
+                   if (getValue() != null && !getValue().isEmpty()){
+                        this.authorChangeAgreedString = authorName;
+                        this.timeChangeAgreedString = dateChangeOfStatus;
+                    }
+                } else {
+                    this.authorChangeAgreedString = null;
+                    this.timeChangeAgreedString = -1;
+                }
+            }
+            ILocalizingBundleDef.version.incrementAndGet();
+            this.isAgreed = isAgreed;
+        }
+
+        public String getAuthorChangeAgreedString() {
+            return authorChangeAgreedString;
+        }
+
+        public long getTimeChangeAgreedString() {
+            return timeChangeAgreedString;
+        }
         
         public void accept(IMultilingualStringDef multilingualString) {
             value = multilingualString.getValue(language);
             needsCheck = multilingualString.getNeedsCheck(language);
+            isAgreed = multilingualString.isAgreed(language);
             
             Timestamp lastModifiedTime = multilingualString.getLastChangeTime(language);
             lastModified = lastModifiedTime == null ? -1 : lastModifiedTime.getTime();
             lastChangeAuthor = multilingualString.getLastChangeAuthor(language);
+            
+            authorChangeOfStatus = multilingualString.getAuthorChangeOfStatus(language);
+            Timestamp time = multilingualString.getTimeChangeOfStatus(language);
+            timeChangeOfStatus = time == null ? -1 : time.getTime();
+            authorChangeAgreedString = multilingualString.getAuthorChangeAgreedString(language);
+            time = multilingualString.getTimeChangeAgreedString(language);
+            timeChangeAgreedString = time == null ? -1 : time.getTime(); 
+            ILocalizingBundleDef.authors.addAuthor(lastChangeAuthor);
+            this.version = multilingualString.getInternalStorage().getVersion(language);
         }
 
-        public void accept(String value, boolean needsCheck, long lastModified, String lastChangeAuthor) {
+        public void accept(String value, boolean needsCheck, long lastModified, String lastChangeAuthor, boolean isAgreed) {
             setNeedsCheck(needsCheck, lastChangeAuthor, lastModified);
+            setAgreed(isAgreed, lastChangeAuthor, lastModified);
             this.value = value;
             this.lastModified = lastModified;
             this.lastChangeAuthor = lastChangeAuthor;
             ILocalizingBundleDef.authors.addAuthor(lastChangeAuthor);
         }
         
-        public void accept(String value, boolean needsCheck, String authorChangeOfStatus, long timeChangeOfStatus, long lastModified, String lastChangeAuthor) {
+        public void accept(String value, boolean needsCheck, String authorChangeOfStatus, long timeChangeOfStatus, 
+                long lastModified, String lastChangeAuthor, boolean isAgreed, String authorChangeAgreedString, long timeChangeAgreedString, long version) {
             this.value = value;
             this.needsCheck = needsCheck;
             this.authorChangeOfStatus = authorChangeOfStatus;
             this.timeChangeOfStatus =  timeChangeOfStatus;
             this.lastModified = lastModified;
             this.lastChangeAuthor = lastChangeAuthor;
+            this.isAgreed = isAgreed;
+            this.authorChangeAgreedString = authorChangeAgreedString;
+            this.timeChangeAgreedString = timeChangeAgreedString;
             ILocalizingBundleDef.authors.addAuthor(lastChangeAuthor);
+            this.version = version;
+        }
+
+        public boolean isModified() {
+            return isModified;
+        }
+
+        public void setIsModified(boolean isModified) {
+            this.isModified = isModified;
+        }
+
+        public long getVersion() {
+            return version;
+        }
+
+        public void setVersion(long version) {
+            this.version = version;
+        }
+        
+        public long incAndGetVersion() {
+            return ++version;
         }
     }
 
@@ -170,7 +242,15 @@ public interface IMultilingualStringDef {
             for (LocalizedString.Value val : xDef.getValueList()) {
                 try {
                     StringStorage storage = new StringStorage(val.getLanguage());
-                    storage.accept(val.getStringValue(), val.getNeedsCheck(), val.isSetAuthorChangeOfStatus()? val.getAuthorChangeOfStatus(): null, val.isSetDateChangeOfStatus() ? val.getDateChangeOfStatus().getTime() : -1 ,val.isSetLastModified() ? val.getLastModified().getTime() : -1, val.isSetAuthor() ? val.getAuthor() : null);
+                    storage.accept(val.getStringValue(), val.getNeedsCheck(), 
+                            val.isSetAuthorChangeOfStatus()? val.getAuthorChangeOfStatus(): null, 
+                            val.isSetDateChangeOfStatus() ? val.getDateChangeOfStatus().getTime() : -1 , 
+                            val.isSetLastModified() ? val.getLastModified().getTime() : -1, 
+                            val.isSetAuthor() ? val.getAuthor() : null, 
+                            val.isSetAgreed()? val.getAgreed() : false,
+                            val.isSetAuthorChangeAgreedString()? val.getAuthorChangeAgreedString(): null,
+                            val.isSetDateChangeAgreedString()? val.getDateChangeAgreedString().getTime() : -1,
+                            val.isSetVersion() ? val.getVersion() : 0);
                     values.add(storage);
                 } catch (NoConstItemWithSuchNameError e) {
                     continue;
@@ -316,8 +396,8 @@ public interface IMultilingualStringDef {
                 if (string == null) {
                     string = addString(language);
                 }
-                string.accept(value, true, System.currentTimeMillis(), System.getProperty("user.name"));
-                owner.setEditState(RadixObject.EEditState.MODIFIED);
+                string.accept(value, true, System.currentTimeMillis(), System.getProperty("user.name"), false);
+                setModified(string);
                 return true;
             }
         }
@@ -356,10 +436,46 @@ public interface IMultilingualStringDef {
             }
             long time = System.currentTimeMillis();
             String authorName = System.getProperty("user.name");
-            storage.setNeedsCheck(needsCheck,authorName,time);
+            storage.setNeedsCheck(needsCheck, authorName, time);
             storage.setLastModified(time);
             storage.setLastChangeAuthor(authorName);
-            owner.setEditState(RadixObject.EEditState.MODIFIED);
+            List<EIsoLanguage> languages = getLayerLanguages();
+            if (!needsCheck && languages != null && !languages.contains(language)) {
+                storage.setVersion(getMaxLayerVersion());
+            }
+            setModified(storage);
+        }
+        
+        
+        public void setAgreed(EIsoLanguage language, boolean isAgreed){
+            StringStorage storage = getString(language);
+            if (storage == null) {
+                storage = addString(language);
+            }
+            long time = System.currentTimeMillis();
+            String authorName = System.getProperty("user.name");
+            storage.setAgreed(isAgreed, authorName, time);
+            storage.setLastModified(time);
+            storage.setLastChangeAuthor(authorName);
+            setModified(storage);
+        }
+
+        public String getAuthorChangeAgreedString(EIsoLanguage language) {
+            StringStorage storage = getString(language);
+            if (storage == null) {
+                return null;
+            } else {
+                return storage.getAuthorChangeAgreedString();
+            }
+        }
+
+        public Timestamp getTimeChangeAgreedString(EIsoLanguage language) {
+            StringStorage storage = getString(language);
+            if (storage == null) {
+                return null;
+            } else {
+                return storage.getTimeChangeAgreedString()> 0 ? new Timestamp(storage.getTimeChangeAgreedString()) : null;
+            }
         }
 
         public String getAuthorChangeOfStatus(EIsoLanguage language){
@@ -397,15 +513,36 @@ public interface IMultilingualStringDef {
                 return storage.getLastChangeAutor();
             }
         }
-
+        
+            
+        public boolean isAgreed(EIsoLanguage lang){
+            StringStorage storage = getString(lang);
+            if (storage == null) {
+                return false;
+            } else {
+                return storage.isAgreed();
+            }
+        }
+        
         public void appendTo(LocalizedString xDef, boolean isApi, EIsoLanguage lang) {
             if (values != null) {
+                List<EIsoLanguage> languages = getLayerLanguages();
                 for (StringStorage storage : this.values) {
                     if (storage.getValue() != null && (lang == null || lang.equals(storage.getLanguage()))) {
                         LocalizedString.Value xVal = xDef.addNewValue();
                         xVal.setLanguage(storage.getLanguage());
                         xVal.setStringValue(storage.getValue());
                         xVal.setNeedsCheck(storage.isNeedsCheck());
+                        xVal.setAgreed(storage.isAgreed());
+                        if (languages != null && languages.contains(lang)){
+                            if (storage.isModified()) {
+                                xVal.setVersion(storage.incAndGetVersion());
+                            } else if (storage.getVersion() > 0) {
+                                xVal.setVersion(storage.getVersion());
+                            }
+                        } else if (storage.getVersion() > 0) {
+                            xVal.setVersion(storage.getVersion());
+                        }
                         if (!isApi) {
                             if (storage.getLastModified() > 0) {
                                 xVal.setLastModified(new Timestamp(storage.getLastModified()));
@@ -419,7 +556,15 @@ public interface IMultilingualStringDef {
                             if (storage.getTimeChangeOfStatus() > 0){
                                 xVal.setDateChangeOfStatus(new Timestamp(storage.getTimeChangeOfStatus()));
                             }
+                            if (storage.getAuthorChangeAgreedString()!= null){
+                                xVal.setAuthorChangeAgreedString(storage.getAuthorChangeAgreedString());
+                            }
+                            if (storage.getTimeChangeAgreedString()> 0){
+                                xVal.setDateChangeAgreedString(new Timestamp(storage.getTimeChangeAgreedString()));
+                            }
+                            
                         }
+                        storage.setIsModified(false);
                     }
                 }
             }
@@ -484,6 +629,45 @@ public interface IMultilingualStringDef {
         public SearchResult findOverwritten(Definition definition) {
             return ((IMultilingualStringDef) definition).findOverwritten();
         }
+        
+        public void setModified(StringStorage storage) {
+            storage.setIsModified(true);
+            owner.setEditState(RadixObject.EEditState.MODIFIED);
+        }
+        
+        public long getMaxLayerVersion() {
+            long v = 0;
+            Iterator<StringStorage> iterator = getValues().iterator();
+            List<EIsoLanguage> languages = getLayerLanguages();
+            if (languages == null){
+                return v;
+            }
+            while (iterator.hasNext()) {
+                StringStorage e = iterator.next();
+                EIsoLanguage lang = e.getLanguage();
+                if (languages.contains(lang)) {
+                    v = Math.max(v, e.isModified()? e.getVersion() + 1 : e.getVersion());
+                }
+            }
+            return v;
+        }
+        
+        private List<EIsoLanguage> getLayerLanguages() {
+            Layer l = owner.getLayer();
+            if (l != null) {
+                return l.getLanguages();
+            }
+            return null;
+        }
+        
+        public long getVersion(EIsoLanguage lang) {
+            StringStorage storage = getString(lang);
+            if (storage == null) {
+                return 0;
+            } else {
+                return storage.getVersion();
+            }
+        }
     }
 
     Id getId();
@@ -547,4 +731,16 @@ public interface IMultilingualStringDef {
     String getAuthor();
 
     Storage getInternalStorage();
+    
+    public boolean isAgreed(EIsoLanguage language);
+
+    public void setAgreed(EIsoLanguage language, boolean isAgreed);
+    
+    public String getAuthorChangeAgreedString(EIsoLanguage language);
+    
+    public Timestamp getTimeChangeAgreedString(EIsoLanguage language);
+    
+    public long getVersion(EIsoLanguage language);
+    
+    public long getMaxLayerVersion();
 }

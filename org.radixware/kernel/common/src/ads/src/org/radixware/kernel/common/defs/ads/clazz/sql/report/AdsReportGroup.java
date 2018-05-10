@@ -110,10 +110,7 @@ public class AdsReportGroup extends RadixObject {
                 headerBand.setContainer(null);
             }
             headerBand = band;
-            if (band != null) {
-                band.setContainer(this);
-            }
-            setEditState(EEditState.MODIFIED);
+            appendBand(band);
         }
     }
 
@@ -147,12 +144,38 @@ public class AdsReportGroup extends RadixObject {
                 footerBand.setContainer(null);
             }
             footerBand = band;
-            if (band != null) {
-                band.setContainer(this);
-            }
-            setEditState(EEditState.MODIFIED);
+            appendBand(band);
         }
     }
+    
+    private void appendBand(AdsReportGroupBand band) {
+        if (band != null) {
+            band.setContainer(this);
+        }
+        setEditState(EEditState.MODIFIED);
+        if (band != null) {
+            fireEvent(new AdsReportForm.ChangedEvent(band, AdsReportForm.ChangedEvent.ChangeEventType.ADD));
+        } else {
+            fireEvent(new AdsReportForm.ChangedEvent(band, AdsReportForm.ChangedEvent.ChangeEventType.REMOVE));
+        }
+    }
+
+    @Override
+    public boolean setName(String name) {
+        boolean isName = super.setName(name);
+        if (isName) {
+            AdsReportBand band = getHeaderBand();
+            if (band != null) {
+                band.fireNameChange();
+            }
+            band = getFooterBand();
+            if (band != null) {
+                band.fireNameChange();
+            }
+        }
+        return isName;
+    }
+
 
     public Jml getCondition() {
         return condition;
@@ -209,6 +232,13 @@ public class AdsReportGroup extends RadixObject {
         final AdsReportForm form = getOwnerForm();
         if (form != null) {
             form.onModified();
+        }
+    }
+    
+    void fireEvent(AdsReportForm.ChangedEvent changedEvent) {
+        final AdsReportForm form = getOwnerForm();
+        if (form != null) {
+            form.fireEvent(changedEvent);
         }
     }
 }

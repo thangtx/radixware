@@ -27,5 +27,6 @@ public class WpsStandardSelector extends RwtSelector {
         super.open(model);
         RwtSelectorGrid grid = new RwtSelectorGrid(this, (GroupModel) model);
         setSelectorWidget(grid);
+        fireOpened();
     }
 }

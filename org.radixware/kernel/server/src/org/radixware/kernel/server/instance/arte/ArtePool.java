@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.server.instance.arte;
 
+import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
@@ -32,18 +34,24 @@ import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.server.instance.Instance;
 import org.radixware.kernel.server.instance.arte.ArteInstance.EState;
 import org.radixware.kernel.common.utils.net.RequestChannel;
+import org.radixware.kernel.server.instance.Messages;
 import org.radixware.kernel.server.instance.ThreadDumpWriter;
-import org.radixware.kernel.server.utils.PriorityResourceManager;
+import org.radixware.kernel.server.sap.SapOptions;
+import org.radixware.kernel.server.units.arte.ArteUnit;
+import org.radixware.kernel.server.utils.IPriorityResourceManager;
+import org.radixware.kernel.server.utils.SynchronizedPriorityResourceManager;
 
 public class ArtePool {
 
     private static final int MAX_STARTING_COUNT = SystemPropUtils.getIntSystemProp("rdx.max.starting.arte", 10);
     private static final long OVERLOAD_TRACE_MESSAGE_INTERVAL_MILLIS = 2000;
+    private static final int WARMUP_LOAD_PERCENT = Math.max(Math.min(SystemPropUtils.getIntSystemProp("rdx.arte.warmup.load.percent", 10), 100), 0);
 
     public static enum ECaptureResult {
 
         SUCCESS,
         ALL_BUSY,
+        INVALID_VERSION,
         ARTE_IS_INITIALIZING;
     }
     public static final long ARTE_SHUTDOWN_INTERVAL_ON_RELOAD_MILLIS = 5000;
@@ -57,15 +65,18 @@ public class ArtePool {
     private final List<ArteInstance> onMaintenance = new ArrayList<>();
     private final Map<String, ArteInstance> arteInstByLastClientAddress;
     private final AtomicLong lastOverloadMessageMillis = new AtomicLong();
-    private final PriorityResourceManager priorityManager = new PriorityResourceManager();
+    private final IPriorityResourceManager priorityManager = new SynchronizedPriorityResourceManager();
     //Guarded by this
     private boolean shutdownCalled = false;
     //Guarded by this
     private long minMaxVersion = -1;
     //Guarded by this
     private long updatingToVersion = -1;
+    private long minAcceptableVersion = -1;
+    private long maxAcceptableVersion = -1;
     private final List<ArteInstance> onUpdate = new ArrayList<>();
     private final List<ArteInstance> toReload = new ArrayList<>();
+    private final Random random = new Random();
 
     public ArtePool(final Instance instance) {
         this.instance = instance;
@@ -81,8 +92,24 @@ public class ArtePool {
         loadMinArteInstCount();
     }
 
+    public synchronized void setAcceptableVersions(final long minAcceptableVersion, final long maxAcceptableVersion) {
+        if (this.minAcceptableVersion != minAcceptableVersion || this.maxAcceptableVersion != maxAcceptableVersion) {
+            getInstance().getTrace().put(EEventSeverity.EVENT, String.format(Messages.ACCEPTABLE_VERSIONS_CHANGED, instance.getFullTitle(), minAcceptableVersion, maxAcceptableVersion), Messages.MLS_ID_ACCEPTED_VERSIONS_CHANGED, new ArrStr(instance.getFullTitle(), String.valueOf(minAcceptableVersion), String.valueOf(maxAcceptableVersion)), EEventSource.INSTANCE, false);
+        }
+        this.minAcceptableVersion = minAcceptableVersion;
+        this.maxAcceptableVersion = maxAcceptableVersion;
+    }
+
+    public long getMinAcceptableVersion() {
+        return minAcceptableVersion;
+    }
+
+    public long getMaxAcceptableVersion() {
+        return maxAcceptableVersion;
+    }
+
     public void onInstanceOptionsChanged() {
-        priorityManager.setOptions(new PriorityResourceManager.Options(instance.getNormalArteInstCount(), instance.getAboveNormalArteInstCount(), instance.getHighArteInstCount(), instance.getVeryHighArteInstCount(), instance.getCriticalArteInstCount()));
+        priorityManager.setOptions(new IPriorityResourceManager.Options(instance.getNormalArteInstCount(), instance.getAboveNormalArteInstCount(), instance.getHighArteInstCount(), instance.getVeryHighArteInstCount(), instance.getCriticalArteInstCount()));
     }
 
     private void loadMinArteInstCount() throws InterruptedException {
@@ -109,7 +136,7 @@ public class ArtePool {
     private ArteInstance newArte() throws Throwable {
         final ArteInstance arteInst = new ArteInstance(instance);
         arteInst.start(idPool.get());
-        pool.add(0, arteInst);
+        pool.add(arteInst);
         instance.getInstanceMonitor().increaseArteInstCount(1);
         return arteInst;
     }
@@ -156,24 +183,31 @@ public class ArtePool {
         doMaintenance();
         doReload();
         doUpdate();
+        doUpdateStats();
+    }
+
+    private void doUpdateStats() {
+        for (ArteInstance inst : pool) {
+            inst.updateWaitsHistory();
+        }
     }
 
     private void doReload() {
         if (toReload.size() > 0) {
-            int nonShuttingDown = 0;
+            int nonShuttingDownAndStarted = 0;
             for (ArteInstance inst : pool) {
-                if (inst.getRequestedShutdownTimeMillis() == 0) {
-                    nonShuttingDown++;
+                if (inst.getRequestedShutdownTimeMillis() == 0 && inst.isStarted()) {
+                    nonShuttingDownAndStarted++;
                 }
             }
             final Iterator<ArteInstance> it = toReload.iterator();
-            while (it.hasNext() && nonShuttingDown <= instance.getMinArteInstCount() / 2) {
+            while (it.hasNext() && nonShuttingDownAndStarted > instance.getMinArteInstCount() / 2) {
                 final ArteInstance inst = it.next();
                 if (inst.isStopped() || inst.isStopping() || inst.getRequestedShutdownTimeMillis() > 0) {
                     it.remove();
                 } else {
                     inst.requestShutdown(0);
-                    nonShuttingDown--;
+                    nonShuttingDownAndStarted--;
                 }
             }
         }
@@ -188,7 +222,7 @@ public class ArtePool {
     private void actualizeMinMaxVersion() {
         minMaxVersion = -1;
         for (ArteInstance inst : pool) {
-            final List<Long> cachedVersions = inst.getCachedVersions();
+            final List<Long> cachedVersions = inst.getCachedVersionsSnapshot();
             final long maxVersion = cachedVersions == null || cachedVersions.isEmpty() ? inst.getVersionOnCreate() : cachedVersions.get(0);
             if (minMaxVersion == -1) {
                 minMaxVersion = maxVersion;
@@ -285,7 +319,7 @@ public class ArtePool {
                     instance.getTrace().put(EEventSeverity.WARNING, ArteMessages.INSUF_ARTE_COUNT, ArteMessages.MLS_ID_INSUF_ARTE_COUNT, new ArrStr(instance.getFullTitle()), EEventSource.ARTE_POOL, false);
                     instance.getThreadDumpWriter().requestDump(ThreadDumpWriter.EThreadDumpReason.INSUF_ARTE);
                 }
-                throw new InsufficientArteInstanceCountException();
+                throw new InsufficientArteInstanceCountException(ECaptureResult.ALL_BUSY);
             }
             Thread.sleep(SLEEP_ON_WAIT_FOR_ARTE_TO_INIT_MILLIS);
         }
@@ -299,14 +333,21 @@ public class ArtePool {
             //was interrupted while waiting for some unit to stop, and instance 
             //thread proceeded to ARTE pool shutdown 
             //when some ARTE modules are still running.
-            throw new InsufficientArteInstanceCountException();
+            throw new InsufficientArteInstanceCountException(ECaptureResult.ALL_BUSY);
         }
-        final PriorityResourceManager.Ticket countTicket = priorityManager.requestTicketNow(request.getRadixPriority());
+        if (minAcceptableVersion == -1) {
+            throw new InsufficientArteInstanceCountException(ECaptureResult.ALL_BUSY);
+        }
+        if (request.getVersion() != -1 && (request.getVersion() < minAcceptableVersion || request.getVersion() > maxAcceptableVersion)) {
+            throw new InsufficientArteInstanceCountException(ECaptureResult.INVALID_VERSION);
+        }
+        final IPriorityResourceManager.Ticket countTicket = priorityManager.requestTicketNow(request.getRadixPriority());
         if (countTicket == null) {
             return new ArteCaptureInfo(ECaptureResult.ALL_BUSY, null, -1);
         }
         boolean releaseCountTicket = true;
         try {
+
             final String clientKey;
             final RequestChannel requestChannel = request.getRequestChannel();
             if (requestChannel != null) {
@@ -319,10 +360,14 @@ public class ArtePool {
             } else {
                 clientKey = null;
             }
+
+            int overallOk = 0;
             final List<ArteInstance> stopped = new ArrayList<>();
             final List<ArteInstance> starting = new ArrayList<>();
             try {
-                ArteInstance selectedInstance = null;
+                final ArtePickMode pickMode = random.nextInt(100) < WARMUP_LOAD_PERCENT ? ArtePickMode.PICK_RANDOM : ArtePickMode.PICK_FIRST;
+                final ArtePicker picker = new ArtePicker(minAcceptableVersion, maxAcceptableVersion, request.getVersion(), pickMode);
+
                 for (final ArteInstance arteInst : pool) {
                     if (arteInst.isStopped()) {
                         stopped.add(arteInst);
@@ -333,38 +378,34 @@ public class ArtePool {
                             launchUpdate(arteInst);
                             continue;
                         }
-                        final List<Long> cachedVersions = arteInst.getCachedVersions();
-                        if ((request.getVersion() == -1 && !arteInst.needUpdate()) || (cachedVersions != null && cachedVersions.contains(request.getVersion()))) {
-                            selectedInstance = arteInst;
+                        picker.check(arteInst);
+                        if (picker.isBestSelected()) {
                             break;
-                        } else {
-                            if (selectedInstance == null && request.getVersion() < arteInst.getLatestCachedVersion()) {
-                                selectedInstance = arteInst;
-                            }
                         }
-
                     } else if (arteInst.getState() == EState.INIT) {
                         starting.add(arteInst);
                     }
+                    if (isOkVer(arteInst, request.getVersion())) {
+                        overallOk++;
+                    }
 
                 }
-                if (selectedInstance != null) {
-                    final ArteInstance finalArteInst = selectedInstance;
-                    arteInstByLastClientAddress.put(clientKey, selectedInstance);
+                if (picker.getSelectedArteInst() != null) {
+                    final ArteInstance selectedArteInst = picker.getSelectedArteInst();
                     final Callable<Boolean> aliveChecker = new Callable<Boolean>() {
 
                         @Override
                         public Boolean call() throws Exception {
-                            return !finalArteInst.isStopped();
+                            return !selectedArteInst.isStopped();
                         }
                     };
                     countTicket.setHolderAliveChecker(aliveChecker);
                     request.setCountTicket(countTicket);
-                    final long actualVersion = request.getVersion() > 0 ? request.getVersion() : selectedInstance.getLatestCachedVersion();
-                    selectedInstance.process(request);
+                    picker.getSelectedArteInst().process(request.getVersion() == -1 ? new VersionedRequest(request, picker.getSelectedVersion()) : request);
                     releaseCountTicket = false;
-                    return new ArteCaptureInfo(ECaptureResult.SUCCESS, selectedInstance, actualVersion);//NOPMD
+                    return new ArteCaptureInfo(ECaptureResult.SUCCESS, selectedArteInst, picker.getSelectedVersion());//NOPMD
                 }
+
             } finally {
                 removeFromPool(stopped);
             }
@@ -374,8 +415,12 @@ public class ArtePool {
                     starting.add(newArte());
                 } catch (Throwable t) {
                     //shouldn't happen
-                    instance.getTrace().put(EEventSeverity.ERROR, "Error on Arte instance creation: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE_POOL);
+                    instance.getTrace().put(EEventSeverity.ERROR, "Error on ARTE creation: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE_POOL);
                 }
+            }
+
+            if (overallOk == 0 && (starting.isEmpty() || request.getVersion() != maxAcceptableVersion)) {
+                throw new InsufficientArteInstanceCountException(ECaptureResult.INVALID_VERSION);
             }
 
             if (!starting.isEmpty()) {
@@ -390,7 +435,15 @@ public class ArtePool {
         }
     }
 
-    public void release(PriorityResourceManager.Ticket ticket) {
+    private boolean isOkVer(final ArteInstance arteInst, final long requestVersion) {
+        final List<Long> cachedVersions = arteInst.getCachedVersionsSnapshot();
+        if (requestVersion == -1 || cachedVersions == null || cachedVersions.isEmpty()) {
+            return true;
+        }
+        return cachedVersions.contains(requestVersion);
+    }
+
+    public void release(IPriorityResourceManager.Ticket ticket) {
         //priorityManager uses internal synchronization
         priorityManager.releaseTicket(ticket);
     }
@@ -428,37 +481,62 @@ public class ArtePool {
         return pool.size();
     }
 
-    public synchronized void shutdown() {
-        shutdownCalled = true;
+    public void shutdown() {
+        shutdown(-1);
+    }
+
+    public boolean shutdown(final long waitTimeMillis) {
+        return doShutdown(waitTimeMillis);
+    }
+
+    public boolean doShutdown(final long waitTimeMillis) {
+        final long startMillis = System.currentTimeMillis();
         boolean arteIsRunning = false;
-        for (ArteInstance arteInst : pool) {
-            try {
-                if (!arteInst.stop(0)) {
-                    arteIsRunning = true;
-                }
-            } catch (Throwable e) {
-                final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
-                instance.getTrace().put(EEventSeverity.ERROR, ArteMessages.ERR_ON_ARTE_INST_STOP + " \"" + arteInst.getTitle() + "\": " + exStack, ArteMessages.MLS_ID_ERR_ON_ARTE_INST_STOP, new ArrStr(arteInst.getTitle(), exStack), EEventSource.ARTE_POOL, false);
-            }
-        }
-        //wait for all instances to stop
-        while (arteIsRunning) {
-            arteIsRunning = false;
+        synchronized (this) {
+            shutdownCalled = true;
             for (ArteInstance arteInst : pool) {
-                if (!arteInst.isStopped()) {
-                    arteIsRunning = true;
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-                        //ignore
+                try {
+                    if (!arteInst.stop(0)) {
+                        arteIsRunning = true;
+                    } else {
+                        removeFromPool(Collections.singletonList(arteInst));
                     }
-                    break;
+                } catch (Throwable e) {
+                    final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
+                    instance.getTrace().put(EEventSeverity.ERROR, ArteMessages.ERR_ON_ARTE_INST_STOP + " \"" + arteInst.getTitle() + "\": " + exStack, ArteMessages.MLS_ID_ERR_ON_ARTE_INST_STOP, new ArrStr(arteInst.getTitle(), exStack), EEventSource.ARTE_POOL, false);
                 }
             }
         }
-        pool.clear();
-        instance.getInstanceMonitor().setArteInstCount(0);
-        arteInstByLastClientAddress.clear();
+
+        //wait for all instances to stop
+        while (arteIsRunning && (waitTimeMillis < 0 || (System.currentTimeMillis() - startMillis < waitTimeMillis))) {
+            synchronized (this) {
+                arteIsRunning = false;
+                for (ArteInstance arteInst : pool) {
+                    if (!arteInst.isStopped()) {
+                        arteIsRunning = true;
+                        arteInst.updateWaitsHistory();
+                    } else {
+                        removeFromPool(Collections.singletonList(arteInst));
+                    }
+
+                }
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                //ignore
+            }
+        }
+        if (!arteIsRunning) {
+            synchronized (this) {
+                pool.clear();
+                instance.getInstanceMonitor().setArteInstCount(0);
+                arteInstByLastClientAddress.clear();
+                return true;
+            }
+        }
+        return false;
     }
 
     public synchronized void requestArteInstanceStop(final ArteInstance arteInstance, final long delayMillis) {
@@ -593,17 +671,177 @@ public class ArtePool {
 
     }
 
+    private static enum ArtePickMode {
+
+        PICK_RANDOM,
+        PICK_FIRST;
+    }
+
+    private class ArtePicker {
+
+        private ArteInstance selectedArte;
+        private final long requestVersion;
+        private final long minAcceptableVersion;
+        private final long maxAcceptableVersion;
+        private long selectedVersion = -1;
+        private final List<ArteInstance> variants;
+
+        public ArtePicker(final long minAcceptableVersion, final long maxAcceptableVersion, final long requestVersion, final ArtePickMode pickMode) {
+            this.minAcceptableVersion = minAcceptableVersion;
+            this.maxAcceptableVersion = maxAcceptableVersion;
+            this.requestVersion = requestVersion;
+            if (pickMode == ArtePickMode.PICK_RANDOM) {
+                variants = new ArrayList<>();
+            } else {
+                variants = null;
+            }
+        }
+
+        public void check(ArteInstance arteInst) {
+            final List<Long> cachedVersions = arteInst.getCachedVersionsSnapshot();
+            if (cachedVersions != null) {
+                if (requestVersion == -1) {
+                    for (Long v : cachedVersions) {
+                        if (minAcceptableVersion <= v && v <= maxAcceptableVersion && v >= selectedVersion) {
+                            if (v > selectedVersion) {
+                                selectedVersion = v;
+                                if (variants == null) {
+                                    selectedArte = arteInst;
+                                } else {
+                                    variants.clear();
+                                }
+                            }
+                            if (variants != null) {
+                                variants.add(arteInst);
+                            }
+                            break;
+                        }
+                    }
+                } else {
+                    if (cachedVersions.contains(requestVersion)) {
+                        if (variants != null) {
+                            variants.add(arteInst);
+                        } else if (selectedVersion == -1) {
+                            selectedVersion = requestVersion;
+                            selectedArte = arteInst;
+                        }
+                    }
+                }
+            }
+        }
+
+        public long getSelectedVersion() {
+            return selectedVersion;
+        }
+
+        public ArteInstance getSelectedArteInst() {
+            if (selectedArte == null && variants != null && !variants.isEmpty()) {
+                selectedArte = variants.get(random.nextInt(variants.size()));
+            }
+            return selectedArte;
+        }
+
+        public boolean isBestSelected() {
+            if (variants != null) {
+                return false;
+            }
+            return requestVersion == -1 ? selectedVersion == maxAcceptableVersion : selectedVersion == requestVersion;
+        }
+    }
+
     public static class InsufficientArteInstanceCountException extends Exception {
 
-        public InsufficientArteInstanceCountException() {
+        private final ECaptureResult captureResult;
+
+        public InsufficientArteInstanceCountException(final ECaptureResult captureResult) {
+            this.captureResult = captureResult;
         }
 
-        public InsufficientArteInstanceCountException(final String mess, final Throwable cause) {
-            super(mess, cause);
+        public ECaptureResult getCaptureResult() {
+            return captureResult;
         }
 
-        public InsufficientArteInstanceCountException(final String mess) {
-            super(mess);
+    }
+
+    private static class VersionedRequest implements IArteRequest {
+
+        private final IArteRequest delegate;
+        private final long version;
+
+        public VersionedRequest(IArteRequest delegate, long version) {
+            this.delegate = delegate;
+            this.version = version;
         }
+
+        @Override
+        public ArteUnit getUnit() {
+            return delegate.getUnit();
+        }
+
+        @Override
+        public RequestChannel getRequestChannel() {
+            return delegate.getRequestChannel();
+        }
+
+        @Override
+        public IArteRequestCallback getCallback() {
+            return delegate.getCallback();
+        }
+
+        @Override
+        public String getClientId() {
+            return delegate.getClientId();
+        }
+
+        @Override
+        public SapOptions getSapOptions() {
+            return delegate.getSapOptions();
+        }
+
+        @Override
+        public int getRadixPriority() {
+            return delegate.getRadixPriority();
+        }
+
+        @Override
+        public InputStream getOverriddenInput() {
+            return delegate.getOverriddenInput();
+        }
+
+        @Override
+        public IPriorityResourceManager.Ticket getCountTicket() {
+            return delegate.getCountTicket();
+        }
+
+        @Override
+        public void setCountTicket(IPriorityResourceManager.Ticket ticket) {
+            delegate.setCountTicket(ticket);
+        }
+
+        @Override
+        public IPriorityResourceManager.Ticket getActiveTicket() {
+            return delegate.getActiveTicket();
+        }
+
+        @Override
+        public void setActiveTicket(IPriorityResourceManager.Ticket ticket) {
+            delegate.setActiveTicket(ticket);
+        }
+
+        @Override
+        public long getCreateTimeMillis() {
+            return delegate.getCreateTimeMillis();
+        }
+
+        @Override
+        public long getVersion() {
+            return version;
+        }
+
+        @Override
+        public Map<String, String> getHeaders() {
+            return delegate.getHeaders();
+        }
+
     }
 }

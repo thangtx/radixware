@@ -160,7 +160,7 @@ public class AdsWidgetDef extends AdsUIItemDef implements IJavaSource {
 
     @Override
     public String getName() {
-        AdsUIProperty.StringProperty objectName = (AdsUIProperty.StringProperty) AdsUIUtil.getUiProperty(this, "objectName");
+        AdsUIProperty.StringProperty objectName = (AdsUIProperty.StringProperty) AdsUIUtil.getUiProperty(this, AdsWidgetProperties.OBJECT_NAME);
         if (objectName != null) {
             return objectName.value;
         }
@@ -169,7 +169,7 @@ public class AdsWidgetDef extends AdsUIItemDef implements IJavaSource {
 
     @Override
     public boolean setName(String name) {
-        AdsUIProperty.StringProperty objectName = (AdsUIProperty.StringProperty) AdsUIUtil.getUiProperty(this, "objectName");
+        AdsUIProperty.StringProperty objectName = (AdsUIProperty.StringProperty) AdsUIUtil.getUiProperty(this, AdsWidgetProperties.OBJECT_NAME);
         if (objectName != null) {
             if (objectName.getContainer() == null) {
                 properties.add(objectName);
@@ -370,7 +370,8 @@ public class AdsWidgetDef extends AdsUIItemDef implements IJavaSource {
         public CanPasteResult canPaste(List<Transfer> objectsInClipboard, DuplicationResolver resolver) {
             final AdsWidgetDef widget = AdsWidgetDef.this;
             final AdsWidgetDef curWidget = (AdsWidgetDef) AdsUIUtil.currentWidget(widget);
-            if (curWidget.getLayout() != null) {
+            
+            if (curWidget != null && curWidget.getLayout() != null) {
                 return curWidget.getLayout().getClipboardSupport().canPaste(objectsInClipboard, resolver);
             }
 
@@ -411,7 +412,7 @@ public class AdsWidgetDef extends AdsUIItemDef implements IJavaSource {
                 }
 
                 if (w != null) {
-                    AdsUIProperty.RectProperty geometry = (AdsUIProperty.RectProperty) AdsUIUtil.getUiProperty(w, "geometry");
+                    AdsUIProperty.RectProperty geometry = (AdsUIProperty.RectProperty) AdsUIUtil.getUiProperty(w, AdsWidgetProperties.GEOMETRY);
                     geometry.x += 5;
                     geometry.y += 5;
                     curWidget.getWidgets().add(w);

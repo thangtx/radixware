@@ -11,10 +11,10 @@
 
 package org.radixware.kernel.server.arte.services.eas;
 
-import java.util.ResourceBundle;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.types.MultilingualString;
+import org.radixware.kernel.server.arte.Arte;
 import org.radixware.schemas.eas.ExceptionEnum;
-
 
 final class Messages {
 
@@ -30,12 +30,13 @@ final class Messages {
     static final String MLS_ID_UNABLE_AUTH_USER_VIA_KERBEROS_WITH_REASON = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls7ZPF4GAB5ZE5LONEETM22QFWGE";//Event, "Unable to authenticate user on statition "%1" (%2) via kerberos protocol. Reason: %3.", App.Audit   
     static final String MLS_ID_UNABLE_AUTH_USER_VIA_KERBEROS = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsLG43XUZ4NBAQLLX4F3ECBN5WXQ";//Event, "Unable to authenticate user on statition "%1" (%2) via kerberos protocol.", App.Audit
     static final String MLS_ID_TRY_TO_USE_LOCKED_USER = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsODXY2MR3S5EGJKYFEZCKG2UY4Y";//Warning, "Trying to use locked  user account "%1" from station "%2" (%3)." ,App.Audit
-    static final String MLS_ID_LOGON_TIME_EXPIRED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsKK23KBIT6FANZGUXEUI4AZI3TY";//Event, "User "%1" failed to continue session using station "%2" (%3): logon time expires" ,App.Audit    
+    static final String MLS_ID_LOGON_TIME_EXPIRED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsKK23KBIT6FANZGUXEUI4AZI3TY";//Event, "User "%1" failed to continue session using station "%2" (%3): logon time expires" ,App.Audit
+    static final String MLS_ID_TEMPORARY_PASSWORD_EXPIRED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsG6CQL7XUU5CWBGAMIA33Z2VWPA";//Event, "User "%1" failed to continue session using station "%2" (%3): temporary password expired" ,App.Audit
     static final String MLS_ID_TRY_TO_USE_FORBIDDEN_AUTH_TYPE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsVEC6MFJPBFBWXNYQF7A5XR7YY4";//Event, "User "%1" failed to log in from station "%2" using forbidden authentication type "%3"." ,App.Audit
     static final String MLS_ID_LOGIN_REQUIRED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsIN3DJAQY6FG7TPPWYWI3YF3NF4";//Warning, "User "%1" failed to log in from station "%2": authentication process was not properly complete" ,App.Audit
     static final String MLS_ID_ATTEMP_TO_REGISTER_FROM_INVALID_STATION = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsZMERMLJM5BCZZI5NAWJB27QWBQ";//Event, "Attempt to register in the system from non-existing station "%1" (%2)" ,App.Audit
     static final String MLS_ID_UNABLE_TO_LOAD_ROLE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsLXCSFHEJIBCSLH5VGW6I334OJM";//Error, "Unable to load role #%1 '%2': %3" , Arte.DefManager
-    static final String MLS_ID_UNABLE_TO_LOAD_ALL_ROLES = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsH32XPQ2DRNFSBIE6GJAWMA2QWM";//Error, "Unable to load all roles assigned to current user, some functionality may be unaccessible." , Arte.DefManager
+    static final String MLS_ID_UNABLE_TO_LOAD_ALL_ROLES = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsH32XPQ2DRNFSBIE6GJAWMA2QWM";//Error, "Unable to load all roles assigned to current user, some functionality may be unaccessible." , Arte.DefManager    
     
     static final Id MLS_OWNER_ID = Id.Factory.loadFrom("adcXCB5KK6HMJH7NP6E642OHPOMXY");
     static final Id MLS_ID_INSUF_PRIV_TO_CONNECT_TO_EAS = Id.Factory.loadFrom("mlsLGV273ZM7BESDAVMGL5XQM7WPQ"); // "Insufficient privileges to connect to Explorer Access Service";
@@ -61,7 +62,7 @@ final class Messages {
     static final Id MLS_ID_INSUF_PRIV_TO_UPDATE_OBJECT = Id.Factory.loadFrom("mlsS4CM5ZQS3RF25MZYGIVAGIHBHE"); // "Insufficient privileges to update object";
     static final Id MLS_ID_INSUF_PRIV_TO_UPDATE_PROPERTY = Id.Factory.loadFrom("mlsL7PVOGD4LNCAVPZ2YBG3HW5MRI"); // "Insufficient privileges to update property";
     static final Id MLS_ID_SUBQUERIES_ARE_FORBIDDEN = Id.Factory.loadFrom("mls3Y3MSECEUBDYREKAMJQMGIJC54");//"Subqueries are forbidden in custom filters"
-    //static final Id MLS_ID_USR_CANT_USE_PWD = Id.Factory.loadFrom("mlsO6DF2IHC5FHQDIQVFKDVEAA6EM");//"User can't be identified by password. The password is not defined."
+    
     static final String MLS_ID_EAS_PREVENTED_ACCESS_VIOLATION = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsF5YDUAZQWJER7OWVASLO7NWSS4"; // "Explorer Access Service prevented access violation: Message: %1, User: %2, Station: %3.", App.Audit, Warning
     static final String MLS_ID_EAS_CREATE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls5W25BATDVNHHRCHXF4SBWKOHVQ";//"User '%1' created '%2' with PID = '%3'", EAS, Event
     static final String MLS_ID_EAS_UPDATE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsBY37QFZGSFCM3A55V6VHTVM4VI";//"User '%1' updated '%2' with PID = '%3'", EAS, Event
@@ -77,35 +78,38 @@ final class Messages {
     static final String MLS_ID_EAS_ERR_ON_RELEASING_RESOURCES = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsIINTMB5BSFB73N2FITRITVB3YE"; //"Error on releasing system resources:\n%1"
     static final String MLS_ID_EAS_ERR_ON_GET_PROP_VAL = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsXFWW3VAYGRB2RDRTC2TPNEAUBQ"; //"Failed to get value of property '%1' (#%2):\n%3"
     static final String MLS_ID_EAS_ERR_ON_SET_PROP_VAL = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls47RFVDVQJBGH7DD42SC4VFCRCY"; //"Failed to set value of property '%1' (#%2):\n%3"
-    static final String REASON_NONEXISTING_USER;
-    static final String REASON_INVALID_PASSWORD;
-    static final String REASON_INVALID_STATION;
-    static final String REASON_KERBEROS_DISABLED;
-    static final String REASON_LOGON_TIME_RESTRICTION_VIOLATION;
-    static final String REASON_SESSIONS_LIMIT_EXCEED;
+    static final String MLS_ID_EAS_ERR_ON_LOAD_INST_CLASS = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsSKEBWPNA4VF2BOJO46ZC5LJZGI";//"Failed to load class #%1 for entity object instantiation:\n%2"
+    static final String MLS_ID_EAS_SKIPPED_BY_ACS_RECORDS = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls336LWVJNWZGTVARVFYUP4A2QGI";//%1 records loaded from database where skipped by EAS due to access control settings
+    static final String MLS_ID_EAS_FILTERED_RECORDS = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsFXKLWG6VRFGVXFKXL5QH3NGOYU";//%1 records loaded from database where programmatically filtered
+    
+    static final Id MLS_ID_REASON_NONEXISTING_USER = Id.Factory.loadFrom("mls3O7VHNY4EVFLNFE6FOTG7BKHRI"); //"there is no such user"
+    static final Id MLS_ID_REASON_INVALID_PASSWORD = Id.Factory.loadFrom("mls3I3LCABD4RCHTHTLO2CHPTK72Q");//invalid password
+    static final Id MLS_ID_REASON_INVALID_STATION = Id.Factory.loadFrom("mlsRE45XYWYTBESJGGVGIOBS7CXKM");//invalid station
+    static final Id MLS_ID_REASON_KERBEROS_DISABLED = Id.Factory.loadFrom("mlsJJNVXZH4RFHY7CHSKBBJINKYPE");//kerberos authentication disabled
+    static final Id MLS_ID_REASON_LOGON_TIME_RESTRICTION_VIOLATION = Id.Factory.loadFrom("mlsMNFMLJ67PBBUVJR2IESWAFFMMU");//logon time restriction violation
+    static final Id MLS_ID_REASON_SESSIONS_LIMIT_EXCEED = Id.Factory.loadFrom("mlsCZEES2GNMVEQVI4F7BHCGB3BOY");//maximum number of sessions exceeded
+    static final Id MLS_ID_REASON_TEMPORARY_PASSWORD_EXPIRED = Id.Factory.loadFrom("mlsHPCELFFCSRF6RKLSVU4NWVMKFM");//temporary password expired
+    static final Id MLS_ID_REASON_WEBDRIVER_NOT_ALLOWED = Id.Factory.loadFrom("mlsPQKBBW3YZRHMLF63XSABPOKAVA");//using of WebDriver is not allowed
 
-    static {
-        final ResourceBundle bundle = ResourceBundle.getBundle("org.radixware.kernel.server.arte.services.eas.mess.messages");
-        REASON_NONEXISTING_USER = bundle.getString("REASON_NONEXISTING_USER");
-        REASON_INVALID_STATION = bundle.getString("REASON_INVALID_STATION");
-        REASON_INVALID_PASSWORD = bundle.getString("REASON_INVALID_PASSWORD");
-        REASON_KERBEROS_DISABLED = bundle.getString("REASON_KERBEROS_DISABLED");
-        REASON_LOGON_TIME_RESTRICTION_VIOLATION = bundle.getString("REASON_LOGON_TIME_RESTRICTION_VIOLATION");
-        REASON_SESSIONS_LIMIT_EXCEED = bundle.getString("REASON_SESSIONS_LIMIT_EXCEED");
-    }
-
-    public static String getReasonForException(final String easExcpetionReason) {
+    public static String getReasonForException(final Arte arte, final String easExcpetionReason) {
+        final Id messageId;
         if (ExceptionEnum.INVALID_USER.toString().equals(easExcpetionReason)) {
-            return REASON_NONEXISTING_USER;
+            messageId = MLS_ID_REASON_NONEXISTING_USER;
         } else if (ExceptionEnum.INVALID_STATION.toString().equals(easExcpetionReason)) {
-            return REASON_INVALID_STATION;
+            messageId = MLS_ID_REASON_INVALID_STATION;
         } else if (ExceptionEnum.INVALID_PASSWORD.toString().equals(easExcpetionReason)) {
-            return REASON_INVALID_PASSWORD;
+            messageId = MLS_ID_REASON_INVALID_PASSWORD;
         } else if (ExceptionEnum.LOGON_TIME_RESTRICTION_VIOLATION.toString().equals(easExcpetionReason)){
-            return REASON_LOGON_TIME_RESTRICTION_VIOLATION;
+            messageId = MLS_ID_REASON_LOGON_TIME_RESTRICTION_VIOLATION;
         } else if (ExceptionEnum.SESSIONS_LIMIT_EXCEED.toString().equals(easExcpetionReason)){
-            return REASON_SESSIONS_LIMIT_EXCEED;
+            messageId = MLS_ID_REASON_SESSIONS_LIMIT_EXCEED;
+        } else if (ExceptionEnum.TEMPORARY_PASSWORD_EXPIRED.toString().equals(easExcpetionReason)){
+            messageId = MLS_ID_REASON_TEMPORARY_PASSWORD_EXPIRED;
+        }else if (ExceptionEnum.WEB_DRIVER_IS_NOT_ALLOWED.toString().equals(easExcpetionReason)){
+            messageId = MLS_ID_REASON_WEBDRIVER_NOT_ALLOWED;
+        } else{
+            messageId = null;
         }
-        return null;
+        return messageId==null ? null : MultilingualString.get(arte, MLS_OWNER_ID, messageId);
     }
 }

@@ -8,10 +8,8 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.units.job.executor;
 
-import java.math.BigInteger;
 import org.radixware.kernel.common.enums.EPriority;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.server.arte.JobQueue;
@@ -27,6 +25,7 @@ final class Job {
     final int radixPriority;
     final int unlockCount;
     final String scpName;
+    final ThreadKey threadKey;
 
     Job(
             final Long id,
@@ -34,13 +33,15 @@ final class Job {
             final long delayMillis,
             final int radixPriority,
             final String scpName,
-            final int unlockCount) {
+            final int unlockCount,
+            final ThreadKey threadKey) {
         this.id = id;
         this.title = title;
         this.delayMillis = delayMillis;
         this.radixPriority = radixPriority;
         this.scpName = scpName;
         this.unlockCount = unlockCount;
+        this.threadKey = threadKey;
     }
 
     @Override
@@ -56,6 +57,10 @@ final class Job {
         return radixPriority;
     }
 
+    public ThreadKey getThreadKey() {
+        return threadKey;
+    }
+    
     protected String getFullTitle() {
         final StringBuilder sb = new StringBuilder();
         sb.append(JobExecutorMessages.JOB);
@@ -71,6 +76,10 @@ final class Job {
     protected String getParametersDescription() {
         final StringBuilder sb = new StringBuilder();
         sb.append("[");
+        if (threadKey != null) {
+            sb.append("Thread: " + threadKey.getThreadPoolClassGuid() + "~" + threadKey.getThreadPoolPid() + "#" + threadKey.getThreadKey());
+            sb.append("; ");
+        }
         sb.append("SCP: ");
         sb.append(scpName);
         sb.append("; Radix priority: ");

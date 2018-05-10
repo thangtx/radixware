@@ -1,12 +1,17 @@
 <?xml version="1.0"?>
 <xs:schema version="1.0"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:types="http://schemas.radixware.org/types.xsd"
+           xmlns:defs="http://schemas.radixware.org/adsdef.xsd"
+           xmlns:common="http://schemas.radixware.org/commondef.xsd"
            targetNamespace="http://schemas.radixware.org/radixdoc.xsd"
            xmlns="http://schemas.radixware.org/radixdoc.xsd"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
     <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="adsdef.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
 
     <xs:annotation>
         <xs:documentation>Radixdoc document elements</xs:documentation>
@@ -88,11 +93,11 @@
     </xs:complexType>
 
     <!--<xs:complexType name="Anchor">-->
-        <!--<xs:complexContent>-->
-            <!--<xs:extension base="DocElement">-->
-                <!--<xs:attribute name="Key" type="xs:string" use="required"/>-->
-            <!--</xs:extension>-->
-        <!--</xs:complexContent>-->
+    <!--<xs:complexContent>-->
+    <!--<xs:extension base="DocElement">-->
+    <!--<xs:attribute name="Key" type="xs:string" use="required"/>-->
+    <!--</xs:extension>-->
+    <!--</xs:complexContent>-->
     <!--</xs:complexType>-->
 
     <xs:complexType name="ElementList">
@@ -201,4 +206,154 @@
 
     <xs:element name="RadixdocUnit" type="RadixdocUnit"/>
     <xs:element name="IndexUnit" type="IndexUnit"/>
+    
+        
+    <xs:complexType name="AbstractDocItem">
+        <xs:attribute name="Name" type="xs:string"/>
+        <xs:attribute name="DescriptionId" type="types:Id"/>
+        <xs:attribute name="TitleId" type="types:Id"/>
+    </xs:complexType>
+    
+    <xs:complexType name="AbstractDefDocItem">
+        <xs:complexContent>
+            <xs:extension base="AbstractDocItem">
+                <xs:attribute name="Id" type="types:Id"/>
+                <xs:attribute name="DefinitionType" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EDefType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="IsDepricated" type="xs:boolean"/>
+                <xs:attribute name="IsPublished" type="xs:boolean"/>
+                <xs:attribute name="IsFinal" type="xs:boolean"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="ModuleDocItem">
+        <xs:complexContent>
+            <xs:extension base="AbstractDefDocItem">
+                <xs:sequence>                    
+                    <xs:element name="DocumentationItems" type="DocumentationItems"></xs:element>
+                </xs:sequence>
+                <xs:attribute name="ModulePath" type="xs:string" use="required"/>
+                <xs:attribute name="LayerUri" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="AdsTopicDefDocItem">
+        <xs:complexContent>
+            <xs:extension base="AdsDefDocItem">
+                <xs:attribute name="Content" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="AdsMapDefDocItem">
+        <xs:complexContent>
+            <xs:extension base="AdsDefDocItem">
+                <xs:sequence>
+                    <xs:element name="Items" type="types:Id" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="AdsDefDocItem">
+        <xs:complexContent>
+            <xs:extension base="AbstractDefDocItem">
+                <xs:attribute name="isOverwrite" type="xs:boolean" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="AdsXmlSchemeDefDocItem">
+        <xs:complexContent>
+            <xs:extension base="AdsDefDocItem">
+                <xs:sequence>
+                    <xs:element name="XmlItemDocEntries" type="XmlItemDocEntries" minOccurs="0"/>
+                    <xs:element name="XmlChangeLog" type="common:ChangeLog" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="TargetNamespace" type="xs:string" use="required"/>
+                <xs:attribute name="NeedsDocumentation" type="xs:boolean" default="true"/>
+                <xs:attribute name="DocumentationTitleId" type="types:Id"/>
+                <xs:attribute name="SchemaZIPTitleId" type="types:Id"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="DocumentationItems">
+        <xs:sequence>
+            <xs:element name="DocumentationItem" type="AbstractDefDocItem" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        </xs:sequence>
+    </xs:complexType>
+        
+    <xs:complexType name="XmlItemDocEntry">
+        <xs:sequence>
+            <xs:element name="NodeXPath" type="xs:string"></xs:element>
+            <xs:element name="XmlItemType" type="XmlItemType"></xs:element>
+            <xs:element name="Attributes" type="XmlItemDocEntries" minOccurs="0"></xs:element>
+            <xs:element name="SubElements" type="XmlItemDocEntries" minOccurs="0"></xs:element>
+        </xs:sequence>
+        <xs:attribute name="LocalizedStringId" type="types:Id"/>
+        <xs:attribute name="SinceVersion" type="xs:string"/>
+        <xs:attribute name="Mandatory" type="xs:string"/>
+    </xs:complexType>
+    
+    <xs:complexType name="XmlItemDocEntries">
+        <xs:sequence>
+            <xs:element name="XmlItemDocEntry" type="XmlItemDocEntry" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="ModuleDocumentationItems" type="ModuleDocItem"></xs:element>
+    <xs:complexType name="XmlItemType">
+        <xs:attribute name="Namespace" type="xs:string"/>
+        <xs:attribute name="Value" type="xs:string"/>
+        <xs:attribute name="Id" type="types:Id"/>
+        <xs:attribute name="Prefix" type="xs:string"/>
+    </xs:complexType>
+    
+    <xs:complexType name="AdsEnumDefDocItem">
+        <xs:complexContent>
+            <xs:extension base="AdsDefDocItem">
+                <xs:sequence>
+                    <xs:element name="PlatformEnum" type="xs:string" minOccurs="0"></xs:element>
+                    <xs:element name="EnumItemsDocEntries" type="EnumItemDocEntries"></xs:element>
+                    <xs:element name="Restrictions" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="RegExp" type="xs:string" minOccurs="0"></xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="ItemsType" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="EnumItemDocEntry">
+        <xs:sequence>
+            <xs:element name="Domains" maxOccurs="1" minOccurs="1" type="xs:string"></xs:element>
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string"/>
+        <xs:attribute name="Value" type="xs:string"/>
+        <xs:attribute name="TitleId" type="types:Id"/>
+        <xs:attribute name="DescriptionId" type="types:Id"/>
+        <xs:attribute name="ViewOrder" type="xs:string"/>
+    </xs:complexType>
+    
+    <xs:complexType name="EnumItemDocEntries">
+        <xs:sequence>
+            <xs:element name="EnumItemDocEntry" type="EnumItemDocEntry" maxOccurs="unbounded" minOccurs="0"></xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
 </xs:schema>

@@ -31,5 +31,7 @@ interface ILocalizedEditor {
     void setText(String text);
 
     String getText();
+    
+    void requestFocus();
 
 }

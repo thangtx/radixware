@@ -20,6 +20,7 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsDefinition.ESaveMode;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.localization.ILocalizedDef.MultilingualStringInfo;
 import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EEntityPresentationInheritance;
@@ -40,6 +41,7 @@ public class EntityObjectPresentations extends EntityBasedPresentations  {
     private final ClassCatalogs classCatalogs;
     private Id objectTitleId;
     protected EnumSet<EEntityPresentationInheritance> inheritanceMask;
+    private boolean searchTitleInherit = true;
     
     public EntityObjectPresentations(AdsEntityObjectClassDef owner, ClassDefinition.Presentations xDef) {
         super(owner, xDef);
@@ -53,9 +55,6 @@ public class EntityObjectPresentations extends EntityBasedPresentations  {
         this.classCatalogs = new ClassCatalogs(this, xDef);
         this.objectTitleId = xDef == null ? null : 
                 xDef.getObjectTitleId() == null ? null:Id.Factory.loadFrom(xDef.getObjectTitleId());
-        if (this.objectTitleId == null) {
-            inheritanceMask.add(EEntityPresentationInheritance.SINGULAR_TITLE);
-        }
     }
 
     public EntityObjectPresentations(AdsEntityObjectClassDef owner) {
@@ -101,17 +100,35 @@ public class EntityObjectPresentations extends EntityBasedPresentations  {
     public ExtendableDefinitions<AdsClassCatalogDef> getClassCatalogs() {
         return classCatalogs;
     }
-
+    
     public Id getObjectTitleId() {
-        if (isObjectTitleInherited()) {
-            AdsClassDef clazz = getOwnerClass().getHierarchy().findOverwritten().get();
-            if (clazz instanceof AdsEntityObjectClassDef) {
-                return ((AdsEntityObjectClassDef) clazz).getPresentations().getObjectTitleId();
-            } else {
-                return null;
+        return getObjectTitleId(isObjectTitleInherited());
+    }
+
+    public Id getObjectTitleId(boolean inherited) {
+        if (inherited) {
+            AdsEntityObjectClassDef def = findOwnerTitleDefinition();
+            if (def != null) {
+                return def.getPresentations().getObjectTitleId();
             }
+            return null;
         }
         return objectTitleId;
+    }
+    
+    public AdsEntityObjectClassDef findOwnerTitleDefinition() {
+        if (isObjectTitleInherited()) {
+            
+            AdsEntityObjectClassDef ovr = findOverwrittenTitleOwner();
+            if (ovr != null) {
+                return ovr;
+            }
+            AdsEntityObjectClassDef def = getOwnerClass().findBasis();
+            if (def != null) {
+                return def.getPresentations().findOwnerTitleDefinition();
+            }            
+        }
+        return getOwnerClass();
     }
 
     public void setObjectTitleId(Id id) {
@@ -128,7 +145,7 @@ public class EntityObjectPresentations extends EntityBasedPresentations  {
      *
      */
     public String getObjectTitle(EIsoLanguage language) {
-        return getOwnerClass().getLocalizedStringValue(language, getObjectTitleId());
+        return findOwnerTitleDefinition().getLocalizedStringValue(language, getObjectTitleId());
     }
 
     /**
@@ -171,7 +188,41 @@ public class EntityObjectPresentations extends EntityBasedPresentations  {
         this.inheritanceMask = EnumSet.allOf(EEntityPresentationInheritance.class);
     }
     
+    private AdsEntityObjectClassDef findOverwrittenTitleOwner() {
+        AdsClassDef classDef = getOwnerClass().getHierarchy().findOverwritten().get();
+        while (classDef != null) {
+            if (classDef instanceof AdsEntityObjectClassDef) {
+                AdsEntityObjectClassDef adsEntityObjectClassDef = (AdsEntityObjectClassDef) classDef;
+                if (!adsEntityObjectClassDef.isTitleInherited()) {
+                    return adsEntityObjectClassDef;
+                }
+            }
+            classDef = classDef.getHierarchy().findOverwritten().get();
+        }
+        return null;
+    }
+    
+    //for writer    
+    public boolean getIsObjectTitleInherited() {
+        AdsEntityObjectClassDef def = findOverwrittenTitleOwner();
+        if (def != null) {
+            return false;
+        }
+        return isObjectTitleInherited();
+    }
+    
     public boolean isObjectTitleInherited(){
+        if (searchTitleInherit) {
+            AdsEntityObjectClassDef owner = getOwnerClass();
+            if (owner ==  null) {
+                return inheritanceMask.contains(EEntityPresentationInheritance.SINGULAR_TITLE);
+            }
+            if (this.objectTitleId == null && (owner.findBasis() != null || (owner.isOverwrite() 
+                    || owner.getHierarchy().findOverwritten().get()!= null))) {
+                inheritanceMask.add(EEntityPresentationInheritance.SINGULAR_TITLE);
+            }
+            searchTitleInherit = false;
+        }
         return inheritanceMask.contains(EEntityPresentationInheritance.SINGULAR_TITLE);
     }
     

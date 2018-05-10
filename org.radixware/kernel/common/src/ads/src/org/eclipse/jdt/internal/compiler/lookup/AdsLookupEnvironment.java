@@ -338,7 +338,7 @@ public class AdsLookupEnvironment extends LookupEnvironment {
     }
 
     public ReferenceBinding findType(Definition determinant, ERuntimeEnvironmentType envType, boolean meta, String suffix) {
-        char[][] packageName = JavaSourceSupport.getPackageNameComponents(determinant, JavaSourceSupport.UsagePurpose.getPurpose(envType, JavaSourceSupport.CodeType.EXCUTABLE));
+        char[][] packageName = JavaSourceSupport.getPackageNameComponents(determinant, false, JavaSourceSupport.UsagePurpose.getPurpose(envType, JavaSourceSupport.CodeType.EXCUTABLE));
         PackageBinding packageBinding = getPackage(packageName);
         if (packageBinding == null) {
             packageBinding = this.defaultPackage;

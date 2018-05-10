@@ -10,10 +10,10 @@
  */
 package org.radixware.kernel.designer.dds.script.defs;
 
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import java.util.Collections;
 import java.util.Set;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
-import org.radixware.kernel.common.defs.dds.DdsDefinition;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.defs.dds.utils.TablespaceCalculator;
@@ -23,6 +23,7 @@ import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.designer.dds.script.IDdsDefinitionScriptGenerator;
 import org.radixware.kernel.designer.dds.script.IScriptGenerationHandler;
 import org.radixware.kernel.designer.dds.script.ScriptGenerator;
+import org.radixware.kernel.designer.dds.script.ScriptGeneratorImpl;
 
 public class DdsTableScriptGenerator implements IDdsDefinitionScriptGenerator<DdsTableDef> {
 
@@ -60,10 +61,7 @@ public class DdsTableScriptGenerator implements IDdsDefinitionScriptGenerator<Dd
     private boolean isPartitionsChanged(DdsTableDef oldTable, DdsTableDef newTable) {
         Sqml oldPartition = oldTable.getPartition();
         Sqml newPartition = newTable.getPartition();
-        if (!DdsScriptGeneratorUtils.isTranslatedSqmlEquals(oldPartition, newPartition)) {
-            return true;
-        }
-        return false;
+        return !DdsScriptGeneratorUtils.isTranslatedSqmlEquals(oldPartition, newPartition);
     }
 
     private void printPartitionScript(CodePrinter cp, DdsTableDef table) {
@@ -149,7 +147,11 @@ public class DdsTableScriptGenerator implements IDdsDefinitionScriptGenerator<Dd
 
     @Override
     public void getRunRoleScript(CodePrinter cp, DdsTableDef table) {
-        cp.print("grant select, update, insert, delete on ");
+        if (table.isGeneratedInDb()) {
+            cp.print("grant select, update, insert, delete on ");
+        } else {//special case for meta tables
+            cp.print("grant select on ");
+        }
         cp.print(table.getDbName());
         cp.print(" to &USER&_RUN_ROLE");
         cp.printCommandSeparator();
@@ -159,18 +161,18 @@ public class DdsTableScriptGenerator implements IDdsDefinitionScriptGenerator<Dd
     public void getAlterScript(CodePrinter cp, DdsTableDef oldTable, final DdsTableDef newTable) {
         if (isPartitionsChanged(oldTable, newTable)) {
             //при изменении параметров партиционирования требуется пересоздание таблицы
-            Set<DdsReferenceDef> incomingRefs = printDisconnectIncomingReferences(newTable, cp);
+            Set<DdsReferenceDef> incomingRefs = DdsScriptGeneratorUtils.printDisconnectIncomingReferences(newTable, cp);
             String intermediateName = printRenameToIntermediateScript(oldTable, cp);
 
             getCreateScript(cp, newTable, IScriptGenerationHandler.NOOP_HANDLER);
 
             printCopyDataFromIntermediateScript(newTable, intermediateName, cp);
 
-            final ScriptGenerator instance = ScriptGenerator.Factory.newCreationInstance(newTable);
+            final ScriptGenerator instance = ScriptGeneratorImpl.Factory.newCreationInstance(newTable);
 
             instance.generateModificationScript(cp, Collections.singleton(newTable));
 
-            printConnectIncomingReferences(incomingRefs, cp);
+            DdsScriptGeneratorUtils.printConnectIncomingReferences(incomingRefs, cp);
         } else {
             String oldDbName = oldTable.getDbName();
             String newDbName = newTable.getDbName();
@@ -219,38 +221,6 @@ public class DdsTableScriptGenerator implements IDdsDefinitionScriptGenerator<Dd
         printer.print(tmpName);
         printer.printCommandSeparator();
         return tmpName;
-    }
-
-    private static Set<DdsReferenceDef> printDisconnectIncomingReferences(DdsTableDef table, CodePrinter printer) {
-        final Set<DdsReferenceDef> incomingRefs = table.collectIncomingReferences();
-        for (DdsReferenceDef ref : incomingRefs) {
-            DdsReferenceScriptGenerator.getEnableDisableScript(ref, printer, false);
-        }
-        return incomingRefs;
-    }
-
-    private static Set<DdsReferenceDef> printDisconnectOutgoingReferences(DdsTableDef table, CodePrinter printer) {
-        final Set<DdsReferenceDef> outgoinfRefs = table.collectOutgoingReferences();
-        for (DdsReferenceDef ref : outgoinfRefs) {
-            DdsReferenceScriptGenerator.getEnableDisableScript(ref, printer, false);
-        }
-        return outgoinfRefs;
-    }
-
-    private static void printConnectIncomingReferences(Set<DdsReferenceDef> incomingRefs, CodePrinter printer) {
-        if (incomingRefs != null) {
-            for (DdsReferenceDef ref : incomingRefs) {
-                DdsReferenceScriptGenerator.getEnableDisableScript(ref, printer, true);
-            }
-        }
-    }
-
-    private static void printConnectOutgoingReferences(Set<DdsReferenceDef> incomingRefs, CodePrinter printer) {
-        if (incomingRefs != null) {
-            for (DdsReferenceDef ref : incomingRefs) {
-                new DdsReferenceScriptGenerator().getCreateScript(printer, ref, IScriptGenerationHandler.NOOP_HANDLER);
-            }
-        }
     }
 
     public static void printCopyDataFromIntermediateScript(DdsTableDef table, String from, CodePrinter printer) {
@@ -304,6 +274,14 @@ public class DdsTableScriptGenerator implements IDdsDefinitionScriptGenerator<Dd
 
     }
 
+    @Override
+    public void getReCreateScript(CodePrinter printer, DdsTableDef definition, boolean storeData) {
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, DdsTableDef definition, boolean enable) {
+    }
+
     public static final class Factory {
 
         private Factory() {
@@ -312,37 +290,5 @@ public class DdsTableScriptGenerator implements IDdsDefinitionScriptGenerator<Dd
         public static DdsTableScriptGenerator newInstance() {
             return new DdsTableScriptGenerator();
         }
-    }
-
-    public static void printReCreateScript(final DdsTableDef table, final boolean storeData, final CodePrinter printer) {
-
-        final ScriptGenerator instance = ScriptGenerator.Factory.newCreationInstance(table);
-        //disable foreign key constraints   
-        final String tmpName;
-        final Set<DdsReferenceDef> incomingRefs = printDisconnectIncomingReferences(table, printer);
-        final Set<DdsReferenceDef> outgoingRefs = printDisconnectOutgoingReferences(table, printer);
-
-        if (storeData) {
-            tmpName = printRenameToIntermediateScript(table, printer);
-        } else {
-            tmpName = null;
-        }
-
-        IDdsDefinitionScriptGenerator generator = instance.getDefinitionScriptGenerator(table);
-
-        if (!storeData) {
-            generator.getDropScript(printer, table);
-        }
-
-        instance.getDefinitionScriptGenerator(table).getCreateScript(printer, table, IScriptGenerationHandler.NOOP_HANDLER);
-        if (storeData) {
-            printCopyDataFromIntermediateScript(table, tmpName, printer);
-        }
-
-        instance.generateModificationScript(printer, Collections.singleton(table));
-
-        printConnectIncomingReferences(incomingRefs, printer);
-        printConnectOutgoingReferences(outgoingRefs, printer);
-
     }
 }

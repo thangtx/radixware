@@ -19,6 +19,7 @@ import org.apache.xmlbeans.XmlException;
 
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.enums.EOrder;
+import org.radixware.kernel.common.enums.EPaginationMethod;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 import org.radixware.kernel.common.meta.RadTitledDef;
 import org.radixware.kernel.server.sqml.Sqml;
@@ -29,6 +30,7 @@ public final class RadSortingDef extends RadTitledDef {
 
     private final List<Item> orderBy;
     private final Sqml hint;
+    private final EPaginationMethod paginationMethod;
 
     public RadSortingDef(
             final Id id,
@@ -39,7 +41,7 @@ public final class RadSortingDef extends RadTitledDef {
             final String hint) {
         this(id, ownerDefId, name, titleId, orderBy, hint, null);
     }
-
+    
     //Constructor
     public RadSortingDef(
             final Id id,
@@ -49,6 +51,19 @@ public final class RadSortingDef extends RadTitledDef {
             final Item[] orderBy,
             final String hint,
             final String layerUri) {
+        this(id, ownerDefId, name, titleId, orderBy, hint, layerUri, EPaginationMethod.ABSOLUTE);
+    }
+
+    //Constructor
+    public RadSortingDef(
+            final Id id,
+            final Id ownerDefId,
+            final String name,
+            final Id titleId,
+            final Item[] orderBy,
+            final String hint,
+            final String layerUri,
+            final EPaginationMethod paginationMethod) {
         super(id, name, ownerDefId, titleId);
         if (orderBy != null) {
             this.orderBy = Collections.unmodifiableList(Arrays.asList(orderBy));
@@ -67,6 +82,7 @@ public final class RadSortingDef extends RadTitledDef {
             this.hint.setLayerUri(layerUri);
             this.hint.switchOnWriteProtection();
         }
+        this.paginationMethod = paginationMethod;
     }
 
     /**
@@ -76,6 +92,10 @@ public final class RadSortingDef extends RadTitledDef {
         return orderBy;
     }
 
+    public EPaginationMethod getPaginationMethod() {
+        return paginationMethod;
+    }
+    
     /**
      * @return the hint
      */

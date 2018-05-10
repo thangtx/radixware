@@ -11,8 +11,10 @@
 
 package org.radixware.kernel.common.repository.uds;
 
+import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsModule;
 
 
 public interface IRepositoryUdsModule extends IRepositoryAdsModule {
+    public IRepositoryAdsDefinition[] getListFiles();
 }

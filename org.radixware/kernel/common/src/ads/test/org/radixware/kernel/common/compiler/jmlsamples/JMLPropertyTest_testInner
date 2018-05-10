@@ -1,0 +1,27 @@
+
+class Sample {
+
+    class Inner {
+
+	void f() {
+	    System.out.print("f invocked");
+	}
+    }
+}
+
+class SampleDescendant extends Sample {
+
+    public final Inner field;
+
+    public SampleDescendant() {
+	field = new Inner();
+    }
+}
+
+class Test {
+
+    static public void main(String[] args) {
+	SampleDescendant s = new SampleDescendant();
+	s.field.f();
+    }
+}

@@ -45,6 +45,7 @@ import org.radixware.kernel.common.enums.*;
 import org.radixware.kernel.common.jml.LicenseCodeGenSupport;
 import org.radixware.kernel.common.repository.ads.AdsSegment;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.CharOperations;
 
@@ -85,12 +86,15 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 printer.print(".this");
                 return true;
             default:
+                WriterUtils.setIsLightGeneration(printer, isLightGeneration());
                 if (usagePurpose.getCodeType() == JavaSourceSupport.CodeType.EXCUTABLE) {
                     if (AdsTransparence.isTransparent(def, false)) {
                         return false;
                     }
                 }
-                return super.writeCode(printer);
+                boolean result = super.writeCode(printer);
+                WriterUtils.setIsLightGeneration(printer, false);
+                return result;
         }
     }
 
@@ -151,7 +155,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             }
         }
 
-
         printer.println();
         final LicenseCodeGenSupport licenseSupport = LicenseCodeGenSupport.get(printer);
         if (licenseSupport != null) {
@@ -183,17 +186,16 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 break;
         }
 
-
-
         if (classType != EClassType.ENTITY_GROUP && classType != EClassType.FORM_HANDLER && classType != EClassType.REPORT) {
+            WriterUtils.enterHumanUnreadableBlock(printer);
             printer.print("public static class ");
-            printer.print(def.getId());
+            printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
             printer.print("_DefaultModel");
             if (!writeDefaultModelSuperClasses(printer)) {
                 return false;
             }
             printer.print(" implements ");
-            printer.print(def.getId());
+            printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
             printer.enterBlock();
             printer.println("{");
         }
@@ -226,6 +228,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
         if (classType != EClassType.ENTITY_GROUP && classType != EClassType.FORM_HANDLER && classType != EClassType.REPORT) {
             printer.leaveBlock();
             printer.println("}");
+            WriterUtils.leaveHumanUnreadableBlock(printer);
         }
         if (classType != EClassType.FORM_HANDLER && classType != EClassType.REPORT) {
             for (AdsPropertyWriter w : rootPropWriters) {
@@ -260,7 +263,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             return false;
         }
 
-
         printer.print("public ");
         AdsType type = def.getType(EValType.USER_CLASS, null);
 
@@ -268,12 +270,12 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
         writeUsage(printer, type);
         //defTypeCodeWriter.writeUsage(printer);
         printer.print('.');
-        printer.print(def.getId());
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
         printer.print("_DefaultModel getEntity(int i) throws InterruptedException, org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException, org.radixware.kernel.common.exceptions.ServiceClientException { return (");
         writeUsage(printer, type);
         //defTypeCodeWriter.writeUsage(printer);
         printer.print('.');
-        printer.print(def.getId());
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
         printer.println("_DefaultModel )  super.getEntity(i);}");
 
         printer.leaveBlock(1);
@@ -296,7 +298,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 AdsPropertyWriter.Factory.ppCache.initialize();
                 for (AdsPropertyDef prop : props) {
 
-
                     AdsPropertyWriter paramWriter = AdsPropertyWriter.Factory.ppCache.getInstance(prop, usagePurpose);
                     if (paramWriter == null) {
                         return false;
@@ -309,7 +310,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             } finally {
                 AdsPropertyWriter.Factory.ppCache.reset();
             }
-
 
         }
         return true;
@@ -492,7 +492,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             }
             rootPropsList.addAll(listToWrite);
 
-
             AdsPropertiesWriter.writePropertiesCreator(def, presentations, printer, usagePurpose);
 
             if (classType == EClassType.ENTITY || classType == EClassType.APPLICATION) {//generate outer adapters
@@ -532,12 +531,15 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                             continue;
                         }
                         printer.print("public static class ");
-                        printer.print(e.getId());
+                        printer.print(JavaSourceSupport.getName(e, printer instanceof IHumanReadablePrinter));
                         printer.print("_ModelAdapter");
                         printer.print(" extends ");
-                        writeCode(printer, model.getType(EValType.USER_CLASS, ""));
+                        CodePrinter cp = CodePrinter.Factory.newJavaPrinter(printer);
+                        writeCode(cp, model.getType(EValType.USER_CLASS, ""));
+                        char [] superType = cp.getContents();
+                        printer.print(superType);
                         printer.print(" implements ");
-                        printer.print(def.getId());
+                        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
                         printer.println('{');
                         printer.enterBlock(1);
                         printer.print("public ");
@@ -547,7 +549,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                         printer.print(" userSession,");
                         printer.print(AdsEditorPresentationWriter.EDITOR_PRESENTATION_META_EXPLORER_CLASS_NAME);
                         printer.println(" def){super(userSession,def);}");
-
 
                         collectPublishableProps(def, propWriters2, presentations2, usagePurpose, model, null, apiProps2);
 
@@ -566,7 +567,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
 
                         for (Id id : apiProps2) {
                             if (!propWriters2.containsKey(id)) {
-                                PropertyPresentationPropertyWriter.writePropertyGetterById(printer, id);
+                                PropertyPresentationPropertyWriter.writePropertyGetterById(printer, id, superType);
                             }
                         }
                         List<AdsScopeCommandDef> commands = new LinkedList<>();
@@ -595,7 +596,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
 //            }
 
             //final IAdsPresentableClass clazz = (IAdsPresentableClass) def;
-
             Collections.sort(commands, new Comparator<AdsScopeCommandDef>() {
                 @Override
                 public int compare(AdsScopeCommandDef o1, AdsScopeCommandDef o2) {
@@ -617,14 +617,14 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             final IAdsPresentableClass clazz = (IAdsPresentableClass) def;
             commands.clear();
             commands.addAll(clazz.getPresentations().getCommands().get(EScope.LOCAL_AND_OVERWRITE/*, new IFilter<AdsScopeCommandDef>() {
-                     @Override
-                     public boolean isTarget(AdsScopeCommandDef radixObject) {
-                     if (radixObject.getHierarchy().findOverridden() != null) {
-                     return false;
-                     }
-                     return true;
-                     }
-                     }*/));
+             @Override
+             public boolean isTarget(AdsScopeCommandDef radixObject) {
+             if (radixObject.getHierarchy().findOverridden() != null) {
+             return false;
+             }
+             return true;
+             }
+             }*/));
             Collections.sort(commands, new Comparator<AdsScopeCommandDef>() {
                 @Override
                 public int compare(AdsScopeCommandDef o1, AdsScopeCommandDef o2) {
@@ -634,8 +634,8 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             writeCommandIdsCache(printer, commands);
 
             //write dynamic method for inheritance handling
-
             if (classType != EClassType.ENTITY_GROUP) {
+                WriterUtils.enterHumanUnreadableBlock(printer);
                 printer.print("\n@Override\nprotected ");
                 printer.print(AdsCommandWriter.EXPLORER_COMMAND_CLASS_NAME);
                 printer.print(" createCommand(");
@@ -643,7 +643,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 printer.enterBlock();
                 printer.println(" def){");
                 boolean hasSuperclass = false;
-                if (classType == EClassType.APPLICATION) {
+                if (classType == EClassType.APPLICATION || classType == EClassType.FORM_HANDLER || classType == EClassType.REPORT) {
                     hasSuperclass = true;
                 } else {
                     if (classType != EClassType.ENTITY) {
@@ -670,13 +670,12 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 }
                 printer.leaveBlock();
                 printer.println("}");
+                WriterUtils.leaveHumanUnreadableBlock(printer);
             }
-
 
 //            printer.println("@SuppressWarnings(\"unused\")");
 //            printer.print(WriterUtils.RADIX_ID_CLASS_NAME);
 //            printer.println(" commandId = def.getId();");
-
             printer.print("public static ");
             printer.print(AdsCommandWriter.EXPLORER_COMMAND_CLASS_NAME);
             printer.print(" createCommand(");
@@ -701,7 +700,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                     printer.print("if(");
                     WriterUtils.writeAutoVariable(printer, info.getId().toCharArray());
                     printer.print(" == commandId) return new ");
-                    printer.print(def.getRuntimeLocalClassName());
+                    printer.print(def.getRuntimeLocalClassName(printer instanceof IHumanReadablePrinter));
                     printer.print('.');
                     writeUsage(printer, info);
                     printer.println("(model,def);");
@@ -731,6 +730,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
     }
 
     private void writeCommandIdsCache(final CodePrinter printer, final List<AdsScopeCommandDef> commands) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.println("/**Executable command ids cache*/");
 
         for (AdsScopeCommandDef info : commands) {
@@ -743,6 +743,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             WriterUtils.writeIdUsage(printer, info.getId());
             printer.printlnSemicolon();
         }
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 
     public static boolean checkEnv(ERuntimeEnvironmentType objEnv, UsagePurpose usagePurpose) {
@@ -766,7 +767,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
     protected void writeExecutableHeader(final CodePrinter printer) {
         //Jml header = def.getHeader();
         List<AdsClassDef.ClassSource> headers = new LinkedList<>();
-
 
         AdsClassDef ovr = def;
         while (ovr != null) {
@@ -905,7 +905,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             case PRESENTATION_ENTITY_ADAPTER:
                 printer.println();
                 printer.print("public ");
-                printer.print(def.getId().toCharArray());
+                printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                 printer.print('(');
                 printer.print(AdsEntityClassDef.PLATFORM_CLASS_NAME);
                 printer.println(" e){super(e);}");
@@ -913,7 +913,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             case ENTITY_GROUP:
                 printer.println();
                 printer.print("public ");
-                printer.print(def.getId().toCharArray());
+                printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                 printer.print("(boolean isContextWrapper){super(isContextWrapper);}");
                 break;
             case FORM_HANDLER:
@@ -921,13 +921,12 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 if (constructor == null || !constructor.isConstructor()) {
                     printer.println();
                     printer.print("public ");
-                    printer.print(def.getId().toCharArray());
+                    printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                     printer.print('(');
                     printer.print(AdsFormHandlerClassDef.PLATFORM_CLASS_NAME);
                     printer.println(" prevForm){super(prevForm);}");
                 }
                 break;
-
 
         }
         if (def instanceof AdsModelClassDef) { //yremizov
@@ -946,7 +945,6 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             if (def instanceof AdsFilterModelClassDef) {//added by yremizov
                 owner = ((AdsFilterModelClassDef) def).getOwnerFilterDef();
             }
-
 
             if (owner != null) {
                 final boolean isViewInherited;
@@ -1072,7 +1070,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             printer.print("public ");
             printer.print(CLIENT_META_CLASS_NAME);
             printer.print(" getRadMeta(){ return ");
-            printer.print(def.getRuntimeLocalClassName());
+            printer.print(def.getRuntimeLocalClassName(printer instanceof IHumanReadablePrinter));
             printer.println("_mi.rdxMeta; }");
         }
 
@@ -1110,6 +1108,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 if (classType != EClassType.INTERFACE && !def.isAnonymous()) {
                     //metainfo accessor
                     printer.println("/**Metainformation accessor method*/");
+                    printer.println("@SuppressWarnings(\"unused\")");
                     printer.print("public ");
                     printer.print(META_CLASS_NAME);
                     printer.print(" getRadMeta(){return ");
@@ -1117,7 +1116,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                     //printer.print(".getDefManager().getClassDef(");
                     //WriterUtils.writeIdUsage(printer, def.getId());
                     //printer.println(");}");
-                    printer.print(def.getTopLevelEnclosingClass().getRuntimeLocalClassName());
+                    printer.print(def.getTopLevelEnclosingClass().getRuntimeLocalClassName(printer instanceof IHumanReadablePrinter));
                     printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
                     printer.print('.');
                     printer.print(getRdxMetaName(def));
@@ -1228,7 +1227,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
             return true;
         }
         printer.print("public ");
-        printer.print(def.getRuntimeLocalClassName());
+        printer.print(def.getRuntimeLocalClassName(printer instanceof IHumanReadablePrinter));
         if (classType != EClassType.FORM_HANDLER && classType != EClassType.REPORT) {
             printer.print("_DefaultModel(");
         } else {
@@ -1295,12 +1294,20 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                     }
                 } else {
                     printer.print(" extends ");
-                    writeUsage(printer, resolvedSuperRef);
+                    if (resolvedSuperRef == null) {
+                        printer.printError();
+                    } else {
+                        writeUsage(printer, resolvedSuperRef);
+                    }
                     switch (classType) {
                         case APPLICATION:
                             //case FORM_HANDLER:
                             printer.print('.');
-                            printer.print(((AdsClassType) resolvedSuperRef).getSource().getId());
+                            if (resolvedSuperRef != null) {
+                                printer.print(JavaSourceSupport.getName(((AdsClassType) resolvedSuperRef).getSource(), printer instanceof IHumanReadablePrinter));
+                            } else {
+                                printer.printError();
+                            }
                             printer.print("_DefaultModel");
 
                     }
@@ -1381,7 +1388,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                                 AdsClassDef serverClass = findServerSideClass(def);
                                 writeUsage(printer, findServerSideClass(def).getType(EValType.USER_CLASS, null));
                                 printer.print('.');
-                                printer.print(serverClass.getId());
+                                printer.print(JavaSourceSupport.getName(serverClass, printer instanceof IHumanReadablePrinter));
                                 printer.print("_DefaultModel.");
                                 printer.print(adapterName);
                                 superClassWritten = true;
@@ -1400,7 +1407,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                         } else {
                             if (serverClass.getClassDefType() != EClassType.FORM_HANDLER && serverClass.getClassDefType() != EClassType.REPORT) {
                                 printer.print('.');
-                                printer.print(serverClass.getId());
+                                printer.print(JavaSourceSupport.getName(serverClass, printer instanceof IHumanReadablePrinter));
                                 printer.print("_DefaultModel");
                             }
                         }
@@ -1551,7 +1558,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
         WriterUtils.writeMetaShareabilityAnnotation(printer, def);
         printer.println();
         printer.print("public final class ");
-        printer.print(getMetaClassName());
+        printer.print(getMetaClassName(printer instanceof IHumanReadablePrinter));
         printer.enterBlock(1);
         printer.println('{');
         if (!writeMetaImpl(printer, def)) {
@@ -1566,12 +1573,12 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
         return true;
     }
 
-    private String getMetaClassName() {
-        return def.getRuntimeLocalClassName() + "_mi";
+    private String getMetaClassName(boolean isHumanReadable) {
+        return def.getRuntimeLocalClassName(isHumanReadable) + "_mi";
     }
 
     protected boolean writeMetaForNested(CodePrinter printer, NestedClasses nested) {
-        for (final AdsClassDef clazz : nested.getLocal()) {
+        for (final AdsClassDef clazz : nested.get(EScope.LOCAL_AND_OVERWRITE)) {
             if (!writeMetaImpl(printer, clazz)) {
                 return false;
             }
@@ -1591,7 +1598,7 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
     private static final char[] CLIENT_META_CLASS_NAME = CharOperations.merge(WriterUtils.PRESENTATIONS_META_EXPLORER_PACKAGE_NAME, "RadClassPresentationDef".toCharArray(), '.');
 
     protected boolean writeMetaImpl(CodePrinter printer, AdsClassDef clazz) {
-
+        
         switch (usagePurpose.getEnvironment()) {
             //case EXPLORER:
             case EXPLORER:
@@ -1740,7 +1747,11 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 printer.printComma();
                 printer.printStringLiteral(clazz.getName());
                 printer.printComma();
-                WriterUtils.writeIdUsage(printer, clazz.getTitleId());
+                if (!clazz.isTitleInherited()) {
+                    WriterUtils.writeIdUsage(printer, clazz.getTitleId());
+                } else {
+                    WriterUtils.writeNull(printer);
+                }
                 printer.printComma();
                 printer.println();
                 printer.enterBlock(5);
@@ -1800,7 +1811,10 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
                 printer.printComma();
                 printer.println();
                 if (clazz instanceof AdsEntityClassDef) {
-                    final AdsEntityClassDef.AccessAreas areas = ((AdsEntityClassDef) clazz).getAccessAreas();
+                    AdsEntityClassDef.AccessAreas areas = ((AdsEntityClassDef) clazz).getAccessAreas();
+                    if (areas.getType() == EAccessAreaType.NOT_OVERRIDDEN) {
+                        areas = getAccessAreasForNotOverridden(clazz);
+                    }
                     WriterUtils.writeEnumFieldInvocation(printer, areas.getType());
                     printer.printComma();
                     WriterUtils.writeIdUsage(printer, areas.getInheritReferenceId());
@@ -1842,13 +1856,52 @@ public class AdsClassWriter<T extends AdsClassDef> extends AbstractDefinitionWri
 
         }
     }
+    
+    private AdsEntityClassDef.AccessAreas getAccessAreasForNotOverridden(AdsClassDef clazz) {
+        AdsClassDef clazzOvr;
+        AdsClassDef startClazz = clazz;
+        while ((clazzOvr = startClazz.getHierarchy().findOverwritten().get()) != null) {
+            if (clazzOvr instanceof AdsEntityClassDef) {
+                final AdsEntityClassDef entityOvr = (AdsEntityClassDef) clazzOvr;
+                switch (entityOvr.getAccessAreas().getType()) {
+                    case INHERITED:
+                    case OWN:
+                        return entityOvr.getAccessAreas();
+                    case NOT_OVERRIDDEN:
+                        break;
+                    case NONE:
+                    default:
+                        throw new IllegalArgumentException("Can not inherit access areas from class with area type: "
+                                + entityOvr.getAccessAreas().getType());
+                }
+                startClazz = clazzOvr;
+            }
+        }
+        throw new IllegalArgumentException("Can not find access areas source for inheritance, class: "
+                                + clazz.getQualifiedName());
+    }
 
     @Override
     public void writeUsage(CodePrinter printer) {
         if (def.isNested()) {
-            printer.print(def.getId().toCharArray());
+            printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
         } else {
-            printer.print(def.getRuntimeLocalClassName());
+            printer.print(def.getRuntimeLocalClassName(printer instanceof IHumanReadablePrinter));
         }
     }
+    
+    
+     public boolean isLightGeneration() {
+        ERuntimeEnvironmentType e = usagePurpose.getEnvironment();
+        ERuntimeEnvironmentType env = def.getClientEnvironment();
+        if (env != ERuntimeEnvironmentType.COMMON_CLIENT) {
+            switch (def.getClassDefType()) {
+                case ENTITY:
+                case APPLICATION:
+                    return e.isClientEnv() && e != ERuntimeEnvironmentType.COMMON_CLIENT && e != env;
+            }
+        }
+        return false;
+    }
+
 }

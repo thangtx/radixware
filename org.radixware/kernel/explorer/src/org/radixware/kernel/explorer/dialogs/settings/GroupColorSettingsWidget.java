@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import com.trolltech.qt.gui.QGridLayout;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 
-public class GroupColorSettingsWidget extends SettingsWidget {
+final class GroupColorSettingsWidget extends SettingsWidget {
 
     private final ArrayList<ColorSettingsWidget> colorsArrayList;
     private QGridLayout parentGridLayout;
@@ -26,7 +26,7 @@ public class GroupColorSettingsWidget extends SettingsWidget {
         super(environment, parent, gr, sub, null);
         this.parentGridLayout = parentGridLayout;
 
-        colorsArrayList = new ArrayList<ColorSettingsWidget>();
+        colorsArrayList = new ArrayList<>();
     }
 
     public ColorSettingsWidget addColorWidget(final int row, final String name, final String description) {
@@ -44,14 +44,14 @@ public class GroupColorSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
         for (ColorSettingsWidget w : colorsArrayList) {
             w.readSettings(src);
         }
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         for (ColorSettingsWidget w : colorsArrayList) {
             w.writeSettings(dst);
         }

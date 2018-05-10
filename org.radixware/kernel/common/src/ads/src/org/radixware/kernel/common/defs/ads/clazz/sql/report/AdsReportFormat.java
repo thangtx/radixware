@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 
+import java.util.Objects;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportFormattedCell.ChangedEvent;
 import org.radixware.kernel.common.enums.EDateTimeStyle;
@@ -271,5 +272,56 @@ public class AdsReportFormat {
             ChangedEvent e=new ChangedEvent();
             changeSupport.fireEvent(e);
          }
-    } 
+    }    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AdsReportFormat other = (AdsReportFormat) obj;
+        if (this.precission != other.precission) {
+            return false;
+        }
+        if (!Objects.equals(this.decimalDelimiter, other.decimalDelimiter)) {
+            return false;
+        }
+        if (!Objects.equals(this.triadDelimeter, other.triadDelimeter)) {
+            return false;
+        }
+        if (this.triadDelimeterType != other.triadDelimeterType) {
+            return false;
+        }
+        if (this.dataStyle != other.dataStyle) {
+            return false;
+        }
+        if (this.timeStyle != other.timeStyle) {
+            return false;
+        }
+        if (!Objects.equals(this.pattern, other.pattern)) {
+            return false;
+        }
+        if (this.useDefaultFormat != other.useDefaultFormat) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + this.precission;
+        hash = 67 * hash + Objects.hashCode(this.decimalDelimiter);
+        hash = 67 * hash + Objects.hashCode(this.triadDelimeter);
+        hash = 67 * hash + Objects.hashCode(this.triadDelimeterType);
+        hash = 67 * hash + Objects.hashCode(this.dataStyle);
+        hash = 67 * hash + Objects.hashCode(this.timeStyle);
+        hash = 67 * hash + Objects.hashCode(this.pattern);
+        hash = 67 * hash + (this.useDefaultFormat ? 1 : 0);        
+        return hash;
+    }
+    
 }

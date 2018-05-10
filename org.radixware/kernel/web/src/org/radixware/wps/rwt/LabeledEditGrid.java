@@ -128,10 +128,13 @@ public class LabeledEditGrid extends UIObject {
         this.matcher = matcher;
         html.layout("$RWT.componentGrid.layout");
         this.html.add(table);
+        this.html.setAttr("isAdjustWidth", true);
+        this.html.setAttr("isAdjustHeight", true);
         this.html.setCss("overflow-x", "hidden");
         this.html.setCss("overflow-y", "auto");
         this.table.setCss("width", "100%");
         this.table.setCss("border-collapse", "collapse");//to make size of <tbody> the same as size of <table>
+        setSpacing(5);
     }
 
     public int computePrefferedHeight() {
@@ -337,7 +340,11 @@ public class LabeledEditGrid extends UIObject {
             info.width = width;
         }
     }
-
+    
+    public void setSpacing(int spacing) {
+        html.setAttr("spacing", spacing + "px");
+    }
+    
     public void unsetColumnWidth(int column) {
         WidthInfo info = findColumnWidth(column);
         if (info != null) {

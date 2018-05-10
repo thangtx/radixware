@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.editors.sqmleditor.sqmltags;
 
+import com.trolltech.qt.gui.QDialog;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.xmlbeans.XmlObject;
@@ -19,6 +20,7 @@ import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.TableOrProperty_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
@@ -97,7 +99,7 @@ public class SqmlTag_PropSqlName extends SqmlTag {
     }
 
     private void setNotValid(final Id tableId, final Id propId, final String mess) {
-        valid = false;
+        setValid(false);
         String s = "???<" + tableId + ">.<" + propId + ">???";
         environment.getTracer().warning(mess);
         setDisplayedInfo(s, s);
@@ -136,11 +138,25 @@ public class SqmlTag_PropSqlName extends SqmlTag {
 
     @Override
     public boolean showEditDialog(XscmlEditor editText, EDefinitionDisplayMode showMode) {
-        boolean openForCurTable = propSqlName.getOwner() == Owner.THIS || tableAlias != null;
-        TableOrProperty_Dialog dialog = new TableOrProperty_Dialog(editText, presentationClassDef, prop, propSqlName.getTableAlias(), propSqlName.getPropAlias(), openForCurTable, showMode);
-        if (dialog.exec() == 1) {
+        final boolean openForCurTable = propSqlName.getOwner() == Owner.THIS || tableAlias != null;        
+        final String alias = openForCurTable ? propSqlName.getPropAlias() : propSqlName.getTableAlias();
+        final ISqmlTableDef classDef;
+        if (tableAlias!=null && (!presentationClassDef.hasAlias() || !tableAlias.equals(presentationClassDef.getAlias()))){
+            classDef = presentationClassDef.createCopyWithAlias(tableAlias);
+        }else{
+            classDef = presentationClassDef;
+        }
+        final TableOrProperty_Dialog dialog = new TableOrProperty_Dialog(editText.getEnvironment(), 
+                                                                                                             classDef, 
+                                                                                                             prop,
+                                                                                                             alias,
+                                                                                                             openForCurTable,
+                                                                                                             showMode,
+                                                                                                             editText.isReadOnly(),
+                                                                                                             editText);
+        if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
             prop = dialog.getProperty();
-            presentationClassDef = prop.getOwnerTable();
+            presentationClassDef = prop==null ? null : prop.getOwnerTable();
             if (presentationClassDef == null) {
                 return false;
             }
@@ -172,23 +188,17 @@ public class SqmlTag_PropSqlName extends SqmlTag {
     }
 
     private String createTitle(String sTable, String sProp, String sPropType, List<String> refColumnNameList) {
-        if (!valid) {
+        if (!isValid()) {
             return "";
         }
-        if (sTable.indexOf('<') != -1) {
-            sTable = sTable.replaceAll("<", "&#60;");
-        }
-        if (sProp.indexOf('<') != -1) {
-            sProp = sProp.replaceAll("<", "&#60;");
-        }
+        sTable = Html.string2HtmlString(sTable);
+        sProp = Html.string2HtmlString(sProp);
         final StringBuilder sb = new StringBuilder(180);
         sb.append("<b>Property:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;").append(sProp).append("</br>");
         if (!refColumnNameList.isEmpty()) {
             sb.append("<br><b>Reference columns:</b></br>");
             for (String refColumnName : refColumnNameList) {
-                if (refColumnName.indexOf('<') != -1) {
-                    refColumnName = refColumnName.replaceAll("<", "&#60;");
-                }
+                refColumnName = Html.string2HtmlString(refColumnName);
                 sb.append("<br>&nbsp;&nbsp;&nbsp;&nbsp;").append(refColumnName).append("</br>");
             }
         }

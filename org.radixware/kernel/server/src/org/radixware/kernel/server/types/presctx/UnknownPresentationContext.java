@@ -17,7 +17,7 @@ public final class UnknownPresentationContext extends PresentationContext{
     public static final UnknownPresentationContext INSTANCE = new UnknownPresentationContext();
     
     private UnknownPresentationContext(){
-        super(null);
+        super(null, null);
     }
     
 }

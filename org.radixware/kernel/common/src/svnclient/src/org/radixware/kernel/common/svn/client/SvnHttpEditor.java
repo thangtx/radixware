@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import org.radixware.kernel.common.svn.RadixSvnException;
 
@@ -46,11 +47,24 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
     private OutputStream currentDelta = null;
     private boolean isFirstWindow = false;
     private final DAV.PathDataCache cache = new DAV.PathDataCache();
+//    private SVNProperties ;
+    private SvnProperties currProperties;
+    
+    private SvnProperties getCurrProperties(){
+        if (currProperties == null){
+            currProperties = new SvnProperties();
+        }
+        return currProperties;
+    }
+    
 
-    public SvnHttpEditor(SvnHttpRepository repository) throws RadixSvnException {
+    public SvnHttpEditor(final SvnHttpRepository repository, final String commitMessage) throws RadixSvnException {
         this.connection = new SvnHttpConnection();
         this.connection.open(repository);
         this.repo = repository;
+        if (commitMessage!=null){
+            getCurrProperties().set(SvnProperties.LOG, new SvnProperties.Value(commitMessage, null));
+        }
     }
 
     private DAV.Resource getTopDir(long revision) throws RadixSvnException {
@@ -135,6 +149,19 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
     @Override
     public void closeDir() throws RadixSvnException {
         DAV.Resource resource = dirsStack.pop();
+        
+        final String getUrl = resource.getURL();
+        final String getWorkingUrl = resource.getWorkingURL();
+        
+        final Iterator<Map.Entry <String, SvnProperties.Value> > iter = resource.getPropertiesAsIterator();
+        if (iter!=null){
+            while (iter.hasNext()){
+                final Entry <String, SvnProperties.Value> entry= iter.next();
+                final String request = SvnHttpConnection.generatePropertyRequest(entry.getKey(), entry.getValue()).toString();
+                connection.propPatch(getUrl, getWorkingUrl, request);
+            }
+        }
+        
         resource.dispose();
     }
 
@@ -188,10 +215,19 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
         try {
             if (!dirsStack.isEmpty()) {
                 DAV.Resource resource = dirsStack.pop();
+                final Iterator<Map.Entry <String, SvnProperties.Value> > iter = resource.getPropertiesAsIterator();
+                if (iter!=null){
+                    while (iter.hasNext()){
+                        final Entry <String, SvnProperties.Value> entry= iter.next();
+                        final String request = SvnHttpConnection.generatePropertyRequest(entry.getKey(), entry.getValue()).toString();
+                        connection.propPatch(resource.getURL(), resource.getWorkingURL(), request);
+                    }               
+                }
+                
                 resource.dispose();
             }
 
-            patchResourceProperties(myActivityLocation);
+            patchResourceProperties(myActivityLocation, getCurrProperties());
 
             return connection.merge(activity, true);
         } finally {
@@ -228,6 +264,8 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
         closeFile(path, chk_sum);
 
     }
+    
+    
 
     @Override
     public void addFile(String path, String copyFromPath, long revision) throws RadixSvnException {
@@ -295,14 +333,13 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
     @Override
     public void updateFile(String path, long revision, InputStream content) throws RadixSvnException {
         SvnEntry.Kind kind = repo.checkPath(path, revision);
-        System.out.print(kind);
-
+        
         openFile(path, revision);
         applyTextDelta(path, null);
         String chk_sum = new SvnDeltaGenerator().sendDelta(path, content, this, true);
         closeFile(path, chk_sum);
     }
-
+ 
     @Override
     public OutputStream textDeltaChunk(String path, SvnDiffWindow diffWindow) throws RadixSvnException {
         try {
@@ -355,7 +392,7 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
         currentDelta = null;
         isFirstWindow = true;
         deltaFile = null;
-        this.baseChecksum = baseChecksum;
+        this.baseChecksum = baseChecksum;        
     }
 
     @Override
@@ -383,6 +420,15 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
                     deltaFile = null;
                 }
             }
+            
+        final Iterator<Map.Entry <String, SvnProperties.Value> > iter = currentFile.getPropertiesAsIterator();
+        if (iter!=null){
+            while (iter.hasNext()){
+                final Entry <String, SvnProperties.Value> entry= iter.next();
+                final String request = SvnHttpConnection.generatePropertyRequest(entry.getKey(), entry.getValue()).toString();
+                connection.propPatch(currentFile.getURL(), currentFile.getWorkingURL(), request);
+            }            
+        } 
 
         } finally {
             currentFile.dispose();
@@ -412,6 +458,19 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
         if (location == null) {
             throw new RadixSvnException("The CHECKOUT response did not contain a 'Location:' header");
         }
+        
+        if (currProperties != null) {
+            final SvnProperties.Value authorRevisionProperty = getCurrProperties().remove(SvnProperties.AUTHOR);
+            patchResourceProperties(location, getCurrProperties());
+            if (authorRevisionProperty != null) {
+                currProperties = new SvnProperties();
+                currProperties.set(SvnProperties.AUTHOR, authorRevisionProperty);
+            } else {
+                currProperties = null;
+            }
+        }        
+        
+        
         return new String[]{activity, location};
     }
 
@@ -435,16 +494,34 @@ public class SvnHttpEditor implements SvnEditor, ISvnDeltaConsumer {
         resource.setWorkingURL(status);
     }
 
-    private void patchResourceProperties(String path) throws RadixSvnException {
-//        if (properties != null && properties.size() > 0) {
-//            final StringBuffer request = DAVProppatchHandler.generatePropertyRequest(null, properties);
-//            try {
-//                myConnection.doProppatch(null, path, request, null, null);
-//            } catch (SVNException e) {
-//                SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.RA_DAV_REQUEST_FAILED, "applying log message to {0}", path);
-//                SVNErrorManager.error(err, SVNLogType.NETWORK);
-//            }
-//        }
+    private void patchResourceProperties(final String path, final SvnProperties myProperties) throws RadixSvnException {
+        //SvnProperties currProperties;
+        if (myProperties != null && !myProperties.isEmpty()) {
+            
+            
+            final Iterator<Entry <String, SvnProperties.Value> > iter = myProperties.map().entrySet().iterator();
+            while (iter.hasNext()){
+                final Entry <String, SvnProperties.Value> entry= iter.next();
+                //changeFileProperty(path, entry.getKey(), entry.getValue());
+                repo.changeFileProperty(path, entry.getKey(), entry.getValue());
+            }
+        }
+    }
+    
+    
+    
+    public void changeFileProperty(final String filePath, final String propertyName, final  SvnProperties.Value value) throws RadixSvnException {
+        final DAV.Resource currentFile = filesMap.get(filePath);
+        if (currentFile == null){
+            throw new RadixSvnException("Resource for file \'" + filePath + "\' not found.");
+        }
+        currentFile.putProperty(propertyName, value);
+    }
+    public void changeDirProperty(final String propertyName, final  SvnProperties.Value value) throws RadixSvnException {        
+        final DAV.Resource directory = this.dirsStack.peek();
+        checkoutResource(directory, true);
+        directory.putProperty(propertyName, value);
+        this.pathsMap.put(directory.getURL(), directory.getPath());
     }
 
 }

@@ -13,18 +13,16 @@ package org.radixware.kernel.common.lang;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlException;
@@ -32,10 +30,8 @@ import org.radixware.kernel.common.build.directory.DirectoryFileSigner;
 import org.radixware.kernel.common.components.ICancellable;
 import org.radixware.kernel.common.constants.FileNames;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
-import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
-import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.schemas.product.Classes;
@@ -82,6 +78,7 @@ public abstract class ClassLinkageAnalyzer implements ICancellable {
 
         protected final LayerInfo layer;
         protected final ERuntimeEnvironmentType env;
+        private final Map<String, Class> loadedPrivateClasses = new HashMap<String, Class>();
 
         public RdxClassLoader(LayerInfo layer, ERuntimeEnvironmentType env) {
             super(null);
@@ -90,16 +87,28 @@ public abstract class ClassLinkageAnalyzer implements ICancellable {
         }
 
         protected void registerClass(String name, Class c) {
-            synchronized (loadedClasses) {
-                loadedClasses.put(name, c);
+            if ((Modifier.PUBLIC & c.getModifiers()) == 0 ){//we cant share private classes (package level) between several classloaders
+                synchronized (loadedPrivateClasses) { 
+                    loadedPrivateClasses.put(name, c);
+                }
+            }else{
+                synchronized (loadedClasses) {                
+                    loadedClasses.put(name, c);
+                }                
             }
         }
 
         protected final Class lookup(String name) {
+            Class c;
             synchronized (loadedClasses) {
-                Class c = loadedClasses.get(name);
-                return c;
+                c = loadedClasses.get(name);                
             }
+            if (c==null){
+                synchronized (loadedPrivateClasses) {
+                    c = loadedPrivateClasses.get(name);
+                }        
+            }
+            return c;
         }
 
         void resolve(Class c) {
@@ -120,9 +129,10 @@ public abstract class ClassLinkageAnalyzer implements ICancellable {
                     c.getDeclaredMethods();
                     c.getDeclaringClass();
                 } catch (LinkageError e) {
-                    final String problemMessage = e.getMessage();
-                    if (!canIgnoreProblem(c, problemMessage)) {
-                        acceptProblem("Class linkage error(" + c.getName() + "): \'" + problemMessage + "\'");
+                    final String problemMessage = e.getMessage();                    
+                    if (!canIgnoreProblem(c, problemMessage)) {                        
+                        acceptProblem("Class linkage error. Class: \'" + c.getName() + 
+                                 "\'. Exception class: \'" + e.getClass().getSimpleName() + "\'. Exception message: " + problemMessage);
                     }
                 }
             }
@@ -157,8 +167,8 @@ public abstract class ClassLinkageAnalyzer implements ICancellable {
                 Class c = defineClass(name, bytes, 0, bytes.length);
                 registerClass(name, c);
                 return c;
-            } catch (Throwable ex) {
-                acceptProblem("Can not find class " + name);
+            } catch (Throwable ex) {                
+                acceptProblem("Can not load class " + name + ". Exception class: \'" + ex.getClass().getSimpleName() + "\'. Exception message: " + ex.getMessage());
             }
             throw new ClassNotFoundException(name);
         }
@@ -194,166 +204,25 @@ public abstract class ClassLinkageAnalyzer implements ICancellable {
             super(layer, env);
         }
 
-        private String getLayerPackageName(LayerInfo layer) {
-            return layer.getURI().replace('-', '_');
-        }
-
-        private ModuleInfo[] findModuleByPackageNameId(Id moduleId) {
-
-            ModuleInfo[] module = layer.findModulesByPackageNameId(moduleId);
-            if (module != null && module.length > 0) {
-                return module;
-            }
-
-            return findModuleByPackageNameId(layer, moduleId);
-        }
-
-        private ModuleInfo[] findModuleByPackageNameId(LayerInfo info, Id moduleId) {
-
-            List<LayerInfo> prevs = info.findPrevLayer();
-            for (LayerInfo prev : prevs) {
-                ModuleInfo[] module = prev.findModulesByPackageNameId(moduleId);
-                if (module != null && module.length > 0) {
-                    return module;
-                }
-            }
-            for (LayerInfo prev : prevs) {
-                ModuleInfo[] module = findModuleByPackageNameId(prev, moduleId);
-                if (module != null && module.length > 0) {
-                    return module;
-                }
-            }
-            return null;
-
-        }
-
-        private int checkLayerName(String name) {
-            String layerPackage = getLayerPackageName(layer);
-            if (name.startsWith(layerPackage)) {
-                return layerPackage.length();
-            }
-            return checkLayerName(layer, name);
-        }
-
-        private int checkLayerName(LayerInfo info, String name) {
-            List<LayerInfo> prevs = info.findPrevLayer();
-            for (LayerInfo prev : prevs) {
-                String layerPackage = getLayerPackageName(prev);
-                if (name.startsWith(layerPackage)) {
-                    return layerPackage.length();
-                }
-            }
-            for (LayerInfo prev : prevs) {
-                int len = checkLayerName(prev, name);
-                if (len > 0) {
-                    return len;
-                }
-            }
-            return -1;
-        }
-
         private Class loadClassFromADS(String name) throws ClassNotFoundException {
-            int layerPackageNameLen = checkLayerName(name);
-            Throwable failCause = null;
-            if (layerPackageNameLen > 0) {
-                String suffix = name.substring(layerPackageNameLen + 1);
-                if (suffix.startsWith("ads")) {
-                    suffix = suffix.substring(4);
-                    String[] components = suffix.split("\\.");
-                    if (components.length == 0) {
-                        throw new ClassNotFoundException(name);
-                    }
-                    if (!components[0].startsWith("mdl") || components[0].length() != 29) {
-                        throw new ClassNotFoundException(name);
-                    }
-                    Id moduleId;
-                    try {
-                        moduleId = Id.Factory.loadFrom(components[0]);
-                    } catch (NoConstItemWithSuchValueError e) {
-                        throw new ClassNotFoundException(name, e);
-                    }
-                    ModuleInfo[] modules = findModuleByPackageNameId(moduleId);
-                    if (modules == null || modules.length == 0) {
-                        throw new ClassNotFoundException(name);
-                    }
-
-                    if (components.length < 2) {
-                        throw new ClassNotFoundException(name);
-                    }
-                    ERuntimeEnvironmentType environment;
-                    if ("common".equals(components[1])) {
-                        environment = ERuntimeEnvironmentType.COMMON;
-                    } else if ("server".equals(components[1])) {
-                        environment = ERuntimeEnvironmentType.SERVER;
-                        if (env != ERuntimeEnvironmentType.SERVER) {
-                            throw new ClassNotFoundException(name);
-                        }
-                    } else if ("explorer".equals(components[1])) {
-                        environment = ERuntimeEnvironmentType.EXPLORER;
-                        if (env != ERuntimeEnvironmentType.EXPLORER) {
-                            throw new ClassNotFoundException(name);
-                        }
-                    } else if ("common_client".equals(components[1])) {
-                        environment = ERuntimeEnvironmentType.COMMON_CLIENT;
-                        if (env != ERuntimeEnvironmentType.COMMON_CLIENT && env != ERuntimeEnvironmentType.EXPLORER && env != ERuntimeEnvironmentType.WEB) {
-                            throw new ClassNotFoundException(name);
-                        }
-                    } else if ("web".equals(components[1])) {
-                        environment = ERuntimeEnvironmentType.WEB;
-                        if (env != ERuntimeEnvironmentType.WEB) {
-                            throw new ClassNotFoundException(name);
-                        }
-                    } else {
-                        throw new ClassNotFoundException(name);
-                    }
-
-                    for (ModuleInfo module : modules) {
-                        if (!Utils.equals(module.getLayer().getURI(), layer.getURI())) {
-                            continue;
-                        }
-                        File file = module.findBinaryFile(environment);
-                        if (file == null || !file.exists()) {
-                            continue;
-                        }
-                        try {
-                            final JarFile jar = new JarFile(file);
-                            try {
-                                final Enumeration<JarEntry> entries = jar.entries();
-                                final String classEntryName = name.replace('.', '/') + ".class";
-                                while (entries.hasMoreElements()) {
-                                    JarEntry e = entries.nextElement();
-                                    String entryName = e.getName();
-                                    if (!e.isDirectory() && entryName.equals(classEntryName)) {
-                                        byte[] entryBytes = FileUtils.getZipEntryByteContent(e, jar);
-                                        try {
-                                            Class c = defineClass(name.replace('/', '.'), entryBytes, 0, entryBytes.length);
-                                            if (c != null) {
-                                                registerClass(name, c);
-                                                return c;
-                                            } else {
-                                                continue;
-                                            }
-                                        } catch (Throwable ex) {
-                                            failCause = ex;
-                                            continue;
-                                            //acceptProblem("Can not find class " + name);
-                                        }
-                                    }
-                                }
-                            } finally {
-                                jar.close();
-                            }
-                        } catch (IOException ex) {
-                            failCause = ex;
-                            continue;
-                            //throw new ClassNotFoundException(name, ex);
-                        }
-                    }
-                    throw new ClassNotFoundException(name, failCause);
+            final byte[] entryBytes = ClassLoaderUtil.findClassFromADS(name, layer, env);
+            if (entryBytes != null) {
+                try {
+                    Class c = defineClass(name.replace('/', '.'), entryBytes, 0, entryBytes.length);
+                    registerClass(name, c);
+                    return c;
+                } catch (Throwable ex) {
+                    final String errorMessage = "During class loading, error was detected. "
+                            + "Layer: \'" + layer.getURI() + "\'. "
+                            + "Environment: \'" + env.getName() +"\'. "
+                            + "Class name \'" + name + "\' "
+                            + "Error type: \'" + ex.getClass().getSimpleName() + "\'. "
+                            + "Error message: \'" + ex.getMessage() + "\'.";// ExceptionTextFormatter.throwableToString(ex);
+                    acceptProblem(errorMessage);
+                    throw new ClassNotFoundException(name, ex);
                 }
-                throw new ClassNotFoundException(name, failCause);
             }
-            throw new ClassNotFoundException(name, failCause);
+            throw new ClassNotFoundException(name);
         }
 
         @Override

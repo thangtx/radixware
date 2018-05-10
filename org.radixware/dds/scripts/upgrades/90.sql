@@ -1,0 +1,8 @@
+alter table RDX_MESSAGEQUEUE
+	add PARTITIONSOURCE VARCHAR2(200 char) null
+/
+
+alter table RDX_MESSAGEQUEUE
+	add PROCORDER VARCHAR2(100 char) null
+/
+

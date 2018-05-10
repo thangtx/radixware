@@ -12,6 +12,7 @@
 package org.radixware.kernel.server.units.mq;
 
 import java.util.Map;
+import org.radixware.kernel.server.aio.AadcAffinity;
 import org.radixware.kernel.server.sc.AasInvokeItem;
 import org.radixware.schemas.aasWsdl.InvokeDocument;
 
@@ -23,8 +24,8 @@ public class MqAasInvokeItem extends AasInvokeItem {
 
     private final MqMessage mqMessage;
 
-    public MqAasInvokeItem(MqMessage mqMessage, InvokeDocument invokeDoc, Map<String, String> headers, int timeoutMillis, String scp, boolean keepConnect) {
-        super(invokeDoc, headers, timeoutMillis, scp, keepConnect);
+    public MqAasInvokeItem(MqMessage mqMessage, InvokeDocument invokeDoc, Map<String, String> headers, int timeoutMillis, String scp, boolean keepConnect, final AadcAffinity aadcAffinity) {
+        super(invokeDoc, headers, timeoutMillis, scp, keepConnect, aadcAffinity);
         this.mqMessage = mqMessage;
     }
 

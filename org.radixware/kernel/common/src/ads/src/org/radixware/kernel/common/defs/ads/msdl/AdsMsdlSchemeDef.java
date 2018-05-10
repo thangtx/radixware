@@ -41,6 +41,7 @@ import org.radixware.kernel.common.defs.ads.xml.AbstractXmlDefinition;
 import org.radixware.kernel.common.defs.ads.xml.IXmlDefinition;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.msdl.IAdsDefinitionLookup;
 import org.radixware.kernel.common.msdl.IEnumLookuper;
 import org.radixware.kernel.common.msdl.RootMsdlScheme;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
@@ -53,7 +54,7 @@ import org.radixware.schemas.adsdef.MsdlDefinition;
 import org.radixware.schemas.msdl.Message;
 import org.radixware.schemas.msdl.MessageElementDocument;
 
-public class AdsMsdlSchemeDef extends AbstractXmlDefinition<MsdlDefinition> implements IAdsTypeSource, IXmlDefinition, IJavaSource, UdsExportable, IEnumLookuper {
+public class AdsMsdlSchemeDef extends AbstractXmlDefinition<MsdlDefinition> implements IAdsTypeSource, IXmlDefinition, IJavaSource, UdsExportable, IEnumLookuper, IAdsDefinitionLookup {
 
     private RootMsdlScheme rootMsdlScheme;
     private boolean isDeprecated = false;
@@ -92,6 +93,11 @@ public class AdsMsdlSchemeDef extends AbstractXmlDefinition<MsdlDefinition> impl
     @Override
     public Definition findEnumDef(Id id) {
         return AdsSearcher.Factory.newAdsEnumSearcher(getModule()).findById(id).get();
+    }
+    
+    @Override
+    public Definition findDefinition(Id id) {
+        return AdsSearcher.Factory.newAdsDefinitionSearcher(getModule()).findById(id).get();
     }
 
     @Override
@@ -299,11 +305,11 @@ public class AdsMsdlSchemeDef extends AbstractXmlDefinition<MsdlDefinition> impl
     }
 
     @Override
-    public String getJavaPackageName() {
+    public String getJavaPackageName(boolean isHumanReadable) {
         if (isTransparent()) {
             return NameUtil.getPackageFromNamespace(this.getTargetNamespace());
         } else {
-            return JavaSourceSupport.getPackageName(this, JavaSourceSupport.UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, JavaSourceSupport.CodeType.EXCUTABLE));
+            return JavaSourceSupport.getPackageName(this, JavaSourceSupport.UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, JavaSourceSupport.CodeType.EXCUTABLE), isHumanReadable);
         }
     }
 

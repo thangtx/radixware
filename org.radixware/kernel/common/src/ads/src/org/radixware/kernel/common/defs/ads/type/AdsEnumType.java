@@ -65,12 +65,12 @@ public class AdsEnumType extends AdsDefinitionType {
         return new TypeJavaSourceSupport(this) {
 
             @Override
-            public char[][] getPackageNameComponents(UsagePurpose env) {
+            public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
                 if (source == null) {
                     return NO_PACKAGE;
                 }
                 if (AdsEnumType.this instanceof AdsEnumType.Array) {
-                    return JavaSourceSupport.getPackageNameComponents(source, UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, env.getCodeType()));
+                    return JavaSourceSupport.getPackageNameComponents(source, isHumanReadable,  UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, env.getCodeType()));
                 }
                 AdsEnumDef src = getSource();
                 if (src == null) {
@@ -92,14 +92,14 @@ public class AdsEnumType extends AdsDefinitionType {
                         }
                     }
                 } else {
-                    return JavaSourceSupport.getPackageNameComponents(source, UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, env.getCodeType()));
+                    return JavaSourceSupport.getPackageNameComponents(source, isHumanReadable, UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, env.getCodeType()));
                 }
             }
 
             @Override
-            public char[] getLocalTypeName(UsagePurpose env) {
+            public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
                 if (AdsEnumType.this instanceof AdsEnumType.Array) {
-                    return CharOperations.merge(source.getId().toCharArray(), "Arr".toCharArray(), '.');
+                    return CharOperations.merge(getName(source, isHumanReadable), "Arr".toCharArray(), '.');
                 } else {
                     AdsEnumDef src = getSource();
                     if (src == null) {
@@ -119,10 +119,10 @@ public class AdsEnumType extends AdsDefinitionType {
                                     }
                                 }
                             } else {
-                                return source.getId().toCharArray();
+                                return JavaSourceSupport.getName(source, isHumanReadable);
                             }
                         } else {
-                            return CharOperations.merge(source.getId().toCharArray(), META_CLASS_SUFFIX);
+                            return JavaSourceSupport.getMetaName(source, isHumanReadable);
                         }
                     }
                 }

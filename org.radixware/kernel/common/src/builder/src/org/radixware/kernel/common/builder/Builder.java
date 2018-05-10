@@ -24,14 +24,19 @@ import org.radixware.kernel.common.components.ICancellable;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.SearchResult;
+import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.common.defs.ads.build.Cancellable;
 import org.radixware.kernel.common.defs.ads.build.IFlowLogger;
 import org.radixware.kernel.common.defs.ads.build.Make;
 import org.radixware.kernel.common.defs.ads.build.Make.Distribution;
+import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
+import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.src.JavaFileSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
@@ -39,6 +44,7 @@ import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.CharOperations;
+import org.radixware.kernel.common.utils.FilePathPrefix;
 import org.radixware.kernel.common.utils.JarFiles;
 
 
@@ -402,7 +408,7 @@ class Builder extends AbstractAdsBuilder {
 
             File imgDir = module.getImages().getDirectory();
 
-            String pathPrefix = new String(CharOperations.merge(JavaSourceSupport.getPackageNameComponents(module, JavaSourceSupport.UsagePurpose.COMMON_EXECUTABLE), '/'));
+            String pathPrefix = new String(CharOperations.merge(JavaSourceSupport.getPackageNameComponents(module, false, JavaSourceSupport.UsagePurpose.COMMON_EXECUTABLE), '/'));
 
             if (imgDir != null && imgDir.exists() && imgDir.isDirectory()) {
                 File binDir = JavaFileSupport.getBinDir(module);
@@ -432,7 +438,7 @@ class Builder extends AbstractAdsBuilder {
             }
         }
 
-        public void processLocales(AdsModule module, BuildFlow flow) {
+        public void processLocales(final AdsModule module, BuildFlow flow) {
             if (module.isReadOnly()) {
                 return;
             }
@@ -452,8 +458,51 @@ class Builder extends AbstractAdsBuilder {
                     }
                 }
             });
+            
+            String pathPrefix = new String(CharOperations.merge(JavaSourceSupport.getPackageNameComponents(module, false, JavaSourceSupport.UsagePurpose.COMMON_EXECUTABLE), '/'));
 
-            String pathPrefix = new String(CharOperations.merge(JavaSourceSupport.getPackageNameComponents(module, JavaSourceSupport.UsagePurpose.COMMON_EXECUTABLE), '/'));
+            final boolean isOverwritten = module.findOverwritten() != null;
+            final Map<Id, AdsLocalizingBundleDef> bundels = new HashMap<>();
+            
+            if (isOverwritten){
+                AdsModule m = module;
+                
+                while (m != null) {
+                    AdsLocalizingBundleDef bundle = m.findExistingLocalizingBundle();
+                    if (bundle != null) {
+                        bundels.put(bundle.getId(), bundle);
+                    }
+
+                    for (AdsDefinition def : m.getDefinitions()) {
+                        bundle = def.findExistingLocalizingBundle();
+                        if (bundle != null) {
+                            if (!bundels.containsKey(bundle.getId())){
+                                bundels.put(bundle.getId(), bundle);
+                            }
+                        }
+                    }
+                    m = m.findOverwritten();
+                }
+            }
+            FilePathPrefix filePathPrefix = new FilePathPrefix(pathPrefix){
+
+                @Override
+                public String getFilePath(File f) {
+                    if (f == null) {
+                        return null;
+                    } 
+                    if (isOverwritten){
+                        String name = f.getName();
+                        Id bundleId = Id.Factory.loadFrom(name.substring(0, name.indexOf(".")));
+                        AdsLocalizingBundleDef bundle = bundels.get(bundleId); 
+                        if (bundle != null){
+                            final String prefix = new String(CharOperations.merge(JavaSourceSupport.getPackageNameComponents(bundle, false, JavaSourceSupport.UsagePurpose.COMMON_EXECUTABLE), '/'));
+                            return FilePathPrefix.preparePrefix(prefix) + name;
+                        }
+                    }
+                    return super.getFilePath(f);
+                }
+            };
             final File binDir = JavaFileSupport.getBinDir(module);
             for (File localeLangDir : localeLangDirs) {
                 if (localeLangDir != null && localeLangDir.exists() && localeLangDir.isDirectory()) {
@@ -474,7 +523,7 @@ class Builder extends AbstractAdsBuilder {
                             }
                         }
                         if (mkJar) {
-                            if (JarFiles.mkJar(localeLangDir, localeJar, xmlFileFilter, pathPrefix, false)) {
+                            if (JarFiles.mkJarFile(localeLangDir, localeJar, xmlFileFilter, filePathPrefix, false)) {
                                 flow.builder.moduleProcessed(module);
                             }
                         }

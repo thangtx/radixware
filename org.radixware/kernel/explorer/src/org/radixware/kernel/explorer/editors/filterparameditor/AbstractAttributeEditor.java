@@ -54,10 +54,14 @@ abstract class AbstractAttributeEditor<T> extends QObject {
                     return new NullTitleAttributeEditor(environment, isReadonly, parent);
                 case SELECTOR_PRESENTATION:
                     return new SelectorPresentationAttributeEditor(environment, isReadonly, parent);
+                case ADDITIONAL_SELECTOR_CONDITION:
+                    return new AdditionalSelectorConditionAttributeEditor(environment, isReadonly, parent);
                 case PERSISTENT_VALUE_DEFINED:
                     return new PersistentValDefinedAttributeEditor(environment, isReadonly, parent);
                 case PERSISTENT_VALUE:
                     return new PersistentValueAttributeEditor(environment, isReadonly, parent);
+                case PARENT_REF_EDITING_MODE:
+                    return new ParentRefEditingModeAttributeEditor(environment, isReadonly, context, parent);
                 default:
                     throw new IllegalArgumentException("Attribute " + attribute.name() + " is not supported");
             }

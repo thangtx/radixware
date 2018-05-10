@@ -8,10 +8,11 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.enumeration;
 
 import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.*;
 import java.util.*;
 import java.util.prefs.BackingStoreException;
@@ -40,7 +41,7 @@ import org.radixware.kernel.designer.common.dialogs.usages.FindUsages;
 import org.radixware.kernel.designer.common.dialogs.usages.FindUsagesCfg;
 import org.radixware.kernel.designer.common.dialogs.utils.SearchFieldAdapter;
 import org.radixware.kernel.designer.common.editors.*;
-
+import org.radixware.kernel.designer.common.general.utils.SwingUtils;
 
 public class EnumerationTablePanel extends javax.swing.JPanel {
 
@@ -216,9 +217,9 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
 
     private void onHexModeChange() {
         this.isHexMode = this.hexBox.isSelected();
-        
+
         enumDef.setItemsViewFormat(isHexMode ? EEnumDefinitionItemViewFormat.HEXADECIMAL : null);
-        
+
         setupTable();
     }
 
@@ -262,7 +263,6 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
 //                    stringDef.setValue(l, titles.get(l));
 //                }
 //            }
-
             int selected = table.getSelectedRow();
             int actualSelected = model.getActualIndex(selected);
             if (actualSelected < model.getViewItemsCount()) {
@@ -280,7 +280,6 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
 //
 //            enumDef.findExistingLocalizingBundle().getStrings().getLocal().add(stringDef);
 //            createdItem.setTitleId(stringDef.getId());
-
             final int newRowPosition = table.convertRowIndexToView(model.getRowByViewItem(createdItem));
             table.setRowSelectionInterval(newRowPosition, newRowPosition);
 
@@ -301,14 +300,14 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
         int selection = table.getSelectedRow();
         if (selection > -1 && selection < model.getRowCount()) {
             final AdsEnumItemDef enumItem = model.getViewItemByRow(selection);
-            
+
             final NewItemDialog itemDialog = new NewItemDialog(enumDef, enumItem, isHexMode, true);
-            
+
             itemDialog.invokeModalDialog();
-            
+
             if (itemDialog.isOK()) {
                 final AdsEnumItemDef createdItem = (AdsEnumItemDef) itemDialog.getCreatedItem();
-                
+
                 NewItemPanel.install(enumDef, enumItem, createdItem, isHexMode);
 
                 final int newRowPosition = table.convertRowIndexToView(model.getRowByViewItem(enumItem));
@@ -456,7 +455,7 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
     }
 
     private UpdateLocker updateLocker = new UpdateLocker();
-    
+
     public void open(final AdsEnumDef enumDef) {
         this.enumDef = enumDef;
         onOpening();
@@ -488,7 +487,6 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
         fixButton.setEnabled(!isFixed);
 
         //table.setEnabled(!enumDef.isReadOnly());
-
         final boolean hasElements = model.getRowCount() > 0;
         if (hasElements) {
             if (lastSelectedItem != null) {
@@ -523,7 +521,7 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
     private void setupTable() {
         isHexMode = enumDef.getItemsViewFormat() == EEnumDefinitionItemViewFormat.HEXADECIMAL;
         this.hexBox.setSelected(isHexMode);
-        
+
         model = new EnumerationTableModel(enumDef);
         table.setModel(model);
 
@@ -536,9 +534,7 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
             column2SortOrder.put(EnumerationTableModel.VALUE_COLUMN + i + 1, SortOrder.UNSORTED);
         }
 
-
         column2SortOrder.put(this.model.DOMAIN_COLUMN, SortOrder.UNSORTED);
-
 
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
@@ -569,7 +565,7 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
             tableColumnModel.getColumn(EnumerationTableModel.VALUE_COLUMN).setCellEditor(multiCellEditor);
         }
 
-        for (int i = EnumerationTableModel.VALUE_COLUMN + 1, size = model.DOMAIN_COLUMN - 1; i <= size; i++) {            
+        for (int i = EnumerationTableModel.VALUE_COLUMN + 1, size = model.DOMAIN_COLUMN - 1; i <= size; i++) {
             tableColumnModel.getColumn(i).setCellEditor(new StringCellEditor(null, model, model.getColumnLanguage(i), enumDef, readonly));
         }
         table.setRowSelectionAllowed(true);
@@ -640,7 +636,6 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
             table.getColumnModel().getColumn(col).setHeaderRenderer(new HeaderRenderer());
         }
 
-
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -673,8 +668,7 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
         if (item != null) {
             int indexInModel = model.getRowByViewItem(item);
             if (indexInModel != -1) {
-                final int indexInTable = table.convertRowIndexToView(indexInModel);
-                table.setRowSelectionInterval(indexInTable, indexInTable);
+                SwingUtils.setRowSelection(table, indexInModel);
             }
         }
 
@@ -729,7 +723,6 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
 //        if (table.isEditing()) {
 //            table.getCellEditor().stopCellEditing();
 //        }
-
         isFixed = enumDef.getViewOrder().isCorrect();
         fixButton.setEnabled(!isFixed);
         addButton.setEnabled(isFixed && !enumDef.isReadOnly() && enumDef.isExtendable());
@@ -841,10 +834,10 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
         if (selectedRow != -1) {
             final int rowIndexInModel = table.convertRowIndexToModel(selectedRow);
             final boolean isEnabled = model.isItemRemovable(rowIndexInModel) && !enumDef.isReadOnly()
-                      && isFixed;
+                    && isFixed;
             removeButton.setEnabled(isEnabled);
             cmdEdit.setEnabled(isEnabled);
-            
+
         } else {
             removeButton.setEnabled(false);
             cmdEdit.setEnabled(false);
@@ -1135,7 +1128,6 @@ public class EnumerationTablePanel extends javax.swing.JPanel {
             Component s = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             Component headerComponent = table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
 
             if (headerComponent instanceof javax.swing.JLabel) {
                 if (column == EnumerationTableModel.NAME_COLUMN

@@ -11,9 +11,10 @@
 
 package org.radixware.kernel.server.instance;
 
+import org.radixware.kernel.common.cache.ICachedObject;
 
-public interface ICachedUserObject {
-    
+
+public interface ICachedUserObject extends ICachedObject {
+    @Override
     public void release();
-    
 }

@@ -14,14 +14,13 @@ package org.radixware.wps.rwt;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.radixware.kernel.common.client.types.IEditingHistory;
 import org.radixware.kernel.common.client.types.RefEditingHistory;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.utils.Utils;
-import org.radixware.wps.views.editors.valeditors.ValObjectAsStrEditorController;
-
 
 public class DropDownEditHistoryDelegate<T> extends DropDownListDelegate<T> {
 
@@ -30,6 +29,16 @@ public class DropDownEditHistoryDelegate<T> extends DropDownListDelegate<T> {
     public DropDownEditHistoryDelegate(InputBox box, IEditingHistory history, EValType type) {
         updateItems(box, history, type);
         setDisplayCurrentItemInDropDownList(true);
+    }
+    
+    public boolean containsValue(final T value){
+        final List<DropDownListItem<T>> items = getItems();
+        for (DropDownListItem<T> item: items){
+            if (Objects.equals(value, item.getValue())){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

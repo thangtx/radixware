@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.common.client.widgets;
 
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
+
 
 public interface IPushButton extends IButton {
 
@@ -19,4 +21,8 @@ public interface IPushButton extends IButton {
     void setDefault(boolean isDefault);
     
     void click();
+    
+    public void setMenu(IMenu menu);
+    
+    public IMenu getMenu();
 }

@@ -23,6 +23,7 @@ import static org.radixware.kernel.common.enums.ERuntimeEnvironmentType.SERVER;
 import static org.radixware.kernel.common.enums.ERuntimeEnvironmentType.WEB;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.CharOperations;
 
@@ -111,8 +112,7 @@ public class AdsParagraphWriter extends AdsExplorerItemWriter<AdsParagraphExplor
                     printer.println();
                     printer.print("public final class ");
                     //writeUsage(printer);
-                    printer.print(def.getId());
-                    printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+                    printer.print(JavaSourceSupport.getMetaName(def, printer instanceof IHumanReadablePrinter));
                     printer.enterBlock(1);
                     printer.println("{");
                     if (env == ERuntimeEnvironmentType.SERVER) {

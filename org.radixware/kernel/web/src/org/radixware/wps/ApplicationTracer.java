@@ -30,6 +30,7 @@ import org.radixware.kernel.common.client.eas.resources.IResourceManager;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.DefManager;
 import org.radixware.kernel.common.client.env.IEventLoop;
+import org.radixware.kernel.common.client.env.ProductInstallationOptions;
 import org.radixware.kernel.common.client.env.progress.ProgressHandleManager;
 import org.radixware.kernel.common.client.exceptions.SignatureException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
@@ -48,6 +49,7 @@ import org.radixware.kernel.common.enums.EDialogIconType;
 import org.radixware.kernel.common.enums.EIsoCountry;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.clientstate.ConnectionParams;
 
 
 class ApplicationTracer extends DefaultClientTracer {
@@ -83,6 +85,11 @@ class ApplicationTracer extends DefaultClientTracer {
         public String getStationName() {
             return "unspecified";
         }
+
+        @Override
+        public String getConnectionName() {
+            return "unspecified";
+        }                
 
         @Override
         public TimeZoneInfo getServerTimeZoneInfo() {
@@ -268,6 +275,11 @@ class ApplicationTracer extends DefaultClientTracer {
         }
 
         @Override
+        public boolean isUserFuncDevelopmentAccessible() {
+            return true;
+        }
+
+        @Override
         public List<EIsoLanguage> getSupportedLanguages() {
             return Collections.<EIsoLanguage>emptyList();
         }
@@ -328,5 +340,15 @@ class ApplicationTracer extends DefaultClientTracer {
         @Override
         public void removeConnectionListener(ConnectionListener listener) {
         }        
+        
+        @Override
+        public void writeConnectionParametersToXml(ConnectionParams xml) {
+
+        }
+
+        @Override
+        public ProductInstallationOptions getProductInstallationOptions() {
+            return ProductInstallationOptions.loadOptions((org.radixware.schemas.types.MapStrStr)null);
+        }                
     }
 }

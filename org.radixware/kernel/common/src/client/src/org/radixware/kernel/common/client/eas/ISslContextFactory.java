@@ -12,10 +12,11 @@
 package org.radixware.kernel.common.client.eas;
 
 import javax.net.ssl.SSLContext;
+import org.radixware.kernel.common.client.utils.ISecretStore;
 import org.radixware.kernel.common.exceptions.CertificateUtilsException;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
 
 
 public interface ISslContextFactory {
-    SSLContext createSslContext(final char[] keyStorePwd)  throws KeystoreControllerException, CertificateUtilsException;
+    SSLContext createSslContext(final ISecretStore secretStore)  throws KeystoreControllerException, CertificateUtilsException;
 }

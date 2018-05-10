@@ -45,6 +45,7 @@ import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.Segment;
+import org.radixware.kernel.designer.ads.localization.RowString;
 import org.radixware.kernel.designer.common.dialogs.components.state.StateAbstractDialog.StateAbstractPanel;
 import org.radixware.kernel.designer.common.general.filesystem.RadixFileUtil;
 
@@ -62,24 +63,28 @@ public class ChooseLayersDialog extends StateAbstractPanel {
      * Creates new form ChooseLayersDialog
      */
     public ChooseLayersDialog(final Map<Layer, List<Module>> selectedLayers) {
+        this(selectedLayers, true);
+    }
+    
+    public ChooseLayersDialog(final Map<Layer, List<Module>> selectedLayers, boolean showDdsSegment) {
         this.selectedLayerMap = selectedLayers;
         initComponents();
         stateDisplayer = new org.radixware.kernel.designer.common.dialogs.components.state.StateDisplayer();
         treeTable = new org.jdesktop.swingx.JXTreeTable();
-        createTreeTableUi();
+        createTreeTableUi(showDdsSegment);
         jScrollPane1.setViewportView(treeTable);
         add(stateDisplayer, BorderLayout.SOUTH);
         //check();
     }
 
-    private void createTreeTableUi() {
+    private void createTreeTableUi(boolean showDdsSegment) {
         treeTable.setRootVisible(false);
         treeTable.setShowsRootHandles(true);
         treeTable.setBackground(Color.white);
         treeTable.setTreeCellRenderer(new DomainsTreeCellRenderer());
         treeTable.getTableHeader().setReorderingAllowed(false);
 
-        tableModel = new MyTreeTableModel();
+        tableModel = new MyTreeTableModel(showDdsSegment);
         treeTable.setTreeTableModel(tableModel);
         treeTable.setDefaultEditor(Boolean.class, new BooleanEditor());
         final TableColumn checkboxesColumn = treeTable.getColumnModel().getColumn(1);
@@ -128,12 +133,13 @@ public class ChooseLayersDialog extends StateAbstractPanel {
                     } else {
                         MutableTreeTableNode segmentNode; 
                         Enumeration<? extends MutableTreeTableNode> segmentChilderen = layerNode.children();
+                        List<Module> modules = new ArrayList<>();
                         while (segmentChilderen != null && segmentChilderen.hasMoreElements()) {
                             segmentNode = segmentChilderen.nextElement();
-                            List<Module> modules = getSelectedModules(segmentNode);
-                            if (!modules.isEmpty()) {
-                                selectedLayerMap.put(layer, modules);
-                            }
+                            modules.addAll(getSelectedModules(segmentNode));
+                        }
+                        if (!modules.isEmpty()) {
+                            selectedLayerMap.put(layer, modules);
                         }
                     }
                 } else {
@@ -210,19 +216,19 @@ public class ChooseLayersDialog extends StateAbstractPanel {
         private String[] columns = {"Name", "Assign"};
         private DefaultMutableTreeTableNode rootNode = new DefaultMutableTreeTableNode();
 
-        public MyTreeTableModel() {
+        public MyTreeTableModel(boolean showDdsSegment) {
             //result=new ArrayList<TreeTableModelRow>();
             Collection<Branch> openBranches = RadixFileUtil.getOpenedBranches();
             for (Branch branch : openBranches) {
                 TreeTableModelRow row = new TreeTableModelRow(branch, false);
                 final DefaultMutableTreeTableNode topLevelNode = new DefaultMutableTreeTableNode(row);
-                appendChildren(topLevelNode, (Branch) row.getValue());
+                appendChildren(topLevelNode, (Branch) row.getValue(), showDdsSegment);
                 row.setChecked(isAllChildrenChecked(topLevelNode));
                 rootNode.add(topLevelNode);
             }
         }
 
-        private void appendChildren(final DefaultMutableTreeTableNode node, final Branch branch) {
+        private void appendChildren(final DefaultMutableTreeTableNode node, final Branch branch, boolean showDdsSegment) {
             final List<Layer> layers = branch.getLayers().list();
 
             Map<Layer, List<Module>> map;
@@ -254,8 +260,9 @@ public class ChooseLayersDialog extends StateAbstractPanel {
                 }
                 final DefaultMutableTreeTableNode layerNode = new DefaultMutableTreeTableNode(layerRow);
                 node.add(layerNode);
-                                
-                addModulesFromSegment(layer.getDds(), selectedModules, layerNode, layerRow.isCheched());
+                if (showDdsSegment){                
+                    addModulesFromSegment(layer.getDds(), selectedModules, layerNode, layerRow.isCheched());
+                }
                 addModulesFromSegment(layer.getAds(), selectedModules, layerNode, layerRow.isCheched());
 
                 

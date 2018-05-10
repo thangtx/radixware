@@ -51,7 +51,7 @@ public class SmioPieceFixedLen extends SmioPiecePadded {
     @Override
     protected SmioCoder getCoder() {
         if (coder == null) {
-            final String encoding = smioField.getModel().getEncoding();
+            final String encoding = smioField.getModel().calcEncoding();
             if (encoding != null) {
                 coder = new SmioCoder(encoding);
             }
@@ -95,21 +95,18 @@ public class SmioPieceFixedLen extends SmioPiecePadded {
                 bin = smioField.getModel().getPadBin();
             }
             if(bin != null)
-                padByte = new Byte(bin[0]);
+                padByte = bin[0];
         }
         return padByte;
     }
 
     @Override
-    protected Character getPadChar() throws SmioException {
+    protected Character getPadChar() {
         if (padChar == null) {
            if(fixedLen.isSetPadChar()) 
                 padChar = fixedLen.getPadChar().charAt(0);
             else if (smioField.getModel().getPadChar() != null && smioField.getModel().getPadChar().length() > 0)
                 padChar = smioField.getModel().getPadChar().charAt(0);
-            else {
-                throw new SmioException("No pad character set!");
-            }
         }
         return padChar;
     }
@@ -124,10 +121,10 @@ public class SmioPieceFixedLen extends SmioPiecePadded {
         if (getUnit() == LenUnitDef.CHAR) {
             return insertPadCharacters(bf, len, trimToLengthIfExceed);
         }
-        if (getUnit() == LenUnitDef.BYTE || (unit == LenUnitDef.ELEMENT && !smioField.getIsBCH() && !smioField.getIsBSD())) {
+        if (getUnit() == LenUnitDef.BYTE || (unit == LenUnitDef.ELEMENT && !smioField.getIsBCH() && !smioField.getIsBCD())) {
             return insertPadBytes(bf, len, trimToLengthIfExceed);
         }
-        if (unit == LenUnitDef.ELEMENT && (smioField.getIsBCH() || smioField.getIsBSD())) {
+        if (unit == LenUnitDef.ELEMENT && (smioField.getIsBCH() || smioField.getIsBCD())) {
             if (len%2==1)
                 len+=1;
             return insertPadBytes(bf, len/2, trimToLengthIfExceed);
@@ -140,15 +137,26 @@ public class SmioPieceFixedLen extends SmioPiecePadded {
         super.check(source, handler);
 
         try {
-            if (getUnit() == null) {
-                handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "' formatting error: 'Unit not defined'"));
-            }
+            final LenUnitDef.Enum unit_ = getUnit();
+            final String msgSource = "MSDL Field '" + source.getQualifiedName();
+            final String msgTemplate = msgSource + "' formatting %s: '%s'";
             if (getAlign() == null) {
-                handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "' formatting error: 'Align not defined'"));
+                handler.accept(RadixProblem.Factory.newError(source, String.format(msgTemplate, "error",
+                        "Align not defined")));
             }
-            if (getUnit() != null && (getUnit() == LenUnitDef.CHAR || getUnit() == LenUnitDef.ELEMENT) && getCoder() == null) {
-                handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "' formatting error: 'Encoding not defined'"));
+            if ((unit_ == LenUnitDef.CHAR || unit_ == LenUnitDef.ELEMENT) && getCoder() == null) {
+                handler.accept(RadixProblem.Factory.newError(source, String.format(msgTemplate, "error",
+                        "Encoding not defined")));
             }
+            if (unit_ == LenUnitDef.ELEMENT && !smioField.getIsBCH() && !smioField.getIsBCD()) {
+                handler.accept(RadixProblem.Factory.newWarning(source, String.format(msgTemplate, "warning",
+                        "Unit type 'Element' allowed only for BCH field type or field with BCD encoding")));
+            }
+            if (len > 1 && getAlign() != null && getAlign() != AlignDef.NONE && !isPadSymbolCorrect(unit_)) {
+                handler.accept(RadixProblem.Factory.newWarning(source, String.format(msgTemplate, "warning",
+                        "Pad symbol not defined")));
+            }
+                        
 //            if ((getUnit() == LenUnitDef.BYTE || getUnit() == LenUnitDef.ELEMENT) && getCoder() != null) {
 //                final Enum enc = getCoder().encoding;
 //                if (
@@ -164,6 +172,10 @@ public class SmioPieceFixedLen extends SmioPiecePadded {
         } catch (Exception ex) {
             handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "' formating error: " + ex.getMessage()));
         }
+    }
+    
+    public boolean isAllowSmallerLength() {
+        return fixedLen.isSetAllowSmallerLength() && fixedLen.getAllowSmallerLength();
     }
     
     public int getLen() { return len; }

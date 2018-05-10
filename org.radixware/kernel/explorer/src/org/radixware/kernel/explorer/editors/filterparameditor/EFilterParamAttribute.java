@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.editors.filterparameditor;
 
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.explorer.env.Application;
 
 
@@ -26,32 +27,38 @@ enum EFilterParamAttribute {
     IS_MANDATORY,
     EDIT_MASK,
     NULL_TITLE,
-    SELECTOR_PRESENTATION;
+    SELECTOR_PRESENTATION,
+    ADDITIONAL_SELECTOR_CONDITION,
+    PARENT_REF_EDITING_MODE;
 
-    public String getTitle() {
+    public String getTitle(final IClientEnvironment environment) {
         switch (this) {
             case NAME:
-                return Application.translate("SqmlEditor", "&Name:");
+                return environment.getMessageProvider().translate("SqmlEditor", "&Name:");
             case PROPERTY:
-                return Application.translate("SqmlEditor", "Base &property:");
+                return environment.getMessageProvider().translate("SqmlEditor", "Base &property:");
             case DEFAULT_VALUE:
-                return Application.translate("SqmlEditor", "Default &value:");
+                return environment.getMessageProvider().translate("SqmlEditor", "Default &value:");
             case VALUE_TYPE:
-                return Application.translate("SqmlEditor", "Value &type:");
+                return environment.getMessageProvider().translate("SqmlEditor", "Value &type:");
             case ENUM:
-                return Application.translate("SqmlEditor", "&Enumeration:");
+                return environment.getMessageProvider().translate("SqmlEditor", "&Enumeration:");
             case IS_MANDATORY:
-                return Application.translate("SqmlEditor", "Value m&ust be defined:");
+                return environment.getMessageProvider().translate("SqmlEditor", "Value m&ust be defined:");
             case EDIT_MASK:
-                return Application.translate("SqmlEditor", "Edit &mask:");
+                return environment.getMessageProvider().translate("SqmlEditor", "Edit &mask:");
             case NULL_TITLE:
-                return Application.translate("SqmlEditor", "&Display instead of '<Not defined>':");
+                return environment.getMessageProvider().translate("SqmlEditor", "&Display instead of '<Not defined>':");
             case SELECTOR_PRESENTATION:
-                return Application.translate("SqmlEditor", "&Presentation:");
+                return environment.getMessageProvider().translate("SqmlEditor", "&Presentation:");
             case PERSISTENT_VALUE_DEFINED:
-                return Application.translate("SqmlEditor", "Constant value de&fined:");
+                return environment.getMessageProvider().translate("SqmlEditor", "Constant value de&fined:");
             case PERSISTENT_VALUE:
-                return Application.translate("SqmlEditor", "&Constant value:");
+                return environment.getMessageProvider().translate("SqmlEditor", "&Constant value:");
+            case PARENT_REF_EDITING_MODE:
+                return environment.getMessageProvider().translate("SqmlEditor", "Editing &mode:");
+            case ADDITIONAL_SELECTOR_CONDITION:
+                return environment.getMessageProvider().translate("SqmlEditor", "&Additional condition:");
         }
         return "";
     }

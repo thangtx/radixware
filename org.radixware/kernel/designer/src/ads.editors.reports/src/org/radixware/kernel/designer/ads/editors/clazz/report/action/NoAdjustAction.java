@@ -24,7 +24,7 @@ public class NoAdjustAction  extends AbstractAction {
     private final AdsReportFormDiagram diagram;
 
     public NoAdjustAction(final AdsReportFormDiagram diagram) {
-        super("Do not adjust",RadixWareIcons.REPORT.NO_ADJUST.getIcon());
+        super("Do not Adjust",RadixWareIcons.REPORT.NO_ADJUST.getIcon());
         this.diagram = diagram;
     }
 

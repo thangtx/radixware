@@ -74,6 +74,7 @@ class AdsModuleUploader extends ModuleUploader<AdsModule> {
         AdsModule module = getModule();
         IRepositoryAdsModule rep = module.getRepository();
         if (rep != null) {
+            rep.setModule(module);
             IRepositoryAdsDefinition[] defs = rep.listDefinitions();
             if (defs != null) {
                 for (IRepositoryAdsDefinition def : defs) {

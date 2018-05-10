@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.monitoring;
 
 import java.sql.Connection;
@@ -80,7 +79,7 @@ public class MetricRecordWriter {
     private final LocalTracer localTracer;
     private final ECommitPolicy commitPolicy;
     private final ECacheMode cacheMode;
-
+    
     public MetricRecordWriter(final Connection connection, final MonitoringDbQueries dbQueries, final LocalTracer localTracer) {
         this(connection, dbQueries, localTracer, ECacheMode.ON, ECommitPolicy.COMMIT_AFTER_FLUSH);
     }
@@ -267,9 +266,9 @@ public class MetricRecordWriter {
 
         return Collections.singletonList(
                 new MetricRecord(lastWritten.getParameters(), new EventValue(
-                lastWritten.getEventValue().getNewValue(),
-                newRecords.get(newRecords.size() - 1).getEventValue().getNewValue(),
-                new StatValue(min, max, integralSum / (newRecords.get(newRecords.size() - 1).getEventValue().getEndTimeMillis() - startTimeMillis + 1)), newRecords.get(newRecords.size() - 1).getEventValue().getEndTimeMillis())));
+                                lastWritten.getEventValue().getNewValue(),
+                                newRecords.get(newRecords.size() - 1).getEventValue().getNewValue(),
+                                new StatValue(min, max, integralSum / (newRecords.get(newRecords.size() - 1).getEventValue().getEndTimeMillis() - startTimeMillis + 1)), newRecords.get(newRecords.size() - 1).getEventValue().getEndTimeMillis())));
     }
 
     private String getMapKey(final MetricRecord record) {
@@ -319,7 +318,7 @@ public class MetricRecordWriter {
     }
 
     protected void doFlushRecords(final List<MetricRecord> records) throws SQLException {
-        if (connection == null) {
+        if (connection == null || connection.isClosed()) {
             return;
         }
         for (final MetricRecord metricRecord : records) {
@@ -348,15 +347,21 @@ public class MetricRecordWriter {
                 } catch (SQLException ex) {
                     if (ex.getErrorCode() == OraExCodes.NO_DATA_FOUND) {//state record with cached id could be removed, create or update new one
                         stateIdCache.put(metricKey, writeAndGetId(metricRecord));
-                    } else if (ex.getErrorCode() == OraExCodes.INTEGRITY_CONSTRAINT_VIOLATED_PARENT_KEY_NOT_FOUND) {
-                        localTracer.debug("Unable to flush metric record " + metricRecord.toString() + ", metric was probably removed" , false);
                     } else {
                         throw ex;
                     }
                 }
+
             }
         } catch (Exception ex) {
-            localTracer.put(EEventSeverity.ERROR, "Error while writing metric record: " + metricRecord.toString() + "\n" + ExceptionTextFormatter.throwableToString(ex), null, null, false);
+            if (ex instanceof SQLException) {
+                if (((SQLException) ex).getErrorCode() == OraExCodes.INTEGRITY_CONSTRAINT_VIOLATED_PARENT_KEY_NOT_FOUND) {
+                    localTracer.debug("Unable to flush metric record " + metricRecord.toString() + ", metric was probably removed", false);
+                    return;
+                }
+            }
+            final String floodKey = "ErrorWritingMetric[" + metricRecord.getParameters().getTypeId() + "/" + metricRecord.getParameters().getDescription().getSensorCoordinates() + "]";
+            localTracer.putFloodControlled(floodKey, EEventSeverity.ERROR, "Error while writing metric record: " + metricRecord.toString() + "\n" + ExceptionTextFormatter.throwableToString(ex), null, null, false);
         }
     }
 
@@ -432,7 +437,8 @@ public class MetricRecordWriter {
     private Long writeAndGetId(final MetricRecord metricRecord) throws SQLException, IllegalMetricDataException {
         createOrUpdateStateRecord(metricRecord);
         final long newId = dbQueries.getMetricStateId(metricRecord.getParameters());
-        return newId == -1 ? null : newId;
+        final Long result = newId == -1 ? null : newId;
+        return result;
     }
 
     private void createOrUpdateStateRecord(final MetricRecord metricRecord) throws SQLException, IllegalMetricDataException {
@@ -555,7 +561,6 @@ public class MetricRecordWriter {
                 + "values (SQN_RDX_SM_METRICSTATEID.nextval, t.typeId, t.instanceId, t.unitId, t.serviceUri, t.netChannelId, "
                 + "t.begTime, t.endTime, t.begVal, t.endVal, t.minVal, t.maxVal, t.avgVal) "
                 + "where t.typeId is not null";
-
 
     }
 

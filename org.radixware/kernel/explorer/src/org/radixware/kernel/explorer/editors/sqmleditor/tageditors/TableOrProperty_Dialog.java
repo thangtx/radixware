@@ -11,135 +11,145 @@
 
 package org.radixware.kernel.explorer.editors.sqmleditor.tageditors;
 
-import com.trolltech.qt.gui.QAction;
-import com.trolltech.qt.gui.QGridLayout;
+import com.trolltech.qt.gui.QFormLayout;
 import com.trolltech.qt.gui.QLabel;
-import com.trolltech.qt.gui.QLineEdit;
+import com.trolltech.qt.gui.QWidget;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
-import org.radixware.kernel.common.client.meta.mask.EditMaskNone;
+import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.meta.mask.EditMaskStr;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.enums.EDialogButtonType;
-import org.radixware.kernel.explorer.editors.sqmleditor.SqmlProcessor;
-import org.radixware.kernel.explorer.editors.valeditors.ValEditor;
-import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
+import org.radixware.kernel.explorer.editors.valeditors.ValSqmlDefEditor;
+import org.radixware.kernel.explorer.editors.valeditors.ValStrEditor;
+import org.radixware.kernel.explorer.models.SqmlTreeModel;
+import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 
 
 
 public class TableOrProperty_Dialog extends ValPropEdit_Dialog {
-
+        
+    private final ValSqmlDefEditor sqmlDefEditor;
+    private final ValStrEditor aliasEditor;
+    private ISqmlTableDef classDef;
     private String alias;
-    // private String tableAlias;
-    private final XscmlEditor editText;
-    private final ValEditor<String> editLine;
-    private final QLineEdit editLineAlias = new QLineEdit(this);
-    private ISqmlTableDef presentClassDef;
-    private final EDefinitionDisplayMode showMode;
-    private final boolean isThisProp;
 
-    private static String createDialogTitle(final IClientEnvironment environment, final ISqmlColumnDef/*RadPropertyDef*/ prop) {
-        return prop == null ? environment.getMessageProvider().translate("SqmlEditor", "Table Tag Editor")
-                : environment.getMessageProvider().translate("SqmlEditor", "Property Tag Editor");
-    }
-
-    public TableOrProperty_Dialog(final XscmlEditor editor, final ISqmlTableDef presentClassDef, final ISqmlColumnDef prop, final String tableAlias, final String alias, final boolean openForCurTable, final EDefinitionDisplayMode showMode) {
-        super(editor.getEnvironment(), editor, prop, createDialogTitle(editor.getEnvironment(),prop));
-        editLine = new ValEditor<>(getEnvironment(), this, new EditMaskNone(), false, true);
-        //editLine= new ValEditor<String>(this,new EditMaskNone(),false,true);
-        editLine.setObjectName("editLine");
-        editLineAlias.setObjectName("editLineAlias");
-        this.editText = editor;
-        this.prop = prop;
-        this.alias = alias;
-        //this.tableAlias=tableAlias;
-        this.isThisProp = openForCurTable;
-        this.presentClassDef = presentClassDef;
-        this.showMode = showMode;
-        createUI();
-
-        setFixedSize(sizeHint().width() + 100, sizeHint().height());
-        String s = getDisplaiedName(presentClassDef, showMode);
-        if (prop != null) {
-            final String displProp = getDisplaiedName(prop, showMode);
-            final String displDef = (tableAlias == null ? getDisplaiedName(presentClassDef, showMode) : tableAlias);
-            s = displDef + "." + displProp;
+    public TableOrProperty_Dialog(final IClientEnvironment environment, 
+                                                  final ISqmlTableDef classDef,
+                                                  final ISqmlColumnDef prop,
+                                                  final String alias,
+                                                  final boolean openForCurTable,
+                                                  final EDefinitionDisplayMode showMode, 
+                                                  final boolean isReadOnly,
+                                                  final QWidget parentWidget) {
+        super(environment, parentWidget, prop, "SqmlTableOrPropertyDialog");        
+        final MessageProvider mp = getEnvironment().getMessageProvider();
+        final SqmlTreeModel sqmlModel;
+        final String dialogTitle;
+        if (prop==null){
+            if (openForCurTable){
+                final List<ISqmlDefinition> columns = new ArrayList<>();
+                columns.addAll(classDef.getColumns().getAll());
+                sqmlModel = new SqmlTreeModel(environment, columns, EnumSet.of(SqmlTreeModel.ItemType.PROPERTY));
+            }else{
+                final EnumSet<SqmlTreeModel.ItemType> itemTypes = EnumSet.of(SqmlTreeModel.ItemType.PROPERTY, SqmlTreeModel.ItemType.MODULE_INFO);
+                sqmlModel = new SqmlTreeModel(environment, null, itemTypes);
+                sqmlModel.setMarkDeprecatedItems(true);
+            }
+            dialogTitle = isReadOnly ? mp.translate("SqmlEditor", "Column") : mp.translate("SqmlEditor", "Select Column");
+        }else{
+            sqmlModel = new SqmlTreeModel(environment, null, EnumSet.of(SqmlTreeModel.ItemType.MODULE_INFO));
+            sqmlModel.setMarkDeprecatedItems(true);
+            dialogTitle = isReadOnly ? mp.translate("SqmlEditor", "Table") : mp.translate("SqmlEditor", "Select Table");
         }
-        editLine.setValue(s);
+        sqmlModel.setDisplayMode(showMode);
+        sqmlDefEditor = new ValSqmlDefEditor(environment, this, sqmlModel, true, isReadOnly);        
+        sqmlDefEditor.setDefinitionDisplayMode(showMode);
+        final SqmlDefDisplayProvider displayProvider;
+        if (classDef.hasAlias()){
+            displayProvider = new SqmlDefDisplayProvider(showMode, classDef.getAlias());
+        }else{
+            displayProvider = new SqmlDefDisplayProvider(showMode);
+        }
+        sqmlDefEditor.setDisplayStringProvider(displayProvider);
+        sqmlDefEditor.setDialogTitle(dialogTitle);
+        sqmlDefEditor.valueChanged.connect(this,"onChangeDefinition()");
+        sqmlDefEditor.setObjectName("editLine");
+        
+        aliasEditor = new ValStrEditor(environment, this, new EditMaskStr(), false, isReadOnly);
+        aliasEditor.setObjectName("editLineAlias");
+        
+        createUI(isReadOnly);
+        
+        sqmlDefEditor.setValue(prop==null ? classDef : prop);        
+        aliasEditor.setValue(alias);
+        this.classDef = classDef;
+        this.alias = alias;
+    }
+    
+    private boolean isTableDialog(){
+        return getProperty()==null;
     }
 
-    private void createUI() {
-        editLineAlias.setText(alias);
+    private void createUI(final boolean isReadOnly) {
+        final MessageProvider mp = getEnvironment().getMessageProvider();
+        if (getProperty()==null){
+            setWindowTitle(mp.translate("SqmlEditor", "Table Tag Editor"));
+        }else{
+            setWindowTitle(mp.translate("SqmlEditor", "Property Tag Editor"));
+        }        
 
-        final QAction action = new QAction(this);
-        action.triggered.connect(this, "bntOpenDialogClick()");
-        editLine.addButton("...", action);
-
-        final QGridLayout gridLayout = new QGridLayout();
-        final QLabel lbPropName = new QLabel();
-        String lb = prop == null ? getEnvironment().getMessageProvider().translate("SqmlEditor", "Table:")
-                : getEnvironment().getMessageProvider().translate("SqmlEditor", "Property:");
-        lbPropName.setText(lb);
-        final QLabel lbValue = new QLabel();
-        lb = prop == null ? getEnvironment().getMessageProvider().translate("SqmlEditor", "Table alias:")
-                : getEnvironment().getMessageProvider().translate("SqmlEditor", "Property alias:");
-        lbValue.setText(lb);
+        final String defLabelText = isTableDialog() ? mp.translate("SqmlEditor", "Table:") : mp.translate("SqmlEditor", "Property:");        
+        final QLabel lbDefinition = new QLabel(defLabelText, this);
+        final String aliasLabelText = isTableDialog() ? mp.translate("SqmlEditor", "Table alias:") : mp.translate("SqmlEditor", "Property alias:");
+        final QLabel lbAlias = new QLabel(aliasLabelText, this);
+        final ExplorerTextOptions labelTextOptions = getLabelTextOptions();
+        labelTextOptions.applyTo(lbDefinition);
+        labelTextOptions.applyTo(lbAlias);
+                
+        final QFormLayout formLayout = new QFormLayout();
+        formLayout.addRow(lbDefinition, sqmlDefEditor);
+        formLayout.addRow(lbAlias, aliasEditor);
+        dialogLayout().addLayout(formLayout);
 
         final EnumSet<EDialogButtonType> buttons;
-        if (editText.isReadOnly()) {
-            editLine.setEnabled(false);
-            editLineAlias.setEnabled(false);
+        if (isReadOnly) {
+            sqmlDefEditor.setEnabled(false);
+            aliasEditor.setEnabled(false);
             buttons = EnumSet.of(EDialogButtonType.CLOSE);
         } else {
             buttons = EnumSet.of(EDialogButtonType.OK, EDialogButtonType.CANCEL);
         }
-
-        gridLayout.addWidget(lbPropName, 0, 0);
-        gridLayout.addWidget(editLine, 0, 1);
-        gridLayout.addWidget(lbValue, 1, 0);
-        gridLayout.addWidget(editLineAlias, 1, 1);
-        dialogLayout().addLayout(gridLayout);
+        
         addButtons(buttons, true);
     }
 
     @SuppressWarnings("unused")
-    private void bntOpenDialogClick() {
-        if (prop != null) {
-            final Object obj;
-            if (isThisProp) {
-                obj = ((SqmlProcessor) editText.getTagConverter()).chooseThisSqmlColumn(presentClassDef, prop, editText.isReadOnly(), this);
-            } else {
-                obj = ((SqmlProcessor) editText.getTagConverter()).chooseSqmlColumn(presentClassDef, prop, editText.isReadOnly(), this);//((SqmlProcessor)editText.tagConverter).showChoceObject(editText,presentClassDef,prop,true);
-            }
-            if ((obj != null) && (obj instanceof ISqmlColumnDef)) {
-                prop = (ISqmlColumnDef) obj;
-                presentClassDef = prop.getOwnerTable()/*Environment.defManager.getClassPresentationDef(prop.getOwnerClassId())*/;
-                if (presentClassDef != null) {
-                    final String displProp = getDisplaiedName(prop, showMode);
-                    final String displDef = getDisplaiedName(presentClassDef, showMode);//(tableAlias==null ? getDisplaiedName(presentClassDef,showMode) : tableAlias );//getDisplaiedName(presentClassDef,showMode);
-                    editLine.setValue(displDef + "." + displProp);
-                }
-            }
-        } else {
-            final Object obj = ((SqmlProcessor) editText.getTagConverter()).chooseSqmlTable(presentClassDef, editText.isReadOnly(), this, false);//((SqmlProcessor)editText.tagConverter).showChoceObject(editText, presentClassDef);
-            if ((obj != null) && (obj instanceof ISqmlTableDef)) {
-                presentClassDef = (ISqmlTableDef) obj;
-                if (presentClassDef != null) {
-                    editLine.setValue(getDisplaiedName(presentClassDef, showMode));
-                }
-            }
+    private void onChangeDefinition() {
+        aliasEditor.setValue(null);
+        final ISqmlDefinition definition = sqmlDefEditor.getValue();
+        if (definition instanceof ISqmlColumnDef){
+            setProperty((ISqmlColumnDef)definition);
+        }else if (definition instanceof ISqmlTableDef){
+            classDef = (ISqmlTableDef)definition;
         }
     }
 
     @Override
     public void accept() {
-        alias = editLineAlias.text();
-        super.accept();
+        if (sqmlDefEditor.getValue()!=null){
+            alias = aliasEditor.getValue();
+            super.accept();
+        }        
     }
 
     public ISqmlTableDef getPresentClassDef() {
-        return presentClassDef;
+        return classDef;
     }
 
     public String getAlias() {

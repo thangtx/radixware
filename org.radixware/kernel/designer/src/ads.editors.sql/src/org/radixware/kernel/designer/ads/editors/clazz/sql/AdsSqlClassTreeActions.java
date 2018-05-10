@@ -34,7 +34,6 @@ import org.radixware.kernel.common.defs.ads.clazz.members.AdsFieldPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsProcedureClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
-import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef.UsedTable;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsStatementClassDef;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
@@ -45,6 +44,10 @@ import org.radixware.kernel.common.defs.dds.DdsDefinitionIcon;
 import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTable;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTables;
+import org.radixware.kernel.common.defs.dds.providers.DdsVisitorProviderFactory;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.Scml;
@@ -339,47 +342,51 @@ public class AdsSqlClassTreeActions {
         }
     }
 
-    public static class AddUsedTableToTree extends AddObjectToTree<UsedTable> {
+    public static class AddUsedTableToTree extends AddObjectToTree<IUsedTable> {
 
         public AddUsedTableToTree() {
             super(ADD_USED_TABLE_TO_TREE);
         }
 
         @Override
-        protected Collection<UsedTable> getCreatedObjects(final AdsSqlClassTree tree) {
+        protected Collection<IUsedTable> getCreatedObjects(final AdsSqlClassTree tree) {
             final ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(
-                    tree.getSqlClass(),
-                    AdsSqlClassVisitorProviderFactory.newUsedTableProvider());
+                    tree.getSqlDef().getDefinition(),
+                    tree.getSqlDef() instanceof AdsSqlClassDef ? AdsSqlClassVisitorProviderFactory.newUsedTableProvider() : DdsVisitorProviderFactory.newGeneratedTableProvider());
             final List<Definition> definitions = ChooseDefinition.chooseDefinitions(cfg);
-            LinkedList<UsedTable> usedTables = null;
+            LinkedList<IUsedTable> usedTablesList = null;
+            IUsedTables usedTables = tree.getSqlDef().getUsedTables();
             if (definitions != null) {
-                usedTables = new LinkedList<UsedTable>();
-                final AdsSqlClassDef sqlClass = tree.getSqlClass();
+                usedTablesList = new LinkedList<>();
                 for (Definition definition : definitions) {
                     final DdsTableDef table = (DdsTableDef) definition;
-                    usedTables.add(sqlClass.getUsedTables().add(table, null));
+                    if (usedTables.useAlias() || !usedTables.containsId(table.getId())){
+                        usedTablesList.add(usedTables.add(table, null));
+                    }
                 }
             } else {
                 return null;
             }
-            if (usedTables.size() == 1) {
-                final AliasEditor panel = new AliasEditor();
-                String alias = usedTables.getFirst().getAlias();
-                if (alias == null) {
-                    alias = "";
+            if (usedTables.useAlias()) {
+                if (usedTablesList.size() == 1) {
+                    final AliasEditor panel = new AliasEditor();
+                    String alias = usedTablesList.getFirst().getAlias();
+                    if (alias == null) {
+                        alias = "";
+                    }
+                    panel.open(alias, new EditorOpenInfo(false, Lookup.EMPTY));
+                    if (panel.showModal()) {
+                        usedTablesList.getFirst().setAlias(panel.getAlias());
+                    }
+                } else if (usedTablesList.size() > 1) {
+                    final AliasesEditorPanel panel = new AliasesEditorPanel();
+                    panel.open(usedTablesList);
+                    panel.showModal();
                 }
-                panel.open(alias, new EditorOpenInfo(false, Lookup.EMPTY));
-                if (panel.showModal()) {
-                    usedTables.getFirst().setAlias(panel.getAlias());
-                }
-            } else if (usedTables.size() > 1) {
-                final AliasesEditorPanel panel = new AliasesEditorPanel();
-                panel.open(usedTables);
-                panel.showModal();
             }
             final DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
             model.nodeStructureChanged(tree.findNodeByGroupName(AdsSqlClassTree.TABLES_NODE));
-            return usedTables;
+            return usedTablesList;
         }
 
         @Override
@@ -411,20 +418,23 @@ public class AdsSqlClassTreeActions {
 
         @Override
         protected void actionPerformed(final AdsSqlClassTree tree) {
-            final AdsSqlClassDef sqlClass = tree.getSqlClass();
-            final AdsParameterPropertyDef parameter = getParameter(tree);
-            final int paramIndex = getParameterIndex(sqlClass, parameter);
-            final int swapParamIndex = getSwapIndex(sqlClass, parameter);
-            sqlClass.getProperties().getLocal().swap(paramIndex, swapParamIndex);
-            final Node node = (Node) tree.getSelectionPath().getLastPathComponent();
-            final Node parent = (Node) node.getParent();
-            final int idx = parent.getIndex(node);
-            final int selectedRow = tree.getSelectionRows()[0];
-            parent.remove(idx);
-            parent.insert(node, idx + getShift());
-            final DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-            model.nodeStructureChanged(parent);
-            tree.setSelectionRow(selectedRow + getShift());
+            final ISqlDef sorceDef = tree.getSqlDef();
+            if (sorceDef instanceof AdsSqlClassDef){
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sorceDef;
+                final AdsParameterPropertyDef parameter = getParameter(tree);
+                final int paramIndex = getParameterIndex(sqlClass, parameter);
+                final int swapParamIndex = getSwapIndex(sqlClass, parameter);
+                sqlClass.getProperties().getLocal().swap(paramIndex, swapParamIndex);
+                final Node node = (Node) tree.getSelectionPath().getLastPathComponent();
+                final Node parent = (Node) node.getParent();
+                final int idx = parent.getIndex(node);
+                final int selectedRow = tree.getSelectionRows()[0];
+                parent.remove(idx);
+                parent.insert(node, idx + getShift());
+                final DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+                model.nodeStructureChanged(parent);
+                tree.setSelectionRow(selectedRow + getShift());
+            }
 
         }
 
@@ -437,12 +447,12 @@ public class AdsSqlClassTreeActions {
             return null;
         }
 
-        protected abstract int getSwapIndex(AdsSqlClassDef sqlClass, AdsParameterPropertyDef parameter);
+        protected abstract int getSwapIndex(ISqlDef sqlClass, AdsParameterPropertyDef parameter);
 
         protected abstract int getShift();
 
         protected boolean canMove(final AdsSqlClassTree tree) {
-            return getSwapIndex(tree.getSqlClass(), getParameter(tree)) != -1;
+            return getSwapIndex(tree.getSqlDef(), getParameter(tree)) != -1;
         }
 
         protected int getParameterIndex(final AdsSqlClassDef sqlClass, final AdsParameterPropertyDef parameter) {
@@ -493,11 +503,14 @@ public class AdsSqlClassTreeActions {
         }
 
         @Override
-        protected int getSwapIndex(final AdsSqlClassDef sqlClass, final AdsParameterPropertyDef parameter) {
-            final int paramIndex = sqlClass.getProperties().getLocal().indexOf(parameter);
-            for (int i = paramIndex - 1; i >= 0; i--) {
-                if (sqlClass.getProperties().getLocal().get(i) instanceof AdsParameterPropertyDef) {
-                    return i;
+        protected int getSwapIndex(final ISqlDef sqmlSorceDef, final AdsParameterPropertyDef parameter) {
+            if (sqmlSorceDef instanceof AdsSqlClassDef){
+                final AdsSqlClassDef sqlClassDef = (AdsSqlClassDef) sqmlSorceDef;
+                final int paramIndex = sqlClassDef.getProperties().getLocal().indexOf(parameter);
+                for (int i = paramIndex - 1; i >= 0; i--) {
+                    if (sqlClassDef.getProperties().getLocal().get(i) instanceof AdsParameterPropertyDef) {
+                        return i;
+                    }
                 }
             }
             return -1;
@@ -527,11 +540,14 @@ public class AdsSqlClassTreeActions {
         }
 
         @Override
-        protected int getSwapIndex(final AdsSqlClassDef sqlClass, final AdsParameterPropertyDef parameter) {
-            final int paramIndex = sqlClass.getProperties().getLocal().indexOf(parameter);
-            for (int i = paramIndex + 1; i < sqlClass.getProperties().getLocal().size(); i++) {
-                if (sqlClass.getProperties().getLocal().get(i) instanceof AdsParameterPropertyDef) {
-                    return i;
+        protected int getSwapIndex(final ISqlDef sqmlSorceDef, final AdsParameterPropertyDef parameter) {
+            if (sqmlSorceDef instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sqmlSorceDef;
+                final int paramIndex = sqlClass.getProperties().getLocal().indexOf(parameter);
+                for (int i = paramIndex + 1; i < sqlClass.getProperties().getLocal().size(); i++) {
+                    if (sqlClass.getProperties().getLocal().get(i) instanceof AdsParameterPropertyDef) {
+                        return i;
+                    }
                 }
             }
             return -1;
@@ -540,9 +556,9 @@ public class AdsSqlClassTreeActions {
 
     public static class ChangeTableAlias extends AbstractPopupMenuAction {
 
-        private final UsedTable table;
+        private final IUsedTable table;
 
-        public ChangeTableAlias(final UsedTable table) {
+        public ChangeTableAlias(final IUsedTable table) {
             super(CHANGE_TABLE_ALIAS);
             putValue(ACTION_COMMAND_KEY, "F2");
             this.table = table;
@@ -599,7 +615,7 @@ public class AdsSqlClassTreeActions {
 
         @Override
         protected boolean isAvailable(final AdsSqlClassTree tree) {
-            return !tree.isReadOnly() && table.findTable() != null;
+            return !tree.isReadOnly() && table.findTable() != null && table.useAlias();
         }
 
         @Override
@@ -626,28 +642,31 @@ public class AdsSqlClassTreeActions {
 
         @Override
         protected Collection<AdsParameterPropertyDef> getCreatedObjects(final AdsSqlClassTree tree) {
-            final AdsSqlClassDef sqlClass = tree.getSqlClass();
-            final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.SQL_CLASS_PARAMETER));
-            final ICreatureGroup group = new ICreatureGroup() {
+            final ISqlDef sqmlSorceDef = tree.getSqlDef();
+            if (sqmlSorceDef instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sqmlSorceDef;
+                final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.SQL_CLASS_PARAMETER));
+                final ICreatureGroup group = new ICreatureGroup() {
 
-                @Override
-                public List<ICreature> getCreatures() {
-                    return creatures;
-                }
+                    @Override
+                    public List<ICreature> getCreatures() {
+                        return creatures;
+                    }
 
-                @Override
-                public String getDisplayName() {
-                    return "group";
-                }
-            };
-            final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
-            if (result != null) {
-                AdsParameterPropertyDef prop = (AdsParameterPropertyDef) result.commit();
-                if (!prop.canBeUsedInSqml()) {
-                    DialogUtils.messageInformation("Parameter " + prop.getName() + " can not be used in sqml");
-                }
-                return Collections.singleton(prop);
+                    @Override
+                    public String getDisplayName() {
+                        return "group";
+                    }
+                };
+                final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
+                if (result != null) {
+                    AdsParameterPropertyDef prop = (AdsParameterPropertyDef) result.commit();
+                    if (!prop.canBeUsedInSqml()) {
+                        DialogUtils.messageInformation("Parameter " + prop.getName() + " can not be used in sqml");
+                    }
+                    return Collections.singleton(prop);
 
+                }
             }
             return null;
         }
@@ -676,24 +695,27 @@ public class AdsSqlClassTreeActions {
 
         @Override
         protected Collection<AdsDynamicPropertyDef> getCreatedObjects(final AdsSqlClassTree tree) {
-            final AdsSqlClassDef sqlClass = tree.getSqlClass();
-            final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.DYNAMIC));
-            final ICreatureGroup group = new ICreatureGroup() {
+           final ISqlDef sqmlSorceDef = tree.getSqlDef();
+            if (sqmlSorceDef instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sqmlSorceDef;
+                final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.DYNAMIC));
+                final ICreatureGroup group = new ICreatureGroup() {
 
-                @Override
-                public List<ICreature> getCreatures() {
-                    return creatures;
-                }
+                    @Override
+                    public List<ICreature> getCreatures() {
+                        return creatures;
+                    }
 
-                @Override
-                public String getDisplayName() {
-                    return "group";
+                    @Override
+                    public String getDisplayName() {
+                        return "group";
+                    }
+                };
+                final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
+                if (result != null) {
+                    result.commit();
+                    tree.update();
                 }
-            };
-            final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
-            if (result != null) {
-                result.commit();
-                tree.update();
             }
             return null;
         }
@@ -803,29 +825,37 @@ public class AdsSqlClassTreeActions {
 
         @Override
         protected boolean isAvailable(final AdsSqlClassTree tree) {
-            final AdsTypeDeclaration typeDecl = extractType(getSelectedNode(tree));
-            if (typeDecl == null || typeDecl.getTypeId() == null || typeDecl.getTypeId() == EValType.ANY) {
-                return false;
+            if (tree.getSqlDef() instanceof AdsSqlClassDef) {
+                final AdsTypeDeclaration typeDecl = extractType(getSelectedNode(tree));
+                if (typeDecl == null || typeDecl.getTypeId() == null || typeDecl.getTypeId() == EValType.ANY) {
+                    return false;
+                }
+                return true;
             }
-            return true;
+            return false;
         }
 
         @Override
         protected Collection<AdsParameterPropertyDef> getCreatedObjects(final AdsSqlClassTree tree) {
-            final AdsParameterPropertyDef parameter = AdsParameterPropertyDef.Factory.newInstance();
+            final ISqlDef sqmlSorceDef = tree.getSqlDef();
+            if (sqmlSorceDef instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sqmlSorceDef;
+                final AdsParameterPropertyDef parameter = AdsParameterPropertyDef.Factory.newInstance();
 
-            final TreePath path = tree.getSelectionPath();
+                final TreePath path = tree.getSelectionPath();
 
-            final Node node = (Node) path.getLastPathComponent();
+                final Node node = (Node) path.getLastPathComponent();
 
-            final AdsTypeDeclaration type = extractType(node);
+                final AdsTypeDeclaration type = extractType(node);
 
-            final String baseName = extractObjectName(node);
-            parameter.setName("p" + baseName.substring(0, 1).toUpperCase() + baseName.substring(1));
-            parameter.getValue().setType(type);
+                final String baseName = extractObjectName(node);
+                parameter.setName("p" + baseName.substring(0, 1).toUpperCase() + baseName.substring(1));
+                parameter.getValue().setType(type);
 
-            tree.getSqlClass().getProperties().getLocal().add(parameter);
-            return Collections.singleton(parameter);
+                sqlClass.getProperties().getLocal().add(parameter);
+                return Collections.singleton(parameter);
+            }
+            return null;
         }
 
         @Override
@@ -852,29 +882,34 @@ public class AdsSqlClassTreeActions {
 
         @Override
         protected Collection<AdsParameterPropertyDef> getCreatedObjects(final AdsSqlClassTree tree) {
-            final UsedTable usedTable = (UsedTable) getSelectedNodeInfo(tree).getObject();
-            final DdsTableDef table = usedTable.findTable();
-            final AdsParameterPropertyDef parameter = AdsParameterPropertyDef.Factory.newInstance();
-            final AdsEntityClassDef entity = AdsUtils.findEntityClass(table);
+            final ISqlDef sorceDef = tree.getSqlDef();
+            if (sorceDef instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sorceDef;
+                final IUsedTable usedTable = (IUsedTable) getSelectedNodeInfo(tree).getObject();
+                final DdsTableDef table = usedTable.findTable();
+                final AdsParameterPropertyDef parameter = AdsParameterPropertyDef.Factory.newInstance();
+                final AdsEntityClassDef entity = AdsUtils.findEntityClass(table);
 
-            if (entity == null) {
-                DialogUtils.messageError("Entity class by table \"" + table.getName() + "\" [#" + table.getId() + "] not found");
-                return null;
+                if (entity == null) {
+                    DialogUtils.messageError("Entity class by table \"" + table.getName() + "\" [#" + table.getId() + "] not found");
+                    return null;
+                }
+
+                final AdsTypeDeclaration type = AdsTypeDeclaration.Factory.newParentRef(entity);
+                //If there is no dependency on entity module, then parameter would be unresolved.
+                sqlClass.getModule().getDependences().add(entity.getModule());
+
+                String pName = usedTable.getAlias();
+                if (pName == null) {
+                    pName = entity.getName();
+                }
+                parameter.setName("p" + pName);
+                parameter.getValue().setType(type);
+
+                sqlClass.getProperties().getLocal().add(parameter);
+                return Collections.singleton(parameter);
             }
-
-            final AdsTypeDeclaration type = AdsTypeDeclaration.Factory.newParentRef(entity);
-            //If there is no dependency on entity module, then parameter would be unresolved.
-            tree.getSqlClass().getModule().getDependences().add(entity.getModule());
-
-            String pName = usedTable.getAlias();
-            if (pName == null) {
-                pName = entity.getName();
-            }
-            parameter.setName("p" + pName);
-            parameter.getValue().setType(type);
-
-            tree.getSqlClass().getProperties().getLocal().add(parameter);
-            return Collections.singleton(parameter);
+            return null;
         }
 
         @Override
@@ -891,6 +926,13 @@ public class AdsSqlClassTreeActions {
         protected int getPriority() {
             return 300;
         }
+
+        @Override
+        protected boolean isAvailable(AdsSqlClassTree tree) {
+            return tree.getSqlDef() instanceof AdsSqlClassDef;
+        }
+        
+        
     }
 
     public static class InsertTagToEditor extends AbstractPopupMenuAction {
@@ -952,46 +994,50 @@ public class AdsSqlClassTreeActions {
         @Override
         protected void actionPerformed(final AdsSqlClassTree tree) {
             final Node node = getSelectedNode(tree);
-            final AdsSqlClassDef sqlClass = tree.getSqlClass();
-            AdsFieldPropertyDef field;
-            final String fieldName = getFieldName(extractObjectName(node));
-            if (fieldName == null) {
-                return;
+            final ISqlDef sorceDef = tree.getSqlDef();
+            if (sorceDef instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sorceDef;
+                AdsFieldPropertyDef field;
+                final String fieldName = getFieldName(extractObjectName(node));
+                if (fieldName == null) {
+                    return;
+                }
+                field = AdsFieldPropertyDef.Factory.newInstance(fieldName);
+                sqlClass.getProperties().getLocal().add(field);
+                field.setConst(true);
+                field.getAccessFlags().setPublic();
+
+                AdsTypeDeclaration typeDecl = extractType(node);
+
+                field.getValue().setType(typeDecl);
+
+                final Scml.Tag columnTag = node.getNodeInfo().createTag(tree);
+                assert columnTag instanceof PropSqlNameTag;
+
+                tree.getEditor().getPane().insertTag(columnTag);
+                tree.getEditor().getPane().insertString(" as ");
+
+                final PropSqlNameTag propTag = PropSqlNameTag.Factory.newInstance();
+                propTag.setOwnerType(PropSqlNameTag.EOwnerType.THIS);
+                propTag.setPropId(field.getId());
+                propTag.setPropOwnerId(field.getOwnerDefinition().getId());
+
+                tree.update();
+                tree.getEditor().getPane().insertTag(propTag);
+                tree.getEditor().getPane().requestFocusInWindow();
             }
-            field = AdsFieldPropertyDef.Factory.newInstance(fieldName);
-            sqlClass.getProperties().getLocal().add(field);
-            field.setConst(true);
-            field.getAccessFlags().setPublic();
-
-            AdsTypeDeclaration typeDecl = extractType(node);
-
-            field.getValue().setType(typeDecl);
-
-            final Scml.Tag columnTag = node.getNodeInfo().createTag(tree);
-            assert columnTag instanceof PropSqlNameTag;
-
-            tree.getEditor().getPane().insertTag(columnTag);
-            tree.getEditor().getPane().insertString(" as ");
-
-            final PropSqlNameTag propTag = PropSqlNameTag.Factory.newInstance();
-            propTag.setOwnerType(PropSqlNameTag.EOwnerType.THIS);
-            propTag.setPropId(field.getId());
-            propTag.setPropOwnerId(field.getOwnerDefinition().getId());
-
-            tree.update();
-            tree.getEditor().getPane().insertTag(propTag);
-            tree.getEditor().getPane().requestFocusInWindow();
-
         }
 
         @Override
         protected boolean isAvailable(final AdsSqlClassTree tree) {
-            final AdsTypeDeclaration typeDecl = extractType(getSelectedNode(tree));
-            if (typeDecl == null || typeDecl.getTypeId() == null || typeDecl.getTypeId() == EValType.ANY) {
-                return false;
-            }
-            if (tree.getEditor().getPane().isCurrentPositionEditable()) {
-                return getSelectedNodeInfo(tree).canInsertTag(tree);
+            if (tree.getSqlDef() instanceof AdsSqlClassDef){
+                final AdsTypeDeclaration typeDecl = extractType(getSelectedNode(tree));
+                if (typeDecl == null || typeDecl.getTypeId() == null || typeDecl.getTypeId() == EValType.ANY) {
+                    return false;
+                }
+                if (tree.getEditor().getPane().isCurrentPositionEditable()) {
+                    return getSelectedNodeInfo(tree).canInsertTag(tree);
+                }
             }
             return false;
         }
@@ -1051,8 +1097,8 @@ public class AdsSqlClassTreeActions {
             final Node indexNode = getSelectedNode(tree);
             if (indexNode != null && indexNode.getNodeInfo().getObject() == index) {
                 final Object usedTableObj = ((Node) indexNode.getParent().getParent()).getNodeInfo().getObject();
-                if (usedTableObj instanceof UsedTable) {
-                    alias = ((UsedTable) usedTableObj).getAlias();
+                if (usedTableObj instanceof IUsedTable) {
+                    alias = ((IUsedTable) usedTableObj).getAlias();
                 }
             }
 
@@ -1185,30 +1231,33 @@ public class AdsSqlClassTreeActions {
 
         @Override
         protected void actionPerformed(AdsSqlClassTree tree) {
-            final AdsSqlClassDef sqlClass = tree.getSqlClass();
-            final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.FIELD));
-            final ICreatureGroup group = new ICreatureGroup() {
+            final ISqlDef sorceDef = tree.getSqlDef();
+            if (sorceDef instanceof AdsSqlClassDef){
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sorceDef;
+                final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.FIELD));
+                final ICreatureGroup group = new ICreatureGroup() {
 
-                @Override
-                public List<ICreature> getCreatures() {
-                    return creatures;
-                }
+                    @Override
+                    public List<ICreature> getCreatures() {
+                        return creatures;
+                    }
 
-                @Override
-                public String getDisplayName() {
-                    return "group";
+                    @Override
+                    public String getDisplayName() {
+                        return "group";
+                    }
+                };
+                final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
+                if (result != null) {
+                    result.commit();
+                    tree.update();
                 }
-            };
-            final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
-            if (result != null) {
-                result.commit();
-                tree.update();
             }
         }
 
         @Override
         protected boolean isAvailable(AdsSqlClassTree tree) {
-            if (tree.getSqlClass() instanceof AdsStatementClassDef || tree.getSqlClass() instanceof AdsProcedureClassDef) {
+            if (!(tree.getSqlDef() instanceof AdsSqlClassDef) || tree.getSqlDef() instanceof AdsStatementClassDef || tree.getSqlDef() instanceof AdsProcedureClassDef) {
                 return false;
             }
             return !tree.isReadOnly();

@@ -1,44 +1,23 @@
 
 package org.radixware.kernel.designer.ads.localization.source;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import org.jdesktop.swingx.JXTable.BooleanEditor;
-import org.radixware.kernel.common.defs.Definition;
-import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
+import org.radixware.kernel.common.enums.EMultilingualStringKind;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
-import org.radixware.kernel.designer.ads.localization.MultilingualEditor;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 
 
@@ -46,7 +25,7 @@ public class Mls2XlsOptionsPanel extends javax.swing.JPanel {
 
     private File outFile;
     private final Branch branch;
-    public Mls2XlsOptionsPanel(Set<Layer> layers) {
+    public Mls2XlsOptionsPanel(Branch b, Map<Layer, List<Module>> layers) {
         
         initComponents();
         
@@ -56,7 +35,7 @@ public class Mls2XlsOptionsPanel extends javax.swing.JPanel {
         for (String name : ILocalizingBundleDef.authors.getAuthors()){
             authorComboBox.addItem(name);
         }
-        String author = getPreferensesValue(MultilingualEditor.EXPORT_AUTHOR, FilterUtils.NOT_DEFINED);
+        String author = MultilingualEditorUtils.getPreferensesValue(MultilingualEditorUtils.EXPORT_AUTHOR, FilterUtils.NOT_DEFINED);
         if (author != null){
             authorComboBox.setSelectedItem(author);
         } else {
@@ -64,32 +43,12 @@ public class Mls2XlsOptionsPanel extends javax.swing.JPanel {
         }
         
         String locations = System.getProperty("user.home") + File.separator + "strings.xls";
-        txtOutput.setText(getPreferensesValue(MultilingualEditor.OUTPUT_LOCATIONS, locations));
+        txtOutput.setText(MultilingualEditorUtils.getPreferensesValue(MultilingualEditorUtils.OUTPUT_LOCATIONS, locations));
 
-        branch = layers.iterator().next().getBranch();
-        List<Layer> allLayers = branch.getLayers().getInOrder();
-        LayerTableModel model = new LayerTableModel();
-        int count = 0;
-        for (Layer layer : allLayers){
-            if (!layer.isLocalizing()){
-                boolean selected = false;
-                if (layers.contains(layer)){
-                    selected = true;
-                }
-                model.addRow(new Object[]{layer, selected});
-                count++;
-            }
-        }
-        model.setAllSelected(count == model.getSelectedSize());
-        layersTabel.setModel(model);
-        layersTabel.getColumnModel().getColumn(0).setCellRenderer(new Render());
-        TableColumn checkboxesColumn = layersTabel.getColumnModel().getColumn(1);
-        checkboxesColumn.setPreferredWidth(60);
-        checkboxesColumn.setMaxWidth(60);
-        checkboxesColumn.setMinWidth(60);
-        checkboxesColumn.setCellRenderer(layersTabel.getDefaultRenderer(Boolean.class));
-        layersTabel.getTableHeader().setReorderingAllowed(false);
-        layersTabel.setRowHeight(20);
+        branch = b;
+        layerPanel1.open(layers == null ? null : new HashMap<>(layers));
+        layerPanel1.changeGap(54);
+        stringTypePanel1.open(getPreferensesTypes());
     }
 
     public File getOutputFile(){
@@ -99,11 +58,12 @@ public class Mls2XlsOptionsPanel extends javax.swing.JPanel {
         return outFile;
     }
     
-    public Set<String> getSelectedLayers(){
-        Set<String> layers = ((LayerTableModel)layersTabel.getModel()).getSelectedLayers();
-        if (layers == null || layers.isEmpty())
-                return null;
-        else return layers;
+    public Map<Layer, List<Module>> getSelectedLayers(){
+        return MultilingualEditorUtils.getLayersAndModules(layerPanel1.getSelectedLayers());
+    }
+    
+    public List<EMultilingualStringKind> getStrinsType(){
+        return stringTypePanel1.getTypes();
     }
 
     public Branch getBranch() {
@@ -135,28 +95,30 @@ public class Mls2XlsOptionsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        edTimeFrom = new org.radixware.kernel.designer.ads.editors.common.adsvalasstr.AdsValAsStrEditor();
-        lbFrom = new javax.swing.JLabel();
-        creationTimePanel = new org.radixware.kernel.designer.ads.localization.dialog.TimeFilterPanel();
         jLabel1 = new javax.swing.JLabel();
         txtOutput = new javax.swing.JTextField();
         btnChooseFile = new javax.swing.JButton();
-        timePanel = new org.radixware.kernel.designer.ads.localization.dialog.TimeFilterPanel();
         authorComboBox = new javax.swing.JComboBox();
+        timePanel = new org.radixware.kernel.designer.ads.localization.dialog.TimeFilterPanel();
         jLabel2 = new javax.swing.JLabel();
-        layersPanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        layersTabel = new javax.swing.JTable();
-
-        org.openide.awt.Mnemonics.setLocalizedText(lbFrom, org.openide.util.NbBundle.getMessage(Mls2XlsOptionsPanel.class, "Mls2XlsOptionsPanel.lbFrom.text")); // NOI18N
+        layerPanel1 = new org.radixware.kernel.designer.ads.localization.dialog.LayerPanel();
+        stringTypePanel1 = new org.radixware.kernel.designer.ads.localization.dialog.StringTypePanel();
 
         setMaximumSize(new java.awt.Dimension(391, 153));
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(Mls2XlsOptionsPanel.class, "Mls2XlsOptionsPanel.jLabel1.text")); // NOI18N
 
         txtOutput.setText(org.openide.util.NbBundle.getMessage(Mls2XlsOptionsPanel.class, "Mls2XlsOptionsPanel.txtOutput.text")); // NOI18N
+        txtOutput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtOutputActionPerformed(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(btnChooseFile, org.openide.util.NbBundle.getMessage(Mls2XlsOptionsPanel.class, "Mls2XlsOptionsPanel.btnChooseFile.text")); // NOI18N
+        btnChooseFile.setMaximumSize(new java.awt.Dimension(47, 20));
+        btnChooseFile.setMinimumSize(new java.awt.Dimension(47, 20));
+        btnChooseFile.setPreferredSize(new java.awt.Dimension(47, 20));
         btnChooseFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnChooseFileActionPerformed(evt);
@@ -167,20 +129,6 @@ public class Mls2XlsOptionsPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(Mls2XlsOptionsPanel.class, "Mls2XlsOptionsPanel.jLabel2.text")); // NOI18N
 
-        layersPanel.setLayout(new javax.swing.BoxLayout(layersPanel, javax.swing.BoxLayout.PAGE_AXIS));
-
-        layersTabel.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        jScrollPane1.setViewportView(layersTabel);
-
-        layersPanel.add(jScrollPane1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -188,49 +136,63 @@ public class Mls2XlsOptionsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(authorComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(timePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(4, 4, 4)
-                        .addComponent(txtOutput)
-                        .addGap(0, 0, 0)
-                        .addComponent(btnChooseFile))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(layersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
-                        .addGap(2, 2, 2)))
-                .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(stringTypePanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(12, 12, 12)
+                                .addComponent(authorComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(12, 12, 12)
+                                .addComponent(txtOutput)
+                                .addGap(0, 0, 0)
+                                .addComponent(btnChooseFile, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(10, 10, 10))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(layerPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(timePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(txtOutput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnChooseFile))
-                .addGap(10, 10, 10)
-                .addComponent(timePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(txtOutput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(7, 7, 7))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnChooseFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)))
+                .addComponent(layerPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(authorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
-                .addComponent(layersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(5, 5, 5)
+                .addComponent(timePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(stringTypePanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                .addGap(10, 10, 10))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnChooseFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseFileActionPerformed
         chooseFile();
     }//GEN-LAST:event_btnChooseFileActionPerformed
+
+    private void txtOutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtOutputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtOutputActionPerformed
 
     private void chooseFile() {
         JFileChooser chooser = new JFileChooser(txtOutput.getText());
@@ -278,143 +240,66 @@ public class Mls2XlsOptionsPanel extends javax.swing.JPanel {
         }
         outFile = file;
     }
-
-    private String getPreferensesValue(String key, String defaultValue) {
-        try {
-            if (Preferences.userRoot().nodeExists(MultilingualEditor.PREFERENCES_KEY)) {
-                Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditor.PREFERENCES_KEY);
-                if (designerPreferences.nodeExists(MultilingualEditor.EDITOR_KEY)) {
-                    Preferences editor = designerPreferences.node(MultilingualEditor.EDITOR_KEY);
-                    return editor.get(key, defaultValue);
-                }
-            }
-        } catch (BackingStoreException ex) {
-            DialogUtils.messageError(ex);
+    
+    private String defaultTypes = null;
+    private List<EMultilingualStringKind> getPreferensesTypes(){
+        if (defaultTypes == null){
+            defaultTypes = buildTypeString(EMultilingualStringKind.values());
         }
-        return defaultValue;
+        String sTypes = MultilingualEditorUtils.getPreferensesValue(MultilingualEditorUtils.EXPORT_TYPES, null);
+        if (sTypes != null) {
+            List<EMultilingualStringKind> types = new ArrayList<>();
+            String[] arrTypes = sTypes.split(",");
+            for (String arrType : arrTypes) {
+                types.add(EMultilingualStringKind.getForName(arrType));
+            }
+            return types;
+        } else {
+            return Arrays.asList(EMultilingualStringKind.values());
+        }
+    }
+    
+    private String buildTypeString(EMultilingualStringKind[] values) {
+        String result = "";
+        if (values == null || values.length == 0){
+            return result;
+        }
+        StringBuilder sb = new StringBuilder();
+        String prefix = "";
+        for (EMultilingualStringKind type : values) {
+            sb.append(prefix);
+            prefix = ",";
+            sb.append(type);
+        }
+        
+        return sb.toString();
     }
     
     public void save(){
-        Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditor.PREFERENCES_KEY);
-        Preferences editor = designerPreferences.node(MultilingualEditor.EDITOR_KEY);
+        Preferences designerPreferences = Preferences.userRoot().node(MultilingualEditorUtils.PREFERENCES_KEY);
+        Preferences editor = designerPreferences.node(MultilingualEditorUtils.EDITOR_KEY);
         
-        editor.put(MultilingualEditor.OUTPUT_LOCATIONS, txtOutput.getText());
+        editor.put(MultilingualEditorUtils.OUTPUT_LOCATIONS, txtOutput.getText());
         String author = getLastModifiedAuthor();
         if (author == null){
-            editor.remove(MultilingualEditor.EXPORT_AUTHOR);
+            editor.remove(MultilingualEditorUtils.EXPORT_AUTHOR);
         } else {
-            editor.put(MultilingualEditor.EXPORT_AUTHOR, author);
+            editor.put(MultilingualEditorUtils.EXPORT_AUTHOR, author);
         }
+        List<EMultilingualStringKind> types = stringTypePanel1.getTypes();
+        editor.put(MultilingualEditorUtils.EXPORT_TYPES, buildTypeString(types.toArray(new EMultilingualStringKind[types.size()])));
         
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox authorComboBox;
     private javax.swing.JButton btnChooseFile;
-    private org.radixware.kernel.designer.ads.localization.dialog.TimeFilterPanel creationTimePanel;
-    private org.radixware.kernel.designer.ads.editors.common.adsvalasstr.AdsValAsStrEditor edTimeFrom;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPanel layersPanel;
-    private javax.swing.JTable layersTabel;
-    private javax.swing.JLabel lbFrom;
+    private org.radixware.kernel.designer.ads.localization.dialog.LayerPanel layerPanel1;
+    private org.radixware.kernel.designer.ads.localization.dialog.StringTypePanel stringTypePanel1;
     private org.radixware.kernel.designer.ads.localization.dialog.TimeFilterPanel timePanel;
     private javax.swing.JTextField txtOutput;
     // End of variables declaration//GEN-END:variables
 
-    class Render extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
-            if (value instanceof RadixObject) {
-                RadixObject radixObject = (RadixObject) value;
-                if (radixObject instanceof Branch){
-                    setText("Select All");
-                    setIcon(null);
-                } else {
-                    setText(radixObject.getName());
-                    setIcon(radixObject.getIcon().getIcon());
-                }
-                return this;
-            }
-            return component;
-        }
-        
-        
-    }
-
-    
-    class LayerTableModel extends DefaultTableModel{
-        public LayerTableModel() {
-            addColumn("Name");
-            addColumn("Assign");
-            addRow(new Object[]{branch, false});
-        }
-        
-        private void setAllLayersSelected(Object value){
-            for (int i = 1; i < getRowCount(); i++){
-                setValueAt(value, i, 1);
-            }
-        }
-        
-        public void setAllSelected(boolean selected){
-            setValueAt(selected, 0, 1);
-        }
-        
-        public Set<String> getSelectedLayers(){
-            Set<String> list = new HashSet<>();
-            for (int i = 1; i < getRowCount(); i++){
-                if (getValueAt(i,1) == Boolean.TRUE){
-                    Object value = getValueAt(i,0);
-                    if (value instanceof Layer){
-                        Layer layer = (Layer) value;
-                        list.add(layer.getURI());
-                    }
-                }
-            }
-            return list;
-        }
-        
-        public int getSelectedSize(){
-            int selected = 0;
-            for (int i = 0; i < getRowCount(); i++){
-                if (getValueAt(i,1) == Boolean.TRUE){
-                    selected++;
-                }
-            }
-            return selected;
-        }
-
-        @Override
-        public void setValueAt(Object aValue, int row, int column) {
-            super.setValueAt(aValue, row, column);
-            if (row == 0 && column == 1){
-                setAllLayersSelected(aValue);
-            } else {
-                int count = getSelectedSize();
-                if (getValueAt(0, 1) == Boolean.FALSE &&count == getRowCount() - 1){
-                    super.setValueAt(Boolean.TRUE, 0, 1);
-                } else {
-                    if (getValueAt(0, 1) == Boolean.TRUE && aValue == Boolean.FALSE){
-                        super.setValueAt(Boolean.FALSE, 0, 1);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            if (columnIndex == 1) {
-			return Boolean.class;
-            }
-            return super.getColumnClass(columnIndex);
-        }
-
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return column == 1;
-        }
-    }
 }

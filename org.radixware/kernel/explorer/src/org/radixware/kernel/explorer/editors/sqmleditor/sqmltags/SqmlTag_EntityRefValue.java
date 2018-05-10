@@ -24,6 +24,7 @@ import org.radixware.kernel.common.client.meta.sqml.ISqmlTableIndices;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.enums.EPidTranslationMode;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.EntityRefValue_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
@@ -80,7 +81,7 @@ public class SqmlTag_EntityRefValue extends SqmlTag_AbstractReference {
                 setDisplayedInfo(null, "???" + strPid + "???");
             }
             if (entityRefValue.getPidTranslationMode() != EPidTranslationMode.AS_STR && getIndexDef() == null) {
-                valid = false;
+                setValid(false);
                 setDisplayedInfo(null, "???" + strPid + "???");
             } else {
                 setDisplayedInfo(displayMode);
@@ -146,7 +147,7 @@ public class SqmlTag_EntityRefValue extends SqmlTag_AbstractReference {
         strBuilder.append("<b>");
         strBuilder.append(lbTableObl);
         strBuilder.append(":</b><br>&nbsp;&nbsp;&nbsp;&nbsp;");
-        strBuilder.append(refObjectTitle);
+        strBuilder.append(Html.string2HtmlString(refObjectTitle));
         strBuilder.append("</br>");
         strBuilder.append(getReferenceToolTip(displayMode));
         return strBuilder.toString();

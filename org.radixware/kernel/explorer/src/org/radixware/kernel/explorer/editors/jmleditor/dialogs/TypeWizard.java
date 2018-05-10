@@ -13,10 +13,12 @@ package org.radixware.kernel.explorer.editors.jmleditor.dialogs;
 import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.QTimer;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.ItemDataRole;
 import com.trolltech.qt.gui.QAbstractItemView;
 import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QComboBox;
 import com.trolltech.qt.gui.QGroupBox;
 import com.trolltech.qt.gui.QHBoxLayout;
@@ -107,6 +109,8 @@ public class TypeWizard extends BaseWizard implements IChooseDefFromList {
     private static final int GENERIC_ARGUMENTS_PAGE = 7;
     private ChooseJavaClassPage javaClassPage;
     private ChooseGenericAtributesPage genericAtributesPage;
+    private final QTimer doubleClickTimer = new QTimer(this);
+    private boolean isDoubleClickPressed = false;
 
     public TypeWizard(final JmlEditor parent, final boolean isForPrifile) {
         super(parent, (ExplorerSettings) parent.getEnvironment().getConfigStore(), "TypeWizard");
@@ -129,6 +133,15 @@ public class TypeWizard extends BaseWizard implements IChooseDefFromList {
         this.button(WizardButton.NextButton).setEnabled(false);
         this.button(WizardButton.BackButton).released.connect(this, "btnBackWasClicked()");
         setWindowTitle(Application.translate("JmlEditor", "Type Selection Wizard"));
+        
+        doubleClickTimer.setSingleShot(true);
+        doubleClickTimer.setInterval(300);
+        doubleClickTimer.timeout.connect(this, "resetDoubleClickFlag()");
+    }
+    
+    @SuppressWarnings("unused")
+    private void resetDoubleClickFlag() {
+        isDoubleClickPressed = false;
     }
 
     @SuppressWarnings("unused")
@@ -175,14 +188,21 @@ public class TypeWizard extends BaseWizard implements IChooseDefFromList {
             return valType;
         }
     }
-
+    
+    
+    
     @Override
     public void onItemClick(final QModelIndex modelIndex) {
+        if (isDoubleClickPressed) {
+            return;
+        }
         setCurItem(modelIndex);
     }
 
     @Override
     public void onItemDoubleClick(final QModelIndex modelIndex) {
+        isDoubleClickPressed = true;
+        doubleClickTimer.start();
         final boolean hasNextPage = this.button(WizardButton.NextButton).isEnabled() && this.button(WizardButton.NextButton).isVisible();
         if (setCurItem(modelIndex) && !hasNextPage) {
             accept();
@@ -277,7 +297,7 @@ public class TypeWizard extends BaseWizard implements IChooseDefFromList {
 
             final QHBoxLayout arrayDimensionLayout = new QHBoxLayout();
             arrayDimensionLayout.setContentsMargins(20, 0, 0, 0);
-            lbDimension = new QLabel(Application.translate("JmlEditor", "Dimension count") + ":");
+            lbDimension = new QLabel(Application.translate("JmlEditor", "Dimension") + ":");
             //QSizePolicy.PolicyFlag.ExpandFlag
             //lbDimension.setSizePolicy(null);
             sbDimension = new QSpinBox();
@@ -557,7 +577,7 @@ public class TypeWizard extends BaseWizard implements IChooseDefFromList {
                 listWidget.addItem(item);
                 for (EValType type : types) {
                     if (type != EValType.PARENT_REF && /*type!=EValType.ARR_REF &&*/ type != EValType.ANY && type != EValType.JAVA_CLASS && type != EValType.XML
-                            && type != EValType.JAVA_TYPE && type != EValType.NATIVE_DB_TYPE && type != EValType.USER_CLASS && type != EValType.OBJECT) {
+                            && type != EValType.JAVA_TYPE && type != EValType.NATIVE_DB_TYPE && type != EValType.USER_CLASS && type != EValType.OBJECT && type != EValType.IMG) {
                         item = new QListWidgetItem(getTypeIcon(type), type.getName());
                         item.setData(ItemDataRole.UserRole, type.getName());
                         listWidget.addItem(item);
@@ -748,7 +768,12 @@ public class TypeWizard extends BaseWizard implements IChooseDefFromList {
             if ((curItem instanceof AdsTypeDeclaration) && def != null) {
                 final String name = ((AdsTypeDeclaration) curItem).getExtStr();
                 final RadixPlatformClass platformClass = getPlatformLib().findPlatformClass(name);
-                if (platformClass.hasGenericArguments()) {
+                boolean isGeneric = false;
+                if (platformClass != null) {
+                    platformClass.getDeclaration().getGenericArguments();
+                    isGeneric = platformClass.hasGenericArguments();
+                }
+                if (platformClass != null && isGeneric) {
                     curItem = platformClass.getDeclaration();
                     final AdsTypeDeclaration.TypeArguments typeArguments = platformClass.getDeclaration().getGenericArguments();
 
@@ -942,4 +967,10 @@ public class TypeWizard extends BaseWizard implements IChooseDefFromList {
             }
         }
     }
+
+    @Override
+    protected void closeEvent(QCloseEvent arg) {
+        this.doubleClickTimer.disconnect();
+    }
+    
 }

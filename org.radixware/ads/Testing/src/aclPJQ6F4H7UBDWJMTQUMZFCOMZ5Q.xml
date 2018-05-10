@@ -1,0 +1,2344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q" Name="TestCase.AbstractGroup" Type="2">
+    <AccessRules IsAbstract="true"/>
+    <Headers>
+      <Src Name="HeaderaclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q">
+        <xsc:Item>
+          <xsc:Java>import java.util.List;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q">
+        <xsc:Item>
+          <xsc:Java>protected static class TraceBufferImpl implements org.radixware.kernel.server.trace.TraceBuffer {
+
+    private final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+            <xsc:Presentation>TestCase</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> testCase;
+    private final StringBuilder sb = new StringBuilder();
+    private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+            <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> maxSeverity = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+            <xsc:Presentation>Arte::EventSeverity:Debug</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+    private </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+            <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> traceLevel = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+            <xsc:Presentation>Arte::EventSeverity:Debug</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+
+    public TraceBufferImpl(final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+            <xsc:Presentation>TestCase</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> testCase, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+            <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> traceLevel) {
+        this.testCase = testCase;
+        this.traceLevel = traceLevel != null ? traceLevel : </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+            <xsc:Presentation>Arte::EventSeverity:Debug</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+    }
+
+    public void put(org.radixware.kernel.common.trace.TraceItem traceItem) {
+        final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+            <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> severity = traceItem.severity;
+        if (severity != null &amp;&amp; severity.Value.longValue() >= traceLevel.Value.longValue()) {
+            sb.append(traceItem.toString());
+            sb.append("\n");
+        }
+        
+        if (severity != null &amp;&amp; severity.Value.longValue() > maxSeverity.Value.longValue()) {
+            if (severity.Value.longValue() > </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+            <xsc:Presentation>Arte::EventSeverity:Event</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.Value.longValue() &amp;&amp; testCase.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA mthNKGGYMI4KRAMDOFE26HU3LKHKM" Invoke="true">
+            <xsc:Presentation>isExpected</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(traceItem) == </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="1">
+            <xsc:Presentation>Bool</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.TRUE) {
+                return;
+            }
+            maxSeverity = severity;
+        }
+    }
+
+    public String toString() {
+        return sb.toString();
+    }
+}</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgU4NPFOQR4JEZBIMJEDTNPPN6SA" Name="Root">
+      <Group Id="cmgMBCBNAEAGFDQTJF3P7CTTQMV6I" Name="Execute" Members="mthG2ORZGNH27NRDISQAAAAAAAAAA"/>
+      <Group Id="cmg2YZCCXWEHBF2LNP73JQKNMJKQU" Name="Abstract" Members="mthMKGKB4FK5BDC7L527USXI3KNNA mthG6UZCOPXGVD4TAWLASVY3K74T4 mth4JG27OGWZRERLNHYAE247CKPCU"/>
+      <Group Id="cmgPCZGA4RWQBHNVHLFASWXBWIAGM" Name="Utils" Members="mthVA25VGJWUBCKTJKY2OACY2EZYU mthLD2LY6LNCNBOHCUQJ4OYCQM3CA mth7FDSED6545DDDGPZ54UF6BGQZ4"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgHQRH5CHPDVBQDIEMH7QFYCW4FQ" Name="Root">
+      <Group Id="cpg6WY3CS5YKZFBVMOX2YFNSHZOCA" Name="Dynamic Props" Members="prdLHELNB6KHNC5XANNAYLQOGNAI4 prdEW36OMEIUFET3BMEOFRM63LKRA"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prdLHELNB6KHNC5XANNAYLQOGNAI4" Name="testData" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1"/>
+        <Type TypeId="411" Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>null</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdEW36OMEIUFET3BMEOFRM63LKRA" Name="topLevelTestId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>null</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdEW36OMEIUFET3BMEOFRM63LKRA" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>topLevelTestId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdEW36OMEIUFET3BMEOFRM63LKRA" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>topLevelTestId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colN3UZ2Z4S27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthG2ORZGNH27NRDISQAAAAAAAAAA" Name="execute" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdLHELNB6KHNC5XANNAYLQOGNAI4" Invoke="true">
+                <xsc:Presentation>testData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthM7Y77J2WBFD7FHQEUIJZHDY3HI" Invoke="true">
+                <xsc:Presentation>TestData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colN3UZ2Z4S27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString());
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prdV7KTVRF6PJBPLHTS5N72A7W7PU" Invoke="true">
+                <xsc:Presentation>failEventSeverity</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci56AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:None</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+
+final org.radixware.kernel.server.aio.ServiceManifestLoader manifestLoader = new org.radixware.kernel.server.aio.ServiceManifestServerLoader() {
+    protected java.sql.Connection getDbConnection() {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthPDUPVLPYXTNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>getDbConnection</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+
+    protected org.radixware.kernel.server.arte.Arte getArte() {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+};
+
+final org.radixware.kernel.common.trace.LocalTracer localTracer = new org.radixware.kernel.common.trace.LocalTracer() {
+    public void put(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+                <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> severity, String localizedMess, String code, List&lt;String> words, boolean isSensitive) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(severity, localizedMess, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciBDR6OQMDWJHFRBABRQBE26DNYU" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:TestCase</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+
+    public long getMinSeverity() {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth437JREGOQPORDMNEABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getMinSeverity</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+
+    public long getMinSeverity(String eventSource) {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthTY5OZ6WJOVETBO7TD5XVEWALEQ" Invoke="true">
+                <xsc:Presentation>getMinSeverity</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsTNLJBZADHTNRDIPGABQAQNO6EY">
+                <xsc:Presentation>Arte::EventSource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getForValue(eventSource));
+    }
+};
+
+final org.radixware.kernel.common.sc.ServiceClient aasClient = new org.radixware.kernel.common.sc.ServiceClient(localTracer, null) {
+    @Override
+    protected List&lt;org.radixware.kernel.common.sc.SapClientOptions> refresh(Long systemId, final Long thisInstanceId, String serviceUri) throws </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4">
+                <xsc:Presentation>Exceptions::ServiceCallException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> {
+        return manifestLoader.readSaps(1l, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Instance.Id, org.radixware.kernel.server.arte.services.aas.ArteAccessService.SERVICE_WSDL, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Instance.ScpName, 0);
+    }
+};
+
+try {
+    aasClient.setScpName(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Instance.ScpName);
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4">
+                <xsc:Presentation>Exceptions::ServiceCallException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc7M2U2F2F7REN5IFLI44GKDBXOY mthTASWO3MNGFD5PBZOIIORJLN6BM" Invoke="true">
+                <xsc:Presentation>Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Error while setting scp for aas client", ex);
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+                <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Event</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth3MY3U3VYSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>enterContext</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aci5MNSM2TPHJADJFF5BAE6YZDCEM" Invoke="true">
+                <xsc:Presentation>Arte::EventContextType:TestCase</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colN3UZ2Z4S27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+try {
+    for (Int id : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mthMKGKB4FK5BDC7L527USXI3KNNA" Invoke="true">
+                <xsc:Presentation>getChildren</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                <xsc:Presentation>TestCase</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> test = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                <xsc:Presentation>TestCase</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, false);
+        if (!test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colQP4LKSN3IFHITPAQXU7J72H6FA" Invoke="true">
+                <xsc:Presentation>active</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue()) {
+            continue;
+        }
+
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+                <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> localResult = null;
+        if (test instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q">
+                <xsc:Presentation>TestCase.AbstractGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q">
+                <xsc:Presentation>TestCase.AbstractGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> childGroup = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q">
+                <xsc:Presentation>TestCase.AbstractGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) test;
+            try {
+                childGroup.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdEW36OMEIUFET3BMEOFRM63LKRA" Invoke="true">
+                <xsc:Presentation>topLevelTestId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdEW36OMEIUFET3BMEOFRM63LKRA" Invoke="true">
+                <xsc:Presentation>topLevelTestId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                childGroup.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA mthJQDKUODJ3DNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>run</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4">
+                <xsc:Presentation>TestData</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> childGroupData = childGroup.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdLHELNB6KHNC5XANNAYLQOGNAI4" Invoke="true">
+                <xsc:Presentation>testData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdLHELNB6KHNC5XANNAYLQOGNAI4" Invoke="true">
+                <xsc:Presentation>testData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthARB577W7YFBXXFV6D4RRGE3UXU" Invoke="true">
+                <xsc:Presentation>getChildren</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().add(childGroupData);
+
+                localResult = childGroup.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colYWL4NXUS27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>result</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(java.text.MessageFormat.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsHWR53UQCFJCW7CF435RZFZUXRY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, id, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colN3UZ2Z4S27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex)), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciBDR6OQMDWJHFRBABRQBE26DNYU" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:TestCase</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+            }
+        } else {
+            try {
+                final org.radixware.schemas.aasWsdl.InvokeDocument invokeDoc = org.radixware.schemas.aasWsdl.InvokeDocument.Factory.newInstance();
+                final org.radixware.schemas.aas.InvokeRq invokeRq = invokeDoc.addNewInvoke().addNewInvokeRq();
+                invokeRq.User = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getUserName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                invokeRq.ClassId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q">
+                <xsc:Presentation>TestCase.AbstractGroup</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                invokeRq.MethodId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mth7FDSED6545DDDGPZ54UF6BGQZ4">
+                <xsc:Presentation>TestCase.AbstractGroup:runTestForAasCall</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                invokeRq.addNewParameters().addNewItem().Int = id;
+                invokeRq.ensureParameters().addNewItem().Int = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdEW36OMEIUFET3BMEOFRM63LKRA" Invoke="true">
+                <xsc:Presentation>topLevelTestId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4">
+                <xsc:Presentation>TestData</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> td = null;
+
+                try {
+                    final org.radixware.schemas.aas.InvokeMess invokeMess = (org.radixware.schemas.aas.InvokeMess) aasClient.invokeService(invokeDoc, org.radixware.schemas.aas.InvokeMess.class, Long.valueOf(1), null, org.radixware.kernel.server.arte.services.aas.ArteAccessService.SERVICE_WSDL, 0, 3 * 60 * 60, 10, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY">
+                <xsc:Presentation>Arte::AadcManager</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc43QKDQ6EZNEFTLCWUO3NACPAFY mthHDROLD2DVBBWZEHIQRFK37NDCA" Invoke="true">
+                <xsc:Presentation>getMyMember</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+                    final org.radixware.schemas.aas.InvokeRs rs = invokeMess == null ? null : invokeMess.InvokeRs;
+
+                    if (rs != null &amp;&amp; rs.isSetReturnValue() &amp;&amp; rs.ReturnValue.isSetStr()) {
+                        final java.io.ByteArrayInputStream bis = new java.io.ByteArrayInputStream(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNC7RELKU45EFBK2XRUG6T2L5DE">
+                <xsc:Presentation>Utils::Hex</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthZYA6V7D5HFDZXKYBVLHCJKUE5U" Invoke="true">
+                <xsc:Presentation>decode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rs.ReturnValue.Str));
+                        try {
+                            final java.io.ObjectInputStream ios = new java.io.ObjectInputStream(bis);
+                            td = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4">
+                <xsc:Presentation>TestData</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) ios.readObject();
+
+                            localResult = td.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthABL3CKBVF5CONPBQDRHLE5DYDY" Invoke="true">
+                <xsc:Presentation>getResult</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+                            td = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mthVA25VGJWUBCKTJKY2OACY2EZYU" Invoke="true">
+                <xsc:Presentation>createFailData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, "Recieved wrong result: " + new String(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNC7RELKU45EFBK2XRUG6T2L5DE">
+                <xsc:Presentation>Utils::Hex</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthZYA6V7D5HFDZXKYBVLHCJKUE5U" Invoke="true">
+                <xsc:Presentation>decode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rs.ReturnValue.Str)));
+                            result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + ": " + test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                        }
+                    } else {
+                        td = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mthVA25VGJWUBCKTJKY2OACY2EZYU" Invoke="true">
+                <xsc:Presentation>createFailData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, "No message was returned");
+                        result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + ": " + test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                    }
+                } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> th) {
+                    if (th instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                        throw th;
+                    }
+                    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> stackTrace = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(th);
+
+                    td = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mthVA25VGJWUBCKTJKY2OACY2EZYU" Invoke="true">
+                <xsc:Presentation>createFailData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, "Error executing test case\n: " + stackTrace);
+                    result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + ": " + test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mth4LIUO5IRWLOBDLJLAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mls2EDPCXUIANCNRI6B7COX72DXBQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, String.valueOf(id), "\n" + stackTrace);
+                }
+
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q prdLHELNB6KHNC5XANNAYLQOGNAI4" Invoke="true">
+                <xsc:Presentation>testData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthARB577W7YFBXXFV6D4RRGE3UXU" Invoke="true">
+                <xsc:Presentation>getChildren</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().add(td);
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> t) {
+                if (t instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                    return result;
+                } else {
+                    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc7M2U2F2F7REN5IFLI44GKDBXOY mthAHB6HV7DB5CZNOPDFLWZKDFMRA" Invoke="true">
+                <xsc:Presentation>Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUMNOFRLSOJGMNL4XAKIYDDAMK4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + id, t);
+                }
+            }
+        }
+
+        if (localResult == null) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(java.text.MessageFormat.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsWBAM7FF56BDA3O55UBQWTULRRQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, id, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colN3UZ2Z4S27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciBDR6OQMDWJHFRBABRQBE26DNYU" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:TestCase</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        }
+
+        if (localResult.Value.longValue() > result.Value.longValue()) {
+            result = localResult;
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + ": " + test.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        }
+
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mthG6UZCOPXGVD4TAWLASVY3K74T4" Invoke="true">
+                <xsc:Presentation>isStopAfterTestFail</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() &amp;&amp; result.Value.longValue() > </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Event</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value.longValue()) {
+            return result;
+        }
+    }
+} finally {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthA2VYUFF2STNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>leaveContext</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aci5MNSM2TPHJADJFF5BAE6YZDCEM" Invoke="true">
+                <xsc:Presentation>Arte::EventContextType:TestCase</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colN3UZ2Z4S27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+return result;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMKGKB4FK5BDC7L527USXI3KNNA" Name="getChildren" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true"/>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="2"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src/>
+        </Sources>
+      </Method>
+      <Method Id="mthVA25VGJWUBCKTJKY2OACY2EZYU" Name="createFailData" Nature="0" IsOverride="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="testId" Id="mprU3YPHONCZZCLFL2Q77IFLRYJJE">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="message" Id="mprJQXTFA7BFNAJJEFDFDB22G36QA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.test.TestData"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4">
+                <xsc:Presentation>TestData</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> td = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthM7Y77J2WBFD7FHQEUIJZHDY3HI" Invoke="true">
+                <xsc:Presentation>TestData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(testId.toString());
+td.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc33B4V3PT25EH7OSX6RHUDXUZYM mth2RJLBYD4FJGA3CNSEWZB6W2DIM" Invoke="true">
+                <xsc:Presentation>onStart</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+td.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc33B4V3PT25EH7OSX6RHUDXUZYM mth7TLDWMOL4NDK7AW7CK2YEWRYMU" Invoke="true">
+                <xsc:Presentation>onFinish</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+td.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthJ4JJRTEZAREH5POCLMOGXG4IMY" Invoke="true">
+                <xsc:Presentation>failed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(message);
+return td;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLD2LY6LNCNBOHCUQJ4OYCQM3CA" Name="appendGroupNames" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="testCase" Id="mprYDTYORZEEZHN7EMDKGFST3XSZQ">
+            <Type TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA"/>
+          </Parameter>
+          <Parameter Name="groupChain" Id="mprXKXA24QITJH4PFMHOCSMZXBB5I">
+            <Type TypeId="400" extStr="java.lang.StringBuilder"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                <xsc:Presentation>TestCase</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> group = testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA col3T77RRLFUBHDLA7X4GCO27SCOU" Invoke="true">
+                <xsc:Presentation>groupRef</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+if (group != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mthLD2LY6LNCNBOHCUQJ4OYCQM3CA" Invoke="true">
+                <xsc:Presentation>appendGroupNames</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(group, groupChain);
+
+    groupChain.append(group.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colN3UZ2Z4S27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>).append(") ");
+    if (group.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prdZSHM4TXE3XNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>classTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        groupChain.append(group.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prdZSHM4TXE3XNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>classTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+    if (group.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colHWP3QCET27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>notes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        groupChain.append(" - ").append(group.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colHWP3QCET27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>notes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.replace('.', '_'));
+    }
+    groupChain.append(".");
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7FDSED6545DDDGPZ54UF6BGQZ4" Name="runTestForAasCall" Nature="0" IsReflectiveCallable="true" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="testId" Id="mpr5EE2V2OG7NCULDJHCJHI6HIICM">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="callerTestId" Id="mprK55VJIQSKVC6LMYNOE3Z5YE3LE">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>org.radixware.kernel.server.trace.Trace trace = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().Trace;
+
+if (testId == null) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("No test id given");
+}
+
+if (callerTestId == null) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Caller test id not defined");
+}
+
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                <xsc:Presentation>TestCase</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> testCase = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                <xsc:Presentation>TestCase</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(testId, true);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4">
+                <xsc:Presentation>TestData</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> testData = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthM7Y77J2WBFD7FHQEUIJZHDY3HI" Invoke="true">
+                <xsc:Presentation>TestData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(testId.toString());
+
+testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mth3QNVWTRLORCRVOKERPUU5VZMII" Invoke="true">
+                <xsc:Presentation>setNotes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colHWP3QCET27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>notes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthE2BLX5QSAJFELKYVHU4SHT67R4" Invoke="true">
+                <xsc:Presentation>setNotificationEmail</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colUSPDDDJLZ5AINICL3FIA4KD7GU" Invoke="true">
+                <xsc:Presentation>notificationEmail</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc33B4V3PT25EH7OSX6RHUDXUZYM mth2RJLBYD4FJGA3CNSEWZB6W2DIM" Invoke="true">
+                <xsc:Presentation>onStart</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+try {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getUserName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == null) {
+        testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colMWOGO4MS27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>actor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsMMWLFGTV55CE3AMUUJNMDDIYPU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    }
+    
+    final java.lang.StringBuilder groupChain = new java.lang.StringBuilder();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mthLD2LY6LNCNBOHCUQJ4OYCQM3CA" Invoke="true">
+                <xsc:Presentation>appendGroupNames</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(testCase, groupChain);
+    testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthYRNBSFXEGJHYNLOEIXEO5KM33A" Invoke="true">
+                <xsc:Presentation>setTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(groupChain.toString() + testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colN3UZ2Z4S27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ") " + (testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prdZSHM4TXE3XNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>classTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? "&lt;no name>" : testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prdZSHM4TXE3XNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>classTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+                <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = null;
+    
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q">
+                <xsc:Presentation>TestCase.AbstractGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> callerTest = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q">
+                <xsc:Presentation>TestCase.AbstractGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                <xsc:Presentation>TestCase</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(callerTestId, true);
+    TraceBufferImpl traceBuffer = new TraceBufferImpl(testCase, callerTest.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclPJQ6F4H7UBDWJMTQUMZFCOMZ5Q mth4JG27OGWZRERLNHYAE247CKPCU" Invoke="true">
+                <xsc:Presentation>getTraceLevelForAasCall</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    Object traceTarget = null;
+    
+    try {
+        traceTarget = trace.addTargetBuffer(testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colPMEM3RSM3PNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>traceProfile</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, traceBuffer);
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> runSectionId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth5JI4ZZQGR3OBDCWOAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>enterCachingSession</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        try {
+            try {
+                testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA mthJQDKUODJ3DNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>run</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                result = testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colYWL4NXUS27NRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>result</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthMDB77XWCE5FQPM3G6VPUHKBH3Y" Invoke="true">
+                <xsc:Presentation>setResult</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(result);
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+                testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc33B4V3PT25EH7OSX6RHUDXUZYM mth7TLDWMOL4NDK7AW7CK2YEWRYMU" Invoke="true">
+                <xsc:Presentation>onFinish</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthJ4JJRTEZAREH5POCLMOGXG4IMY" Invoke="true">
+                <xsc:Presentation>failed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(e));
+            }
+        } finally {
+            try {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthYFY5PGIHR3OBDCWOAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>leaveCachingSession</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(runSectionId);
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getCache().clear(runSectionId, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.MAX_VALUE);
+            } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> t) {
+                try {
+                    if ((testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthO4JVJHTT65FRHKCQ47AR4NGWJ4" Invoke="true">
+                <xsc:Presentation>getError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == null) &amp;&amp; (result != null) &amp;&amp; (result.Value.longValue() &lt;= </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Event</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value.longValue())) {
+                        testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc33B4V3PT25EH7OSX6RHUDXUZYM mth7TLDWMOL4NDK7AW7CK2YEWRYMU" Invoke="true">
+                <xsc:Presentation>onFinish</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                        testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthJ4JJRTEZAREH5POCLMOGXG4IMY" Invoke="true">
+                <xsc:Presentation>failed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(t));
+                    } else {
+                        StringBuilder errorSb = new StringBuilder();
+                        if (testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthO4JVJHTT65FRHKCQ47AR4NGWJ4" Invoke="true">
+                <xsc:Presentation>getError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() != null) {
+                            errorSb.append("Execution error:\n");
+                            errorSb.append(testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthO4JVJHTT65FRHKCQ47AR4NGWJ4" Invoke="true">
+                <xsc:Presentation>getError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+                        }
+                        errorSb.append("Result comment as str:\n");
+                        errorSb.append(testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                        errorSb.append('\n');
+                        errorSb.append("Flushing data to database error:\n");
+                        errorSb.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(t));
+                        testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthJ4JJRTEZAREH5POCLMOGXG4IMY" Invoke="true">
+                <xsc:Presentation>failed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(errorSb.toString());
+                    }
+                    result = null;//indicate that error happend
+                } finally {
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthVR3O4RAGRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>rollback</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                }
+            }
+        }
+    } finally {
+        if (traceTarget != null) {
+            trace.delTarget(traceTarget);
+        }
+    }
+    if (result != null) {
+        testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc33B4V3PT25EH7OSX6RHUDXUZYM mth7TLDWMOL4NDK7AW7CK2YEWRYMU" Invoke="true">
+                <xsc:Presentation>onFinish</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        if (result.Value.longValue() > </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Event</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value.longValue()) {
+            testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthJ4JJRTEZAREH5POCLMOGXG4IMY" Invoke="true">
+                <xsc:Presentation>failed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prd5AM5QSYIGZBWFFRWMT47NIP5AQ" Invoke="true">
+                <xsc:Presentation>resultCommentAsStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        } 
+    }    
+    testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthVFRTC7366NDKFLU3UI6TEJJT2A" Invoke="true">
+                <xsc:Presentation>setStdout</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(traceBuffer.toString() + "\nDuration: " + testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA mth4T6TOADMIRAVVFHOHZUUI5ECOA" Invoke="true">
+                <xsc:Presentation>getDurationStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> t) {
+    testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc33B4V3PT25EH7OSX6RHUDXUZYM mth7TLDWMOL4NDK7AW7CK2YEWRYMU" Invoke="true">
+                <xsc:Presentation>onFinish</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthJ4JJRTEZAREH5POCLMOGXG4IMY" Invoke="true">
+                <xsc:Presentation>failed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(t));
+}
+
+testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colI5ELDBK7XVDQDA626NCPOMNAXM" Invoke="true">
+                <xsc:Presentation>lastIsExecDate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthH5UTIPGXTPNRDISQABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getCurrentTime</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (testData.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLVGITPQRG5BXDOHXYWGYQ3O5S4 mthPTFVU7ZNXBFGZPUVSSREEARQ5M" Invoke="true">
+                <xsc:Presentation>isOk</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colPI3FLY6XA5DV3LZKE3RO4PQFFQ" Invoke="true">
+                <xsc:Presentation>lastIsSuccessDate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colI5ELDBK7XVDQDA626NCPOMNAXM" Invoke="true">
+                <xsc:Presentation>lastIsExecDate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colKTWEBHYK2JGENOQY3SHZ27BQ6I" Invoke="true">
+                <xsc:Presentation>seqIsFailCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = 0;
+} else {
+    if (testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colKTWEBHYK2JGENOQY3SHZ27BQ6I" Invoke="true">
+                <xsc:Presentation>seqIsFailCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+        testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colKTWEBHYK2JGENOQY3SHZ27BQ6I" Invoke="true">
+                <xsc:Presentation>seqIsFailCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = 1;
+    } else {
+        testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colKTWEBHYK2JGENOQY3SHZ27BQ6I" Invoke="true">
+                <xsc:Presentation>seqIsFailCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = testCase.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA colKTWEBHYK2JGENOQY3SHZ27BQ6I" Invoke="true">
+                <xsc:Presentation>seqIsFailCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue() + 1;
+    }    
+}
+
+try {
+    final java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+    final java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(bos);
+    oos.writeObject(testData);
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNC7RELKU45EFBK2XRUG6T2L5DE">
+                <xsc:Presentation>Utils::Hex</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthLOCUMHMZ5ZDG7NDBYGMWSCLZBU" Invoke="true">
+                <xsc:Presentation>encode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(bos.toByteArray());
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Error while running testcase #" + testId + ":\n" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex));
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthG6UZCOPXGVD4TAWLASVY3K74T4" Name="isStopAfterTestFail" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4JG27OGWZRERLNHYAE247CKPCU" Name="getTraceLevelForAasCall" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1" IsAbstract="true"/>
+        <ReturnType TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci56AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:None</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblHW4OSVMS27NRDISQAAAAAAAAAA"/>
+    <Presentations/>
+    <Extends TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA"/>
+  </AdsClassDefinition>
+</AdsDefinition>

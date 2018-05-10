@@ -38,6 +38,8 @@ import org.radixware.schemas.eas.SetParentRs;
 import org.radixware.schemas.eas.UpdateRs;
 import org.radixware.kernel.common.auth.PasswordRequirements;
 import org.radixware.kernel.common.client.models.EntityObjectsSelection;
+import org.radixware.kernel.common.client.types.AggregateFunctionCall;
+import org.radixware.schemas.eas.CalcSelectionStatisticRs;
 import org.radixware.schemas.eas.DeleteRs;
 
 
@@ -96,6 +98,12 @@ public interface IEasSession {
             final IContext.Entity ctx,
             final Collection<Property> predefinedVals)
             throws ServiceClientException, InterruptedException;
+    
+    public PrepareCreateRs prepareCreate(
+            final List<Id> creationPresentationIds,
+            final IContext.Entity ctx,
+            final List<EntityModel> templates)
+            throws ServiceClientException, InterruptedException;    
 
     public CreateRs create(EntityModel entity)
             throws ServiceClientException, InterruptedException;
@@ -164,6 +172,11 @@ public interface IEasSession {
                                              final GetObjectTitlesRq.Objects objects
                                              )      
             throws ServiceClientException, InterruptedException;    
+    
+    public CalcSelectionStatisticRs calcSelectionStatistic(final GroupModel group, 
+                                                                                 final List<AggregateFunctionCall> aggregateFunctions
+                                                                                 )
+            throws ServiceClientException, InterruptedException;
 
     public PasswordRequirements getPasswordRequirements() throws ServiceClientException, InterruptedException;
     
@@ -201,4 +214,6 @@ public interface IEasSession {
     public byte[] encryptBySessionKey(byte[] data);
     
     public byte[] decryptBySessionKey(byte[] data);
+    
+    public void scheduleResponseNotificationTask(final Runnable task);
 }

@@ -13,7 +13,6 @@ package org.radixware.kernel.explorer.editors.filterparameditor;
 
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QGroupBox;
-import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QListWidget;
 import com.trolltech.qt.gui.QListWidgetItem;
@@ -30,13 +29,11 @@ import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
-import org.radixware.kernel.common.defs.RadixObjectIcon;
+import org.radixware.kernel.common.enums.EEditMaskEnumOrder;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.valeditors.ValConstSetEditor;
 import org.radixware.kernel.explorer.env.Application;
-import org.radixware.kernel.explorer.env.ExplorerIcon;
-import org.radixware.kernel.explorer.env.KernelIcon;
 
 import org.radixware.kernel.explorer.types.RdxIcon;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
@@ -48,7 +45,9 @@ final class ValueTypeAttributeEditor extends AbstractAttributeEditor<EValType> {
     private final static List<EValType> SUPPORTED_TYPES =
             Arrays.asList(
             EValType.STR, EValType.INT, EValType.NUM, EValType.DATE_TIME, EValType.BOOL,
-            EValType.CHAR, EValType.BIN, EValType.PARENT_REF);
+            EValType.CHAR, EValType.BIN, EValType.PARENT_REF, 
+            EValType.ARR_STR, EValType.ARR_INT, EValType.ARR_NUM, EValType.ARR_DATE_TIME,
+            EValType.ARR_CHAR, EValType.ARR_BIN, EValType.ARR_REF);
     private final QLabel lbValType;
     private final ValConstSetEditor cbValType;
     private final QGroupBox gbValType;
@@ -56,7 +55,7 @@ final class ValueTypeAttributeEditor extends AbstractAttributeEditor<EValType> {
     public final com.trolltech.qt.QSignalEmitter.Signal0 onDoubleClick =
             new com.trolltech.qt.QSignalEmitter.Signal0();
 
-    public ValueTypeAttributeEditor(IClientEnvironment environment, final boolean isList, final boolean isReadonly, final QWidget parent) {
+    public ValueTypeAttributeEditor(final IClientEnvironment environment, final boolean isList, final boolean isReadonly, final QWidget parent) {
         super(environment);
         setObjectName("attrEditor_" + getAttribute().name());
         final RadEnumPresentationDef enumDef = environment.getApplication().getDefManager().getEnumPresentationDef(VAL_TYPE_ENUM_ID);
@@ -76,7 +75,7 @@ final class ValueTypeAttributeEditor extends AbstractAttributeEditor<EValType> {
             QListWidgetItem item;
 
             for (RadEnumPresentationDef.Item enumItem : items) {
-                item = new QListWidgetItem((RdxIcon) enumItem.getIcon(), enumItem.getTitle(), lwValType);
+                item = new QListWidgetItem((RdxIcon) enumItem.getIcon(), enumItem.getTitle(), lwValType);//NOPMD
                 item.setData(Qt.ItemDataRole.UserRole, enumItem.getValue());
             }
 
@@ -93,26 +92,17 @@ final class ValueTypeAttributeEditor extends AbstractAttributeEditor<EValType> {
             lbValType = null;
             cbValType = null;
         } else {
-            lbValType = new QLabel(getAttribute().getTitle(), parent);
+            lbValType = new QLabel(getAttribute().getTitle(environment), parent);
             lbValType.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
             lbValType.setObjectName("lbValType");
-            final EditMaskConstSet editMask = new EditMaskConstSet(VAL_TYPE_ENUM_ID, null, null, null);
-            editMask.setItems(items);
+            final EditMaskConstSet editMask = new EditMaskConstSet(VAL_TYPE_ENUM_ID, EEditMaskEnumOrder.BY_VALUE, null, null);
+            editMask.setItems(items);            
             cbValType = new ValConstSetEditor(getEnvironment(), parent, editMask, true, isReadonly);
-            cbValType.setObjectName("cbValType");
+            cbValType.setObjectName("cbValType");            
             cbValType.setValue(EValType.STR.getValue());
             cbValType.valueChanged.connect(this, "onValueChanged()");
             lbValType.setBuddy(cbValType);
-            /*
-            cbValType = new QComboBox(parent);
-            cbValType.setObjectName("cbValType");
-
-            for (EValType valType: SUPPORTED_TYPES)
-            cbValType.addItem(getValTypeQIcon(valType), getValTypeTitle(valType), valType);
-
-            cbValType.setCurrentIndex(0);
-            cbValType.currentIndexChanged.connect(this,"onValueChanged()");
-             */
+            
             setupLabelTextOptions(lbValType, isReadonly);
             cbValType.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed);
 
@@ -127,44 +117,12 @@ final class ValueTypeAttributeEditor extends AbstractAttributeEditor<EValType> {
         attributeChanged.emit(this);
     }
 
-    private static QIcon getValTypeQIcon(final EValType valType) {
-        return ExplorerIcon.getQIcon(KernelIcon.getInstance(RadixObjectIcon.getForValType(valType)));
-    }
-
-    private static String getValTypeTitle(final EValType valType) {
-        switch (valType) {
-            case STR:
-                return Application.translate("SqmlEditor", "String");
-            case INT:
-                return Application.translate("SqmlEditor", "Integer");
-            case NUM:
-                return Application.translate("SqmlEditor", "Decimal");
-            case DATE_TIME:
-                return Application.translate("SqmlEditor", "Date/Time");
-            case BOOL:
-                return Application.translate("SqmlEditor", "Boolean");
-            case PARENT_REF:
-                return Application.translate("SqmlEditor", "Object reference");
-            case CHAR:
-                return Application.translate("SqmlEditor", "Character");
-            case CLOB:
-                return Application.translate("SqmlEditor", "Large string");
-            case BIN:
-                return Application.translate("SqmlEditor", "Binary");
-            case BLOB:
-                return Application.translate("SqmlEditor", "Large binary");
-            default:
-                return valType.getName();
-        }
-
-    }
-
-    protected ValueTypeAttributeEditor(IClientEnvironment userSession, final boolean isReadonly, final QWidget parent) {
+    protected ValueTypeAttributeEditor(final IClientEnvironment userSession, final boolean isReadonly, final QWidget parent) {
         this(userSession, false, isReadonly, parent);
     }
 
     @Override
-    public boolean updateParameter(ISqmlParameter parameter) {
+    public boolean updateParameter(final ISqmlParameter parameter) {
         if (parameter instanceof ISqmlModifiableParameter) {
             final EValType valType = getAttributeValue();
             ((ISqmlModifiableParameter) parameter).setValType(valType, EditMask.newInstance(valType), parameter.isMandatory(), parameter.getNullString());
@@ -173,15 +131,16 @@ final class ValueTypeAttributeEditor extends AbstractAttributeEditor<EValType> {
     }
 
     @Override
-    public void updateEditor(ISqmlParameter parameter) {
+    public void updateEditor(final ISqmlParameter parameter) {
         final EValType valType = parameter.getType();
         if (lwValType == null) {
-            if (valType == EValType.PARENT_REF) {
+            if (valType == EValType.PARENT_REF || valType == EValType.ARR_REF) {
                 cbValType.setReadOnly(true);
             } else {
                 final EditMaskConstSet editMask = (EditMaskConstSet) cbValType.getEditMask();
                 final RadEnumPresentationDef.Items items = editMask.getItems(environment.getApplication());
                 items.removeItem(EValType.PARENT_REF);
+                items.removeItem(EValType.ARR_REF);
                 editMask.setItems(items);
                 cbValType.setEditMask(editMask);
             }

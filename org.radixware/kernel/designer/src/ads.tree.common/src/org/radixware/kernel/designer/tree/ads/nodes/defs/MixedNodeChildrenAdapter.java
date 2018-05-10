@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import org.openide.nodes.Children;
 import org.openide.nodes.Index;
 import org.openide.nodes.Node;
+import org.openide.util.Mutex;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.designer.common.general.creation.ICreatureGroup;
@@ -45,7 +46,7 @@ public final class MixedNodeChildrenAdapter<T extends RadixObject> extends Child
 
         @Override
         public Node[] getNodes() {
-            return MixedNodeChildrenAdapter.this.getNodes();
+                return MixedNodeChildrenAdapter.this.getNodes();
         }
 
         @Override
@@ -54,8 +55,14 @@ public final class MixedNodeChildrenAdapter<T extends RadixObject> extends Child
         }
 
         @Override
-        public void reorder(int[] perm) {
-            providers[0].reorder(perm);
+        public void reorder(final int[] perm) {
+            MUTEX.postWriteRequest(new Runnable() {
+
+                @Override
+                public void run() {
+                    providers[0].reorder(perm);
+                }
+            });
         }
     }
 
@@ -69,37 +76,44 @@ public final class MixedNodeChildrenAdapter<T extends RadixObject> extends Child
     }
 
     @SuppressWarnings("unchecked")
-    public MixedNodeChildrenAdapter(AdsMixedNode<T> node, T context, Class<? extends MixedNodeChildrenProvider<?>>[] providers, boolean transitiveCreation) {
-        this.node = node;
-        ArrayList<MixedNodeChildrenProvider<T>> pl = new ArrayList<>(providers.length);
-        this.transitiveCreation = transitiveCreation;
+    public MixedNodeChildrenAdapter(final AdsMixedNode<T> node, T context, Class<? extends MixedNodeChildrenProvider<?>>[] providers, boolean transitiveCreation) {
+            this.node = node;
+            ArrayList<MixedNodeChildrenProvider<T>> pl = new ArrayList<>(providers.length);
+            this.transitiveCreation = transitiveCreation;
 
-        for (int i = 0; i < providers.length; i++) {
-            try {
-                final MixedNodeChildrenProvider<T> p = (MixedNodeChildrenProvider<T>) providers[i].newInstance();
-                if (p.enterContext(this, context)) {
-                    p.adapter = this;
-                    pl.add(p);
-                }
-            } catch (InstantiationException | IllegalAccessException ex) {
-                if (DEBUG) {
-                    ex.printStackTrace();
+            for (int i = 0; i < providers.length; i++) {
+                try {
+                    final MixedNodeChildrenProvider<T> p = (MixedNodeChildrenProvider<T>) providers[i].newInstance();
+                    if (p.enterContext(this, context)) {
+                        p.adapter = this;
+                        pl.add(p);
+                    }
+                } catch (InstantiationException | IllegalAccessException ex) {
+                    if (DEBUG) {
+                        ex.printStackTrace();
+                    }
                 }
             }
-        }
-        if (!pl.isEmpty()) {
-            this.providers = pl.toArray(new MixedNodeChildrenProvider[]{});
-            if (this.providers.length > 0 && this.providers[0].isSorted()) {
-                index = new MixedNodeChildrenIndex();
+            if (!pl.isEmpty()) {
+                this.providers = pl.toArray(new MixedNodeChildrenProvider[]{});
+                if (this.providers.length > 0 && this.providers[0].isSorted()) {
+                    index = new MixedNodeChildrenIndex();
+                } else {
+                    index = null;
+                }
             } else {
+                this.providers = null;
                 index = null;
             }
-        } else {
-            this.providers = null;
-            index = null;
-        }
-        setKeys(updateKeys());
+            updateKeys();//set empty flag 
+            MUTEX.postWriteRequest(new Runnable() {
 
+                @Override
+                public void run() {
+                    setKeys(updateKeys());
+                    node.checkChildren();
+                }
+            });
     }
 
     public boolean isEmpty() {
@@ -123,23 +137,23 @@ public final class MixedNodeChildrenAdapter<T extends RadixObject> extends Child
 
     @Override
     protected Node[] createNodes(Key key) {
-        if (this.providers != null) {
-            for (int i = 0; i < providers.length; i++) {
-                Node[] createdNodes = providers[i].createNodes(key);
-                if (createdNodes != null && createdNodes.length > 0) {
-                    BuildOptions.UserModeHandler userModeHandler = getParentNode().getLookup().lookup(BuildOptions.UserModeHandler.class);
-                    if (userModeHandler != null) {
-                        for (int n = 0; n < createdNodes.length; n++) {
-                            if (createdNodes[n] instanceof RadixObjectNode) {
-                                ((RadixObjectNode) createdNodes[n]).expandLookup(BuildOptions.UserModeHandler.class, userModeHandler);
+            if (this.providers != null) {
+                for (int i = 0; i < providers.length; i++) {
+                    Node[] createdNodes = providers[i].createNodes(key);
+                    if (createdNodes != null && createdNodes.length > 0) {
+                        BuildOptions.UserModeHandler userModeHandler = getParentNode().getLookup().lookup(BuildOptions.UserModeHandler.class);
+                        if (userModeHandler != null) {
+                            for (int n = 0; n < createdNodes.length; n++) {
+                                if (createdNodes[n] instanceof RadixObjectNode) {
+                                    ((RadixObjectNode) createdNodes[n]).expandLookup(BuildOptions.UserModeHandler.class, userModeHandler);
+                                }
                             }
                         }
+                        return createdNodes;
                     }
-                    return createdNodes;
                 }
             }
-        }
-        return new Node[]{};
+            return new Node[]{};
     }
     //private static final Object lock = new Object();
 

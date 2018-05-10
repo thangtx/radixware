@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import org.ietf.jgss.GSSCredential;
 import org.openide.LifecycleManager;
 import org.openide.awt.StatusDisplayer;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.Clipboard;
 import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.IClientEnvironment;
@@ -45,6 +46,7 @@ import org.radixware.kernel.common.client.eas.resources.IResourceManager;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.DefManager;
 import org.radixware.kernel.common.client.env.IEventLoop;
+import org.radixware.kernel.common.client.env.ProductInstallationOptions;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.env.progress.ProgressHandleManager;
 import org.radixware.kernel.common.client.errors.EasError;
@@ -127,6 +129,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
     }
     private String userName;
     private String stationName;
+    private String connectionName;
     private TimeZoneInfo serverTimeZoneInfo;
     private final EasSession session;
     private List<Id> contextlessCommands = null;
@@ -136,8 +139,10 @@ public class DesignerClientEnvironment implements IClientEnvironment {
     private final DesignerClientApplication application = new DesignerClientApplication(this);
     private ConnectionOptions predefinedConnection;
     private ConnectionOptions.SslOptions sslOptions;
+    private ProductInstallationOptions productInstallationOptions;
     private boolean connected = false;
     private List<IClientEnvironment.ConnectionListener> connectionListeners;
+    private final IResourceManager resourceManager = new ResourceManagerStub();
 
     public DesignerClientEnvironment(EasSession src) {
         session = new EasSession(this);
@@ -156,6 +161,11 @@ public class DesignerClientEnvironment implements IClientEnvironment {
     public String getStationName() {
         return stationName;
     }
+    
+    @Override
+    public String getConnectionName(){
+        return connectionName;
+    }
 
     @Override
     public TimeZoneInfo getServerTimeZoneInfo() {
@@ -169,7 +179,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
 
     @Override
     public IResourceManager getResourceManager() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return resourceManager;
     }
 
     @Override
@@ -246,7 +256,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
 
     private void processUnsupportedVersionException() {
         getDefManager().getAdsVersion().makeUnsupported();
-        if (!getDefManager().getAdsVersion().isNewVersionAvailable()) {
+        if (getDefManager().getAdsVersion().getTargetVersionNumber()>-1) {
             getTracer().warning(getMessageProvider().translate("TraceMessage", "Current definition version is not supported by server, but client is not in old version mode"));
             if (getDefManager().getAdsVersion().checkForUpdates(this) == null) {
                 getTracer().error(getMessageProvider().translate("TraceMessage", "Current definition version is not supported by server, but client have not newer version"));
@@ -274,7 +284,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
         if (messageConfirmation(title, message)) {
             getDefManager().getAdsVersion().checkForUpdates(this);
             try {
-                getDefManager().getAdsVersion().updateToNewVersion();
+                getDefManager().getAdsVersion().switchToTargetVersion();
             } catch (CantUpdateVersionException ex) {
                 ex.showMessage(this);
             } catch (Exception ex) {
@@ -366,11 +376,11 @@ public class DesignerClientEnvironment implements IClientEnvironment {
 //                    }
 //                } else {
                 final Id myId = Id.Factory.loadFrom("parP2VNBBVCGNEF7DYDM6UE3E6WLI");
-                CreateSessionRs response = connectAutonomely(password, myId);
-
+                CreateSessionRs response = connectAutonomely(password, myId);                
                 if (response != null) {
                     setContextlessCommands(response.getContextlessCommands());
                     setServerResources(response.getServerResources());
+                    productInstallationOptions = ProductInstallationOptions.loadOptions(response.getProductInstallationOptions());
                     final org.radixware.schemas.eas.TimeZone timeZone = response.getServerTimeZone();
                     serverTimeZoneInfo = timeZone == null ? null : TimeZoneInfo.parse(timeZone);
                     getTracer().getBuffer().setMaxSize(getConfigStore().readInteger(SettingNames.SYSTEM + "_TRACE_MAX_SIZE", 500));
@@ -459,7 +469,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
     private CreateSessionRs connectAutonomely(char[] pwd, Id myId) throws IllegalUsageError {
         //first try connect using parent settings
         String un = RunParams.getUserName();
-        String connectionName = RunParams.getConnectionName();
+        connectionName = RunParams.getConnectionName();
 
         if (connectionName != null) {
             final ConnectionOptions connection = getConnections().findByName(connectionName);
@@ -468,26 +478,38 @@ public class DesignerClientEnvironment implements IClientEnvironment {
                 final EasClientProvider provider = new EasClientProvider(this, connection);
                 final String connectionStationName = connection.getStationName();
                 final EAuthType authType = connection.getAuthType();
+                if (un == null) {
+                    un = connection.getUserName();
+                }
                 for (;;) {
                     try {
                         final char[] password;
-                        final byte[] pwdHash;
+                        final PasswordHash pwdHash;
                         if (pwd != null) {
                             BASE64Decoder decoder = new BASE64Decoder();
                             final byte[] bytes = decoder.decodeBuffer(new String(pwd));
-                            switch (authType) {
-                                case PASSWORD: {
-                                    pwdHash = new TokenProcessor().decryptBytes(bytes);
-                                    password = null;
-                                }
-                                break;
-                                default: {
-                                    password = new TokenProcessor().decrypt(bytes);
-                                    pwdHash = null;
+                            try{
+                                switch (authType) {
+                                    case PASSWORD: {
+                                        final byte[] decryptedPwdHash = new TokenProcessor().decryptBytes(bytes);
+                                        try{
+                                            pwdHash = PasswordHash.Factory.fromBytes( decryptedPwdHash );
+                                        }finally{
+                                            Arrays.fill(decryptedPwdHash, (byte)0);
+                                        }
+                                        password = null;
+                                    }
+                                    break;
+                                    default: {
+                                        password = new TokenProcessor().decrypt(bytes);
+                                        pwdHash = null;
 
+                                    }
+                                    break;
                                 }
-                                break;
-                            }
+                            }finally{
+                                Arrays.fill(bytes, (byte)0);
+                            }                        
                         } else if (authType == EAuthType.CERTIFICATE || authType == EAuthType.PASSWORD) {
                             pwdHash = null;
                             IEnterPasswordDialog pwdDialog = getApplication().getDialogFactory().newEnterPasswordDialog(DesignerClientEnvironment.this);
@@ -521,9 +543,9 @@ public class DesignerClientEnvironment implements IClientEnvironment {
                                     userName = un;
                                     final CreateSessionRs response;
                                     if (pwdHash == null) {
-                                        response = session.open(easClient, connectionStationName, un, new String(password), authType, myId);
+                                        response = session.open(easClient, connectionStationName, un, new String(password), authType, myId, null, false);
                                     } else {
-                                        response = session.open(easClient, connectionStationName, un, pwdHash, myId);
+                                        response = session.open(easClient, connectionStationName, un, pwdHash, myId, null, false);
                                     }
                                     userName = response.getUser();
                                     return response;
@@ -537,7 +559,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
                                         = new KerberosCredentialsProvider(userName, password, spn);
                                 try {
                                     final CreateSessionRs response
-                                            = session.open(easClient, connectionStationName, krbCredsProvider, null, myId, null);
+                                            = session.open(easClient, connectionStationName, krbCredsProvider, null, myId, null, null, false);
                                     userName = response.getUser();
                                     return response;
                                 } catch (KerberosError | ServiceClientException | EasError | InterruptedException ex) {
@@ -550,7 +572,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
                                 Arrays.fill(password, ' ');
                             }
                             if (pwdHash != null) {
-                                Arrays.fill(pwdHash, (byte) 0);
+                                pwdHash.erase();
                             }
 
                         }
@@ -610,7 +632,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
                 this.userName = un;
                 this.stationName = sn;
                 final CreateSessionRs response
-                        = session.open(easClient, sn, un, password, authType, myId);
+                        = session.open(easClient, sn, un, password, authType, myId, null, false);
                 userName = response.getUser();
                 return response;
             } catch (ServiceClientException | EasError | InterruptedException | IllegalUsageError | KeystoreControllerException | CertificateUtilsException ex) {
@@ -715,6 +737,11 @@ public class DesignerClientEnvironment implements IClientEnvironment {
         return isServerResourceAccessible(EDrcServerResource.EAS_SORTING_CREATION);
     }
 
+    @Override
+    public boolean isUserFuncDevelopmentAccessible() {
+        return isServerResourceAccessible(EDrcServerResource.USER_FUNC_DEV);
+    }
+    
     protected boolean isServerResourceAccessible(EDrcServerResource resource) {
         return allowedResources != null && allowedResources.contains(resource);
     }
@@ -785,7 +812,7 @@ public class DesignerClientEnvironment implements IClientEnvironment {
     public DefManager getDefManager() {
         return application.getDefManager();
     }
-
+    
     @Override
     public String setStatusBarLabel(String string) {
         StatusDisplayer.getDefault().setStatusText(string);
@@ -838,4 +865,18 @@ public class DesignerClientEnvironment implements IClientEnvironment {
             connectionListeners.remove(listener);
         }
     }
+    
+    public String getLayerVersionsString() {
+        return getDefManager().getClassLoader().getRevisionMeta().getLayerVersionsString();
+    }
+
+    @Override
+    public void writeConnectionParametersToXml(org.radixware.schemas.clientstate.ConnectionParams cp) {
+        
+    }        
+
+    @Override
+    public ProductInstallationOptions getProductInstallationOptions() {
+        return productInstallationOptions;
+    }        
 }

@@ -18,6 +18,9 @@ import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegistration;
 import org.radixware.kernel.common.enums.ERepositoryBranchType;
+import org.radixware.kernel.common.repository.dds.DdsAadcTransform;
+import org.radixware.kernel.common.repository.dds.DdsAadcTransformColumn;
+import org.radixware.kernel.common.repository.dds.DdsAadcTransformTable;
 import org.radixware.kernel.common.repository.dds.DdsScript;
 import org.radixware.kernel.common.repository.dds.DdsScripts;
 import org.radixware.kernel.common.repository.dds.DdsUpdateInfo;
@@ -104,6 +107,7 @@ public class DdsScriptsChecker extends RadixObjectChecker<DdsScripts> {
                         }
                     }
                 }
+                checkDdsAadcTransform(updateInfo, problemHandler);
             }
         }
         if (fileName2Script != null && fileName2ReverseScript != null) {
@@ -117,6 +121,30 @@ public class DdsScriptsChecker extends RadixObjectChecker<DdsScripts> {
                 DdsUpdateInfo straight = fileName2Script.get(info.getStraightUpdateFileName());
                 if (straight == null) {
                     error(info, problemHandler, "Source script not found for reverse script " + info.getUpdateFileName());
+                }
+            }
+        }
+    }
+    
+    private void checkDdsAadcTransform(DdsUpdateInfo info, IProblemHandler problemHandler){
+        DdsAadcTransform transform = info.getDdsAadcTransform();
+        if (!transform.isRequired()) {
+            return;
+        }
+        if (transform.getWarnings().isEmpty() && transform.getTables().isEmpty()) {
+            error(transform, problemHandler, "AADC transform for " + info.getUpdateFileName() + " script must contains table or warning");
+        } else {
+            if (transform.getTables().isEmpty()) {
+                return;
+            }
+            for (DdsAadcTransformTable table : transform.getTables()) {
+                if (table.findTable() == null) {
+                    error(table, problemHandler, "AADC transform table #" + table.getTargetId() + " not found");
+                }
+                for (DdsAadcTransformColumn column : table.getColumns()) {
+                    if (column.findColumn()== null) {
+                        error(column, problemHandler, "AADC transform column #" + column.getTargetId() + " not found");
+                    }
                 }
             }
         }

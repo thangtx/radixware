@@ -97,4 +97,6 @@ public interface IClientApplication extends IRadixEnvironment {
     public boolean isInGuiThread();
     
     public boolean isExtendedMetaInformationAccessible();
+    
+    public boolean isSqmlAccessible();
 }

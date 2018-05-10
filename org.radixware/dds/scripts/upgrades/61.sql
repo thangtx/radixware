@@ -1,0 +1,11 @@
+alter table RDX_SYSTEM
+	add PWDBLACKLIST CLOB null
+/
+
+alter table RDX_SYSTEM
+	add TEMPORARYPWDEXPIRATIONPERIOD NUMBER(9,0) default 72 null
+/
+
+alter table RDX_AC_USER
+	add TEMPORARYPWDSTARTTIME DATE null
+/

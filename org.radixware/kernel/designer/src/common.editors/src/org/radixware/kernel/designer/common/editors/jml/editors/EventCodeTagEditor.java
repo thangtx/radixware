@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.editors.jml.editors;
 
 import java.awt.BorderLayout;
@@ -31,7 +30,6 @@ import org.radixware.kernel.designer.ads.common.EventSourceEnumFinder;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.tags.TagEditor;
 import org.radixware.kernel.designer.common.dialogs.utils.RadixNbEditorUtils;
 import org.radixware.kernel.designer.common.editors.jml.JmlEditor;
-
 
 public class EventCodeTagEditor<T extends JmlTagEventCode> extends TagEditor<T> {
 
@@ -141,23 +139,27 @@ public class EventCodeTagEditor<T extends JmlTagEventCode> extends TagEditor<T> 
     @Override
     public void afterOpen() {
         context = getOpenInfo().getLookup().lookup(JmlEditor.ContextProvider.class).getContext();
-        AdsEventCodeDef ecDef = getEventCodeDef();
         lsPanel.open(getObject(), getOpenInfo());
 
         DefaultComboBoxModel severityModel = new DefaultComboBoxModel(EEventSeverity.values());
         severityModel.removeElement(EEventSeverity.NONE);
         coSeverity.setModel(severityModel);
+
+        // check RADIX-12330
+        AdsEventCodeDef ecDef = getEventCodeDef();
+        if (ecDef == null) {
+            setCorrencFalse();
+            return;
+        }
+
         if (ecDef.getEventSeverity() != null) {
             coSeverity.setSelectedItem(ecDef.getEventSeverity());
         }
 
+        // check
         AdsEnumDef sourceEnum = findEventSourceEnum();
         if (sourceEnum == null) {
-            setCorrect(false);
-            coEventSource.setEnabled(false);
-            btCopyGuid.setEnabled(false);
-            coSeverity.setEnabled(false);
-            lsPanel.setEnabled(false);
+            setCorrencFalse();
             return;
 
         }
@@ -172,6 +174,14 @@ public class EventCodeTagEditor<T extends JmlTagEventCode> extends TagEditor<T> 
         } else {
             btCopyGuid.setVisible(true);
         }
+    }
+
+    private void setCorrencFalse() {
+        setCorrect(false);
+        coEventSource.setEnabled(false);
+        btCopyGuid.setEnabled(false);
+        coSeverity.setEnabled(false);
+        lsPanel.setEnabled(false);
     }
 
     private Object[] createSourceValues(AdsEnumDef sourceEnum) {
@@ -223,6 +233,6 @@ public class EventCodeTagEditor<T extends JmlTagEventCode> extends TagEditor<T> 
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        
+
     }
 }

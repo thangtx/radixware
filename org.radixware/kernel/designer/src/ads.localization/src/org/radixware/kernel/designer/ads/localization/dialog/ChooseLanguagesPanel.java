@@ -156,6 +156,19 @@ public class ChooseLanguagesPanel extends javax.swing.JPanel {
         return selectedLangs;
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        lbListTitle.setEnabled(enabled);
+        jScrollPane2.setEnabled(enabled);
+        
+        LanguagesTableModel model = (LanguagesTableModel) languagesTable.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            model.setRowEditable(i, enabled);
+        }
+        
+        super.setEnabled(enabled);
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

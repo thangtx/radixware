@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.dialogs;
 
+import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.core.QDate;
 import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.Qt;
@@ -52,15 +53,15 @@ public class DateTimeDialog extends QtDialog implements IDateTimeDialog {
     
     private static class TimeDisplayProvider implements IDisplayStringProvider{                
         
-        private final Locale locale;
+        private final IClientEnvironment environment;
         
-        public TimeDisplayProvider(final Locale locale){
-            this.locale = locale;
+        public TimeDisplayProvider(final IClientEnvironment environment){
+            this.environment = environment;
         }
         
         @Override
         public String format(final EditMask mask, final Object value, final String defaultDisplayString) {
-            if (((EditMaskDateTime)mask).halfDayFieldPresent(locale)){
+            if (((EditMaskDateTime)mask).halfDayFieldPresent(environment)){
                 return defaultDisplayString.substring(0, defaultDisplayString.length()-3);
             }else{
                 return defaultDisplayString;
@@ -93,7 +94,7 @@ public class DateTimeDialog extends QtDialog implements IDateTimeDialog {
             @Override
             protected String getInputText(final Long value){
                 final String inputText = super.getInputText(value);
-                if (((EditMaskDateTime)getEditMask()).halfDayFieldPresent(getEnvironment().getLocale())){
+                if (((EditMaskDateTime)getEditMask()).halfDayFieldPresent(environment)){
                     return inputText.substring(0, inputText.length()-3);
                 }else{
                     return inputText;
@@ -102,7 +103,7 @@ public class DateTimeDialog extends QtDialog implements IDateTimeDialog {
 
             @Override
             protected ValidationResult validateInputText(final String text) {
-                if (((EditMaskDateTime)getEditMask()).halfDayFieldPresent(getEnvironment().getLocale())){
+                if (((EditMaskDateTime)getEditMask()).halfDayFieldPresent(environment)){
                     return super.validateInputText(text+" "+amPmEditor.currentText());
                 }else{
                     return super.validateInputText(text);
@@ -111,7 +112,7 @@ public class DateTimeDialog extends QtDialog implements IDateTimeDialog {
 
             @Override
             protected Timestamp getValueFromInputText(final String inputText) throws WrongFormatException {
-                if (((EditMaskDateTime)getEditMask()).halfDayFieldPresent(getEnvironment().getLocale())){
+                if (((EditMaskDateTime)getEditMask()).halfDayFieldPresent(environment)){
                     return super.getValueFromInputText(inputText+" "+amPmEditor.currentText());
                 }else{
                     return super.getValueFromInputText(inputText);
@@ -236,8 +237,8 @@ public class DateTimeDialog extends QtDialog implements IDateTimeDialog {
 
     public void setTimeDisplayFormat(final String format) {
         final EditMaskDateTime mask = new EditMaskDateTime(format, null, null);
-        amPmEditor.setVisible(mask.halfDayFieldPresent(environment.getLocale()));        
-        timeEditor.setDisplayStringProvider(new TimeDisplayProvider(environment.getLocale()));
+        amPmEditor.setVisible(mask.halfDayFieldPresent(environment));        
+        timeEditor.setDisplayStringProvider(new TimeDisplayProvider(environment));
         timeEditor.setEditMask(mask);        
         updateAmPm();
     }
@@ -353,6 +354,7 @@ public class DateTimeDialog extends QtDialog implements IDateTimeDialog {
     }
 
     @Override
+    @QtPropertyWriter(name = "minDate", enabled = false)    
     public void setMaxDate(final Calendar calendar) {
         setMaxDate(new Timestamp(calendar.getTimeInMillis()));
     }
@@ -363,6 +365,7 @@ public class DateTimeDialog extends QtDialog implements IDateTimeDialog {
     }
 
     @Override
+    @QtPropertyWriter(name = "minDate", enabled = false)
     public void setMinDate(final Calendar calendar) {
         setMinDate(new Timestamp(calendar.getTimeInMillis()));
     }        

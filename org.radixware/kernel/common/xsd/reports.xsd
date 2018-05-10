@@ -1,7 +1,8 @@
-<xs:schema xmlns:this="http://schemas.radixware.org/reports.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:eas="http://schemas.radixware.org/eas.xsd" targetNamespace="http://schemas.radixware.org/reports.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:this="http://schemas.radixware.org/reports.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:common="http://schemas.radixware.org/commondef.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:eas="http://schemas.radixware.org/eas.xsd" targetNamespace="http://schemas.radixware.org/reports.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
     <xs:complexType name="BandType">
         <xs:sequence>
             <xs:element name="Cell" minOccurs="0" maxOccurs="unbounded">
@@ -66,6 +67,7 @@
         <xs:sequence>
             <xs:element name="Title" type="xs:string" minOccurs="0"/>
             <xs:element name="Location" type="xs:string" minOccurs="0"/>
+            <xs:element name="ReportClassName" type="xs:string" minOccurs="0"/>
             <xs:element name="Description" type="xs:string" minOccurs="0"/>
             <xs:element name="Params" minOccurs="0">
                 <xs:annotation>
@@ -99,7 +101,7 @@
             </xs:element>
         </xs:sequence>
         <xs:attribute name="Pid" type="xs:string" use="required"/>
-        <xs:attribute name="ReportClassId" type="types:Id" use="required"/>
+        <xs:attribute name="ReportClassId" type="types:Id" use="optional"/>
         <xs:attribute name="SupportedFormats" use="optional">
             <xs:simpleType>
                 <xs:list>                    
@@ -196,10 +198,50 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="ParamValues" type="eas:PropertyList"/>
+                <xs:element name="ExportFormats" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ExportFormat" maxOccurs="unbounded" minOccurs="0">
+                                <xs:simpleType>
+                                    <xs:annotation>
+                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                            <types:class>org.radixware.kernel.common.enums.EReportExportFormat</types:class>
+                                        </xs:appinfo>
+                                    </xs:annotation>
+                                    <xs:restriction base="types:StrEnum"/>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="FormatDirectories" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="FormatDirectory" maxOccurs="unbounded" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Format" maxOccurs="1" minOccurs="1">
+                                            <xs:simpleType>
+                                                <xs:annotation>
+                                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                        <types:class>org.radixware.kernel.common.enums.EReportExportFormat</types:class>
+                                                    </xs:appinfo>
+                                                </xs:annotation>
+                                                <xs:restriction base="types:StrEnum"/>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="Path" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
             <xs:attribute name="File" type="xs:string" use="required"/>
             <xs:attribute name="Type" type="xs:string" use="optional"/>
             <xs:attribute name="ReportPubPid" type="xs:string" use="optional"/>
+            <xs:attribute name="DefaultFileName" type="xs:string"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="GetReportPubTreeRq">
@@ -255,6 +297,7 @@
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="Msdl" type="this:ReportMsdlType" minOccurs="0"/>
+                <xs:element name="ColumnsSettings" type="this:ColumnSettings" minOccurs="0"></xs:element>
             </xs:sequence>
             <xs:attribute name="ReportClassGuid" type="xs:string" use="required"/>
             <xs:attribute name="Dir" type="xs:string" use="required"/>
@@ -290,6 +333,7 @@
             <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ContextParamType" type="xscml:TypeDeclaration" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ChangeLog" type="common:ChangeLog" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="Id" type="types:Id"/>
         <xs:attribute name="CurrentVersion" type="xs:long"/>        
@@ -394,4 +438,56 @@
     <xs:element name="DisableReportPubsRs" type="this:DisableReportPubsRs"/>
     <xs:element name="LibUserFuncsListRs" type="this:LibUserFuncsListRs"/>
     <xs:element name="LibUserFuncXmlRq" type="this:LibUserFuncXmlRq"/>
+    <xs:complexType name="ReportPreviewRq">
+        <xs:sequence>
+            <xs:element name="ReportId" type="types:Id"/>
+            <xs:element name="ExportFormat" type="xs:string"/>
+            <xs:element name="ReportJar" type="types:BinBase64"/>
+            <xs:element name="TestDataZip" type="types:BinBase64"/>
+            <xs:element name="ExportLocale" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ReportPreviewRs">
+        <xs:sequence>
+            <xs:element name="ReportData" type="types:BinBase64"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="ReportPreviewRq" type="this:ReportPreviewRq"></xs:element>
+    <xs:element name="ReportPreviewRs" type="this:ReportPreviewRs"></xs:element>
+    <xs:complexType name="ColumnSettings">
+        <xs:sequence>
+            <xs:element name="ResizeMode" maxOccurs="1" minOccurs="1">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                            <types:class>org.radixware.kernel.common.enums.EReportColumnsUserResizeMode</types:class>
+                        </xs:appinfo>
+                    </xs:annotation>
+                    <xs:restriction base="types:StrEnum"/>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="VisibleColumns" maxOccurs="1" minOccurs="0" type="this:ReportColumnsList"/>                
+        </xs:sequence>
+        <xs:attribute name="IsUsed" type="xs:boolean" default="true"/>
+    </xs:complexType>
+    <xs:element name="ColumnSettings" type="this:ColumnSettings"></xs:element>
+    <xs:complexType name="ReportColumnsList">
+        <xs:sequence>
+            <xs:element name="Column" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>                                    
+                        <xs:element name="Width" maxOccurs="1" minOccurs="0">
+                            <xs:complexType>
+                                <xs:attribute name="Columns" type="xs:int"/>
+                                <xs:attribute name="Millimeters" type="types:Num"/>
+                            </xs:complexType>
+                        </xs:element>                                    
+                    </xs:sequence>
+                    <xs:attribute name="ColumnId" type="types:Id"/>
+                    <xs:attribute name="ColumnName" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="ReportColumnsList" type="this:ReportColumnsList"></xs:element>
 </xs:schema>

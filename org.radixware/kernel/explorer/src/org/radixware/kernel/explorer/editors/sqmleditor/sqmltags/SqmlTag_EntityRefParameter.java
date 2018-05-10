@@ -23,7 +23,10 @@ import org.radixware.kernel.common.client.meta.sqml.ISqmlParameters;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableIndexDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableIndices;
+import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.enums.EPidTranslationMode;
+import org.radixware.kernel.common.html.Html;
+import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.Parameter_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
 import org.radixware.schemas.xscml.Sqml;
@@ -46,6 +49,9 @@ public final class SqmlTag_EntityRefParameter extends SqmlTag_AbstractReference 
         if (parameter!=null){
             parameterItem.setParamId(parameter.getId());
             parameterItem.setReferencedTableId(parameter.getReferencedTableId());
+            if (parameter.getType().isArrayType()){
+                parameterItem.setExpressionList(true);
+            }
         }
         parameterItem.setPidTranslationMode(EPidTranslationMode.AS_STR);
         this.contextTable = contextTable;
@@ -60,7 +66,7 @@ public final class SqmlTag_EntityRefParameter extends SqmlTag_AbstractReference 
         parameter = parameters.getParameterById(xmlParameter.getParamId());
         if (parameter == null
                 || (parameterItem.getPidTranslationMode() != EPidTranslationMode.AS_STR && getIndexDef() == null)) {
-            valid = false;
+            setValid(false);
             setDisplayedInfo(null, "::???" + xmlParameter.getParamId() + "???");
         } else {
             setIsDeprecated(parameter.isDeprecated());
@@ -110,7 +116,7 @@ public final class SqmlTag_EntityRefParameter extends SqmlTag_AbstractReference 
         strBuilder.append("<b>");
         strBuilder.append(parameterStr);
         strBuilder.append(":</b><br>&nbsp;&nbsp;&nbsp;&nbsp;");
-        strBuilder.append(parameter.getTitle());
+        strBuilder.append(Html.string2HtmlString(parameter.getTitle()));
         strBuilder.append("</br>");
         if (parameter.getBasePropertyId() != null) {
             final ISqmlColumnDef column = contextTable.getColumns().getColumnById(parameter.getBasePropertyId());
@@ -119,9 +125,9 @@ public final class SqmlTag_EntityRefParameter extends SqmlTag_AbstractReference 
                 strBuilder.append(basePropertyStr);
                 strBuilder.append(":</b></br><br>&nbsp;&nbsp;&nbsp;&nbsp;");
                 if (displayMode == EDefinitionDisplayMode.SHOW_TITLES) {
-                    strBuilder.append(column.getTitle());
+                    strBuilder.append(Html.string2HtmlString(column.getTitle()));
                 } else {
-                    strBuilder.append(column.getShortName());
+                    strBuilder.append(Html.string2HtmlString(column.getShortName()));
                 }
                 strBuilder.append("</br>");
             }
@@ -151,32 +157,64 @@ public final class SqmlTag_EntityRefParameter extends SqmlTag_AbstractReference 
     @Override
     public boolean setDisplayedInfo(final EDefinitionDisplayMode showMode) {
         if (isValid() && parameter!=null && parameters!=null){
+            final String toolTip;
+            final StringBuilder displayInfoBuilder = new StringBuilder();
             if (parameters.getParameterById(parameter.getId()) == null) {
-                valid = false;
+                setValid(false);
                 final String idAsStr = parameter.getId() == null ? "" : parameter.getId().toString();
-                setDisplayedInfo(null, "::???" + idAsStr + "???");
-                return true;
+                toolTip = null;
+                displayInfoBuilder.append("::???");
+                displayInfoBuilder.append(idAsStr);
+                displayInfoBuilder.append("???");                
+            }else if (getReferencedTable()==null){
+                setValid(false);
+                final String traceMessage =
+                    environment.getMessageProvider().translate("SqmlEditor", "Can't parse EntityRefParameter tag: table  #%s was not found");
+                environment.getTracer().warning(String.format(traceMessage,parameterItem.getReferencedTableId()));
+                final String idAsStr = parameter.getId()==null ? "" : parameter.getId().toString();
+                toolTip = null;
+                displayInfoBuilder.append("::???");
+                displayInfoBuilder.append(idAsStr);
+                displayInfoBuilder.append("???");
+            }else{
+                final boolean isExpressionList = parameterItem!=null && parameterItem.getExpressionList();
+                if (isExpressionList){
+                    displayInfoBuilder.append("( ");
+                }
+                if (parameter.getPersistentValue() != null && parameter.getPersistentValue().isValid(environment)) {
+                    appendValueTitle(displayInfoBuilder, parameter.getPersistentValue().getValObject(), showMode);
+                    if (isExpressionList){
+                        displayInfoBuilder.append(" )");
+                    }                    
+                } else {
+                    displayInfoBuilder.append("::");
+                    displayInfoBuilder.append( getReferenceDisplayedInfo(parameter.getDisplayableText(showMode),showMode) );
+                    if (isExpressionList){
+                        displayInfoBuilder.append(",...)");
+                    }                    
+                }
+                toolTip = calculateToolTip(showMode);
             }
-            if (getReferencedTable()==null){
-                    valid = false;
-                    final String traceMessage =
-                        environment.getMessageProvider().translate("SqmlEditor", "Can't parse EntityRefParameter tag: table  #%s was not found");
-                    environment.getTracer().warning(String.format(traceMessage,parameterItem.getReferencedTableId()));
-                    final String idAsStr = parameter.getId()==null ? "" : parameter.getId().toString();
-                    setDisplayedInfo(null, "::???"+idAsStr+"???");
-                    return true;
-            }
-            final String prefix;
-            if (parameter.getPersistentValue() != null && parameter.getPersistentValue().isValid(environment)) {
-                final Object obj = parameter.getPersistentValue().getValObject();
-                prefix = obj == null ? "::null" : "::" + obj.toString();
-            } else {
-                prefix = "::" + parameter.getDisplayableText(showMode);
-            }
-            setDisplayedInfo(calculateToolTip(showMode), getReferenceDisplayedInfo(prefix, showMode));
+            setDisplayedInfo(toolTip, displayInfoBuilder.toString());
             return true;
         }
         return false;
+    }
+    
+    private void appendValueTitle(final StringBuilder builder, final Object value, final EDefinitionDisplayMode showMode){
+        if (value instanceof Arr){
+            boolean firstItem=true;
+            for (Object item: (Arr)value){
+                if (firstItem){
+                    firstItem = false;                    
+                }else{
+                    builder.append(", ");
+                }                        
+                appendValueTitle(builder, item, showMode);
+            }
+        }else{
+            builder.append(getReferenceDisplayedInfo(String.valueOf(value), showMode));
+        }
     }
 
     @Override

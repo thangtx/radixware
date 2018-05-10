@@ -13,11 +13,11 @@ package org.radixware.kernel.common.client.dialogs;
 
 import java.sql.Timestamp;
 import java.util.List;
-import org.radixware.kernel.common.auth.PasswordRequirements;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.exceptions.StandardProblemHandler;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
+import org.radixware.kernel.common.client.models.AbstractBatchOperationResult;
 import org.radixware.kernel.common.client.models.groupsettings.Filters;
 import org.radixware.kernel.common.client.models.groupsettings.Sortings;
 import org.radixware.kernel.common.client.models.items.properties.Property;
@@ -45,6 +45,8 @@ public interface DialogFactory {
     public ISortingsManagerDialog newSortingsManagerDialog(IClientEnvironment environment, IWidget parent, Sortings sortings);
 
     public ISelectInstantiatableClassDialog newInstantiatableClassDialog(IClientEnvironment environment, IWidget parentWidget, List<InstantiatableClass> classes, String configGroup, boolean sortByTitles);
+    
+    public ISelectInstantiatableClassDialog newInstantiatableClassDialog(IClientEnvironment environment, IWidget parentWidget, List<InstantiatableClass> classes, String configGroup, boolean sortByTitles, boolean multipleSelection);
 
     public IMandatoryPropertiesConfirmationDialog newMandatoryPropertiesConfirmationDialog(IClientEnvironment environment, final IWidget parentWidget, final List<String> propertyTitles);
 
@@ -63,4 +65,10 @@ public interface DialogFactory {
     public IDateTimeDialog newDateTimeDialog(IClientEnvironment environment, IWidget parent, String timeFormat, Timestamp initialVal);
     
     public ISelectEasSessionDialog newSelectEasSessionDialog(IClientEnvironment environment, IWidget parent);
+    
+    public IListDialog newListDialog(IClientEnvironment environment, IWidget parent, String configPrefix);
+    
+    public IBatchOperationResultDialog newBatchOperationResultDialog(IClientEnvironment environment, IWidget parent, AbstractBatchOperationResult result);
+    
+    public IWaitForAadcMemberSwitchDialog newWaitForAadcMemberSwitchDialog(IClientEnvironment environment);
 }

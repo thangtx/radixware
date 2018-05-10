@@ -40,6 +40,7 @@ import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
 import org.radixware.kernel.common.trace.LocalTracer;
+import org.xmlsoap.schemas.soap.envelope.Envelope;
 
 public class SoapFormatter {
 
@@ -74,8 +75,8 @@ public class SoapFormatter {
      * @return SOAP envelope body content
      * @throws IOException
      */
-    static private XmlObject parseMessage(final byte[] mess) throws IOException {
-        return getInnerContent(parseSoapMessage(mess));
+    static private XmlObject parseBody(final byte[] mess) throws IOException {
+        return ((EnvelopeDocument) parseSoapEnvelope(mess)).getEnvelope().getBody();
     }
 
     public static XmlObject getInnerContent(final XmlObject xmlObj) throws IOException {
@@ -93,17 +94,16 @@ public class SoapFormatter {
         return m;
     }
 
-    private static XmlObject parseSoapMessage(final byte[] mess) throws IOException {
+    private static EnvelopeDocument parseSoapEnvelope(final byte[] mess) throws IOException {
         final EnvelopeDocument envDoc;
         try {
             if (mess == null) {
                 throw new XmlException("(null) soap message");
             }
             envDoc = EnvelopeDocument.Factory.parse(new ByteArrayInputStream(mess));
-            //System.out.println("envDoc = " + envDoc.xmlText());
         } catch (IOException e) {
             throw new RadixError("Unexpected exception: " + ExceptionTextFormatter.exceptionStackToString(e), e);
-        } catch (XmlException e) {
+        } catch (XmlException | RuntimeException e) {            
             String messStr;
             boolean isMessInHex = false;
             try {
@@ -114,7 +114,7 @@ public class SoapFormatter {
             }
             throw new IOException("Can't parse message" + (isMessInHex ? ". \nMessage text in HEX: \n" : ": \n") + messStr + "\nParse exception: " + ExceptionTextFormatter.getExceptionMess(e), e);
         }
-        return envDoc.getEnvelope().getBody();
+        return envDoc;
     }
 
     /**
@@ -123,7 +123,7 @@ public class SoapFormatter {
      * @throws IOException
      */
     static public XmlObject parseSoapRequest(byte[] mess) throws IOException {
-        return parseSoapMessage(mess);
+        return parseBody(mess);
     }
 
     /**
@@ -132,7 +132,7 @@ public class SoapFormatter {
      * @throws IOException
      */
     static public XmlObject parseRequest(byte[] mess) throws IOException {
-        return parseMessage(mess);
+        return getInnerContent(parseBody(mess));
     }
 
     /**
@@ -141,7 +141,7 @@ public class SoapFormatter {
      * @throws ServiceCallFault - if Fault received
      */
     static public XmlObject parseResponse(byte[] mess, Class resultClass) throws IOException, ServiceCallFault {
-        return parseResponse(parseMessage(mess), resultClass);
+        return parseResponse(parseSoapEnvelope(mess), resultClass);
     }
 
     /**
@@ -149,24 +149,37 @@ public class SoapFormatter {
      * @throws IOException
      * @throws ServiceCallFault - if Fault received
      */
-    static public XmlObject parseResponse(XmlObject rs, Class resultClass) throws IOException, ServiceCallFault {
-        if (rs instanceof Fault) {
-            final Fault fault = (Fault) rs;
+    static public XmlObject parseResponse(final XmlObject rs, final Class resultClass) throws IOException, ServiceCallFault {
+        XmlObject bodyFirstChild = null;
+        if (rs instanceof EnvelopeDocument) {
+            bodyFirstChild = getInnerContent(((EnvelopeDocument) rs).getEnvelope().getBody());
+        } else {
+            bodyFirstChild = rs;
+        }
+        if (bodyFirstChild instanceof Fault) {
+            final Fault fault = (Fault) bodyFirstChild;
             throw new ServiceCallFault(fault.getFaultcode() == null ? null : fault.getFaultcode().getLocalPart(), fault.getFaultstring(), fault.getDetail());
         }
-        if (resultClass != null && !resultClass.isInstance(rs)) {
+        if (resultClass != null && EnvelopeDocument.class.isAssignableFrom(resultClass)) {
+            if (rs instanceof EnvelopeDocument) {
+                return rs;
+            } else {
+                throw new IOException("Expected EnvelopeDocument, got " + (rs == null ? "null" : rs.getClass().getName()));
+            }
+        }
+        if (resultClass != null && !resultClass.isInstance(bodyFirstChild)) {
             try {								//try to reparse					
                 final Class<?> c = resultClass.getClassLoader().loadClass(resultClass.getName() + "$Factory");
                 final Method m = c.getMethod("parse", new Class[]{org.w3c.dom.Node.class});
-                rs = (XmlObject) m.invoke(null, new Object[]{rs.getDomNode()});
+                bodyFirstChild = (XmlObject) m.invoke(null, new Object[]{bodyFirstChild.getDomNode()});
             } catch (Exception e) {
-                throw new IOException("Can't reparse message: \n" + (rs == null ? "null" : rs.xmlText()) + "\nParse exception: " + ExceptionTextFormatter.getExceptionMess(e), e);
+                throw new IOException("Can't reparse message: \n" + (bodyFirstChild == null ? "null" : bodyFirstChild.xmlText()) + "\nParse exception: " + ExceptionTextFormatter.getExceptionMess(e), e);
             }
-            if (!resultClass.isInstance(rs)) {
-                throw new IOException("Invalid message class. Expected \"" + resultClass.getName() + "\" got \"" + rs.getClass().getName() + "\"");
+            if (!resultClass.isInstance(bodyFirstChild)) {
+                throw new IOException("Invalid message class. Expected \"" + resultClass.getName() + "\" got \"" + bodyFirstChild.getClass().getName() + "\"");
             }
         }
-        return rs;
+        return bodyFirstChild;
     }
 
     /**
@@ -222,9 +235,23 @@ public class SoapFormatter {
         return xmlOutputStream.toByteArray();
     }
 
+    public static EnvelopeDocument getEnvelopeDoc(final XmlObject envDoc) {
+        if (envDoc instanceof EnvelopeDocument) {
+            return (EnvelopeDocument) envDoc;
+        } else {
+            try {
+                return EnvelopeDocument.Factory.parse(envDoc.newReader());
+            } catch (XmlException | IOException | RuntimeException ex) {
+                return null;
+            }
+        }
+    }
+
     public static XmlObject createSoapEnvelope(final XmlObject bodyDoc) {
-        final EnvelopeDocument envelopeDoc = EnvelopeDocument.Factory.newInstance();
-        envelopeDoc.addNewEnvelope().addNewBody().set(bodyDoc);
+        EnvelopeDocument envelopeDoc = getEnvelopeDoc(bodyDoc);
+        if (envelopeDoc == null) {
+            return wrapToSoapEnvelope(bodyDoc);
+        }
         return envelopeDoc;
     }
 
@@ -403,7 +430,11 @@ public class SoapFormatter {
     }
 
     public static void sendFault(final byte[] mess, final OutputStream outputStream, final boolean keepAlive) throws IOException {
-        final String header = HttpFormatter.prepareSoapFaultHeader(null, mess.length, keepAlive);
+        sendFault(mess, outputStream, null, keepAlive);
+    }
+    
+    public static void sendFault(final byte[] mess, final OutputStream outputStream, Map<String, String> headerAttrs, final boolean keepAlive) throws IOException {
+        final String header = HttpFormatter.prepareSoapFaultHeader(headerAttrs, mess.length, keepAlive);
         writeStringToStream(header, outputStream);
         outputStream.write(mess);
         outputStream.flush();

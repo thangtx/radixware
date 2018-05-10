@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.types;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
@@ -64,9 +65,38 @@ public class InstantiatableClasses {
                                                   final List<InstantiatableClass> classes,
                                                   final String configPrefix,
                                                   final boolean sortByTitles) throws NoInstantiatableClassesException {
-        if (classes != null && !classes.isEmpty()) {
+        final List<InstantiatableClass> selectedClasses = 
+                selectClassesImpl(environment, parentWidget, classes, configPrefix, sortByTitles, false);
+        if (selectedClasses==null || selectedClasses.isEmpty()){
+            return null;
+        }else{
+            return selectedClasses.get(0);
+        }
+    }
+    
+    public static List<InstantiatableClass> selectClasses(final IClientEnvironment environment, 
+                                                  final IWidget parentWidget, 
+                                                  final List<InstantiatableClass> classes,
+                                                  final String configPrefix,
+                                                  final boolean sortByTitles) throws NoInstantiatableClassesException {
+        return selectClassesImpl(environment, parentWidget, classes, configPrefix, sortByTitles, false);
+    }
+    
+    public static List<InstantiatableClass> selectClasses(final IClientEnvironment environment, 
+                                                  final IWidget parentWidget, 
+                                                  final List<InstantiatableClass> classes,
+                                                  final String configPrefix,
+                                                  final boolean sortByTitles,
+                                                  final boolean isMultiselectEnabled) throws NoInstantiatableClassesException {
+        return selectClassesImpl(environment, parentWidget, classes, configPrefix, sortByTitles, isMultiselectEnabled);
+    }    
+    
+    public static InstantiatableClass autoSelectClass(final List<InstantiatableClass> classes){
+        if (classes==null || classes.isEmpty()){
+            return null;
+        }else{
             InstantiatableClass resultClass = null;
-            int classCount = 0;
+            int classCount = 0;            
             for (InstantiatableClass c : classes) {
                 classCount += getNotAbstractClassesCount(c);
                 if (classCount > 1) {
@@ -79,28 +109,42 @@ public class InstantiatableClasses {
                     resultClass = findFirstNotAbstractClass(c);
                 }
             }
+            return classCount==1 ? resultClass : null;
+        }    
+    }
+    
+    private static List<InstantiatableClass> selectClassesImpl(final IClientEnvironment environment, 
+                                                  final IWidget parentWidget, 
+                                                  final List<InstantiatableClass> classes,
+                                                  final String configPrefix,
+                                                  final boolean sortByTitles,
+                                                  final boolean multipleSelection) throws NoInstantiatableClassesException {
+        if (classes != null && !classes.isEmpty()) {
+            final InstantiatableClass resultClass = autoSelectClass(classes);
 
-            if (classCount == 1) {
-                return resultClass;
+            if (resultClass != null) {
+                return Collections.singletonList(resultClass);
             }
 
-            if (classCount > 1) {
-                final ISelectInstantiatableClassDialog dialog = 
-                    environment.getApplication().getDialogFactory().newInstantiatableClassDialog(environment, parentWidget, classes, configPrefix, sortByTitles);
-                environment.getProgressHandleManager().blockProgress();
-                try {
-                    if (dialog.execDialog() == DialogResult.ACCEPTED) {
-                        return dialog.getCurrentClass();
-                    } else {
-                        return null;
+            final ISelectInstantiatableClassDialog dialog = 
+                environment.getApplication().getDialogFactory().newInstantiatableClassDialog(environment, parentWidget, classes, configPrefix, sortByTitles, multipleSelection);
+            environment.getProgressHandleManager().blockProgress();
+            try {
+                if (dialog.execDialog() == DialogResult.ACCEPTED) {
+                    if (multipleSelection){
+                        return dialog.getSelectedClasses();
+                    }else{
+                        return Collections.singletonList(dialog.getCurrentClass());
                     }
-                } finally {
-                    environment.getProgressHandleManager().unblockProgress();
+                } else {
+                    return null;
                 }
+            } finally {
+                environment.getProgressHandleManager().unblockProgress();
             }
         }
         throw new NoInstantiatableClassesException(environment.getMessageProvider());
-    }
+    }    
 
     private static InstantiatableClass findFirstNotAbstractClass(InstantiatableClass clazz) {
         InstantiatableClass c;

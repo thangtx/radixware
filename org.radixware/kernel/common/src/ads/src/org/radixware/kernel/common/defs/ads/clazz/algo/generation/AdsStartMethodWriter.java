@@ -48,8 +48,8 @@ public class AdsStartMethodWriter extends AdsMethodWriter<AdsAlgoStartMethodDef>
 
         final AdsAlgoClassDef algo = (AdsAlgoClassDef)m.getOwnerClass();
 
-        final CodePrinter before = CodePrinter.Factory.newJavaPrinter();
-        final CodePrinter after = CodePrinter.Factory.newJavaPrinter();
+        final CodePrinter before = CodePrinter.Factory.newJavaPrinter(printer);
+        final CodePrinter after = CodePrinter.Factory.newJavaPrinter(printer);
 
         for (AdsAlgoClassDef.Param p: algo.getParams()) {
             final Id id = p.getId();

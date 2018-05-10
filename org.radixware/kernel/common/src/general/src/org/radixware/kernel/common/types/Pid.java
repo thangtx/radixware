@@ -16,14 +16,31 @@ import java.util.ArrayList;
 import java.util.Date;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
-import org.radixware.kernel.common.exceptions.WrongFormatError;
-import org.radixware.kernel.common.utils.ValueConverter;
+import org.radixware.kernel.common.utils.ValueFormatter;
 
 public class Pid {
 
+    protected final static char PK_VAL_DELIMETER = '~';
+    
     private int hashCode;
-    private Id tableId;
+    private final Id tableId;
     private String asStr;
+    private boolean isNullObject;
+    
+     /**
+     * Create "Null object". Is used in new entity getPid() if primary key is
+     * empty. Different "Null objects" are not equal.
+     */
+    protected Pid(final Id tableId, final int pkColumnsCount){
+        this.tableId = tableId;
+        final StringBuilder pidAsStrBuilder = new StringBuilder();
+        for (int i=1; i<pkColumnsCount; i++){
+            pidAsStrBuilder.append(PK_VAL_DELIMETER);
+        }
+        asStr = pidAsStrBuilder.toString();
+        hashCode = (tableId.toString() + asStr).hashCode();//NOPMD
+        isNullObject = true;
+    }
 
     /**
      * Конструирует идентификатор сущности по его строковому представлению
@@ -35,7 +52,7 @@ public class Pid {
     public Pid(final Id tableId, final String str) {
         this.tableId = tableId;
         this.asStr = str;
-        int start = 0;        
+        hashCode = (tableId + asStr).hashCode();
     }
 
     /**
@@ -134,8 +151,8 @@ public class Pid {
         hashCode = pid.hashCode;
     }
 
-    public static Pid fromStr(String asStrWithTableId) {
-        int index = asStrWithTableId.indexOf("\n");
+    public static Pid fromStr(final String asStrWithTableId) {
+        final int index = asStrWithTableId.indexOf('\n');
         if (index < 0) {
             return null;
         } else {
@@ -144,6 +161,10 @@ public class Pid {
             return new Pid(Id.Factory.loadFrom(tableIdAsStr), pidAsStr);
         }
 
+    }
+    
+    public boolean isNullObject() {
+        return isNullObject;
     }
 
     /**
@@ -160,15 +181,17 @@ public class Pid {
      * строковые представления и идентификаторы их таблиц.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {       
         if (this == o) {
             return true;
         }
+        if (isNullObject){ //"null object" is not equal an other "null object" or regular objects
+            return false;
+        }
         if (o instanceof Pid) {
-            Pid p = (Pid) o;
+            final Pid p = (Pid) o;
             return tableId.equals(p.tableId) && asStr.equals(p.asStr);
         }
-
         return false;
     }
 
@@ -193,6 +216,15 @@ public class Pid {
     public int hashCode() {
         return hashCode;
     }
+    
+    protected final void setPidAsStr(final String pidAsStr){
+        asStr = pidAsStr;
+        hashCode = (tableId.toString()+asStr).hashCode();
+    }
+    
+    protected final void setIsNullObject(final boolean isNull){
+        isNullObject = isNull;
+    }
 
 //private methods
     private void build(ArrayList<Object> key) {
@@ -205,18 +237,18 @@ public class Pid {
                 if (isFirstVal) {
                     isFirstVal = false;
                 } else {
-                    tmp.append('~');
+                    tmp.append(PK_VAL_DELIMETER);
                 }
-                appendVal2PidStr(tmp, val);
+                appendVal2PidStr(tmp, val, -1);
             }
             asStr = tmp.toString();
         } else {
             asStr = "";
         }
         hashCode = (tableId + asStr).hashCode();
-    }
+    }    
 
-    private ArrayList<Object> normalizeKeyVals(final ArrayList<Object> key) {
+    private static ArrayList<Object> normalizeKeyVals(final ArrayList<Object> key) {
         // разгребаем последствия атобоксинга
         final ArrayList<Object> res = new ArrayList<Object>(key.size() * 2 + 1);
         for (Object val : key) {
@@ -238,26 +270,43 @@ public class Pid {
         }
         return res;
     }
-
-    private void appendVal2PidStr(final StringBuilder pidStr, final Object val) {
+    
+    protected static void appendVal2PidStr(final StringBuilder pidStr, final Object val, final int columnPrecision) {
         if (val == null) {
             return;
         }
-        if (val instanceof Number || val instanceof IKernelIntEnum) {
+        if (val instanceof BigDecimal) {
+            pidStr.append(ValueFormatter.normalizeBigDecimal((BigDecimal) val).toPlainString());
+        } else if (val instanceof Number || val instanceof IKernelIntEnum) {
             pidStr.append(val.toString());
         } else if (val instanceof Boolean) {
-            pidStr.append(((Boolean) val).booleanValue() ? '1' : '0');
+            pidStr.append((Boolean) val ? '1' : '0');
         } else if (val instanceof java.sql.Timestamp) {
-            pidStr.append(ValueConverter.floraValueOf((java.sql.Timestamp) val));
-        } else {//searching bad chars only in String fields
-            String tmp = val.toString();
+            final String timeStampStr = val.toString();
+            final int dotBeforeFractionalSecondsIdx = timeStampStr.lastIndexOf('.');
+            pidStr.append(timeStampStr.substring(0, dotBeforeFractionalSecondsIdx));
+            if (columnPrecision > 0) {
+                pidStr.append('.');
+                final String fractionalSecondsStr = timeStampStr.substring(dotBeforeFractionalSecondsIdx + 1);
+                if (fractionalSecondsStr.length() > columnPrecision) {
+                    pidStr.append(fractionalSecondsStr.substring(0, columnPrecision));
+                } else {
+                    pidStr.append(fractionalSecondsStr);
+                    for (int i = 0; i < columnPrecision - fractionalSecondsStr.length(); i++) {
+                        pidStr.append('0');
+                    }
+                }
+            }
+        } else { //searching bad chars only in String fields
+            final String tmp = val.toString();
             for (int i = 0; i < tmp.length(); i++) {
                 switch (tmp.charAt(i)) {
                     case '\\':
                         pidStr.append("\\\\");
                         break;
-                    case '~':
-                        pidStr.append("\\~");
+                    case PK_VAL_DELIMETER:
+                        pidStr.append('\\');
+                        pidStr.append(PK_VAL_DELIMETER);
                         break;
                     case '\n':
                         pidStr.append("\\n");
@@ -274,8 +323,6 @@ public class Pid {
                     default:
                         pidStr.append(tmp.charAt(i));
                 }
-                //pidStr.append(tmp);
-
             }
         }
     }

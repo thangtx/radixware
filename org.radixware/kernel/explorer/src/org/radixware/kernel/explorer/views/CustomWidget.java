@@ -82,6 +82,7 @@ public abstract class CustomWidget extends ExplorerWidget implements IExplorerVi
     @Override
     public void open(Model model) {
         model.setView(this);
+        setObjectName("rx_widget_view_#"+model.getDefinition().getId());
     }
 
     public void open() {

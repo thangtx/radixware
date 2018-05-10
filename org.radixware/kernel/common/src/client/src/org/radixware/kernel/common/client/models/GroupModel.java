@@ -25,6 +25,7 @@ import java.util.Set;
 import org.radixware.kernel.common.client.meta.filters.RadCommonFilter;
 import org.radixware.kernel.common.client.meta.explorerItems.RadSelectorExplorerItemDef;
 import org.radixware.kernel.common.client.meta.explorerItems.RadChildRefExplorerItemDef;
+import org.radixware.kernel.common.client.meta.mask.EditMaskRef;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
@@ -53,12 +54,17 @@ import org.radixware.kernel.common.client.models.groupsettings.Sortings;
 import org.radixware.kernel.common.client.models.items.SelectorColumnModelItem;
 import org.radixware.kernel.common.client.models.items.SelectorColumns;
 import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.models.items.properties.PropertyReference;
 import org.radixware.kernel.common.client.models.items.properties.PropertyValue;
+import org.radixware.kernel.common.client.models.items.properties.SimpleProperty;
 import org.radixware.kernel.common.client.tree.IExplorerTreeManager;
+import org.radixware.kernel.common.client.types.AggregateFunctionCall;
 import org.radixware.kernel.common.client.types.GroupRestrictions;
 import org.radixware.kernel.common.client.types.InstantiatableClass;
 import org.radixware.kernel.common.client.types.InstantiatableClasses;
 import org.radixware.kernel.common.client.types.Pid;
+import org.radixware.kernel.common.client.types.Reference;
+import org.radixware.kernel.common.client.types.SelectorColumnsStatistic;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.client.views.IView;
@@ -76,6 +82,7 @@ import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.scml.SqmlExpression;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
+import org.radixware.schemas.eas.CalcSelectionStatisticRs;
 import org.radixware.schemas.eas.ColorScheme;
 import org.radixware.schemas.eas.DeleteRejections;
 import org.radixware.schemas.eas.DeleteRs;
@@ -84,6 +91,62 @@ import org.radixware.schemas.eas.SelectMess;
 import org.radixware.schemas.eas.SelectRs;
 
 public abstract class GroupModel extends Model implements IPresentationChangedHandler {
+    
+    public static final class ClassFilter{
+        
+        private final Id classId;
+        private final boolean includeDescendants;
+        
+        private ClassFilter(final Id classId, final boolean includeDescendants){
+            this.classId = classId;
+            this.includeDescendants = includeDescendants;
+        }
+
+        public Id getClassId() {
+            return classId;
+        }
+
+        public boolean includeDescendants() {
+            return includeDescendants;
+        }
+        
+        public org.radixware.schemas.eas.ClassFilters.Item writeToXml(org.radixware.schemas.eas.ClassFilters.Item item){
+            org.radixware.schemas.eas.ClassFilters.Item xml;
+            xml = item==null ? org.radixware.schemas.eas.ClassFilters.Item.Factory.newInstance() : item;
+            xml.setClassId(classId);
+            if (includeDescendants){
+                xml.setIncludeDescendants(true);
+            }
+            return xml;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 23 * hash + Objects.hashCode(this.classId);
+            hash = 23 * hash + (this.includeDescendants ? 1 : 0);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final ClassFilter other = (ClassFilter) obj;
+            if (!Objects.equals(this.classId, other.classId)) {
+                return false;
+            }
+            if (this.includeDescendants != other.includeDescendants) {
+                return false;
+            }
+            return true;
+        }
+                
+    }
     
     public static abstract class SelectionListener{
         public boolean beforeChangeSelection(final EntityObjectsSelection oldSelection, final EntityObjectsSelection newSelection){
@@ -241,9 +304,10 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
     private FilterModel filter;
     private Long filterChangeTimestamp;
     private Filters filters;    
+    private ClassFilter classFilter;
     private RadSortingDef sorting;
-    private Sortings sortings;
-    final List<ProxyGroupModel> linkedGroups = new ArrayList<>();    
+    private Sortings sortings;    
+    final List<ProxyGroupModel> linkedGroups = new ArrayList<>();
     List<InstantiatableClass> instantiatableClasses;
     private IEntitySelectionController selectionController;
     private SelectRs bufferedResponce;
@@ -285,6 +349,7 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
             sortings.invalidate();
         }
         filter = null;
+        classFilter = null;
         filterChangeTimestamp = null;
         sorting = null;
         instantiatableClasses = null;
@@ -527,12 +592,16 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
             //Определение класса создаваемого объекта
             classId = onSelectCreationClass();
             if (classId == null) {
+                final List<Id> selectedClassIds;
                 try {
-                    classId = selectCreationClass();
+                    selectedClassIds = selectCreationClass(false);
                 } catch (InterruptedException ex) {
-                    return null;//Создание было отменено
+                    return null;//Creation was cancelled
                 }
-                assert classId != null;
+                if (selectedClassIds==null || selectedClassIds.isEmpty()){
+                    return null;//Creation was cancelled
+                }
+                classId = selectedClassIds.get(0);
             }
         }
         final IContext.InSelectorCreating context = new IContext.InSelectorCreating(this);
@@ -548,6 +617,62 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
 
     public EntityModel openCreatingEntity(Id classId, final EntityModel src) throws ServiceClientException, InterruptedException {
         return openCreatingEntity(classId, src, null);
+    }
+        
+    /**
+     * Метод создает модели презентаций редактора, на основе которых в 
+     * последствии могут создаваться объекты сущности внутри данной группы.
+     * Для каждого идентификатора класса из списка <code>classIds<code> будет создана одна модель 
+     * презентации редактора на основе одной из презентаций списка
+     * {@link RadSelectorPresentationDef#getCreationPresentationIds()}.
+     * <p>Если идентификаторы классов не заданы, а в группе допускается наличие сущностей,
+     * принадлежащих разным классам, то будет вызван диалог выбора класса (одного или нескольких).
+     * Когда идентификатор класса не удается определить или не указана презентация для создания
+     * объекта, генерируется {@link ModelCreationError}.
+     * <p>Для завершения создания нового объекта сущности необходим вызов {@link EntityModel#create()}
+     * @param classIds список идентификаторов классов сущности
+     * @param initialValues начальные значения свойств новых объектов
+     * @return список моделей сущности для создания новых объектов.
+     * @throws ServiceClientException ошибки при выполении запроса на подготовку
+     * к созданию объектов или запроса на получение списка классов сущностей.
+     * @throws InterruptedException выполнение запроса было прервано
+     */
+    public List<EntityModel> openCreatingEntities(List<Id> classIds, final Map<Id, Object> initialValues) throws ServiceClientException, InterruptedException {
+        if (classIds == null || classIds.isEmpty()) {
+            //Определение класса создаваемого объекта
+            classIds = onSelectCreationClasses();
+            if (classIds==null || classIds.isEmpty()){
+                final Id classId = onSelectCreationClass();
+                if (classId!=null){
+                    classIds = Collections.singletonList(classId);
+                }
+            }
+            if (classIds == null || classIds.isEmpty()) {
+                final List<Id> selectedClassIds;
+                try {
+                    selectedClassIds = selectCreationClass(true);
+                } catch (InterruptedException ex) {
+                    return null;//Creation was cancelled
+                }
+                if (selectedClassIds==null || selectedClassIds.isEmpty()){
+                    return null;//Creation was cancelled
+                }
+                classIds = selectedClassIds;
+            }
+        }
+        final IContext.InSelectorCreating context = new IContext.InSelectorCreating(this);
+        if (getSelectorPresentationDef().getCreationPresentation() == null) {
+            final String msg = getEnvironment().getMessageProvider().translate("ExplorerError", "creating presentation was not defined");
+            throw new ModelCreationError(ModelCreationError.ModelType.ENTITY_MODEL_FOR_NEW, getDefinition(), context, msg);
+        }
+        return EntityModel.openPrepareCreateModels(getSelectorPresentationDef().getCreationPresentation(),
+                                                                             classIds,
+                                                                             getSelectorPresentationDef().getCreationPresentationIds(),
+                                                                             initialValues, context);
+    }
+    
+    public List<EntityModel> openCreatingEntities(List<Id> classIds) throws ServiceClientException, InterruptedException {
+        return openCreatingEntities(classIds, null);
     }
 
     /**
@@ -763,7 +888,6 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
         }
     }
 
-
     public void setCondition(SqmlExpression expression) throws ServiceClientException, InterruptedException {
         setCondition(expression != null ? expression.asXsqml() : null);
     }
@@ -833,6 +957,27 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
         sorting = newSorting;
         instantiatableClasses = null;
         SelectRs response = null;
+        try{
+           response = rereadImpl(needToClearSelection);
+        }finally{
+            if (response == null) {//wasException
+                filter = oldFilter;
+                filterChangeTimestamp = oldFilterChangeTimestamp;
+                sorting = oldSorting;
+                instantiatableClasses = oldInstantiatableClasses;
+            }            
+        }
+        if (newFilter != null) {
+            filters.setAsLastUsed(newFilter);
+            afterApplyFilter(newFilter);
+            newFilter.afterApply();
+        }
+        if (newSorting != null){
+            sortings.setAsLastUsed(sorting);
+        }
+    }
+    
+    private SelectRs rereadImpl(final boolean clearSelection) throws ServiceClientException, InterruptedException{
         final boolean readEntireObjectAtFirstRow;
         if (getView()!=null 
             && !getRestrictions().getIsEditorRestricted() 
@@ -845,25 +990,17 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
         }else{
             readEntireObjectAtFirstRow = false;
         }
+        SelectRs response = null;
         try{
-            try {
-                response =  readMoreImpl(1,readPageSize, needToClearSelection);
-            }
-            finally {
-                if (response == null) {//wasException
-                    filter = oldFilter;
-                    filterChangeTimestamp = oldFilterChangeTimestamp;
-                    sorting = oldSorting;
-                    instantiatableClasses = oldInstantiatableClasses;
-                } else {
-                    bufferedResponce = response;
-                }
+            try {                
+                response =  readMoreImpl(1,readPageSize, clearSelection);
+            }finally {
+                bufferedResponce = response;
             }
             if (getView() != null) {            
                 getGroupView().leaveCurrentEntity(true);
                 getGroupView().reread(null);
                 getGroupView().repaint();
-
             } else {
                 reset();
             }
@@ -875,13 +1012,24 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
                 }
             }
         }
-        if (newFilter != null) {
-            filters.setAsLastUsed(newFilter);
-            newFilter.setIsPropertyValueEdited(false);
-            newFilter.afterApply();
-        }        
-        if (newSorting != null){
-            sortings.setAsLastUsed(sorting);
+        return response;
+    }    
+    
+    @SuppressWarnings("unchecked")
+    private void afterApplyFilter(final FilterModel filter){
+        final List<Property> filterProperties = new ArrayList<>(filter.getActiveProperties());
+        for (Property property: filterProperties){
+            if (property.isLocal()){
+                if (property instanceof SimpleProperty){                    
+                    ((SimpleProperty)property).setInitialValue(property.getValueObject());
+                }else if (property instanceof PropertyReference){
+                    ((PropertyReference)property).setInitialValue((Reference)property.getValueObject());
+                }
+            }else{                
+                final PropertyValue newServerValue = new PropertyValue(property);
+                newServerValue.setReadonly(false);
+                property.setServerValue(newServerValue);
+            }
         }
     }
 
@@ -889,14 +1037,42 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
         applyGroupSettingsImpl(newFilter,getCurrentSorting());
     }
     
+    public final void setClassFilter(final Id classId, 
+                                                final boolean includeDescendants) throws ServiceClientException, InterruptedException{
+        if (classId==null){
+            removeClassFilter();
+        }else{
+            final ClassFilter newFilter = new ClassFilter(classId, includeDescendants);
+            final boolean classFilterDefined = classFilter!=null;
+            if (!Objects.equals(newFilter, classFilter)){
+                classFilter = newFilter;
+                if (!isEmpty() || (classFilterDefined && !hasMoreRows())){
+                    rereadImpl(true);
+                }
+            }
+        }
+    }
+    
+    public final void removeClassFilter() throws ServiceClientException, InterruptedException{
+        if (classFilter!=null){
+            classFilter = null;
+            if (!isEmpty() || !hasMoreRows()){
+                rereadImpl(true);
+            }
+        }
+    }
+    
+    public final ClassFilter getClassFilter(){
+        return classFilter;
+    }
+        
     public void setSorting(final RadSortingDef newSorting) throws ServiceClientException, InterruptedException{
         try{
             applyGroupSettingsImpl(getCurrentFilter(), newSorting);
         }
         catch(PropertyIsMandatoryException | InvalidPropertyValueException exception){
             showException(exception);
-        }
-                
+        }                
     }
     
     public void applySettings(final FilterModel newFilter, final RadSortingDef newSorting) throws PropertyIsMandatoryException, InvalidPropertyValueException, ServiceClientException, InterruptedException {
@@ -910,17 +1086,10 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
         return condition != null ? (org.radixware.schemas.xscml.Sqml) condition.copy() : null;
     }
 
-    private Id selectCreationClass() throws ServiceClientException, InterruptedException {
+    private List<Id> selectCreationClass(final boolean isMultipleSelection) throws ServiceClientException, InterruptedException {
         final RadSelectorPresentationDef presentation = getSelectorPresentationDef();
         if (!presentation.getClassPresentation().isClassCatalogExists()) {
-
-            /*             //RADIX-3002
-            if (getContext() instanceof Context.TableSelect){
-            final Context.TableSelect context = (Context.TableSelect)getContext();
-            if (context.explorerItemDef.getModelDefinitionClassId()!=null)
-            return context.explorerItemDef.getModelDefinitionClassId();
-            }*/
-            return presentation.getOwnerClassId();
+            return Collections.singletonList(presentation.getOwnerClassId());
         }        
         final List<InstantiatableClass> classes;
         if (instantiatableClasses==null || instantiatableClasses.isEmpty()){
@@ -941,74 +1110,78 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
         }
 
         final IWidget parentWidget = getGroupView() == null ? getEnvironment().getMainWindow() : getGroupView();
-        final InstantiatableClass cl = 
-            InstantiatableClasses.selectClass(getEnvironment(), 
+        final List<InstantiatableClass> selectedClasses = 
+            InstantiatableClasses.selectClasses(getEnvironment(), 
                                               parentWidget, 
                                               classes, 
                                               presentation.getId().toString(),
-                                              presentation.autoSortInstantiatableClasses());
+                                              presentation.autoSortInstantiatableClasses(),
+                                              isMultipleSelection);
 
-        if (cl == null) {
-            throw new InterruptedException();
+        if (selectedClasses == null || selectedClasses.isEmpty()) {
+            return null;
         }
-        return cl.getId();
+        final List<Id> result = new LinkedList<>();
+        for (InstantiatableClass cl: selectedClasses){
+            result.add(cl.getId());
+        }
+        return result;
     }
 
     public boolean deleteAll(final boolean forced) throws ServiceClientException, InterruptedException {
         if (!beforeDeleteAll()) {
             return false;
         }
-        final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Object Deletion"), msg = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Do you really want to clear \'%s\'?");
-        if (forced || getEnvironment().messageConfirmation(title, String.format(msg, getTitle()))) {
-            if (deleteImpl(false, forced)) {                
-                final Collection<Pid> pids;
-                if (getEntitiesCount()>0) {
-                    pids = new ArrayList<>(getEntitiesCount());
-                    final List<EntityModel> allRows = getAllRows();
-                    if (getSelectorPresentationDef().getTableId().equals(getEnvironment().getClipboard().getTableId())) {
-                        getEnvironment().getClipboard().remove(allRows);
-                    }
+        if ((forced || confirmToDeleteAllObjects()) && deleteImpl(false, forced)) {
+            final Collection<Pid> pids;
+            if (getEntitiesCount()>0) {
+                pids = new ArrayList<>(getEntitiesCount());
+                final List<EntityModel> allRows = getAllRows();
+                if (getSelectorPresentationDef().getTableId().equals(getEnvironment().getClipboard().getTableId())) {
+                    getEnvironment().getClipboard().remove(allRows);
+                }
 
-                    if (getEnvironment().getTreeManager() != null) {
-                        for (EntityModel entity : allRows) {
-                            pids.add(entity.getPid());
-                        }
+                if (getEnvironment().getTreeManager() != null) {
+                    for (EntityModel entity : allRows) {
+                        pids.add(entity.getPid());
                     }
-                    clearRows();
-                    startReadIndex = 1;
-                    asyncReader.clean();
-                }else{
-                    pids = Collections.emptyList();
                 }
-                //then invoke event
-                afterDeleteAll();
-                //and finally synchronize explorer tree
-                if (!pids.isEmpty() && getEnvironment().getTreeManager() != null) {
-                    final IExplorerTreeManager tree = getEnvironment().getTreeManager();
-                    tree.afterEntitiesRemoved(pids, getView());
-                }
-                return true;
+                clearRows();
+                startReadIndex = 1;
+                asyncReader.clean();
+            }else{
+                pids = Collections.emptyList();
             }
+            //then invoke event
+            afterDeleteAll();
+            //and finally synchronize explorer tree
+            if (!pids.isEmpty() && getEnvironment().getTreeManager() != null) {
+                final IExplorerTreeManager tree = getEnvironment().getTreeManager();
+                tree.afterEntitiesRemoved(pids, getView());
+            }
+            return true;
         }
         return false;
+    }
+    
+    protected boolean confirmToDeleteAllObjects(){
+        final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Object Deletion");
+        final String msg = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Do you really want to clear \'%s\'?");
+        return getEnvironment().messageConfirmation(title, String.format(msg, getTitle()));
     }
 
     @Override
     public List<Id> getAccessibleCommandIds() {
         if (commandIds == null) {
-            if (getContext() instanceof IContext.ContextlessSelect) {
-                commandIds = Collections.emptyList();
-            } else {
-                final Collection<RadCommandDef> commandDefs = getSelectorPresentationDef().getEnabledCommands();
-                commandIds = new ArrayList<>(commandDefs.size());
-                for (RadCommandDef command : commandDefs) {
-                    if (!getContext().getRestrictions().getIsCommandRestricted(command.getId())
-                        && isCommandAccessible(command)
-                       ) {
-                        commandIds.add(command.getId());
-                    }
+            final Collection<RadCommandDef> commandDefs = getSelectorPresentationDef().getEnabledCommands();
+            commandIds = new ArrayList<>(commandDefs.size());
+            for (RadCommandDef command : commandDefs) {
+                if (!getContext().getRestrictions().getIsCommandRestricted(command)
+                    && isCommandAccessible(command)
+                   ) {
+                    commandIds.add(command.getId());
                 }
-            }
+            }            
         }
         return Collections.unmodifiableList(commandIds);
     }
@@ -1034,6 +1207,11 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
     protected Id onSelectCreationClass() {
         return null;
     }
+    
+    protected List<Id> onSelectCreationClasses() {
+        return null;
+    }
+    
 
     protected boolean beforePresentClassList(List<InstantiatableClass> classes) {
         return true;
@@ -1076,7 +1254,7 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
     private SelectRs readMoreImpl(final int startIndex, final int count, final boolean clearSelection) throws ServiceClientException, InterruptedException {
         removeProcessedHandles(SelectMess.class);
         asyncReader.clean();
-        if (startReadIndex==1){
+        if (startIndex==1){
             beforeRead = true;
             try{
                 beforeReadFirstPage();
@@ -1456,7 +1634,7 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
             new LinkedList<>(reader.merge(getAllRows(), models, currentEntity));
         clearRows();
         addRows(mergedEntities);
-        setHasMoreRows(false);
+        setHasMoreRows(reader.hasMoreAfterMerge());
         for(EntityModel e : getAllRows()) {
             if(!(e instanceof BrokenEntityModel)) {
                 resultWithoutBroken.add(e);
@@ -1568,6 +1746,36 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
         }
     }
     
+    public final boolean applyEditMaskSettings(final EditMaskRef editMask){
+        org.radixware.schemas.xscml.Sqml editMaskCondition = editMask.getCondition();
+        if (editMaskCondition != null) {
+            try {
+                setCondition(editMaskCondition);
+            } catch (ObjectNotFoundError err) {
+                getEnvironment().processException(err);
+                return false;
+            } catch (InterruptedException exception){
+                return false;
+            } catch (ServiceClientException ex) {
+                showException(ex);
+                return false;
+            }
+        }
+        boolean customInitialFilter = editMask.isDefinedDefaultFilter();
+        if (customInitialFilter) {
+            getFilters().setDefaultFilterId(editMask.getDefaultFilterId());
+        }
+
+        Map<Id, Id> defaultSortingIdByFilterId = editMask.getDefaultSortingIdByFilterId();
+        if (defaultSortingIdByFilterId != null && !defaultSortingIdByFilterId.isEmpty()) {
+            final Sortings sortings = getSortings();
+            for (Map.Entry<Id, Id> entry : editMask.getDefaultSortingIdByFilterId().entrySet()) {
+                sortings.setDefaultSortingId(entry.getValue(), entry.getKey());
+            }
+        }
+        return true;
+    }
+    
     final boolean notifyBeforeChangeSelection(final EntityObjectsSelection newSelection){        
         if (selectionListeners!=null){
             final List<SelectionListener> listeners = new LinkedList<>(selectionListeners);            
@@ -1636,12 +1844,8 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
             }else{
                 return BatchDeleteResult.EMPTY;
             }
-        }else{                
-            final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Objects Deletion"),
-                    msg = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Do you really want to delete selected objects?"),
-                    confirmationMessage = String.format(msg, getTitle());
-
-            if (forced || getEnvironment().messageConfirmation(title, confirmationMessage)){
+        }else{
+            if (forced || confirmToDeleteSelectedObjects()){
                 if (selection.getSelectionMode()==ESelectionMode.INCLUSION){
                     if (entities!=null){
                         final Collection<Pid> selectedObjects = new LinkedList<>(selection.getSelectedObjects());
@@ -1677,14 +1881,19 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
         }
     }
     
+    protected boolean confirmToDeleteSelectedObjects(){
+        final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Objects Deletion");
+        final String msg = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Do you really want to delete selected objects?");
+        return getEnvironment().messageConfirmation(title, String.format(msg, getTitle()));
+    }
+    
     private boolean deleteSelectedObjectsImpl(final EntityObjectsSelection selection, final boolean cascade, final BatchDeleteResult result)
         throws ServiceClientException, InterruptedException {
         try{
             parseDeleteResponse(getEnvironment().getEasSession().deleteSelectedObjects(this, selection, cascade),result);
         }catch (ServiceCallFault e) {
             if (e.getFaultString().equals(ExceptionEnum.CONFIRM_SUBOBJECTS_DELETE.toString())) {
-                final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Objects Deletion");
-                if (getEnvironment().messageConfirmation(title, e.getMessage())) {
+                if (confirmToDeleteSubobjects(e.getMessage())) {
                    return deleteSelectedObjectsImpl(selection,true,result);
                 }else{
                     return false;
@@ -1699,6 +1908,11 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
             }
         }        
         return true;
+    }
+    
+    protected boolean confirmToDeleteSubobjects(final String message){
+        final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Objects Deletion");
+        return getEnvironment().messageConfirmation(title, message);
     }
     
     private void parseDeleteResponse(final DeleteRs response, final BatchDeleteResult result){
@@ -1732,5 +1946,10 @@ public abstract class GroupModel extends Model implements IPresentationChangedHa
     
     protected void afterDeleteSelectedObjects(){
         
+    }
+    
+    public SelectorColumnsStatistic calcStatistic(final List<AggregateFunctionCall> functions) throws ServiceClientException, InterruptedException{
+        final CalcSelectionStatisticRs response = getEnvironment().getEasSession().calcSelectionStatistic(this, functions);
+        return SelectorColumnsStatistic.parse(response.getAggregateFunctions());        
     }
 }

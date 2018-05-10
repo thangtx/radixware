@@ -26,7 +26,7 @@ public abstract class XmlSchemaItem {
     private List<XmlSchemaItem> childItems;
 
     public XmlSchemaItem(final SchemaParticle particle) {
-        this(particle, null);
+        this(particle, null);        
     }
 
     public XmlSchemaItem(final SchemaParticle particle, final String nameSpace) {        
@@ -48,7 +48,7 @@ public abstract class XmlSchemaItem {
             final SchemaType particleType = particle.getType();
             final SchemaParticle particleContentModel = particleType == null ? null : particleType.getContentModel();
             if (particleType != null && particleContentModel != null) {
-                final XmlSchemaItem schemaItem = newInstance(particleContentModel, nameSpace);
+                final XmlSchemaItem schemaItem = newInstance(particle.getParticleType(), particleContentModel, nameSpace);
                 if (schemaItem != null) {
                     if (particleContentModel.getParticleType() == SchemaParticle.ELEMENT
                             && schemaItem instanceof XmlSchemaElementItem) {
@@ -66,19 +66,19 @@ public abstract class XmlSchemaItem {
 
     private static void addChildItems(final SchemaParticle particle, final List<XmlSchemaItem> childItems, final String nameSpace) {
         for (int i = 0; i < particle.countOfParticleChild(); i++) {
-            final XmlSchemaItem childItem = newInstance(particle.getParticleChild(i), nameSpace);
+            final XmlSchemaItem childItem = newInstance(particle.getParticleType(), particle.getParticleChild(i), nameSpace);
             if (childItem != null) {
                 childItems.add(childItem);
             }
         }
     }
 
-    private static XmlSchemaItem newInstance(final SchemaParticle particle, final String nameSpace) {
+    private static XmlSchemaItem newInstance(final int parentParticalType, final SchemaParticle particle, final String nameSpace) {
         final int type = particle.getParticleType();
         switch (type) {
             case SchemaParticle.ELEMENT:
                 if (particle.getMaxOccurs() == null
-                        || particle.getMaxOccurs().intValue() > 1) {
+                    || particle.getMaxOccurs().intValue() > 1) {
                     return new XmlSchemaElementsListItem(particle,nameSpace);
                 } else {
                     return new XmlSchemaElementItem(particle, nameSpace);
@@ -92,4 +92,10 @@ public abstract class XmlSchemaItem {
                 return null;
         }
     }
+
+    @Override
+    public String toString() {
+        return particle==null || particle.getName()==null ? "any type" : particle.getName().toString();
+    }
+        
 }

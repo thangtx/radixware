@@ -402,7 +402,7 @@ public abstract class EditorPages extends ExtendableMembers<AdsEditorPageDef> im
         public boolean isNodePage() {
             AdsEditorPageDef page = findPage();
             if (page != null) {
-                return page.getType() == EEditorPageType.STANDARD && page.getProperties().isEmpty();
+                return page.getType() == EEditorPageType.STANDARD;// && page.getProperties().isEmpty()
             } else {
                 return false;
             }

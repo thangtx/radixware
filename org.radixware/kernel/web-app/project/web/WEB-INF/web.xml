@@ -1,37 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <!--servlet>
-        <servlet-name>Dispatcher</servlet-name>
-        <servlet-class>org.radixware.ws.servlet.Dispatcher</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Dispatcher</servlet-name>
-        <url-pattern>/icons/*</url-pattern>
-        <url-pattern>/rwtext/*</url-pattern>
-        <url-pattern>/explorer.html</url-pattern>
-    </servlet-mapping-->
     <listener>
         <description>Default application listener</description>
         <listener-class>org.radixware.ws.servlet.LifecycleListener</listener-class>
     </listener>
     <servlet>
+        <description>General WPS Servlet</description>
         <servlet-name>Dispatcher</servlet-name>
         <servlet-class>org.radixware.ws.servlet.Dispatcher</servlet-class>
     </servlet>
     <servlet>
+        <description>Servlet for uploading files</description>
         <servlet-name>FileUploader</servlet-name>
         <servlet-class>org.radixware.ws.servlet.FileUploader</servlet-class>
     </servlet>
+    <servlet>
+        <description>Servlet for testing transfer spped</description>
+        <display-name>SpeedTestServlet</display-name>
+        <servlet-name>SpeedTestServlet</servlet-name>
+        <servlet-class>org.radixware.ws.servlet.SpeedTestServlet</servlet-class>
+        <init-param>
+          <description>Max test package size (MBytes)</description>
+          <param-name>rdx.web.speed.test.max.packet.size</param-name>
+          <param-value>10</param-value>
+        </init-param>
+        <init-param>
+          <description>Max test package time-to-live (minutes)</description>
+          <param-name>rdx.web.speed.test.max.packet.ttl</param-name>
+          <param-value>5</param-value>
+        </init-param>
+    </servlet>    
     <servlet-mapping>
         <servlet-name>Dispatcher</servlet-name>
         <url-pattern>/icons/*</url-pattern>
         <url-pattern>/fileresource/*</url-pattern>
+        <url-pattern>/bannerDir/*</url-pattern>
         <url-pattern>/explorer.html</url-pattern>
         <url-pattern>/rwtext/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>FileUploader</servlet-name>
         <url-pattern>/file-upload.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SpeedTestServlet</servlet-name>
+        <url-pattern>/speedTest.html</url-pattern>
     </servlet-mapping>
     <filter>
         <filter-name>SetCacheControl</filter-name>

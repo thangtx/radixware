@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.common.builder.check.common;
 
+import java.nio.file.Path;
 import java.sql.Connection;
 
 public class CheckOptions {
@@ -21,6 +22,9 @@ public class CheckOptions {
     private int maxSqlQueryVariants;
     private boolean checkDocumentation;
     private boolean checkUDSRelatedDocumentationOnly;
+    private boolean checkExactDefTypesDoc;
+    private Path csvReportPath;  
+    private Path detailsFilePath;
 
     public CheckOptions() {
     }
@@ -80,6 +84,9 @@ public class CheckOptions {
             this.checkModuleDependences = options.checkModuleDependences;
             this.checkDocumentation = options.checkDocumentation;
             this.checkUDSRelatedDocumentationOnly = options.checkUDSRelatedDocumentationOnly;
+            this.checkExactDefTypesDoc = options.checkExactDefTypesDoc;
+            this.csvReportPath = options.csvReportPath;
+            this.detailsFilePath = options.detailsFilePath;
         }
     }
 
@@ -107,4 +114,27 @@ public class CheckOptions {
         this.checkUDSRelatedDocumentationOnly = checkUDSRelatedDocumentationOnly;
     }
 
+    public Path getCsvReportPath() {
+        return csvReportPath;
+    }
+
+    public boolean isCheckExactDefTypesDoc() {
+        return checkExactDefTypesDoc;
+    }
+
+    public void setCheckExactDefTypesDoc(boolean checkExactDefTypesDoc) {
+        this.checkExactDefTypesDoc = checkExactDefTypesDoc;
+    }
+    
+    public void setCsvReportPath(Path csvReportPath) {
+        this.csvReportPath = csvReportPath;
+    }        
+
+    public Path getDetailsFilePath() {
+        return detailsFilePath;
+    }
+
+    public void setDetailsFilePath(Path detailsFilePath) {
+        this.detailsFilePath = detailsFilePath;
+    }
 }

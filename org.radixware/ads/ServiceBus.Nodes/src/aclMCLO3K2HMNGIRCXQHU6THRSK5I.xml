@@ -156,14 +156,18 @@ protected final static </xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451"/>
+              <xsc:TypeDeclaration TypeId="451">
+                <xsc:Presentation>Xml</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> xDoc = null;
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthIDUH5DPQFJBUDIUFASRXYKBWLU" Invoke="true"/>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthIDUH5DPQFJBUDIUFASRXYKBWLU" Invoke="true">
+                <xsc:Presentation>traceDebugXml</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("Unpacked request data", rq.CurStage.Data, true);
@@ -171,307 +175,142 @@ try {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prd7K24HY6ZZ5CETC6GPMPJ5RREEE" Invoke="true"/>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prd7K24HY6ZZ5CETC6GPMPJ5RREEE" Invoke="true">
+                <xsc:Presentation>inRqData</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M">
+                <xsc:Presentation>ServiceBus::SbCommonUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true"/>
+              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true">
+                <xsc:Presentation>copyXml</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(rq.CurStage.Data);
     xDoc = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4">
+                <xsc:Presentation>ServiceBus::SbServerUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthGW36STLCPBDGFEER2LEGASIYWQ" Invoke="true"/>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthGW36STLCPBDGFEER2LEGASIYWQ" Invoke="true">
+                <xsc:Presentation>toBinBase64</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(rq.CurStage.Data, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruKVJ5RLNKI5DPFOJJ5VDHCDJGHY" Invoke="true"/>
+              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruKVJ5RLNKI5DPFOJJ5VDHCDJGHY" Invoke="true">
+                <xsc:Presentation>format</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruGODLMUTCJRDXRDQ6Q452FN66AU" Invoke="true"/>
+              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruGODLMUTCJRDXRDQ6Q452FN66AU" Invoke="true">
+                <xsc:Presentation>rqType</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthYFZPW475EFFCLLXOYQHNVMU3UM" Invoke="true"/>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthYFZPW475EFFCLLXOYQHNVMU3UM" Invoke="true">
+                <xsc:Presentation>getPipeline</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthIR5AQSWXA5FDJKMH4KLR4Q7X4I" Invoke="true"/>
+              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthIR5AQSWXA5FDJKMH4KLR4Q7X4I" Invoke="true">
+                <xsc:Presentation>getDataSchemes</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>());
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prdAZH4RRX4CFDB7KEL3JEGUO2UME" Invoke="true"/>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prdAZH4RRX4CFDB7KEL3JEGUO2UME" Invoke="true">
+                <xsc:Presentation>outRqData</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M">
+                <xsc:Presentation>ServiceBus::SbCommonUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true"/>
+              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true">
+                <xsc:Presentation>copyXml</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xDoc);
 } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
-    rq.Event = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="acsRFE5WRGZLRGVJORJQUY3DO3Z5Y aci6YCJLZTP3NAKNN6T27WPC3JVKQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>;
-    rq.ErrorMess = e.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>();
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true">
+                <xsc:Presentation>traceError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("To base64 exception: " + e.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>());
-}
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthIDUH5DPQFJBUDIUFASRXYKBWLU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>("Packed request data", xDoc, true);
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRq"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> curStage = (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRq"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)rq.CurStage.copy();
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRq"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> nextRq =
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthCNBAJHEAJBGKTFV2N6LU2JOKW4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(rq, OUT, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruQSDJEXJDXRCS7KSIC7U3ZIZLXI" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, xDoc) ;
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> rs = 
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthL2ENLREVU5BLFBXCDY3F36CZJQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruQSDJEXJDXRCS7KSIC7U3ZIZLXI" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, nextRq);
-
-</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthIDUH5DPQFJBUDIUFASRXYKBWLU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>("Packed response data", rs.CurStage.Data, true);
-try {
-    </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prdW53UTOGUQVGTXBHSL5YQSYWQ3I" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(rs.CurStage.Data);
-    xDoc = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthNXIWSL5B4BBKLNMY3BRUF5FQDI" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(rs.CurStage.Data, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruKVJ5RLNKI5DPFOJJ5VDHCDJGHY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruF5V5ORCYHJFK5GZWPNCNYE4YIQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruLWFE7VNDWJB5JIH34UUG5W2CPM" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthYFZPW475EFFCLLXOYQHNVMU3UM" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthIR5AQSWXA5FDJKMH4KLR4Q7X4I" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>());
-    </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prdODTOFAENCRDWFKAY2NWRI7CA7A" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(xDoc);
-} catch (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> e) {
-    </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>("From base64 exception: " + e.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>());
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcMKZKPPDWWFFIFAF4VNQN2KPMPA mth7DQE25SEPJALZHKUOLRA5TVGVE" Invoke="true"/>
+              <xsc:IdReference Path="axcU6ICZ6WTEVHXDMK5ISPSJ2DNMU mthQ5TQEKPJ6BEBZJUHERXMNY2GYU" Invoke="true">
+                <xsc:Presentation>PipelineException.InvalidRq</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true"/>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), this);
@@ -480,20 +319,285 @@ try {
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthIDUH5DPQFJBUDIUFASRXYKBWLU" Invoke="true"/>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthIDUH5DPQFJBUDIUFASRXYKBWLU" Invoke="true">
+                <xsc:Presentation>traceDebugXml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Packed request data", xDoc, true);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRq">
+                <xsc:Presentation>ServiceBus::SbXsd:StageRq</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> curStage = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="StageRq">
+                <xsc:Presentation>ServiceBus::SbXsd:StageRq</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)rq.CurStage.copy();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRq">
+                <xsc:Presentation>ServiceBus::SbXsd:PipelineMessageRq</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> nextRq =
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4">
+                <xsc:Presentation>ServiceBus::SbServerUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthCNBAJHEAJBGKTFV2N6LU2JOKW4" Invoke="true">
+                <xsc:Presentation>prepareNextRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rq, OUT, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruQSDJEXJDXRCS7KSIC7U3ZIZLXI" Invoke="true">
+                <xsc:Presentation>outConnectId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, xDoc) ;
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs">
+                <xsc:Presentation>ServiceBus::SbXsd:PipelineMessageRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = 
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4">
+                <xsc:Presentation>ServiceBus::SbServerUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthL2ENLREVU5BLFBXCDY3F36CZJQ" Invoke="true">
+                <xsc:Presentation>processRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruQSDJEXJDXRCS7KSIC7U3ZIZLXI" Invoke="true">
+                <xsc:Presentation>outConnectId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, nextRq);
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthIDUH5DPQFJBUDIUFASRXYKBWLU" Invoke="true">
+                <xsc:Presentation>traceDebugXml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Packed response data", rs.CurStage.Data, true);
+try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prdW53UTOGUQVGTXBHSL5YQSYWQ3I" Invoke="true">
+                <xsc:Presentation>outRsData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M">
+                <xsc:Presentation>ServiceBus::SbCommonUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true">
+                <xsc:Presentation>copyXml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rs.CurStage.Data);
+    xDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4">
+                <xsc:Presentation>ServiceBus::SbServerUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthNXIWSL5B4BBKLNMY3BRUF5FQDI" Invoke="true">
+                <xsc:Presentation>fromBinBase64</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(rs.CurStage.Data, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruKVJ5RLNKI5DPFOJJ5VDHCDJGHY" Invoke="true">
+                <xsc:Presentation>format</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruF5V5ORCYHJFK5GZWPNCNYE4YIQ" Invoke="true">
+                <xsc:Presentation>rsType</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclMCLO3K2HMNGIRCXQHU6THRSK5I pruLWFE7VNDWJB5JIH34UUG5W2CPM" Invoke="true">
+                <xsc:Presentation>toCheckByXsd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthYFZPW475EFFCLLXOYQHNVMU3UM" Invoke="true">
+                <xsc:Presentation>getPipeline</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthIR5AQSWXA5FDJKMH4KLR4Q7X4I" Invoke="true">
+                <xsc:Presentation>getDataSchemes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prdODTOFAENCRDWFKAY2NWRI7CA7A" Invoke="true">
+                <xsc:Presentation>inRsData</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M">
+                <xsc:Presentation>ServiceBus::SbCommonUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true">
+                <xsc:Presentation>copyXml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(xDoc);
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+    rs.Event = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsRFE5WRGZLRGVJORJQUY3DO3Z5Y aci6OC3YXAO6FGFFIZFXTQLFDFS4U" Invoke="true">
+                <xsc:Presentation>ServiceBus::PipelineEvent:InvalidRs</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    rs.ErrorMess = e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthQ7MQNDFPEVCSZM46CIFMM4ISAI" Invoke="true">
+                <xsc:Presentation>traceError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("From base64 exception: " + e.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A mthIDUH5DPQFJBUDIUFASRXYKBWLU" Invoke="true">
+                <xsc:Presentation>traceDebugXml</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("Unpacked response data", xDoc, true);
 return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4">
+                <xsc:Presentation>ServiceBus::SbServerUtil</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth4LECBP6LEVFBJGQ2THZDYKJMWA" Invoke="true"/>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mth4LECBP6LEVFBJGQ2THZDYKJMWA" Invoke="true">
+                <xsc:Presentation>prepareNextResponse</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(rs, curStage, xDoc);</xsc:Java>

@@ -1,0 +1,16 @@
+
+public class Test {
+
+    public void f() {
+	if ((1 == 1) != Boolean.FALSE) {
+	    System.out.println("ok");
+	}
+	g();
+    }
+
+    public void g() {
+	if ((1 == 1) != Boolean.FALSE.booleanValue()) {
+	    System.out.println("ok");
+	}
+    }
+}

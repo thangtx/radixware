@@ -85,8 +85,22 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="noIconInMenu" boolvalue="false"/>
             </file>
+            <file name="org-radixware-kernel-designer-environment-actions-ExportXmlSchemasAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.environment.Bundle"/>
+                <attr name="delegate" newvalue="org.radixware.kernel.designer.environment.actions.ExportXmlSchemasAction"/>
+                <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.actions.Bundle#CTL_ExportXmlSchemasAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
         </folder>
         <folder name="Refactoring">
+<!--            <file name="org-radixware-kernel-designer-environment-actions-PreloadInstallScript.instance">
+                <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.Bundle#Actions/Refactoring/org-radixware-kernel-designer-environment-actions-PreloadInstallScript.instance"/>
+                <attr name="name" stringvalue="org-radixware-kernel-designer-environment-actions-PreloadInstallScript"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+                <attr name="selectionType" stringvalue="ANY"/>
+                <attr name="type" stringvalue="org.radixware.kernel.common.repository.Layer"/>
+            </file> -->
             <file name="org-radixware-kernel-designer-environment-actions-OptimizeReferencesAction.instance">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.environment.Bundle"/>
                 <attr name="delegate" newvalue="org.radixware.kernel.designer.environment.actions.OptimizeReferencesAction"/>
@@ -108,6 +122,20 @@
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="noIconInMenu" boolvalue="false"/>
             </file>
+            <file name="org-radixware-kernel-designer-environment-actions-MoveUdsFilesAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.environment.Bundle"/>
+                <attr name="delegate" newvalue="org.radixware.kernel.designer.environment.actions.MoveUdsFilesAction"/>
+                <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.actions.Bundle#CTL_MoveUdsFilesAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+            <file name="org-radixware-kernel-designer-tree-ads-nodes-actions-preview-GenerateAllPreviewAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.environment.Bundle"/>
+                <attr name="delegate" newvalue="org.radixware.kernel.designer.tree.ads.nodes.actions.preview.GenerateAllPreviewAction"/>
+                <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.Bundle#CTL_GenerateAllPreviewAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
             <file name="org-radixware-kernel-designer-environment-actions-GenerateTriggersScriptAction.instance">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.environment.Bundle"/>
                 <attr name="delegate" newvalue="org.radixware.kernel.designer.environment.actions.GenerateTriggersScriptAction"/>
@@ -119,6 +147,13 @@
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.environment.Bundle"/>
                 <attr name="delegate" newvalue="org.radixware.kernel.designer.environment.actions.SaveAllForcedlyAction"/>
                 <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.actions.Bundle#CTL_SaveAllForcedlyAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+            <file name="org-radixware-kernel-designer-environment-actions-ExportClassNamesAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.environment.Bundle"/>
+                <attr name="delegate" newvalue="org.radixware.kernel.designer.environment.actions.ExportClassNamesAction"/>
+                <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.actions.Bundle#CTL_ExportClassNamesAction"/>
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
                 <attr name="noIconInMenu" boolvalue="false"/>
             </file>
@@ -175,13 +210,23 @@
             <file name="org-radixware-kernel-designer-environment-actions-GenerateRunRoleScriptAction.instance">
                 <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.context"/>
                 <attr name="delegate" newvalue="org.radixware.kernel.designer.environment.actions.GenerateRunRoleScriptAction"/>
+                <attr name="name" stringvalue="org-radixware-kernel-designer-environment-actions-GenerateRunRoleScript"/>
                 <attr name="type" stringvalue="org.radixware.kernel.common.repository.Layer"/>
                 <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.actions.Bundle#CTL_GenerateRUN_ROLE_script"/>
                 <attr name="selectionType" stringvalue="ANY"/>
                 <attr name="noIconInMenu" boolvalue="false"/>
             </file>     
-            <file name="org-radixware-kernel-designer-environment-actions-MergeChangesToBranchAction.instance">
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.connect"/>
+            <file name="org-radixware-kernel-designer-environment-actions-PreloadInstallScriptAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.context"/>
+                <attr name="delegate" newvalue="org.radixware.kernel.designer.environment.actions.PreloadInstallScriptAction"/>
+                <attr name="name" stringvalue="org-radixware-kernel-designer-environment-actions-PreloadInstallScript"/>
+                <attr name="type" stringvalue="org.radixware.kernel.common.repository.Layer"/>
+                <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.actions.Bundle#CTL_PreloadInstallScript"/>
+                <attr name="selectionType" stringvalue="ANY"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>     
+            <file name="org-radixware-kernel-designer-environment-actions-MergeChangesToBranchAction.instance">                
+                <attr name="instanceCreate" methodvalue="org.radixware.kernel.designer.environment.actions.MergeChangesToBranchAction.create"/>
                 <attr name="noIconInMenu" boolvalue="false"/>
             </file>             
             <file name="org-radixware-kernel-designer-environment-actions-ViewInformationAction.instance">
@@ -310,9 +355,11 @@
                     <attr name="position" intvalue="100"/>
                 </file>
             </folder>
-            
-            
 
+<!--            <file name="org-radixware-kernel-designer-environment-actions-PreloadInstallScript.shadow" url="org-radixware-kernel-designer-environment-actions-PreloadInstallScript.shadow">
+                <attr name="displayName" bundlevalue="org.radixware.kernel.designer.environment.Bundle#Menu/RadixTools/org-radixware-kernel-designer-environment-actions-PreloadInstallScript.shadow"/>
+                <attr name="originalFile" stringvalue="Actions/Refactoring/org-radixware-kernel-designer-environment-actions-PreloadInstallScript.instance"/>
+            </file> -->
             <file name="org-radixware-kernel-designer-environment-actions-optimizeReferencesAction.shadow_hidden">
                 <attr name="originalFile" stringvalue="Actions/Refactoring/org-radixware-kernel-designer-environment-actions-OptimizeReferencesAction.instance"/>
                 <attr name="position" intvalue="100"/>
@@ -325,6 +372,11 @@
             </file>
             <file name="org-radixware-kernel-designer-environment-actions-RenameImagesAction.shadow_hidden">
                 <attr name="originalFile" stringvalue="Actions/Refactoring/org-radixware-kernel-designer-environment-actions-RenameImagesAction.instance"/>
+                <attr name="position" intvalue="300"/>
+                <attr name="hidden" intvalue="true"/>
+            </file>
+            <file name="org-radixware-kernel-designer-environment-actions-MoveUdsFilesAction.shadow_hidden">
+                <attr name="originalFile" stringvalue="Actions/Refactoring/org-radixware-kernel-designer-environment-actions-MoveUdsFilesAction.instance"/>
                 <attr name="position" intvalue="300"/>
                 <attr name="hidden" intvalue="true"/>
             </file>
@@ -364,25 +416,34 @@
                 <attr name="originalFile" stringvalue="Actions/Debug/org-radixware-kernel-designer-environment-actions-FramerTestAction.instance"/>
                 <attr name="position" intvalue="880"/>
             </file>
+            <file name="org-radixware-kernel-designer-environment-actions-ExportXmlSchemasAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Debug/org-radixware-kernel-designer-environment-actions-ExportXmlSchemasAction.instance"/>
+                <attr name="position" intvalue="900"/>
+            </file>
+            <file name="org-radixware-kernel-designer-environment-actions-SaveAllForcedlyAction.shadow_hidden">
+                <attr name="originalFile" stringvalue="Actions/Refactoring/org-radixware-kernel-designer-environment-actions-SaveAllForcedlyAction.instance"/>
+                <attr name="position" intvalue="910"/>
+                <attr name="hidden" intvalue="true"/>
+            </file>
             <file name="selfCheck-separatorBefore.instance_hidden">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
-                <attr name="position" intvalue="900"/>
+                <attr name="position" intvalue="950"/>
             </file>
             <file name="org-radixware-kernel-designer-environment-actions-ViewInformationAction.shadow_hidden">
                 <attr name="originalFile" stringvalue="Actions/Refactoring/org-radixware-kernel-designer-environment-actions-ViewInformationAction.instance"/>
-                <attr name="position" intvalue="1000"/>
+                <attr name="position" intvalue="1050"/>
             </file>
             <file name="org-radixware-kernel-designer-environment-actions-selfCheckAction.shadow_hidden">
                 <attr name="originalFile" stringvalue="Actions/Debug/org-radixware-kernel-designer-environment-actions-SelfCheckAction.instance"/>
-                <attr name="position" intvalue="1100"/>
+                <attr name="position" intvalue="1150"/>
             </file>
             <file name="options-separatorBefore.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
-                <attr name="position" intvalue="1200"/>
+                <attr name="position" intvalue="1250"/>
             </file>
             <file name="org-netbeans-modules-options-OptionsWindowAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-netbeans-modules-options-OptionsWindowAction.instance"/>
-                <attr name="position" intvalue="1300"/>
+                <attr name="position" intvalue="1350"/>
             </file>
         </folder>
         <folder name="Versioning">
@@ -477,6 +538,9 @@
     </folder>
 
     <folder name="Services">
+        <folder name="JavaHelp">
+            <file name="org-radixware-kernel-designer-environment-docs.xml" url="org-radixware-kernel-designer-environment-docs.xml"/>
+        </folder>
         <folder name="MIMEResolver">
             <file name="JavaSupportResolver.xml" url="javasupport/JavaSupportResolver.xml">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.environment.javasupport.Bundle"/>

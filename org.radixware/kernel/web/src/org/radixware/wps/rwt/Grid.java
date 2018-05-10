@@ -14,28 +14,32 @@ import org.radixware.kernel.common.html.Html;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EKeyboardModifier;
-import org.radixware.kernel.common.client.enums.EMouseButton;
-import org.radixware.kernel.common.client.meta.RadSortingDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
+import org.radixware.kernel.common.client.types.FilterRules;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
-import org.radixware.kernel.common.client.widgets.selector.SelectorSortUtils;
-import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EEditMaskType;
+import org.radixware.kernel.common.enums.EKeyEvent;
 import org.radixware.wps.HttpQuery;
 import org.radixware.wps.icons.WpsIcon;
 import org.radixware.kernel.common.html.Div;
 import org.radixware.kernel.common.html.ICssStyledItem;
 import org.radixware.wps.rwt.IGrid.CellRenderer;
+import org.radixware.wps.rwt.events.ClickHtmlEvent;
+import org.radixware.wps.rwt.events.HtmlEvent;
+import org.radixware.wps.rwt.events.KeyDownEventFilter;
+import org.radixware.wps.rwt.events.KeyDownHtmlEvent;
 import org.radixware.wps.views.editors.valeditors.IValEditor;
 import org.radixware.wps.views.editors.valeditors.ValEditorController;
 import org.radixware.wps.views.editors.valeditors.ValEditorFactory;
+import org.radixware.wps.views.editors.valeditors.ValStrEditorController;
 
-public class Grid extends UIObject implements IGrid {
+public class Grid extends UIObject implements IGrid {        
 
     public static enum SelectionMode {
 
@@ -78,174 +82,20 @@ public class Grid extends UIObject implements IGrid {
 
         void onValueChanged(final Cell cell, final Object oldValue, final Object newValue);
     }
-
-    public class Column extends UIObject implements IColumn {
-
-        private Html cell = new Div();
-        private Html title = new Html("label");
-        private Html separator = new Html("span");
-        private Html srtDirectionIndicator;
-        private Html srtSequenceIndicator;
-        private boolean isEditable = true;
-        private EColumnSizePolicy policy;
-        private Object userData;
-        private final IEditingOptions editOpts = new EditingOptions(this);
-        private WpsIcon icon;
-        private Div imageContainer;
+    
+    public class Column extends IGrid.AbstractColumn {
 
         @Deprecated
         public void setPersistentId(String id) {
             setPersistenceKey(id);
         }
 
-        @Override
-        public IEditingOptions getEditingOptions() {
-            return editOpts;
-        }
-
-        public Column() {
-            super(new Html("td"));
-            this.html.add(cell);
-            this.html.setCss("padding", "0px");
-            this.html.setCss("border-top", "none");
-
-            this.html.addClass("rwt-grid-row-cell");
-            this.cell.addClass("header-cell");
-
-            this.cell.setCss("overflow", "hidden");
-            this.cell.setCss("padding-top", "3px");
-            this.cell.setCss("vertical-align", "middle");
-            this.cell.setCss("width", "100%");
-
-            this.cell.add(title);
-            this.title.addClass("rwt-ui-element");
-            this.title.setCss("white-space", "nowrap");
-            this.title.setCss("cursor", "pointer");
-
-            this.cell.add(separator);
-            separator.setCss("width", "1px");
-            separator.setCss("height", "100%");
-            separator.setCss("float", "right");
-            separator.addClass("header-handle");
-            html.setAttr("onclick", "$RWT.grid.onHeaderClick");
-            html.setAttr("oncontextmenu", "$RWT.grid.onContextMenu");
-            setSizePolicyImpl(EColumnSizePolicy.INTERACTIVE);            
-        }
-
-        @Override
-        public void processAction(final String actionName, final String actionParam) {
-            if (Events.EVENT_NAME_ONCLICK.equals(actionName)) {
-                if (actionParam == null || actionParam.isEmpty()) {
-                    processClickEvent(0);
-                } else {
-                    final int buttonsMask;
-                    try {
-                        buttonsMask = Integer.parseInt(actionParam);
-                    } catch (NumberFormatException exception) {
-                        processClickEvent(0);
-                        return;
-                    }
-                    processClickEvent(buttonsMask);
-                }
-            } else {
-                super.processAction(actionName, actionParam);
-            }
-        }
-
-        @Override
-        public void setIcon(final WpsIcon icon) {            
-            if (!Objects.equals(icon, this.icon)) {
-                this.icon = icon;
-            }
-            if (icon == null) {
-                if (imageContainer!=null){
-                    imageContainer.remove();
-                    imageContainer = null;
-                }
-            } else {
-                final Html image;
-                if (imageContainer == null) {
-                    imageContainer = new Div();
-                    image = new Html("img");
-                    imageContainer.add(image);
-                    image.setCss("width", "12px");
-                    image.setCss("height", "12px");
-
-                    imageContainer.setCss("vertical-align", "middle");
-                    imageContainer.setCss("padding-top", "3px");
-                    imageContainer.setCss("display", "inline");
-                    imageContainer.setCss("margin-right", "3px");
-
-                    this.cell.add(0, imageContainer);                    
-                }else{
-                    image = imageContainer.getChildAt(0);
-                }
-                final String imageUri = getIcon().getURI(this);
-                if (!Objects.equals(image.getAttr("src"), imageUri)) {
-                    image.setAttr("src", imageUri);
-                }                
-            }
-        }
-
-        @Override
-        public WpsIcon getIcon() {
-            return icon;
-        }
-
-        @Override
-        public int getWidth() {
-            return super.getWidth();
-        }
-
-        @Override
-        public final void setWidth(int w) {
-            this.cell.setCss("width", String.valueOf(w) + "px");
-            this.cell.setAttr("width", w);
-        }
-
-        private void processClickEvent(final int buttonsMask) {
-            final EnumSet<EMouseButton> mouseButtons = EMouseButton.fromAwtBitMask(buttonsMask);
-            if (mouseButtons.contains(EMouseButton.LEFT)) {
-                Grid.this.notifyColumnHeaderClick(this, EKeyboardModifier.fromAwtBitMask(buttonsMask));
-            } else if (mouseButtons.contains(EMouseButton.RIGHT)) {
-                Grid.this.setupColumnsVisiblity();
-            }
-        }
-
-        @Override
-        public Object getUserData() {
-            return userData;
-        }
-
-        @Override
-        public void setUserData(Object userData) {
-            this.userData = userData;
-        }
-
-        @Override
-        public String getTitle() {
-            return this.title.getInnerText();
-        }
-
-        @Override
-        public void setTitle(String title) {
-            this.title.setInnerText(title);
+        Column(final AbstractColumnHeaderCell headerCell) {
+            super(headerCell,"$RWT.grid.onHeaderClick", "$RWT.grid.onContextMenu");
         }
 
         public int getIndex() {
-            return Grid.this.columns.indexOf(this);
-        }
-
-        public boolean isEditable() {
-            return isEditable;
-        }
-
-        public void setEditable(boolean editable) {
-            this.isEditable = editable;
-        }
-
-        public boolean getEditable() {
-            return isEditable();
+            return Grid.this.horizontalHeader.getColumnIndex(this);
         }
 
         public LinkedList<Cell> getCellsAtColumn(int columnIndex) {
@@ -253,304 +103,137 @@ public class Grid extends UIObject implements IGrid {
                 return new LinkedList<>();
             }
             LinkedList<Cell> column = new LinkedList<>();
-            for (Row r : rows) {
+            for (Row r : verticalHeader) {
                 column.add(r.cells.get(columnIndex));
             }
             return column;
         }
 
         @Override
-        public void setVisible(boolean visible) {
-            super.setVisible(visible);            
-            updateColumnsVisibility(null);
-            Grid.this.updateColumnsResizingMode();
-        }
-
-        @Override
-        public int getFixedWidth() {
-            String attr = html.getAttr(IGrid.IColumn.FIXED_WIDTH_ATTR_NAME);
-            if (attr != null) {
-                try {
-                    return Integer.parseInt(attr);
-                } catch (NumberFormatException e) {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        }
-
-        @Override
-        public boolean isSetFixedWidth() {
-            return html.getAttr(IGrid.IColumn.FIXED_WIDTH_ATTR_NAME) != null;
-        }
-
-        @Override
-        public void setFixedWidth(int fw) {
-            html.setAttr(IGrid.IColumn.FIXED_WIDTH_ATTR_NAME, fw);
-            setSizePolicy(IGrid.EColumnSizePolicy.FIXED);
-        }
-
-        @Override
-        public void unsetFixedWidth() {
-            html.setAttr(IGrid.IColumn.FIXED_WIDTH_ATTR_NAME, null);
-            setSizePolicy(IGrid.EColumnSizePolicy.INTERACTIVE);
-        }
-
-        @Override
-        public int getInitialWidth() {
-            String attr = html.getAttr(IGrid.IColumn.INITIAL_WIDTH_ATTR_NAME);
-            if (attr != null) {
-                try {
-                    return Integer.parseInt(attr);
-                } catch (NumberFormatException e) {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        }
-
-        @Override
-        public boolean isSetInitialWidth() {
-            return html.getAttr(IGrid.IColumn.INITIAL_WIDTH_ATTR_NAME) != null;
-        }
-
-        @Override
-        public void setInitialWidth(int iw) {
-            html.setAttr(IGrid.IColumn.INITIAL_WIDTH_ATTR_NAME, iw);
-        }
-
-        @Override
-        public void unsetInitialWidth() {
-            html.setAttr(IGrid.IColumn.INITIAL_WIDTH_ATTR_NAME, null);
-        }
-
-        @Override
-        public void showSortingIndicator(final RadSortingDef.SortingItem.SortOrder direction,
-                final int sequenceNumber) {
-            if (sequenceNumber > 0) {
-                if (srtSequenceIndicator == null) {
-                    initSrtSequenceIndicator();
-                }
-                srtSequenceIndicator.setCss("visibility", null);
-                srtSequenceIndicator.setInnerText(String.valueOf(sequenceNumber));
-            } else if (srtSequenceIndicator != null) {
-                srtSequenceIndicator.setCss("visibility", "hidden");
-            }
-            if (srtDirectionIndicator == null) {
-                initSrtDirectionIndicator();
-            }
-            if (direction == RadSortingDef.SortingItem.SortOrder.ASC) {
-                srtDirectionIndicator.setInnerText(SelectorSortUtils.ASC_ARROW);
-            } else {
-                srtDirectionIndicator.setInnerText(SelectorSortUtils.DESC_ARROW);
-            }
-            srtDirectionIndicator.setCss("visibility", null);
-        }
-
-        @Override
-        public void hideSortingIndicator() {
-            if (srtDirectionIndicator != null) {
-                srtDirectionIndicator.setCss("visibility", "hidden");
-            }
-            if (srtSequenceIndicator != null) {
-                srtSequenceIndicator.setCss("visibility", "hidden");
-            }
-        }
-
-        @Override
-        public boolean isSortingIndicatorVisible() {
-            return srtDirectionIndicator != null && !"hidden".equals(srtDirectionIndicator.getCss("visibility"));
-        }
-
-        private void initSrtSequenceIndicator() {
-            srtSequenceIndicator = createSrtIndicatorLabel();
-            srtSequenceIndicator.setCss("font-size", "10px");
-        }
-
-        private void initSrtDirectionIndicator() {
-            srtDirectionIndicator = createSrtIndicatorLabel();
-            srtDirectionIndicator.setCss("font-size", "14px");
-        }
-
-        private Html createSrtIndicatorLabel() {
-            final Html srtIndicator = new Html("label");
-            cell.add(srtIndicator);
-            srtIndicator.addClass("rwt-ui-element");
-            srtIndicator.setCss("white-space", "nowrap");
-            srtIndicator.setCss("float", "right");
-            srtIndicator.setCss("color", "dimgray");
-            srtIndicator.setCss("font-weight", "bold");
-            srtIndicator.setCss("height", "100%");
-            return srtIndicator;
-        }
-
-        @Override
-        public void setSizePolicy(final EColumnSizePolicy newPolicy) {
-            if (policy!=newPolicy){
-                if (newPolicy==EColumnSizePolicy.FIXED && !isSetFixedWidth()){
-                    return;
-                }
-                setSizePolicyImpl(newPolicy);
+        public void setVisible(final boolean visible) {
+            if (visible!=isVisible()){
+                super.setVisible(visible);
+                Grid.this.updateColumnsVisibility(null);
                 Grid.this.updateColumnsResizingMode();
             }
         }
         
-        final void setSizePolicyImpl(final EColumnSizePolicy newPolicy){
-            getHtml().setAttr(IGrid.IColumn.SIZE_POLISY_ATTR_NAME,newPolicy.getHtmlAttrValue());
-            policy = newPolicy;            
+        private void setResizingColumnIdx(final int idx){
+            getHeaderCell().getHtml().setAttr(IGrid.IColumn.RESIZE_COLUMN_INDEX_ATTR_NAME, idx);            
+            getHeaderCell().setResizable(idx>=0);
+            final int nextColumnIndex = getIndex()+1;
+            if (nextColumnIndex<Grid.this.horizontalHeader.getColumnsCount()){
+                Grid.this.horizontalHeader.getColumn(nextColumnIndex).getHeaderCell().setPrevCellResizable(idx>=0);
+            }
         }
 
         @Override
-        public EColumnSizePolicy getSizePolicy() {
-            return policy;
+        public void updateCellsRenderer() {
+            final LinkedList<Cell> cells = getCellsAtColumn(getIndex());
+            for (Cell c : cells) {
+                c.updateRenderer();
+            }
         }
-        
-        private void setResizingColumnIdx(final int idx){
-            cell.setAttr(IGrid.IColumn.RESIZE_COLUMN_INDEX_ATTR_NAME, idx);
-            separator.setAttr(IGrid.IColumn.RESIZABLE_ATTR_NAME, idx>=0);
-        }        
+
+        @Override
+        protected void afterChangeSizePolicy() {
+            Grid.this.updateColumnsResizingMode();
+        }
+
+        @Override
+        protected void setupColumnsVisiblity() {
+            Grid.this.setupColumnsVisiblity();
+        }
+
+        @Override
+        protected void notifyColumnHeaderClick(EnumSet<EKeyboardModifier> modifiers) {
+            Grid.this.notifyColumnHeaderClick(this, modifiers);
+        }                
     }
     
     private void updateColumnsResizingMode(){
         if (isStickToRight()){
             final IGrid.EColumnSizePolicy[] actualSizePolicy = columnsResizeController.calcFinalSizePolicy();                    
             for (int i=0,count=getColumnCount(); i<count; i++){
-                getColumn(i).setSizePolicyImpl(actualSizePolicy[i]);
+                getColumn(i).applySizePolicy(actualSizePolicy[i]);
             }
         }
         for (int i=0,count=getColumnCount(); i<count; i++){            
             final Column column = getColumn(i);            
             column.setResizingColumnIdx(columnsResizeController.findSectionToResize(i));
         }
-    }    
+    }            
+
+    public void setColumnsHeaderAlignment(final Alignment a) {
+        horizontalHeader.setTextAlignment(a);        
+    }
+
+    public Alignment getColumnsHeaderAlignment() {
+        return horizontalHeader.getTextAlignment();
+    }
     
-    private Alignment headerAlignment;
-
-    public void setHeaderAlignment(Alignment a) {
-        this.headerAlignment = a;
-        header.updateHeaderAlign(a);
+    public interface RowHeaderClickListener{
+        void onClick(final Row row, final EnumSet<EKeyboardModifier> keyboardModifiers);
     }
-
-    public Alignment getHeaderAlignment() {
-        return headerAlignment;
-    }
-
-    private class Header extends UIObject {
-
-        private Html head;
-        private Html tr;
-
-        public Header() {
-            super(new Html("table"));
-            html.setCss("position", "relative");
-            this.head = new Html("thead");
-            this.tr = new Html("tr");
-            this.html.add(this.head);
-            this.head.add(tr);
-            this.html.setCss("cellspacing", "0px");
-            this.html.setCss("cellpadding", "0px");
-            this.html.setCss("border-collapse", "collapse");
-            this.html.setCss("border", "none");
+    
+    public interface RowHeaderDoubleClickListener{
+        void onDoubleClick(final Row row, final EnumSet<EKeyboardModifier> keyboardModifiers);
+    }    
             
-            this.html.setCss("table-layout", "fixed");
-            Grid.this.headerContainer.add(html);
-            Grid.this.headerContainer.setCss("position", "relative");
-            updateHeaderAlign(getHeaderAlignment());
-            setParent(Grid.this);
+    private class VerticalHeader extends IGrid.AbstractRowHeader implements Iterable<Row>{
+        
+        private List<RowHeaderClickListener> clickListeners;
+        private List<RowHeaderDoubleClickListener> dblClickListeners;
+                
+        private List<Row> rows = new ArrayList<>();
+        
+        public VerticalHeader(){
+            super(Grid.this);
         }
-
-        public int getColumnIndex(Column c) {
-            return columns.indexOf(c);
-        }
-
-        public Column addColumn(int index, String title) {
-
-            Column c = new Column();
-
-            if (index < 0 || index >= columns.size()) {
-                columns.add(c);
-            } else {
-                columns.add(index, c);
-            }
-            c.setTitle(title);
-            c.setParent(this);
-
-            this.tr.add(columns.indexOf(c), c.getHtml());
-            return c;
-        }
-
-        public void removeColumn(int index) {
-            Column c = columns.remove(index);
-            this.tr.remove(c.html);
-            c.setParent(null);
-        }
-
-        public final void updateHeaderAlign(Alignment a) {
-            if (columns != null && !columns.isEmpty()) {
-                for (Column c : columns) {
-                    c.cell.setCss("text-align", a.name());
-                }
-            }
-        }
-
-        @Override
-        public void visit(Visitor visitor) {
-            super.visit(visitor);
-            if (columns != null) {
-                for (Column c : columns) {
-                    c.visit(visitor);
-                }
-            }
-        }
-
-        @Override
-        public UIObject findObjectByHtmlId(String id) {
-            UIObject result = super.findObjectByHtmlId(id);
-            if (result != null) {
-                return result;
-            }
-            if (columns != null) {
-                for (Column c : columns) {
-                    result = c.findObjectByHtmlId(id);
-                    if (result != null) {
-                        return result;
+                
+        public Row addRow(final int index, final String title, final AbstractRowHeaderCell rowHeaderCell){
+            final boolean addLastRow;
+            final int actualIndex = index<0 || index>=rows.size() ? rows.size() : index;
+            final AbstractRowHeaderCell actualRowHeaderCell = rowHeaderCell==null ? new DefaultRowHeaderCell() : rowHeaderCell;
+            final VerticalHeaderCell headerCell = new VerticalHeaderCell(this, actualRowHeaderCell);
+            final Row row = new Row(headerCell);
+            if (index<0 || index>=rows.size()){
+                if (!rows.isEmpty()) {
+                    final Row lastRow = rows.get(rows.size() - 1);
+                    for (Cell c : lastRow.cells) {
+                        c.html.removeClass("rwt-grid-data-last-row");
+                        c.html.addClass("rwt-grid-data-row");
                     }
                 }
+                rows.add(row);
+                addHeaderCell(headerCell);
+                addLastRow = true;
+            }else{
+                rows.add(index, row);
+                addHeaderCell(index, headerCell);
+                addLastRow = false;
             }
-            return null;
-        }
-
-        @Override
-        public void processAction(String actionName, String actionParam) {
-            if (IGrid.RESIZE_ACTION_NAME.equals(actionName) & actionParam != null) {
-                headerSettings = actionParam;
+            for (int i=0, count=horizontalHeader.getColumnsCount(); i<count; i++) {
+                final Column c = horizontalHeader.getColumn(i);
+                final Cell cell = row.addCell(c, i);
+                cell.html.addClass("rwt-grid-data-col");
+                if (addLastRow){
+                    cell.html.addClass("rwt-grid-data-last-row");
+                }
+                cell.setVisible(c.isVisible());
             }
-            super.processAction(actionName, actionParam);
+            row.setParent(Grid.this.data);
+            Grid.this.data.addRow(actualIndex, row);
+            if (title!=null && !title.isEmpty()){
+                actualRowHeaderCell.setTitle(title);
+            }
+            Grid.this.updateVerticalHeaderVisibility();
+            row.applyFilter();
+            return row;
         }
-    }
+        
+        public Row addRowWithSpannedCells(final String title, final AbstractRowHeaderCell rowHeaderCell) {
 
-    private class Data extends UIObject {
-
-        private Html body = new Html("tbody");
-
-        public Data() {
-            super(new Html("table"));
-            Grid.this.bodyContainer.add(html);
-            Grid.this.bodyContainer.addClass("rwt-grid-data-panel");
-            this.html.setCss("cellspacing", "0px");
-            this.html.setCss("cellpadding", "0px");
-            this.html.setCss("border-collapse", "collapse");
-            this.html.setCss("border", "none");
-            
-            this.html.setCss("table-layout", "fixed");
-            this.html.add(body);
-            setParent(Grid.this);
-        }
-
-        public Row addRow() {
-            Row row = new Row();
             if (!rows.isEmpty()) {
                 Row lastRow = rows.get(rows.size() - 1);
                 for (Cell c : lastRow.cells) {
@@ -558,36 +241,29 @@ public class Grid extends UIObject implements IGrid {
                     c.html.addClass("rwt-grid-data-row");
                 }
             }
-            rows.add(row);
-            for (Column c : columns) {
-                Cell cell = row.addCell(c, columns.indexOf(c));
-                cell.html.addClass("rwt-grid-data-col");
-                cell.html.addClass("rwt-grid-data-last-row");
-                cell.setVisible(c.isVisible());
+            final AbstractRowHeaderCell actualRowHeaderCell = rowHeaderCell==null ? new DefaultRowHeaderCell() : rowHeaderCell;
+            final VerticalHeaderCell headerCell = new VerticalHeaderCell(this, actualRowHeaderCell);            
+            
+            final Row row = new Row(headerCell);
+            row.setParent(Grid.this.data);   
+            rows.add(row);            
+            
+            final Cell cell = row.addCell(horizontalHeader.getColumn(0), 0);
+            cell.html.setAttr("colSpan", horizontalHeader.getColumnsCount());
+            cell.html.addClass("rwt-grid-data-col");
+            cell.html.addClass("rwt-grid-data-last-row");
+            Grid.this.data.addRow(-1, row);
+            
+            addHeaderCell(headerCell);
+            if (title!=null && !title.isEmpty()){
+                headerCell.setTitle(title);
             }
-            row.setParent(this);
-            this.body.add(row.getHtml());
+            Grid.this.updateVerticalHeaderVisibility();
+            row.applyFilter();
             return row;
-        }
-
-        public Row insertRow(int index) {
-            if (index < 0 || index >= rows.size()) {
-                return addRow();
-            }
-            Row row = new Row();
-            rows.add(index, row);
-            for (Column c : columns) {
-                Cell cell = row.addCell(c, columns.indexOf(c));
-                cell.html.addClass("rwt-grid-data-col");
-                cell.html.addClass("rwt-grid-data-last-row");
-                cell.setVisible(c.isVisible());
-            }
-            row.setParent(this);
-            this.body.add(index, row.getHtml());
-            return row;
-        }
-
-        public void swapRows(int index1, int index2) {
+        }     
+        
+        public void swapRows(final int index1, final int index2) {
             if (index1 < 0 || index1 >= rows.size()) {
                 return;
             }
@@ -598,59 +274,224 @@ public class Grid extends UIObject implements IGrid {
                 return;
             }
 
-            Row row1 = getRow(index1);
-            Row row2 = getRow(index2);
-
-            final boolean row1WithSpannedCells = row1.spannedCells();
-            final boolean row2WithSpannedCells = row2.spannedCells();
-
+            final Row row1 = getRow(index1);
+            final Row row2 = getRow(index2);
+            final VerticalHeaderCell cell1 = row1.getHeaderCell();
+            final VerticalHeaderCell cell2 = row2.getHeaderCell();
+            
             rows.set(index1, row2);
             rows.set(index2, row1);
 
-            if (row1WithSpannedCells) {
-                removeHtmlForRowWithSpannedCells(row1.getHtml());
-            } else {
-                this.body.remove(row1.getHtml());
-            }
+            Grid.this.data.removeRow(row1);
             row1.getHtml().renew();
-            if (row2WithSpannedCells) {
-                removeHtmlForRowWithSpannedCells(row2.getHtml());
-            } else {
-                this.body.remove(row2.getHtml());
-            }
+            
+            Grid.this.data.removeRow(row2);
             row2.getHtml().renew();
+            
+            removeHeaderCell(cell1);
+            cell1.getHtml().renew();
+            
+            removeHeaderCell(cell2);
+            cell2.getHtml().renew();
 
-            if (row2WithSpannedCells) {
-                addHtmlForRowWithSpannedCells(index1, row2.getHtml());
-            } else {
-                this.body.add(index1, row2.getHtml());
-            }
-            if (row1WithSpannedCells) {
-                addHtmlForRowWithSpannedCells(index2, row1.getHtml());
-            } else {
-                this.body.add(index2, row1.getHtml());
+            if (index1<index2){
+                Grid.this.data.addRow(index1, row2);
+                Grid.this.data.addRow(index2, row1);
+                addHeaderCell(index1, cell2);
+                addHeaderCell(index2, cell1);
+            }else{
+                Grid.this.data.addRow(index2, row1);
+                Grid.this.data.addRow(index1, row2);
+                addHeaderCell(index2, cell1);
+                addHeaderCell(index1, cell2);
+            }            
+            
+            row1.applyFilter();
+            row2.applyFilter();
+        }
+        
+        public int getRowsCount(){
+            return rows.size();
+        }
+        
+        public int getRowIndex(final Row row){
+            return rows.indexOf(row);
+        }
+        
+        public Row getRow(final int index){            
+            return rows.get(index);
+        }
+
+        @Override
+        public Iterator<Row> iterator() {
+            return rows.iterator();
+        }                
+        
+        public void removeAllRows(){
+            Grid.this.data.removeAllRows();
+            rows.clear();
+            clearHeaderCells();
+            Grid.this.updateVerticalHeaderVisibility();
+        }
+        
+        public void removeRow(final Row row) {
+            if (rows != null) {
+                if (rows.remove(row)) {
+                    Grid.this.data.removeRow(row);
+                    removeHeaderCell(row.getHeaderCell());
+                    Grid.this.updateVerticalHeaderVisibility();
+                }
             }
         }
 
-        public Row addRowWithSpannedCells() {
-            Row row = new Row();
-
+        @Override
+        public UIObject findObjectByHtmlId(final String id) {
+            UIObject result = super.findObjectByHtmlId(id);
+            if (result != null) {
+                return result;
+            }
             if (!rows.isEmpty()) {
-                Row lastRow = rows.get(rows.size() - 1);
-                for (Cell c : lastRow.cells) {
-                    c.html.removeClass("rwt-grid-data-last-row");
-                    c.html.addClass("rwt-grid-data-row");
+                for (Row r : rows) {
+                    result = r.findObjectByHtmlId(id);
+                    if (result != null) {
+                        return result;
+                    }
+                }
+            }            
+            return null;
+        }
+
+        @Override
+        public void visit(final Visitor visitor) {            
+            if (!rows.isEmpty()) {
+                for (Row r : rows) {
+                    r.visit(visitor);
                 }
             }
+            super.visit(visitor);
+        }        
+        
+        public void addClickListener(final RowHeaderClickListener listener){
+            if (listener!=null){
+                if (clickListeners==null){
+                    clickListeners = new LinkedList<>();
+                    getHtml().setAttr("onclick", "$RWT.gridLayout.onVerticalHeaderCellClick");
+                }
+                if (!clickListeners.contains(listener)){
+                    clickListeners.add(listener);
+                }
+            }
+        }
+        
+        public void removeClickListener(final RowHeaderClickListener listener){
+            if (clickListeners!=null && !clickListeners.isEmpty() && listener!=null){
+                clickListeners.remove(listener);
+                if (clickListeners.isEmpty()){
+                    clickListeners = null;
+                    getHtml().setAttr("onclick", null);
+                }
+            }
+        }       
+        
+        @Override
+        protected void notifyClick(final VerticalHeaderCell vHeaderCell, final EnumSet<EKeyboardModifier> modifiers){
+            if (clickListeners!=null){
+                final Row row = findRowForHeaderCell(vHeaderCell);
+                if (row!=null){
+                    final List<RowHeaderClickListener> listeners = new LinkedList<>(clickListeners);
+                    for (RowHeaderClickListener listener: listeners){
+                        listener.onClick(row, modifiers);
+                    }
+                }
+            }
+        }
+        
+        public void addDoubleClickListener(final RowHeaderDoubleClickListener listener){
+            if (listener!=null){
+                if (dblClickListeners==null){
+                    dblClickListeners = new LinkedList<>();
+                    getHtml().setAttr("ondblclick", "$RWT.gridLayout.onVerticalHeaderCellDblClick");
+                }
+                if (!dblClickListeners.contains(listener)){
+                    dblClickListeners.add(listener);
+                }
+            }
+        }
+        
+        public void removeDoubleClickListener(final RowHeaderDoubleClickListener listener){
+            if (dblClickListeners!=null && !dblClickListeners.isEmpty() && listener!=null){
+                dblClickListeners.remove(listener);
+                if (dblClickListeners.isEmpty()){
+                    dblClickListeners = null;
+                    getHtml().setAttr("ondblclick", null);
+                }
+            }
+        }
+        
+        @Override
+        protected void notifyDoubleClick(final VerticalHeaderCell vHeaderCell, final EnumSet<EKeyboardModifier> modifiers){
+            if (dblClickListeners!=null){
+                final Row row = findRowForHeaderCell(vHeaderCell);
+                if (row!=null){
+                    final List<RowHeaderDoubleClickListener> listeners = new LinkedList<>(dblClickListeners);
+                    for (RowHeaderDoubleClickListener listener: listeners){
+                        listener.onDoubleClick(row, modifiers);
+                    }
+                }
+            }
+        }        
+        
+        private Row findRowForHeaderCell(final VerticalHeaderCell headerCell){
+            for (Row row: rows){
+                if (row.getHeaderCell()==headerCell){
+                    return row;
+                }
+            }
+            return null;
+        }        
+    }
+    
+    private static class Data extends UIObject {
 
-            Cell cell = row.addCell(columns.get(0), 0);
-            cell.html.setAttr("colSpan", columns.size());
-            cell.html.addClass("rwt-grid-data-col");
-            cell.html.addClass("rwt-grid-data-last-row");
-            row.setParent(this);
-            addHtmlForRowWithSpannedCells(-1, row.getHtml());
-            rows.add(row);
-            return row;
+        private final Html table = new Html("table");
+        private final Html body = new Html("tbody");        
+        private boolean browserFocusFrameEnabled = true;
+        private boolean borderShown;        
+        private Color shadeColor;
+        private int indexOffset;
+        
+        public Data() {
+            super(new Div());            
+            
+            table.setCss("cellspacing", "0px");
+            table.setCss("cellpadding", "0px");
+            table.setCss("border-collapse", "collapse");
+            table.setCss("border", "none");
+            
+            table.setCss("table-layout", "fixed");
+            table.add(body);
+            
+            getHtml().add(table);
+            getHtml().addClass("rwt-grid-data-panel");
+            getHtml().addClass("rwt-grid");
+            getHtml().setCss("overflow", "auto");            
+            getHtml().setAttr("onscroll", "_rwt_grid_flow._syncScroll");                                    
+        }
+
+        public void addRow(final int index, final Row row) {
+            if (row.spannedCells()){
+                addHtmlForRowWithSpannedCells(index>-1 ? index+indexOffset : index, row.getHtml());
+            }else{
+                body.add(index>-1 ? index+indexOffset : index, row.getHtml());
+            }
+        }
+        
+        public void removeRow(final Row row){
+            if (row.spannedCells()){
+                removeHtmlForRowWithSpannedCells(row.getHtml());
+            }else{
+                body.remove(row.getHtml());
+            }
         }
 
         private void addHtmlForRowWithSpannedCells(final int index, final Html row) {
@@ -669,6 +510,7 @@ public class Grid extends UIObject implements IGrid {
             } else {
                 this.body.add(dummyRow);
             }
+            indexOffset+=2;
         }
 
         private void removeHtmlForRowWithSpannedCells(final Html row) {
@@ -683,58 +525,73 @@ public class Grid extends UIObject implements IGrid {
                 //remove second dummy empty row
                 rowHtml = body.getChildAt(rowHtmlIndex);
                 this.body.remove(rowHtml);
+                indexOffset-=2;
             }
         }
-
-        public void removeRow(final Row row) {
-            if (rows != null) {
-                final boolean spannedCells = row.spannedCells();
-                if (rows.remove(row)) {
-                    if (spannedCells) {
-                        removeHtmlForRowWithSpannedCells(row.getHtml());
-                    } else {
-                        this.body.remove(row.getHtml());
-                    }
+        
+        public void removeAllRows(){
+            this.body.clear();
+        }
+                
+        public void setBrowserFocusFrameEnabled(final boolean enabled){
+            if (browserFocusFrameEnabled!=enabled){
+                browserFocusFrameEnabled = enabled;
+                if (enabled){
+                    table.removeClass("rwt-grid-disable-standard-focus-frame");
+                }else{
+                    table.addClass("rwt-grid-disable-standard-focus-frame");
                 }
             }
         }
-
-        @Override
-        public void visit(Visitor visitor) {
-            super.visit(visitor);
-            if (rows != null) {
-                for (Row r : rows) {
-                    r.visit(visitor);
-                }
+        
+        public boolean isBrowserFocusFrameEnabled(){
+            return browserFocusFrameEnabled;
+        }
+        
+        public void setBorderVisible(final boolean showBorder) {
+            if (borderShown!=showBorder){
+                table.setAttr(IGrid.SHOW_BORDER_ATTR_NAME, showBorder ? "true" : null);
+                borderShown = showBorder;
+            }
+        }
+        
+        public boolean isBorderVisible() {
+            return borderShown;
+        }
+        
+        public void setShadeColor(final Color color) {
+            if (color != null && !color.equals(shadeColor)) {
+                shadeColor = color;
+                final StringBuilder colorBuilder = new StringBuilder("rgba(");
+                colorBuilder.append(String.valueOf(color.getRed())).append(',');
+                colorBuilder.append(String.valueOf(color.getGreen())).append(',');
+                colorBuilder.append(String.valueOf(color.getBlue())).append(')');                
+                table.setAttr("shadeColor", colorBuilder.toString());
             }
         }
 
-        @Override
-        public UIObject findObjectByHtmlId(String id) {
-            UIObject result = super.findObjectByHtmlId(id);
-            if (result != null) {
-                return result;
-            }
-            if (rows != null) {
-                for (Row r : rows) {
-                    result = r.findObjectByHtmlId(id);
-                    if (result != null) {
-                        return result;
-                    }
-                }
-            }
-            return null;
+        public Color getShadeColor() {
+            return shadeColor;
         }
+        
+        public void shadeEvenRow(int opacityPercent) {
+            table.setAttr("alpha", opacityPercent);
+        }        
     }
 
     public class Row extends UIObject {
 
         private List<Cell> cells = new LinkedList<>();
-        private Object userData;
+        private VerticalHeaderCell headerCell;
         private boolean isEditable = true;
+        private boolean isMatchToFilter = true;
+        private boolean isVisible = true;        
+        private Color backgroundColor;
+        private FilterRules filterRules;
 
-        public Row() {
+        Row(final VerticalHeaderCell headerCell) {
             super(new Html("tr"));
+            this.headerCell = headerCell;
             if (getSelectionMode() == SelectionMode.ROW) {
                 html.markAsChoosable();
             }
@@ -771,7 +628,7 @@ public class Grid extends UIObject implements IGrid {
         }
 
         public Cell getCell(Column c) {
-            int idx = header.getColumnIndex(c);
+            int idx = horizontalHeader.getColumnIndex(c);
             return cells.get(idx);
         }
 
@@ -780,13 +637,14 @@ public class Grid extends UIObject implements IGrid {
         }
 
         @Override
-        public void visit(Visitor visitor) {
+        public void visit(final Visitor visitor) {
             super.visit(visitor);
             if (cells != null) {
                 for (Cell c : cells) {
                     c.visit(visitor);
                 }
             }
+            headerCell.visit(visitor);
         }
 
         @Override
@@ -802,8 +660,8 @@ public class Grid extends UIObject implements IGrid {
                         return result;
                     }
                 }
-            }
-            return null;
+            }            
+            return headerCell.findObjectByHtmlId(id);
         }
 
         boolean spannedCells() {
@@ -815,11 +673,11 @@ public class Grid extends UIObject implements IGrid {
         }
 
         public Object getUserData() {
-            return userData;
+            return headerCell.getUserData();
         }
 
-        public void setUserData(Object userData) {
-            this.userData = userData;
+        public void setUserData(final Object userData) {
+            headerCell.setUserData(userData);
         }
 
         public void setEditable(final boolean isEditable) {
@@ -832,12 +690,62 @@ public class Grid extends UIObject implements IGrid {
 
         public boolean getEditable() {
             return isEditable();
+        }
+        
+        VerticalHeaderCell getHeaderCell(){
+            return headerCell;
+        }
+        
+        void setHeaderCell(final VerticalHeaderCell cell){
+            headerCell = cell;
+        }
+        
+        public String getTitle(){
+            return headerCell.getTitle();
+        }
+        
+        public void setTitle(final String title){
+            headerCell.setTitle(title);
+        }
+        
+        public Color getPrimaryBackgroundColor(){
+            return backgroundColor;
+        }
+        
+        public void setPrimaryBackgroundColor(final Color color){
+            if (!Objects.equals(backgroundColor, color)){
+                backgroundColor = color;
+                if (cells != null) {
+                    for (Cell c : cells) {
+                        c.updateSelectionBackground();
+                    }
+                }
+            }
+        }
+        
+        public final void setFilterRules(final FilterRules newRules){
+            filterRules = newRules==null ? null : newRules.copy();        
+        }
+
+        public final FilterRules getFilterRules(){
+            return filterRules==null ? null : filterRules.copy();
+        }
+
+        @Override
+        public void setVisible(boolean isVisible) {
+            this.isVisible = isVisible;
+            super.setVisible(isMatchToFilter && isVisible);
+        }
+        
+        public final void applyFilter(){
+            isMatchToFilter = filterRules==null ? true : filterRules.isMatchToSomeFilter(Grid.this.currentFilter);
+            super.setVisible(isMatchToFilter && isVisible);
         }        
     }
 
     public static class DefaultRenderer extends UIObject implements CellRenderer {
 
-        private Html label = new Html("label");
+        protected final Html label = new Html("label");
         private Html icon;
 
         public DefaultRenderer() {
@@ -945,38 +853,37 @@ public class Grid extends UIObject implements IGrid {
             return editOpts;
         }
 
-        public Cell(Column c, Row r) {
+        public Cell(final Column c, final Row r) {
             super(new Html("td"));
             this.col = c;
             setTabIndex(col.getIndex() + 1);
             this.row = r;
             html.setFocusSencitive(false);
             this.html.add(container);
-            this.html.addClass("rwt-grid-row-cell");
             this.html.setCss("padding", "0px");
 
             container.addClass("rwt-grid-row-cell-content");
             //this.html.setCss("margin-left", "5px");
             //this.html.setCss("margin-right", "5px");
             registerEventListeners();
+            this.html.setAttr("onkeydown", "$RWT.grid.cell.keyDown");
+            this.html.setAttr("onfocus", "$RWT.grid.cell.focused");
             if (getSelectionMode() == SelectionMode.CELL) {
                 html.markAsChoosable();
             }
             if (!isBorderVisible()){
                 html.setCss("border-width","0px");
-            }
+            }            
         }
         
         private void registerEventListeners(){
             this.html.setAttr("onclick", "$RWT.grid.cell.click");
-            this.html.setAttr("ondblclick", "$RWT.grid.cell.dblclick");
-            this.html.setAttr("onkeydown", "$RWT.grid.cell.keyDown");            
+            this.html.setAttr("ondblclick", "$RWT.grid.cell.dblclick");            
         }
         
         private void removeEventListeners(){
             this.html.setAttr("onclick", null);
             this.html.setAttr("ondblclick", null);
-            this.html.setAttr("onkeydown", null);
         }
 
         public Row getRow() {
@@ -1040,98 +947,6 @@ public class Grid extends UIObject implements IGrid {
             }
         }
 
-        void setupBorder(final boolean currentRow, final boolean currentCell) {
-            final Color frameColor;
-            final boolean rowBorder = 
-                currentRow && getSelectionStyle().contains(IGrid.ESelectionStyle.ROW_FRAME);
-            final boolean cellBorder = 
-                currentCell && getSelectionStyle().contains(IGrid.ESelectionStyle.CELL_FRAME);            
-            if (cellBorder){
-                frameColor = getCurrentCellFrameColor();
-            }else if (rowBorder){
-                frameColor = getCurrentRowFrameColor();
-            }else{
-                frameColor = null;
-            }
-            getHtml().removeClass("current-cell-frame");
-            getHtml().removeClass("current-row-frame");            
-            getHtml().setCss("border-color", null);
-            getHtml().setCss("border-top-color", null);
-            getHtml().setCss("border-bottom-color", null);
-            if (frameColor == null) {                
-                if (col.getIndex() > 0) {
-                    final Cell prevCell = row.getCell(col.getIndex() - 1);
-                    prevCell.getHtml().removeClass("prev-current-cell-frame");
-                    prevCell.getHtml().setCss("border-right-color", null);
-                }
-                final int rowIndex = getRowIndex(row);
-                if (rowIndex > 0) {
-                    final Row upperRow = Grid.this.getRow(rowIndex - 1);
-                    if (row.spannedCells()) {
-                        for (int i = upperRow.getCellCount() - 1; i >= 0; i--) {
-                            final Cell upperCell = upperRow.getCell(i);
-                            upperCell.getHtml().removeClass("upper-current-cell-frame");
-                            upperCell.getHtml().setCss("border-bottom-color", null);
-                        }
-                        if (rowIndex < (Grid.this.getRowCount() - 1)) {
-                            final Row lowerRow = Grid.this.getRow(rowIndex + 1);
-                            for (int i = lowerRow.getCellCount() - 1; i >= 0; i--) {
-                                final Cell lowerCell = lowerRow.getCell(i);
-                                lowerCell.getHtml().removeClass("lower-current-cell-frame");
-                                lowerCell.getHtml().setCss("border-top-color", null);
-                            }
-                        }
-                    } else if (upperRow.spannedCells()) {
-                        upperRow.getCell(0).getHtml().setCss("border-bottom-width", null);
-                    } else if (col.getIndex() > -1) {
-                        final int colIndex = Math.min(upperRow.getCellCount() - 1, col.getIndex());
-                        final Cell upperCell = upperRow.getCell(colIndex);
-                        upperCell.getHtml().removeClass("upper-current-cell-frame");
-                        upperCell.getHtml().setCss("border-bottom-color", null);
-                    }
-                }
-            } else {
-                final String frameColorStr = UIObject.color2Str(frameColor);
-                getHtml().addClass(currentCell ? "current-cell-frame" : "current-row-frame");
-                if (currentCell){
-                    getHtml().setCss("border-color", frameColorStr);
-                }else{
-                    getHtml().setCss("border-top-color", frameColorStr);
-                    getHtml().setCss("border-bottom-color", frameColorStr);
-                }
-                if (col.getIndex() > 0 && currentCell) {
-                    final Cell prevCell = row.getCell(col.getIndex() - 1);
-                    prevCell.getHtml().addClass("prev-current-cell-frame");
-                    prevCell.getHtml().setCss("border-right-color", frameColorStr);
-                }
-                final int rowIndex = getRowIndex(row);
-                if (rowIndex > 0) {
-                    final Row upperRow = Grid.this.getRow(rowIndex - 1);
-                    if (row.spannedCells() && currentCell) {
-                        for (int i = upperRow.getCellCount() - 1; i >= 0; i--) {
-                            final Cell upperCell = upperRow.getCell(i);
-                            upperCell.getHtml().addClass("upper-current-cell-frame");
-                            upperCell.getHtml().setCss("border-bottom-color", frameColorStr);
-                        }
-                        if (rowIndex < (Grid.this.getRowCount() - 1)) {
-                            final Row lowerRow = Grid.this.getRow(rowIndex + 1);
-                            for (int i = lowerRow.getCellCount() - 1; i >= 0; i--) {
-                                final Cell lowerCell = lowerRow.getCell(i);
-                                lowerCell.getHtml().addClass("lower-current-cell-frame");
-                                lowerCell.getHtml().setCss("border-top-color", frameColorStr);
-                            }
-                        }
-                    } else if (upperRow.spannedCells()) {
-                        upperRow.getCell(0).getHtml().setCss("border-bottom-width", "0px");
-                    } else {
-                        final Cell upperCell = upperRow.getCell(col);
-                        upperCell.getHtml().addClass("upper-current-cell-frame");
-                        upperCell.getHtml().setCss("border-bottom-color", frameColorStr);
-                    }
-                }
-            }
-        }
-
         public int getCellIndex() {
             return col.getIndex();
         }        
@@ -1180,7 +995,8 @@ public class Grid extends UIObject implements IGrid {
                     super.setBackground(color);
                 }else{
                     getHtml().removeClass("rwt-ui-selected-item");
-                    setBackground(background);                    
+                    final Color rowColor = row==null ? null : row.getPrimaryBackgroundColor();
+                    applyBackgroundColor(rowColor==null ? background : rowColor);
                 }
             }
         }
@@ -1238,7 +1054,7 @@ public class Grid extends UIObject implements IGrid {
         }
 
         @Override
-        public void visit(Visitor visitor) {
+        public void visit(final Visitor visitor) {
             super.visit(visitor);
             if (editor != null) {
                 editor.getUI().visit(visitor);
@@ -1248,28 +1064,8 @@ public class Grid extends UIObject implements IGrid {
         }
 
         @Override
-        public void processAction(String actionName, String actionParam) {
-            if (Events.EVENT_NAME_ONCLICK.equals(actionName)) {
-                if (Grid.this.getCurrentCell() == this) {
-                    if (editor != null && editor.getUI() != null) {
-                        editor.getUI().processAction(actionName, actionParam);
-                    } else {
-                        if (!tryToOpenEditor()
-                                && renderer.getUI() != null
-                                && html.containsClass("editor-cell")) {
-                            renderer.getUI().processAction(actionName, actionParam);
-                        }
-                    }
-                } else {
-                    if (Grid.this.getCurrentCell() != null) {
-                        if (Grid.this.getCurrentCell().finishEdit(true)) {
-                            Grid.this.setCurrentCell(this);
-                        }
-                    } else {
-                        Grid.this.setCurrentCell(this);
-                    }
-                }
-            } else if (Events.EVENT_NAME_KEY_DOWN.equals(actionName)) {
+        public void processAction(final String actionName, final String actionParam) {
+            if (Events.EVENT_NAME_KEY_DOWN.equals(actionName)) {
                 switch (actionParam) {
                     case "27":
                         //esc
@@ -1277,7 +1073,8 @@ public class Grid extends UIObject implements IGrid {
                             finishEdit(false);
                         }
                         break;
-                    case "13":
+                    case "13"://Enter
+                    case "113"://F2
                         if (editor != null && editor.getUI() != null) {
                             finishEdit(true);
                         } else {
@@ -1287,12 +1084,24 @@ public class Grid extends UIObject implements IGrid {
                 }
             } else if (Events.EVENT_NAME_ONDBLCLICK.equals(actionName) && isEnabled()) {
                 Grid.this.notifyDoubleClick(row, this);
+            } else {
+                super.processAction(actionName, actionParam);
             }
         }
 
+        @Override
+        protected void processHtmlEvent(final HtmlEvent event) {
+            if (event instanceof ClickHtmlEvent){
+                final UIObject editorUI = editor==null ? null : editor.getUI();
+                Grid.this.processCellClickEvent(this, (ClickHtmlEvent)event, editorUI, renderer.getUI());
+            }else{
+                super.processHtmlEvent(event);
+            }
+        }
+               
         public boolean isEditable() {
             if (Grid.this.isEditable && Grid.this.editorProvider != null) {
-                if (!row.isEditable || !col.isEditable) {
+                if (!row.isEditable || !col.isEditable()) {
                     return false;
                 } else {
                     return isEditable;
@@ -1300,6 +1109,10 @@ public class Grid extends UIObject implements IGrid {
             } else {
                 return false;
             }
+        }
+        
+        public boolean isInEditingMode(){
+            return getHtml().containsClass("editor-cell");
         }
 
         public void setEditable(boolean editable) {
@@ -1374,28 +1187,31 @@ public class Grid extends UIObject implements IGrid {
         }
 
         @Override
-        public void setBackground(Color c) {
+        public void setBackground(final Color c) {
             if (html.containsClass("rwt-ui-selected-item")) {
                 this.background = c;
             }else{
-                if (renderer != null) {
-                    renderer.getUI().setBackground(c);
+                final Color rowColor = row==null ? null : row.getPrimaryBackgroundColor();
+                final Color actualColor;
+                if (rowColor==null){
+                    actualColor = c;
+                }else{
+                    this.background = c;
+                    actualColor = rowColor;
                 }
-                super.setBackground(c);
+                applyBackgroundColor(actualColor);
             }
         }
-
-       /* @Override
-        public Color getBackground() {
-            if (html.containsClass("rwt-ui-selected-item")) {
-                return this.background;
-            } else {
-                return renderer.getUI().getBackground();
+        
+        private void applyBackgroundColor(final Color color){
+            if (renderer != null) {
+                renderer.getUI().setBackground(color);
             }
-        }*/
+            super.setBackground(color);
+        }
 
         @Override
-        public void setForeground(Color c) {
+        public void setForeground(final Color c) {
             renderer.getUI().setForeground(c);
         }
 
@@ -1408,11 +1224,6 @@ public class Grid extends UIObject implements IGrid {
             }
         }
 
-       /* @Override
-        protected ICssStyledItem getBackgroundHolder() {
-            return renderer.getUI().getHtml();
-        }*/
-
         public final Object getEditorValue() {
             if (this.renderer instanceof EditMaskRenderer) {
                 return ((EditMaskRenderer) renderer).getEditorValue();
@@ -1420,7 +1231,8 @@ public class Grid extends UIObject implements IGrid {
             return null;
         }
 
-        protected void updateRenderer() {
+        @Override
+        public void updateRenderer() {
             if (editor == null) {
                 Column column = this.getColumn();
                 int r = getRowIndex(this.row);
@@ -1460,24 +1272,60 @@ public class Grid extends UIObject implements IGrid {
         }
     }
     
-    private Header header;
-    private Html headerContainer = new Div();
-    private Html bodyContainer = new Div();
-    private Data data;
-    private List<Column> columns = new LinkedList<>();
-    private List<Row> rows = new LinkedList<>();
-    private Cell selection = null;
-    private boolean isEditable = true;
-    private boolean borderShown;
-    private boolean browserFocusFrameEnabled = true;
-    private SelectionMode selectionMode = SelectionMode.CELL;
-    private Color currentCellFrameColor = Color.decode("#404040");
-    private Color currentRowFrameColor = Color.decode("#3399ff");
+    private final AbstractHorizontalHeader<Column> horizontalHeader = new IGrid.AbstractHorizontalHeader<Column>() {
+        @Override
+        public Column createColumn(final AbstractColumnHeaderCell headerCell) {
+            return new Column(headerCell);
+        }
+    };    
+    private final VerticalHeader verticalHeader = new VerticalHeader();    
+    private final Html outerContainer = new Div();//contains data and hHeader
+    private final Data data = new Data();
     private final IGrid.RowFrame currentRowFrame;
     private final IGrid.CellFrame currentCellFrame;
-    private String headerSettings = "";    
     private final IGrid.ColumnsResizeController columnsResizeController = new IGrid.ColumnsResizeController(this);
     private final EnumSet<IGrid.ESelectionStyle> selectionStyle = EnumSet.of(IGrid.ESelectionStyle.BACKGROUND_COLOR,IGrid.ESelectionStyle.CELL_FRAME);
+    private Cell selection = null;
+    private boolean isEditable = true;
+    private boolean isVerticalHeaderVisible;    
+    private SelectionMode selectionMode = SelectionMode.CELL;
+    private Color currentCellFrameColor = Color.decode("#404040");
+    private Color currentRowFrameColor = Color.decode("#3399ff");    
+    
+    private final DefaultCurrentRowListener rowSelectionListener = new DefaultCurrentRowListener();
+    private final DefaultCurrentCellListener cellSelectionListener = new DefaultCurrentCellListener();
+    private List<DoubleClickListener> doubleClickListeners;
+    private List<CellValueChangeListener> cellValueChangeListeners;
+    private List<ColumnHeaderClickListener> headerClickListeners;
+    
+    private CellEditorProvider editorProvider = null;
+    private CellRendererProvider rendererProvider = new CellRendererProvider() {
+        @Override
+        public CellRenderer newCellRenderer(int r, int c) {
+            Column column = getColumn(c);
+            Cell cell = getCell(r, c);
+            EditMask cellmask = cell.getEditingOptions().getEditMask();
+            EditMask colmask = column.getEditingOptions().getEditMask();
+            EditMask mask = cellmask != null ? cellmask : (colmask != null ? colmask : null);
+            if (mask != null) {
+                return new EditMaskRenderer(mask, Grid.this, getEnvironment(), cell);
+            } else {
+                return new DefaultRenderer();
+            }
+        }
+    };
+    
+    private String currentFilter;
+    private final IGrid.FilterEditorController filterController;
+    
+    private final ValueEditor.ValueChangeListener<String> filterChangeListener = 
+            new ValueEditor.ValueChangeListener<String>(){
+                    @Override
+                    public void onValueChanged(final String oldValue, final String newValue) {
+                        applyFilter(newValue);
+                    }        
+            };
+    
 
     private class DefaultCurrentRowListener implements CurrentRowListener {
 
@@ -1560,31 +1408,11 @@ public class Grid extends UIObject implements IGrid {
             }
         }
     }
-    private DefaultCurrentRowListener rowSelectionListener = new DefaultCurrentRowListener();
-    private DefaultCurrentCellListener cellSelectionListener = new DefaultCurrentCellListener();
-    private List<DoubleClickListener> doubleClickListeners;
-    private List<CellValueChangeListener> cellValueChangeListeners;
-    private List<ColumnHeaderClickListener> headerClickListeners;
-    private CellRendererProvider rendererProvider = new CellRendererProvider() {
-        @Override
-        public CellRenderer newCellRenderer(int r, int c) {
-            Column column = getColumn(c);
-            Cell cell = getCell(r, c);
-            EditMask cellmask = cell.getEditingOptions().getEditMask();
-            EditMask colmask = column.getEditingOptions().getEditMask();
-            EditMask mask = cellmask != null ? cellmask : (colmask != null ? colmask : null);
-            if (mask != null) {
-                return new EditMaskRenderer(mask, Grid.this, getEnvironment(), cell);
-            } else {
-                return new DefaultRenderer();
-            }
-        }
-    };
-
+    
     public CellRendererProvider getRendererProvider() {
         return rendererProvider;
     }
-    private CellEditorProvider editorProvider = null;
+        
 
     public CellEditorProvider getEditorProvider() {
         return editorProvider;
@@ -1592,27 +1420,34 @@ public class Grid extends UIObject implements IGrid {
 
     public Grid() {
         super(new Div());
-        this.headerContainer.addClass("rwt-grid-header-panel");
-        this.headerContainer.setCss("overflow", "hidden");
-        this.headerContainer.setCss("width", "100%");
-        //this.headerContainer.setCss("padding-bottom", "5px");
-        this.bodyContainer.setCss("overflow", "auto");
-        this.bodyContainer.setCss("width", "100%");
-        this.bodyContainer.setAttr("onscroll", "_rwt_grid_flow._syncScroll");        
-        headerContainer.addClass("header");
-        this.header = new Header();
-        this.data = new Data();
-        this.html.add(this.headerContainer);
-        this.html.add(this.bodyContainer);
-        this.bodyContainer.addClass("rwt-grid");
+        
+        this.outerContainer.addClass("rwt-grid-outer-container");
+        this.outerContainer.setCss("overflow", "none");
+                        
+        horizontalHeader.setParent(this);
+        data.setParent(this);
+        outerContainer.add(horizontalHeader.getHtml());
+        outerContainer.add(data.getHtml());
+        html.add(outerContainer);
         html.layout("$RWT.grid._layout");
         html.setCss("overflow", "hidden");
         html.setAttr("more-rows", "true");
-        currentCellFrame = new IGrid.CellFrame(bodyContainer,"cellFrame");
+        currentCellFrame = new IGrid.CellFrame(data.getHtml(),"cellFrame");
         currentCellFrame.setColor(currentCellFrameColor);
-        currentRowFrame = new IGrid.RowFrame(bodyContainer,"rowFrame");
+        currentRowFrame = new IGrid.RowFrame(data.getHtml(),"rowFrame");
         currentRowFrame.setColor(currentRowFrameColor);
         setBorderVisible(true);
+        subscribeToKeyEvents();
+        filterController = new FilterEditorController(getHtml(), filterChangeListener);
+    }
+    
+    private void subscribeToKeyEvents(){
+        final EKeyEvent keyCodes[] = 
+            new EKeyEvent[]{EKeyEvent.VK_UP, EKeyEvent.VK_DOWN, EKeyEvent.VK_LEFT, EKeyEvent.VK_RIGHT, 
+                      EKeyEvent.VK_TAB, EKeyEvent.VK_HOME, EKeyEvent.VK_END, EKeyEvent.VK_RETURN};
+        for (EKeyEvent keyCode: keyCodes){
+            subscribeToEvent(new KeyDownEventFilter(keyCode, EKeyboardModifier.ANY));
+        }
     }
 
     @Deprecated
@@ -1624,126 +1459,33 @@ public class Grid extends UIObject implements IGrid {
         return selection == null ? null : selection.row;
     }
 
-    private class SetupColumnVisibilityDialog extends Dialog {
-
-        private class VCheckBox extends CheckBox {
-
-            ColumnDescriptor desc;
-
-            VCheckBox(ColumnDescriptor desc) {
-                setText(desc.getTitle());
-                this.desc = desc;
-            }
-        }
-
-        public SetupColumnVisibilityDialog(IClientEnvironment env) {
-            super(env, null);
-            this.setWindowTitle(getEnvironment().getMessageProvider().translate("Selector", "Columns Visibility"));
-            List<ColumnDescriptor> all = getAllColumnDescriptors();
-            if (all == null) {
-                return;
-            }
-            List<ColumnDescriptor> visible = getVisibleColumnDescriptors(all);
-            if (visible == null) {
-                return;
-            }
-            this.getHtml().setAttr("dlgId", "visibleColumns");
-            this.setWidth(300);
-            this.setHeight(300);
-            LabeledEditGrid grid = createLabeledEditGrid();
-            this.add(grid);
-            List<VCheckBox> cbss = fillColumnDescription(all, visible, grid);
-
-            grid.setTop(3);
-            grid.setLeft(3);
-            grid.getAnchors().setRight(new Anchors.Anchor(1, -3));
-            grid.getAnchors().setBottom(new Anchors.Anchor(1, -3));
-            this.addCloseAction(EDialogButtonType.OK);
-            this.addCloseAction(EDialogButtonType.CANCEL);
-
-            if (this.execDialog() == DialogResult.ACCEPTED) {
-                List<ColumnDescriptor> descriptor = new LinkedList<>();
-                for (VCheckBox cb : cbss) {
-                    if (cb.isSelected()) {
-                        descriptor.add(cb.desc);
-                    }
-                }                
-                updateColumnsVisibility(descriptor);
-                Grid.this.updateColumnsResizingMode();
-                updateConfigStr();
-            }
-        }
-
-        private LabeledEditGrid createLabeledEditGrid() {
-            return new LabeledEditGrid(new LabeledEditGrid.AbstractEditor2LabelMatcher() {
-                @Override
-                protected UIObject createLabelComonent(UIObject editorComponent) {
-                    return new Label();
-                }
-            });
-        }
-
-        private List<VCheckBox> fillColumnDescription(List<ColumnDescriptor> all, final List<ColumnDescriptor> visible, LabeledEditGrid grid) {
-            final List<VCheckBox> cbss = new LinkedList<>();
-            for (ColumnDescriptor desc : all) {
-                VCheckBox cb = new VCheckBox(desc);
-                grid.addEditor(cb, 0, -1);
-                cb.setSelected(visible.contains(desc));
-                cbss.add(cb);
-                if (visible.size() == 1) {
-                    cb.setEnabled(!visible.contains(desc));
-                }
-                cb.addSelectionStateListener(new CheckBox.SelectionStateListener() {
-                    @Override
-                    public void onSelectionChange(CheckBox cb) {
-                        int j = 0;
-                        for (int i = 0; i < cbss.size(); i++) {
-                            if (!cbss.get(i).isSelected()) {
-                                j++;
-                            }
-                            int index = findUncheckedItemIndex(cbss);
-                            cbss.get(i).setEnabled(i != index);
-                            cbss.get(index).setEnabled(!(j == cbss.size() - 1));
-                        }
-
-                    }
-                });
-            }
-            return cbss;
-        }
-
-        private int findUncheckedItemIndex(List<VCheckBox> cbss) {
-            for (VCheckBox cb : cbss) {
-                if (cb.isSelected()) {
-                    return cbss.indexOf(cb);
-                }
-            }
-            return cbss.size() - 1;
-        }
-    }
-
     protected void updateColumnsVisibility(List<ColumnDescriptor> visibleColumns) {
         if (visibleColumns == null) {//default behaviour
-            boolean visible[] = new boolean[columns.size()];
+            boolean visible[] = new boolean[horizontalHeader.getColumnsCount()];
             int i = 0;
-            for (Column c : columns) {
+            for (Column c : horizontalHeader) {
                 visible[i] = c.isVisible();
                 i++;
             }
-            for (Row r : rows) {
-                for (i = 0; i < visible.length; i++) {
-                    r.getCell(i).setVisible(visible[i]);
+            for (Row r : verticalHeader) {
+                if (!r.spannedCells()){
+                    for (i = 0; i < visible.length; i++) {
+                        r.getCell(i).setVisible(visible[i]);
+                    }
                 }
             }
+        }
+        if (selection!=null && getSelectionStyle().contains(IGrid.ESelectionStyle.CELL_FRAME)){
+            setupFrames(selection);
         }
     }
 
     public boolean isHeaderVisible() {
-        return !"none".equals(headerContainer.getCss("display"));
+        return horizontalHeader.isVisible();        
     }
 
     public void setHeaderVisible(boolean visible) {
-        headerContainer.setCss("display", visible ? null : "none");
+        horizontalHeader.setVisible(visible);
     }
 
     public boolean getHeaderVisible() {
@@ -1757,33 +1499,51 @@ public class Grid extends UIObject implements IGrid {
     protected List<ColumnDescriptor> getVisibleColumnDescriptors(List<ColumnDescriptor> all) {
         return null;
     }
+    
+    protected boolean showRestoreDefaultColumnSettingsButton(){
+        return false;
+    }
+    
+    protected void restoreDefaultColumnSettings(){
+        
+    }
 
     private void setupColumnsVisiblity() {
-        Dialog setupDialog = new SetupColumnVisibilityDialog(getEnvironment());
-        setupDialog.execDialog(null);
+        final List<ColumnDescriptor> allColumns = getAllColumnDescriptors();
+        if (allColumns==null){
+            return;
+        }
+        final List<ColumnDescriptor> visibleColumns = getVisibleColumnDescriptors(allColumns);
+        if (visibleColumns==null){
+            return;
+        }
+        final IGrid.SetupColumnVisibilityDialog dialog = 
+            new IGrid.SetupColumnVisibilityDialog(getEnvironment(), allColumns,  visibleColumns, false, showRestoreDefaultColumnSettingsButton());
+        if (dialog.execDialog(this)==DialogResult.ACCEPTED){
+            updateColumnsVisibility(dialog.getSelectedColumns());
+            updateColumnsResizingMode();
+            updateConfigStr();
+        }else if (dialog.needToRestoreDefaultSettings()){
+            restoreDefaultColumnSettings();
+            updateColumnsResizingMode();
+            updateConfigStr();            
+        }
     }
 
     public Cell getCurrentCell() {
         return selection;
     }
 
-    public void shadeEvenRow(int opacityPercent) {
-        if (data != null) {
-            data.getHtml().setAttr("alpha", opacityPercent);
-        }
-    }
-    private Color shadeColor;
+    public void shadeEvenRow(final int opacityPercent) {
+        data.shadeEvenRow(opacityPercent);
+    }        
 
-    public void setShadeColor(Color color) {
-        if (data != null && color != null) {
-            shadeColor = color;
-            String c = "rgba(" + color.getRed() + "," + color.getGreen() + "," + color.getBlue() + ")";
-            data.html.setAttr("shadeColor", c);
-        }
+    public void setShadeColor(final Color color) {
+        data.setShadeColor(color);
     }
 
     public Color getShadeColor() {
-        return shadeColor;
+        return data.getShadeColor();
     }
 
     @Override
@@ -1805,18 +1565,16 @@ public class Grid extends UIObject implements IGrid {
             selectedRow = null;
             selectedCell = -1;
         }
-        this.header.removeColumn(index);
+        this.horizontalHeader.removeColumn(index);
         final int columnsCount = getColumnCount();
-        if (!rows.isEmpty()) {
-            for (Row row : rows) {
-                if (row.spannedCells()) {
-                    Cell cell = row.getCell(0);
-                    cell.getHtml().setAttr("colSpan", columnsCount);
-                } else {
-                    Cell cell = row.cells.remove(index);
-                    row.html.remove(cell.html);
-                    cell.setParent(null);
-                }
+        for (Row row : verticalHeader) {
+            if (row.spannedCells()) {
+                Cell cell = row.getCell(0);
+                cell.getHtml().setAttr("colSpan", columnsCount);
+            } else {
+                Cell cell = row.cells.remove(index);
+                row.html.remove(cell.html);
+                cell.setParent(null);
             }
         }
         if (selectedRow != null && Math.abs(index - selectedCell) < 2 && selection != null) {
@@ -1827,21 +1585,31 @@ public class Grid extends UIObject implements IGrid {
     }
 
     @Override
-    public Column addColumn(String title) {
-        return addColumn(-1, title);
+    public Column addColumn(final String title) {
+        return addColumn(-1, title, null);
     }
-
+    
     @Override
-    public Column addColumn(int index, String title) {
+    public Column addColumn(final String title, final AbstractColumnHeaderCell columnHeaderCell) {
+        return addColumn(-1, title, columnHeaderCell);
+    }    
+    
+    @Override
+    public Column addColumn(final int index, final String title){
+        return addColumn(index, title, null);
+    }
+    
+    @Override
+    public Column addColumn(final int index, final String title, final AbstractColumnHeaderCell columnHeaderCell) {
         final int newColumnIndex = index < 0 ? getColumnCount() : index;
         final boolean updateCurrentCellBorder = selection != null
                 && (selection.getRow().spannedCells() || Math.abs(newColumnIndex - selection.getColumn().getIndex()) < 2);
         if (updateCurrentCellBorder) {
             setupFrames(null);
         }
-        Column c = header.addColumn(index, title);
-        if (!rows.isEmpty()) {
-            int columnIndex = header.getColumnIndex(c);
+        Column c = horizontalHeader.addColumn(index, title, columnHeaderCell);
+        if (verticalHeader.getRowsCount()>0) {
+            int columnIndex = horizontalHeader.getColumnIndex(c);
             int columnCount = getColumnCount();
             final Row selectedRow;
             if (selectionMode == SelectionMode.ROW && selection != null) {
@@ -1849,7 +1617,7 @@ public class Grid extends UIObject implements IGrid {
             } else {
                 selectedRow = null;
             }
-            for (Row r : rows) {
+            for (Row r : verticalHeader) {
                 if (r.spannedCells()) {
                     Cell cell = r.getCell(0);
                     cell.getHtml().setAttr("colSpan", columnCount);
@@ -1882,60 +1650,91 @@ public class Grid extends UIObject implements IGrid {
     }
 
     public void clearRows() {
-        for (Row r : new ArrayList<>(rows)) {
-            removeRow(r);
-        }
+        verticalHeader.removeAllRows();
     }
 
     @Override
     public Column getColumn(int index) {
-        return columns.get(index);
+        return horizontalHeader.getColumn(index);
     }
 
     @Override
     public int getColumnCount() {
-        return columns.size();
+        return horizontalHeader.getColumnsCount();
     }
 
     public Row addRow() {
-        return data.addRow();
+        return verticalHeader.addRow(-1, "",null);
+    }
+    
+    public Row addRow(final String title){
+        return verticalHeader.addRow(-1, title, null);
+    }
+    
+    public Row addRow(final String title, final AbstractRowHeaderCell rowHeaderCell){
+        return verticalHeader.addRow(-1, title, rowHeaderCell);
+    }    
+
+    public Row insertRow(final int index) {
+        return verticalHeader.addRow(index, "", null);
+    }
+    
+    public Row insertRow(final int index, final String title) {
+        return verticalHeader.addRow(index, title, null);
+    }
+    
+    public Row insertRow(final int index, final String title, final AbstractRowHeaderCell rowHeaderCell) {
+        return verticalHeader.addRow(index, title, rowHeaderCell);
     }
 
-    public Row insertRow(int index) {
-        return data.insertRow(index);
-    }
-
-    public void swapRows(int index1, int index2) {
-        data.swapRows(index1, index2);
+    public void swapRows(final int index1, final int index2) {
+        this.verticalHeader.swapRows(index1, index2);
     }
 
     public Row addRowWithSpannedCells() {
-        return data.addRowWithSpannedCells();
+        return verticalHeader.addRowWithSpannedCells("",null);
     }
+    
+    public Row addRowWithSpannedCells(final String title) {
+        return verticalHeader.addRowWithSpannedCells(title,null);
+    }
+    
+    public Row addRowWithSpannedCells(final String title, final AbstractRowHeaderCell factory) {
+        return verticalHeader.addRowWithSpannedCells(title,factory);
+    }    
+    
 
     public Row getRow(int index) {
-        return rows.get(index);
+        return verticalHeader.getRow(index);
     }
 
     public int getRowIndex(Row row) {
-        return rows.indexOf(row);
+        return verticalHeader.getRowIndex(row);
     }
 
     public void removeRow(Row row) {
-        data.removeRow(row);
+        verticalHeader.removeRow(row);
         if (selection!=null && selection.row==row){
             setCurrentCell(null);
         }
     }
 
     public int getRowCount() {
-        return rows.size();
+        return verticalHeader.getRowsCount();
     }
 
     @Override
     public void setWidth(int w) {
         super.setWidth(w);
         html.layout("$RWT.grid._layout");
+    }
+
+    public void setAdjustWidth(boolean isAdjustWidth) {
+        data.getHtml().setAttr("isAdjustWidth", isAdjustWidth);
+    }
+    
+    public void setAdjustHeight(boolean isAdjustHeight) {
+        data.getHtml().setAttr("isAdjustHeight", isAdjustHeight);
     }
 
     @Override
@@ -1949,13 +1748,8 @@ public class Grid extends UIObject implements IGrid {
     }
 
     public void setCurrentCell(final Cell cell) {
-        if (selection == cell) {
-            return;
-        }
-
         final Row oldRow = selection == null ? null : selection.row;
         final Row newRow = cell == null ? null : cell.row;
-
         if (!cellSelectionListener.beforeChangeCurrentCell(selection, cell)) {
             return;
         }
@@ -2009,7 +1803,7 @@ public class Grid extends UIObject implements IGrid {
             switch (selectionMode) {
                 case ROW: {
                     updateRowSelectionMode(newMode);
-                    for (Row row : rows) {
+                    for (Row row : verticalHeader) {
                         row.getHtml().removeChoosableMarker();
                         if (newMode == SelectionMode.CELL) {
                             for (Cell cell : row.cells) {
@@ -2021,7 +1815,7 @@ public class Grid extends UIObject implements IGrid {
                 break;
                 case CELL: {
                     updateRowSelectionMode(newMode);
-                    for (Row row : rows) {
+                    for (Row row : verticalHeader) {
                         if (newMode == SelectionMode.ROW) {
                             row.getHtml().markAsChoosable();
                         }
@@ -2048,14 +1842,14 @@ public class Grid extends UIObject implements IGrid {
                     }
                 }
             }
-            for (Row row : rows) {
+            for (Row row : verticalHeader) {
                 row.getHtml().markAsChoosable();
             }
         } else if (mode == SelectionMode.CELL){//CELL
             if (selection != null && getSelectionStyle().contains(IGrid.ESelectionStyle.BACKGROUND_COLOR)) {
                 selection.setSelected(true);
             }
-            for (Row row : rows) {
+            for (Row row : verticalHeader) {
                 for (Cell cell : row.cells) {
                     cell.getHtml().markAsChoosable();
                 }
@@ -2152,32 +1946,43 @@ public class Grid extends UIObject implements IGrid {
                 currentRowFrame.setRow(currentCell.getRow());
             }
             if (getSelectionStyle().contains(IGrid.ESelectionStyle.CELL_FRAME)){
-                currentCellFrame.setCell(currentCell.getRow(), currentCell.getCellIndex());
+                int visibleCellIndex = currentCell.getCellIndex();
+                for (int i=0,count=getColumnCount(),index=currentCell.getCellIndex();i<index && i<count;i++){
+                    if (!getColumn(i).isVisible()){
+                        visibleCellIndex--;
+                    }
+                }
+                currentCellFrame.setCell(currentCell.getRow(), visibleCellIndex);
             }
         }
     }
     
     @Override
-    public void visit(Visitor visitor) {
+    public void visit(final Visitor visitor) {
         super.visit(visitor);
-        this.header.visit(visitor);
-        this.data.visit(visitor);
+        horizontalHeader.visit(visitor);
+        verticalHeader.visit(visitor);
+        data.visit(visitor);
     }
 
     @Override
-    public UIObject findObjectByHtmlId(String id) {
+    public UIObject findObjectByHtmlId(final String id) {
         UIObject result = super.findObjectByHtmlId(id);
         if (result != null) {
             return result;
         }
-        result = header.findObjectByHtmlId(id);
+        result = horizontalHeader.findObjectByHtmlId(id);
         if (result != null) {
+            return result;
+        }
+        result = verticalHeader.findObjectByHtmlId(id);
+        if (result != null ){
             return result;
         }
         result = data.findObjectByHtmlId(id);
         if (result != null) {
             return result;
-        }
+        }        
         return null;
     }
 
@@ -2231,6 +2036,22 @@ public class Grid extends UIObject implements IGrid {
                 headerClickListeners.add(l);
             }
         }
+    }
+    
+    public void addRowHeaderClickListener(final RowHeaderClickListener l){
+        verticalHeader.addClickListener(l);
+    }
+    
+    public void removeRowHeaderClickListener(final RowHeaderClickListener l){
+        verticalHeader.removeClickListener(l);
+    }
+    
+    public void addRowHeaderDoubleClickListener(final RowHeaderDoubleClickListener l){
+        verticalHeader.addDoubleClickListener(l);
+    }
+    
+    public void removeRowHeaderDoubleClickListener(final RowHeaderDoubleClickListener l){
+        verticalHeader.removeDoubleClickListener(l);
     }
 
     public void removeColumnHeaderClickListener(final ColumnHeaderClickListener l) {
@@ -2307,7 +2128,9 @@ public class Grid extends UIObject implements IGrid {
         if ("config".equals(actionName)) {
             applyConfigStr(actionParam);
             updateConfigStr();
-        } else {
+        } else if ("filter".equals(actionName)){
+            applyFilter(actionParam);
+        }else{
             super.processAction(actionName, actionParam);
         }
     }
@@ -2316,18 +2139,18 @@ public class Grid extends UIObject implements IGrid {
         this.editorProvider = editorProvider;
     }
 
-    public Cell getCell(int row, int column) {
+    public Cell getCell(final int row, final int column) {
         if (row >= getRowCount() || row < 0 || column >= getColumnCount() || column < 0) {
             return null;
         }
-        Row r = rows.get(row);
+        final Row r = verticalHeader.getRow(row);
         Cell cell = r.getCell(column);
         return cell;
     }
 
-    public void setRendererProvider(CellRendererProvider rendererProvider) {
+    public void setRendererProvider(final CellRendererProvider rendererProvider) {
         this.rendererProvider = rendererProvider;
-        for (Row r : rows) {
+        for (Row r : verticalHeader) {
             for (Cell cell : r.cells) {
                 cell.updateRenderer();
             }
@@ -2369,26 +2192,12 @@ public class Grid extends UIObject implements IGrid {
 
     @Override
     public String getHeaderSettings() {
-        return headerSettings;
+        return horizontalHeader.getSettings();
     }
 
     @Override
     public void setHeaderSettings(final String settings) {
-        if (settings != null && !settings.isEmpty() && !settings.equals(headerSettings)) {
-            this.headerSettings = settings;
-            String[] arrHeaderSettings = settings.split(";");
-            if (arrHeaderSettings != null && arrHeaderSettings.length > 0) {
-                for (int i = 0; i < arrHeaderSettings.length; i++) {
-                    String id = arrHeaderSettings[i].split(":")[0];
-                    int width = Integer.parseInt(arrHeaderSettings[i].split(":")[1].split(",")[0]);                    
-                    for (Column s : columns) {
-                        if (s.isVisible() && s.getPersistenceKey().equals(id) && s.getSizePolicy()==IGrid.EColumnSizePolicy.INTERACTIVE) {
-                            s.setInitialWidth(width);
-                        }
-                    }
-                }
-            }
-        }
+        horizontalHeader.setSettings(settings);
     }
 
     public static class EditMaskRenderer implements CellRenderer {
@@ -2418,7 +2227,7 @@ public class Grid extends UIObject implements IGrid {
             if (cellMask != null) {
                 editMask = cellMask;
 
-            } else {
+            } else  if (colMask !=null) {
                 editMask = colMask;
             }
 
@@ -2457,11 +2266,20 @@ public class Grid extends UIObject implements IGrid {
         @SuppressWarnings("unchecked")
         public UIObject getUI() {
             if (editor == null) {
-                this.editor = ValEditorFactory.getDefault().createValEditor(null, editMask, e);
+                this.editor = createValEditor();
 
                 UIObject uio = (UIObject) editor;
                 uio.html.addClass("renderer");
                 uio.setHeight(21);
+
+                editor.addValueChangeListener(new ValueEditor.ValueChangeListener() {
+                    @Override
+                    public void onValueChanged(Object oldValue, Object newValue) {
+                        if (editingCell != null) {
+                            editingCell.setValue(newValue);
+                        }
+                    }
+                });
             } else {
                 final UIObject parent = ((UIObject) editor).getParent();
                 if (parent != null) {
@@ -2469,16 +2287,11 @@ public class Grid extends UIObject implements IGrid {
                 }
             }
 
-            editor.addValueChangeListener(new ValueEditor.ValueChangeListener() {
-                @Override
-                public void onValueChanged(Object oldValue, Object newValue) {
-                    if (editingCell != null) {
-                        editingCell.setValue(newValue);
-                    }
-                }
-            });
-
             return (UIObject) editor;
+        }
+        
+        protected IValEditor createValEditor(){
+            return ValEditorFactory.getDefault().createValEditor(null, editMask, e);
         }
 
         public EEditMaskType getEditMaskType() {
@@ -2506,106 +2319,285 @@ public class Grid extends UIObject implements IGrid {
             return null;
         }
     }
-
-    public static class EditingOptions implements IEditingOptions {
-
-        private ECellEditingMode mode;
-        private final Cell cell;
-        private final Column column;
-        private EditMask mask = null;
-
-        EditingOptions(Cell cell) {
-            mode = null;
-            this.cell = cell;
-            this.column = null;
-        }
-
-        EditingOptions(Column col) {
-            mode = ECellEditingMode.NULL_VALUE_ACCEPTED;
-            this.cell = null;
-            this.column = col;
-        }
-
-        @Override
-        public EditMask getEditMask() {
-            if (mask == null) {
-                return null;
-            }
-            return EditMask.newCopy(mask);
-        }
-
-        @Override
-        public ECellEditingMode getEditingMode() {
-            return mode;
-        }
-
-        @Override
-        public void setEditMask(EditMask editMask) {
-            if (mask == null && editMask == null) {
-                return;
-            }
-            mask = editMask==null ? null : EditMask.newCopy(editMask);
-            if (cell != null) {
-                cell.updateRenderer();
-            }
-            if (column != null) {
-                LinkedList<Cell> cells = column.getCellsAtColumn(column.getIndex());
-                for (Cell c : cells) {
-                    c.updateRenderer();
-                }
-            }
-        }
-
-        @Override
-        public void setEditingMode(ECellEditingMode editMode) {
-            if (editMode == null) {
-                //throw new IllegalArgumentException("Cell editing mode can`t be null!");
-                mode = ECellEditingMode.NULL_VALUE_ACCEPTED;//by default
-            }
-            if (editMode == mode) {
-                return;
-            }
-            this.mode = editMode;
-
-            if (cell != null) {
-                cell.updateRenderer();
-            }
-            if (column != null) {
-                LinkedList<Cell> cells = column.getCellsAtColumn(column.getIndex());
-                for (Cell c : cells) {
-                    c.updateRenderer();
-                }
-            }
-        }
-    }
     
     @Override
-    public final void setBorderVisible(boolean showBorder) {
-        if (borderShown!=showBorder){
-            data.getHtml().setAttr(IGrid.SHOW_BORDER_ATTR_NAME, showBorder ? "true" : null);
-            borderShown = showBorder;
-        }
+    public final void setBorderVisible(final boolean showBorder) {
+        data.setBorderVisible(showBorder);
     }
 
     @Override
     public boolean isBorderVisible() {
-        return borderShown;
+        return data.isBorderVisible();
     }
 
     @Override
     public void setBrowserFocusFrameEnabled(final boolean enabled){
-        if (browserFocusFrameEnabled!=enabled){
-            browserFocusFrameEnabled = enabled;
-            if (enabled){
-                bodyContainer.removeClass("rwt-grid-disable-standard-focus-frame");
-            }else{
-                bodyContainer.addClass("rwt-grid-disable-standard-focus-frame");
-            }
-        }
+        data.setBrowserFocusFrameEnabled(enabled);
     }
     
     @Override
     public boolean isBrowserFocusFrameEnabled(){
-        return browserFocusFrameEnabled;
+        return data.isBrowserFocusFrameEnabled();
+    }
+    
+    public CornerHeaderCell getCornerHeaderCell(){
+        return verticalHeader.getCornerCell();
+    }
+    
+    public void setCornerHeaderCell(final CornerHeaderCell cell){
+        verticalHeader.setCornerCell(cell);
+    }
+    
+    public final void setRowHeaderVisible(final boolean isVisible){
+        if (isVisible!=isVerticalHeaderVisible){
+            isVerticalHeaderVisible = isVisible;
+            updateVerticalHeaderVisibility();
+        }
+    }
+    
+    public final boolean isRowHeaderVisible(){
+        return isVerticalHeaderVisible;
+    }   
+    
+    private void updateVerticalHeaderVisibility(){
+        final boolean currentVisibility = getHtml().getChildAt(0)==verticalHeader.getHtml();
+        final boolean vHeaderActualVisibility = isVerticalHeaderVisible && getRowCount()>0;
+        if (currentVisibility!=vHeaderActualVisibility){
+            if (vHeaderActualVisibility){
+                verticalHeader.getHtml().renew();
+                getHtml().add(0, verticalHeader.getHtml());
+            }else{
+                getHtml().remove(verticalHeader.getHtml());
+            }            
+        }
+    }
+    
+    protected void processCellClickEvent(final Cell cell,
+                                         final ClickHtmlEvent event,
+                                         final UIObject cellEditor,
+                                         final UIObject rendererUi
+                                         ){
+        final Cell currentCell = getCurrentCell();
+        if (currentCell == cell) {
+            if (cellEditor != null) {
+                cellEditor.processAction(Events.EVENT_NAME_ONCLICK, "");
+            } else {
+                if (!cell.tryToOpenEditor()
+                        && rendererUi != null
+                        && cell.getHtml().containsClass("editor-cell")) {
+                    rendererUi.processAction(Events.EVENT_NAME_ONCLICK, "");
+                }
+            }
+        } else {
+            if (currentCell == null || currentCell.finishEdit(true)) {
+                setCurrentCell(cell);
+            }
+        }        
+    }
+
+    @Override
+    protected void processHtmlEvent(final HtmlEvent event) {
+        if (event instanceof KeyDownHtmlEvent){
+            processKeyDownHtmlEvent((KeyDownHtmlEvent)event);
+        }else{
+            super.processHtmlEvent(event);
+        }
+    }    
+    
+    protected boolean processKeyDownHtmlEvent(final KeyDownHtmlEvent event){
+        final Cell currentCell = getCurrentCell();
+        if (currentCell==null){
+            return false;
+        }
+        Cell newCurrentCell = null;
+        switch (EKeyEvent.getForValue(Long.valueOf(event.getButton()))){
+            case VK_TAB:{                
+                currentCell.processAction(RESIZE_ACTION_NAME, RESIZE_ACTION_NAME);
+                if (event.getKeyboardModifiers().contains(EKeyboardModifier.SHIFT)){//reverse tabulation
+                    newCurrentCell = getPrevVisibleCell(currentCell);
+                }else{
+                    newCurrentCell = getNextVisibleCell(currentCell);
+                }
+                break;
+            }case VK_LEFT:{                
+                newCurrentCell = currentCell.isInEditingMode() ? null : getPrevVisibleCell(currentCell);
+                break;
+            }case VK_RIGHT:{
+                newCurrentCell = currentCell.isInEditingMode() ? null : getNextVisibleCell(currentCell);
+                break;
+            }case VK_UP:{
+                return moveCursorUp();
+            }case VK_DOWN:{
+                return moveCursorDown();
+            }case VK_HOME:{
+                newCurrentCell = currentCell.isInEditingMode() ? null : getFirstVisibleCell(currentCell.getRow());
+                break;
+            }case VK_END:{
+                newCurrentCell = currentCell.isInEditingMode() ? null : getLastVisibleCell(currentCell.getRow());
+                break;
+            }
+            case VK_RETURN:{
+                return !currentCell.isInEditingMode() && currentCell.tryToOpenEditor();
+            }
+        }
+        return changeCurrentCell(currentCell, newCurrentCell);
+    }
+    
+    protected final boolean moveCursorUp(){
+        final Cell currentCell = getCurrentCell();
+        if (currentCell!=null){
+            final Row prevRow = currentCell.isInEditingMode() ? null : getPrevVisibleRow(currentCell.getRow());
+            if (prevRow!=null){
+                return changeCurrentCell(currentCell, prevRow.getCell(prevRow.spannedCells() ? 0 : currentCell.getCellIndex()) );                
+            }
+        }
+        return false;
+    }
+    
+    protected final boolean moveCursorDown(){
+        final Cell currentCell = getCurrentCell();
+        if (currentCell!=null){
+            final Row nextRow = currentCell.isInEditingMode() ? null : getNextVisibleRow(currentCell.getRow());
+            if (nextRow!=null){
+                return changeCurrentCell(currentCell, nextRow.getCell(nextRow.spannedCells() ? 0 : currentCell.getCellIndex()) );                
+            }
+        }
+        return false;
+    }    
+    
+    private boolean changeCurrentCell(final Cell currentCell, final Cell newCurrentCell){
+        if (newCurrentCell==null || currentCell==null){
+            return false;
+        }else{
+            currentCell.finishEdit(true);
+            setCurrentCell(newCurrentCell);
+            if (getCurrentCell()!=null){
+                getCurrentCell().setFocused(true);
+            }
+            return true;
+        }
+    }
+    
+    protected final Cell getNextVisibleCell(final Cell cell){
+        if (cell!=null){
+            final int colIndex = cell.getCellIndex();
+            final Row currentRow = cell.getRow();
+            if (!currentRow.spannedCells()){
+                for (int i=colIndex+1; i<getColumnCount(); i++){
+                    if (getColumn(i).isVisible()){
+                        return currentRow.getCell(i);
+                    }
+                }
+                return getFirstVisibleCell(getNextVisibleRow(currentRow));
+            }
+        }
+        return null;
+    }
+    
+    protected final Row getNextVisibleRow(final Row row){
+        if (row!=null){
+            final int rowIndex = getRowIndex(row);
+            for (int r=rowIndex+1; r<getRowCount(); r++){
+                final Row nextRow = getRow(r);
+                if (nextRow.isVisible()){
+                    return nextRow;
+                }
+            }
+        }
+        return null;   
+    }        
+    
+    protected final Cell getFirstVisibleCell(final Row row){
+        if (row!=null){
+            if (row.spannedCells()){
+                return row.getCell(0);
+            }
+            for (int c=0; c<getColumnCount(); c++){
+                if (getColumn(c).isVisible()){
+                    return row.getCell(c);
+                }
+            }
+        }
+        return null;
+    }
+    
+    protected final Cell getLastVisibleCell(final Row row){
+        if (row!=null){
+            if (row.spannedCells()){
+                return row.getCell(0);
+            }            
+            for (int c=getColumnCount()-1; c>=0; c--){
+                if (getColumn(c).isVisible()){
+                    return row.getCell(c);
+                }
+            }
+        }
+        return null;
+    }
+    
+    protected final Cell getPrevVisibleCell(final Cell cell){
+        if (cell!=null){
+            final int colIndex = cell.getCellIndex();
+            final Row currentRow = cell.getRow();
+            if (!currentRow.spannedCells()){
+                for (int i=colIndex-1; i>=0; i--){
+                    if (getColumn(i).isVisible()){
+                        return currentRow.getCell(i);
+                    }
+                }
+                return getLastVisibleCell(getPrevVisibleRow(currentRow));
+            }
+        }
+        return null;        
+    }
+    
+    protected final Row getPrevVisibleRow(final Row row){
+        if (row!=null){
+            final int rowIndex = getRowIndex(row);
+            for (int r=rowIndex-1; r>=0; r--){
+                final Row prevRow = getRow(r);
+                if (prevRow.isVisible()){
+                    return prevRow;
+                }
+            }
+        }
+        return null;
+    }
+        
+    @Override
+    public final void setFilterEditor(final ValStrEditorController editor){
+        filterController.setFilterEditor(editor);
+    }
+    
+    @Override
+    public final ValStrEditorController getFilterEditor(){
+        return filterController.getFilterEditor();
+    }    
+    
+    public final void addFilterListener(final IGrid.FilterListener listener){        
+        filterController.addFilterListener(listener);
+    }
+    
+    public final void removeFilterListener(final IGrid.FilterListener listener){
+        filterController.removeFilterListener(listener);
+    }
+    
+    private void notifyFilterListeners(final String filter){
+        filterController.notifyFilterListeners(filter);
+    }    
+    
+    private void applyFilter(final String filter){
+        if (!Objects.equals(currentFilter, filter)){
+            currentFilter = filter;
+            applyCurrentFilter();
+        }
+    }
+    
+    @Override
+    public void applyCurrentFilter(){
+        for (int r=0,count=getRowCount(); r<count; r++){
+            getRow(r).applyFilter();
+        }            
+        notifyFilterListeners(currentFilter);
     }
 }

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcBNDZPYUQCNFNNNYQEJJJMHVY24" Name="HttpClient" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcBNDZPYUQCNFNNNYQEJJJMHVY24"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcBNDZPYUQCNFNNNYQEJJJMHVY24">
+        <xsc:Item>
+          <xsc:Java>private volatile org.apache.http.client.methods.HttpRequestBase request = null;//Required for tests</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgC7CHZ3SCVJFBTECO6ZZN4IL2OY" Name="Root"/>
+    <PropertyGroup Id="cpgRPQ3JXNSOZDVXDKOMUGUMSN6NE" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXCUE25K63BC6JGDIAZNI3SKGBQ" Name="invoke" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="packet" Id="mprDYRGA2FVSRDURCG4KXLYV3TVRU">
+            <Type TypeId="411" Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E"/>
+          </Parameter>
+          <Parameter Name="connectTimeoutMillis" Id="mprJRCZY546VBHDNNM2TKMYY6KRIE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="receiveTimeoutMillis" Id="mprCI5X4BS2GFHWFNGYFZCDTALGUE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final org.apache.http.impl.conn.BasicHttpClientConnectionManager connManager = new org.apache.http.impl.conn.BasicHttpClientConnectionManager();
+try {
+    org.apache.http.impl.client.CloseableHttpClient client = org.apache.http.impl.client.HttpClients.custom().setConnectionManager(connManager).build();
+    if (packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdLLC6EVUH2RBB7P2Y2GSVLNQZNI" Invoke="true">
+                <xsc:Presentation>url</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true">
+                <xsc:Presentation>IllegalArgumentException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("URL cant be null");
+    }
+    try {
+        if ("GET".equalsIgnoreCase(packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdXYIDXCOVTBCZLHRBHHP67QMFRU" Invoke="true">
+                <xsc:Presentation>method</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+            org.apache.http.client.methods.HttpGet get = new org.apache.http.client.methods.HttpGet(packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdLLC6EVUH2RBB7P2Y2GSVLNQZNI" Invoke="true">
+                <xsc:Presentation>url</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            request = get;
+        } else if ("POST".equalsIgnoreCase(packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdXYIDXCOVTBCZLHRBHHP67QMFRU" Invoke="true">
+                <xsc:Presentation>method</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) || packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdXYIDXCOVTBCZLHRBHHP67QMFRU" Invoke="true">
+                <xsc:Presentation>method</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+            org.apache.http.client.methods.HttpPost post = new org.apache.http.client.methods.HttpPost(packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdLLC6EVUH2RBB7P2Y2GSVLNQZNI" Invoke="true">
+                <xsc:Presentation>url</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            if (packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdHZQ76NX6HNFYXKMBS5IQTAAF6Y" Invoke="true">
+                <xsc:Presentation>body</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+                throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true">
+                <xsc:Presentation>IllegalArgumentException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Body cant be null in POST");
+            }
+            post.setEntity(new org.apache.http.entity.ByteArrayEntity(packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdHZQ76NX6HNFYXKMBS5IQTAAF6Y" Invoke="true">
+                <xsc:Presentation>body</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+            request = post;
+        } else {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true">
+                <xsc:Presentation>IllegalArgumentException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unsupported method " + packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdXYIDXCOVTBCZLHRBHHP67QMFRU" Invoke="true">
+                <xsc:Presentation>method</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+        for (java.util.Map.Entry&lt;String, String> entry : packet.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdWMJ74IIYKBBL7GN7CFWOKUO2UI" Invoke="true">
+                <xsc:Presentation>headers</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.entrySet()) {
+            request.addHeader(entry.Key, entry.Value);
+        }
+
+        if (request.getHeaders(org.apache.http.HttpHeaders.CONTENT_TYPE) == null) {
+            request.setHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, org.radixware.kernel.common.utils.HttpFormatter.SOAP_CONTENT_TYPE);
+        }
+
+        if (connectTimeoutMillis > 0) {
+            org.apache.http.params.HttpConnectionParams.setConnectionTimeout(request.getParams(), connectTimeoutMillis);
+        }
+        if (receiveTimeoutMillis > 0) {
+            org.apache.http.params.HttpConnectionParams.setSoTimeout(request.getParams(), receiveTimeoutMillis);
+        }
+
+        request.addHeader(org.apache.http.HttpHeaders.CONNECTION, "Close");
+
+        org.apache.http.client.methods.CloseableHttpResponse response = client.execute(request);
+
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E">
+                <xsc:Presentation>HttpPacket</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rsPacket = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E mthK2DWKLIQXJDWLBCE47BVSONA6Y" Invoke="true">
+                <xsc:Presentation>HttpPacket</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        if (response.getEntity() != null) {
+            final java.io.InputStream is = response.getEntity().getContent();
+            if (is != null) {
+                rsPacket.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdHZQ76NX6HNFYXKMBS5IQTAAF6Y" Invoke="true">
+                <xsc:Presentation>body</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = org.apache.commons.io.IOUtils.toByteArray(is);
+            }
+        }
+        rsPacket.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdSWSA7CT3V5BEDIPQLWUYLROQY4" Invoke="true">
+                <xsc:Presentation>responseCode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = response.getStatusLine().getStatusCode();
+        rsPacket.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prd5MOA336EDBFBXA57X64FVJCVFQ" Invoke="true">
+                <xsc:Presentation>responseReasonPhrase</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = response.getStatusLine().getReasonPhrase();
+        if (response.getAllHeaders() != null) {
+            for (org.apache.http.Header header : response.getAllHeaders()) {
+                rsPacket.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc23YWTMXD5NEGPJVM7BRX2VEU7E prdWMJ74IIYKBBL7GN7CFWOKUO2UI" Invoke="true">
+                <xsc:Presentation>headers</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(header.Name, header.Value);
+            }
+        }
+        return rsPacket;
+    } catch (Throwable ex) {
+        if (ex instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            throw (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) ex;
+        }
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM mthDPD4N2KHBJDBBLC4D3ZNCXLDBU" Invoke="true">
+                <xsc:Presentation>IOException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex);
+    } finally {
+        synchronized (this) {
+            try {
+                client.close();
+            } catch (Throwable t) {
+                //ignore
+            }
+        }
+    }
+} finally {
+    synchronized (this) {
+        try {
+            connManager.close();
+        } catch (Throwable t) {
+            //ingore
+        }
+    }
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

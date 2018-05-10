@@ -24,7 +24,7 @@ import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
-public class PreviewWidget extends QWidget {
+final class PreviewWidget extends QWidget {
 
     private final ValStrEditor readOnlyValEditor;
     private final ValStrEditor mandatoryValEditor;

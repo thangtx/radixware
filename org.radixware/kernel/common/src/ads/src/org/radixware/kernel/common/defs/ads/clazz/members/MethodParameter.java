@@ -11,13 +11,17 @@
 
 package org.radixware.kernel.common.defs.ads.clazz.members;
 
+import java.util.List;
+import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.IDefinition;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef.MethodValue;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.RadixObjectsUtils;
 import org.radixware.schemas.adsdef.ParameterDeclaration;
 
 
@@ -95,7 +99,8 @@ public class MethodParameter extends MethodValue implements IDefinition {
     }
 
     protected MethodParameter(AdsMethodParameters context, ParameterDeclaration declaration) {
-        super(AdsTypeDeclaration.Factory.loadFrom(declaration.getType()), declaration.getName(), declaration.getDescription(), declaration.getDescriptionId());
+        super(AdsTypeDeclaration.Factory.loadFrom(declaration.getType()), declaration.getName(), declaration.getDescription(), declaration.getDescriptionId(), 
+                declaration.isSetIsDescriptionInherited() ? declaration.getIsDescriptionInherited() : true);
         if (declaration.getId() == null) {
             //this.id = declaration.getId() != null ? declaration.getId() : Id.Factory.newInstance(EDefinitionIdPrefix.ADS_METHOD_PARAMETER);
             if (context == null) {
@@ -125,10 +130,16 @@ public class MethodParameter extends MethodValue implements IDefinition {
         if (isVariable()) {
             xDef.setVariable(true);
         }
-
-        if (isDescriptionIdChanged()) {
-            xDef.setDescriptionId(getDescriptionId());
+        
+        if (!isDescriptionInherited()) {
+            if (isDescriptionIdChanged()) {
+                xDef.setDescriptionId(getDescriptionId());
+            }
+            if (isDescriptionInheritable()){
+                xDef.setIsDescriptionInherited(false);
+            }
         }
+        
         xDef.setId(getId());
     }
 

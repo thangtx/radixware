@@ -20,13 +20,15 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsObjectTitleFormatDef;
 import org.radixware.kernel.common.components.ExtendableTextField;
+import org.radixware.kernel.common.enums.ETitleNullFormat;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 
 
 class ObjectTitleItemCellEditor extends AbstractCellEditor implements TableCellEditor {
 
     //private AdsObjectTitleFormatDef objectTitleFormat;
-    private ExtendableTextField extendableTextField;
+    private ExtendableTextField formatExtendableTextField;
+    private ExtendableTextField nullFormatExtendableTextField;
     private AdsObjectTitleFormatDef.TitleItem titleItem;
 
     public ObjectTitleItemCellEditor(final AdsObjectTitleFormatDef objectTitleFormat) {
@@ -35,10 +37,10 @@ class ObjectTitleItemCellEditor extends AbstractCellEditor implements TableCellE
         //this.objectTitleFormat = objectTitleFormat;
         this.titleItem = null;
 
-        extendableTextField = new ExtendableTextField();
-        extendableTextField.setReadOnly(true);
+        formatExtendableTextField = new ExtendableTextField();
+        formatExtendableTextField.setReadOnly(true);
 
-        final JButton setStringFormatButton = extendableTextField.addButton();
+        final JButton setStringFormatButton = formatExtendableTextField.addButton();
         setStringFormatButton.setIcon(RadixWareIcons.DIALOG.CHOOSE.getIcon(13, 13));
         setStringFormatButton.addActionListener(new ActionListener() {
 
@@ -54,18 +56,42 @@ class ObjectTitleItemCellEditor extends AbstractCellEditor implements TableCellE
                 }
             }
         });
+        
+        nullFormatExtendableTextField = new ExtendableTextField();
+        nullFormatExtendableTextField.setReadOnly(true);
+        final JButton setFormatButton = nullFormatExtendableTextField.addButton();
+        setFormatButton.setIcon(RadixWareIcons.DIALOG.CHOOSE.getIcon(13, 13));
+        setFormatButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                //invoke format string editor
+                assert (titleItem != null);
+              
+                if (ObjectTitleNullFormatPanel.showModel(titleItem)){
+                    //if dialog has been closed with the "OK" status, then force cell editing stop
+                    fireEditingStopped();
+                }
+            }
+        });
     }
 
     @Override
     public Object getCellEditorValue() {
-        return extendableTextField.getValue();
+        return formatExtendableTextField.getValue();
     }
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         assert(table.getModel() instanceof ObjectTitleFormatTableModel);
         titleItem = ((ObjectTitleFormatTableModel) table.getModel()).getTitleItem(table.convertRowIndexToModel(row));
-        extendableTextField.setValue(value == null ? "" : (String) value);
-        return extendableTextField;
+        if (column == ObjectTitleFormatTableModel.NULL_FORMAT) {
+            nullFormatExtendableTextField.setValue(value == null ? "" : (String) value);
+            return nullFormatExtendableTextField;
+        }
+        formatExtendableTextField.setValue(value == null ? "" : (String) value);
+        return formatExtendableTextField;
     }
+    
 }

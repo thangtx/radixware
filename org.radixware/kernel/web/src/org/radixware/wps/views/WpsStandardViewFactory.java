@@ -16,6 +16,7 @@ import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.RadSortingDef;
 import org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef;
+import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameterFactory;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
@@ -33,12 +34,17 @@ import org.radixware.kernel.common.client.views.IParameterCreationWizard;
 import org.radixware.kernel.common.client.views.IParameterEditorDialog;
 import org.radixware.kernel.common.client.views.IPropEditor;
 import org.radixware.kernel.common.client.views.IPropLabel;
+import org.radixware.kernel.common.client.views.IProxyPropEditor;
+import org.radixware.kernel.common.client.views.ISelectEntitiesDialog;
 import org.radixware.kernel.common.client.views.ISelectEntityDialog;
 import org.radixware.kernel.common.client.views.ISortingEditorDialog;
 import org.radixware.kernel.common.client.views.IView;
 import org.radixware.kernel.common.client.views.StandardViewFactory;
+import org.radixware.kernel.common.client.widgets.IListWidget;
 import org.radixware.kernel.common.client.widgets.IWidget;
+import org.radixware.kernel.common.client.widgets.area.IWidgetArea;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.types.Arr;
 import org.radixware.wps.WpsEnvironment;
@@ -46,6 +52,7 @@ import org.radixware.wps.dialogs.ArrayEditorDialog;
 import org.radixware.wps.views.dialog.EntityEditorDialog;
 import org.radixware.wps.views.dialog.RwtStandardForm;
 import org.radixware.wps.views.dialog.RwtStandardReportParamEditor;
+import org.radixware.wps.views.dialog.SelectEntitiesDialog;
 import org.radixware.wps.views.dialog.SelectEntityDialog;
 import org.radixware.wps.views.editor.EditorPage;
 import org.radixware.wps.views.editor.StandardEditor;
@@ -54,6 +61,7 @@ import org.radixware.wps.views.editor.property.*;
 import org.radixware.wps.views.paragraph.ParagraphView;
 import org.radixware.wps.views.selector.StandardFilterParameters;
 import org.radixware.wps.views.selector.WpsStandardSelector;
+import org.radixware.wps.views.widgetsarea.WebWidgetsArea;
 
 
 public class WpsStandardViewFactory implements StandardViewFactory {
@@ -184,6 +192,11 @@ public class WpsStandardViewFactory implements StandardViewFactory {
     }
 
     @Override
+    public IProxyPropEditor newProxyPropEditor(final Property prop, final EValType valType, final EditMask editMask) {
+        return new ProxyPropEditor(prop, valType, editMask);
+    }
+
+    @Override
     public IPropLabel newPropLabel(Property prop) {
         return new PropLabel(prop);
     }
@@ -204,11 +217,23 @@ public class WpsStandardViewFactory implements StandardViewFactory {
         final ERuntimeEnvironmentType environmentType = parentGroupModel.getSelectorPresentationDef().getRuntimeEnvironmentType();
         if (environmentType != ERuntimeEnvironmentType.COMMON_CLIENT && environmentType != ERuntimeEnvironmentType.EXPLORER) {
             final String message =
-                    "Can't use selector for " + environmentType.getName() + " environment  in " + ERuntimeEnvironmentType.EXPLORER.getName() + " environment";
+                    "Unable to use selector for " + environmentType.getName() + " environment  in " + ERuntimeEnvironmentType.EXPLORER.getName() + " environment";
             throw new IllegalUsageError(message);
         }
         return new SelectEntityDialog(((WpsEnvironment) parentGroupModel.getEnvironment()).getDialogDisplayer(), parentGroupModel, canClear);
     }
+
+    @Override
+    public ISelectEntitiesDialog newSelectEntitiesDialog(final GroupModel groupModel, final boolean canClear) {
+        final ERuntimeEnvironmentType environmentType = groupModel.getSelectorPresentationDef().getRuntimeEnvironmentType();
+        if (environmentType != ERuntimeEnvironmentType.COMMON_CLIENT && environmentType != ERuntimeEnvironmentType.EXPLORER) {
+            final String message =
+                    "Unable to use selector for " + environmentType.getName() + " environment  in " + ERuntimeEnvironmentType.EXPLORER.getName() + " environment";
+            throw new IllegalUsageError(message);
+        }
+        return new SelectEntitiesDialog(((WpsEnvironment) groupModel.getEnvironment()).getDialogDisplayer(), groupModel, canClear);
+    }
+        
 
     @Override
     public IFilterEditorDialog newFilterEditorDialog(FilterModel filter, Collection<String> restrictedNames, boolean showApplyButton, IWidget parent) {
@@ -234,5 +259,15 @@ public class WpsStandardViewFactory implements StandardViewFactory {
     public IArrayEditorDialog newArrayEditorDialog(PropertyArr prop, IWidget parent) {
         final WpsEnvironment wpsEnv = (WpsEnvironment) prop.getEnvironment();
         return new ArrayEditorDialog(prop, wpsEnv.getDialogDisplayer());
+    }
+
+    @Override
+    public IListWidget newListWidget(IClientEnvironment environment, IWidget parent) {
+        return new RwtListWidget(environment);
+    }        
+
+    @Override
+    public IWidgetArea newWidgetArea(IClientEnvironment environment, IWidget parent) {
+        return new WebWidgetsArea(environment, parent);
     }
 }

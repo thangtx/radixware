@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.xmlbeans.XmlCursor;
 
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlException;
@@ -30,6 +32,7 @@ import org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument;
 import org.radixware.schemas.msdl.AnyField;
 import org.radixware.schemas.msdl.ChoiceField;
 import org.radixware.schemas.msdl.ChoiceFieldVariant;
+import org.radixware.schemas.msdl.Field;
 import org.radixware.schemas.msdl.Message;
 import org.radixware.schemas.msdl.MessageElementDocument;
 import org.radixware.schemas.msdl.SequenceField;
@@ -368,7 +371,14 @@ public class XmlObjectMessagingXsdCreator {
                 if (unbounded) {
                     sb.append(" maxOccurs=\"unbounded\"");
                 }
-                sb.append("/>");
+
+                if (isNeedAnnotation(structure)) {
+                    sb.append(">");
+                    addAnnotation(sb, structure);
+                    sb.append("\n   </xs:element>");
+                } else {
+                    sb.append("/>");
+                }
 //                sb.append("\n  <xs:complexType>\n   <xs:complexContent>\n");
 //                sb.append("<xs:extension base=\"").append(prefix).append(":").append(typeName).append("\"/>");
 //                sb.append("\n   </xs:complexContent>\n </xs:complexType>\n </xs:element>");
@@ -395,11 +405,19 @@ public class XmlObjectMessagingXsdCreator {
             }
 
             if (level > 0) {
-                sb.append(">\n <xs:complexType>");
+                sb.append(">");
+                addAnnotation(sb, structure);
+                sb.append("\n <xs:complexType>");
                 getStructure(sb, structure.getStructure(), typeResolver, level, ns2Prefix);
                 sb.append("\n </xs:complexType>\n </xs:element>");
             } else {
-                sb.append("/>");
+                if (isNeedAnnotation(structure)) {
+                    sb.append(">");
+                    addAnnotation(sb, structure);
+                    sb.append("\n   </xs:element>");
+                } else {
+                    sb.append("/>");
+                }
 //                sb.append(">\n  <xs:complexType>\n   <xs:complexContent>\n");
 //                sb.append("<xs:extension base=\"").append("this").append(":").append(structure.getName()).append("\"/>");
 //                sb.append("\n   </xs:complexContent>\n </xs:complexType>\n </xs:element>");
@@ -432,19 +450,38 @@ public class XmlObjectMessagingXsdCreator {
             trullyUnbounded = true;
         }
         addContent(sb, f, trullyUnbounded);
-        sb.append("/>");
+
+        if (isNeedAnnotation(f)) {
+            sb.append(">");
+            addAnnotation(sb, f);
+            sb.append("\n   </xs:element>");
+        } else {
+            sb.append("/>");
+        }
     }
 
     static private void addFieldStrEnum(StringBuffer sb, boolean unbounded, StrField f, DefinitionTypeResolver typeResolver) {
         sb.append("\n   <xs:element name=\"").append(f.getName()).append("\" type=\"me:").append(f.getName()).append("Enum\"");
         addContent(sb, f, unbounded);
-        sb.append("/>");
+        if (isNeedAnnotation(f)) {
+            sb.append(">");
+            addAnnotation(sb, f);
+            sb.append("\n   </xs:element>");
+        } else {
+            sb.append("/>");
+        }
     }
 
     static private void addFieldIntEnum(StringBuffer sb, boolean unbounded, SimpleField f) {
         sb.append("\n   <xs:element name=\"").append(f.getName()).append("\" type=\"me:").append(f.getName()).append("Enum\"");
         addContent(sb, f, unbounded);
-        sb.append("/>");
+        if (isNeedAnnotation(f)) {
+            sb.append(">");
+            addAnnotation(sb, f);
+            sb.append("\n   </xs:element>");
+        } else {
+            sb.append("/>");
+        }
     }
 
     @SuppressWarnings("boxing")
@@ -456,7 +493,9 @@ public class XmlObjectMessagingXsdCreator {
         if (unbounded) {
             sb.append(" maxOccurs=\"unbounded\"");
         }
-        sb.append(">\n <xs:complexType>\n <xs:choice>");
+        sb.append(">");
+        addAnnotation(sb, choice);
+        sb.append("\n <xs:complexType>\n <xs:choice>");
         for (ChoiceFieldVariant f : choice.getVariantList()) {
             getField(sb, f.getField(), false, typeResolver, level + 1, ns2Prefix);
         }
@@ -472,8 +511,28 @@ public class XmlObjectMessagingXsdCreator {
         if (unbounded) {
             sb.append(" maxOccurs=\"unbounded\"");
         }
-        sb.append(">\n <xs:complexType>\n <xs:sequence>");
+        sb.append(">");
+        addAnnotation(sb, f);
+        sb.append("\n <xs:complexType>\n <xs:sequence>");
         getField(sb, f.getItem(), true, typeResolver, level + 1, ns2Prefix);
         sb.append("\n </xs:sequence>\n </xs:complexType>\n </xs:element>");
+    }
+
+    static private boolean isNeedAnnotation(Field f) {
+        return f.getComment() != null;
+    }
+
+    static private void addAnnotation(StringBuffer sb, Field f) {
+        if (isNeedAnnotation(f)) {
+            sb.append("\n      <xs:annotation>");
+            sb.append("\n         <xs:documentation>");
+            
+            XmlCursor tmpCursor = f.getComment().newCursor();
+            sb.append(StringEscapeUtils.escapeXml(tmpCursor.getTextValue()));
+            tmpCursor.dispose();
+            
+            sb.append("</xs:documentation>");
+            sb.append("\n      </xs:annotation>");
+        }
     }
 }

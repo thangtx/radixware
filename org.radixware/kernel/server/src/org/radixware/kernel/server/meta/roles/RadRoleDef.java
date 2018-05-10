@@ -26,6 +26,7 @@ import org.radixware.kernel.common.enums.EDrcResourceType;
 import org.radixware.kernel.common.enums.EDrcServerResource;
 import org.radixware.kernel.server.arte.Release;
 import org.radixware.kernel.common.meta.RadTitledDef;
+import org.radixware.kernel.common.types.MultilingualString;
 import org.radixware.kernel.server.arte.Arte;
 
 public final class RadRoleDef extends RadTitledDef {
@@ -42,6 +43,7 @@ public final class RadRoleDef extends RadTitledDef {
     private final Id[] apFamilyIds;
     private final String layerUri;
     private static final String HASH_SEP = "~";
+    private Id descriptionId = null;
 
     public RadRoleDef(
             final Arte arte,
@@ -69,6 +71,22 @@ public final class RadRoleDef extends RadTitledDef {
             final boolean isAbstract,
             final boolean isDeprecated) {
         this(release, id, name, description, titleId, ancestorIds, apFamilyIds, resources, isAbstract, isDeprecated, false, false);
+    }
+    
+    public RadRoleDef(
+            final Release release,
+            final Id id,
+            final String name,
+            final String description,
+            final Id descriptionId,
+            final Id titleId,
+            final Id[] ancestorIds,
+            final Id[] apFamilyIds,
+            final RadRoleResource[] resources,
+            final boolean isAbstract,
+            final boolean isDeprecated) {
+        this(release, id, name, description, titleId, ancestorIds, apFamilyIds, resources, isAbstract, isDeprecated);
+        this.descriptionId = descriptionId;
     }
 
     public RadRoleDef(
@@ -310,5 +328,17 @@ public final class RadRoleDef extends RadTitledDef {
             hash.append(subDefId);
         }
         return hash.toString();
+    }
+
+    @Override
+    public String getDescription() {
+        String result = MultilingualString.get(Arte.get(), getId(), descriptionId);                
+        
+        return result == null ? super.getDescription() : result;
+    }
+
+    @Override
+    public Id getDescriptionId() {
+        return descriptionId;
     }
 }

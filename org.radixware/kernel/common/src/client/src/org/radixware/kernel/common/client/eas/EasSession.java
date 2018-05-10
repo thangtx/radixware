@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.eas;
 
 import java.security.cert.X509Certificate;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.utils.ISecretStore;
 import org.radixware.kernel.common.enums.EAuthType;
@@ -22,13 +23,21 @@ import org.radixware.schemas.eas.CreateSessionRs;
 
 public class EasSession extends AbstractEasSession implements IPrimaryEasSession {
 
+    public EasSession(final IClientEnvironment environment, final IResponseNotificationScheduler scheduler) {
+        super(environment,scheduler,null);
+    }
+    
     public EasSession(final IClientEnvironment environment) {
-        this(environment, null);
-    }
+        super(environment, null ,null, null);
+    }    
 
-    public EasSession(final IClientEnvironment environment, final ISecretStore secretStore) {
-        super(environment,secretStore,null);
+    public EasSession(final IClientEnvironment environment, final ISecretStore secretStore,final IResponseNotificationScheduler scheduler) {
+        super(environment, secretStore, scheduler, null);
     }
+    
+    public EasSession(final IClientEnvironment environment, final ISecretStore secretStore) {
+        super(environment, secretStore, null, null);
+    }    
 
     @Override
     public CreateSessionRs open(final IEasClient soapConnection,
@@ -36,7 +45,9 @@ public class EasSession extends AbstractEasSession implements IPrimaryEasSession
             final String userName,
             final String password,
             final EAuthType authType,
-            final Id desiredExplorerRoot)
+            final Id desiredExplorerRoot,
+            final Long replacedSessionId,
+            final boolean isWebDriverEnabled)
             throws ServiceClientException, InterruptedException {
         if (isOpened()) {
             close(false);
@@ -44,7 +55,8 @@ public class EasSession extends AbstractEasSession implements IPrimaryEasSession
         final AbstractEasSessionParameters parameters;
         switch (authType) {
             case PASSWORD:
-                final EasSessionPwdParameters pwdParameters = new EasSessionPwdParameters(userName, stationName);
+                final EasSessionPwdParameters pwdParameters = 
+                        new EasSessionPwdParameters(userName, stationName, null, isWebDriverEnabled);
                 if (getSecretStore()==null){
                     setTokenCalculator(pwdParameters.createTokenCalculator(password));
                 }else{
@@ -54,7 +66,7 @@ public class EasSession extends AbstractEasSession implements IPrimaryEasSession
                 break;
             case CERTIFICATE:
                 final EasSessionCertParameters certParameters = 
-                    new EasSessionCertParameters(userName, stationName, null);
+                    new EasSessionCertParameters(userName, stationName, null, isWebDriverEnabled);
                 setTokenCalculator(certParameters.createTokenCalculator());
                 parameters = certParameters;
                 break;
@@ -62,36 +74,42 @@ public class EasSession extends AbstractEasSession implements IPrimaryEasSession
                 throw new IllegalArgumentException("authType \'" + authType.getName() + "\' is not supported");
         }
         setConnection(soapConnection);
-        return createSession(parameters, false, desiredExplorerRoot);
+        return createSession(parameters, false, desiredExplorerRoot, replacedSessionId);
     }
 
     @Override
     public CreateSessionRs open(final IEasClient soapConnection,
             final String stationName,
             final X509Certificate[] userCertificates,
-            final Id desiredExplorerRootId) throws ServiceClientException, InterruptedException {
+            final Id desiredExplorerRootId,
+            final Long replacedSessionId,
+            final boolean isWebDriverEnabled) throws ServiceClientException, InterruptedException {
         if (isOpened()) {
             close(false);
         }
-        final EasSessionCertParameters parameters = new EasSessionCertParameters(null, stationName, userCertificates);
+        final EasSessionCertParameters parameters = 
+            new EasSessionCertParameters(null, stationName, userCertificates, isWebDriverEnabled);
         setTokenCalculator(parameters.createTokenCalculator());
         setConnection(soapConnection);
-        return createSession(parameters, false, desiredExplorerRootId);
+        return createSession(parameters, false, desiredExplorerRootId, replacedSessionId);
     }
 
     public CreateSessionRs open(final IEasClient soapConnection,
             final String stationName,
             final String userName,
-            final byte[] pwdHash,
-            final Id desiredExplorerRoot)
+            final PasswordHash pwdHash,
+            final Id desiredExplorerRoot,
+            final Long replacedSessionId,
+            final boolean isWebDriverEnabled)
             throws ServiceClientException, InterruptedException {
         if (isOpened()) {
             close(false);
         }        
-        final EasSessionPwdParameters parameters = new EasSessionPwdParameters(userName, stationName);
-        setTokenCalculator(parameters.createTokenCalculator(pwdHash.clone()));
+        final EasSessionPwdParameters parameters = 
+            new EasSessionPwdParameters(userName, stationName, null, isWebDriverEnabled);
+        setTokenCalculator(parameters.createTokenCalculator(pwdHash.copy()));
         setConnection(soapConnection);
-        return createSession(parameters, false, desiredExplorerRoot);
+        return createSession(parameters, false, desiredExplorerRoot, replacedSessionId);
     }
 
     @Override
@@ -100,12 +118,15 @@ public class EasSession extends AbstractEasSession implements IPrimaryEasSession
             final IKerberosCredentialsProvider krbCredentialsProvider,
             final ISpnegoGssTokenProvider authDelegate,
             Id desiredExplorerRootId,
-            final X509Certificate[] userCertificates) throws ServiceClientException, InterruptedException {
+            final X509Certificate[] userCertificates,
+            final Long replacedSessionId,
+            final boolean isWebDriverEnabled) throws ServiceClientException, InterruptedException {
         if (isOpened()) {
             close(false);
         }
         setConnection(soapConnection);
-        AbstractEasSessionParameters parameters = new EasSessionKrbParameters(null, stationName, krbCredentialsProvider, authDelegate, userCertificates);
-        return createSession(parameters, false, desiredExplorerRootId);
-    }
+        final AbstractEasSessionParameters parameters = 
+            new EasSessionKrbParameters(null, stationName, krbCredentialsProvider, authDelegate, userCertificates, isWebDriverEnabled);
+        return createSession(parameters, false, desiredExplorerRootId, replacedSessionId);
+    }    
 }

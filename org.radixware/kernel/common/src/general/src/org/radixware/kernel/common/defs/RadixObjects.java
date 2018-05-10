@@ -136,8 +136,8 @@ public class RadixObjects<T extends RadixObject> extends RadixObject implements 
     private void fireChanges(T object, T object2, EChangeType changeType) {
         changesSupport.fireEvent(new ContainerChangedEvent(object, object2, changeType));
     }
-
-    private void afterAdd(T object) {
+    
+    protected void afterAdd(T object) {
         try {
             RadixObject container = getContainer();
             if (container != null) {
@@ -149,6 +149,12 @@ public class RadixObjects<T extends RadixObject> extends RadixObject implements 
         }
 
         onAdd(object);
+    }
+    
+    protected void afterRemove(T object) {
+        if (this.getContainer() != null) {
+            object.setContainer(null);
+        }
     }
 
     /**
@@ -226,9 +232,7 @@ public class RadixObjects<T extends RadixObject> extends RadixObject implements 
         }
 
         if (removed) {
-            if (this.getContainer() != null) {
-                object.setContainer(null);
-            }
+            afterRemove(object);
 
             setEditState(Definition.EEditState.MODIFIED);
             fireChanges(object, EChangeType.SHRINK);

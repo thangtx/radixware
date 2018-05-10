@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
 import java.text.MessageFormat;
@@ -17,21 +16,23 @@ import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsPin;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsProgramObject;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.xscml.JmlType;
 import org.radixware.schemas.xscml.JmlType.Item;
-
 
 public class JmlTagPin extends Jml.Tag {
 
     private Id id;
 
     public JmlTagPin(Id id) {
+        super(null);
         this.id = id;
     }
 
     JmlTagPin(JmlType.Item.Pin xPin) {
+        super(xPin);
         id = Id.Factory.loadFrom(xPin.getId());
     }
 
@@ -42,6 +43,7 @@ public class JmlTagPin extends Jml.Tag {
     @Override
     public void appendTo(Item item) {
         Item.Pin xPin = item.addNewPin();
+        appendTo(xPin);
         xPin.setId(id.toString());
     }
 
@@ -68,9 +70,9 @@ public class JmlTagPin extends Jml.Tag {
     public String getDisplayName() {
         AdsPin pin = findPin();
         if (pin != null) {
-            return pin.toString();
+            return rememberDisplayName(pin.toString());
         } else {
-            return "unknown exit [" + id.toString() + "]";
+            return "unknown exit [" + restoreDisplayName(id.toString()) + "]";
         }
     }
 
@@ -79,26 +81,26 @@ public class JmlTagPin extends Jml.Tag {
         AdsPin pin = findPin();
         if (pin != null) {
             String name = "";
-            for (char ch: getDisplayName().toCharArray()) {
+            for (char ch : getDisplayName().toCharArray()) {
                 name += "&#" + Long.valueOf(ch);
             }
             return pin.getTypeTitle() + "'" + name + "'";
         } else {
             return "unknown exit [" + id.toString() + "]";
         }
-/*
-        String name = getDisplayName();
-        for (char ch: getDisplayName().toCharArray()) {
-            name += "&#" + Long.valueOf(ch);
-            if ('<' == ch)
-                name += "&lt";
-            else if ('>' == ch)
-                name += "&gt";
-            else
-                name += ch;
-        }
-        return "Exit \'" + name + "\'";
-*/
+        /*
+         String name = getDisplayName();
+         for (char ch: getDisplayName().toCharArray()) {
+         name += "&#" + Long.valueOf(ch);
+         if ('<' == ch)
+         name += "&lt";
+         else if ('>' == ch)
+         name += "&gt";
+         else
+         name += ch;
+         }
+         return "Exit \'" + name + "\'";
+         */
     }
 
     @Override
@@ -107,16 +109,22 @@ public class JmlTagPin extends Jml.Tag {
 
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagPin.this) {
 
                     @Override
                     public boolean writeCode(CodePrinter printer) {
-                        int index = indexOfPin();
-                        if (index >= 0) {
-                            printer.print(String.valueOf(index));
-                            return true;
-                        } else {
-                            return false;
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
+                        try {
+                            int index = indexOfPin();
+                            if (index >= 0) {
+                                printer.print(String.valueOf(index));
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        } finally {
+                            WriterUtils.leaveHumanUnreadableBlock(printer);
                         }
                     }
 
@@ -143,7 +151,7 @@ public class JmlTagPin extends Jml.Tag {
     }
 
     @Override
-    public void check(IProblemHandler problemHandler,Jml.IHistory h) {
+    public void check(IProblemHandler problemHandler, Jml.IHistory h) {
         if (indexOfPin() < 0) {
             error(problemHandler, MessageFormat.format("Referenced exit is not found: {0}", getId()));
         }

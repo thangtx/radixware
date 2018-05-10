@@ -12,6 +12,7 @@
 package org.radixware.kernel.designer.ads.editors.pages;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -70,9 +71,8 @@ public class TitleAndIconPanel extends javax.swing.JPanel {
         c.anchor = GridBagConstraints.NORTH;
         c.weightx = 1.0;
 
-        
         if (isContainer) {
-            c.insets = new Insets(0, 0, 0, 10);
+            c.insets = new Insets(0, 0, 0, 0);
             inheritableTitleEditor = new InheritableTitlePanel();
 
             gbl.setConstraints(inheritableTitleEditor, c);
@@ -138,13 +138,14 @@ public class TitleAndIconPanel extends javax.swing.JPanel {
             }
         } else {
             titleEditor = new LocalizingEditorPanel();
-            c.insets = new Insets(0, 0, 0, 10);
+            c.insets = new Insets(0, 0, 0, 0);
             gbl.setConstraints(titleEditor, c);
             content.add(titleEditor);
-
+            
             c.insets = new Insets(0, 0, 0, 0);
             c.gridx = 1;
             c.weightx = 0.0;
+            c.anchor = GridBagConstraints.CENTER;
             gbl.setConstraints(iconEditor, c);
             content.add(iconEditor);
         }

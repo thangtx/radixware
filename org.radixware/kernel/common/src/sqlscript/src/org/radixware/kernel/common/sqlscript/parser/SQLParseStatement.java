@@ -11,14 +11,21 @@
 
 package org.radixware.kernel.common.sqlscript.parser;
 
-
 public class SQLParseStatement {
-    private SQLPosition           position;
-    private SQLConstants.StatementType  type;
+    private final SQLPosition position;
+    private final SQLConstants.StatementType type;
 
-    public SQLParseStatement(SQLPosition position, SQLConstants.StatementType type) {
-        this.position = position.fork();
-        this.type = type;
+    public SQLParseStatement(final SQLPosition position, final SQLConstants.StatementType type) {
+        if (position == null) {
+            throw new IllegalArgumentException("Position can't be null");
+        }
+        else if (type == null) {
+            throw new IllegalArgumentException("Statement type can't be null");
+        }
+        else {
+            this.position = position.fork();
+            this.type = type;
+        }
     }
 
     public SQLPosition getPosition() {
@@ -27,5 +34,10 @@ public class SQLParseStatement {
 
     public SQLConstants.StatementType getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLParseStatement{" + "position=" + position + ", type=" + type + '}';
     }
 }

@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.src.clazz.presentation;
 
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
@@ -24,8 +23,8 @@ import org.radixware.kernel.common.defs.ads.type.AdsEnumType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.ParentRefType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.common.utils.CharOperations;
-
 
 public class AdsFilterWriter extends AbstractDefinitionWriter<AdsFilterDef> {
 
@@ -73,6 +72,9 @@ public class AdsFilterWriter extends AbstractDefinitionWriter<AdsFilterDef> {
                 printer.printComma();
                 printer.println();
                 WriterUtils.writeSqmlAsXmlStr(printer, def.getCondition());
+                printer.printComma();
+                printer.println();
+                WriterUtils.writeSqmlAsXmlStr(printer, def.getConditionFrom().hasImportant() ? def.getConditionFrom() : null);
                 printer.printComma();
                 printer.println();
                 WriterUtils.writeIdArrayUsage(printer, def.getEnabledSortings().getEnabledSortingIds());
@@ -218,6 +220,8 @@ public class AdsFilterWriter extends AbstractDefinitionWriter<AdsFilterDef> {
                 WriterUtils.writeIdUsage(printer, def.getTitleId()); // by BAO
                 printer.printComma();							 	 // by BAO
                 WriterUtils.writeSqmlAsXmlStr(printer, def.getCondition());
+                printer.printComma();
+                WriterUtils.writeSqmlAsXmlStr(printer, def.getConditionFrom().hasImportant() ? def.getConditionFrom() : null);
                 printer.printComma();
                 WriterUtils.writeSqmlAsXmlStr(printer, def.getHint());
                 printer.printComma();

@@ -44,6 +44,12 @@ abstract class AdsSqlClassSourceProcessor extends SqmlProcessor {
 
     protected void processSqlTag(Tag tag) {
     }
+    
+    protected void startIfBranch() {
+    }
+    
+    protected void endIfBranch() {
+    }
 
     @Override
     protected void processTag(Tag tag) {
@@ -73,6 +79,12 @@ abstract class AdsSqlClassSourceProcessor extends SqmlProcessor {
             if (tagTranslator != null) {
                 try {
                     tagTranslator.translate(tag, cp);
+                    if (tag instanceof ElseIfTag || tag instanceof EndIfTag) {
+                        endIfBranch();
+                    }
+                    if (tag instanceof IfParamTag || tag instanceof TargetDbPreprocessorTag || tag instanceof ElseIfTag) {
+                        startIfBranch();
+                    }
                 } catch (RadixError cause) {
                     cp.printError();
                 }

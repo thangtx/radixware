@@ -21,11 +21,7 @@ import org.radixware.kernel.common.utils.Utils;
  * Available in SQL classes, filters.
  */
 public class ParameterTag extends ParameterAbstractTag {
-
-    protected ParameterTag() {
-        super();
-    }
-
+    
     public static final class Factory {
 
         private Factory() {
@@ -34,8 +30,16 @@ public class ParameterTag extends ParameterAbstractTag {
         public static ParameterTag newInstance() {
             return new ParameterTag();
         }
-    }
+    }    
+    
     private boolean literal = false;
+    private boolean expressionList = false;
+    private EParamDirection direction = EParamDirection.IN;
+    private Id propId = null;
+
+    protected ParameterTag() {
+        super();
+    }
 
     public boolean isLiteral() {
         return literal;
@@ -46,8 +50,7 @@ public class ParameterTag extends ParameterAbstractTag {
             this.literal = literal;
             setEditState(EEditState.MODIFIED);
         }
-    }
-    private EParamDirection direction = EParamDirection.IN;
+    }    
 
     public EParamDirection getDirection() {
         return direction;
@@ -58,8 +61,7 @@ public class ParameterTag extends ParameterAbstractTag {
             this.direction = direction;
             setEditState(EEditState.MODIFIED);
         }
-    }
-    private Id propId = null;
+    }    
 
     /**
      * Get PkParameter property GUID.
@@ -71,6 +73,17 @@ public class ParameterTag extends ParameterAbstractTag {
     public void setPropId(Id propId) {
         if (!Utils.equals(this.propId, propId)) {
             this.propId = propId;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public boolean isExpressionList() {
+        return expressionList;
+    }
+
+    public void setExpressionList(boolean expressionList) {
+        if (this.expressionList != expressionList){
+            this.expressionList = expressionList;
             setEditState(EEditState.MODIFIED);
         }
     }

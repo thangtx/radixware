@@ -33,6 +33,7 @@ import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.ESelectorColumnVisibility;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.CharOperations;
 
@@ -67,8 +68,7 @@ public class AdsSelectorPresentationWriter extends AbstractDefinitionWriter<AdsS
                 WriterUtils.writePackageDeclaration(printer, def, usagePurpose);
                 printer.print("public final class ");
                 //writeUsage(printer);
-                printer.print(def.getId());
-                printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+                printer.print(JavaSourceSupport.getMetaName(def, printer instanceof IHumanReadablePrinter));
                 printer.print(" extends ");
                 printer.print(SELECTOR_PRESENTATION_META_EXPLORER_CLASS_NAME);
                 printer.enterBlock(1);
@@ -161,8 +161,7 @@ public class AdsSelectorPresentationWriter extends AbstractDefinitionWriter<AdsS
                  */
                 printer.print("new ");
                 //writeUsage(printer);
-                printer.print(def.getId());
-                printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+                printer.print(JavaSourceSupport.getMetaName(def, printer instanceof IHumanReadablePrinter));
                 printer.println("();");
 
                 if (!writeExplorerMetaConstructor(printer, attributes)) {
@@ -213,8 +212,7 @@ public class AdsSelectorPresentationWriter extends AbstractDefinitionWriter<AdsS
         printer.print("private ");
         printer.enterBlock();
         //writeUsage(printer);
-        printer.print(def.getId());
-        printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+        printer.print(JavaSourceSupport.getMetaName(def, printer instanceof IHumanReadablePrinter));
         printer.println("(){");
         printer.print("super(");
         WriterUtils.writeIdUsage(printer, def.getId());
@@ -373,14 +371,16 @@ public class AdsSelectorPresentationWriter extends AbstractDefinitionWriter<AdsS
         printer.printComma();
         printer.print(def.isRestorePositionEnabled());
 
+        printer.printComma();
+        printer.print(attributes.isAutoSortClasses);
 
-//        final IModalDisplayable.ModialViewSizeInfo sizeInfo = def.getModialViewSizeInfo(usagePurpose.getEnvironment());
-//        if (sizeInfo != null) {
-//            printer.printComma();
-//            printer.print(sizeInfo.getWidth());
-//            printer.printComma();
-//            printer.print(sizeInfo.getHeight());
-//        }
+        final IModalDisplayable.ModialViewSizeInfo sizeInfo = def.getModialViewSizeInfo(usagePurpose.getEnvironment());
+        if (sizeInfo != null) {
+            printer.printComma();
+            printer.print(sizeInfo.getWidth());
+            printer.printComma();
+            printer.print(sizeInfo.getHeight());
+        }
 
 
         printer.println(");");

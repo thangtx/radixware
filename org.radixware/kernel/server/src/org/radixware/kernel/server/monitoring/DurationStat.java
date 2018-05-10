@@ -18,7 +18,7 @@ import org.radixware.kernel.server.types.ProfileStatisticEntry;
  *
  * @author dsafonov
  */
-class DurationStat extends AbstractStat<ProfileStatisticEntry> {
+public class DurationStat extends AbstractStat<ProfileStatisticEntry> {
     private long curMinNanos = Long.MAX_VALUE;
     private long curMaxNanos = 0;
     private long curTotalNanos = 0;

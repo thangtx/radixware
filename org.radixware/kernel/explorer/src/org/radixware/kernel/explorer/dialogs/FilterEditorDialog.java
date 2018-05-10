@@ -64,7 +64,7 @@ public class FilterEditorDialog extends ExplorerDialog implements IFilterEditorD
         this.filter = filter.isUserDefined() ? (RadUserFilter) filter.getFilterDef() : null;
         this.restrictedNames = restrictedNames;
         contextTableId = filter.getFilterContext().ownerGroup.getSelectorPresentationDef().getOwnerClassId();
-        conditionEditor = new SqmlEditor(filter.getEnvironment(), this, contextTableId);
+        conditionEditor = new SqmlEditor(filter.getEnvironment(), this, contextTableId);                
         setupUi(filter.getFilterDef(), showApplyButton);
     }
 
@@ -85,18 +85,21 @@ public class FilterEditorDialog extends ExplorerDialog implements IFilterEditorD
         hLayout.addWidget(leFilterName);
 
         final Splitter splitter;
+        final org.radixware.schemas.xscml.Sqml additionalFrom;
         if (filter == null || filter.getBaseFilter() != null) {
-            final org.radixware.schemas.xscml.Sqml condition;
+            final org.radixware.schemas.xscml.Sqml condition;            
             final QGroupBox gbPredefined;
             final SqmlEditor editor;
             if (filter == null) {
                 condition = filterDef.getCondition();
+                additionalFrom = filterDef.getConditionFrom();
                 gbPredefined = new QGroupBox(Application.translate("SelectorAddons", "Predefined Condition:"), this);
                 dialogLayout().addWidget(gbPredefined);
                 editor = new SqmlEditor(getEnvironment(), gbPredefined, contextTableId, filterDef.getParameters());
                 splitter = null;
             } else {
                 condition = filter.getBaseFilter().getCondition();
+                additionalFrom = filter.getBaseFilter().getConditionFrom();
                 splitter = new Splitter(this,(ExplorerSettings)getEnvironment().getConfigStore());
                 gbPredefined = new QGroupBox(Application.translate("SelectorAddons", "Predefined Condition:"), splitter);
                 splitter.addWidget(gbPredefined);
@@ -109,11 +112,13 @@ public class FilterEditorDialog extends ExplorerDialog implements IFilterEditorD
             final QVBoxLayout vLayout = new QVBoxLayout(gbPredefined);
 
             vLayout.addWidget(editor);
+            editor.setImportAccessible(false);
+            editor.setExportAccessible(false);
             editor.setReadonly(true);
-            editor.setSqml(condition);
-            //readonlySettings.apply(editor.getTextEditor());
+            editor.setSqml(condition, additionalFrom, null);
         } else {
             splitter = null;
+            additionalFrom = null;
         }
 
         if (filter != null) {
@@ -133,7 +138,9 @@ public class FilterEditorDialog extends ExplorerDialog implements IFilterEditorD
                 parameterIds.add(parameter.getId());
             }
 
-            conditionEditor.setSqml(filter.getCondition(), filter.getParameters());
+            conditionEditor.setImportAccessible(false);
+            conditionEditor.setExportAccessible(false);
+            conditionEditor.setSqml(filter.getCondition(), additionalFrom, filter.getParameters());
             conditionEditor.getTextEditor().textChanged.connect(this, "conditionWasChanged()");
 
         } else {

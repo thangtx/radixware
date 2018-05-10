@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.role;
 
 import java.awt.BorderLayout;
@@ -26,6 +25,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.*;
 import javax.swing.tree.*;
+import org.openide.util.Exceptions;
+import org.openide.util.RequestProcessor;
+import org.openide.util.actions.SystemAction;
 import org.radixware.kernel.common.defs.Dependences.Dependence;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.*;
@@ -65,6 +67,10 @@ import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitio
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.EChooseDefinitionDisplayMode;
 import org.radixware.kernel.designer.common.dialogs.components.SimpleTable;
+import org.radixware.kernel.designer.common.dialogs.usages.FindUsages;
+import org.radixware.kernel.designer.common.dialogs.usages.FindUsagesAction;
+import org.radixware.kernel.designer.common.dialogs.usages.FindUsagesCfg;
+import org.radixware.kernel.designer.common.dialogs.usages.FindUsagesCfgPanel;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.editors.treeTable.TreeGridModel;
 import org.radixware.kernel.designer.common.editors.treeTable.TreeGridModel.TreeGridNode;
@@ -73,7 +79,6 @@ import org.radixware.kernel.designer.common.editors.treeTable.TreeTable;
 import org.radixware.kernel.designer.common.editors.treeTable.TreeTableModel;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
 import org.radixware.kernel.designer.common.general.nodes.NodesManager;
-
 
 public class AdsRoleEditorPanel extends JPanel {
 
@@ -133,7 +138,7 @@ public class AdsRoleEditorPanel extends JPanel {
         jbtGoToEntity = new javax.swing.JButton();
         jSeparatorGoToEntity = new javax.swing.JToolBar.Separator();
         jbtSearchEntity = new javax.swing.JButton();
-        jbtChangeMode = new javax.swing.JButton();
+        jbtChangeMode = new javax.swing.JToggleButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel8 = new javax.swing.JPanel();
@@ -145,6 +150,9 @@ public class AdsRoleEditorPanel extends JPanel {
         jSeparator8 = new javax.swing.JToolBar.Separator();
         jbtAddEdPr = new javax.swing.JButton();
         jbtDelEdPr = new javax.swing.JButton();
+        jEdPrSeparator = new javax.swing.JToolBar.Separator();
+        jbtGoToEdPr = new javax.swing.JButton();
+        jbtFindUsagesEdPr = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel23 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -183,6 +191,9 @@ public class AdsRoleEditorPanel extends JPanel {
         jSeparator17 = new javax.swing.JToolBar.Separator();
         jbtAddSlPr = new javax.swing.JButton();
         jbtDelSpPr = new javax.swing.JButton();
+        jSlPrSeparator = new javax.swing.JToolBar.Separator();
+        jbtGoToSlPr = new javax.swing.JButton();
+        jbtFindUsagesSlPr = new javax.swing.JButton();
         jPanel17 = new javax.swing.JPanel();
         jPanel20 = new javax.swing.JPanel();
         jScrollPaneCurr1 = new javax.swing.JScrollPane();
@@ -372,10 +383,10 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         });
         jAncestorList.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
                 jAncestorListCaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         jAncestorList.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -752,6 +763,8 @@ public class AdsRoleEditorPanel extends JPanel {
         });
         jToolBar3.add(jbtSearchEntity);
 
+        jbtChangeMode.setIcon(RadixWareDesignerIcon.TREE.UNDEPENDENCIES.getIcon());
+        jbtChangeMode.setText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtChangeMode.text")); // NOI18N
         jbtChangeMode.setToolTipText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtChangeMode.toolTipText")); // NOI18N
         jbtChangeMode.setFocusable(false);
         jbtChangeMode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -859,6 +872,43 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         });
         jToolBar8.add(jbtDelEdPr);
+
+        jEdPrSeparator.setName("jEdPrSeparator"); // NOI18N
+        jToolBar8.add(jEdPrSeparator);
+
+        jbtGoToEdPr.setIcon(RadixWareDesignerIcon.TREE.SELECT_IN_TREE.getIcon());
+        jbtGoToEdPr.setText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtGoToEdPr.text")); // NOI18N
+        jbtGoToEdPr.setToolTipText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtGoToEdPr.toolTipText")); // NOI18N
+        jbtGoToEdPr.setFocusable(false);
+        jbtGoToEdPr.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jbtGoToEdPr.setMaximumSize(new java.awt.Dimension(32, 32));
+        jbtGoToEdPr.setMinimumSize(new java.awt.Dimension(32, 32));
+        jbtGoToEdPr.setName("jbtGoToEdPr"); // NOI18N
+        jbtGoToEdPr.setPreferredSize(new java.awt.Dimension(32, 32));
+        jbtGoToEdPr.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jbtGoToEdPr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtGoToEdPrActionPerformed(evt);
+            }
+        });
+        jToolBar8.add(jbtGoToEdPr);
+
+        jbtFindUsagesEdPr.setIcon(SystemAction.get(FindUsagesAction.class).getIcon());
+        jbtFindUsagesEdPr.setText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtFindUsagesEdPr.text")); // NOI18N
+        jbtFindUsagesEdPr.setToolTipText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtFindUsagesEdPr.toolTipText")); // NOI18N
+        jbtFindUsagesEdPr.setFocusable(false);
+        jbtFindUsagesEdPr.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jbtFindUsagesEdPr.setMaximumSize(new java.awt.Dimension(32, 32));
+        jbtFindUsagesEdPr.setMinimumSize(new java.awt.Dimension(32, 32));
+        jbtFindUsagesEdPr.setName("jbtFindUsagesEdPr"); // NOI18N
+        jbtFindUsagesEdPr.setPreferredSize(new java.awt.Dimension(32, 32));
+        jbtFindUsagesEdPr.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jbtFindUsagesEdPr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtFindUsagesEdPrActionPerformed(evt);
+            }
+        });
+        jToolBar8.add(jbtFindUsagesEdPr);
 
         jPanel14.add(jToolBar8, java.awt.BorderLayout.PAGE_START);
 
@@ -1209,14 +1259,14 @@ public class AdsRoleEditorPanel extends JPanel {
         ));
         jtblSelectorPresentation.setName("jtblSelectorPresentation"); // NOI18N
         jtblSelectorPresentation.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtblSelectorPresentationMouseClicked(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jtblSelectorPresentationMousePressed(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 jtblSelectorPresentationMouseReleased(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jtblSelectorPresentationMouseClicked(evt);
             }
         });
         jtblSelectorPresentation.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1299,6 +1349,43 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         });
         jToolBar13.add(jbtDelSpPr);
+
+        jSlPrSeparator.setName("jSlPrSeparator"); // NOI18N
+        jToolBar13.add(jSlPrSeparator);
+
+        jbtGoToSlPr.setIcon(RadixWareDesignerIcon.TREE.SELECT_IN_TREE.getIcon());
+        jbtGoToSlPr.setText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtGoToSlPr.text")); // NOI18N
+        jbtGoToSlPr.setToolTipText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtGoToSlPr.toolTipText")); // NOI18N
+        jbtGoToSlPr.setFocusable(false);
+        jbtGoToSlPr.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jbtGoToSlPr.setMaximumSize(new java.awt.Dimension(32, 32));
+        jbtGoToSlPr.setMinimumSize(new java.awt.Dimension(32, 32));
+        jbtGoToSlPr.setName("jbtGoToSlPr"); // NOI18N
+        jbtGoToSlPr.setPreferredSize(new java.awt.Dimension(32, 32));
+        jbtGoToSlPr.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jbtGoToSlPr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtGoToSlPrActionPerformed(evt);
+            }
+        });
+        jToolBar13.add(jbtGoToSlPr);
+
+        jbtFindUsagesSlPr.setIcon(SystemAction.get(FindUsagesAction.class).getIcon());
+        jbtFindUsagesSlPr.setText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtFindUsagesSlPr.text")); // NOI18N
+        jbtFindUsagesSlPr.setToolTipText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtFindUsagesSlPr.toolTipText")); // NOI18N
+        jbtFindUsagesSlPr.setFocusable(false);
+        jbtFindUsagesSlPr.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jbtFindUsagesSlPr.setMaximumSize(new java.awt.Dimension(32, 32));
+        jbtFindUsagesSlPr.setMinimumSize(new java.awt.Dimension(32, 32));
+        jbtFindUsagesSlPr.setName("jbtFindUsagesSlPr"); // NOI18N
+        jbtFindUsagesSlPr.setPreferredSize(new java.awt.Dimension(32, 32));
+        jbtFindUsagesSlPr.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jbtFindUsagesSlPr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtFindUsagesSlPrActionPerformed(evt);
+            }
+        });
+        jToolBar13.add(jbtFindUsagesSlPr);
 
         jPanel25.add(jToolBar13, java.awt.BorderLayout.PAGE_START);
 
@@ -1637,7 +1724,7 @@ public class AdsRoleEditorPanel extends JPanel {
         jToolBar10.setName("jToolBar8"); // NOI18N
 
         jbtDelAPFamily.setIcon(RadixWareDesignerIcon.DELETE.DELETE.getIcon());
-        jbtDelAPFamily.setText(null);
+        jbtDelAPFamily.setText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtDelAPFamily.text")); // NOI18N
         jbtDelAPFamily.setToolTipText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtDelAPFamily.toolTipText")); // NOI18N
         jbtDelAPFamily.setFocusable(false);
         jbtDelAPFamily.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1670,7 +1757,7 @@ public class AdsRoleEditorPanel extends JPanel {
         jToolBar10.add(jSeparator19);
 
         jbtAddAutoAPFamily.setIcon(RadixWareDesignerIcon.TREE.DEPENDENCIES.getIcon());
-        jbtAddAutoAPFamily.setText(null);
+        jbtAddAutoAPFamily.setText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtAddAutoAPFamily.text")); // NOI18N
         jbtAddAutoAPFamily.setToolTipText(org.openide.util.NbBundle.getMessage(AdsRoleEditorPanel.class, "AdsRoleEditorPanel.jbtAddAutoAPFamily.toolTipText")); // NOI18N
         jbtAddAutoAPFamily.setFocusable(false);
         jbtAddAutoAPFamily.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1723,10 +1810,10 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         });
         jAPFamilyList.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
                 jAPFamilyListCaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         jAPFamilyList.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1836,7 +1923,6 @@ public class AdsRoleEditorPanel extends JPanel {
                 setBranch(par2, x, false, rootId);
             }
 
-
         }
 
         if (x == 0) {
@@ -1923,7 +2009,6 @@ public class AdsRoleEditorPanel extends JPanel {
             return;
         }
 
-
         Iterator<AdsRoleDef.Resource> iter = role.getResources().iterator();
         int size = 0;
         while (iter.hasNext()) {
@@ -1964,7 +2049,6 @@ public class AdsRoleEditorPanel extends JPanel {
         stateEntityClassDisableStatus();
 
 
-
 }//GEN-LAST:event_jbtInheritEditorPresActionPerformed
 
     private void jbtExplRootInheritAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtExplRootInheritAllActionPerformed
@@ -1996,7 +2080,6 @@ public class AdsRoleEditorPanel extends JPanel {
             } else {
                 role.RemoveResourceRestrictions(hash);
             }
-
 
         }
 
@@ -2034,9 +2117,9 @@ public class AdsRoleEditorPanel extends JPanel {
         if (!DialogUtils.messageConfirmation(sPrefix + "rights for all resources?")) {
             return;
         }
-        for (int i = 0; i < SERVER_RESOURCES_SIZE; i++) {
+        for (int i = 0; i < AdsRoleEditorPanelUtils.getServerResourceCount(); i++) {
             role.RemoveResourceRestrictions(
-                    AdsRoleDef.generateResHashKey(EDrcResourceType.SERVER_RESOURCE, indexToServerResource(i)));
+                    AdsRoleDef.generateResHashKey(EDrcResourceType.SERVER_RESOURCE, AdsRoleEditorPanelUtils.indexToServerResource(i)));
             jtblServerResource.setValueAt(jtblServerResource.getValueAt(i, 0), i, 0);
             jtblServerResource.setValueAt(Inherit, i, 2);
             jtblServerResource.setValueAt(jtblServerResource.getValueAt(i, 1), i, 3);
@@ -2046,7 +2129,6 @@ public class AdsRoleEditorPanel extends JPanel {
 }//GEN-LAST:event_jbtServerInheritAllActionPerformed
 
     private void jbtSelectAllCmdForEdPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtSelectAllCmdForEdPrActionPerformed
-
 
         if (currCoverEditorPresentation == null
                 || editorCommandsList == null
@@ -2112,9 +2194,8 @@ public class AdsRoleEditorPanel extends JPanel {
             return;
         }
 
-
-        for (int i = 0; i < SERVER_RESOURCES_SIZE; i++) {
-            EDrcServerResource resource = indexToServerResource(i);
+        for (int i = 0; i < AdsRoleEditorPanelUtils.getServerResourceCount(); i++) {
+            EDrcServerResource resource = AdsRoleEditorPanelUtils.indexToServerResource(i);
             role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
                     EDrcResourceType.SERVER_RESOURCE,
                     Id.Factory.loadFrom(resource.getValue()),
@@ -2156,8 +2237,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
     private void jbtExplItemAllowedTreeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtExplItemAllowedTreeActionPerformed
 
-
-
         int row = treeTableExplorerItems.getSelectedRow();
         if (treeTableExplorerItems.getRowCount() == 0 || row < 0) {
             return;
@@ -2165,7 +2244,6 @@ public class AdsRoleEditorPanel extends JPanel {
         if (!DialogUtils.messageConfirmation("Allow access to branch and all its subitems?")) {
             return;
         }
-
 
         TreeGridModel.TreeGridNode tgn = (TreeGridModel.TreeGridNode) treeTableExplorerItems.getValueAt(row, 0);
         TreeGridRoleResourceRow item = (TreeGridRoleResourceRow) tgn.getGridItem();
@@ -2175,10 +2253,10 @@ public class AdsRoleEditorPanel extends JPanel {
         while (item2 != null) {
             role.CreateOrReplaceResourceRestrictions(
                     new AdsRoleDef.Resource(
-                    EDrcResourceType.EXPLORER_ROOT_ITEM,
-                    item2.parentId,
-                    parentId == item2.explorerItem.getId() ? null : item2.explorerItem.getId(),
-                    Restrictions.Factory.newInstance(0)));
+                            EDrcResourceType.EXPLORER_ROOT_ITEM,
+                            item2.parentId,
+                            parentId == item2.explorerItem.getId() ? null : item2.explorerItem.getId(),
+                            Restrictions.Factory.newInstance(0)));
             item2.loadValues();
             item2 = item2.parent;
         }
@@ -2227,7 +2305,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
         RadixObjectsUtils.sortByQualifiedName(contextlessCommands);
         setContextlessCommands();
-
 
         if (jtblContextlessCommands.getRowCount() > 0) {
             jtblContextlessCommands.setRowSelectionInterval(0, 0);
@@ -2393,7 +2470,6 @@ public class AdsRoleEditorPanel extends JPanel {
             jAncestorList.setSelectionInterval(0, 0);
         }
 
-
         role.clearAncestorIds();
         refreshAncestorsButtons();
         isMustRefreshInheritRihghts = true;
@@ -2401,8 +2477,6 @@ public class AdsRoleEditorPanel extends JPanel {
     }//GEN-LAST:event_jbtClearAncestorsActionPerformed
 
     private void jbtAllowedEditorPresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtAllowedEditorPresActionPerformed
-
-
 
         if (!DialogUtils.messageConfirmation("Allow access to all editor and selector presentations and theirs explorer items?")) {
             return;
@@ -2424,20 +2498,19 @@ public class AdsRoleEditorPanel extends JPanel {
                 removeOverwriteItems(sPresList);
             }
 
-
             for (AdsEditorPresentationDef ePres : ePresList) {
                 role.CreateOrReplaceResourceRestrictions(
                         new AdsRoleDef.Resource(
-                        EDrcResourceType.EDITOR_PRESENTATION,
-                        ePres.getOwnerClass().getId(), ePres.getId(),
-                        Restrictions.Factory.newInstance(role, 0)));
+                                EDrcResourceType.EDITOR_PRESENTATION,
+                                ePres.getOwnerClass().getId(), ePres.getId(),
+                                Restrictions.Factory.newInstance(role, 0)));
             }
             for (AdsSelectorPresentationDef sPres : sPresList) {
                 role.CreateOrReplaceResourceRestrictions(
                         new AdsRoleDef.Resource(
-                        EDrcResourceType.SELECTOR_PRESENTATION,
-                        sPres.getOwnerClass().getId(), sPres.getId(),
-                        Restrictions.Factory.newInstance(role, 0)));
+                                EDrcResourceType.SELECTOR_PRESENTATION,
+                                sPres.getOwnerClass().getId(), sPres.getId(),
+                                Restrictions.Factory.newInstance(role, 0)));
             }
         }
         setClasses();
@@ -2446,22 +2519,21 @@ public class AdsRoleEditorPanel extends JPanel {
 
     private void jbtAddExplorerRootActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtAddExplorerRootActionPerformed
 
-
         List<Definition> prList = new ArrayList<>(0);
         for (CoverFoo item : paragraphsMap.values()) {
             prList.add(item.getParagraphItem());
         }
-        ChooseKnownDefinitionCfg cfg =
-                new ChooseKnownDefinitionCfg(
-                role.getModule(),
-                null, prList);
+        ChooseKnownDefinitionCfg cfg
+                = new ChooseKnownDefinitionCfg(
+                        role.getModule(),
+                        null, prList);
 
         Definition def = ChooseDefinition.chooseDefinition(cfg);
         if (def != null) {
             String s;
             if (role.getOverwriteAndAncestordResourceRestrictions(
                     AdsRoleDef.generateResHashKey(
-                    EDrcResourceType.EXPLORER_ROOT_ITEM, def.getId(), null), null).isDenied(ERestriction.ACCESS)) {
+                            EDrcResourceType.EXPLORER_ROOT_ITEM, def.getId(), null), null).isDenied(ERestriction.ACCESS)) {
                 s = Forbidden;
             } else {
                 s = Allowed;
@@ -2491,8 +2563,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
     private void jbtAddEntityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtAddEntityActionPerformed
 
-
-
         HashMap<Id, Definition> freeEntityClassesMap = new HashMap<>();
         Iterator<CoverEntityObjectClasses> iter = entityObjectClassesMap.values().iterator();
         while (iter.hasNext()) {
@@ -2503,15 +2573,16 @@ public class AdsRoleEditorPanel extends JPanel {
                 freeEntityClassesMap.put(cover.clazz.getId(), cover.clazz);
             }
         }
-        ChooseKnownDefinitionCfg cfg =
-                new ChooseKnownDefinitionCfg(
-                role.getModule(),
-                null, freeEntityClassesMap.values());
-
+        ChooseKnownDefinitionCfg cfg
+                = new ChooseKnownDefinitionCfg(
+                        role.getModule(),
+                        null, freeEntityClassesMap.values());
 
         //cfg.setDisplayMode(EChooseDefinitionDisplayMode.QUALIFIED_NAME);
-
         Definition def = ChooseDefinition.chooseDefinition(cfg);
+        if (def instanceof AdsPresentationDef) {//RADIX-13784
+            def = ((AdsPresentationDef)def).getOwnerClass();
+        }
         if (def != null) {
             CoverEntityObjectClasses cover = entityObjectClassesMap.get(def.getId());
             List<CoverEntityObjectClasses> lst = new ArrayList<>();
@@ -2551,14 +2622,12 @@ public class AdsRoleEditorPanel extends JPanel {
                     }
                 }
 
-
                 int index = AdsUsedByRolePanel.findPlace(currChilds, item, false);
 
                 Bool2 bool2 = new Bool2();
                 bool2.color = Color.BLACK;// greyColor;
                 DefaultMutableTreeNodeEx treeNodeEx = new DefaultMutableTreeNodeEx(item.clazz.getIcon().getIcon(), item, bool2);
                 item.treeNodeEx = treeNodeEx;
-
 
                 {
                     if (index >= prt.treeNodeEx.getChildCount()) {
@@ -2569,15 +2638,11 @@ public class AdsRoleEditorPanel extends JPanel {
                 }
                 item.setRightsOrRightsInChilds(true);
 
-
                 ((DefaultTreeModel) jEntityAndApplTree.getModel()).setRoot(
                         (TreeNode) jEntityAndApplTree.getModel().getRoot());
                 for (int i = 0; i < jEntityAndApplTree.getRowCount(); i++) {
                     jEntityAndApplTree.expandRow(i);
                 }
-
-
-
 
                 prt = item;
             }
@@ -2589,9 +2654,9 @@ public class AdsRoleEditorPanel extends JPanel {
                     Restrictions rest = role.getOverwriteAndAncestordResourceRestrictions(hash, pres);
                     role.CreateOrReplaceResourceRestrictions(
                             new AdsRoleDef.Resource(EDrcResourceType.EDITOR_PRESENTATION,
-                            pres.getOwnerClass().getId(),
-                            pres.getId(),
-                            rest));
+                                    pres.getOwnerClass().getId(),
+                                    pres.getId(),
+                                    rest));
                 }
             }
 
@@ -2602,15 +2667,11 @@ public class AdsRoleEditorPanel extends JPanel {
                     Restrictions rest = role.getOverwriteAndAncestordResourceRestrictions(hash, null);
                     role.CreateOrReplaceResourceRestrictions(
                             new AdsRoleDef.Resource(EDrcResourceType.SELECTOR_PRESENTATION,
-                            pres.getOwnerClass().getId(),
-                            pres.getId(),
-                            rest));
+                                    pres.getOwnerClass().getId(),
+                                    pres.getId(),
+                                    rest));
                 }
             }
-
-
-
-
 
             TreeNode[] pathes = ((DefaultTreeModel) jEntityAndApplTree.getModel()).getPathToRoot(lst.get(lst.size() - 1).treeNodeEx);
             TreePath path = new TreePath(pathes);
@@ -2618,10 +2679,7 @@ public class AdsRoleEditorPanel extends JPanel {
             jEntityAndApplTree.setSelectionPath(path);
             jEntityAndApplTree.repaint();
 
-
-
         }
-
 
         refreshEditorAndSelectorPresentationList();
         stateEntityClassDisableStatus();
@@ -2634,16 +2692,16 @@ public class AdsRoleEditorPanel extends JPanel {
         for (CoverFoo item : contextlessCommandsMap.values()) {
             prList.add(item.getCmdItem());
         }
-        ChooseKnownDefinitionCfg cfg =
-                new ChooseKnownDefinitionCfg(
-                role.getModule(),
-                null, prList);
+        ChooseKnownDefinitionCfg cfg
+                = new ChooseKnownDefinitionCfg(
+                        role.getModule(),
+                        null, prList);
         Definition def = ChooseDefinition.chooseDefinition(cfg);
         if (def != null) {
             String s;
             if (role.getOverwriteAndAncestordResourceRestrictions(
                     AdsRoleDef.generateResHashKey(
-                    EDrcResourceType.CONTEXTLESS_COMMAND, def.getId(), null), null).isDenied(ERestriction.ACCESS)) {
+                            EDrcResourceType.CONTEXTLESS_COMMAND, def.getId(), null), null).isDenied(ERestriction.ACCESS)) {
                 s = Forbidden;
             } else {
                 s = Allowed;
@@ -2678,7 +2736,6 @@ public class AdsRoleEditorPanel extends JPanel {
         CoverFoo par = paragraphs.get(y);
 
         inheritedAllItemsAtaParagraph(par.getId());
-
 
         if (jtblExplorerRoots.getValueAt(y, 1).equals(Allowed)) {
             jtblExplorerRoots.setValueAt(Inherit, y, 2);
@@ -2719,8 +2776,8 @@ public class AdsRoleEditorPanel extends JPanel {
             if (currCoverEntityObjectClasses.clazz == null) {
                 entityObjectClassesMap.remove(currCoverEntityObjectClasses.incorrectId);
             } else {
-                CoverEntityObjectClasses cl =
-                        entityObjectClassesMap.get(currCoverEntityObjectClasses.clazz.getId());
+                CoverEntityObjectClasses cl
+                        = entityObjectClassesMap.get(currCoverEntityObjectClasses.clazz.getId());
                 cl.setRightsOrRightsInChilds(false);
             }
             // entityObjectClassesMap.put(currCoverEntityObjectClasses.clazz.getId(), currCoverEntityObjectClasses);
@@ -2802,22 +2859,7 @@ public class AdsRoleEditorPanel extends JPanel {
     }//GEN-LAST:event_jtblCurrentEditorEnabledCmdMousePressed
 
     private void jbtAddAutoAPFamilyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtAddAutoAPFamilyActionPerformed
-        List<DdsAccessPartitionFamilyDef> list = new ArrayList<>(0);
-        for (DdsModule m : ddsModules) {
-            DdsModelDef nextModel = m.getModelManager().findModel();
-            if (nextModel != null) {
-                for (DdsAccessPartitionFamilyDef item : nextModel.getAccessPartitionFamilies()) {
-                    if (!list.contains(item)) {
-                        list.add(item);
-                    }
-                }
-            }
-        }
-
-
-
         List<DdsAccessPartitionFamilyDef> newList = role.getDependentAPF();
-
 
         AdsRoleDef r = role;
         List<Id> overwriteAPF_ = new ArrayList<>();
@@ -2828,9 +2870,6 @@ public class AdsRoleEditorPanel extends JPanel {
             }
             overwriteAPF_.addAll(r.getAPFamilieIds());
         }
-
-
-
 
         List<Id> newApfList = new ArrayList<>();
         RadixObjectsUtils.sortByQualifiedName(newList);
@@ -2871,8 +2910,8 @@ public class AdsRoleEditorPanel extends JPanel {
         List<AdsEditorPresentationDef> currPresentations = new ArrayList<>();
 
         TreeGridNode node = (TreeGridNode) treeTableEditorPresentationsModel.getRoot();
-        TreeGridRoleResourceRowForEditorPresentation rootCover =
-                (TreeGridRoleResourceRowForEditorPresentation) node.getGridItem();
+        TreeGridRoleResourceRowForEditorPresentation rootCover
+                = (TreeGridRoleResourceRowForEditorPresentation) node.getGridItem();
 
         collectThisAndChildEditorPresentation(rootCover.cover, currPresentations);
 
@@ -2882,9 +2921,9 @@ public class AdsRoleEditorPanel extends JPanel {
         for (AdsEditorPresentationDef epd : currPresentations) {
             role.RemoveResourceRestrictions(
                     AdsRoleDef.generateResHashKey(
-                    EDrcResourceType.EDITOR_PRESENTATION,
-                    epd.getOwnerClass().getId(),
-                    epd.getId()));
+                            EDrcResourceType.EDITOR_PRESENTATION,
+                            epd.getOwnerClass().getId(),
+                            epd.getId()));
         }
         //CoverEntityObjectClasses
         if (currCoverEntityObjectClasses != null && currCoverEntityObjectClasses.clazz != null) {
@@ -2894,9 +2933,9 @@ public class AdsRoleEditorPanel extends JPanel {
                 for (Id id : lst) {
                     role.RemoveResourceRestrictions(
                             AdsRoleDef.generateResHashKey(
-                            EDrcResourceType.EDITOR_PRESENTATION,
-                            clazzId,
-                            id));
+                                    EDrcResourceType.EDITOR_PRESENTATION,
+                                    clazzId,
+                                    id));
                 }
                 lst.clear();
             }
@@ -2952,7 +2991,6 @@ public class AdsRoleEditorPanel extends JPanel {
         fillEditorPresentationRightsAndCommand();
 
 
-
     }//GEN-LAST:event_jbtDelEdPrActionPerformed
 
     private void jbtAddEdPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtAddEdPrActionPerformed
@@ -2970,9 +3008,8 @@ public class AdsRoleEditorPanel extends JPanel {
             collectVisiblePresentation(usingList, (TreeGridRoleResourceRowForEditorPresentation) gridNode.getGridItem());
         }
 
-        Iterator<Map.Entry<Id, CoverEditorPresentation>> iter =
-                editorPresantationMap.entrySet().iterator();
-
+        Iterator<Map.Entry<Id, CoverEditorPresentation>> iter
+                = editorPresantationMap.entrySet().iterator();
 
         //AdsEditorPresentationDef pres = entry.getValue().getEditorPresentation();
         HashMap<Definition, Definition> map = new HashMap<>();
@@ -2986,10 +3023,10 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-        ChooseKnownDefinitionCfg cfg =
-                new ChooseKnownDefinitionCfg(
-                role.getModule(),
-                null, map.values());
+        ChooseKnownDefinitionCfg cfg
+                = new ChooseKnownDefinitionCfg(
+                        role.getModule(),
+                        null, map.values());
         AdsEditorPresentationDef epd = (AdsEditorPresentationDef) ChooseDefinition.chooseDefinition(cfg);
         if (epd != null) {
 
@@ -3031,11 +3068,9 @@ public class AdsRoleEditorPanel extends JPanel {
         }
         List<AdsEditorPresentationDef> currPresentations = new ArrayList<>();
 
-
         TreeGridNode node = (TreeGridNode) treeTableEditorPresentationsModel.getRoot();
-        TreeGridRoleResourceRowForEditorPresentation rootCover =
-                (TreeGridRoleResourceRowForEditorPresentation) node.getGridItem();
-
+        TreeGridRoleResourceRowForEditorPresentation rootCover
+                = (TreeGridRoleResourceRowForEditorPresentation) node.getGridItem();
 
         collectThisAndChildEditorPresentation(rootCover.cover, currPresentations);
         for (AdsEditorPresentationDef epd : currPresentations) {
@@ -3129,9 +3164,9 @@ public class AdsRoleEditorPanel extends JPanel {
         for (AdsSelectorPresentationDef epd : allPresentations) {
             role.RemoveResourceRestrictions(
                     AdsRoleDef.generateResHashKey(
-                    EDrcResourceType.SELECTOR_PRESENTATION,
-                    currCoverEntityObjectClasses.clazz.getId(),
-                    epd.getId()));
+                            EDrcResourceType.SELECTOR_PRESENTATION,
+                            currCoverEntityObjectClasses.clazz.getId(),
+                            epd.getId()));
         }
 
         List<Id> lst = allSelectorPresantationMap.get(currCoverEntityObjectClasses.clazz.getId());
@@ -3144,10 +3179,7 @@ public class AdsRoleEditorPanel extends JPanel {
              */
         }
 
-
         // refreshSelectorPresentationList(null);
-
-
         checkEntityDefRowBold();
         refreshEditorAndSelectorPresentationList();
         refreshEditorPresentationTree(null);
@@ -3176,10 +3208,10 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-        ChooseKnownDefinitionCfg cfg =
-                new ChooseKnownDefinitionCfg(
-                role.getModule(),
-                null, map.values());
+        ChooseKnownDefinitionCfg cfg
+                = new ChooseKnownDefinitionCfg(
+                        role.getModule(),
+                        null, map.values());
         AdsSelectorPresentationDef spd = (AdsSelectorPresentationDef) ChooseDefinition.chooseDefinition(cfg);
         if (spd != null) {
             int index = AdsUsedByRolePanel.findPlace(entitySelectorPresentations, spd, true);
@@ -3206,7 +3238,6 @@ public class AdsRoleEditorPanel extends JPanel {
         refreshEntityObjectTreeBrunch();
         stateEntityClassDisableStatus();
         stateEnabledCommandsButtons();
-
 
 
     }//GEN-LAST:event_jbtAddSlPrActionPerformed
@@ -3251,7 +3282,6 @@ public class AdsRoleEditorPanel extends JPanel {
                 }
             }
         }
-
 
         refreshSelectorPresentationList(null);
         fillSelectorPresentationRightsAndCommand();
@@ -3394,7 +3424,6 @@ public class AdsRoleEditorPanel extends JPanel {
 //                                    currCoverEntityObjectClasses.clazz.getId(),
 //                                    lastSelectorPresentationId);
 
-
     }//GEN-LAST:event_jtblCurrentSelectorEnabledCmdPropertyChange
 
     private void jbtSetAllRightsSelectorPres1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtSetAllRightsSelectorPres1ActionPerformed
@@ -3414,7 +3443,6 @@ public class AdsRoleEditorPanel extends JPanel {
 //        stateEntityClassDisableStatus();
 //        fillEditorPresentationRightsAndCommand();
 
-
         refreshEditorPresentationTree(currCoverEditorPresentation.getEditorPresentation());
         refreshEntityObjectTreeBrunch();
         stateEntityClassDisableStatus();
@@ -3422,17 +3450,12 @@ public class AdsRoleEditorPanel extends JPanel {
         checkEntityDefRowBold();
 
 
-
-
-
-
     }//GEN-LAST:event_jbtSetAllRightsSelectorPres1ActionPerformed
 
-    
-    private Restrictions getEditorPresentationViewOnlyRestriction(){
-        return Restrictions.Factory.newInstance(~ (ERestriction.ACCESS.getValue()|ERestriction.VIEW.getValue()|ERestriction.ANY_CHILD.getValue()|ERestriction.ANY_PAGES.getValue()));
+    private Restrictions getEditorPresentationViewOnlyRestriction() {
+        return Restrictions.Factory.newInstance(~(ERestriction.ACCESS.getValue() | ERestriction.VIEW.getValue() | ERestriction.ANY_CHILD.getValue() | ERestriction.ANY_PAGES.getValue()));
     }
-    
+
     private void jbtSetAccessRightsSelectorPres1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtSetAccessRightsSelectorPres1ActionPerformed
         if (currCoverEditorPresentation == null
                 || currCoverEditorPresentation.epr == null) {
@@ -3443,7 +3466,7 @@ public class AdsRoleEditorPanel extends JPanel {
                 currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
                 currCoverEditorPresentation.getEditorPresentation().getId(),
                 getEditorPresentationViewOnlyRestriction()
-                );
+        );
         role.CreateOrReplaceResourceRestrictions(resource);
 //        checkEntityDefRowBold();
 //        stateEntityClassDisableStatus();
@@ -3470,8 +3493,8 @@ public class AdsRoleEditorPanel extends JPanel {
         List<Id> oldEnabledCommands = oldRestrictions.getEnabledCommandIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledCommandIds());
         List<Id> oldEnabledPages = oldRestrictions.getEnabledPageIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledPageIds());
         long bitMask = ERestriction.toBitField(oldRestrictions.getRestriction());
-        List<AdsExplorerItemDef> list =
-                currCoverEditorPresentation.getEditorPresentation().
+        List<AdsExplorerItemDef> list
+                = currCoverEditorPresentation.getEditorPresentation().
                 getExplorerItems().
                 getChildren().
                 get(EScope.LOCAL_AND_OVERWRITE);
@@ -3549,12 +3572,11 @@ public class AdsRoleEditorPanel extends JPanel {
 
     private void jbtSearchEntityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtSearchEntityActionPerformed
 
-        HashMap<Id, Definition> freeEntityClassesMap = new HashMap<>();
-
-        Iterator<CoverEntityObjectClasses> iter = entityObjectClassesMap.values().iterator();
+        final HashMap<Id, Definition> freeEntityClassesMap = new HashMap<>();
+        final Iterator<CoverEntityObjectClasses> iter = entityObjectClassesMap.values().iterator();
 
         while (iter.hasNext()) {
-            CoverEntityObjectClasses classCover = iter.next();
+            final CoverEntityObjectClasses classCover = iter.next();
             if (classCover.isRightsOrRightsInChilds()) {
 //                if (!isShowInheritClassesResources && classCover.clazz instanceof AdsApplicationClassDef)
 //                {
@@ -3566,59 +3588,127 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
-        ChooseKnownDefinitionCfg cfg =
-                new ChooseKnownDefinitionCfg(
-                role.getModule(),
-                null, freeEntityClassesMap.values());
-
+        final ChooseKnownDefinitionCfg cfg
+                = new ChooseKnownDefinitionCfg(
+                        role.getModule(),
+                        null, freeEntityClassesMap.values());
 
         cfg.setDisplayMode(EChooseDefinitionDisplayMode.QUALIFIED_NAME);
 
-        Definition def = ChooseDefinition.chooseDefinition(cfg);
-        if (def != null) {
-
+        final AdsEditorPresentationDef editorPresentation;
+        final AdsSelectorPresentationDef selectorPresentation;
+        
+        final Definition def = ChooseDefinition.chooseDefinition(cfg);
+        final AdsEntityObjectClassDef classDef; 
+        if (def instanceof AdsEntityObjectClassDef) {
+            editorPresentation = null;
+            selectorPresentation = null;
+            classDef = (AdsEntityObjectClassDef)def;
+        }
+        else if (def instanceof AdsEditorPresentationDef) {
+            editorPresentation = (AdsEditorPresentationDef)def;
+            selectorPresentation = null;
+            classDef = editorPresentation.getOwnerClass();
+        }
+        else if (def instanceof AdsSelectorPresentationDef) {
+            editorPresentation = null;
+            selectorPresentation = (AdsSelectorPresentationDef)def;
+            classDef = selectorPresentation.getOwnerClass();
+        }        
+        //selectorPresentation = null;
+        else {
+            selectorPresentation = null;
+            editorPresentation = null;
+            classDef = null;
+        }
+        
+        if (classDef != null) {
             for (int i = 0; i < jEntityAndApplTree.getRowCount(); i++) {
-                TreePath treePath = jEntityAndApplTree.getPathForRow(i);
-//            DefaultTreeModel model = (DefaultTreeModel)jEntityAndApplTree.getModel();
-                DefaultMutableTreeNodeEx obj = (DefaultMutableTreeNodeEx) treePath.getLastPathComponent();
-                CoverEntityObjectClasses cover =
-                        (CoverEntityObjectClasses) obj.obj;
-                if (cover.clazz == def) {
+                final TreePath treePath = jEntityAndApplTree.getPathForRow(i);
+                final DefaultMutableTreeNodeEx obj = (DefaultMutableTreeNodeEx) treePath.getLastPathComponent();
+                final CoverEntityObjectClasses cover = (CoverEntityObjectClasses) obj.obj;
+                if (cover.clazz == classDef) {
                     jEntityAndApplTree.expandPath(treePath);
                     jEntityAndApplTree.setSelectionPath(treePath);
                     jEntityAndApplTree.scrollPathToVisible(treePath);
                     refreshEditorAndSelectorPresentationList();
                     stateEntityClassDisableStatus();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                    }
+                    
+                    if (editorPresentation != null) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException ex) {
+                                }
+                                
+                                jTabbedPane2.setSelectedIndex(0);
+                                for (int j=0; j<treeTableEditorPresentations.getRowCount(); ++j) {
+                                    final TreeGridNode node = (TreeGridNode)treeTableEditorPresentations.getValueAt(j, 0);
+                                    final TreeGridRoleResourceRowForEditorPresentation rowEx
+                                            = (TreeGridRoleResourceRowForEditorPresentation) node.getGridItem();
+                                    if (rowEx.cover.epr == editorPresentation) {
+                                        treeTableEditorPresentations.getSelectionModel().setSelectionInterval(j, j);
+                                        currCoverEditorPresentation = rowEx.cover; 
+
+                                        checkEntityDefRowBold();
+                                        stateEntityClassDisableStatus();
+                                        fillEditorPresentationRightsAndCommand();
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    else if (selectorPresentation != null) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException ex) {
+                                }
+                                
+                                jTabbedPane2.setSelectedIndex(1);
+                                if (entitySelectorPresentations.size() == jtblSelectorPresentation.getRowCount()) {
+                                    for (int i=0; i<entitySelectorPresentations.size(); i++){
+                                        final CoverSelectorPresentation cover = entitySelectorPresentations.get(i);
+                                        if (cover.sp == selectorPresentation) {
+                                            jtblSelectorPresentation.getSelectionModel().setSelectionInterval(i, i);
+                                            fillSelectorPresentationRightsAndCommand();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
                     break;
                 }
-
-
-            }
+            }            
         }
 
 
-
     }//GEN-LAST:event_jbtSearchEntityActionPerformed
-
-    private void jbtChangeModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtChangeModeActionPerformed
-        isShowInheritClassesResources = !isShowInheritClassesResources;
-        Preferences pref = Utils.findOrCreatePreferences(settingKey);
-        pref.putBoolean(showSubClassesResourcesKey, isShowInheritClassesResources);
-        refreshjbtChangeMode();
-        setClasses();
-    }//GEN-LAST:event_jbtChangeModeActionPerformed
 
     private void setAllEdPresPagees(boolean val) {
 
         if (currCoverEditorPresentation.getEditorPresentation() == null) {
             return;
         }
-        String hash = AdsRoleDef.generateResHashKey(
+        final String hash = AdsRoleDef.generateResHashKey(
                 EDrcResourceType.EDITOR_PRESENTATION,
                 currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
                 lastEditorPresentationId);
-        Restrictions oldRestrictions = role.getOnlyCurrentResourceRestrictions(hash);
+        final Restrictions oldRestrictions = role.getOnlyCurrentResourceRestrictions(hash);
+        if (oldRestrictions == null){
+            return;
+        }
         List<Id> oldEnabledCommands = oldRestrictions.getEnabledCommandIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledCommandIds());
         List<Id> oldEnabledChilds = oldRestrictions.getEnabledChildIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledChildIds());
         //List<Id> oldEnabledPages = oldRestrictions.getEnabledPageIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledPageIds());
@@ -3626,13 +3716,12 @@ public class AdsRoleEditorPanel extends JPanel {
 
         List<Id> collectLst = null;
         if (val) {
-            List<AdsEditorPageDef> pages = currCoverEditorPresentation.getEditorPresentation().getEditorPages().get(EScope.ALL);
+            final List<AdsEditorPageDef> pages = currCoverEditorPresentation.getEditorPresentation().getEditorPages().get(EScope.ALL);
             collectLst = new ArrayList<>(pages.size());
             for (AdsEditorPageDef page : pages) {
                 collectLst.add(page.getId());
             }
         }
-
 
         role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
                 EDrcResourceType.EDITOR_PRESENTATION,
@@ -3652,17 +3741,88 @@ public class AdsRoleEditorPanel extends JPanel {
     private void jbtUnSetEdPresPagesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtUnSetEdPresPagesActionPerformed
         setAllEdPresPagees(false);
     }//GEN-LAST:event_jbtUnSetEdPresPagesActionPerformed
+
+    private void jbtGoToEdPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtGoToEdPrActionPerformed
+        if (currCoverEditorPresentation == null) {
+            return;
+        }
+        if (currCoverEditorPresentation.epr != null) {
+            NodesManager.selectInProjects(currCoverEditorPresentation.epr);
+        }
+    }//GEN-LAST:event_jbtGoToEdPrActionPerformed
+
+    private void jbtFindUsagesEdPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtFindUsagesEdPrActionPerformed
+        if (currCoverEditorPresentation == null) {
+            return;
+        }
+        if (currCoverEditorPresentation.epr != null) {
+            final FindUsagesCfg cfg = FindUsagesCfgPanel.askCfg(currCoverEditorPresentation.epr);
+            if (cfg != null) {
+                RequestProcessor.getDefault().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        FindUsages.search(cfg);
+                    }
+                });
+            }
+        }
+    }//GEN-LAST:event_jbtFindUsagesEdPrActionPerformed
+
+    private void jbtGoToSlPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtGoToSlPrActionPerformed
+
+        if (currCoverEntityObjectClasses == null) {
+            return;
+        }
+        if (entitySelectorPresentations.isEmpty()) {
+            return;
+        }
+	int index = jtblSelectorPresentation.getSelectedRow();
+        AdsSelectorPresentationDef pres = entitySelectorPresentations.get(index).sp;
+        if (pres != null) {
+            NodesManager.selectInProjects(pres);
+        }
+    }//GEN-LAST:event_jbtGoToSlPrActionPerformed
+
+    private void jbtFindUsagesSlPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtFindUsagesSlPrActionPerformed
+        if (currCoverEntityObjectClasses == null) {
+            return;
+        }
+        if (entitySelectorPresentations.isEmpty()) {
+            return;
+        }
+	int index = jtblSelectorPresentation.getSelectedRow();
+        AdsSelectorPresentationDef pres = entitySelectorPresentations.get(index).sp;
+        if (pres != null) {
+            final FindUsagesCfg cfg = FindUsagesCfgPanel.askCfg(pres);
+            if (cfg != null) {
+                RequestProcessor.getDefault().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        FindUsages.search(cfg);
+                    }
+                });
+            }
+        }
+    }//GEN-LAST:event_jbtFindUsagesSlPrActionPerformed
+
+    private void jbtChangeModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtChangeModeActionPerformed
+        isShowInheritClassesResources = !isShowInheritClassesResources;
+        Preferences pref = Utils.findOrCreatePreferences(settingKey);
+        pref.putBoolean(showSubClassesResourcesKey, isShowInheritClassesResources);
+        refreshjbtChangeMode();
+        setClasses();
+    }//GEN-LAST:event_jbtChangeModeActionPerformed
     private static String settingKey = "AdsRoleEditorSettings";
     private static String showSubClassesResourcesKey = "showSubClassesResourcesKey";
     private boolean isShowInheritClassesResources = true;
 
     private void refreshjbtChangeMode() {
         if (isShowInheritClassesResources) {
-            jbtChangeMode.setIcon(RadixWareDesignerIcon.TREE.UNDEPENDENCIES.getIcon());
             jbtChangeMode.setToolTipText("Hide Inherited Сlasses");
+            jbtChangeMode.setSelected(false);
         } else {
-            jbtChangeMode.setIcon(RadixWareDesignerIcon.TREE.DEPENDENCIES2.getIcon());
             jbtChangeMode.setToolTipText("Show Inherited Сlasses");
+            jbtChangeMode.setSelected(true);
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -3672,6 +3832,7 @@ public class AdsRoleEditorPanel extends JPanel {
     private javax.swing.JPanel generalPanel;
     private javax.swing.JList jAPFamilyList;
     private javax.swing.JList jAncestorList;
+    private javax.swing.JToolBar.Separator jEdPrSeparator;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel12;
@@ -3725,6 +3886,7 @@ public class AdsRoleEditorPanel extends JPanel {
     private javax.swing.JToolBar.Separator jSeparatorGoToCCmd;
     private javax.swing.JToolBar.Separator jSeparatorGoToEntity;
     private javax.swing.JToolBar.Separator jSeparatorGoToExplorerRoot;
+    private javax.swing.JToolBar.Separator jSlPrSeparator;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
@@ -3759,7 +3921,7 @@ public class AdsRoleEditorPanel extends JPanel {
     private javax.swing.JButton jbtAllowedSelectorPres;
     private javax.swing.JButton jbtCCmdAllowedAll;
     private javax.swing.JButton jbtCCmdInheritAll;
-    private javax.swing.JButton jbtChangeMode;
+    private javax.swing.JToggleButton jbtChangeMode;
     private javax.swing.JButton jbtClearAPFamily;
     private javax.swing.JButton jbtClearAncestors;
     private javax.swing.JButton jbtDelAPFamily;
@@ -3774,11 +3936,15 @@ public class AdsRoleEditorPanel extends JPanel {
     private javax.swing.JButton jbtExplItemInheritTree;
     private javax.swing.JButton jbtExplRootAllowedAll;
     private javax.swing.JButton jbtExplRootInheritAll;
+    private javax.swing.JButton jbtFindUsagesEdPr;
+    private javax.swing.JButton jbtFindUsagesSlPr;
     private javax.swing.JButton jbtGoToAPFamily;
     private javax.swing.JButton jbtGoToAncestorRole;
     private javax.swing.JButton jbtGoToCCmd;
+    private javax.swing.JButton jbtGoToEdPr;
     private javax.swing.JButton jbtGoToEntity;
     private javax.swing.JButton jbtGoToExplorerRoot;
+    private javax.swing.JButton jbtGoToSlPr;
     private javax.swing.JButton jbtInheritEdPr;
     private javax.swing.JButton jbtInheritEditorPres;
     private javax.swing.JButton jbtInheritSlPr;
@@ -3975,8 +4141,8 @@ public class AdsRoleEditorPanel extends JPanel {
                     }
                     TreePath treePath = jEntityAndApplTree.getPathForRow(row);
                     DefaultMutableTreeNodeEx obj = (DefaultMutableTreeNodeEx) treePath.getLastPathComponent();
-                    CoverEntityObjectClasses cover =
-                            (CoverEntityObjectClasses) obj.obj;
+                    CoverEntityObjectClasses cover
+                            = (CoverEntityObjectClasses) obj.obj;
 
                     String sMess = "";
                     {
@@ -4003,10 +4169,7 @@ public class AdsRoleEditorPanel extends JPanel {
                         RadixObjectsUtils.sortByQualifiedName(currEditorPresList);
                         boolean isFirst = true;
 
-
                         List<AdsRoleDef> roleList = role.collectAllAncestors();
-
-
 
                         for (AdsEditorPresentationDef pres : currEditorPresList) {
                             String currHash = AdsRoleDef.generateResHashKey(EDrcResourceType.EDITOR_PRESENTATION,
@@ -4119,8 +4282,8 @@ public class AdsRoleEditorPanel extends JPanel {
     void collectEPR(HashMap<Id, AdsEditorPresentationDef> output, CoverEntityObjectClasses cover) {
 
         if (cover.clazz != null) {
-            List<AdsEditorPresentationDef> presList =
-                    cover.clazz.getPresentations().getEditorPresentations().get(EScope.LOCAL_AND_OVERWRITE);
+            List<AdsEditorPresentationDef> presList
+                    = cover.clazz.getPresentations().getEditorPresentations().get(EScope.LOCAL_AND_OVERWRITE);
             removeOverwriteItems(presList);
 
             for (AdsEditorPresentationDef pres : presList) {
@@ -4130,11 +4293,9 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
         for (CoverEntityObjectClasses child : cover.childs) {
             collectEPR(output, child);
         }
-
 
     }
 
@@ -4212,11 +4373,9 @@ public class AdsRoleEditorPanel extends JPanel {
     protected RoleResourcesCash getOverwriteOptions() {
         return allOverwriteOptions;
     }
-    //private HashMap<Id, CoverFoo> classesMap = new HashMap<Id, CoverFoo>();
     private HashMap<Id, CoverFoo> contextlessCommandsMap = new HashMap<>();
-    //private HashMap<Definition, Definition> entityClassesMap = new HashMap<Definition, Definition>();
-    private static final int SERVER_RESOURCES_SIZE = 0x9;
-    private List<Boolean> serverResourcesCanForbid = new ArrayList<>(SERVER_RESOURCES_SIZE);
+    
+    private List<Boolean> serverResourcesCanForbid = new ArrayList<>(AdsRoleEditorPanelUtils.getServerResourceCount());
     private Font boldFont = null;
     private Font normalFont = null;
     private boolean isDisableTableCurrentEditorRights = true;
@@ -4229,7 +4388,6 @@ public class AdsRoleEditorPanel extends JPanel {
     private List<CoverFoo> contextlessCommands = new ArrayList<>(0);
 
     private CoverFoo createConverFoo(AdsDefinition item) {
-
 
         if (item instanceof AdsParagraphExplorerItemDef) {
             return new CoverFoo(item, EDrcResourceType.EXPLORER_ROOT_ITEM);
@@ -4290,6 +4448,16 @@ public class AdsRoleEditorPanel extends JPanel {
             }
             return incorrectId;
         }
+
+        @Override
+        public EDocGroup getDocGroup() {
+            return EDocGroup.NONE;
+        }
+
+        @Override
+        public ERuntimeEnvironmentType getDocEnvironment() {
+            return getOwnerDefinition() == null ? null : getOwnerDefinition().getDocEnvironment();
+        }
     }
 
     private class CoverEditorPresentation extends Definition {
@@ -4345,6 +4513,16 @@ public class AdsRoleEditorPanel extends JPanel {
 
         public AdsEditorPresentationDef getEditorPresentation() {
             return epr;
+        }
+
+        @Override
+        public EDocGroup getDocGroup() {
+            return EDocGroup.NONE;
+        }
+
+        @Override
+        public ERuntimeEnvironmentType getDocEnvironment() {
+           return getOwnerDefinition() == null ? null : getOwnerDefinition().getDocEnvironment(); 
         }
     }
     /*
@@ -4445,6 +4623,16 @@ public class AdsRoleEditorPanel extends JPanel {
                 return "#" + incorrectId.toString();
             }
             return clazz == null ? null : clazz.getName();
+        }
+
+        @Override
+        public EDocGroup getDocGroup() {
+            return EDocGroup.NONE;
+        }
+
+        @Override
+        public ERuntimeEnvironmentType getDocEnvironment() {
+            return clazz.getDocEnvironment();
         }
     }
 
@@ -4586,7 +4774,6 @@ public class AdsRoleEditorPanel extends JPanel {
             String hash = AdsRoleDef.generateResHashKey(EDrcResourceType.EXPLORER_ROOT_ITEM,
                     paragraphs.get(j).getParagraphItem().getId(), null);
 
-
             Restrictions ar = role.getOverwriteAndAncestordResourceRestrictions(hash, null);
             Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
             if (!ar.isDenied(ERestriction.ACCESS)) {
@@ -4653,7 +4840,6 @@ public class AdsRoleEditorPanel extends JPanel {
                                 TreeGridModel.TreeGridNode gridNode = (TreeGridModel.TreeGridNode) treeTableExplorerItems.getValueAt(row, 0);
                                 TreeGridRoleResourceRow item = (TreeGridRoleResourceRow) gridNode.getGridItem();
 
-
                                 Id parentId = paragraphs.get(jtblExplorerRoots.getSelectedRow()).getId();
                                 Id childId = item.explorerItem == null ? item.incorrectId : item.explorerItem.getId();
                                 restr = role.getOverwriteResourceRestrictions(AdsRoleDef.generateResHashKey(
@@ -4661,7 +4847,7 @@ public class AdsRoleEditorPanel extends JPanel {
                                         parentId, parentId != childId ? childId : null), null);
                             }
                             if (table == jtblServerResource) {
-                                EDrcServerResource res = indexToServerResource(row);
+                                EDrcServerResource res = AdsRoleEditorPanelUtils.indexToServerResource(row);
                                 restr = role.getOverwriteResourceRestrictions(AdsRoleDef.generateResHashKey(
                                         EDrcResourceType.SERVER_RESOURCE, res), null);
                             } else if (table == jtblExplorerRoots) {
@@ -4699,7 +4885,6 @@ public class AdsRoleEditorPanel extends JPanel {
                         }
 
                     }
-
 
                 }
             }
@@ -4755,47 +4940,42 @@ public class AdsRoleEditorPanel extends JPanel {
     private void initContextlessCommandsTable() {
         jtblContextlessCommands = new SimpleTable();
 
-
         jtblContextlessCommandsModel = new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
                 new String[]{
-            "Command", "Inherited Rights", "Own Rights", "Total Rights", "Rights"
-        }) {
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return java.lang.Object.class;
-            }
+                    "Command", "Inherited Rights", "Own Rights", "Total Rights", "Rights"
+                }) {
+                    @Override
+                    public Class getColumnClass(int columnIndex) {
+                        return java.lang.Object.class;
+                    }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                if (columnIndex == 2) {
-                    if (!isSuperAdmin && !roleIsReadOnly) {
-                        int y = rowIndex;
-                        if (contextlessCommands.get(y).isCanForbid()) {
-                            if (comboBoxEx.getItemCount() == 2) {
-                                comboBoxEx.addItem(Forbidden);
-                            }
-                        } else {
-                            if (comboBoxEx.getItemCount() == 3) {
-                                comboBoxEx.removeItemAt(2);
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        if (columnIndex == 2) {
+                            if (!isSuperAdmin && !roleIsReadOnly) {
+                                int y = rowIndex;
+                                if (contextlessCommands.get(y).isCanForbid()) {
+                                    if (comboBoxEx.getItemCount() == 2) {
+                                        comboBoxEx.addItem(Forbidden);
+                                    }
+                                } else {
+                                    if (comboBoxEx.getItemCount() == 3) {
+                                        comboBoxEx.removeItemAt(2);
+                                    }
+                                }
+                                return true;
                             }
                         }
-                        return true;
+                        if (columnIndex == 4) {
+                            return (!isSuperAdmin && !roleIsReadOnly);
+                        }
+                        return false;
                     }
-                }
-                if (columnIndex == 4) {
-                    return (!isSuperAdmin && !roleIsReadOnly);
-                }
-                return false;
-            }
-        };
-
+                };
 
         jtblContextlessCommands.setModel(jtblContextlessCommandsModel);
         jScrollPaneContextlessCommands.setViewportView(jtblContextlessCommands);
-
-
-
 
         jtblContextlessCommands.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -4868,8 +5048,6 @@ public class AdsRoleEditorPanel extends JPanel {
         column = columnModel.getColumn(4);
         column.setCellEditor(new DefaultCellEditor(checkBoxEx));
         column.setCellRenderer(new BooleanRendererForMainColumns());
-
-
 
         if (jtblContextlessCommands.getRowCount() > 0) {
             jtblContextlessCommands.setRowSelectionInterval(0, 0);
@@ -4996,8 +5174,8 @@ public class AdsRoleEditorPanel extends JPanel {
             }
             this.setHorizontalAlignment(SwingConstants.CENTER);
 
-            boolean isGray =
-                    roleIsReadOnly
+            boolean isGray
+                    = roleIsReadOnly
                     || isSuperAdmin
                     || //table == jtblCurrentRights
                     //&&
@@ -5013,14 +5191,12 @@ public class AdsRoleEditorPanel extends JPanel {
                     || column == 3)
                     && (jtblCurrentEditorRights == table || jtblCurrentSelectorRights == table);
 
-
             if (!isGray && jtblCurrentEditorRights == table && column == 2 && row == 7) {
                 Boolean fl = (Boolean) jtblCurrentEditorRights.getValueAt(4, 2);
                 if (fl == null || !fl) {
                     isGray = true;
                 }
             }
-
 
             if (!isGray && jtblCurrentEditorRights == table) {
                 isGray = blueInheritEditorRights[row];
@@ -5030,7 +5206,6 @@ public class AdsRoleEditorPanel extends JPanel {
             {
                 isGray = blueInheritSelectorRights[row];
             }
-
 
             if (isGray) {
                 this.setEnabled(false);
@@ -5088,11 +5263,11 @@ public class AdsRoleEditorPanel extends JPanel {
                             || currCoverEditorPresentation.getEditorPresentation().getOwnerClass() == null) {
                         isGray = true;
                     } else {
-                        String hash =
-                                AdsRoleDef.generateResHashKey(
-                                EDrcResourceType.EDITOR_PRESENTATION,
-                                currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
-                                currCoverEditorPresentation.getEditorPresentation().getId());
+                        String hash
+                                = AdsRoleDef.generateResHashKey(
+                                        EDrcResourceType.EDITOR_PRESENTATION,
+                                        currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
+                                        currCoverEditorPresentation.getEditorPresentation().getId());
                         Restrictions rest = role.getOnlyCurrentResourceRestrictions(hash);
                         if (rest == null) {
                             isGray = true;
@@ -5128,14 +5303,14 @@ public class AdsRoleEditorPanel extends JPanel {
 
                                 if (t.getGridItem() != null) {
                                     if (t.getGridItem() instanceof TreeGridRoleResourceEdPresentationExplorerItemRow) {
-                                        TreeGridRoleResourceEdPresentationExplorerItemRow item =
-                                                (TreeGridRoleResourceEdPresentationExplorerItemRow) t.getGridItem();
+                                        TreeGridRoleResourceEdPresentationExplorerItemRow item
+                                                = (TreeGridRoleResourceEdPresentationExplorerItemRow) t.getGridItem();
                                         List<Id> lst = or.getEnabledChildIds();
                                         isGray = item.explorerItem == null ? false
                                                 : lst.contains(item.explorerItem.getId());
                                     } else {
-                                        TreeGridRoleResourceEdPresentationPageRow item =
-                                                (TreeGridRoleResourceEdPresentationPageRow) t.getGridItem();
+                                        TreeGridRoleResourceEdPresentationPageRow item
+                                                = (TreeGridRoleResourceEdPresentationPageRow) t.getGridItem();
                                         List<Id> lst = or.getEnabledPageIds();
                                         isGray = item.page == null ? false
                                                 : lst.contains(item.page.getId());
@@ -5231,13 +5406,12 @@ public class AdsRoleEditorPanel extends JPanel {
         if (classCover.clazz == null) {
             return;
         }
-        List<AdsEditorPresentationDef> list =
-                classCover.clazz.getPresentations().getEditorPresentations().get(EScope.LOCAL_AND_OVERWRITE);
+        List<AdsEditorPresentationDef> list
+                = classCover.clazz.getPresentations().getEditorPresentations().get(EScope.LOCAL_AND_OVERWRITE);
         removeOverwriteItems(list);
         for (AdsEditorPresentationDef pres : list) {
             lst.add(pres);
         }
-
 
         for (CoverEntityObjectClasses chld : classCover.childs) {
             innateCollectPres(lst, chld);
@@ -5255,13 +5429,11 @@ public class AdsRoleEditorPanel extends JPanel {
         if (classCover.clazz == null) {
             return;
         }
-        List<AdsEditorPresentationDef> list =
-                classCover.clazz.getPresentations().getEditorPresentations().get(EScope.LOCAL_AND_OVERWRITE);
+        List<AdsEditorPresentationDef> list
+                = classCover.clazz.getPresentations().getEditorPresentations().get(EScope.LOCAL_AND_OVERWRITE);
         removeOverwriteItems(list);
 
         //role.getResources()
-
-
         for (AdsEditorPresentationDef pres : list) {
 //            AdsEditorPresentationDef ownerPres = null;
 //
@@ -5327,8 +5499,8 @@ public class AdsRoleEditorPanel extends JPanel {
 //            {
 //            }
 //            else
-        isAllow =
-                curr == cover.clazz
+        isAllow
+                = curr == cover.clazz
                 || isEntityDefContaintAllowedPresentationInnate(cover.clazz);
         if (isAllow) {
             CoverEntityObjectClasses tmp = cover;
@@ -5386,9 +5558,9 @@ public class AdsRoleEditorPanel extends JPanel {
         refreshCoverEntityObjectClassesRights(tmp);
 
         Bool2 bool2 = isEntityDefContaintAllowedPresentation(tmp.clazz);
-        DefaultMutableTreeNodeEx newNode =
-                new DefaultMutableTreeNodeEx(tmp.clazz == null ? null : tmp.clazz.getIcon().getIcon(),
-                tmp, bool2);
+        DefaultMutableTreeNodeEx newNode
+                = new DefaultMutableTreeNodeEx(tmp.clazz == null ? null : tmp.clazz.getIcon().getIcon(),
+                        tmp, bool2);
         tmp.treeNodeEx = newNode;
         model.insertNodeInto(newNode, (MutableTreeNode) root, index);
 
@@ -5410,10 +5582,10 @@ public class AdsRoleEditorPanel extends JPanel {
     }
 
     private void refreshSelectorPresentationList(AdsSelectorPresentationDef visiblePres) {
-        Object currObject =
-                jEntityAndApplTree.getSelectionPath() == null
-                ? null
-                : jEntityAndApplTree.getSelectionPath().getLastPathComponent();
+        Object currObject
+                = jEntityAndApplTree.getSelectionPath() == null
+                        ? null
+                        : jEntityAndApplTree.getSelectionPath().getLastPathComponent();
         DefaultTableModel selectorModel = (DefaultTableModel) jtblSelectorPresentation.getModel();
         if (currObject == null || jEntityAndApplTree.getRowCount() == 0) {
             selectorModel.setRowCount(0);
@@ -5424,7 +5596,6 @@ public class AdsRoleEditorPanel extends JPanel {
             stateEnabledCommandsButtons();
             return;
         }
-
 
         DefaultMutableTreeNodeEx currNode = (DefaultMutableTreeNodeEx) currObject;
         currCoverEntityObjectClasses = (CoverEntityObjectClasses) currNode.obj;
@@ -5442,7 +5613,6 @@ public class AdsRoleEditorPanel extends JPanel {
         }
 
         removeOverwriteItems(entitySelectorPresentations);
-
 
         if (currCoverEntityObjectClasses.clazz != null) {
             final List<Id> lst = allSelectorPresantationMap.get(currCoverEntityObjectClasses.clazz.getId());
@@ -5464,15 +5634,9 @@ public class AdsRoleEditorPanel extends JPanel {
 
         RadixObjectsUtils.sortByName(entitySelectorPresentations);
 
-
-
-
-
         int nSp = entitySelectorPresentations.size();
         selectorModel.setRowCount(nSp);
         RadixObjectsUtils.sortByName(entitySelectorPresentations);
-
-
 
         for (int j = 0; j < nSp; j++) {
             CoverSelectorPresentation spd = entitySelectorPresentations.get(j);
@@ -5517,25 +5681,12 @@ public class AdsRoleEditorPanel extends JPanel {
 
     }
 
-    static AdsEditorPresentationDef getPresentationParent(AdsEditorPresentationDef pres) {
-        if (pres.isRightsInheritanceModeInherited()) {
-            return pres.findRightsInheritanceDefinePresentation().get();
-        }
-        if (pres.getRightInheritanceMode().equals(EEditorPresentationRightsInheritanceMode.FROM_REPLACED)) {
-            return pres.findReplacedEditorPresentation().get();
-        }
-        if (pres.getRightInheritanceMode().equals(EEditorPresentationRightsInheritanceMode.FROM_DEFINED)) {
-            return pres.findRightSourceEditorPresentation();
-        }
-        return null;
-    }
-
     void refreshEditorPresentationTree(AdsEditorPresentationDef visiblePres) {
         if (jEntityAndApplTree.getSelectionPath() == null) {
             CoverEditorPresentation rootCover = new CoverEditorPresentation(null, null);
             treeTableEditorPresentationsModel = new TreeGridModel(null, cNames2, cTypes2);
-            TreeGridRoleResourceRowForEditorPresentation root2 =
-                    new TreeGridRoleResourceRowForEditorPresentation(rootCover);
+            TreeGridRoleResourceRowForEditorPresentation root2
+                    = new TreeGridRoleResourceRowForEditorPresentation(rootCover);
             treeTableEditorPresentationsModel.openRoot(root2);
             treeTableEditorPresentations.setRootVisible(false);
             treeTableEditorPresentations.afterOpen(treeTableEditorPresentationsModel, backgroundColor);
@@ -5553,12 +5704,10 @@ public class AdsRoleEditorPanel extends JPanel {
             parentCover_ = parentCover_.parent;
         }
 
-
         AdsEditorPresentationDef currEdPres = null;
         if (currCoverEditorPresentation != null) {
             currEdPres = currCoverEditorPresentation.epr;
         }
-
 
         if (currCoverEntityObjectClasses == null) {
             return;
@@ -5567,7 +5716,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
         //AdsEntityObjectClassDef clazz = currCoverEntityObjectClasses.clazz;
         //get all presentation to this class and all subclasses
-
         collectPresentations(parentCover_);
 
         CoverEditorPresentation rootCover = new CoverEditorPresentation(null, null);
@@ -5577,7 +5725,6 @@ public class AdsRoleEditorPanel extends JPanel {
                     get(EScope.ALL);
             removeOverwriteItems(lst);
 
-
             for (AdsEditorPresentationDef pres : lst) {
 //                AdsEditorPresentationDef ownPres = getPresentationParent(pres);
 //                if (ownPres != null && lst.contains(ownPres)) {
@@ -5585,26 +5732,23 @@ public class AdsRoleEditorPanel extends JPanel {
 //                }
                 AdsEditorPresentationDef tmp = pres;
                 boolean mustContinue = false;
-                while(true){                    
-                    AdsEditorPresentationDef ownPres = getPresentationParent(tmp);
-                    if (ownPres == null || tmp == ownPres){
+                while (true) {
+                    AdsEditorPresentationDef ownPres = tmp.getInheritRightsFromPres();
+                    if (ownPres == null || tmp == ownPres) {
                         break;
-                    }                    
-                    if (lst.contains(ownPres)){
+                    }
+                    if (lst.contains(ownPres)) {
                         mustContinue = true;
                         break;
                     }
                     tmp = ownPres;
                 }
-                if (mustContinue){
+                if (mustContinue) {
                     continue;
                 }
-                
-                
-
 
                 CoverEditorPresentation presFromFirstList = editorPresantationMap.get(pres.getId());
-                if (presFromFirstList!=null){
+                if (presFromFirstList != null) {
                     String hash = AdsRoleDef.generateResHashKey(EDrcResourceType.EDITOR_PRESENTATION,
                             presFromFirstList.epr.getOwnerClass().getId(),
                             presFromFirstList.epr.getId());
@@ -5637,31 +5781,23 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-        Iterator<Map.Entry<Id, CoverEditorPresentation>> iter =
-                editorPresantationMap.entrySet().iterator();
+        Iterator<Map.Entry<Id, CoverEditorPresentation>> iter
+                = editorPresantationMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<Id, CoverEditorPresentation> entry = iter.next();
             AdsEditorPresentationDef pres = entry.getValue().getEditorPresentation();
 
-
             Id replacedOrParentEditorPresentationId = null;
             if (pres != null) {
-                if (pres.isRightsInheritanceModeInherited()) {
-                    replacedOrParentEditorPresentationId = pres.getBasePresentationId();
-                } else if (pres.getRightInheritanceMode().equals(EEditorPresentationRightsInheritanceMode.FROM_REPLACED)) {
-                    replacedOrParentEditorPresentationId = pres.getReplacedEditorPresentationId();
-                } else if (pres.getRightInheritanceMode().equals(EEditorPresentationRightsInheritanceMode.FROM_DEFINED)) {
-                    replacedOrParentEditorPresentationId = pres.getRightsSourceEditorPresentationId();
-                }
+                AdsEditorPresentationDef parentPres = pres.getInheritRightsFromPres();
+                replacedOrParentEditorPresentationId = parentPres != null ? parentPres.getId() : null;
             }
 
-
-
             {
-                CoverEditorPresentation parentCover =
-                        replacedOrParentEditorPresentationId == null
-                        ? null
-                        : editorPresantationMap.get(replacedOrParentEditorPresentationId);
+                CoverEditorPresentation parentCover
+                        = replacedOrParentEditorPresentationId == null
+                                ? null
+                                : editorPresantationMap.get(replacedOrParentEditorPresentationId);
                 //if (parentCover!=null)
                 {
                     CoverEditorPresentation childCover = entry.getValue();
@@ -5696,7 +5832,6 @@ public class AdsRoleEditorPanel extends JPanel {
                         }
                     }
 
-
                     if (isMustAdd || visiblePres == childCover.epr) {
                         List<CoverEditorPresentation> recLst = new ArrayList<>();
                         CoverEditorPresentation tmp = childCover;
@@ -5714,8 +5849,6 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
-
         iter = editorPresantationMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<Id, CoverEditorPresentation> entry = iter.next();
@@ -5727,8 +5860,8 @@ public class AdsRoleEditorPanel extends JPanel {
         editorPresantationMap.put(unicalId, rootCover);
 
         treeTableEditorPresentationsModel = new TreeGridModel(null, cNames2, cTypes2);
-        TreeGridRoleResourceRowForEditorPresentation root2 =
-                new TreeGridRoleResourceRowForEditorPresentation(rootCover);
+        TreeGridRoleResourceRowForEditorPresentation root2
+                = new TreeGridRoleResourceRowForEditorPresentation(rootCover);
         treeTableEditorPresentationsModel.openRoot(root2);
         treeTableEditorPresentations.afterOpen(treeTableEditorPresentationsModel, backgroundColor);
         //boolean isAncestors = role.getAncestorIds().size()>0 || role.isOverwrite();
@@ -5737,8 +5870,6 @@ public class AdsRoleEditorPanel extends JPanel {
             treeTableEditorPresentations.getColumnModel().getColumn(1).setMinWidth(40);
             treeTableEditorPresentations.getColumnModel().getColumn(1).setWidth(70);
         }
-
-
 
         treeTableEditorPresentations.setRootVisible(false);
         treeTableEditorPresentations.expandAll();
@@ -5749,8 +5880,8 @@ public class AdsRoleEditorPanel extends JPanel {
         if (currEdPres != null) {
             for (int i = 0; i < treeTableEditorPresentations.getRowCount(); i++) {
                 TreeGridNode node = (TreeGridNode) treeTableEditorPresentations.getValueAt(i, 0);
-                TreeGridRoleResourceRowForEditorPresentation rowEx =
-                        (TreeGridRoleResourceRowForEditorPresentation) node.getGridItem();
+                TreeGridRoleResourceRowForEditorPresentation rowEx
+                        = (TreeGridRoleResourceRowForEditorPresentation) node.getGridItem();
                 if (rowEx.cover.epr == currEdPres) {
                     treeTableEditorPresentations.getSelectionModel().setSelectionInterval(i, i);
                     currCoverEditorPresentation = rowEx.cover;
@@ -5781,9 +5912,8 @@ public class AdsRoleEditorPanel extends JPanel {
             hash = cover.epr == null
                     ? null
                     : AdsRoleDef.generateResHashKey(EDrcResourceType.EDITOR_PRESENTATION,
-                    cover.epr.getOwnerClass().getId(),
-                    cover.epr.getId());
-
+                            cover.epr.getOwnerClass().getId(),
+                            cover.epr.getId());
 
             for (CoverEditorPresentation childCover : cover.childs) {
                 if (childCover.isVisible()) {
@@ -5809,8 +5939,8 @@ public class AdsRoleEditorPanel extends JPanel {
                     //if (isMustBreak)
                     //    break;
 
-                    TreeGridRoleResourceRowForEditorPresentation chld =
-                            new TreeGridRoleResourceRowForEditorPresentation(childCover);
+                    TreeGridRoleResourceRowForEditorPresentation chld
+                            = new TreeGridRoleResourceRowForEditorPresentation(childCover);
                     list.add(chld);
                 }
             }
@@ -5906,9 +6036,9 @@ public class AdsRoleEditorPanel extends JPanel {
                 //settingKey, pres)AncestorResourceRestrictions
                 role.CreateOrReplaceResourceRestrictions(
                         new AdsRoleDef.Resource(EDrcResourceType.EDITOR_PRESENTATION,
-                        pres.getOwnerClass().getId(),
-                        pres.getId(),
-                        rest));
+                                pres.getOwnerClass().getId(),
+                                pres.getId(),
+                                rest));
 
             }
             currCoverEditorPresentation = this.cover;
@@ -5984,7 +6114,6 @@ public class AdsRoleEditorPanel extends JPanel {
         DefaultMutableTreeNodeEx currNode = (DefaultMutableTreeNodeEx) currObject;
         currCoverEntityObjectClasses = (CoverEntityObjectClasses) currNode.obj;
 
-
         ((DefaultTreeModel) jEntityAndApplTree.getModel()).setRoot(
                 (TreeNode) jEntityAndApplTree.getModel().getRoot());
         for (int i = 0; i < jEntityAndApplTree.getRowCount(); i++) {
@@ -6037,7 +6166,6 @@ public class AdsRoleEditorPanel extends JPanel {
         treeTableEditorPresentations.getTableHeader().setReorderingAllowed(false);
         treeTableEditorPresentations.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-
         jEntityAndApplTree = new JTreeWithMouseMotionListener();
 
         jScrollPaneEntitys.setViewportView(jEntityAndApplTree);
@@ -6072,8 +6200,6 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         });
 
-
-
         jEntityAndApplTree.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -6084,178 +6210,83 @@ public class AdsRoleEditorPanel extends JPanel {
         });
 
         //refreshEditorAndSelectorPresentationList()
-
-
         //currEnabledCommandForEditorDefIds = new ArrayList<Id>();
-
         DefaultTableModel selectorTableModel = new DefaultTableModel(
                 new Object[][]{},
                 new String[]{
-            "Selector Presentation", "Own"
-        }) {
-            Class[] types = new Class[]{
-                java.lang.String.class, java.lang.Boolean.class
-            };
+                    "Selector Presentation", "Own"
+                }) {
+                    Class[] types = new Class[]{
+                        java.lang.String.class, java.lang.Boolean.class
+                    };
 
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
+                    @Override
+                    public Class getColumnClass(int columnIndex) {
+                        return types[columnIndex];
+                    }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex == 0 ? false : !isSuperAdmin && !roleIsReadOnly;
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        return columnIndex == 0 ? false : !isSuperAdmin && !roleIsReadOnly;
 
-            }
-        };
+                    }
+                };
         jtblSelectorPresentation.setModel(selectorTableModel);
-
-
-
-
 
         jtblCurrentEditorRights = new SimpleTable();
         jtblCurrentSelectorRights = new SimpleTable();
 
         DefaultTableModel currentEditorTableModel = new DefaultTableModel(
                 new Object[][]{
-            {"Access", null, null, null},
-            {"Create", null, null, null},
-            {"Delete", null, null, null},
-            {"Update", null, null, null},
-            {"View", null, null, null},
-            {"Any commands", null, null, null},
-            {"Any children", null, null, null},
-            {"Any pages", null, null, null}
-        },
+                    {"Access", null, null, null},
+                    {"Create", null, null, null},
+                    {"Delete", null, null, null},
+                    {"Update", null, null, null},
+                    {"View", null, null, null},
+                    {"Any commands", null, null, null},
+                    {"Any children", null, null, null},
+                    {"Any pages", null, null, null}
+                },
                 new String[]{
-            "Rights", "Inherit", "Own", "Total"
-        }) {
-            Class[] types = new Class[]{
-                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
-            };
+                    "Rights", "Inherit", "Own", "Total"
+                }) {
+                    Class[] types = new Class[]{
+                        java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
+                    };
 
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
+                    @Override
+                    public Class getColumnClass(int columnIndex) {
+                        return types[columnIndex];
+                    }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                //if ()
-                jtblCurrentEditorRightsIndex = rowIndex;
-                if (columnIndex != 2 || isSuperAdmin
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        //if ()
+                        jtblCurrentEditorRightsIndex = rowIndex;
+                        if (columnIndex != 2 || isSuperAdmin
                         || roleIsReadOnly
                         || currCoverEditorPresentation == null
                         || currCoverEditorPresentation.epr == null) {
-                    return false;
-                }
-
+                            return false;
+                        }
 
                 //if (rowIndex==0)
-                //    return true;
-                String hash = AdsRoleDef.generateResHashKey(
-                        EDrcResourceType.EDITOR_PRESENTATION,
-                        currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
-                        lastEditorPresentationId);
-                Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
-                if (r == null) {
-                    return false;
-                }
-                ERestriction eRest = null;
-                if (rowIndex != 0 && r.isDenied(ERestriction.ACCESS)) {
-                    return false;
-                }
-                if (rowIndex == 7 && r.isDenied(ERestriction.VIEW)) {
-                    return false;
-                }
-                switch (rowIndex) {
-                    case 0:
-                        eRest = ERestriction.ACCESS;
-                        break;
-
-                    case 1:
-                        eRest = ERestriction.CREATE;
-                        break;
-
-                    case 2:
-                        eRest = ERestriction.DELETE;
-                        break;
-
-                    case 3:
-                        eRest = ERestriction.UPDATE;
-                        break;
-
-                    case 4:
-                        eRest = ERestriction.VIEW;
-                        break;
-
-                    case 5:
-                        eRest = ERestriction.ANY_COMMAND;
-                        break;
-
-                    case 6:
-                        eRest = ERestriction.ANY_CHILD;
-                        break;
-
-                    case 7:
-                        eRest = ERestriction.ANY_PAGES;
-                        break;
-
-                }
-
-                if (r.isDenied(eRest)) {
-                    return true;
-                }
-
-                Restrictions or = role.getOverwriteResourceRestrictions(hash, currCoverEditorPresentation.epr);
-                return or.isDenied(eRest);
-
-
-
-
-                //return false;
-            }
-        };
-
-        DefaultTableModel currentSelectorTableModel = new DefaultTableModel(
-                new Object[][]{
-            {"Access", null, null, null},
-            {"Create", null, null, null},
-            {"Delete All", null, null, null},
-            {"Any command", null, null, null}
-        },
-                new String[]{
-            "Rights", "Inherit", "Own", "Total"
-        }) {
-            Class[] types = new Class[]{
-                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
-            };
-
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                if (columnIndex == 2) {
-                    if (!isSuperAdmin && !roleIsReadOnly && currCoverEntityObjectClasses != null) {
+                        //    return true;
                         String hash = AdsRoleDef.generateResHashKey(
-                                EDrcResourceType.SELECTOR_PRESENTATION,
-                                currCoverEntityObjectClasses.getId(),
-                                lastSelectorPresentationId);
+                                EDrcResourceType.EDITOR_PRESENTATION,
+                                currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
+                                lastEditorPresentationId);
                         Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
                         if (r == null) {
                             return false;
                         }
+                        ERestriction eRest = null;
                         if (rowIndex != 0 && r.isDenied(ERestriction.ACCESS)) {
                             return false;
                         }
-
-
-                        ERestriction eRest = null;
-
+                        if (rowIndex == 7 && r.isDenied(ERestriction.VIEW)) {
+                            return false;
+                        }
                         switch (rowIndex) {
                             case 0:
                                 eRest = ERestriction.ACCESS;
@@ -6266,29 +6297,109 @@ public class AdsRoleEditorPanel extends JPanel {
                                 break;
 
                             case 2:
-                                eRest = ERestriction.DELETE_ALL;
+                                eRest = ERestriction.DELETE;
                                 break;
 
                             case 3:
+                                eRest = ERestriction.UPDATE;
+                                break;
+
+                            case 4:
+                                eRest = ERestriction.VIEW;
+                                break;
+
+                            case 5:
                                 eRest = ERestriction.ANY_COMMAND;
                                 break;
-                        }
 
+                            case 6:
+                                eRest = ERestriction.ANY_CHILD;
+                                break;
+
+                            case 7:
+                                eRest = ERestriction.ANY_PAGES;
+                                break;
+
+                        }
 
                         if (r.isDenied(eRest)) {
                             return true;
                         }
 
-                        Restrictions or = role.getOverwriteResourceRestrictions(hash, null);
+                        Restrictions or = role.getOverwriteResourceRestrictions(hash, currCoverEditorPresentation.epr);
                         return or.isDenied(eRest);
 
-
+                        //return false;
                     }
-                }
-                return false;
-            }
-        };
+                };
 
+        DefaultTableModel currentSelectorTableModel = new DefaultTableModel(
+                new Object[][]{
+                    {"Access", null, null, null},
+                    {"Create", null, null, null},
+                    {"Delete All", null, null, null},
+                    {"Any command", null, null, null}
+                },
+                new String[]{
+                    "Rights", "Inherit", "Own", "Total"
+                }) {
+                    Class[] types = new Class[]{
+                        java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
+                    };
+
+                    @Override
+                    public Class getColumnClass(int columnIndex) {
+                        return types[columnIndex];
+                    }
+
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        if (columnIndex == 2) {
+                            if (!isSuperAdmin && !roleIsReadOnly && currCoverEntityObjectClasses != null) {
+                                String hash = AdsRoleDef.generateResHashKey(
+                                        EDrcResourceType.SELECTOR_PRESENTATION,
+                                        currCoverEntityObjectClasses.getId(),
+                                        lastSelectorPresentationId);
+                                Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
+                                if (r == null) {
+                                    return false;
+                                }
+                                if (rowIndex != 0 && r.isDenied(ERestriction.ACCESS)) {
+                                    return false;
+                                }
+
+                                ERestriction eRest = null;
+
+                                switch (rowIndex) {
+                                    case 0:
+                                        eRest = ERestriction.ACCESS;
+                                        break;
+
+                                    case 1:
+                                        eRest = ERestriction.CREATE;
+                                        break;
+
+                                    case 2:
+                                        eRest = ERestriction.DELETE_ALL;
+                                        break;
+
+                                    case 3:
+                                        eRest = ERestriction.ANY_COMMAND;
+                                        break;
+                                }
+
+                                if (r.isDenied(eRest)) {
+                                    return true;
+                                }
+
+                                Restrictions or = role.getOverwriteResourceRestrictions(hash, null);
+                                return or.isDenied(eRest);
+
+                            }
+                        }
+                        return false;
+                    }
+                };
 
         jtblCurrentEditorRights.setModel(currentEditorTableModel);
         jtblCurrentSelectorRights.setModel(currentSelectorTableModel);
@@ -6310,7 +6421,6 @@ public class AdsRoleEditorPanel extends JPanel {
                 if (jtblSelectorPresentation.getSelectedColumn() == 1 && row > -1) {
                     CoverSelectorPresentation spd = entitySelectorPresentations.get(row);
                     lastSelectorPresentationId = spd.getId();
-
 
                     String hash = AdsRoleDef.generateResHashKey(
                             EDrcResourceType.SELECTOR_PRESENTATION,
@@ -6357,256 +6467,280 @@ public class AdsRoleEditorPanel extends JPanel {
         };
         jtblSelectorPresentation.addPropertyChangeListener(selectorPresentationChangeListener);
 
-        PropertyChangeListener currEditorRightsChangeListener =
-                new PropertyChangeListener() {
-            @Override
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                if (canIgnoreChangeEvent(evt)) {
-                    return;
-                }
-                int row = jtblCurrentEditorRightsIndex;
-                //jtblCurrentEditorRights.getSelectedRow();
-                if (jtblCurrentEditorRights.getSelectedRowCount() == 1) //                        DialogUtils.messageInformation( String.valueOf(jtblCurrentEditorRights.getSelectedRows()[0]));
-                {
-                    if (currCoverEditorPresentation == null
+        PropertyChangeListener currEditorRightsChangeListener
+                = new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                        if (canIgnoreChangeEvent(evt)) {
+                            return;
+                        }
+                        int row = jtblCurrentEditorRightsIndex;
+                        //jtblCurrentEditorRights.getSelectedRow();
+                        if (jtblCurrentEditorRights.getSelectedRowCount() == 1) //                        DialogUtils.messageInformation( String.valueOf(jtblCurrentEditorRights.getSelectedRows()[0]));
+                        {
+                            if (currCoverEditorPresentation == null
                             || currCoverEditorPresentation.epr == null) {
-                        return;
-                    }
-                }
-                if (role == null || !role.isInBranch()) {
-                    return;
-                }
-
-                //isUpdated = 0;
-                if (row > -1 && isUpdated == 0) {
-                    String hash = AdsRoleDef.generateResHashKey(
-                            EDrcResourceType.EDITOR_PRESENTATION,
-                            currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
-                            lastEditorPresentationId);
-                    Restrictions oldRestrictions = role.getOnlyCurrentResourceRestrictions(hash);
-                    if (oldRestrictions == null) {
-                        return;
-                    }
-
-
-                    ERestriction restr = null;
-                    switch (row) {
-                        case 0:
-                            restr = ERestriction.ACCESS;
-                            break;
-                        case 1:
-                            restr = ERestriction.CREATE;
-                            break;
-                        case 2:
-                            restr = ERestriction.DELETE;
-                            break;
-                        case 3:
-                            restr = ERestriction.UPDATE;
-                            break;
-                        case 4:
-                            restr = ERestriction.VIEW;
-                            break;
-                        case 5:
-                            restr = ERestriction.ANY_COMMAND;
-                            break;
-                        case 6:
-                            restr = ERestriction.ANY_CHILD;
-                            break;
-                        case 7:
-                            restr = ERestriction.ANY_PAGES;
-                            break;
-                    }
-                    long newBitMask = restr.getValue();
-
-                    List<Id> oldEnabledCommands = oldRestrictions.getEnabledCommandIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledCommandIds());
-                    List<Id> oldEnabledChilds = oldRestrictions.getEnabledChildIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledChildIds());
-                    List<Id> oldEnabledPages = oldRestrictions.getEnabledPageIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledPageIds());
-
-
-                    long bitMask = ERestriction.toBitField(oldRestrictions.getRestriction());
-
-                    Boolean isSet = (Boolean) jtblCurrentEditorRights.getValueAt(row, 2);
-                    jtblCurrentEditorRights.setValueAt(isSet, row, 3);
-                    if (isSet == null) {
-                        isSet = Boolean.FALSE;
-                    }
-                    boolean isMaySet = isSet;
-                    Restrictions overwriteRestrictions = role.getOverwriteResourceRestrictions(hash, currCoverEditorPresentation.epr);
-                    if (!isSet) {
-                        isMaySet = overwriteRestrictions.getRestriction().contains(restr);
-                    }
-
-                    if (isDisableTableCurrentEditorRights && row != 0 || !isMaySet) {
-                        jtblCurrentEditorRights.repaint();
-                        return;
-                    }
-
-
-                    if ((row == 5) && !isSet) {
-                        oldEnabledCommands = new ArrayList<>(overwriteRestrictions.getEnabledCommandIds());
-                    } else if ((row == 6) && !isSet) {
-
-                        oldEnabledChilds = new ArrayList<>(overwriteRestrictions.getEnabledChildIds());
-                    } else if ((row == 7) && !isSet) {
-
-                        oldEnabledPages = new ArrayList<>(overwriteRestrictions.getEnabledPageIds());
-                    }
-
-
-
-                    if (row == 0) {
-                        isDisableTableCurrentEditorRights = !isSet;
-                        int r = treeTableEditorPresentations.getSelectedRow();
-                        if (r < 0) {
+                                return;
+                            }
+                        }
+                        if (role == null || !role.isInBranch()) {
                             return;
                         }
 
+                        //isUpdated = 0;
+                        if (row > -1 && isUpdated == 0) {
+                            String hash = AdsRoleDef.generateResHashKey(
+                                    EDrcResourceType.EDITOR_PRESENTATION,
+                                    currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
+                                    lastEditorPresentationId);
+                            Restrictions oldRestrictions = role.getOnlyCurrentResourceRestrictions(hash);
+                            if (oldRestrictions == null) {
+                                return;
+                            }
 
-                        treeTableEditorPresentations.setValueAt(new FooItemWithBool(treeTableEditorPresentations.getValueAt(r, 0).toString(), isSet, Color.BLACK), r, 0);
-                        jtblCurrentEditorRights.repaint();
-                    }
+                            ERestriction restr = null;
+                            switch (row) {
+                                case 0:
+                                    restr = ERestriction.ACCESS;
+                                    break;
+                                case 1:
+                                    restr = ERestriction.CREATE;
+                                    break;
+                                case 2:
+                                    restr = ERestriction.DELETE;
+                                    break;
+                                case 3:
+                                    restr = ERestriction.UPDATE;
+                                    break;
+                                case 4:
+                                    restr = ERestriction.VIEW;
+                                    break;
+                                case 5:
+                                    restr = ERestriction.ANY_COMMAND;
+                                    break;
+                                case 6:
+                                    restr = ERestriction.ANY_CHILD;
+                                    break;
+                                case 7:
+                                    restr = ERestriction.ANY_PAGES;
+                                    break;
+                            }
+                            long newBitMask = restr.getValue();
 
+                            List<Id> oldEnabledCommands = oldRestrictions.getEnabledCommandIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledCommandIds());
+                            List<Id> oldEnabledChilds = oldRestrictions.getEnabledChildIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledChildIds());
+                            List<Id> oldEnabledPages = oldRestrictions.getEnabledPageIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledPageIds());
 
-                    if (isSet) {
-                        bitMask &= ~newBitMask;
-                    } else {
-                        bitMask |= newBitMask;
-                    }
+                            long bitMask = ERestriction.toBitField(oldRestrictions.getRestriction());
 
+                            Boolean isSet = (Boolean) jtblCurrentEditorRights.getValueAt(row, 2);
+                            jtblCurrentEditorRights.setValueAt(isSet, row, 3);
+                            if (isSet == null) {
+                                isSet = Boolean.FALSE;
+                            }
+                            boolean isMaySet = isSet;
+                            Restrictions overwriteRestrictions = role.getOverwriteResourceRestrictions(hash, currCoverEditorPresentation.epr);
+                            if (!isSet) {
+                                isMaySet = overwriteRestrictions.getRestriction().contains(restr);
+                            }
 
-                    if ((row == 7 || row == 6 || row == 5) && !isSet) {
-                        List<AdsExplorerItemDef> list =
-                                currCoverEditorPresentation.getEditorPresentation().
+                            if (isDisableTableCurrentEditorRights && row != 0 || !isMaySet) {
+                                jtblCurrentEditorRights.repaint();
+                                return;
+                            }
+                            
+                            if (!isSet){//RADIX-12382
+                                if (restr == ERestriction.ACCESS){
+                                    newBitMask |= 
+                                        ERestriction.CREATE.getValue() |
+                                        ERestriction.DELETE.getValue() |
+                                        ERestriction.UPDATE.getValue() |
+                                        ERestriction.VIEW.getValue() |
+                                        ERestriction.ANY_COMMAND.getValue() |
+                                        ERestriction.ANY_CHILD.getValue() |
+                                        ERestriction.ANY_PAGES.getValue();
+                                }
+                                if (restr == ERestriction.VIEW){
+                                    newBitMask |= 
+                                        ERestriction.ANY_PAGES.getValue();                                    
+                                }
+                            }//end RADIX-12382
+                            
+
+                            if ((row == 5) && !isSet) {
+                                oldEnabledCommands = new ArrayList<>(overwriteRestrictions.getEnabledCommandIds());
+                            } else if ((row == 6) && !isSet) {
+
+                                oldEnabledChilds = new ArrayList<>(overwriteRestrictions.getEnabledChildIds());
+                            } else if ((row == 7) && !isSet) {
+
+                                oldEnabledPages = new ArrayList<>(overwriteRestrictions.getEnabledPageIds());
+                            }
+
+                            if (row == 0) {
+                                isDisableTableCurrentEditorRights = !isSet;
+                                int r = treeTableEditorPresentations.getSelectedRow();
+                                if (r < 0) {
+                                    return;
+                                }
+
+                                treeTableEditorPresentations.setValueAt(new FooItemWithBool(treeTableEditorPresentations.getValueAt(r, 0).toString(), isSet, Color.BLACK), r, 0);
+                                jtblCurrentEditorRights.repaint();
+                            }
+
+                            if (isSet) {
+                                bitMask &= ~newBitMask;
+                            } else {
+                                bitMask |= newBitMask;
+                            }
+
+                            if ((row == 7 || row == 6 || row == 5) && !isSet) {
+                                List<AdsExplorerItemDef> list
+                                = currCoverEditorPresentation.getEditorPresentation().
                                 getExplorerItems().
                                 getChildren().
                                 get(EScope.LOCAL_AND_OVERWRITE);
-                        removeOverwriteItems(list);
-                        List<Id> collectLst = new ArrayList<>();
-                        for (AdsExplorerItemDef item : list) {
-                            collectExplorerItems(collectLst, item);
+                                removeOverwriteItems(list);
+                                List<Id> collectLst = new ArrayList<>();
+                                for (AdsExplorerItemDef item : list) {
+                                    collectExplorerItems(collectLst, item);
+                                }
+                                role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
+                                                EDrcResourceType.EDITOR_PRESENTATION,
+                                                currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
+                                                lastEditorPresentationId,
+                                                //Restrictions.Factory.newInstance(role, bitMask, oldEnabledCommands, collectLst)));
+                                                Restrictions.Factory.newInstance(role, bitMask, oldEnabledCommands, oldEnabledChilds, oldEnabledPages)));
+                            } else {
+                                role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
+                                                EDrcResourceType.EDITOR_PRESENTATION,
+                                                currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
+                                                lastEditorPresentationId,
+                                                Restrictions.Factory.newInstance(role, bitMask, oldEnabledCommands, oldEnabledChilds, oldEnabledPages)));
+                            }
+
+                            if (row == 0 || row == 4 || row == 5 || row == 6 || row == 7) {
+                                refreshEditorPresentationTree(currCoverEditorPresentation.getEditorPresentation());
+                                refreshEntityObjectTreeBrunch();
+                                stateEntityClassDisableStatus();
+                                stateEnabledCommandsButtons();
+                            }
+                            checkEntityDefRowBold();
                         }
-                        role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
-                                EDrcResourceType.EDITOR_PRESENTATION,
-                                currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
-                                lastEditorPresentationId,
-                                //Restrictions.Factory.newInstance(role, bitMask, oldEnabledCommands, collectLst)));
-                                Restrictions.Factory.newInstance(role, bitMask, oldEnabledCommands, oldEnabledChilds, oldEnabledPages)));
-                    } else {
-                        role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
-                                EDrcResourceType.EDITOR_PRESENTATION,
-                                currCoverEditorPresentation.getEditorPresentation().getOwnerClass().getId(),
-                                lastEditorPresentationId,
-                                Restrictions.Factory.newInstance(role, bitMask, oldEnabledCommands, oldEnabledChilds, oldEnabledPages)));
                     }
+                };
 
-                    if (row == 0 || row == 4 || row == 5 || row == 6 || row == 7) {
-                        refreshEditorPresentationTree(currCoverEditorPresentation.getEditorPresentation());
-                        refreshEntityObjectTreeBrunch();
-                        stateEntityClassDisableStatus();
-                        stateEnabledCommandsButtons();
-                    }
-                    checkEntityDefRowBold();
-                }
-            }
-        };
-
-        PropertyChangeListener currSelectorRightsChangeListener =
-                new PropertyChangeListener() {
-            @Override
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                if (canIgnoreChangeEvent(evt)) {
-                    return;
-                }
-
-                int row = jtblCurrentSelectorRights.getSelectedRow();
-
-                if (role == null || !role.isInBranch() || currCoverEntityObjectClasses == null) {
-                    return;
-                }
-                if (row > -1 && isUpdated == 0) {
-                    String hash = AdsRoleDef.generateResHashKey(
-                            EDrcResourceType.SELECTOR_PRESENTATION,
-                            currCoverEntityObjectClasses.clazz.getId(),
-                            lastSelectorPresentationId);
-                    Restrictions oldRestrictions = role.getOnlyCurrentResourceRestrictions(hash);
-                    if (oldRestrictions == null) {
-                        return;
-                    }
-                    ERestriction restr = null;
-                    switch (row) {
-                        case 0:
-                            restr = ERestriction.ACCESS;
-                            break;
-                        case 1:
-                            restr = ERestriction.CREATE;
-                            break;
-                        case 2:
-                            restr = ERestriction.DELETE_ALL;
-                            break;
-                        case 3:
-                            restr = ERestriction.ANY_COMMAND;
-                            break;
-                    }
-                    long newBitMask = restr.getValue();
-                    List<Id> oldEnabledCommands = oldRestrictions.getEnabledCommandIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledCommandIds());
-                    long bitMask = ERestriction.toBitField(oldRestrictions.getRestriction());
-                    Boolean isSet = (Boolean) jtblCurrentSelectorRights.getValueAt(row, 2);
-                    jtblCurrentSelectorRights.setValueAt(isSet, row, 3);
-                    if (isSet == null) {
-                        isSet = Boolean.FALSE;
-                    }
-                    boolean isMaySet = isSet;
-                    Restrictions overwriteRestrictions = role.getOverwriteResourceRestrictions(hash, null);
-                    if (!isSet) {
-                        isMaySet = overwriteRestrictions.getRestriction().contains(restr);
-                    }
-
-                    if (isDisableTableCurrentSelectorRights && row != 0 || !isMaySet) {
-                        fillSelectorPresentationRightsAndCommand();
-                        jtblCurrentSelectorRights.repaint();
-                        return;
-                    }
-                    if (row == 3 && !isSet) {
-                        oldEnabledCommands = new ArrayList<>(overwriteRestrictions.getEnabledCommandIds());
-                    }
-                    if (oldEnabledCommands != null && oldEnabledCommands.size() > 0
-                            && (!isSet && row == 0
-                            || isSet && row == 3)) {
-                        fillSelectorPresentationRightsAndCommand();
-                        jtblCurrentSelectorRights.repaint();
-                    }
-                    if (row == 0) {
-                        isDisableTableCurrentSelectorRights = !isSet;
-                        int r = jtblSelectorPresentation.getSelectedRow();
-                        if (r < 0) {
+        PropertyChangeListener currSelectorRightsChangeListener
+                = new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                        if (canIgnoreChangeEvent(evt)) {
                             return;
                         }
 
-                        jtblSelectorPresentation.setValueAt(new FooItemWithBool(jtblSelectorPresentation.getValueAt(r, 0).toString(), isSet, Color.BLACK), r, 0);
+                        int row = jtblCurrentSelectorRights.getSelectedRow();
 
-                        jtblCurrentSelectorRights.repaint();
+                        if (role == null || !role.isInBranch() || currCoverEntityObjectClasses == null) {
+                            return;
+                        }
+                        if (row > -1 && isUpdated == 0) {
+                            String hash = AdsRoleDef.generateResHashKey(
+                                    EDrcResourceType.SELECTOR_PRESENTATION,
+                                    currCoverEntityObjectClasses.clazz.getId(),
+                                    lastSelectorPresentationId);
+                            Restrictions oldRestrictions = role.getOnlyCurrentResourceRestrictions(hash);
+                            if (oldRestrictions == null) {
+                                return;
+                            }
+                            ERestriction restr = null;
+                            switch (row) {
+                                case 0:
+                                    restr = ERestriction.ACCESS;
+                                    break;
+                                case 1:
+                                    restr = ERestriction.CREATE;
+                                    break;
+                                case 2:
+                                    restr = ERestriction.DELETE_ALL;
+                                    break;
+                                case 3:
+                                    restr = ERestriction.ANY_COMMAND;
+                                    break;
+                            }
+                            
+                            long newBitMask = restr.getValue();
+                            List<Id> oldEnabledCommands = oldRestrictions.getEnabledCommandIds() == null ? new ArrayList<Id>() : new ArrayList<>(oldRestrictions.getEnabledCommandIds());
+                            long bitMask = ERestriction.toBitField(oldRestrictions.getRestriction());
+                            Boolean isSet = (Boolean) jtblCurrentSelectorRights.getValueAt(row, 2);
+                            jtblCurrentSelectorRights.setValueAt(isSet, row, 3);
+                            if (isSet == null) {
+                                isSet = Boolean.FALSE;
+                            }
+                            boolean isMaySet = isSet;
+                            Restrictions overwriteRestrictions = role.getOverwriteResourceRestrictions(hash, null);
+                            if (!isSet) {
+                                isMaySet = overwriteRestrictions.getRestriction().contains(restr);
+                            }
+
+                            if (isDisableTableCurrentSelectorRights && row != 0 || !isMaySet) {
+                                fillSelectorPresentationRightsAndCommand();
+                                jtblCurrentSelectorRights.repaint();
+                                return;
+                            }
+                            
+  
+                            //RADIX-12382
+                            if (!isSet){
+                                if (restr == ERestriction.ACCESS){
+                                    newBitMask |= 
+                                        ERestriction.CREATE.getValue() |
+                                        ERestriction.DELETE_ALL.getValue() |
+                                        ERestriction.ANY_COMMAND.getValue();
+                                }                              
+                            }
+                            //end RADIX-12382
+                            
+                            if (row == 3 && !isSet) {
+                                oldEnabledCommands = new ArrayList<>(overwriteRestrictions.getEnabledCommandIds());
+                            }
+                            if (oldEnabledCommands != null && oldEnabledCommands.size() > 0
+                            && (!isSet && row == 0
+                            || isSet && row == 3)) {
+                                fillSelectorPresentationRightsAndCommand();
+                                jtblCurrentSelectorRights.repaint();
+                            }
+                            if (row == 0) {
+                                isDisableTableCurrentSelectorRights = !isSet;
+                                int r = jtblSelectorPresentation.getSelectedRow();
+                                if (r < 0) {
+                                    return;
+                                }
+
+                                jtblSelectorPresentation.setValueAt(new FooItemWithBool(jtblSelectorPresentation.getValueAt(r, 0).toString(), isSet, Color.BLACK), r, 0);
+
+                                jtblCurrentSelectorRights.repaint();
+                            }
+
+                            if (isSet) {
+                                bitMask &= ~newBitMask;
+                            } else {
+                                bitMask |= newBitMask;
+                            }
+
+                            role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
+                                            EDrcResourceType.SELECTOR_PRESENTATION,
+                                            currCoverEntityObjectClasses.clazz.getId(),
+                                            lastSelectorPresentationId,
+                                            Restrictions.Factory.newInstance(role, bitMask, oldEnabledCommands, new ArrayList<Id>(), new ArrayList<Id>())));
+
+                            if (row == 0 || row == 3) {
+                                fillSelectorPresentationRightsAndCommand();
+
+                            }
+                            checkEntityDefRowBold();
+                        }
                     }
-
-                    if (isSet) {
-                        bitMask &= ~newBitMask;
-                    } else {
-                        bitMask |= newBitMask;
-                    }
-
-                    role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
-                            EDrcResourceType.SELECTOR_PRESENTATION,
-                            currCoverEntityObjectClasses.clazz.getId(),
-                            lastSelectorPresentationId,
-                            Restrictions.Factory.newInstance(role, bitMask, oldEnabledCommands, new ArrayList<Id>(), new ArrayList<Id>())));
-
-                    if (row == 0 || row == 3) {
-                        fillSelectorPresentationRightsAndCommand();
-
-                    }
-                    checkEntityDefRowBold();
-                }
-            }
-        };
+                };
 
         jtblCurrentEditorRights.addPropertyChangeListener(currEditorRightsChangeListener);
         jtblCurrentSelectorRights.addPropertyChangeListener(currSelectorRightsChangeListener);
@@ -6621,16 +6755,12 @@ public class AdsRoleEditorPanel extends JPanel {
         column = jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(0);
         column.setCellRenderer(new TableCellBlueColorRenderer());
 
-
-
-
         column = jtblSelectorPresentation.getColumnModel().getColumn(0);
         column.setCellRenderer(grayTableCellRendererWithBold);
         column = jtblCurrentEditorRights.getColumnModel().getColumn(0);
         column.setCellRenderer(grayTableCellRendererWithBold);
         column = jtblCurrentSelectorRights.getColumnModel().getColumn(0);
         column.setCellRenderer(grayTableCellRendererWithBold);
-
 
         BooleanRenderer renderer2 = new BooleanRenderer();
         column = jtblCurrentEditorRights.getColumnModel().getColumn(1);
@@ -6654,13 +6784,10 @@ public class AdsRoleEditorPanel extends JPanel {
 
         jtblCurrentSelectorRights.getTableHeader().setReorderingAllowed(false);
 
-
-
         int rowHeight = jtblSelectorPresentation.getRowHeight();
         int delta = 46;
         {
             java.awt.GridBagConstraints gridBagConstraints = ((java.awt.GridBagLayout) jPanel17.getLayout()).getConstraints(jPanel20);
-
 
             gridBagConstraints.ipady = rowHeight * 5 + delta;
 
@@ -6676,185 +6803,178 @@ public class AdsRoleEditorPanel extends JPanel {
             jPanel23.add(jPanel22, gridBagConstraints);
         }
 
-
     }
 
     private void initEditorEnabledCmdTable() {
         //
 
-        currEditorModel =
-                new DefaultTableModel(
-                new Object[][]{},
-                new String[]{
-            "Enabled Command", "Inherit", "Own", "Total", "Rights"
-        }) {
-            Class[] types = new Class[]{
-                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
-            };
+        currEditorModel
+                = new DefaultTableModel(
+                        new Object[][]{},
+                        new String[]{
+                            "Enabled Command", "Inherit", "Own", "Total", "Rights"
+                        }) {
+                            Class[] types = new Class[]{
+                                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
+                            };
 
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
+                            @Override
+                            public Class getColumnClass(int columnIndex) {
+                                return types[columnIndex];
+                            }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                if (columnIndex != 2 && columnIndex != 4) {
-                    return false;
+                            @Override
+                            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                                if (columnIndex != 2 && columnIndex != 4) {
+                                    return false;
+                                }
+                                if (currCoverEditorPresentation == null
+                                || currCoverEditorPresentation.epr == null
+                                || currCoverEntityObjectClasses == null) {
+                                    return false;
+                                }
+                                String hash = AdsRoleDef.generateResHashKey(EDrcResourceType.EDITOR_PRESENTATION,
+                                        currCoverEditorPresentation.epr.getOwnerClass().getId(),
+                                        currCoverEditorPresentation.epr.getId());
+                                Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
+                                if (r == null) {
+                                    return false;
+                                }
+                                if (r.isDenied(ERestriction.ACCESS) || !r.isDenied(ERestriction.ANY_COMMAND)) {
+                                    return false;
+                                }
+
+                                Restrictions or = role.getOverwriteResourceRestrictions(hash, currCoverEditorPresentation.epr);
+                                List<Id> lst = or.getEnabledCommandIds();
+                                if (lst != null) {
+                                    FooItem obj = (FooItem) jtblCurrentEditorEnabledCmd.getValueAt(rowIndex, 0);
+                                    AdsScopeCommandDefCover cmd = (AdsScopeCommandDefCover) obj.obj;
+                                    Boolean fl = (Boolean) jtblCurrentEditorEnabledCmd.getValueAt(rowIndex, columnIndex);
+                                    return !lst.contains(cmd.getId())
+                                    || fl != null && !fl;
+                                }
+
+                                return true;
+                            }
+                        };
+                jtblCurrentEditorEnabledCmd.setModel(currEditorModel);
+                BooleanRenderer2 boolRenderer = new BooleanRenderer2(ERestriction.ANY_COMMAND);
+                for (int i = 1; i < 5; i++) {
+                    jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(i).setCellRenderer(boolRenderer);
                 }
-                if (currCoverEditorPresentation == null
-                        || currCoverEditorPresentation.epr == null
-                        || currCoverEntityObjectClasses == null) {
-                    return false;
-                }
-                String hash = AdsRoleDef.generateResHashKey(EDrcResourceType.EDITOR_PRESENTATION,
-                        currCoverEditorPresentation.epr.getOwnerClass().getId(),
-                        currCoverEditorPresentation.epr.getId());
-                Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
-                if (r == null) {
-                    return false;
-                }
-                if (r.isDenied(ERestriction.ACCESS) || !r.isDenied(ERestriction.ANY_COMMAND)) {
-                    return false;
-                }
+                TableColumn column;
+                column = jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(0);
+                column.setCellRenderer(new TableCellBlueColorRenderer());
 
-                Restrictions or = role.getOverwriteResourceRestrictions(hash, currCoverEditorPresentation.epr);
-                List<Id> lst = or.getEnabledCommandIds();
-                if (lst != null) {
-                    FooItem obj = (FooItem) jtblCurrentEditorEnabledCmd.getValueAt(rowIndex, 0);
-                    AdsScopeCommandDefCover cmd = (AdsScopeCommandDefCover) obj.obj;
-                    Boolean fl = (Boolean) jtblCurrentEditorEnabledCmd.getValueAt(rowIndex, columnIndex);
-                    return !lst.contains(cmd.getId())
-                            || fl != null && !fl;
-                }
+                jtblCurrentEditorEnabledCmd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                        if (canIgnoreChangeEvent(evt)) {
+                            return;
+                        }
 
+                        int row = jtblCurrentEditorEnabledCmd.getSelectedRow();
+                        if (editorCommandsList == null
+                                || currCoverEditorPresentation == null
+                                || row >= editorCommandsList.size()
+                                || row < 0) {
+                            return;
+                        }
+                        if (!role.isInBranch()) {
+                            return;
+                        }
+                        int col = jtblCurrentEditorEnabledCmd.getSelectedColumn();
+                        if (col != 2 && col != 4) {
+                            return;
+                        }
+                        int col2 = col != 2 ? 2 : 4;
+                        //AdsScopeCommandDef cmd = editorCommandsList.get(row);
 
+                        Boolean val = (Boolean) jtblCurrentEditorEnabledCmd.getValueAt(row, col);
+                        jtblCurrentEditorEnabledCmd.setValueAt(val, row, col2);
+                        jtblCurrentEditorEnabledCmd.setValueAt(val, row, 3);
 
+                        Restrictions res = role.getResourceRestrictions(EDrcResourceType.EDITOR_PRESENTATION,
+                                currCoverEditorPresentation.epr.getOwnerClass().getId(), currCoverEditorPresentation.epr.getId(), currCoverEditorPresentation.epr);
+                        res.setCommandEnabled(editorCommandsList.get(row).getId(), val);
 
+                        AdsRoleDef.Resource resource = new AdsRoleDef.Resource(
+                                EDrcResourceType.EDITOR_PRESENTATION,
+                                currCoverEditorPresentation.epr.getOwnerClass().getId(),
+                                currCoverEditorPresentation.epr.getId(),
+                                res);
+                        role.CreateOrReplaceResourceRestrictions(resource);
 
-                return true;
-            }
-        };
-        jtblCurrentEditorEnabledCmd.setModel(currEditorModel);
-        BooleanRenderer2 boolRenderer = new BooleanRenderer2(ERestriction.ANY_COMMAND);
-        for (int i = 1; i < 5; i++) {
-            jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(i).setCellRenderer(boolRenderer);
-        }
-        TableColumn column;
-        column = jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(0);
-        column.setCellRenderer(new TableCellBlueColorRenderer());
-
-
-        jtblCurrentEditorEnabledCmd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            @Override
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                if (canIgnoreChangeEvent(evt)) {
-                    return;
-                }
-
-                int row = jtblCurrentEditorEnabledCmd.getSelectedRow();
-                if (editorCommandsList == null
-                        || currCoverEditorPresentation == null
-                        || row >= editorCommandsList.size()
-                        || row < 0) {
-                    return;
-                }
-                if (!role.isInBranch()) {
-                    return;
-                }
-                int col = jtblCurrentEditorEnabledCmd.getSelectedColumn();
-                if (col != 2 && col != 4) {
-                    return;
-                }
-                int col2 = col != 2 ? 2 : 4;
-                //AdsScopeCommandDef cmd = editorCommandsList.get(row);
-
-                Boolean val = (Boolean) jtblCurrentEditorEnabledCmd.getValueAt(row, col);
-                jtblCurrentEditorEnabledCmd.setValueAt(val, row, col2);
-                jtblCurrentEditorEnabledCmd.setValueAt(val, row, 3);
-
-                Restrictions res = role.getResourceRestrictions(EDrcResourceType.EDITOR_PRESENTATION,
-                        currCoverEditorPresentation.epr.getOwnerClass().getId(), currCoverEditorPresentation.epr.getId(), currCoverEditorPresentation.epr);
-                res.setCommandEnabled(editorCommandsList.get(row).getId(), val);
-
-                AdsRoleDef.Resource resource = new AdsRoleDef.Resource(
-                        EDrcResourceType.EDITOR_PRESENTATION,
-                        currCoverEditorPresentation.epr.getOwnerClass().getId(),
-                        currCoverEditorPresentation.epr.getId(),
-                        res);
-                role.CreateOrReplaceResourceRestrictions(resource);
-
-            }
-        });
-
+                    }
+                });
 
     }
 
     private void initSelectorEnabledCmdTable() {
-        cmdSelectorModel =
-                new javax.swing.table.DefaultTableModel(
-                new Object[][]{},
-                new String[]{
-            "Enabled Command", "Inherit", "Own", "Total", "Rights"
-        }) {
-            Class[] types = new Class[]{
-                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
-            };
+        cmdSelectorModel
+                = new javax.swing.table.DefaultTableModel(
+                        new Object[][]{},
+                        new String[]{
+                            "Enabled Command", "Inherit", "Own", "Total", "Rights"
+                        }) {
+                            Class[] types = new Class[]{
+                                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
+                            };
 //                boolean[] canEdit = new boolean [] {
 //                    false, true, true, true
 //                };
 
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
+                            @Override
+                            public Class getColumnClass(int columnIndex) {
+                                return types[columnIndex];
+                            }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                if (columnIndex != 2 && columnIndex != 4) {
-                    return false;
-                }
+                            @Override
+                            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                                if (columnIndex != 2 && columnIndex != 4) {
+                                    return false;
+                                }
 
-                if (lastSelectorPresentationId == null
-                        || selectorCommandsList == null
-                        || currCoverEntityObjectClasses == null) {
-                    return false;
-                }
-                String hash = AdsRoleDef.generateResHashKey(EDrcResourceType.SELECTOR_PRESENTATION,
-                        currCoverEntityObjectClasses.clazz.getId(),
-                        lastSelectorPresentationId);
-                Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
-                if (r == null) {
-                    return false;
-                }
-                if (r.isDenied(ERestriction.ACCESS) || !r.isDenied(ERestriction.ANY_COMMAND)) {
-                    return false;
-                }
+                                if (lastSelectorPresentationId == null
+                                || selectorCommandsList == null
+                                || currCoverEntityObjectClasses == null) {
+                                    return false;
+                                }
+                                String hash = AdsRoleDef.generateResHashKey(EDrcResourceType.SELECTOR_PRESENTATION,
+                                        currCoverEntityObjectClasses.clazz.getId(),
+                                        lastSelectorPresentationId);
+                                Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
+                                if (r == null) {
+                                    return false;
+                                }
+                                if (r.isDenied(ERestriction.ACCESS) || !r.isDenied(ERestriction.ANY_COMMAND)) {
+                                    return false;
+                                }
 
-                Restrictions or = role.getOverwriteResourceRestrictions(hash, null);
+                                Restrictions or = role.getOverwriteResourceRestrictions(hash, null);
 
-                FooItem val = (FooItem) jtblCurrentSelectorEnabledCmd.getValueAt(rowIndex, 0);
-                Boolean currVal = (Boolean) jtblCurrentSelectorEnabledCmd.getValueAt(rowIndex, 2);
-                if (currVal != null && currVal) {
-                    AdsScopeCommandDefCover cmd = (AdsScopeCommandDefCover) val.GetMyObject();
-                    List<Id> lst = or.getEnabledCommandIds();
-                    if (lst != null && lst.contains(cmd.getId())) {
-                        return false;
-                    }
+                                FooItem val = (FooItem) jtblCurrentSelectorEnabledCmd.getValueAt(rowIndex, 0);
+                                Boolean currVal = (Boolean) jtblCurrentSelectorEnabledCmd.getValueAt(rowIndex, 2);
+                                if (currVal != null && currVal) {
+                                    AdsScopeCommandDefCover cmd = (AdsScopeCommandDefCover) val.GetMyObject();
+                                    List<Id> lst = or.getEnabledCommandIds();
+                                    if (lst != null && lst.contains(cmd.getId())) {
+                                        return false;
+                                    }
 
+                                }
+                                return true;
+                            }
+                        };
+                jtblCurrentSelectorEnabledCmd.setModel(cmdSelectorModel);
+                BooleanRendererForMainColumns2 renderer = new BooleanRendererForMainColumns2();
+                for (int i = 1; i < 5; i++) {
+                    TableColumn col = jtblCurrentSelectorEnabledCmd.getColumnModel().getColumn(i);
+                    col.setCellRenderer(renderer);
                 }
-                return true;
-            }
-        };
-        jtblCurrentSelectorEnabledCmd.setModel(cmdSelectorModel);
-        BooleanRendererForMainColumns2 renderer = new BooleanRendererForMainColumns2();
-        for (int i = 1; i < 5; i++) {
-            TableColumn col = jtblCurrentSelectorEnabledCmd.getColumnModel().getColumn(i);
-            col.setCellRenderer(renderer);
-        }
-        TableColumn column;
-        column = jtblCurrentSelectorEnabledCmd.getColumnModel().getColumn(0);
-        column.setCellRenderer(new TableCellBlueColorRenderer());
+                TableColumn column;
+                column = jtblCurrentSelectorEnabledCmd.getColumnModel().getColumn(0);
+                column.setCellRenderer(new TableCellBlueColorRenderer());
     }
 
     public static void collectExplorerItems(List<Id> collectLst, AdsExplorerItemDef explorerItem) {
@@ -7049,7 +7169,6 @@ public class AdsRoleEditorPanel extends JPanel {
 //            }
         }
 
-
         return false;
     }
 
@@ -7060,10 +7179,8 @@ public class AdsRoleEditorPanel extends JPanel {
         }
         Object currObject = jEntityAndApplTree.getSelectionPath().getLastPathComponent();
 
-
         DefaultMutableTreeNodeEx currNode = (DefaultMutableTreeNodeEx) currObject;
         currCoverEntityObjectClasses = (CoverEntityObjectClasses) currNode.obj;
-
 
         currNode.bool2 = isEntityDefContaintAllowedPresentation(currCoverEntityObjectClasses.clazz);
         jEntityAndApplTree.repaint();
@@ -7074,57 +7191,45 @@ public class AdsRoleEditorPanel extends JPanel {
         jtblServerResource = new SimpleTable();
 
         jtblServerTableModel = new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-            {"Connect to Explorer Access Service", null, null, null, null},
-            {"Selector color schemes creation in Explorer", null, null, null, null},
-            {"Filter creation and refining in Explorer", null, null, null, null},
-            {"Access to server file resources", null, null, null, null},
-            {"Sorting creation and refining in Explorer", null, null, null, null},
-            {"Debug", null, null, null, null},
-            {"Trace", null, null, null, null},
-            {"View audit", null, null, null, null},
-            {"User functions development", null, null, null, null}
-        },
+                AdsRoleEditorPanelUtils.getjtblServerResourceInitialObjects()                ,
                 new String[]{
-            "Server Resource", "Inherited Rights", "Own Rights", "Total Rights", "Rights"
-        }) {
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return java.lang.Object.class;
-            }
+                    "Server Resource", "Inherited Rights", "Own Rights", "Total Rights", "Rights"
+                }) {
+                    @Override
+                    public Class getColumnClass(int columnIndex) {
+                        return java.lang.Object.class;
+                    }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                try{
-                    if (columnIndex == 2) {
-                        if (!isSuperAdmin && !roleIsReadOnly) {
-                            int y = rowIndex;
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        try {
+                            if (columnIndex == 2) {
+                                if (!isSuperAdmin && !roleIsReadOnly) {
+                                    int y = rowIndex;
 
-                            if (serverResourcesCanForbid.get(y)) {
-                                if (comboBoxEx.getItemCount() == 3) {
-                                    comboBoxEx.removeItemAt(2);
-                                }
-                            } else {
-                                if (comboBoxEx.getItemCount() == 2) {
-                                    comboBoxEx.addItem(Forbidden);
+                                    if (serverResourcesCanForbid.get(y)) {
+                                        if (comboBoxEx.getItemCount() == 3) {
+                                            comboBoxEx.removeItemAt(2);
+                                        }
+                                    } else {
+                                        if (comboBoxEx.getItemCount() == 2) {
+                                            comboBoxEx.addItem(Forbidden);
+                                        }
+                                    }
+                                    return true;
                                 }
                             }
-                            return true;
+                            if (columnIndex == 4) {
+                                return (!isSuperAdmin && !roleIsReadOnly);
+                            }
+                            return false;
+                        } catch (Throwable th) {
+                            return false;
                         }
                     }
-                    if (columnIndex == 4) {
-                        return (!isSuperAdmin && !roleIsReadOnly);
-                    }
-                    return false;
-                }
-                catch (Throwable th){
-                    return false;
-                }
-            }
-        };
+                };
         jtblServerResource.setModel(jtblServerTableModel);
         jScrollPaneServerResource.setViewportView(jtblServerResource);
-
 
         TableColumnModel columnModel = jtblServerResource.getColumnModel();
         TableColumn column = columnModel.getColumn(2);
@@ -7133,7 +7238,6 @@ public class AdsRoleEditorPanel extends JPanel {
         column = columnModel.getColumn(4);
         column.setCellEditor(new DefaultCellEditor(checkBoxEx));
         column.setCellRenderer(new BooleanRendererForMainColumns());
-
 
         jtblServerResource.setDefaultRenderer(Object.class, whiteTableCellRendererWithBold);
         jtblServerResource.setRowSelectionInterval(0, 0);
@@ -7145,9 +7249,6 @@ public class AdsRoleEditorPanel extends JPanel {
                 column.setCellRenderer(grayTableCellRendererWithBold);
             }
         }
-
-
-
 
         jtblServerResource.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             @Override
@@ -7162,10 +7263,8 @@ public class AdsRoleEditorPanel extends JPanel {
                 int index = jtblServerResource.getSelectedRow();
                 if (index > -1) {
 
-                    EDrcServerResource resource = indexToServerResource(index);
+                    EDrcServerResource resource = AdsRoleEditorPanelUtils.indexToServerResource(index);
                     if (jtblServerResource.getSelectedColumn() == 2) {
-
-
 
                         String value = (String) jtblServerTableModel.getValueAt(index, 2);
                         if (value.equals(Inherit)) {
@@ -7208,42 +7307,41 @@ public class AdsRoleEditorPanel extends JPanel {
 
     private void initExplorerRootsTable() {
 
-
         jtblExplorerRootsModel = new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
                 new String[]{
-            "Explorer Root", "Inherited Rights", "Own Rights", "Total Rights", "Rights"
-        }) {
-            @Override
-            public Class getColumnClass(int columnIndex) {
-                return java.lang.Object.class;
-            }
+                    "Explorer Root", "Inherited Rights", "Own Rights", "Total Rights", "Rights"
+                }) {
+                    @Override
+                    public Class getColumnClass(int columnIndex) {
+                        return java.lang.Object.class;
+                    }
 
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                if (columnIndex == 2) {
-                    if (!isSuperAdmin && !roleIsReadOnly) {
-                        isUpdated++;
-                        int y = rowIndex;
-                        if (paragraphs.get(y).isCanForbid()) {
-                            if (comboBoxEx.getItemCount() == 2) {
-                                comboBoxEx.addItem(Forbidden);
-                            }
-                        } else {
-                            if (comboBoxEx.getItemCount() == 3) {
-                                comboBoxEx.removeItemAt(2);
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        if (columnIndex == 2) {
+                            if (!isSuperAdmin && !roleIsReadOnly) {
+                                isUpdated++;
+                                int y = rowIndex;
+                                if (paragraphs.get(y).isCanForbid()) {
+                                    if (comboBoxEx.getItemCount() == 2) {
+                                        comboBoxEx.addItem(Forbidden);
+                                    }
+                                } else {
+                                    if (comboBoxEx.getItemCount() == 3) {
+                                        comboBoxEx.removeItemAt(2);
+                                    }
+                                }
+                                isUpdated--;
+                                return true;
                             }
                         }
-                        isUpdated--;
-                        return true;
+                        if (columnIndex == 4) {
+                            return (!isSuperAdmin && !roleIsReadOnly);
+                        }
+                        return false;
                     }
-                }
-                if (columnIndex == 4) {
-                    return (!isSuperAdmin && !roleIsReadOnly);
-                }
-                return false;
-            }
-        };
+                };
 
         jtblExplorerRoots = new SimpleTable();
 
@@ -7322,9 +7420,9 @@ public class AdsRoleEditorPanel extends JPanel {
 
                             role.RemoveResourceRestrictions(
                                     AdsRoleDef.generateResHashKey(
-                                    EDrcResourceType.EXPLORER_ROOT_ITEM,
-                                    paragraphs.get(index).getId(),
-                                    null));
+                                            EDrcResourceType.EXPLORER_ROOT_ITEM,
+                                            paragraphs.get(index).getId(),
+                                            null));
                             //        role.CreateOrReplaceResourceRestrictions(new AdsRoleDef.Resource(
                             //                EDrcResourceType.EXPLORER_ROOT_ITEM,
                             //                paragraphs.get(index).getParagraphItem().getId(),
@@ -7349,7 +7447,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
         jtblExplorerRoots.setDefaultRenderer(Object.class, whiteTableCellRendererWithBold);
 
-
         for (int i = 0; i < 4; i++) {
 
             if (i == 2) {
@@ -7363,10 +7460,8 @@ public class AdsRoleEditorPanel extends JPanel {
         treeTableExplorerItems = new TreeTableExWithMouseMotionListener(treeTableExplorerItemsModel);
         jScrollPaneExplorerItems.setViewportView(treeTableExplorerItems);
 
-
         treeTableExplorerItems.getTableHeader().setReorderingAllowed(false);
         jtblExplorerRoots.getTableHeader().setReorderingAllowed(false);
-
 
     }
     private DefaultCellEditor treeTableCellEditorMain = null;
@@ -7380,14 +7475,12 @@ public class AdsRoleEditorPanel extends JPanel {
 
         treeTablePresExplorerItems.getTableHeader().setReorderingAllowed(false);
 
-
         treeTablePresEditorPageModel = new TreeGridModel(null, cNamesPres, cTypesBool);
         treeTablePresEditorPage = new TreeTable(treeTablePresEditorPageModel);
         jScrollPane4.setViewportView(treeTablePresEditorPage);
         treeTablePresEditorPage.setRootVisible(false);
 
         treeTablePresEditorPage.getTableHeader().setReorderingAllowed(false);
-
 
         treeTableEditorPresentations.addKeyListener(new KeyListener() {
             @Override
@@ -7436,7 +7529,6 @@ public class AdsRoleEditorPanel extends JPanel {
             jbtDeselectAllCmdForEdPr.setEnabled(true);
         }
 
-
         if (currCoverEditorPresentation == null
                 || currCoverEditorPresentation.epr == null) {
             currEditorModel.setRowCount(0);
@@ -7479,15 +7571,11 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
-
         RadixObjectsUtils.sortByName(editorCommandsList);
 
         currEditorModel.setRowCount(editorCommandsList.size());
 
-
         //editorCommandsList.contains();
-
         boolean isNotDefinedAncestors = ar.isDenied(ERestriction.ACCESS);
         boolean isSetAncesstors = !isNotDefinedAncestors && !ar.isDenied(ERestriction.ANY_COMMAND);
         List<Id> ancestorIdList = ar.getEnabledCommandIds();
@@ -7496,12 +7584,8 @@ public class AdsRoleEditorPanel extends JPanel {
         }
 
         // && !r.isDenied(ERestriction.ANY_COMMAND)
-
         boolean isNotDefined = r != null && r.isDenied(ERestriction.ACCESS);
         boolean isSet = r != null && !isNotDefined && !r.isDenied(ERestriction.ANY_COMMAND);
-
-
-
 
 //            if (!r.isDenied(ERestriction.ACCESS) && !r.isDenied(ERestriction.ANY_COMMAND))
         {
@@ -7530,8 +7614,8 @@ public class AdsRoleEditorPanel extends JPanel {
 
                 jtblCurrentEditorEnabledCmd.setValueAt(
                         r == null
-                        ? jtblCurrentEditorEnabledCmd.getValueAt(i, 1)
-                        : jtblCurrentEditorEnabledCmd.getValueAt(i, 2),
+                                ? jtblCurrentEditorEnabledCmd.getValueAt(i, 1)
+                                : jtblCurrentEditorEnabledCmd.getValueAt(i, 2),
                         i,
                         3);
                 mayRemoveEditorEnabledCommands.add(false);
@@ -7544,7 +7628,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
     private void fillPresentationExplorerItemsTree() {
 
-
         if (currCoverEditorPresentation == null
                 || currCoverEditorPresentation.epr == null) {
             treeTablePresExplorerItemsModel.openRoot(null);
@@ -7555,8 +7638,6 @@ public class AdsRoleEditorPanel extends JPanel {
             treeTablePresExplorerItemsModel.openRoot(root);
             treeTablePresExplorerItems.afterOpen(treeTablePresExplorerItemsModel, backgroundColor);
 
-
-
             treeTablePresEditorPageModel.openRoot(null);
             treeTablePresEditorPage.afterOpen(treeTablePresEditorPageModel, Color.lightGray);
 
@@ -7565,17 +7646,13 @@ public class AdsRoleEditorPanel extends JPanel {
             treeTablePresEditorPageModel.openRoot(root2);
             treeTablePresEditorPage.afterOpen(treeTablePresEditorPageModel, backgroundColor);
 
-
-
-
             return;
         }
         treeTablePresExplorerItems.setRootVisible(false);
         treeTablePresEditorPage.setRootVisible(false);
 
-
-        List<AdsExplorerItemDef> list =
-                currCoverEditorPresentation.getEditorPresentation().
+        List<AdsExplorerItemDef> list
+                = currCoverEditorPresentation.getEditorPresentation().
                 getExplorerItems().
                 getChildren().
                 get(EScope.ALL);
@@ -7591,27 +7668,21 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
-
         String hash = AdsRoleDef.generateResHashKey(EDrcResourceType.EDITOR_PRESENTATION,
                 currCoverEditorPresentation.epr.getOwnerClass().getId(),
                 currCoverEditorPresentation.epr.getId());
 
-
         TreeGridRoleResourceEdPresentationExplorerItemRow root = new TreeGridRoleResourceEdPresentationExplorerItemRow(
                 null, treeTablePresExplorerItems, hash, role, null, currCoverEditorPresentation.epr);
 
-
         TreeGridRoleResourceEdPresentationPageRow root2 = new TreeGridRoleResourceEdPresentationPageRow(
                 null, treeTablePresEditorPage, hash, role, null, currCoverEditorPresentation.epr);
-
 
         root.list = new ArrayList<>();
         root2.list = new ArrayList<>();
 
         root.isMayChild = !list.isEmpty();
         root2.isMayChild = !list2.isEmpty();
-
 
         for (AdsExplorerItemDef eItem : list) {
             TreeGridRoleResourceEdPresentationExplorerItemRow item = new TreeGridRoleResourceEdPresentationExplorerItemRow(
@@ -7624,7 +7695,6 @@ public class AdsRoleEditorPanel extends JPanel {
                     null, treeTablePresEditorPage, hash, role, pItem, currCoverEditorPresentation.epr);
             root2.list.add(item);
         }
-
 
         Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
         {
@@ -7671,14 +7741,11 @@ public class AdsRoleEditorPanel extends JPanel {
 
         //
         //List<AdsExplorerItemDef> lst
-
         treeTablePresExplorerItemsModel.openRoot(root);
         treeTablePresExplorerItems.afterOpen(treeTablePresExplorerItemsModel, backgroundColor);
 
-
         treeTablePresEditorPageModel.openRoot(root2);
         treeTablePresEditorPage.afterOpen(treeTablePresEditorPageModel, backgroundColor);
-
 
         BooleanRenderer2 boolRenderer = new BooleanRenderer2(ERestriction.ANY_CHILD);
         for (int i = 1; i < 5; i++) {
@@ -7709,7 +7776,6 @@ public class AdsRoleEditorPanel extends JPanel {
                     if (row >= 0 && row < entitySelectorPresentations.size()) {
                         AdsSelectorPresentationDef pres = entitySelectorPresentations.get(row).sp;
                         if (pres != null) {
-
 
                             AdsMultilingualStringDef msd = pres.findTitleStorage();
                             String title = msd == null ? null : msd.getValue(EIsoLanguage.ENGLISH);
@@ -7772,8 +7838,8 @@ public class AdsRoleEditorPanel extends JPanel {
                     int row = treeTablePresEditorPage.getRowForLocation(e.getY());
                     if (row >= 0 && row < treeTablePresEditorPage.getRowCount()) {
                         TreeGridModel.TreeGridNode item = (TreeGridModel.TreeGridNode) treeTablePresEditorPage.getValueAt(row, 0);
-                        TreeGridRoleResourceEdPresentationPageRow curr =
-                                (TreeGridRoleResourceEdPresentationPageRow) item.getGridItem();
+                        TreeGridRoleResourceEdPresentationPageRow curr
+                                = (TreeGridRoleResourceEdPresentationPageRow) item.getGridItem();
 
                         String title = curr.getTitle();
                         if (title == null || title.isEmpty()) {
@@ -7824,11 +7890,8 @@ public class AdsRoleEditorPanel extends JPanel {
                     TreeGridModel.TreeGridNode item = (TreeGridModel.TreeGridNode) treeTableExplorerItems.getValueAt(row, 0);
                     TreeGridRoleResourceRow gridItem = (TreeGridRoleResourceRow) item.getGridItem();
 
-
                     c.setToolTipText(gridItem.getExplorerItemTitle()
                             + " (" + (gridItem.explorerItem == null ? "" : gridItem.explorerItem.getQualifiedName() + ")"));
-
-
 
                 }
             }
@@ -7864,43 +7927,7 @@ public class AdsRoleEditorPanel extends JPanel {
     private TreeGridModel treeTablePresEditorPageModel;
     private TreeTable treeTablePresEditorPage;
 
-    EDrcServerResource indexToServerResource(int i) {
-        EDrcServerResource serverResource;
-        switch (i) {
-
-            case 0:
-                serverResource = EDrcServerResource.EAS;
-                break;
-            case 1:
-                serverResource = EDrcServerResource.EAS_COLORING_CREATION;
-                break;
-            case 2:
-                serverResource = EDrcServerResource.EAS_FILTER_CREATION;
-                break;
-            case 3:
-                serverResource = EDrcServerResource.EAS_SERVER_FILES;
-                break;
-            case 4:
-                serverResource = EDrcServerResource.EAS_SORTING_CREATION;
-                break;
-            case 5:
-                serverResource = EDrcServerResource.DEBUG;
-                break;
-            case 6:
-                serverResource = EDrcServerResource.TRACING;
-                break;
-            case 7:
-                serverResource = EDrcServerResource.VIEW_AUDIT;
-                break;
-            /*
-             * case 8: serverResource = EDrcServerResource.USER_FUNC_DEV; break;
-             */
-            default:
-                serverResource = EDrcServerResource.USER_FUNC_DEV;
-                break;
-        }
-        return serverResource;
-    }
+    
 
     class MyListCellRenderer extends DefaultListCellRenderer {
 
@@ -7928,7 +7955,6 @@ public class AdsRoleEditorPanel extends JPanel {
         jAncestorList.setCellRenderer(cellRenderer);
         jAPFamilyList.setCellRenderer(cellRenderer);
 
-
     }
 
     private void refreshAncestorsButtons() {
@@ -7942,7 +7968,6 @@ public class AdsRoleEditorPanel extends JPanel {
     private void refreshAPFButtons() {
         DefaultListModel model = (DefaultListModel) jAPFamilyList.getModel();
         int y = jAPFamilyList.getSelectedIndex();
-
 
         // jbtAddAPFamily.setEnabled(!isSuperAdmin && !roleIsReadOnly);
         jbtDelAPFamily.setEnabled(
@@ -7985,7 +8010,6 @@ public class AdsRoleEditorPanel extends JPanel {
         for (AdsRoleDef r2 : overwriteAncestors) {
             model.add(model.size(), new FooItem(r2.getQualifiedName(), r2.getId()));
         }
-
 
         for (Id id : role.getAncestorIds()) {
             adsSearcher = AdsSearcher.Factory.newAdsDefinitionSearcher(role.getModule());
@@ -8100,8 +8124,6 @@ public class AdsRoleEditorPanel extends JPanel {
         jbtExplItemAllowedTree.setEnabled(!isSuperAdmin && !roleIsReadOnly && treeTableExplorerItems.getRowCount() > 0);
         jbtExplItemInheritTree.setEnabled(!isSuperAdmin && !roleIsReadOnly && treeTableExplorerItems.getRowCount() > 0);
 
-
-
     }
 
     public static <T extends Definition> void removeOverwriteItems(List<T> items) {
@@ -8140,7 +8162,7 @@ public class AdsRoleEditorPanel extends JPanel {
             isMayInherit = !role.getAncestorIds().isEmpty()
                     || role.isOverwrite()
                     || currCoverEditorPresentation.getEditorPresentation().getOwnerClass() instanceof AdsApplicationClassDef
-                    || getPresentationParent(currCoverEditorPresentation.epr) != null;
+                    || currCoverEditorPresentation.epr.getInheritRightsFromPres() != null;
         }
         if (isMayInherit) {
             for (int i = 0; i < 2; i++) {
@@ -8159,7 +8181,6 @@ public class AdsRoleEditorPanel extends JPanel {
                     treeTablePresEditorPage.getColumnModel().getColumn(u).setMinWidth(70);
                     treeTablePresEditorPage.getColumnModel().getColumn(u).setWidth(70);
 
-
                 }
 
                 treeTablePresExplorerItems.getColumnModel().getColumn(4).setMaxWidth(0);
@@ -8169,7 +8190,6 @@ public class AdsRoleEditorPanel extends JPanel {
                 treeTablePresEditorPage.getColumnModel().getColumn(4).setMaxWidth(0);
                 treeTablePresEditorPage.getColumnModel().getColumn(4).setMinWidth(0);
                 treeTablePresEditorPage.getColumnModel().getColumn(4).setWidth(0);
-
 
                 for (int u = 1; u < 4; u++) {
                     jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(u).setMaxWidth(70);
@@ -8192,8 +8212,6 @@ public class AdsRoleEditorPanel extends JPanel {
                     jtblCurrentEditorRights.getColumnModel().getColumn(r).setWidth(0);
                 }
 
-
-
                 for (int u = 1; u < 4; u++) {
                     treeTablePresExplorerItems.getColumnModel().getColumn(u).setMaxWidth(0);
                     treeTablePresExplorerItems.getColumnModel().getColumn(u).setMinWidth(0);
@@ -8213,7 +8231,6 @@ public class AdsRoleEditorPanel extends JPanel {
                 treeTablePresEditorPage.getColumnModel().getColumn(4).setMinWidth(70);
                 treeTablePresEditorPage.getColumnModel().getColumn(4).setWidth(70);
 
-
                 for (int u = 1; u < 4; u++) {
                     jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(u).setMaxWidth(0);
                     jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(u).setMinWidth(0);
@@ -8225,19 +8242,17 @@ public class AdsRoleEditorPanel extends JPanel {
                 jtblCurrentEditorEnabledCmd.getColumnModel().getColumn(4).setWidth(70);
             }
 
-
         }
 
     }
 
     private void fillEditorPresentationRightsAndCommand() {
 
-
         if (treeTableEditorPresentations.getSelectedRow() < 0
                 || currCoverEditorPresentation == null
                 || currCoverEditorPresentation.epr == null) {
             isUpdated++;
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < blueInheritEditorRights.length; i++) {
                 jtblCurrentEditorRights.setValueAt(false, i, 1);
                 jtblCurrentEditorRights.setValueAt(false, i, 2);
                 jtblCurrentEditorRights.setValueAt(false, i, 3);
@@ -8249,11 +8264,11 @@ public class AdsRoleEditorPanel extends JPanel {
             jbtDelEdPr.setEnabled(treeTableEditorPresentations.getSelectedRow() >= 0);
             boolean isEntityClasesListNotEmpty = false;//jtblEntityResourceModel.getRowCount() != 0;
 
-
             jbtAddEdPr.setEnabled(isEntityClasesListNotEmpty);
             jbtInheritEdPr.setEnabled(isEntityClasesListNotEmpty);
             jbtAllowedEditorPres1.setEnabled(isEntityClasesListNotEmpty);
-
+            jbtGoToEdPr.setEnabled(isEntityClasesListNotEmpty);
+            jbtFindUsagesEdPr.setEnabled(isEntityClasesListNotEmpty);
 
             jtblCurrentEditorRights.setEnabled(false);
             jbtSetAllRightsSelectorPres1.setEnabled(false);
@@ -8261,9 +8276,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
             jbtSetEdPresExplChild.setEnabled(false);
             jbtUnSetEdPresExplChild.setEnabled(false);
-
-
-
 
             //inhEditorModel.setRowCount(0);
             currEditorModel.setRowCount(0);
@@ -8280,19 +8292,8 @@ public class AdsRoleEditorPanel extends JPanel {
             return;
         }
 
-
         //if (currCoverEditorPresentation==null || currCoverEditorPresentation.epr==null)
         //    return;
-
-
-
-
-
-
-
-
-
-
         AdsEditorPresentationDef epd = currCoverEditorPresentation.epr;//entityEditorPresentations.get(jtblEditorPresentation.getSelectedRow());
         lastEditorPresentationId = epd.getId();
 
@@ -8343,8 +8344,6 @@ public class AdsRoleEditorPanel extends JPanel {
         jtblCurrentEditorRights.setValueAt(!ar.isDenied(ERestriction.ANY_CHILD), 6, 3);
         jtblCurrentEditorRights.setValueAt(!ar.isDenied(ERestriction.ANY_PAGES), 7, 3);
 
-
-
         blueInheritEditorEnabledCommands.clear();
         blueInheritEditorEnabledCommands1.clear();
 
@@ -8356,12 +8355,7 @@ public class AdsRoleEditorPanel extends JPanel {
             jbtSetEdPresExplChild.setEnabled(false);
             jbtUnSetEdPresExplChild.setEnabled(false);
 
-
-
-
             jbtDelEdPr.setEnabled(false);
-
-
 
             jtblCurrentEditorRights.setBackground(backgroundColor);
             isDisableTableCurrentEditorRights = true;
@@ -8377,11 +8371,7 @@ public class AdsRoleEditorPanel extends JPanel {
             jbtSetAllRightsSelectorPres1.setEnabled(!roleIsReadOnly);
             jbtSetAccessRightsSelectorPres1.setEnabled(!roleIsReadOnly);
 
-
             jbtDelEdPr.setEnabled(true);
-
-
-
 
             jtblCurrentEditorRights.setBackground(Color.WHITE);
             jtblCurrentEditorRights.setEnabled(true);
@@ -8410,7 +8400,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
             jbtSetEdPresExplChild.setEnabled(isMaySetChild);
             jbtUnSetEdPresExplChild.setEnabled(isMaySetChild);
-
 
             mayRemoveEditorEnabledCommands.clear();
             if (jtblCurrentEditorEnabledCmd.getRowCount() > 0) {
@@ -8457,12 +8446,21 @@ public class AdsRoleEditorPanel extends JPanel {
             }
             return incorrectId;
         }
+
+        @Override
+        public EDocGroup getDocGroup() {
+            return EDocGroup.NONE;
+        }
+
+        @Override
+        public ERuntimeEnvironmentType getDocEnvironment() {
+            return getOwnerDefinition() == null ? null : getOwnerDefinition().getDocEnvironment();
+        }
     }
     List<AdsScopeCommandDefCover> selectorCommandsList = null;
     List<AdsScopeCommandDefCover> editorCommandsList = null;
 
     private void fillSelectorPresentationRightsAndCommand() {
-
 
         jlSelectorPresTitle.setText("Current selector presentation - \'none\'");
         if (jtblSelectorPresentation.getRowCount() == 0) {
@@ -8491,7 +8489,6 @@ public class AdsRoleEditorPanel extends JPanel {
             return;
         }
 
-
         CoverSelectorPresentation spd = entitySelectorPresentations.get(jtblSelectorPresentation.getSelectedRow());
         lastSelectorPresentationId = spd.getId();
         jlSelectorPresTitle.setText("Current selector presentation - \'" + spd.getQualifiedName() + "\'");
@@ -8511,7 +8508,6 @@ public class AdsRoleEditorPanel extends JPanel {
         jbtSetAllRightsSelectorPres.setEnabled(r != null && !this.roleIsReadOnly);
         jbtSetAccessRightsSelectorPres.setEnabled(r != null && !this.roleIsReadOnly);
 
-
         blueInheritSelectorRights[0] = !or.isDenied(ERestriction.ACCESS);
         blueInheritSelectorRights[1] = !or.isDenied(ERestriction.CREATE);
         blueInheritSelectorRights[2] = !or.isDenied(ERestriction.DELETE_ALL);
@@ -8526,7 +8522,6 @@ public class AdsRoleEditorPanel extends JPanel {
         jtblCurrentSelectorRights.setValueAt(!ar.isDenied(ERestriction.CREATE), 1, 3);
         jtblCurrentSelectorRights.setValueAt(!ar.isDenied(ERestriction.DELETE_ALL), 2, 3);
         jtblCurrentSelectorRights.setValueAt(!ar.isDenied(ERestriction.ANY_COMMAND), 3, 3);
-
 
         //int i = 0;
         blueInheritSelectorEnabledCommands.clear();
@@ -8578,7 +8573,6 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
         RadixObjectsUtils.sortByName(selectorCommandsList);
 
 //        if (!ar.isDenied(ERestriction.ACCESS) && !ar.isDenied(ERestriction.ANY_COMMAND)) {
@@ -8614,7 +8608,6 @@ public class AdsRoleEditorPanel extends JPanel {
 //            }
 //        }
         //  i = 0;
-
         isUpdated++;
         if (r == null) {
             jbtDelSpPr.setEnabled(false);
@@ -8646,7 +8639,6 @@ public class AdsRoleEditorPanel extends JPanel {
             jtblCurrentSelectorRights.setValueAt(!r.isDenied(ERestriction.DELETE_ALL), 2, 2);
             jtblCurrentSelectorRights.setValueAt(!r.isDenied(ERestriction.ANY_COMMAND), 3, 2);
 
-
             jtblCurrentSelectorRights.setValueAt(!r.isDenied(ERestriction.ACCESS), 0, 3);
             jtblCurrentSelectorRights.setValueAt(!r.isDenied(ERestriction.CREATE), 1, 3);
             jtblCurrentSelectorRights.setValueAt(!r.isDenied(ERestriction.DELETE_ALL), 2, 3);
@@ -8656,12 +8648,11 @@ public class AdsRoleEditorPanel extends JPanel {
 
         }
 
-
         boolean isEnableSetAndUnset = false;
 
         //int cmdTblSize = 0;
-        boolean isAncestorDefined =
-                ar.isDenied(ERestriction.ACCESS)
+        boolean isAncestorDefined
+                = ar.isDenied(ERestriction.ACCESS)
                 || !ar.isDenied(ERestriction.ANY_COMMAND);
         boolean isAncestorSet = ar.isDenied(ERestriction.ACCESS)
                 && !ar.isDenied(ERestriction.ANY_COMMAND);
@@ -8736,11 +8727,8 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
-
         jbtSetSelectorPresCmd.setEnabled(isEnableSetAndUnset);
         jbtUnSetSelectorPresCmd.setEnabled(isEnableSetAndUnset);
-
 
         stateEnabledCommandsButtons();
         isUpdated--;
@@ -8805,7 +8793,10 @@ public class AdsRoleEditorPanel extends JPanel {
         //    isMayRemoveEditor = (treeTableEditorPresentations.getSelectedRow() >= 0);
         jbtDelEdPr.setEnabled(isMayRemoveEditor);
 
-
+        jbtGoToEdPr.setEnabled(treeTableEditorPresentations.getSelectedRow() >= 0);
+        jbtFindUsagesEdPr.setEnabled(treeTableEditorPresentations.getSelectedRow() >= 0);
+        jbtGoToSlPr.setEnabled(jtblSelectorPresentation.getSelectedRow() >= 0);
+        jbtFindUsagesSlPr.setEnabled(jtblSelectorPresentation.getSelectedRow() >= 0);
         boolean isMustAdd = !isSuperAdmin && !roleIsReadOnly;
         if (isMustAdd && currCoverEntityObjectClasses != null) {
             if (currCoverEntityObjectClasses.clazz == null) {
@@ -8841,7 +8832,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
     private void fillExplorerItemsTree() {
 
-
         treeTableExplorerItemsModel = new TreeGridModel(null, cNames, cTypes);
         if (jtblExplorerRoots.getRowCount() == 0 || jtblExplorerRoots.getSelectedRow() < 0) {
             treeTableExplorerItemsModel.openRoot(null);
@@ -8866,8 +8856,6 @@ public class AdsRoleEditorPanel extends JPanel {
         List<TreeGridRoleResourceRow> list = (List<TreeGridRoleResourceRow>) root2.getChilds();
 
         //AdsRoleDef.
-
-
         final ExplorerItems items = par.getExplorerItems();
 
         List<Id> allLst = allExplorerItemMap.get(par.getId());
@@ -8885,10 +8873,7 @@ public class AdsRoleEditorPanel extends JPanel {
         treeTableExplorerItemsModel.openRoot(root2);
         treeTableExplorerItems.afterOpen(treeTableExplorerItemsModel, backgroundColor);
 
-
-
         lastExplorerRootId = par.getId();
-
 
         fillExplorerItem();
         setColumns(treeTableExplorerItems);
@@ -8907,11 +8892,9 @@ public class AdsRoleEditorPanel extends JPanel {
             column.setCellRenderer(grayTableCellRendererWithBold);
             column.setCellRenderer(whiteTableCellRendererWithBold);
 
-
         }
         column = treeTableExplorerItems.getColumnModel().getColumn(4);
         column.setCellRenderer(new BooleanRenderer());
-
 
     }
 
@@ -8980,22 +8963,22 @@ public class AdsRoleEditorPanel extends JPanel {
     }
 
     private boolean checkParagraph(AdsDefinition def) {
-        if (anitRecursion.contains(def)){
-            return false;            
+        if (anitRecursion.contains(def)) {
+            return false;
         }
         anitRecursion.add(def);
         if (def instanceof AdsParagraphExplorerItemDef) {
             AdsParagraphExplorerItemDef par = (AdsParagraphExplorerItemDef) def;
-                            
+
             final List<AdsExplorerItemDef> childsAndThis = new ArrayList<>(par.getExplorerItems().getChildren().get(EScope.ALL));
             childsAndThis.add(par);
             for (AdsExplorerItemDef item : childsAndThis) {
-                
+
                 checkParagraph(item);
-                
+
                 collectOwerwriteExplorerItems(allOverwriteOptions, item);
             }
-            
+
             //allExplorerItemsMap
             if (par.isRoot()
                     && !isFindOrRepleseInCoverList(par, paragraphs)
@@ -9058,8 +9041,6 @@ public class AdsRoleEditorPanel extends JPanel {
                     EDrcResourceType.EXPLORER_ROOT_ITEM,
                     par.getId(), null);
 
-
-
             Restrictions ar = role.getOverwriteAndAncestordResourceRestrictions(hash, null);
             Restrictions r = role.getOnlyCurrentResourceRestrictions(hash);
             if (!ar.isDenied(ERestriction.ACCESS)) {
@@ -9091,8 +9072,6 @@ public class AdsRoleEditorPanel extends JPanel {
         }
         jbtGoToExplorerRoot.setEnabled(i1 > 0);
         stateExplorerRootDisableStatus();
-
-
 
         fillExplorerItemsTree();
     }
@@ -9142,9 +9121,6 @@ public class AdsRoleEditorPanel extends JPanel {
 //            else
             isAllow = isEntityDefContaintAllowedPresentationInnate(classCover.clazz);
 
-
-
-
             if (isAllow) {
                 classCover.setRightsOrRightsInChilds(true);
             }
@@ -9163,7 +9139,6 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
         List<CoverEntityObjectClasses> entityClasses = new ArrayList<CoverEntityObjectClasses>(parentCount);
         iter = entityObjectClassesMap.values().iterator();
         while (iter.hasNext()) {
@@ -9174,16 +9149,14 @@ public class AdsRoleEditorPanel extends JPanel {
         }
         RadixObjectsUtils.sortByQualifiedName(entityClasses);
 
-
-
         DefaultTreeModel model = (DefaultTreeModel) jEntityAndApplTree.getModel();
         iter = entityObjectClassesMap.values().iterator();
         Bool2 bool2 = new Bool2();
-        DefaultMutableTreeNodeEx root =
-                new DefaultMutableTreeNodeEx(
-                null,
-                rootCover,
-                bool2);
+        DefaultMutableTreeNodeEx root
+                = new DefaultMutableTreeNodeEx(
+                        null,
+                        rootCover,
+                        bool2);
         rootCover.treeNodeEx = root;
         rootCover.setRightsOrRightsInChilds(true);
 
@@ -9259,7 +9232,6 @@ public class AdsRoleEditorPanel extends JPanel {
         jbtDelCCmd.setEnabled(!isSuperAdmin && !roleIsReadOnly && y >= 0 && !jtblContextlessCommandsModel.getValueAt(y, 2).equals(Inherit));
         jbtGoToCCmd.setEnabled(y >= 0);
 
-
     }
 
     private void stateEntityClassDisableStatus() {
@@ -9289,9 +9261,7 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         }
 
-
         jbtAddEntity.setEnabled(!isSuperAdmin && !roleIsReadOnly && isMayAdd);
-
 
         jbtDelEntity.setEnabled(!isSuperAdmin && !roleIsReadOnly
                 && (isBlack || isRed));
@@ -9352,8 +9322,6 @@ public class AdsRoleEditorPanel extends JPanel {
         jbtInheritEdPr.setIcon(icon);
         jbtInheritSlPr.setIcon(icon);
 
-
-
         setColumns(jtblServerResource);
         setColumns(jtblExplorerRoots);
         setColumns(jtblContextlessCommands);
@@ -9364,7 +9332,6 @@ public class AdsRoleEditorPanel extends JPanel {
 //
 //        jSplitPane4.setEnabled(isAncestors);
 //        jSplitPane6.setEnabled(isAncestors);
-
 
         if (!isAncestors) {
             //new EmptyBorder()
@@ -9380,7 +9347,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
                 jtblCurrentSelectorRights.getColumnModel().getColumn(2).setMaxWidth(70);
                 jtblCurrentSelectorRights.getColumnModel().getColumn(2).setMinWidth(70);
-
 
                 for (int r = 1; r < 4; r += 2) {
 
@@ -9410,14 +9376,14 @@ public class AdsRoleEditorPanel extends JPanel {
                     jtblCurrentSelectorRights.getColumnModel().getColumn(r).setMaxWidth(70);
                     jtblCurrentSelectorRights.getColumnModel().getColumn(r).setMinWidth(70);
                     jtblCurrentSelectorRights.getColumnModel().getColumn(r).setWidth(70);
- 
+
                 }
             }
         }
     }
 
     Set<AdsDefinition> anitRecursion = new HashSet<>(1024);
-    
+
     private void fillResources() {
 
         anitRecursion.clear();
@@ -9430,7 +9396,6 @@ public class AdsRoleEditorPanel extends JPanel {
         paragraphsMap.clear();
         contextlessCommandsMap.clear();
         entityObjectClassesMap.clear();
-
 
         for (AdsModule m : adsModules) {
             for (AdsDefinition def : m.getDefinitions().list()) {
@@ -9448,10 +9413,8 @@ public class AdsRoleEditorPanel extends JPanel {
 
         allExplorerItemMap.clear();
 
-
         Object[] contextlessCommandsArr = contextlessCommands.toArray();
         Object[] paragraphsArr = paragraphs.toArray();
-
 
         while (iter.hasNext()) {
             AdsRoleDef.Resource res = iter.next();
@@ -9523,7 +9486,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
         setClasses();
 
-
         setParagraphs();
         setContextlessCommands();
         fillSetColumnVisible();
@@ -9557,10 +9519,10 @@ public class AdsRoleEditorPanel extends JPanel {
         TableModel tblModel = jtblServerResource.getModel();
         serverResourcesCanForbid.clear();
 
-        for (int i = 0; i < SERVER_RESOURCES_SIZE; i++) {
+        for (int i = 0; i < AdsRoleEditorPanelUtils.getServerResourceCount(); i++) {
             hash = AdsRoleDef.generateResHashKey(
                     EDrcResourceType.SERVER_RESOURCE,
-                    indexToServerResource(i));
+                    AdsRoleEditorPanelUtils.indexToServerResource(i));
 
             ar = role.getOverwriteAndAncestordResourceRestrictions(hash, null);
             or = role.getOverwriteResourceRestrictions(hash, null);
@@ -9620,7 +9582,6 @@ public class AdsRoleEditorPanel extends JPanel {
                 t.getColumnModel().getColumn(i).setMinWidth(70);
             }
 
-
         } else {
             for (int i = 0; i < 2; i++) {
                 for (int j = 1; j < 4; j++) {
@@ -9656,7 +9617,6 @@ public class AdsRoleEditorPanel extends JPanel {
                 t.getColumnModel().getColumn(i).setMinWidth(110);
             }
 
-
         } else {
             for (int i = 0; i < 2; i++) {
                 for (int j = 1; j < 4; j++) {
@@ -9677,9 +9637,7 @@ public class AdsRoleEditorPanel extends JPanel {
         jbtAddEdPr.setVisible(false);
         jbtAddSlPr.setVisible(false);
 
-
         //jLabel1.setVisible(false);
-
         // jbtAddAPFamily.setVisible(false);
         //  jSeparator14.setVisible(false);
         //jbtDelAPFamily.setVisible(false);
@@ -9715,7 +9673,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
         initPresentationExplorerItemTable();
 
-
         jtblServerResource.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jtblExplorerRoots.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jtblContextlessCommands.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -9727,13 +9684,11 @@ public class AdsRoleEditorPanel extends JPanel {
         jtblCurrentSelectorRights.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jtblSelectorPresentation.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-
         registerComponent(jEntityAndApplTree);
         jEntityAndApplTree.addMouseMotionListener(jEntityAndApplTree);
 
         initSelectorEnabledCmdTable();
         initEditorEnabledCmdTable();
-
 
         registerComponent(treeTableEditorPresentations);
         registerComponent(treeTableExplorerItems);
@@ -9742,7 +9697,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
         treeTableEditorPresentations.addMouseMotionListener(treeTableEditorPresentations);
         treeTableExplorerItems.addMouseMotionListener(treeTableExplorerItems);
-
 
         registerComponent(jtblSelectorPresentation);
         jtblSelectorPresentation.addMouseMotionListener(commonMouseMotionListener);
@@ -9758,9 +9712,6 @@ public class AdsRoleEditorPanel extends JPanel {
 
         registerComponent(treeTablePresEditorPage);
         treeTablePresEditorPage.addMouseMotionListener(commonMouseMotionListener);
-
-
-
 
     }
 
@@ -9784,11 +9735,8 @@ public class AdsRoleEditorPanel extends JPanel {
         generalPanel2.open(definition, info);
         this.role = (AdsRoleDef) definition;
 
-
-
         isSuperAdmin = role.getId().toString().equals(EDrcPredefinedRoleId.SUPER_ADMIN.getValue());
         roleIsReadOnly = role.isReadOnly();
-
 
         TableCellRendererWithBold renderer = isSuperAdmin || roleIsReadOnly ? grayTableCellRendererWithBold : whiteTableCellRendererWithBold;
 
@@ -9822,7 +9770,9 @@ public class AdsRoleEditorPanel extends JPanel {
             @Override
             public void accept(HierarchyWalker.Controller<Object> controller, Layer layer) {
                 for (Module m : layer.getAds().getModules()) {
-
+                    if (m.isUserExtension() && m.getId() != AdsModule.UD_ROLES_MODULE_ID) {
+                        continue;
+                    }
                     if (!adsModules.contains((AdsModule) m)) {
                         adsModules.add((AdsModule) m);
                     }
@@ -9844,7 +9794,6 @@ public class AdsRoleEditorPanel extends JPanel {
             }
         });
 
-
         fillServerResourceTable();
 
         fillResources();
@@ -9859,17 +9808,22 @@ public class AdsRoleEditorPanel extends JPanel {
         jbtGoToEntity.setVisible(!isAppRole);
         jSeparatorGoToEntity.setVisible(!isAppRole);
 
-
         jbtGoToCCmd.setVisible(!isAppRole);
         jSeparatorGoToCCmd.setVisible(!isAppRole);
-
 
         jbtGoToExplorerRoot.setVisible(!isAppRole);
         jSeparatorGoToExplorerRoot.setVisible(!isAppRole);
 
-
         jbtGoToAPFamily.setVisible(!isAppRole);
         jSeparatorGoToAPFamily.setVisible(!isAppRole);
+        
+        jbtGoToEdPr.setVisible(!isAppRole);
+        jbtFindUsagesEdPr.setVisible(!isAppRole);
+        jEdPrSeparator.setVisible(!isAppRole);
+        
+        jbtGoToSlPr.setVisible(!isAppRole);
+        jbtFindUsagesSlPr.setVisible(!isAppRole);
+        jSlPrSeparator.setVisible(!isAppRole);
 
     }
 }

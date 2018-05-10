@@ -14,6 +14,7 @@ package org.radixware.kernel.designer.common.dialogs.components.description;
 import java.util.Map;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.IDescribable;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.ILocalizedStringInfo;
@@ -163,4 +164,16 @@ public class MixedDescriptionHandleInfo<T extends Object & IDescribable & ILocal
     public ILocalizedStringInfo getStringInfo() {
         return understudy.getStringInfo();
     }
+    
+    @Override
+    public boolean isReadOnly() {
+        if (object instanceof MixedDescriptionWrapper) {
+            // если есть возможность, выясняем ReadOnly у дифиниции, к которой относится описание
+            return ((MixedDescriptionWrapper)object).isReadOnly();
+        } else {
+            // иначе у дифиниции где лежит описание
+            Definition definition = getAdsDefinition();
+            return definition == null ? true : definition.isReadOnly();
+        }                
+    }    
 }

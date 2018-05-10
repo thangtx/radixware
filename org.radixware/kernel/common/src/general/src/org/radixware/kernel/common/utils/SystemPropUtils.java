@@ -37,6 +37,17 @@ public class SystemPropUtils {
             return defaultVal;
         }
     }
+    
+    public static Boolean getBooleanSystemProp(final String name) {
+        String val = System.getProperty(name);
+        val = val != null ? val.trim().toLowerCase() : "non-boolean";
+        if (val.equals("true")) {
+            return true;
+        } else if (val.equals("false")) {
+            return false;
+        }
+        return null;
+    }
 
     /**
      * Empty existing property is treated like true

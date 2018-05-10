@@ -152,11 +152,7 @@ public class CommandRefPanel extends JPanel implements PropertyChangeListener {
             prop.setCommandId(def != null ? def.getId() : null);
 
             editor.setValue(prop);
-            try {
-                ((UIPropertySupport) editor.getSource()).setValue(prop);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            ((UIPropertySupport) editor.getSource()).setValue(prop);
         }
     }
 }

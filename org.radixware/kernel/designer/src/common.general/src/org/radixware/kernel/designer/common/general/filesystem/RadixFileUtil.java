@@ -8,10 +8,10 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.general.filesystem;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,11 +23,15 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
+import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.IDirectoryRadixObject;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
+import org.radixware.kernel.common.defs.ads.module.AdsModule;
+import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsLocaleDefinition;
@@ -35,16 +39,16 @@ import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsModule;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.Utils;
 
-
 public class RadixFileUtil {
 
     /**
      * Return FileObject for specified file.
+     *
      * @return FileObject or null if file not exist.
      */
     public static FileObject toFileObject(final File file) {
         final File normalizedFile = FileUtil.normalizeFile(file); // required Netbeans, warning otherwise
-        final FileObject fileObject = FileUtil.toFileObject(normalizedFile);        
+        final FileObject fileObject = FileUtil.toFileObject(normalizedFile);
         return fileObject;
     }
 
@@ -68,13 +72,13 @@ public class RadixFileUtil {
                     result = radixObject; // last appropriated
                 }
             } else if (radixObject.isSaveable()) {
-                if(radixObject instanceof AdsLocalizingBundleDef){
-                    AdsLocalizingBundleDef mlBundle=(AdsLocalizingBundleDef)radixObject;
-                    if(mlBundle.getModule()!=null && mlBundle.getModule().getRepository()!=null){
+                if (radixObject instanceof AdsLocalizingBundleDef) {
+                    AdsLocalizingBundleDef mlBundle = (AdsLocalizingBundleDef) radixObject;
+                    if (mlBundle.getModule() != null && mlBundle.getModule().getRepository() != null) {
                         IRepositoryAdsModule rep = mlBundle.getModule().getRepository();
-                        if (rep != null){
+                        if (rep != null) {
                             IRepositoryAdsDefinition defRep = rep.getDefinitionRepository(mlBundle);
-                            if(defRep!=null && (defRep instanceof IRepositoryAdsLocaleDefinition )) {
+                            if (defRep != null && (defRep instanceof IRepositoryAdsLocaleDefinition)) {
                                 if (loadLocalizingDefs((IRepositoryAdsLocaleDefinition) defRep)) {
                                     result = mlBundle;
                                     return true;
@@ -88,15 +92,22 @@ public class RadixFileUtil {
                     result = radixObject;
                     return true;
                 }
+                if (AdsUtils.isEnableHumanReadable(radixObject)) {
+                    File hrFile = AdsUtils.calcHumanReadableFile(radixObjectFile);
+                    if (Utils.equals(this.file, hrFile)) {
+                        result = radixObject;
+                        return true;
+                    }
+                }
             }
             return false;
         }
-        
-        private boolean loadLocalizingDefs(IRepositoryAdsLocaleDefinition defRep){
-            for(IRepositoryAdsDefinition localeDef :defRep.getRepositories().values()){
-                if(localeDef instanceof IRepositoryAdsLocaleDefinition){
-                    loadLocalizingDefs((IRepositoryAdsLocaleDefinition)localeDef);
-                }else{
+
+        private boolean loadLocalizingDefs(IRepositoryAdsLocaleDefinition defRep) {
+            for (IRepositoryAdsDefinition localeDef : defRep.getRepositories().values()) {
+                if (localeDef instanceof IRepositoryAdsLocaleDefinition) {
+                    loadLocalizingDefs((IRepositoryAdsLocaleDefinition) localeDef);
+                } else {
                     if (Utils.equals(this.file, localeDef.getFile())) {
                         return true;
                     }
@@ -119,6 +130,7 @@ public class RadixFileUtil {
 
     /**
      * File Radix object for specified file.
+     *
      * @return Radix object or null if not found in opened projects.
      */
     public static RadixObject findRadixObject(File file) {
@@ -145,6 +157,7 @@ public class RadixFileUtil {
 
     /**
      * File Radix object for specified fileObject.
+     *
      * @return Radix object or null if not found in opened projects.
      */
     public static RadixObject findRadixObject(FileObject fileObject) {
@@ -165,8 +178,8 @@ public class RadixFileUtil {
     private static final String SELECTED_RADIX_OBJECT = "SELECTED_RADIX_OBJECT";
 
     /**
-     * File Object can contains some RadixObjects.
-     * To realize navigation it is possible to mark one of RadixObject in the FileObject.
+     * File Object can contains some RadixObjects. To realize navigation it is
+     * possible to mark one of RadixObject in the FileObject.
      */
     public static final void setSelectedInFileObject(final RadixObject radixObject) {
         try {
@@ -197,7 +210,8 @@ public class RadixFileUtil {
     }
 
     /**
-     * @return directory if radix object is IDirectoryFileObject, or data files otherwise
+     * @return directory if radix object is IDirectoryFileObject, or data files
+     * otherwise
      */
     public static List<File> getVersioningFiles(RadixObject radixObject) {
         if (radixObject instanceof IDirectoryRadixObject) {
@@ -211,27 +225,67 @@ public class RadixFileUtil {
 
         final File file = radixObject.getFile();
         if (file != null) {
+            final List<File> result = new ArrayList<>();
+            result.add(file);
             if (radixObject instanceof AdsDefinition) {
                 final AdsDefinition adsDefinition = (AdsDefinition) radixObject;
+                    File hrFile = AdsUtils.calcHumanReadableFile(file);
+                    if (hrFile.exists()) {
+                        result.add(hrFile);
+                }
                 final AdsLocalizingBundleDef bundle = adsDefinition.findExistingLocalizingBundle();
                 if (bundle != null) {
                     final List<File> bundleFiles = bundle.getFiles();
+                    //check another locale files under module directory. Possibly there are deleted files
+                    AdsModule module = adsDefinition.getModule();
+                    File dir = module.getDirectory();
+                    if (dir != null && dir.exists()) {
+                        File localeDor = new File(dir, "locale");
+                        File[] langFiles = localeDor.listFiles(new FileFilter() {
+
+                            @Override
+                            public boolean accept(File pathname) {
+                                return pathname.isDirectory();
+                            }
+                        });
+                        if (langFiles != null) {
+                            final String fileName = bundle.getId().toString() + ".xml";
+                            for (File langDir : langFiles) {
+                                File[] added = langDir.listFiles(new FileFilter() {
+
+                                    @Override
+                                    public boolean accept(File pathname) {
+                                        return fileName.equals(pathname.getName());
+                                    }
+                                });
+                                if (added != null) {
+                                    for (int i = 0; i < added.length; i++) {
+                                        if (bundleFiles != null && bundleFiles.contains(added[i])) {
+                                            continue;
+                                        } else {
+                                            bundleFiles.add(added[i]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
                     if (bundleFiles != null) {
-                        final List<File> result = new ArrayList<File>();
-                        result.add(file);
                         result.addAll(bundleFiles);
                         return result;
                     }
                 }
             }
-            return Collections.singletonList(file);
+            return result;
         }
 
         return Collections.emptyList();
     }
 
     /**
-     * @return directory if radix object is IDirectoryFileObject, or data files otherwise
+     * @return directory if radix object is IDirectoryFileObject, or data files
+     * otherwise
      */
     public static List<FileObject> getVersioningFileObjects(RadixObject radixObject) {
         final List<File> files = getVersioningFiles(radixObject);
@@ -239,7 +293,7 @@ public class RadixFileUtil {
         for (File file : files) {
             final FileObject fileObject = toFileObject(file);
             if (fileObject != null) {
-                result.add(toFileObject(file));
+                result.add(fileObject);
             }
         }
         return result;

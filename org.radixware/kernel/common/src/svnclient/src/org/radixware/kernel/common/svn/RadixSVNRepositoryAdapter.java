@@ -367,12 +367,12 @@ class RadixSVNRepositoryAdapter implements SVNRepositoryAdapter {
 
     @Override
     public void log(String path, long startRevision, long endRevision, ISvnLogHandler logHandler) throws RadixSvnException {
-        radix.log(path, startRevision, endRevision, false, logHandler);
+        radix.log(path, startRevision, endRevision, true, logHandler);
     }
 
     @Override
     public void log(String path, long startRevision, long endRevision, boolean strictNodes, ISvnLogHandler logHandler) throws RadixSvnException {
-        radix.log(path, startRevision, endRevision, false, strictNodes, logHandler);
+        radix.log(path, startRevision, endRevision, true, strictNodes, logHandler);
     }
 
     @Override
@@ -384,7 +384,8 @@ class RadixSVNRepositoryAdapter implements SVNRepositoryAdapter {
 
     @Override
     public SvnProperties getRevisionProperties(long revision) throws RadixSvnException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return radix.getRevisionProperties(revision, null);
     }
 
     @Override

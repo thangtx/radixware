@@ -1,0 +1,4 @@
+alter table RDX_MESSAGEQUEUE
+	add PREFETCHCOUNT NUMBER(9,0) null
+/
+

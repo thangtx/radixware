@@ -11,8 +11,10 @@
 package org.radixware.wps.views.selector.tree;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.*;
 import org.radixware.kernel.common.client.Clipboard;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EEntityCreationResult;
 import org.radixware.kernel.common.client.enums.EKeyboardModifier;
 import org.radixware.kernel.common.client.enums.ESelectorColumnHeaderMode;
@@ -30,8 +32,10 @@ import org.radixware.kernel.common.client.models.items.SelectorColumnModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.*;
 import org.radixware.kernel.common.client.utils.ClientValueFormatter;
+import org.radixware.kernel.common.client.views.IDialog;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.client.views.IEntityEditorDialog;
+import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.client.views.SelectorController;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
@@ -42,19 +46,24 @@ import org.radixware.kernel.common.client.widgets.selector.ISelectorWidget;
 import org.radixware.kernel.common.client.widgets.selector.SelectorModelDataLoader;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
+import org.radixware.kernel.common.enums.EKeyEvent;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.WpsSettings;
 import org.radixware.wps.dialogs.BrokenEntityMessageDialog;
-import org.radixware.wps.icons.WpsIcon;
 import org.radixware.wps.rwt.Alignment;
 import org.radixware.wps.rwt.IGrid;
 import org.radixware.wps.rwt.UIObject;
+import org.radixware.wps.rwt.events.HtmlEvent;
+import org.radixware.wps.rwt.events.KeyDownEventFilter;
+import org.radixware.wps.rwt.events.KeyDownHtmlEvent;
 import org.radixware.wps.rwt.tree.Node;
 import org.radixware.wps.rwt.tree.Tree;
 import org.radixware.wps.settings.ISettingsChangeListener;
 import org.radixware.wps.views.RwtAction;
+import org.radixware.wps.views.selector.FindInSelectorDialog;
 import org.radixware.wps.views.selector.RwtSelector;
 import org.radixware.wps.views.selector.RwtSelectorWidgetDelegate;
 import org.radixware.wps.views.selector.SelectorWidgetController;
@@ -124,6 +133,14 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             }
         }
     };
+    
+    private final Tree.RowHeaderDoubleClickListener rowHeaderDblClickListener = new Tree.RowHeaderDoubleClickListener() {
+        @Override
+        public void onDoubleClick(final Node node, final EnumSet<EKeyboardModifier> keyboardModifiers) {
+            RwtSelectorTree.this.onRowHeaderDoubleClick(node);
+        }
+    };
+    
 
     private final static class Icons extends ClientIcon.CommonOperations {
 
@@ -140,11 +157,13 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
 
     //Tree implementation
     private final ISelector selector;
-    private final SelectorWidgetController controller;
-    private final Map<SelectorColumnModelItem, Column> treeColumn2SelectorColumn = new HashMap<>();
+    private final SelectorWidgetController controller;    
     private final List<Node> expandedNodes = new ArrayList<>();
     private final RwtAction createChildObjectAction;
     private final RwtAction pasteChildObjectAction;
+    private int numberOfObjectsProcessedInSearch;
+    private int nodesLoaded;
+    private final String searchConfirmationMessageTemplate;
     private final SelectorModelDataLoader allDataLoader;
     private final Tree.HeaderClickListener headerClickListener = new Tree.HeaderClickListener() {
         @Override
@@ -179,6 +198,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         setSelectionStyle(EnumSet.of(IGrid.ESelectionStyle.ROW_FRAME,IGrid.ESelectionStyle.CELL_FRAME));
         setBrowserFocusFrameEnabled(false);
         this.selector = selector;
+        searchConfirmationMessageTemplate = selector.getEnvironment().getMessageProvider().translate("Selector", "%1s objects were loaded, but the required one was not found.\nIt is recommended to use filter to find specific objects.\nDo you want to continue searching among the next %2s objects?");
         this.setPersistenceKey("st" + rootGroupModel.getSelectorPresentationDef().getId().toString());
         ((WpsEnvironment) this.getEnvironment()).addSettingsChangeListener(l);
         actions = new Actions((WpsEnvironment) getEnvironment());
@@ -220,7 +240,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
 
             @Override
             protected void addColumn(final int index, final SelectorColumnModelItem selectorColumn) {
-                final Tree.Column treeColumn = RwtSelectorTree.this.addColumn(index, selectorColumn);
+                SelectorWidgetController.addColumn(RwtSelectorTree.this, index, selectorColumn);
                 final Stack<Node> nodes = new Stack<>();
                 for (int r = 0; r < getRootNode().getChildCount(); r++) {
                     nodes.push(getRootNode().getChildAt(r));
@@ -234,7 +254,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                                 ((SelectorTreeEntityModelNode) n).setupCell(index, selectorColumn);
                             } else {
                                 final Property property = entity.getProperty(selectorColumn.getPropertyDef().getId());
-                                n.setCellValue(treeColumn, property);
+                                n.setCellValue(index, property);
                             }
                         }
                     }
@@ -244,21 +264,29 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                         }
                     }
                 }
+                selectorColumn.subscribe(RwtSelectorTree.this);
             }
+
+            @Override
+            protected void removeColumn(int index) {
+                RwtSelectorTree.this.removeColumn(index);
+            }                        
 
         };
 
         addSelectionListener(selectionListener);
         addDoubleClickListener(doubleClickListener);
+        addRowHeaderDoubleClickListener(rowHeaderDblClickListener);
         {
             final String actionTitle
                     = getEnvironment().getMessageProvider().translate("Selector", "Create Child Object...");
             createChildObjectAction = new RwtAction(getEnvironment(), Icons.CREATE_CHILD_OBJECT);
             createChildObjectAction.setToolTip(actionTitle);
+            createChildObjectAction.setObjectName("create_child_obj");
             createChildObjectAction.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(final Action action) {
-                    RwtSelectorTree.this.createChildObject();
+                    RwtSelectorTree.this.createChildObjects();
                 }
             });
         }
@@ -267,6 +295,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                     = getEnvironment().getMessageProvider().translate("Selector", "Paste Child Object...");
             pasteChildObjectAction = new RwtAction(getEnvironment(), Icons.PASTE_CHILD_OBJECT);
             pasteChildObjectAction.setToolTip(actionTitle);
+            pasteChildObjectAction.setObjectName("paste_child_obj");
             pasteChildObjectAction.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(final Action action) {
@@ -276,11 +305,12 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         }
         final String confirmMovingToLastObjectMessage
                 = getEnvironment().getMessageProvider().translate("RwtSelectorTree", "Number of loaded objects is %1s.\nDo you want to load next %2s objects?");
-        allDataLoader = new SelectorModelDataLoader(getEnvironment(), selector);
+        allDataLoader = new SelectorModelDataLoader(getEnvironment());
         allDataLoader.setDontAskButtonVisibleInConfirmationDialog(false);
         allDataLoader.setConfirmationMessageText(confirmMovingToLastObjectMessage);
         allDataLoader.setProgressHeader(getEnvironment().getMessageProvider().translate("Selector", "Moving to Last Object"));
         allDataLoader.setProgressTitleTemplate(getEnvironment().getMessageProvider().translate("Selector", "Moving to Last Object...\nNumber of Loaded Objects: %1s"));
+        setRowHeaderVisible(true);
         showHeader(true);//always show header for selector
         applySettings();
     }
@@ -307,6 +337,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         }
         return true;
     }
+    
     public final Actions actions;
     private final static String ROWS_LIMIT_FOR_NAVIGATION_CONFIG_PATH
             = SettingNames.SYSTEM + "/" + SettingNames.SELECTOR_GROUP + "/" + SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.ROWS_LIMIT_FOR_NAVIGATION;
@@ -314,6 +345,8 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             = SettingNames.SYSTEM + "/" + SettingNames.SELECTOR_GROUP + "/" + SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.ROWS_LIMIT_FOR_RESTORING_POSITION;
 
     public final class Actions {
+        public final RwtAction findAction;
+        public final RwtAction findNextAction;
         //эти кнопки активны только при переходе по узлам верхнего уровня
 
         public final RwtAction prevAction;
@@ -323,13 +356,28 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
 
         public Actions(final WpsEnvironment environment) {
             final MessageProvider mp = environment.getMessageProvider();
+             Action.ActionListener findListener = new Action.ActionListener() {
+                @Override
+                public void triggered(Action action) {
+                    find();
+                }
+            };
+            findAction = createAction(environment, ClientIcon.CommonOperations.FIND, mp.translate("RwtSelectorGrid", "Find"), "find_obj", findListener);
+            
+             Action.ActionListener findNextListener = new Action.ActionListener() {
+                @Override
+                public void triggered(Action action) {
+                    findNext();
+                }
+            };
+            findNextAction = createAction(environment, ClientIcon.CommonOperations.FIND_NEXT, mp.translate("RwtSelectorGrid", "Find Next"), "find_next_obj", findNextListener);
             Action.ActionListener nextListener = new Action.ActionListener() {
                 @Override
                 public void triggered(Action action) {
                     selectNextRow();
                 }
             };
-            nextAction = createAction(environment, Icons.NEXT, mp.translate("RwtSelectorTree", "Next"), nextListener);
+            nextAction = createAction(environment, Icons.NEXT, mp.translate("RwtSelectorTree", "Next"), "go_to_next_obj", nextListener);
 
             Action.ActionListener prevListener = new Action.ActionListener() {
                 @Override
@@ -337,7 +385,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                     selectPrevRow();
                 }
             };
-            prevAction = createAction(environment, Icons.PREV, mp.translate("RwtSelectorTree", "Previous"), prevListener);
+            prevAction = createAction(environment, Icons.PREV, mp.translate("RwtSelectorTree", "Previous"), "go_to_prev_obj", prevListener);
 
             Action.ActionListener beginListener = new Action.ActionListener() {
                 @Override
@@ -345,7 +393,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                     selectFirstRow();
                 }
             };
-            beginAction = createAction(environment, Icons.BEGIN, mp.translate("RwtSelectorTree", "First"), beginListener);
+            beginAction = createAction(environment, Icons.BEGIN, mp.translate("RwtSelectorTree", "First"), "go_to_first_obj", beginListener);
 
             Action.ActionListener endListener = new Action.ActionListener() {
                 @Override
@@ -353,18 +401,20 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                     selectLastRow();
                 }
             };
-            endAction = createAction(environment, Icons.END, mp.translate("RwtSelectorTree", "Last"), endListener);
+            endAction = createAction(environment, Icons.END, mp.translate("RwtSelectorTree", "Last"), "go_to_last_obj", endListener);
         }
 
         private RwtAction createAction(final WpsEnvironment environment,
                 final ClientIcon icon,
                 final String title,
+                final String objectName,
                 final Action.ActionListener listener) {
             final RwtAction action
                     = new RwtAction(environment, icon);
             action.setText(title);
             action.setToolTip(title);
-            action.addActionListener(listener);
+            action.addActionListener(listener);            
+            action.setObjectName(objectName);
             action.setEnabled(false);
             return action;
         }
@@ -386,6 +436,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             beginAction.setEnabled(true);
             nextAction.setEnabled(true);
             endAction.setEnabled(true);
+            findAction.setEnabled(true);
             if (cur == -1 || cur == 0) {
                 prevAction.setEnabled(false);
                 beginAction.setEnabled(false);
@@ -397,6 +448,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         }
 
         public void close() {
+            findAction.close();
             prevAction.close();
             nextAction.close();
             beginAction.close();
@@ -404,6 +456,198 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         }
     }
 
+    public void find() {
+        FindInSelectorDialog dialog = controller.getFindDialog();
+        int currentIndex = getSelectedNode() == null ? 0 : getSelectedNode().getCurrentCellIndex();
+        dialog.setSelectorColumns(getVisibleColumns(), currentIndex);
+        if (dialog.execDialog() == IDialog.DialogResult.ACCEPTED) {
+            try {
+                selectFirstMatchRow(false);
+            } catch (InterruptedException ex) {
+                //search was interrupted - nothing to do
+            } catch (ServiceClientException ex) {
+                controller.processErrorOnReceivingData(ex);
+            }
+        }
+    }    
+    
+    public void findNext() {
+        FindInSelectorDialog dialog = controller.getFindDialog();
+        if (dialog != null && dialog.getFindWhat() != null && !dialog.getFindWhat().isEmpty()) {
+            try {
+                selectFirstMatchRow(true);
+            } catch (InterruptedException ex) {
+                //search was interrupted - nothing to do
+            } catch (ServiceClientException ex) {
+                controller.processErrorOnReceivingData(ex);
+            }
+        }
+    }
+    
+    private void selectFirstMatchRow(final boolean next) throws InterruptedException, ServiceClientException{
+        final FindInSelectorDialog dialog = controller.getFindDialog();
+        final boolean forward = dialog.isForwardChecked();            
+        final int searchColumnIndexInSelector = dialog.getColumnIdx();
+        final MatchOptions matchOptions = 
+            new MatchOptions(dialog.isMatchCaseChecked(), dialog.isWholeWordChecked());            
+        final String searchString = dialog.getFindWhat();
+        Node first = this.getSelectedNode();
+        Node currentNode;
+        Property property = null;
+        String displayText = null;
+        numberOfObjectsProcessedInSearch = 0;   
+        nodesLoaded = 0;
+        final IProgressHandle progressHandle = controller.getSearchProgressHandle();
+        progressHandle.startProgress(selector.getEnvironment().getMessageProvider().translate("Wait Dialog", "Searching..."), true); 
+        try {   
+            if (next) {
+                first = forward ? getNextNode(first) : getPrevNode(first);
+            }   
+            for (currentNode = first; currentNode != null && !(currentNode == getRootNode()); currentNode = forward ? getNextNode(currentNode) : getPrevNode(currentNode)) {
+                numberOfObjectsProcessedInSearch++;
+                updateSearchProgressHandle();
+                if (!(currentNode.getUserData() instanceof BrokenEntityModel)) { 
+                    Object cellValue = currentNode.getCellValue(searchColumnIndexInSelector);
+                    if (cellValue instanceof Property) {
+                        property = (Property)cellValue;
+                    } else if (cellValue != null){
+                        displayText = cellValue.toString();
+                    }
+                } else {
+                    property = null;
+                }
+                boolean isFound = false;
+                if (property != null) {
+                    displayText = SelectorWidgetController.getTextToDisplay(property);
+                    if (displayText != null && property.valueMatchesToSearchString(displayText, searchString, matchOptions)) {
+                        isFound = true;
+                    }
+                } else if (displayText != null) {
+                    if (matchOptions.matchToSearchString(displayText, searchString)) {
+                        isFound = true;
+                    }
+                }
+                if (isFound) {
+                    if (selector.leaveCurrentEntity(false)) {
+                    Node expandedNode;
+                    for (expandedNode = currentNode.getParentNode(); expandedNode != null; expandedNode = expandedNode.getParentNode()) {
+                        expandedNode.expand();
+                    }
+                    this.getHtml().setAttr("isForward", forward);
+                    setSelectedNode(currentNode);
+                    ((UIObject)currentNode.getCells().get(searchColumnIndexInSelector)).setFocused(true);
+                    scrollToNode(currentNode);
+                    }
+                    return;
+                } 
+            }
+        } finally {
+            progressHandle.finishProgress();
+        }
+        final String title = selector.getEnvironment().getMessageProvider().translate("ExplorerDialog", "Information");
+            final String message;
+            final boolean isBooleanColumn = getVisibleColumns().get(searchColumnIndexInSelector).getPropertyDef().getType() == EValType.BOOL;  
+            if (isBooleanColumn) {
+                message = selector.getEnvironment().getMessageProvider().translate("ExplorerDialog", "Value not found");
+            } else {
+                message = selector.getEnvironment().getMessageProvider().translate("ExplorerDialog", "String \'%s\' not found");
+            }
+            selector.getEnvironment().messageInformation(title, String.format(message, controller.getFindDialog().getFindWhat()));
+            find();
+    }
+    
+    private Node getNextNode(Node currentNode) throws ServiceClientException, InterruptedException {
+        Node nextNode = null;
+        if (!currentNode.isLeaf() && !currentNode.getChildNodes().areChildrenLoaded()) {
+            if (nodesLoaded > controller.getRowsLoadingLimit()) {
+                if (!askToContinue()){
+                    return null;
+                } else {
+                   nodesLoaded = 0; 
+                }
+            } else {
+                nodesLoaded += currentNode.getChildCount(); 
+            }
+        }
+        if (currentNode.getChildCount() != 0) {
+            return currentNode.getChildAt(0);
+        } else {
+            Node parentNode = currentNode.getParentNode();
+            while (parentNode != null) {
+                int curNodeIndex = parentNode.indexOfChild(currentNode);
+                if (parentNode.getChildCount() > curNodeIndex + 1) {
+                    nextNode = parentNode.getChildAt(curNodeIndex + 1);
+                    break;
+                } else {
+                    currentNode = parentNode;              
+                    parentNode = parentNode.getParentNode();
+                }
+            }
+            return nextNode;
+        } 
+    }
+    
+    private Node getPrevNode(Node currentNode) throws ServiceClientException, InterruptedException {
+        Node parentNode = currentNode.getParentNode();
+        if (parentNode != null) {
+            int currentNodeIndex = parentNode.indexOfChild(currentNode); 
+            if (currentNodeIndex != 0) {
+                Node adjucentNode = parentNode.getChildAt(currentNodeIndex - 1); 
+                while (!adjucentNode.isLeaf()) {
+                    if (!adjucentNode.getChildNodes().areChildrenLoaded()) {
+                        if (nodesLoaded > controller.getRowsLoadingLimit()) {
+                            if (!askToContinue()){
+                                return null;
+                            } else {
+                               updateSearchProgressHandle();
+                               nodesLoaded = 0; 
+                            }
+                        } else {
+                             nodesLoaded += adjucentNode.getChildCount();
+                        }
+                    }
+                    adjucentNode = adjucentNode.getChildAt(adjucentNode.getChildCount() - 1);
+                }
+                return adjucentNode;
+            } else {
+                return currentNode.getParentNode();
+            }
+        } 
+        return null;
+    }
+        
+     private List<SelectorColumnModelItem> getVisibleColumns() {
+        List<SelectorColumnModelItem> colList = new LinkedList<>();
+        for (SelectorColumnModelItem selectorColModelItem : controller.getSelectorColumns()) {
+            if (selectorColModelItem.isVisible()) {
+                colList.add(selectorColModelItem);
+            }
+        }
+        return colList;
+    }
+    
+    private boolean askToContinue() {
+        IClientEnvironment environment = selector.getEnvironment();
+        final String message =
+                String.format(searchConfirmationMessageTemplate, nodesLoaded, controller.getRowsLoadingLimit());        
+
+        final String confirmationTitle =
+                environment.getMessageProvider().translate("Selector", "Confirm to Proceed Operation");
+        environment.getProgressHandleManager().blockProgress();
+        try {
+            return environment.messageConfirmation(confirmationTitle, message);
+        } finally {
+            environment.getProgressHandleManager().unblockProgress();
+        }      
+    }
+            
+    private void updateSearchProgressHandle() throws ServiceClientException, InterruptedException{
+        final String waitDialogText = 
+            selector.getEnvironment().getMessageProvider().translate("Selector", "Searching...\nNumber of Processed Objects: %1s");
+        controller.getSearchProgressHandle().setText(String.format(waitDialogText, numberOfObjectsProcessedInSearch));
+    }
+    
+    
     public void selectNextRow() {
         if (getSelectedNode() != null && rootNode.getChildCount() > 0) {
             if (rootNode.indexOfChild(getSelectedNode()) + 1 < rootNode.getChildCount()) {
@@ -456,10 +700,20 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             }
         }
     }
+    
+    @Override
+    protected void restoreDefaultColumnSettings() {
+        controller.restoreDefaultSettings(this, true, 0);
+    }    
+
+    @Override
+    protected boolean showRestoreDefaultColumnSettingsButton() {
+        return controller.isDefaultColumnSettingsChanged(this, true);
+    }    
 
     @Override
     protected List<ColumnDescriptor> getVisibleColumnDescriptors(final List<ColumnDescriptor> all) {
-        return controller.getVisibleColumnDescriptors(this, all);
+        return controller.getVisibleColumnDescriptors(this, all, 0);
     }
 
     @Override
@@ -469,17 +723,11 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
 
     @Override
     protected void updateColumnsVisibility(List<ColumnDescriptor> visible) {
-        controller.updateColumnsVisibility(this, visible);
-    }
-
-    private Column addColumn(final int index, final SelectorColumnModelItem item) {
-        final ESelectorColumnHeaderMode headerMode = item.getHeaderMode();
-        final String headerTitle = headerMode == ESelectorColumnHeaderMode.ONLY_ICON ? "" : item.getTitle();
-        final Column c = addColumn(index, headerTitle);
-        updateColumnIconAndToolTip(c, item);
-        c.setUserData(item);
-        c.setPersistenceKey(item.getId().toString());
-        return c;
+        if (visible==null){
+            super.updateColumnsVisibility(null);
+        }else{
+            controller.updateColumnsVisibility(this, visible, 0);
+        }
     }
 
     private EntityModel getEntityImpl(SelectorTreeNode node) {
@@ -509,21 +757,30 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             return;
         }
         binded = true;
+        boolean firstColumn = true;
+        int columnIndex = 0;        
         for (SelectorColumnModelItem item : controller.getSelectorColumns()) {
+            if (firstColumn){
+                if (item.isForbidden()) {
+                    item.setForbidden(false);
+                }
+                if (!item.isVisible()) {
+                    item.setVisible(true);
+                }                
+                firstColumn = false;
+            }
             if (item.isVisible()) {
                 final Column column;
-                final ESelectorColumnHeaderMode headerMode = item.getHeaderMode();
-                final String headerTitle = headerMode == ESelectorColumnHeaderMode.ONLY_ICON ? "" : item.getTitle();
-                if (treeColumn2SelectorColumn.isEmpty()) {
+                if (columnIndex==0){
                     column = getTreeColumn();
+                    final ESelectorColumnHeaderMode headerMode = item.getHeaderMode();
+                    final String headerTitle = headerMode == ESelectorColumnHeaderMode.ONLY_ICON ? "" : item.getTitle();                                    
                     column.setTitle(headerTitle);
+                    SelectorWidgetController.setupColumn(column, item);
                 } else {
-                    column = addColumn(headerTitle);
+                    SelectorWidgetController.addColumn(this, columnIndex, item);
                 }
-                treeColumn2SelectorColumn.put(item, column);
-                updateColumnIconAndToolTip(column, item);
-                column.setPersistenceKey(item.getId().toString());
-                column.setUserData(item);
+                columnIndex++;
                 item.subscribe(this);
             }
         }
@@ -531,41 +788,26 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         if (!selector.isDisabled()) {
             rootNode = createRootNode();
             setRootNode(rootNode);
+            selectFirstRow();
         }
         addHeaderClickListener(headerClickListener);
-        controller.updateSortingIndicators(this);
-        controller.updateColumnsSizePolicy(this);
+        controller.updateSortingIndicators(this, 0);
+        controller.updateColumnsSizePolicy(this, 0);
         updateActions();
-    }
-
-    private void updateColumnIconAndToolTip(final Tree.Column treeColumn, final SelectorColumnModelItem selectorColumn) {
-        final ESelectorColumnHeaderMode headerMode = selectorColumn.getHeaderMode();
-        if (headerMode == ESelectorColumnHeaderMode.ONLY_TEXT) {
-            treeColumn.setIcon(null);
-        } else {
-            treeColumn.setIcon((WpsIcon) selectorColumn.getHeaderIcon());
+        for (int i=getColumnCount()-1; i>=0; i--){
+            final SelectorColumnModelItem column = (SelectorColumnModelItem)getColumn(i).getUserData();
+            if (column!=null){
+                column.subscribe(this);
+            }
         }
-        final String toolTip = selectorColumn.getHint();
-        if (headerMode == ESelectorColumnHeaderMode.ONLY_ICON && (toolTip == null || toolTip.isEmpty())) {
-            treeColumn.setToolTip(selectorColumn.getTitle());
-        } else {
-            treeColumn.setToolTip(toolTip);
-        }
+        subscribeToEvent(new KeyDownEventFilter(EKeyEvent.VK_F, EKeyboardModifier.CTRL));
+        subscribeToEvent(new KeyDownEventFilter(EKeyEvent.VK_F3));
     }
 
     @Override
     public final void refresh(final ModelItem modelItem) {
         if (modelItem instanceof SelectorColumnModelItem) {
-            final SelectorColumnModelItem selectorColumn = (SelectorColumnModelItem) modelItem;
-            final Tree.Column treeColumn = treeColumn2SelectorColumn.get(selectorColumn);
-            final ESelectorColumnHeaderMode headerMode = selectorColumn.getHeaderMode();
-            if (headerMode == ESelectorColumnHeaderMode.ONLY_ICON) {
-                treeColumn.setTitle("");
-            } else {
-                treeColumn.setTitle(selectorColumn.getTitle());
-            }
-            updateColumnIconAndToolTip(treeColumn, selectorColumn);
-            controller.updateColumnsSizePolicy(this);
+            SelectorWidgetController.refreshColumn(this, (SelectorColumnModelItem) modelItem);
         }
         updateActions();
     }
@@ -577,7 +819,15 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
 
     //ISelectorWidget implementation
     @Override
-    public void setupSelectorMenu(final IMenu menu) {//empty implementation
+    public void setupSelectorMenu(final IMenu menu) {//not empty implementation
+        final Action createAction = selector.getActions().getCreateAction();
+        menu.insertAction(createAction, actions.beginAction);
+        menu.insertAction(createAction, actions.prevAction);
+        menu.insertAction(createAction, actions.nextAction);
+        menu.insertAction(createAction, actions.endAction);
+        menu.insertAction(createAction, actions.findAction);
+        menu.insertAction(createAction, actions.findNextAction);
+        menu.insertSeparator(createAction);
     }
 
     @Override
@@ -592,6 +842,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             toolBar.insertAction(createAction, actions.prevAction);
             toolBar.insertAction(createAction, actions.nextAction);
             toolBar.insertAction(createAction, actions.endAction);
+            toolBar.insertAction(createAction, actions.findAction);
         }
     }
 
@@ -639,6 +890,27 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         }
     }
 
+    @Override
+    protected void processHtmlEvent(HtmlEvent event) {
+        if (event instanceof KeyDownHtmlEvent) {
+            KeyDownHtmlEvent keyEvent = (KeyDownHtmlEvent)event;
+            if (keyEvent.getButton()==KeyEvent.VK_F
+                   && keyEvent.getKeyboardModifiers().size()==1
+                   && keyEvent.getKeyboardModifiers().contains(EKeyboardModifier.CTRL)
+                  ){
+            find();
+        } else if (keyEvent.getButton()==KeyEvent.VK_F3
+                    && keyEvent.getKeyboardModifiers().size()==0
+                    && actions.findNextAction.isEnabled()) {
+            actions.findNextAction.trigger();
+        } else {
+            super.processHtmlEvent(event); 
+        }
+        } else {
+            super.processHtmlEvent(event); 
+        } 
+    }
+    
     @Override
     public final void entityRemoved(final Pid pid) {
         final Node currentNode = getSelectedNode();
@@ -707,7 +979,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         setRootNode(rootNode);
 
         rootNode.getChildNodes().getNodes();
-        controller.updateSortingIndicators(this);
+        controller.updateSortingIndicators(this, 0);
         selector.refresh();
         setEnabled(true);
     }
@@ -726,11 +998,31 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         if (pid == null || current == null
                 || current.getUserData() instanceof EntityModel == false
                 || current.getParentNode() instanceof SelectorTreeNode == false) {
-            reread(null, pid);
+            if (pid==null){
+                reread(null, null);
+            }else{
+                reread(null, Collections.singletonList(pid));
+            }
         } else {
-            reread((SelectorTreeNode) current.getParentNode(), pid);
+            reread((SelectorTreeNode) current.getParentNode(), Collections.singleton(pid));
         }
     }
+
+    @Override
+    public void rereadAndSetCurrent(Collection<Pid> pids) throws InterruptedException, ServiceClientException {
+        final Node current = getSelectedNode();
+        if (pids == null  || pids.isEmpty() || current == null
+                || current.getUserData() instanceof EntityModel == false
+                || current.getParentNode() instanceof SelectorTreeNode == false) {
+            if (pids==null || pids.isEmpty()){
+                reread(null, null);
+            }else{
+                reread(null, pids);
+            }
+        } else {
+            reread((SelectorTreeNode) current.getParentNode(), pids);
+        }
+    }        
 
     /**
      * Перечитывание подузлов текущего узла. Если текущий узел является
@@ -749,7 +1041,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         }
     }
 
-    private void reread(final SelectorTreeNode parentNode, final Pid pid) {
+    private void reread(final SelectorTreeNode parentNode, final Collection<Pid> pids) {
         final boolean wasSelection;
         final NodePath currentNodePath;
         final List<NodePath> nodesToExpand = new LinkedList<>();
@@ -758,12 +1050,12 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             wasSelection = current != null;
             setSelectedNode(null);//to unsubscribe properties from renderer
 
-            if (pid != null) {
+            if (pids != null && !pids.isEmpty()) {
                 if (parentNode == null) {
-                    currentNodePath = NodePath.fromPid(pid);
+                    currentNodePath = NodePath.fromPids(pids);
                 } else {
                     currentNodePath
-                            = NodePath.concatinate(NodePath.fromNode(parentNode, getRootNode()), NodePath.fromPid(pid));
+                            = NodePath.concatinate(NodePath.fromNode(parentNode, getRootNode()), NodePath.fromPids(pids));
                 }
             } else if (current != null && parentNode == null) {
                 currentNodePath = NodePath.fromNode(current, getRootNode());
@@ -830,7 +1122,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                 }
             }
         }
-        controller.updateSortingIndicators(this);
+        controller.updateSortingIndicators(this, 0);
     }
 
     /**
@@ -857,16 +1149,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             try {
                 final GroupModel group = ((SelectorTreeNode) current).getGroupModelToCreateChildObject();
                 if (group != null && selector.canChangeCurrentEntity(false)) {
-                    final EntityModel result = SelectorController.createEntity(group, null, this);
-                    if (result != null) {
-                        if (group.getSelectorPresentationDef().isRestoringPositionEnabled()) {
-                            reread((SelectorTreeNode) current, result.getPid());
-                        } else {
-                            reread((SelectorTreeNode) current, null);
-                        }
-                        ((RwtSelector) selector).notifyEntityObjectsCreated(Collections.singletonList(result));
-                    }
-                    return result;
+                    return doCreateChildObject((SelectorTreeNode) current, group);
                 }
             } catch (InterruptedException e) {
             } catch (Exception ex) {
@@ -875,6 +1158,73 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
         }
         return null;
     }
+    
+    private EntityModel doCreateChildObject(final SelectorTreeNode currentNode, final GroupModel group) throws ServiceClientException, InterruptedException{
+        final EntityModel result = SelectorController.createEntity(group, null, this);
+        if (result != null) {
+            if (group.getSelectorPresentationDef().isRestoringPositionEnabled()) {
+                reread(currentNode, Collections.singleton(result.getPid()));
+            } else {
+                reread(currentNode, null);
+            }
+            ((RwtSelector) selector).notifyEntityObjectsCreated(Collections.singletonList(result));
+        }
+        return result;        
+    }
+    
+    /**
+     * Выполнение операции по созданию подобъектов для текущего объекта сущности.
+     * В стандартной реализации для создания новых объектов используется модель
+     * группы, которую возвращает метод
+     * {@link SelectorTreeNode#getGroupModelToCreateChildObject() getGroupModelToCreateChildObject}
+     * у текущего узла {@link SelectorTreeNode}. Если текущий узел не является
+     * инстанцией {@link SelectorTreeNode}, то метод возвращает пустой список.
+     * После создания инстанции {@link EntityModel}
+     * вызывается обработчик
+     * {@link #afterPrepareCreate(EntityModel) afterPrepareCreate}, затем
+     * показывается стандартный диалог создания объекта. В случае успешного
+     * завершения операции создания происходит перечитывание дочерних узлов и
+     * если у корневой модели группы в презентации селектора установлена
+     * настройка "восстанавливать позицию", то будет выполнен переход к узлу
+     * дерева, который соответствует первому созданному объекту сущности.
+     *
+     * @return список новых дочерних объект сущности
+     */
+    public List<EntityModel> createChildObjects() {
+        final Node current = getSelectedNode();
+        if (current instanceof SelectorTreeNode) {
+            try {
+                final GroupModel group = ((SelectorTreeNode) current).getGroupModelToCreateChildObject();
+                if (group != null && selector.canChangeCurrentEntity(false)) {
+                    if (group.getRestrictions().getIsMultipleCreateRestricted()){                        
+                        final EntityModel result = doCreateChildObject((SelectorTreeNode)current, group);
+                        return result==null ? Collections.<EntityModel>emptyList() : Collections.singletonList(result);
+                    }else{
+                        final List<EntityModel> newEntities = SelectorController.createEntities(group, this);
+                        if (newEntities!=null && !newEntities.isEmpty()){
+                            if (group.getSelectorPresentationDef().isRestoringPositionEnabled()) {
+                                final List<Pid> pids = new LinkedList<>();
+                                for (EntityModel newEntity: newEntities){
+                                    if (newEntity.getPid()!=null){
+                                        pids.add(newEntity.getPid());
+                                    }
+                                }
+                                reread((SelectorTreeNode)current, pids);
+                            } else {
+                                reread((SelectorTreeNode)current, null);
+                            }
+                            ((RwtSelector) selector).notifyEntityObjectsCreated(newEntities);
+                            return newEntities;   
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+            } catch (Exception ex) {
+                selector.getModel().showException(getEnvironment().getMessageProvider().translate("Selector", "Failed to create entity"), ex);
+            }
+        }
+        return null;
+    }       
 
     /**
      * Выполнение операции вставки подобъекта(ов) из буфера обмена. В
@@ -901,7 +1251,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                     if (result.size() == 1
                             && groupModel.getSelectorPresentationDef().isRestoringPositionEnabled()) {
                         final Pid pid = result.get(0).getPid();
-                        reread((SelectorTreeNode) current, pid);
+                        reread((SelectorTreeNode) current, Collections.singleton(pid));
                     } else if (result.size() > 0) {
                         reread((SelectorTreeNode) current, null);
                     }
@@ -954,6 +1304,9 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                 = canCreateChildObject && clipboard.size() > 0 && clipboard.isCompatibleWith(childGroup);
         pasteChildObjectAction.setEnabled(canPasteChildObject);
         pasteChildObjectAction.setToolTip(getTitleOfPasteChildObjectActionImpl(childGroup, clipboard));
+        actions.findAction.setEnabled(true);
+        actions.findNextAction.setEnabled(getSelectedNode() != null);
+        
     }
 
     /**
@@ -1353,7 +1706,7 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
                 nodeModel.updateNodeDisplayName();
             }
         }
-    }
+    }       
 
     private void applyHeaderAlignmentSettings() {
         Alignment alignmentFlag;
@@ -1371,14 +1724,42 @@ public class RwtSelectorTree extends Tree implements ISelectorWidget, IRwtSelect
             settings.endGroup();
         }
     }
+    
+    private void onRowHeaderDoubleClick(final Node node){
+        final EntityModel entityModel = getEntity(node);
+        if (entityModel!=null
+            && entityModel instanceof BrokenEntityModel==false
+            && selector.insertEntity(entityModel)==null){
+            if (getSelectedNode()!=node){
+                setSelectedNode(node);
+            }
+            if (selector.getCurrentEntity()==entityModel){
+                selector.getActions().getEntityActivatedAction().trigger();
+            }
+        }        
+    }
+    
+    protected void beforeClose(){
+        storeHeaderSettings();
+        actions.close();
+        for (int i=getColumnCount()-1; i>=0; i--){
+            if (getColumn(i).getUserData() instanceof SelectorColumnModelItem){
+                ((SelectorColumnModelItem)getColumn(i).getUserData()).unsubscribe(this);                
+            }
+        }
+        controller.close();
+        if (l != null) {
+            ((WpsEnvironment) getEnvironment()).removeSettingsChangeListener(l);
+        }
+        if (rootNode!=null){
+            rootNode.getChildNodes().reset();
+        }        
+    }
 
     @Override
     public void setParent(final UIObject parent) {
         if (parent == null) {//closing selector
-            controller.close();
-            if (l != null) {
-                ((WpsEnvironment) getEnvironment()).removeSettingsChangeListener(l);
-            }
+            beforeClose();
         }
         super.setParent(parent);
     }

@@ -19,7 +19,7 @@ import org.radixware.kernel.common.enums.EIsoLanguage;
 
 public final class LocalizingStringContextFactory {
 
-    public static ILocalizingStringContext newInstance(HandleInfo handleInfo) {
+    public static HandleInfoAdapter newInstance(HandleInfo handleInfo) {
         assert handleInfo != null;
         return handleInfo != null ? new HandleInfoAdapter(handleInfo) : null;
     }

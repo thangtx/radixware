@@ -48,7 +48,7 @@ public interface SVNRepositoryAdapter {
 
         public SVNRepositoryAdapter newInstance(String url, String path, String user, SvnAuthType auth, String sshKeyFilePath, ISvnPasswordProvider passwordGetter) throws RadixSvnException;
 
-        public SVNRepositoryAdapter newInstance(SVNRepositoryExtendedOptions options, String url, String path, String user, SvnAuthType auth, String sshKeyFilePath, ISvnPasswordProvider passwordGetter) throws RadixSvnException;
+//        public SVNRepositoryAdapter newInstance(SVNRepositoryExtendedOptions options, String url, String path, String user, SvnAuthType auth, String sshKeyFilePath, ISvnPasswordProvider passwordGetter) throws RadixSvnException;
 
         public SVNRepositoryAdapter newInstance(String url, SVNRepositoryAdapter credentialsProvider) throws RadixSvnException;
     }
@@ -182,9 +182,9 @@ public interface SVNRepositoryAdapter {
             return EngineLookup.getEngine().newInstance(url, path, user, auth, sshKeyFilePath, passwordGetter);
         }
 
-        public static SVNRepositoryAdapter newInstance(SVNRepositoryExtendedOptions options, String url, String path, String user, SvnAuthType auth, String sshKeyFilePath, ISvnPasswordProvider passwordGetter) throws RadixSvnException {
-            return EngineLookup.getEngine().newInstance(options, url, path, user, auth, sshKeyFilePath, passwordGetter);
-        }
+//        public static SVNRepositoryAdapter newInstance(SVNRepositoryExtendedOptions options, String url, String path, String user, SvnAuthType auth, String sshKeyFilePath, ISvnPasswordProvider passwordGetter) throws RadixSvnException {
+//            return EngineLookup.getEngine().newInstance(options, url, path, user, auth, sshKeyFilePath, passwordGetter);
+//        }
     }
 
     Editor createEditor(String commitMessage) throws RadixSvnException;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.server.aio;
 
+import java.io.Closeable;
 import org.radixware.kernel.common.utils.net.AioUtils;
 import java.io.IOException;
 import java.net.Socket;
@@ -30,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.utils.net.RadixServerSelector;
 
-public class EventDispatcher {
+public class EventDispatcher implements Closeable {
     //Attention: never use SelectableChannel.keyFor(selector) to obtain
     //the key for the channel inside of the EventDispatcher, because 
     //RadixServerSelector is a virtual selector that incapsulates pipe selector 
@@ -119,6 +120,10 @@ public class EventDispatcher {
         timerSubscribers = new PriorityQueue<>();
         this.selector = selector;
     }
+    
+    public void yield() {
+        this.yield = true;
+    }
 
     public void process() throws IOException {
         TimerSubscription ts = timerSubscribers.peek();
@@ -142,7 +147,8 @@ public class EventDispatcher {
         }
         while (true) {
             ts = timerSubscribers.peek();
-            if (ts == null || ts.time > System.currentTimeMillis()) {
+            if (yield || ts == null || ts.time > System.currentTimeMillis()) {
+                yield = false;
                 break;
             }
             timerSubscribers.poll();
@@ -401,6 +407,7 @@ public class EventDispatcher {
     private final EventSubscriptions eventSubscriptions = new EventSubscriptions();
     private final PriorityQueue<TimerSubscription> timerSubscribers;
     protected long iteration;
+    private boolean yield;
 
     public final long getEventSubscribersCount() {
         return eventSubscriptions.size();
@@ -453,6 +460,10 @@ public class EventDispatcher {
         } catch (IOException ex) {
             //do nothing
         }
+    }
+    
+    public boolean isOpen() {
+        return selector.isOpen();
     }
 
     private static class EventSubscriptions {

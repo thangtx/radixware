@@ -945,8 +945,8 @@ public class DdsModelDef extends DdsDefinition {
         }
 
         setEditState(EEditState.NONE);
-
-        getModule().saveDirectoryXml(); // update model.xml digist
+        getModule().saveSqmlDefsXml();// update sqmldefs.xml
+        getModule().saveDirectoryXml(); // update model.xml and sqmldefs.xml digists
     }
     long fileLastModifiedTime = 0L;
 

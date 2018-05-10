@@ -15,15 +15,23 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 
 
 public class SQLParseConnectStatement extends SQLParseStatement {
-    private String user;
-    private String password;
-    private String baseAlias;
+    private final String user;
+    private final String password;
+    private final String baseAlias;
 
-    public SQLParseConnectStatement(SQLPosition pPosition, String pUser, String pPassword, String pBaseAlias) {
+    public SQLParseConnectStatement(final SQLPosition pPosition, final String pUser, final String pPassword, final String pBaseAlias) {
         super(pPosition, StatementType.ST_CONNECT);
-        user = pUser;
-        password = pPassword;
-        baseAlias = pBaseAlias;
+        if (pUser == null || pUser.isEmpty()) {
+            throw new IllegalArgumentException("User name can't be null or empty");
+        }
+        else if (pPassword == null) {
+            throw new IllegalArgumentException("Password can't be null");
+        }
+        else {
+            this.user = pUser;
+            this.password = pPassword;
+            this.baseAlias = pBaseAlias;
+        }
     }
 
     public String getUser() {
@@ -36,5 +44,10 @@ public class SQLParseConnectStatement extends SQLParseStatement {
 
     public String getBaseAlias() {
         return baseAlias;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLParseConnectStatement{" + "user=" + user + ", password=" + password + ", baseAlias=" + baseAlias + '}';
     }
 }

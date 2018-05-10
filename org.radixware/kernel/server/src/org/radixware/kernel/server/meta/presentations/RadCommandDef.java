@@ -29,7 +29,32 @@ public class RadCommandDef extends RadDefinition {
     public final ECommandNature nature;
     private final List<Id> propIds;  // if not null then properties are restricted
     private final Id classId; // if not null then classes are restricted
+    private final boolean isReadOnly;
+    private final boolean traceGuiActivity;
     public final ECommandAccessibility accessibility;
+    
+    public RadCommandDef(
+            final Id id,
+            final String name,
+            final ECommandScope scope,
+            final Id[] propIds,
+            final ECommandAccessibility accessibility,
+            final ECommandNature nature,
+            final Id classId) {
+        this(id, name, scope, propIds, accessibility, nature, classId, false, true);
+    }
+    
+    public RadCommandDef(
+            final Id id,
+            final String name,
+            final ECommandScope scope,
+            final Id[] propIds,
+            final ECommandAccessibility accessibility,
+            final ECommandNature nature,
+            final Id classId,
+            final boolean isReadOnly) {
+        this(id, name, scope, propIds, accessibility, nature, classId, isReadOnly, true);
+    }
 
 //Constructor
     public RadCommandDef(
@@ -39,7 +64,9 @@ public class RadCommandDef extends RadDefinition {
             final Id[] propIds,
             final ECommandAccessibility accessibility,
             final ECommandNature nature,
-            final Id classId) {
+            final Id classId,
+            final boolean isReadOnly, 
+            final boolean traceGuiActivity) {
         super(id, name);
         this.scope = scope;
         this.nature = nature;
@@ -50,7 +77,11 @@ public class RadCommandDef extends RadDefinition {
         }
         this.accessibility = accessibility;
         this.classId = classId;
+        this.isReadOnly = isReadOnly;
+        this.traceGuiActivity = traceGuiActivity;
     }
+    
+    
     private Release release = null;
 
     void link(final Release release) {
@@ -76,5 +107,13 @@ public class RadCommandDef extends RadDefinition {
             }
         }
         return false;
+    }
+    
+    public boolean isReadOnly(){
+        return isReadOnly;
+    }
+    
+    public boolean getUsrActionsIsTraced() {
+        return traceGuiActivity;
     }
 }

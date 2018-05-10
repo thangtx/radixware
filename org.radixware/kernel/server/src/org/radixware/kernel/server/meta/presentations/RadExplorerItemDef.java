@@ -46,7 +46,10 @@ public abstract class RadExplorerItemDef extends RadDefinition {
 
     public abstract Restrictions getRestrictions();
 
+    @Deprecated
     public abstract boolean isCommandEnabled(final Id cmdId);
+    
+    public abstract boolean isCommandEnabled(final Id cmdId, final boolean isReadOnlyCommand);
 
     public abstract DdsReferenceDef getContextReference();
 

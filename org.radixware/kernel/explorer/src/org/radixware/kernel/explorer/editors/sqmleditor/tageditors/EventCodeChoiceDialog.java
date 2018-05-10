@@ -171,7 +171,7 @@ public class EventCodeChoiceDialog extends ExplorerDialog {
     }
 
     private String toPlainText(final String string) {
-        final String newString = string.replaceAll("\\n", " ");
+        final String newString = string.replace("\n", " ");
         if (LIMIT <= newString.length()) {
             return newString.substring(0, LIMIT - 1).concat("...");
         } else {

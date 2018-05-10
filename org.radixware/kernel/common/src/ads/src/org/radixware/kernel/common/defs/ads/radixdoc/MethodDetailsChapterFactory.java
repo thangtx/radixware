@@ -13,6 +13,7 @@ package org.radixware.kernel.common.defs.ads.radixdoc;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsCommandHandlerMethodDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
@@ -35,6 +36,7 @@ import static org.radixware.kernel.common.enums.EMethodNature.USER_DEFINED;
 import org.radixware.kernel.common.radixdoc.DefaultAttributes;
 import org.radixware.kernel.common.radixdoc.DefaultStyle;
 import org.radixware.kernel.common.radixdoc.RadixIconResource;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.radixdoc.Block;
 import org.radixware.schemas.radixdoc.ContentContainer;
 import org.radixware.schemas.radixdoc.ElementList;
@@ -62,36 +64,47 @@ public class MethodDetailsChapterFactory extends DetailMembersChapterFactory<Ads
         contentBlock.setStyle(DefaultStyle.NAMED);
 
         final Block title = clWriter.addBlockTitle(contentBlock);
+
+        final RadixIconResource resource = new RadixIconResource(member.getIcon());
+        title.addNewResource().setSource(resource.getKey());
+        clWriter.addText(title, member.getName()).setStyle(DefaultStyle.IDENTIFIER);
+
+        addArgs(title, member);
+        classDoc.addResource(resource);
+
+        final Block descriptionBlock = contentBlock.addNewBlock();
+        descriptionBlock.setStyle(DefaultStyle.DESCRIPTION);
+        
         final TypeDocument typeDoc = new TypeDocument();
         typeDoc.addString(member.getProfile().getAccessFlags().getRadixdocPresentation()).addString(" ");
         MethodReturnValue retVal = member.getProfile().getReturnValue();
         if (retVal != null) {
             typeDoc.addType(retVal.getType(), classDoc.getSource());
         }
-        clWriter.documentType(title, typeDoc, classDoc.getSource());
-
-        final RadixIconResource resource = new RadixIconResource(member.getIcon());
-        title.addNewResource().setSource(resource.getKey());
-        clWriter.addText(title, member.getName()).setStyle(DefaultStyle.IDENTIFIER);
-
-        final Block descriptionBlock = contentBlock.addNewBlock();
-        descriptionBlock.setStyle(DefaultStyle.DESCRIPTION);
-
-        final TypeDocument argsTypeDoc = new TypeDocument();
-        argsTypeDoc.addString(" (");
-        boolean first = true;
-        for (final MethodParameter parametr : member.getProfile().getParametersList()) {
-            if (first) {
-                first = false;
-            } else {
-                argsTypeDoc.addString(", ");
+        clWriter.documentType(descriptionBlock, typeDoc, classDoc.getSource());
+        clWriter.addText(descriptionBlock, " " + member.getName());
+        addArgs(descriptionBlock, member);
+        descriptionBlock.addNewBlock();
+        
+        if (member.isOverride()) {
+            AdsMethodDef parentDef = member.getHierarchy().findOverridden().get();
+            if (parentDef != null) {
+                Table overrideTable = clWriter.addNewTable(descriptionBlock, "Overrides");
+                clWriter.addRefRow(overrideTable, null, parentDef, parentDef.getModule());
+                clWriter.appendStyle(overrideTable, DefaultStyle.GENERAL_ATTRIBUTES);
             }
-            argsTypeDoc.addType(parametr.getType(), member).addString(" ").addString(parametr.getName());
         }
-        argsTypeDoc.addString(")");
-        clWriter.documentType(title, argsTypeDoc, member);
-        classDoc.addResource(resource);
-        clWriter.setAttribute(title, DefaultAttributes.ANCHOR, member.getId().toString());
+        
+        if (member.isOverwrite()) {
+            AdsMethodDef parentDef = member.getHierarchy().findOverwritten().get();
+            if (parentDef != null) {
+                Table overwriteTable = clWriter.addNewTable(descriptionBlock, "Overwrites");
+                clWriter.addRefRow(overwriteTable, null, parentDef, parentDef.getModule());
+                clWriter.appendStyle(overwriteTable, DefaultStyle.GENERAL_ATTRIBUTES);
+            }
+        }
+        
+        clWriter.setAttribute(title, DefaultAttributes.ANCHOR, classDoc.getIdentifier(member));
 
         clWriter.documentDescription(descriptionBlock, member);
 
@@ -140,12 +153,28 @@ public class MethodDetailsChapterFactory extends DetailMembersChapterFactory<Ads
         }
 
         AdsMethodDef profileDescriptionProviderDef = (AdsMethodDef) clWriter.findOwnerDescriptionDefinition(member);
-        if(profileDescriptionProviderDef == null) {
+        if (profileDescriptionProviderDef == null) {
             profileDescriptionProviderDef = member;
         }
         writeReturnValInfo(profileDescriptionProviderDef, descriptionBlock);
         writeParametersInfo(profileDescriptionProviderDef, descriptionBlock);
         writeExceptionsInfo(profileDescriptionProviderDef, descriptionBlock);
+    }
+
+    private void addArgs(ContentContainer root ,AdsMethodDef member) {
+        final TypeDocument argsTypeDoc = new TypeDocument();
+        argsTypeDoc.addString(" (");
+        boolean first = true;
+        for (final MethodParameter parametr : member.getProfile().getParametersList()) {
+            if (first) {
+                first = false;
+            } else {
+                argsTypeDoc.addString(", ");
+            }
+            argsTypeDoc.addType(parametr.getType(), member).addString(" ").addString(parametr.getName());
+        }
+        argsTypeDoc.addString(")");
+        clWriter.documentType(root, argsTypeDoc, member);
     }
 
     @Override
@@ -221,8 +250,10 @@ public class MethodDetailsChapterFactory extends DetailMembersChapterFactory<Ads
             for (MethodParameter par : member.getProfile().getParametersList()) {
                 Table.Row row = paramsTable.addNewRow();
                 row.addNewCell().addNewText().setStringValue(par.getName() + " - ");
-                if (par.getDescriptionId() != null && par.getDescriptionLocation() != null) {
-                    clWriter.addMslId(row.addNewCell(), member, par.getDescriptionLocation().getLocalizingBundleId(), par.getDescriptionId());
+                Id id = par.getDescriptionId();
+                AdsDefinition def = par.getDescriptionLocation();
+                if (id != null &&  def != null) {
+                    clWriter.addMslId(row.addNewCell(), def, def.getLocalizingBundleId(), id);
                 }
             }
         }

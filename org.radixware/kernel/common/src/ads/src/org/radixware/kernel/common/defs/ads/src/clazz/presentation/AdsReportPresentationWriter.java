@@ -75,6 +75,8 @@ public class AdsReportPresentationWriter extends AbstractFormPresentationWriter<
         printer.println();
         printer.print(report.getCsvInfo() == null ? false : report.getCsvInfo().isExportToCsvEnabled());
         printer.printComma();
+        printer.print(report.getXlsxReportInfo() == null ? false : report.getXlsxReportInfo().isExportToXlsxEnabled());
+        printer.printComma();
         printer.print(report.getForm().isSupportsTxt());
         printer.printComma();
         printer.println();

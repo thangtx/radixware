@@ -161,10 +161,10 @@ public class XmlHyperlinkProvider implements HyperlinkProviderExt {
         }
         
         return (IXmlDefinition) branch.find(new VisitorProvider() {
-                    @Override
-                    public boolean isTarget(RadixObject radixObject) {
-                        return (radixObject instanceof IXmlDefinition) && ((IXmlDefinition)radixObject).getTargetNamespace().equals(namespace);
-                    }
+            @Override
+            public boolean isTarget(RadixObject radixObject) {
+                return (radixObject instanceof IXmlDefinition) && namespace.equals(((IXmlDefinition) radixObject).getTargetNamespace());
+            }
         });
         
     }

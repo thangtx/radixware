@@ -194,8 +194,22 @@ class EmptySettings implements IExplorerSettings {
     }
 
     @Override
+    public void pushGroup() {        
+    }
+
+    @Override
+    public String popGroup() {
+        return "";
+    }        
+
+    @Override
     public void setConfigProfile(String profile) {
     }
+
+    @Override
+    public String getConfigProfile() {
+        return "";
+    }       
 
     @Override
     public int beginReadArray(String array) {

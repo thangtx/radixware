@@ -33,7 +33,7 @@ import org.radixware.kernel.designer.common.dialogs.utils.NameAcceptorFactory;
 import org.radixware.kernel.designer.common.editors.RadixObjectEditor;
 import org.radixware.kernel.designer.common.general.editors.IEditorFactory;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
-import org.radixware.kernel.designer.dds.script.defs.DdsScriptGeneratorUtils;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.designer.common.editors.sqml.SqmlEditorPanel;
 

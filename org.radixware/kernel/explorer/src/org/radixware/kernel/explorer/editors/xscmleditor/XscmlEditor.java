@@ -13,6 +13,7 @@ package org.radixware.kernel.explorer.editors.xscmleditor;
 
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QMimeData;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.DropAction;
 import com.trolltech.qt.core.Qt.FocusPolicy;
 import com.trolltech.qt.core.Qt.FocusReason;
@@ -23,11 +24,11 @@ import com.trolltech.qt.gui.QTextCursor.MoveOperation;
 import com.trolltech.qt.gui.QTextOption.WrapMode;
 import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.check.RadixProblem.ESeverity;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
@@ -65,7 +66,9 @@ public class XscmlEditor extends AbstractXscmlEditor {
     public Signal0 updateUndoRedoBtns = new Signal0();
     public Signal0 checkBracket = new Signal0();
     public Signal0 clearHighlightBracket = new Signal0();
+    public Signal0 beforeExposeCompleter = new Signal0();
     private QTextCharFormat defaultCharFormat;
+    private QAction showCompleterAct;
     private List<TagInfo> copyTags;
     private boolean isUndo = false;
     private AdsUserFuncDef userFunc;
@@ -105,9 +108,10 @@ public class XscmlEditor extends AbstractXscmlEditor {
             defaultCharFormat = this.currentCharFormat();
             completeProcessor = new CompleterProcessor(this, tagConverter);
         }
+        this.setMouseTracking(true);
         this.show();
     }
-
+    
     public IClientEnvironment getEnvironment() {
         return environment;
     }
@@ -118,7 +122,32 @@ public class XscmlEditor extends AbstractXscmlEditor {
         setXcmlEditorText();
         errorhighlighter = new ErrorHightlighter(this);
         errorhighlighter.clearHightlightError();
+        initShowCompleterAction();
         //this.document().undoCommandAdded.connect(this, "undoTextChange()");
+    }
+    
+    public final void startPreloadCompletion() {
+        completeProcessor.startPreloadCompletion();
+    }
+    
+    private void initShowCompleterAction() {
+        if (showCompleterAct != null) {
+            return;
+        }
+        showCompleterAct = new QAction(this);
+        List<QKeySequence> shortcuts = new ArrayList<>();
+        shortcuts.add(QKeySequence.fromString("Ctrl+Space"));
+        shortcuts.add(QKeySequence.fromString("Ctrl+\\"));
+        if (SystemTools.isOSX) {
+            shortcuts.add(QKeySequence.fromString("Meta+\\"));
+        }
+        String altShowCompleter = RunParams.getAlternateUdfCompletionShortcut();
+        if (altShowCompleter != null && !altShowCompleter.isEmpty()) {
+            shortcuts.add(QKeySequence.fromString(altShowCompleter));
+        }
+        showCompleterAct.setShortcuts(shortcuts);
+        showCompleterAct.triggered.connect(this, "exposeCompleter()");
+        this.addAction(showCompleterAct);
     }
 
     public QTextCharFormat getDefaultCharFormat() {
@@ -205,10 +234,6 @@ public class XscmlEditor extends AbstractXscmlEditor {
                 }
                 tagConverter.tagListHystory.add(tagConverter.hystoryIndex + 1, tagList);
                 tagConverter.hystoryIndex = tagConverter.hystoryIndex + 1;
-
-                if (tagConverter instanceof JmlProcessor) {
-                    ((JmlProcessor) tagConverter).setTagInfoMap();
-                }
             }
         }
         updateTagsPos();
@@ -419,6 +444,8 @@ public class XscmlEditor extends AbstractXscmlEditor {
             if (isReadOnly()) {
                 if (isCopy) {
                     processCopyPast(isCut, isCopy);
+                } else {
+                    super.keyPressEvent(e);
                 }
                 return;
             }
@@ -435,18 +462,7 @@ public class XscmlEditor extends AbstractXscmlEditor {
                     return;
                 }
             } else {
-                /*if (e.key() == Key.Key_Backtab.value() || e.key() == Key.Key_Tab.value()) {
-                 //insertText(str_tab);
-                 processTab(tc, e.key() == Key.Key_Backtab.value() );
-                 checkBracket.emit();
-                 return;
-                 } else */ 
-                if (isCtrl && (e.key() == Key.Key_Space.value())||
-                         ((SystemTools.isOSX || SystemTools.isWindows)  && isCtrl && (e.key() == Key.Key_Backslash.value()))) {
-                    completeProcessor.exposeCompleter();
-                    //System.out.print("ctrl+space!");
-                    return;
-                }else if (isCtrl && (e.key() == Key.Key_S.value())){
+                if (isCtrl && (e.key() == Key.Key_S.value())){
                     super.keyPressEvent(e);
                     return;
                 }
@@ -547,6 +563,14 @@ public class XscmlEditor extends AbstractXscmlEditor {
             tc.dispose();
         }
 
+    }
+    
+    @Override
+    protected void keyReleaseEvent(QKeyEvent e) {
+        super.keyReleaseEvent(e);
+        if (e.key() == Qt.Key.Key_Control.value() || SystemTools.isOSX &&  e.key() == Qt.Key.Key_Meta.value()) {
+            changeCursorShape(Qt.CursorShape.IBeamCursor);
+        }
     }
     
     private boolean isNotIgnoredKey(final int key) {
@@ -708,6 +732,24 @@ public class XscmlEditor extends AbstractXscmlEditor {
     }
     private int clickPos = 0;
     //устанавливаем позицию курсора на теге
+    
+    @Override
+    protected void mouseMoveEvent(QMouseEvent e) {
+        super.mouseMoveEvent(e);
+        
+        Qt.CursorShape shape = Qt.CursorShape.IBeamCursor;
+        if (withCtrl(e)) {
+            final int pos = cursorForPosition(e.pos()).position();
+            final TagInfo tag = tagConverter.getTagInfoForCursorMove(pos, false);
+            if (tag != null) {
+                final Qt.CursorShape sh = tag.getCursorShape(e);
+                if (sh != null) {
+                    shape = sh;
+                }
+            }
+        }
+        changeCursorShape(shape);
+    }
 
     @Override
     protected void mouseReleaseEvent(QMouseEvent e) {
@@ -716,11 +758,20 @@ public class XscmlEditor extends AbstractXscmlEditor {
         super.mouseReleaseEvent(e);
         moveCursor();
         mousePessed = false;
-        if (!isReadOnly() && (tagConverter instanceof JmlProcessor) && isCursorOnTag(clickPos, false)) {
-            ((JmlProcessor) tagConverter).toXml(toPlainText(), textCursor());
-            TagInfo tag = tagConverter.getTagInfoForCursorMove(clickPos, false);//getTagUnderCursor(clickPos);
-            if (tag != null && !(tag instanceof JmlTag_LocalizedString) && !(tag instanceof JmlTag_DbEntity)) {
-                completeProcessor.exposeQuickCompleter(tag);
+        if (tagConverter instanceof JmlProcessor && isCursorOnTag(clickPos, false)) {
+            if (withCtrl(e) && e.button() == Qt.MouseButton.LeftButton) {
+                ((JmlProcessor) tagConverter).toXml(toPlainText(), textCursor());
+                TagInfo tag = tagConverter.getTagInfoForCursorMove(clickPos, false);//getTagUnderCursor(clickPos);
+                if (tag != null) {
+                    tag.onMouseReleased(e, environment);
+                    changeCursorShape(Qt.CursorShape.IBeamCursor);
+                }
+            } else if (!isReadOnly()) {
+                ((JmlProcessor) tagConverter).toXml(toPlainText(), textCursor());
+                TagInfo tag = tagConverter.getTagInfoForCursorMove(clickPos, false);//getTagUnderCursor(clickPos);
+                if (tag != null && !(tag instanceof JmlTag_LocalizedString) && !(tag instanceof JmlTag_DbEntity)) {
+                    completeProcessor.exposeQuickCompleter(tag);
+                }
             }
         }
     }
@@ -732,6 +783,19 @@ public class XscmlEditor extends AbstractXscmlEditor {
         super.mousePressEvent(e);
         clearHighlightBracket.emit();
         checkBracket.emit();
+    }
+    
+    private boolean withCtrl(QMouseEvent e) {
+        return e.modifiers().isSet(KeyboardModifier.ControlModifier)
+                || (e.modifiers().isSet(KeyboardModifier.MetaModifier) && SystemTools.isOSX);
+    }
+
+    private void changeCursorShape(Qt.CursorShape shape) {
+        final QCursor c = viewport().cursor();
+        if (c.shape() != shape) {
+            c.setShape(shape);
+            viewport().setCursor(c);
+        }
     }
 
     private boolean moveCursor(QKeyEvent e, QTextCursor tc) {
@@ -1542,6 +1606,10 @@ public class XscmlEditor extends AbstractXscmlEditor {
         QApplication.postEvent(this, new UpdateTagNamesEvent());
     }
     
+    public void cleanup() {
+        showCompleterAct.disconnect();
+        completeProcessor.cleanup();
+    }
     
 
     /* private void endUndoCommand(final QTextCursor tc){
@@ -1574,6 +1642,49 @@ public class XscmlEditor extends AbstractXscmlEditor {
         }else{
             super.customEvent(qevent);
         }        
+    }
+    
+    public void toggleComment() {
+        final QTextCursor tc = this.textCursor();
+        final String comment = "//";
+        final int startPos = tc.hasSelection() ? tc.selectionStart() : tc.position();
+        //Decrease selection end pos by 1, because we don't want to include line if cursor set at start of line.
+        final int endPos = tc.hasSelection() ? tc.selectionEnd() - 1 : tc.position(); 
+
+        tc.setPosition(endPos);
+        int endBlock = tc.block().blockNumber();
+        tc.setPosition(startPos);
+        int startBlock = tc.block().blockNumber();
+        boolean allBlocksStartWithComment = true;
+        final int iterCnt = (endBlock - startBlock) + 1;
+        for (int i = 0; i < iterCnt; i++) {
+            if (!isStartWith(tc.block().text(), comment)) {
+                allBlocksStartWithComment = false;
+                break;
+            }
+            tc.movePosition(MoveOperation.NextBlock);
+        }
+        
+        tc.setPosition(startPos);
+        tc.movePosition(MoveOperation.StartOfLine);
+        
+        tc.beginEditBlock();
+        try {
+            for (int i = 0; i < iterCnt; i++) {
+                if (allBlocksStartWithComment) {
+                    final int offset = tc.block().text().indexOf(comment);
+                    tc.setPosition(tc.position() + offset);
+                    tc.deleteChar();
+                    tc.deleteChar();
+                } else {
+                    tc.insertText(comment);
+                }
+                tc.movePosition(MoveOperation.NextBlock);
+            }
+        } finally {
+            tc.endEditBlock();
+        }
+        this.setFocusInText();
     }
     
    /* int lineNumberAreaWidth(){

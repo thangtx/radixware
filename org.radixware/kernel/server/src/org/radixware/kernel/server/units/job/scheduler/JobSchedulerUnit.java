@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -12,7 +12,6 @@ package org.radixware.kernel.server.units.job.scheduler;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,9 +36,9 @@ import org.radixware.kernel.server.aio.Event;
 import org.radixware.kernel.server.aio.EventDispatcher.TimerEvent;
 import org.radixware.kernel.server.aio.ServiceManifestServerLoader;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.units.AsyncEventHandlerUnit;
 import org.radixware.kernel.server.units.Messages;
-import org.radixware.kernel.server.units.UnitDescription;
 import org.radixware.kernel.server.units.UnitView;
 import org.radixware.schemas.aasWsdl.InvokeDocument;
 
@@ -53,7 +52,7 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
     }
     public static final String TASK_TABLE_ID = "tblWZB7K4HLJPOBDCIUAALOMT5GDM";
     static final int DEFAULT_DELAY_BEFORE_AAS_ACTUALIZATION_SEC = 5;
-    private static final int SCHEDULING_PERIOD_MILLIS = 10000;
+    private static final int SCHEDULING_PERIOD_MILLIS = 4000;
     private static final int SINGLE_ACTUALIZATION_TIMEOUT_SEC = 2;
     private static final int MAX_ACTUALIZATION_DURATION_MILLIS = SCHEDULING_PERIOD_MILLIS - SINGLE_ACTUALIZATION_TIMEOUT_SEC * 1000 - 1000;
     private static final int DURATION_WARNING_INTERVAL_MILLIS = 5 * 60000;
@@ -69,7 +68,7 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
      * @NotThreadsafe should be accessed only from unit thread
      */
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
-    private final DbQueries jobShedDbQueries;
+    private final JobSchedulerDbQueries jobShedDbQueries;
     /**
      * Id of the parent scheduler. If this scheduler has no parent, then it is
      * parent scheduler itself.
@@ -82,27 +81,17 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
 
     public JobSchedulerUnit(final Instance instModel, final Long id, final String title) {
         super(instModel, id, title);
-        jobShedDbQueries = new DbQueries(this);
-    }
-
-    @Override
-    protected boolean prepareForStart() throws InterruptedException {
-        parentSchedulerId = getInstance().getMainSchedulerUnitId(getId());
-        if (parentSchedulerId == -1) {
-            postponeStart("Main scheduler unit is not defined");
-            return false;
-        }
-        return true;
+        jobShedDbQueries = new JobSchedulerDbQueries(this);
     }
 
     @Override
     protected String getIdForSingletonLock() {
-        return "JobSchedulerUnit#" + parentSchedulerId;
+        return "JobSchedulerUnit#" + getPrimaryUnitId();
     }
 
     @Override
-    protected UnitDescription getStartedDuplicatedUnitDescription() throws SQLException {
-        return getInstance().getStartedDuplicatedScheduler(this);
+    public boolean isSingletonByPrimary() {
+        return true;
     }
 
     @Override
@@ -116,6 +105,12 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
                     protected Connection getDbConnection() {
                         return JobSchedulerUnit.this.getDbConnection();
                     }
+
+                    @Override
+                    protected Integer getTargetAadcMemberId() {
+                        return getInstance().getAadcInstMemberId();
+                    }
+                    
                 };
 
                 @Override
@@ -127,7 +122,7 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
                 protected boolean isSslPossible() {
                     return true;
                 }
-
+                
                 @Override
                 protected SSLContext prepareSslContext(SapClientOptions sap) throws Exception {
                     return CertificateUtils.prepareServerSslContext(sap.getClientKeyAliases(), sap.getServerCertAliases());
@@ -169,10 +164,6 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
         }
     }
 
-    public long getParentSchedulerId() {
-        return parentSchedulerId;
-    }
-
     private long roundToFiveSeconds(final long millis) {
         final long millisToTrim = millis + 2500;
         return millisToTrim - millisToTrim % 5000;
@@ -186,12 +177,12 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
 
 //db 	
     @Override
-    protected void setDbConnection(final Connection dbConnection) {
+    protected void setDbConnection(final RadixConnection dbConnection) {
         jobShedDbQueries.closeAll();
         super.setDbConnection(dbConnection);
     }
 
-    final DbQueries getDbQueries() {
+    final JobSchedulerDbQueries getDbQueries() {
         return jobShedDbQueries;
     }
 
@@ -219,7 +210,7 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
         Collection<PendingTask> pendingJobs;
         if (!isShuttingDown()) {
             try {
-                pendingJobs = getDbQueries().loadPendingJobs();
+                pendingJobs = getDbQueries().loadPendingTasks();
             } catch (Throwable e) {
                 if (e instanceof InterruptedException || Thread.currentThread().isInterrupted()) {
                     return;
@@ -287,7 +278,7 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
                 if (timedOutOnActualize.contains(tasksToActualize.get(i)) == executePreviouslyTimedOut) {
                     invokeDoc.getInvoke().getInvokeRq().getParameters().getItemList().get(0).getRef().setPID(String.valueOf(tasksToActualize.get(i).taskId));
                     try {
-                        final InvokeDocument respDoc = (InvokeDocument) serviceClient.invokeService(invokeDoc, InvokeDocument.class, 1l, (long) getInstance().getId(), "http://schemas.radixware.org/aas.wsdl", MAX_ACTUALIZATION_DURATION_MILLIS / 1000 + 1, SINGLE_ACTUALIZATION_TIMEOUT_SEC);
+                        final InvokeDocument respDoc = (InvokeDocument) serviceClient.invokeService(invokeDoc, InvokeDocument.class, 1l, (long) getInstance().getId(), "http://schemas.radixware.org/aas.wsdl", MAX_ACTUALIZATION_DURATION_MILLIS / 1000 + 1, SINGLE_ACTUALIZATION_TIMEOUT_SEC, getInstance().getAadcInstMember());
                         if (respDoc.getInvoke().getInvokeRs().isSetReturnValue() && respDoc.getInvoke().getInvokeRs().getReturnValue().getBool() == Boolean.TRUE) {
 
                             getTrace().enterContext(EEventContextType.TASK, tasksToActualize.get(i).taskId, null);
@@ -393,7 +384,7 @@ public final class JobSchedulerUnit extends AsyncEventHandlerUnit {
                 } else {
                     String skipReason = "it has status '" + job.status + "'";
                     if (job.hasRelatedJobs) {
-                        skipReason = " and has related jobs";
+                        skipReason += " and has related jobs";
                     }
                     EEventSeverity severity = EEventSeverity.DEBUG;
                     if (job.status == ETaskStatus.EXECUTING && job.skipIfExecuting) {

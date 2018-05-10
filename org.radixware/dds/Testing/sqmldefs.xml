@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlZXCEKUXXTFDUHM2SQTUFQFBVT4" QualifiedName="Radix::Testing">
+  <TableDef Id="tbl4O4HPFJFYNBMLFRA5LLNYQMVLU" Name="TEDCChildDetail" MasterTableId="tbl73I26X3GUNGMPDAF3YPGJE272Y">
+    <Indexes>
+      <Index Id="idxRWLWWNPJE5DY7PQIHD5IXATJTM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colTYKPRAJA5BHYVDOBLKF5QWPBHM"/>
+    </Indexes>
+    <ReferenceToMasterTable Id="refRV5SRH342VAI3P5COYNVTQYMWM" Name="TEDCChildDetail=>TEDCChild (id=>id)"/>
+    <OutgoingReferences>
+      <Reference Id="refJWBKZUBIA5ENNBDYLAFLNEVUOE" Name="TEDCChildDetail=>TEDCParent (detailParentId=>id)" ReferencedTableId="tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE" ChildColumnNames="detailParentId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colTYKPRAJA5BHYVDOBLKF5QWPBHM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colPHX3RFBNGRGFVO46XGBSKUVISM" Name="detailParentId" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA" Name="AuditMaster">
+    <Indexes>
+      <Index Id="idxARZGDVN6PNHSDDRPVF4T7G3UGU" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colD22JEPQGTBCWXMSA3OPK7QFRAQ col5YD5OPHOGNBUZDIJHO2ZX4SMCE col24X4VKBUFNDNFODTQ6PKN6DC44 colND3RMLRWDRBHXA6SG4IZCWFIXM colKW27ZCV64RAU5L2V6KZCOC6D6Y colHBYPDPTCFFF4NJ4WVD5EKNLTIU"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colD22JEPQGTBCWXMSA3OPK7QFRAQ" Name="PkColInt" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col5YD5OPHOGNBUZDIJHO2ZX4SMCE" Name="PkColChar" ValType="3" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="col24X4VKBUFNDNFODTQ6PKN6DC44" Name="PkColNum" ValType="11" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colND3RMLRWDRBHXA6SG4IZCWFIXM" Name="PkColDate" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colHBYPDPTCFFF4NJ4WVD5EKNLTIU" Name="PkColTimestamp" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colKW27ZCV64RAU5L2V6KZCOC6D6Y" Name="PkColStr" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col67TEKGVN45GJPDYHNSJP46C7DA" Name="ClassGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colIY54HRUWQRC5LI4AMLNJDHNCAU" Name="ColInt" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colSW4DJGZ5LRCLFJCYZLQZGDNAME" Name="ColChar" ValType="3" Length="1" Precision="0"/>
+      <Column Id="col6WWL3SC5TZBMZGHZSPPPJVV2BQ" Name="ColNum" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colJ7FU6BTM75HQTCIAKYQDRXDY5U" Name="ColDate" ValType="12" Length="0" Precision="0"/>
+      <Column Id="col4TWPKWPOL5EB3GHUIUL6UFRHWQ" Name="ColTimestamp" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colV5EPQ4QOLREEZOV2UUHUWZHYEE" Name="ColStr" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colTGVNWDGLGNBI3N5BYXZLI5RXQQ" Name="ColBin" ValType="22" Length="2000" Precision="0"/>
+      <Column Id="colFDVZCLAYD5HZRN2JGORFYFA3NE" Name="ColBlob" ValType="28" Length="0" Precision="0"/>
+      <Column Id="colL76ZGR3OPVHQFHYKDPWUIZQA34" Name="ColClob" ValType="27" Length="0" Precision="0"/>
+      <Column Id="col4O6RSJKND5EPFLKQUWZOO5WMRM" Name="ColArrBool" ValType="201" Length="0" Precision="0"/>
+      <Column Id="colI7RDFSIDUZE4PPBNSJFU4RCEIM" Name="ColArrInt" ValType="202" Length="4000" Precision="0"/>
+      <Column Id="colGAR4IF3GRVAFLA4DTQXPQGCSME" Name="ColArrChar" ValType="203" Length="0" Precision="0"/>
+      <Column Id="colY5PXD2VKE5FBTFGVSCPTLGE46U" Name="ColArrStr" ValType="221" Length="0" Precision="0"/>
+      <Column Id="colE3SYXVPOCVEIFEEYBEIFXY66XQ" Name="ColArrNum" ValType="211" Length="4000" Precision="0"/>
+      <Column Id="colYZYQHXB75VHEVG2BTGNGPNJZEA" Name="ColArrDateTime" ValType="212" Length="0" Precision="0"/>
+      <Column Id="col54URWAVOAVE4ZFLUZI7QEQYCDM" Name="ColArrBin" ValType="222" Length="0" Precision="0"/>
+      <Column Id="colD6G6MRNNKVGJFGSYHPF3DFQ66Y" Name="ColArrParentRef" ValType="231" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl73I26X3GUNGMPDAF3YPGJE272Y" Name="TEDCChild">
+    <Indexes>
+      <Index Id="idxNGMENGJ3VJCERFXXRGGUQZ5U5E" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colZVSVJWX55BGZ7OKKOVBYNHB4YA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refDSYVFORX2VGBPLKZAGVMZIPDME" Name="TEDCChild=>TEDCParent (parentId=>id)" ReferencedTableId="tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE" ChildColumnNames="parentId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colZVSVJWX55BGZ7OKKOVBYNHB4YA" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colVYZI5QIAJ5D7BPQOSO7IDMMGWI" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colKCH5PANXSBHZ3L2DZELNGY2V5A" Name="parentId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colN6C3Z6QULREVVOW7FPEHHSAR4A" Name="notes" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblB6QEDVV5BNEWZHKZRTVR67TKOY" Name="Child">
+    <Indexes>
+      <Index Id="idx2YQY2XRIHZGMDH223KCPSUZ46M" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colZWTMK2FUIVHQHFVTADHDUHYWJQ"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refGRWCN5HJCBDL3IKBE3VH3VUBPM" Name="Child=>Parent (ParentId=>Id)" ReferencedTableId="tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA" ChildColumnNames="ParentId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colDUDO2TJWP5GX3AFU7LLHKP2NW4" Name="AuditScheme" ValType="21" Length="9" Precision="0"/>
+      <Column Id="colZWTMK2FUIVHQHFVTADHDUHYWJQ" Name="Id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colRLMSOMVQ3VBDBHDRRWGBATJCHA" Name="ParentId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col4QNVS32PUBDN5FOQVHEUYPX624" Name="Title" ValType="21" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col6OTOT3XC7BHKVIE3Y6WRX4O2OY" Name="ChildType" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colZDX2SYK7TJAFTJENP6ATORQOTI" Name="colBool" ValType="1" Length="1" Precision="1"/>
+      <Column Id="col5MPEYBORVVHJ3CNR42Z2XE65DM" Name="colInt" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colVTKWXW5C7RHLVACWBAAOZ3XJGY" Name="colChar" ValType="3" Length="1" Precision="1"/>
+      <Column Id="colHYXTFXRDBFFO7BTLQCI5PA7VW4" Name="colNum" ValType="11" Length="9" Precision="3"/>
+      <Column Id="col7CYI2GEMAJA5LNUWSJ27NVIUZ4" Name="colDateTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="col7H5JDXACMZGJVKTZHZUQKNPCRU" Name="colStr" ValType="21" Length="9" Precision="0"/>
+      <Column Id="colKL44DI627ZGCRKIAYPXPE5LOUY" Name="colBin" ValType="22" Length="2000" Precision="0"/>
+      <Column Id="colYAZ2V7BNNZHJTJLMGA6JZUJFQ4" Name="colClob" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colRABZQGSV3BHHFJEB4H3BEAAPII" Name="colClobAsXml" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colHELAHZF5BJEWPKKPTS3HKWHTQM" Name="colBlob" ValType="28" Length="0" Precision="0"/>
+      <Column Id="colCPKXUIF6MRHFLITTPV37HR5HSE" Name="colArrBool" ValType="201" Length="0" Precision="0"/>
+      <Column Id="colS5P6GKK2DRFKHKZRMLIFVUUMZA" Name="colArrInt" ValType="202" Length="0" Precision="0"/>
+      <Column Id="colGXZY5LOSDBFMXOXWMKVP5QCJ2Q" Name="colArrChar" ValType="203" Length="0" Precision="0"/>
+      <Column Id="colMGQ6K5EMCVFEFFYTKW7CF33TEU" Name="colArrNum" ValType="211" Length="0" Precision="0"/>
+      <Column Id="colGYUQDNULWJBINDEMPBN4VJSPFU" Name="colArrDateTime" ValType="212" Length="0" Precision="0"/>
+      <Column Id="col37737JBJBRCDTJUCW74RYUCFBM" Name="colArrBin" ValType="222" Length="0" Precision="0"/>
+      <Column Id="colQPIIILCVLNFK3JSJVMZQPTN2OE" Name="colArrStr" ValType="221" Length="0" Precision="0"/>
+      <Column Id="colKLAAJQKA55DNJJRTGLFPUI64WY" Name="ValType" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colMFGU7H7UBVARPI7EYXY53CMLTU" Name="DefinitionIdPrefix" ValType="21" Length="64" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblCJ53NERF4VBJDEDGNHBFXRNNC4" Name="DmTestA">
+    <Indexes>
+      <Index Id="idxVA4QXX4WC5AWFIMC4JO2OMXQTM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colV4Y2WNZYZBHODMGL6IYZGVY2JM colNSAONCQ7CBBPTKPNVIZODZ5EPE"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colV4Y2WNZYZBHODMGL6IYZGVY2JM" Name="pkInt" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNSAONCQ7CBBPTKPNVIZODZ5EPE" Name="pkStr" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colDG3DOTUKTVHOZBHV74YJNYV5YE" Name="classGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colYKGRW6YLUFERHLWNSTRLXY75ZE" Name="title" ValType="21" Length="9" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblEYWOB4T6DVAZVHSCGSERAQZXRU" Name="NewTable">
+    <Indexes>
+      <Index Id="idx3S4UJBAKPRGY7I2QFXGJ4M5KCA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colXEALWCCP2ZGH3ASLDQDVFVYTEQ"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colXEALWCCP2ZGH3ASLDQDVFVYTEQ" Name="NewColumn" ValType="2" Length="9" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblFW5F7B7PS5DVXPQS2XAUUSITJQ" Name="UserChild">
+    <Indexes>
+      <Index Id="idxJ2YUOLWR7JA5FPMDUAYVMTO7QY" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colSU6DYJLO35HN3KPDDFXKB4ZQ74"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colSU6DYJLO35HN3KPDDFXKB4ZQ74" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblFZPLNQD2OFEFXD4PHGYU7EOTXA" Name="DmTestB">
+    <Indexes>
+      <Index Id="idx4KUOK3M2HFDVLLCLE7T3O4GVIU" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colNFJVGOJTONHWJEFSZVSQ5DSN4Y colS3GS2FVOU5CKBPY3OVBEY4D36I"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colNFJVGOJTONHWJEFSZVSQ5DSN4Y" Name="pkInt" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colS3GS2FVOU5CKBPY3OVBEY4D36I" Name="pkStr" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colPTWLFDUMLBAPXH5AZMATUHFRQY" Name="title" ValType="21" Length="9" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblIOIXD5DJVVD53KTA2RNHOYYJGY" Name="UserParentSimple">
+    <Indexes>
+      <Index Id="idxFRUSTZ44Q5DEFDZWBZNQQUVHS4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col3DJGSMJLKNEFHDQX7K7IVXTCHI"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col3DJGSMJLKNEFHDQX7K7IVXTCHI" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA" Name="Parent">
+    <Indexes>
+      <Index Id="idxWS3QRCD7QRDIXLHTL4PJN26VZY" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colSMGQNI2XJJB3JIUX63F57YFYHI"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refFHD2TR22YBHP3OSTTHKHNHVTBM" Name="Parent=>Scheme (AuditScheme=>guid)" ReferencedTableId="tblJBWGL34ATTNBDPK5ABQJO5ADDQ" ChildColumnNames="AuditScheme"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colDVQJX56PLVEIHAGJAGM5PGF7ZM" Name="AuditScheme" ValType="21" Length="50" Precision="0"/>
+      <Column Id="colYVRONPVHI5H7DIARFWV6HIKPFU" Name="colClobAsXml" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colSMGQNI2XJJB3JIUX63F57YFYHI" Name="Id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col5CSHYC3NZFBLJBXEPEFH4MGBRA" Name="Title" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblKPUY4CMANZH3XDOZZB7FXKHWEY" Name="DmTest">
+    <Indexes>
+      <Index Id="idxYDMTJJ3BUJGZFM4U4AQ7RGV7EA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colJ6WR3DLVLNDOTPIDZWJ35IX4WY"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refW3BEPABCQ5EDBAOWED5J2INGL4" Name="DmTest=>DmTestA (keyInt=>pkInt, keyStr=>pkStr)" ReferencedTableId="tblCJ53NERF4VBJDEDGNHBFXRNNC4" ChildColumnNames="keyInt keyStr"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colJ6WR3DLVLNDOTPIDZWJ35IX4WY" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col2O7XOLNS5REDZF6BUVXGUUHPYI" Name="keyInt" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col3AKO7XWXVBD4BGKSSG7RWMMYYE" Name="keyStr" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colVCU56KXMXNH4PFG4UK73NH3SDY" Name="title" ValType="21" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colKWLK7EIMONCOZJUW7DLEGBQVN4" Name="colBool" ValType="1" Length="1" Precision="1"/>
+      <Column Id="colZ5PPFA3CKBCAFPB3LMS2T7WAXA" Name="colInt" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colCSTHQGKY2RCAXHUSCPFWYZRCVY" Name="colChar" ValType="3" Length="1" Precision="1"/>
+      <Column Id="colM5ISG432SNE4HEGXEDWRZTU7YY" Name="colNum" ValType="11" Length="9" Precision="3"/>
+      <Column Id="colOJIQE5FN75GE3CH3LFQ5YVHOD4" Name="colDateTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colJPNLJDHCYNCI7LKULGN7BEJ7OA" Name="colStr" ValType="21" Length="9" Precision="0"/>
+      <Column Id="colH43KVULMCFCOLEL7U3TNIRMDDQ" Name="colBin" ValType="22" Length="2000" Precision="0"/>
+      <Column Id="colO75MDDHFHJCUBEE76MM77IEN3Y" Name="colClob" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colAAPBA2A54ZDCRFTINVK6CX5LMA" Name="colBlob" ValType="28" Length="0" Precision="0"/>
+      <Column Id="colS3MBLR3BN5AGJM33ZFO3WRCJZA" Name="colArrBool" ValType="201" Length="0" Precision="0"/>
+      <Column Id="colQQ3IA4O5IZHQVBVOSVACCE6SAM" Name="colArrInt" ValType="202" Length="0" Precision="0"/>
+      <Column Id="colKIHTSAJN7FER7PRH77QW4AZHQY" Name="colArrChar" ValType="203" Length="0" Precision="0"/>
+      <Column Id="colYME7HN4LCZH25OTBU7J4QPBJMY" Name="colArrNum" ValType="211" Length="0" Precision="0"/>
+      <Column Id="colXJYM2AOY2FAW5KBGWOHORASQ5U" Name="colArrDateTime" ValType="212" Length="0" Precision="0"/>
+      <Column Id="colI4BM7HLHYFBXLAZSSBWR2FAGBI" Name="colArrBin" ValType="222" Length="0" Precision="0"/>
+      <Column Id="colONNDXIZQ6ZGJ7GIS65EKXJPER4" Name="colArrStr" ValType="221" Length="0" Precision="0"/>
+      <Column Id="colJAXHCRLRWBHJHISV3Z7SAZGXDE" Name="valType" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblOIKKJ54YSNFLTMVHR4R6DKTYBQ" Name="UserParentComplex">
+    <Indexes>
+      <Index Id="idxDYXMZ6RVEBCCNO34UTXBGLQWJY" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colAH4WWXZNGFCDRLJWRZTN2QADM4 colU2FPEUCHKJGJ5CPIDPJJ5FNZN4 col3XXTUTMNCZCFPCI3VAO4IBWHZI colMCHRHK4S5FEQZNOJMITW57C2NM"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colAH4WWXZNGFCDRLJWRZTN2QADM4" Name="pk_int" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colU2FPEUCHKJGJ5CPIDPJJ5FNZN4" Name="pk_char" ValType="3" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="col3XXTUTMNCZCFPCI3VAO4IBWHZI" Name="pk_date" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colMCHRHK4S5FEQZNOJMITW57C2NM" Name="pk_str" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblOLTF5INQ6FH55KRXWIOP3Q64GU" Name="TableWithDatePk">
+    <Indexes>
+      <Index Id="idxIAFOHBGL3ZDMNDZGY2KX2HJRY4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colG3RIDFMRUVHF5HLGU3236IYZPU"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colG3RIDFMRUVHF5HLGU3236IYZPU" Name="datepk" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col6XIN5577QREIZIXUVARGJQ5WGY" Name="intvalue" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblP4J5I7EXBFBEND2UG7UHGJISEE" Name="Images">
+    <Indexes>
+      <Index Id="idxXPUEUZ2RZRAGLDAKN6ZONQ2UGQ" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col4M5TIJ6C7JDP7GHFWSJBMGOEWI"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col4M5TIJ6C7JDP7GHFWSJBMGOEWI" Name="Id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colQSXDS57LTBEXRFWEQ7D2T7JJCA" Name="Data" ValType="28" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colCNWLYWVBWJFIXPIOJYKEH5LA7Q" Name="MimeType" ValType="21" Length="64" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblPMQ4RAJPDRHURAMR4OJE365D4M" Name="InheritanceNode">
+    <Indexes>
+      <Index Id="idxWQCMQZDJVRHDFAHNUCTS7L57FY" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colXW7M4ZN5GZEYZPIWG6AULVUGWY"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refYL3LUL2GMFGXFAX2ET4HIXIEQU" Name="InheritanceNode=>InheritanceNode (parentId=>id)" ReferencedTableId="tblPMQ4RAJPDRHURAMR4OJE365D4M" ChildColumnNames="parentId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colXW7M4ZN5GZEYZPIWG6AULVUGWY" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colO6B5VNFX5ZG7XO7OBK63W2PVCE" Name="colClob" ValType="27" Length="0" Precision="0"/>
+      <Column Id="col46J3OSAQYJHIPOR2IHDQMPHLNA" Name="colBlob" ValType="28" Length="0" Precision="0"/>
+      <Column Id="colNJYGG7PJSZBVRJAQ7A5ZJDETDE" Name="colInt" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col3JGI4R2HZFBC7P3DJVSCBX3U4Y" Name="colArrParentRef" ValType="231" Length="0" Precision="0"/>
+      <Column Id="colN73ANLDFPZCARCF46OKCLYPFIU" Name="parentId" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblRRUNIOXPJJDFJODOO3W76OYHAI" Name="TestPair">
+    <Indexes>
+      <Index Id="idxPJPBBJFYHVGHLPJSNXURRNXQ5A" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colVK7PXMH6VVAOTPK7PG4BXFHWWY colYV55BWKNEBHODPMJH3JBJNGVOE"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colVK7PXMH6VVAOTPK7PG4BXFHWWY" Name="key" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colYV55BWKNEBHODPMJH3JBJNGVOE" Name="value" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colXJKRMUZ6GVAFVCVY6XPXAU6DDY" Name="ClassGuid" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblS4NVQKVQI5HLTG33G43UK5QMXU" Name="AuditDetail" MasterTableId="tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA">
+    <Indexes>
+      <Index Id="idx2G7STTYP3BFYHKMWFR3RBSHBNA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colKIXGB62HZZBFVEYXCZA6SKH56I col4DLFFUDKF5G3TEWEXBLUUQFLXU colK3BN3EZAARAFNOAW6NLHGG6VY4 colT24PEKRT4JBUZKM44UFQ7AL34M colA4UXXF74ZNHCNOCPSVJL7VCTMU col3MWPYPQ6JNEYTGAZTS6JYB7NWA"/>
+    </Indexes>
+    <ReferenceToMasterTable Id="ref5JQYWO62MRDVLN4URUST3BBLPA" Name="AuditDetail=>AuditMaster (PkColInt=>PkColInt, PkColChar=>PkColChar, PkColNum=>PkColNum, PkColDate=>PkColDate, PkColStr=>PkColStr, PkColTimestamp=>PkColTimestamp)"/>
+    <Columns>
+      <Column Id="colKIXGB62HZZBFVEYXCZA6SKH56I" Name="PkColInt" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col4DLFFUDKF5G3TEWEXBLUUQFLXU" Name="PkColChar" ValType="3" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colK3BN3EZAARAFNOAW6NLHGG6VY4" Name="PkColNum" ValType="11" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colT24PEKRT4JBUZKM44UFQ7AL34M" Name="PkColDate" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col3MWPYPQ6JNEYTGAZTS6JYB7NWA" Name="PkColTimestamp" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colA4UXXF74ZNHCNOCPSVJL7VCTMU" Name="PkColStr" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colB7LCJXCMXVFF7PZ7UH3YBVJXOQ" Name="Title" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE" Name="TEDCParent">
+    <Indexes>
+      <Index Id="idxH6XOVL44LVDZZB4JHXNHMRRYVI" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colCHVPDUW5EFEY5C3ZPOMQVYELXY"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colCHVPDUW5EFEY5C3ZPOMQVYELXY" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colXVELGQ7EEND5BPLMYS2Z3YWMDY" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colRBUYWQQTLNBGVB4YBY2UTMBQYI" Name="notes" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblZ7C7LFLBNJAMHMDNYM42PPFEXA" Name="DmTestChild">
+    <Indexes>
+      <Index Id="idx6LCW56NAVFHB5HODRETSLH5JLA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colEAEYV73KD5CJDFNHKHO3SDZ5A4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref6YWK2O6TT5CTZNAW6GJ4WUIDVM" Name="DmTestChild=>DmTest (keyId=>id)" ReferencedTableId="tblKPUY4CMANZH3XDOZZB7FXKHWEY" ChildColumnNames="keyId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colEAEYV73KD5CJDFNHKHO3SDZ5A4" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colCJ54F2ADPNBEJFHETANG3IWXBQ" Name="keyId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colXVPZUKNRGBDNBEYLU5YPN7B24U" Name="title" ValType="21" Length="9" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

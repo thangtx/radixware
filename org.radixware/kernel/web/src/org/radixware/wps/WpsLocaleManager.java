@@ -11,6 +11,7 @@
 
 package org.radixware.wps;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -18,18 +19,26 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.radixware.kernel.common.client.eas.connections.ConnectionOptions;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
+import org.radixware.kernel.starter.meta.FileMeta;
+import org.radixware.kernel.starter.meta.RevisionMeta;
 import org.radixware.kernel.starter.radixloader.RadixClassLoader;
+import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 
 final class WpsLocaleManager extends org.radixware.kernel.common.client.env.LocaleManager{
+    
+    private static final String TS_FILE_PATH = "kernel/web/explorer_%s.ts";
 
     private final WpsEnvironment env;
 
@@ -63,6 +72,28 @@ final class WpsLocaleManager extends org.radixware.kernel.common.client.env.Loca
         }
 
         return result;
+    }
+    
+    public EIsoLanguage autoSelectLanguage(final HttpConnectionOptions httpConnection, final ConnectionOptions easConnection){
+        EIsoLanguage lang;
+        if (getSupportedLanguages().size() == 1) {
+            lang = getSupportedLanguages().get(0);
+        } else {
+            lang = httpConnection != null ? httpConnection.getUrlLanguage() : null;
+            if (lang == null || !getSupportedLanguages().contains(lang)) {
+                lang = easConnection != null ? easConnection.getLanguage() : null;
+                if (lang != null && !getSupportedLanguages().contains(lang)) {
+                    lang = httpConnection != null ? httpConnection.getBrowserLanguage() : null;
+                    if (lang != null && !getSupportedLanguages().contains(lang)) {
+                        lang = EIsoLanguage.ENGLISH;
+                        if (!getSupportedLanguages().contains(lang)) {
+                            lang = getSupportedLanguages().get(0);
+                        }
+                    }
+                }
+            }
+        }
+        return lang;
     }
 
     static final class TranslationSet {
@@ -197,125 +228,160 @@ final class WpsLocaleManager extends org.radixware.kernel.common.client.env.Loca
         }
         return res;
     }
+    
+    private static InputStream loadTranslationsFromRepository(final EIsoLanguage lang){
+        final RadixLoader loader = RadixLoader.getInstance();
+        final RevisionMeta revision = loader.getCurrentRevisionMeta();
+        final String fileName = String.format(TS_FILE_PATH, lang.getValue());
+        final FileMeta fileMeta = revision.findOverFile(fileName);
+        if (fileMeta==null){
+            return null;
+        }
+        final byte[] translation;
+        try{
+            translation = loader.readFileData(fileMeta, revision);
+        }catch(IOException exception){
+            Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Failed to extract repository file: \"" +fileName+ "\"",exception);
+            return null;
+        }  
+        return translation==null || translation.length==0 ? null : new ByteArrayInputStream(translation);        
+    }
 
-    private static void loadTranslations(EIsoLanguage lang) {
-        InputStream stream = WpsLocaleManager.class.getResourceAsStream("translations_" + lang.getValue() + ".properties");
-        if (stream != null) {
-            try {
-                final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-
-                final TranslationSet set = new TranslationSet();
-                parser.parse(stream, new DefaultHandler() {
-
-                    @Override
-                    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-                        if ("context".equals(qName)) {
-                            set.closeCurrentLoadContext();
-                            set.beginContext();
-                        } else if ("name".equals(qName)) {
-                            TranslationSet.Context c = set.currentLoadContext();
-                            if (c != null) {
-                                c.expectName = true;
-                            }
-                        } else if ("message".equals(qName)) {
-                            TranslationSet.Context c = set.currentLoadContext();
-                            if (c != null) {
-                                c.beginMessage();
-                            }
-                        } else if ("source".equals(qName)) {
-                            TranslationSet.Context c = set.currentLoadContext();
-                            if (c != null) {
-                                TranslationSet.Context.Message m = c.currentLoadMessage();
-                                if (m != null) {
-                                    m.expectSrc = true;
-                                }
-                            }
-                        } else if ("translation".equals(qName)) {
-                            TranslationSet.Context c = set.currentLoadContext();
-                            if (c != null) {
-                                TranslationSet.Context.Message m = c.currentLoadMessage();
-                                if (m != null) {
-                                    m.expectTranslation = true;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void endElement(String uri, String localName, String qName) throws SAXException {
-                        if ("context".equals(qName)) {
-                            set.closeCurrentLoadContext();
-                        } else if ("translation".equals(qName)) {
-                            TranslationSet.Context c = set.currentLoadContext();
-                            if (c != null) {
-                                TranslationSet.Context.Message m = c.currentLoadMessage();
-                                if (m != null) {
-                                    m.expectTranslation = false;
-                                }
-                            }
-                        } else if ("source".equals(qName)) {
-                            TranslationSet.Context c = set.currentLoadContext();
-                            if (c != null) {
-                                TranslationSet.Context.Message m = c.currentLoadMessage();
-                                if (m != null) {
-                                    m.expectSrc = false;
-                                }
-                            }
-                        } else if ("name".equals(qName)) {
-                            TranslationSet.Context c = set.currentLoadContext();
-                            if (c != null) {
-                                c.expectName = false;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void characters(char[] ch, int start, int length) throws SAXException {
-                        super.characters(ch, start, length);
-
-                        TranslationSet.Context c = set.currentLoadContext();
-                        if (c != null) {
-
-                            if (c.expectName) {
-                                if (c.name != null) {
-                                    c.name += String.valueOf(ch, start, length);
-                                } else {
-                                    c.name = String.valueOf(ch, start, length);
-                                }
-
-                            } else {
-                                TranslationSet.Context.Message m = c.currentLoadMessage();
-                                if (m != null) {
-                                    if (m.expectSrc) {
-                                        if (m.src != null) {
-                                            m.src += String.valueOf(ch, start, length);
-                                        } else {
-                                            m.src = String.valueOf(ch, start, length);
-                                        }
-
-                                    }
-                                    if (m.expectTranslation) {
-                                        if (m.translation != null) {
-                                            m.translation += String.valueOf(ch, start, length);
-                                        } else {
-                                            m.translation = String.valueOf(ch, start, length);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
+    private static void loadTranslations(final EIsoLanguage lang) {
+        InputStream stream = loadTranslationsFromRepository(lang);
+        if (stream!=null){
+            final TranslationSet set = readTranslations(stream);
+            if (set!=null){
                 translations.put(lang, set);
                 return;
-            } catch (IOException | ParserConfigurationException | SAXException ex) {
-            } finally {
-                try {
-                    stream.close();
-                } catch (IOException ex) {
-                }
+            }
+        }
+        stream = WpsLocaleManager.class.getResourceAsStream("translations_" + lang.getValue() + ".properties");
+        if (stream!=null){
+            final TranslationSet set = readTranslations(stream);
+            if (set!=null){
+                translations.put(lang, set);
+                return;
             }
         }
         translations.put(lang, NONE);
+    }
+    
+    private static TranslationSet readTranslations(final InputStream stream) {
+        try {
+            final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+
+            final TranslationSet set = new TranslationSet();
+            parser.parse(stream, new DefaultHandler() {
+
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                    if ("context".equals(qName)) {
+                        set.closeCurrentLoadContext();
+                        set.beginContext();
+                    } else if ("name".equals(qName)) {
+                        TranslationSet.Context c = set.currentLoadContext();
+                        if (c != null) {
+                            c.expectName = true;
+                        }
+                    } else if ("message".equals(qName)) {
+                        TranslationSet.Context c = set.currentLoadContext();
+                        if (c != null) {
+                            c.beginMessage();
+                        }
+                    } else if ("source".equals(qName)) {
+                        TranslationSet.Context c = set.currentLoadContext();
+                        if (c != null) {
+                            TranslationSet.Context.Message m = c.currentLoadMessage();
+                            if (m != null) {
+                                m.expectSrc = true;
+                            }
+                        }
+                    } else if ("translation".equals(qName)) {
+                        TranslationSet.Context c = set.currentLoadContext();
+                        if (c != null) {
+                            TranslationSet.Context.Message m = c.currentLoadMessage();
+                            if (m != null) {
+                                m.expectTranslation = true;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void endElement(String uri, String localName, String qName) throws SAXException {
+                    if ("context".equals(qName)) {
+                        set.closeCurrentLoadContext();
+                    } else if ("translation".equals(qName)) {
+                        TranslationSet.Context c = set.currentLoadContext();
+                        if (c != null) {
+                            TranslationSet.Context.Message m = c.currentLoadMessage();
+                            if (m != null) {
+                                m.expectTranslation = false;
+                            }
+                        }
+                    } else if ("source".equals(qName)) {
+                        TranslationSet.Context c = set.currentLoadContext();
+                        if (c != null) {
+                            TranslationSet.Context.Message m = c.currentLoadMessage();
+                            if (m != null) {
+                                m.expectSrc = false;
+                            }
+                        }
+                    } else if ("name".equals(qName)) {
+                        TranslationSet.Context c = set.currentLoadContext();
+                        if (c != null) {
+                            c.expectName = false;
+                        }
+                    }
+                }
+
+                @Override
+                public void characters(char[] ch, int start, int length) throws SAXException {
+                    super.characters(ch, start, length);
+
+                    TranslationSet.Context c = set.currentLoadContext();
+                    if (c != null) {
+
+                        if (c.expectName) {
+                            if (c.name != null) {
+                                c.name += String.valueOf(ch, start, length);
+                            } else {
+                                c.name = String.valueOf(ch, start, length);
+                            }
+
+                        } else {
+                            TranslationSet.Context.Message m = c.currentLoadMessage();
+                            if (m != null) {
+                                if (m.expectSrc) {
+                                    if (m.src != null) {
+                                        m.src += String.valueOf(ch, start, length);
+                                    } else {
+                                        m.src = String.valueOf(ch, start, length);
+                                    }
+
+                                }
+                                if (m.expectTranslation) {
+                                    if (m.translation != null) {
+                                        m.translation += String.valueOf(ch, start, length);
+                                    } else {
+                                        m.translation = String.valueOf(ch, start, length);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            return set;
+        } catch (IOException | ParserConfigurationException | SAXException ex) {
+            Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Unexpected exception on loading translations", ex);
+            return null;
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException ex) {
+            }
+        }        
     }
 }

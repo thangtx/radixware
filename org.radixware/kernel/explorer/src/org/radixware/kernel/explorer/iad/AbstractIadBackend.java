@@ -34,7 +34,7 @@ public abstract class AbstractIadBackend {
         private Factory(){            
         }
         
-        public static AbstractIadBackend getInstance(final EImageAcquaringDeviceType type){
+        public static AbstractIadBackend getInstance(final EImageAcquiringDeviceType type){
             if (SystemTools.isWindows){
                 return IadWiaBackend.getInstance();
             }else if (SystemTools.isUnix()){
@@ -46,8 +46,8 @@ public abstract class AbstractIadBackend {
     }
     
 
-    public final Collection<ImageAcquaringDevice> enumDevices(final IClientEnvironment environment, 
-                                                              final EImageAcquaringDeviceType type){
+    public final Collection<ImageAcquiringDevice> enumDevices(final IClientEnvironment environment, 
+                                                              final EImageAcquiringDeviceType type){
         if (!inited){
             if (init(environment)){
                 inited = true;                
@@ -58,8 +58,8 @@ public abstract class AbstractIadBackend {
         return enumDevicesImpl(environment, type);
     }
     
-    protected abstract Collection<ImageAcquaringDevice> enumDevicesImpl(final IClientEnvironment environment, 
-                                                                        final EImageAcquaringDeviceType type);
+    protected abstract Collection<ImageAcquiringDevice> enumDevicesImpl(final IClientEnvironment environment, 
+                                                                        final EImageAcquiringDeviceType type);
     
     protected Throwable processEnumDevicesTaskException(final ExecutionException exception){
         return exception.getCause();
@@ -84,8 +84,8 @@ public abstract class AbstractIadBackend {
         return messageProvider.translate("IAD", "No device was found. Make sure the device is online, connected to the PC, and has the correct driver installed on the PC.");
     }
     
-    public final ImageAcquaringDevice selectDevice(final IClientEnvironment environment, 
-                                                    final EImageAcquaringDeviceType type,
+    public final ImageAcquiringDevice selectDevice(final IClientEnvironment environment, 
+                                                    final EImageAcquiringDeviceType type,
                                                     final QWidget parentWidget,
                                                     final boolean forcedlyShowDialog) {
         if (!inited){
@@ -98,11 +98,11 @@ public abstract class AbstractIadBackend {
         final TaskWaiter taskWaiter = new TaskWaiter(environment,parentWidget);
         taskWaiter.setMessage(environment.getMessageProvider().translate("IAD", "Detecting Devices..."));
         taskWaiter.setCanBeCanceled(true);        
-        final Collection<ImageAcquaringDevice> devices;
+        final Collection<ImageAcquiringDevice> devices;
         try{
-            devices = taskWaiter.runAndWait(new Callable<Collection<ImageAcquaringDevice>>() {
+            devices = taskWaiter.runAndWait(new Callable<Collection<ImageAcquiringDevice>>() {
                 @Override
-                public Collection<ImageAcquaringDevice> call() throws Exception {
+                public Collection<ImageAcquiringDevice> call() throws Exception {
                     return enumDevices(environment,type);
                 }
             });

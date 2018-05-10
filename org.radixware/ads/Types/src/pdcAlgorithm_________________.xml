@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
-  <AdsClassDefinition Id="pdcAlgorithm_________________" Name="Algorithm" Type="3" Environment="server">
+  <AdsClassDefinition Id="pdcAlgorithm_________________" Name="Algorithm" DescriptionId="mlsCV4C5T4AORENPBSNC3JPY7KAFA" Type="3" Environment="server">
     <AccessRules IsAbstract="true">
       <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Algorithm"/>
     </AccessRules>
@@ -14,7 +14,7 @@
     <PropertyGroup Id="cpg6NKJIOQOZBFUBJ66632GULEC3Y" Name="Root"/>
     <Properties/>
     <Methods>
-      <Method Id="mthZCWDLZRZPNHFZH6YKAVDDOFFSQ" Name="beforeFinish" Nature="0" IsOverride="false">
+      <Method Id="mthZCWDLZRZPNHFZH6YKAVDDOFFSQ" Name="beforeFinish" DescriptionId="mlsSA5S5T7HAREGBEIJIWKHP7VRTI" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="beforeFinish()V"/>
         </AccessRules>
@@ -22,7 +22,7 @@
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException"/>
         </ThrownExceptions>
       </Method>
-      <Method Id="mthZPCQ5E77P5A35IQZSAQOIRKH34" Name="beforeResume" Nature="0" IsOverride="false">
+      <Method Id="mthZPCQ5E77P5A35IQZSAQOIRKH34" Name="beforeResume" DescriptionId="mlsGBIHYY7EQRB23D34FKOYTRJ3HM" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="beforeResume()V"/>
         </AccessRules>
@@ -30,7 +30,7 @@
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException"/>
         </ThrownExceptions>
       </Method>
-      <Method Id="mth2GR3UFFWVJFR7LY3SIFNVR4ENE" Name="beforeStart" Nature="0" IsOverride="false">
+      <Method Id="mth2GR3UFFWVJFR7LY3SIFNVR4ENE" Name="beforeStart" DescriptionId="mlsG6OWSZOIFRGCNHVVXPT6NQWYIE" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="beforeStart()V"/>
         </AccessRules>
@@ -38,7 +38,7 @@
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException"/>
         </ThrownExceptions>
       </Method>
-      <Method Id="mthPLIAOSXHUVCWDE46EQWS73VK7U" Name="beforeSuspend" Nature="0" IsOverride="false">
+      <Method Id="mthPLIAOSXHUVCWDE46EQWS73VK7U" Name="beforeSuspend" DescriptionId="mlsICPQQKZB4BBS5NEUTRGJ6NN23Y" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="beforeSuspend()V"/>
         </AccessRules>
@@ -46,16 +46,16 @@
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException"/>
         </ThrownExceptions>
       </Method>
-      <Method Id="mthK7BUDYS3AXORDNHYABIFNQAABA" Name="onEvent" Nature="0" IsOverride="false">
+      <Method Id="mthK7BUDYS3AXORDNHYABIFNQAABA" Name="onEvent" DescriptionId="mls7NT2VOF3LREKLO7DTV6AHTX45Y" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
-          <Parameter Name="processId" Id="mprXR4JFXP2AVCH5NYCH6HEUTWGOI">
+          <Parameter Name="processId" DescriptionId="mls6Y3OTMSQ4FAVTOSE73XVQ27ADQ" Id="mprXR4JFXP2AVCH5NYCH6HEUTWGOI">
             <Type TypeId="2"/>
           </Parameter>
-          <Parameter Name="waitId" Id="mprEAJOMMMHY5FY3HJGFDVWKAKOFM">
+          <Parameter Name="waitId" DescriptionId="mlsVYRQOVC6X5ENPH5QA4JZZYOFIU" Id="mprEAJOMMMHY5FY3HJGFDVWKAKOFM">
             <Type TypeId="2"/>
           </Parameter>
-          <Parameter Name="clientData" Id="mpr5JT5ACB2E5DC3GHC6L7MYUQ7YM">
+          <Parameter Name="clientData" DescriptionId="mlsFMQH5OYUS5D6JES342ELTH7EPA" Id="mpr5JT5ACB2E5DC3GHC6L7MYUQ7YM">
             <Type TypeId="400" extStr="java.lang.Object"/>
           </Parameter>
         </Parameters>
@@ -69,13 +69,17 @@
     onEvent(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), processId, waitId, clientData);
@@ -83,7 +87,9 @@
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true"/>
+              <xsc:IdReference Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ mth3IJGQPORMVEO7HQLJ7TDK2VWME" Invoke="true">
+                <xsc:Presentation>AppException</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e.getMessage());
@@ -92,13 +98,13 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthN6CF3S22AXORDNHYABIFNQAABA" Name="onTimeout" Nature="0" IsOverride="false">
+      <Method Id="mthN6CF3S22AXORDNHYABIFNQAABA" Name="onTimeout" DescriptionId="mlsGAXZV7MGEVCUZEAGM2XRXRDVGQ" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
-          <Parameter Name="processId" Id="mprSAANIVFXFVEAJNZJCVGAXWX4HU">
+          <Parameter Name="processId" DescriptionId="mls7PZO4UTUMZADRPSBNLCRQB5YHM" Id="mprSAANIVFXFVEAJNZJCVGAXWX4HU">
             <Type TypeId="2"/>
           </Parameter>
-          <Parameter Name="waitId" Id="mprKDBB6U2EBRF5JA6DSH5QYW54PA">
+          <Parameter Name="waitId" DescriptionId="mlsVBSKWESPLFAEJBXAXISNCOVPGE" Id="mprKDBB6U2EBRF5JA6DSH5QYW54PA">
             <Type TypeId="2"/>
           </Parameter>
         </Parameters>
@@ -135,13 +141,13 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthP5FIAPBYA3ORDNH2ABIFNQAABA" Name="setSimulatedTime" Nature="0" IsOverride="false">
+      <Method Id="mthP5FIAPBYA3ORDNH2ABIFNQAABA" Name="setSimulatedTime" DescriptionId="mlsQKKIV6LRVVDBJK5Z2AOQ5UZDAI" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true" IsStatic="true"/>
         <Parameters>
-          <Parameter Name="process" Id="mprHWLF3VU42JHQNAANCYL6OAP47M">
+          <Parameter Name="process" DescriptionId="mlsC4EMGKRBNRCIDLMHQ76JFBUMVU" Id="mprHWLF3VU42JHQNAANCYL6OAP47M">
             <Type TypeId="411" Path="pdcEntity____________________"/>
           </Parameter>
-          <Parameter Name="time" Id="mprIBU4X6ZRYZCY3KKMAPDNVLIDPM">
+          <Parameter Name="time" DescriptionId="mls2N6J3DO26RH6NLDJKTHEQJHFEA" Id="mprIBU4X6ZRYZCY3KKMAPDNVLIDPM">
             <Type TypeId="12"/>
           </Parameter>
         </Parameters>

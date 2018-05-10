@@ -13,6 +13,7 @@ package org.radixware.kernel.designer.ads.editors.clazz.forms.common;
 
 import java.awt.Point;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -21,6 +22,7 @@ import java.awt.Rectangle;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import org.radixware.kernel.common.defs.ads.ui.enums.EAlignment;
+import org.radixware.kernel.designer.ads.editors.clazz.forms.canvas.Canvas;
 
 
 public class DrawUtil {
@@ -49,7 +51,8 @@ public class DrawUtil {
     public final static Color COLOR_TOOLTIP_TEXT = new Color(0, 0, 0);
 //    final static public Font DEFAULT_FONT = new Font("Arial", Font.PLAIN, 10);
     public final static Font DEFAULT_FONT = new Font("MS Shell Dlg", Font.PLAIN, 12);
-    static public FontMetrics DEFAULT_FONT_METRICS = null;
+    private static volatile FontMetrics DEFAULT_FONT_METRICS = null;
+    private final static Object monitor = new Object();
 
     public static void drawShadeLine(Graphics2D gr, int x1, int y1, int x2, int y2, boolean sunken /*= true*/, int lineWidth /*= 1*/, int midLineWidth /*= 0*/) {
         if (!(gr != null && lineWidth >= 0 && midLineWidth >= 0)) {
@@ -514,5 +517,25 @@ public class DrawUtil {
         gr.setPaint(color);
         gr.drawLine(x1, y1, x2, y2);
         gr.setPaint(oldPaint);
+    }
+    
+    public static FontMetrics getFontMetrics(){
+        return getFontMetrics(null);
+    }
+    
+    public static FontMetrics getFontMetrics(Component component) {
+        synchronized (monitor) {
+            if (DrawUtil.DEFAULT_FONT_METRICS == null) {
+                if (component != null) {
+                    DrawUtil.DEFAULT_FONT_METRICS = component.getFontMetrics(DEFAULT_FONT);
+                    return DEFAULT_FONT_METRICS;
+                } else {
+                    Canvas c = new Canvas();
+                    return c.getFontMetrics(DEFAULT_FONT);
+                }
+            }
+        }
+        
+        return DEFAULT_FONT_METRICS;
     }
 }

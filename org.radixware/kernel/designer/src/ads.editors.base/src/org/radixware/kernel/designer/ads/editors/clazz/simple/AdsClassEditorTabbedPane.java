@@ -348,7 +348,7 @@ final class AdsClassEditorTabbedPane extends JPanel {
                         titlesForSingleHandleInfo = new HandleInfo() {                          
                             @Override
                             public AdsDefinition getAdsDefinition() {
-                                return sourceClass;
+                                return ((AdsEntityObjectClassDef) sourceClass).getPresentations().findOwnerTitleDefinition();
                             }
 
                             @Override
@@ -925,9 +925,19 @@ final class AdsClassEditorTabbedPane extends JPanel {
                     
                 revalidate();
             } else {
+                AdsEntityObjectClassDef basis = ((AdsEntityObjectClassDef) sourceClass).findBasis();
+                if (!isPluralPanel &&  basis != null) {
+                    chkInherit.setVisible(true);
+                    updateSingularPanel();
+                } else {
+                    chkInherit.setVisible(false);
+                    chkInherit.setSelected(false);
+                }
                 super.open(handleInfo);
-                chkInherit.setVisible(false);
-                chkInherit.setSelected(false);
+                if (!isPluralPanel && basis != null) {
+                    update();
+                } 
+                
                 if (isPluralPanel){
                     if (((AdsEntityClassDef) sourceClass).getPresentations().isEntityTitleInherit()){
                         updatePluralPanel();

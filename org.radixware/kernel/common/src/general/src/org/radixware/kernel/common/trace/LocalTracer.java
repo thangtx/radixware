@@ -20,7 +20,7 @@ public abstract class LocalTracer {
     public void debug(final String mess, final boolean isSensitive) {
         put(EEventSeverity.DEBUG, mess, null, null, isSensitive);
     }
-
+    
     public abstract void put(EEventSeverity severity, String localizedMess, String code, List<String> words, boolean isSensitive);
 
     public void putFloodControlled(final String floodKey, EEventSeverity severity, String localizedMess, String code, List<String> words, boolean isSensitive) {
@@ -34,4 +34,29 @@ public abstract class LocalTracer {
     public long getMinSeverity(final EEventSource eventSource) {
         return getMinSeverity(eventSource == null ? (String) null : eventSource.getValue());
     }
+    
+
+
+    
+    private static LocalTracer findRadixTraceAsLocalTracer() {
+        final IRadixTrace irt = IRadixTrace.Lookup.findInstance(null);
+        final LocalTracer lt = irt instanceof LocalTracer ? (LocalTracer) irt : null;
+        return lt;
+    }
+    
+    private static LocalTracer getLocalOrEmptyTracer() {
+        LocalTracer localTracer = LocalTracerThreadGroup.findLocalTracer();
+        localTracer = localTracer != null ? localTracer : findRadixTraceAsLocalTracer();
+        localTracer = localTracer != null ? localTracer : EmptyLocalTracer.getInstance();
+        return localTracer;
+    }
+    
+    public static void debugNonSensitive(String mess) {
+        getLocalOrEmptyTracer().debug(mess, false);
+    }
+    
+    public static void debugSensitive(String mess) {
+        getLocalOrEmptyTracer().debug(mess, true);
+    }
+    
 }

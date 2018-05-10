@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import oracle.jdbc.OraclePreparedStatement;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
@@ -28,6 +27,7 @@ import org.radixware.kernel.server.arte.AdsClassLoader;
 import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.instance.Instance;
 import org.radixware.kernel.server.jdbc.RadixPreparedStatement;
+import org.radixware.kernel.server.jdbc.RadixStatement;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 
 /**
@@ -47,7 +47,14 @@ public abstract class SqlClass {
     private final Arte arte;
 
     protected SqlClass(final Arte arte) { // for unit tests
-        this.arte = arte != null ? arte : ((AdsClassLoader) getClass().getClassLoader()).getArte();
+        Arte tmpArte = arte;
+        if (tmpArte == null && getClass().getClassLoader() instanceof AdsClassLoader) {
+            tmpArte = ((AdsClassLoader) getClass().getClassLoader()).getArte();
+        }
+        if (tmpArte == null) {
+            tmpArte = Arte.get();
+        } 
+        this.arte = tmpArte;
     }
 
     protected SqlClass() {
@@ -93,7 +100,7 @@ public abstract class SqlClass {
 
             public void setBatchSize(final int batchSize) throws SQLException {
                 if (this.batchSize != batchSize) {
-                    ((OraclePreparedStatement) (statement)).setExecuteBatch(batchSize);
+                    ((RadixStatement)statement).setExecuteBatch(batchSize);
                     this.batchSize = batchSize;
                 }
             }
@@ -223,7 +230,7 @@ public abstract class SqlClass {
                 if (item.batchSize > 1) {
                     arte.getProfiler().enterTimingSection(ETimingSection.RDX_SQLCLASS_BATCHEXEC);
                     try {
-                        ((OraclePreparedStatement) item.statement).sendBatch();
+                        ((RadixPreparedStatement)item.statement).sendBatch();
                     } finally {
                         arte.getProfiler().leaveTimingSection(ETimingSection.RDX_SQLCLASS_BATCHEXEC);
                     }

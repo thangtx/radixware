@@ -24,6 +24,7 @@ import com.trolltech.qt.gui.QToolButton;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dialogs.IFiltersManagerDialog;
 import org.radixware.kernel.common.client.env.ClientIcon;
+import org.radixware.kernel.common.client.meta.filters.RadFilterDef;
 import org.radixware.kernel.common.client.models.FilterModel;
 import org.radixware.kernel.common.client.models.groupsettings.Filters;
 import org.radixware.kernel.common.client.models.groupsettings.IGroupSetting;
@@ -63,7 +64,11 @@ public class FiltersManagerDialog extends ExplorerDialog implements IFiltersMana
             editFilterBtn.setIconSize(new QSize(28, 28));
             editFilterBtn.setAutoRaise(true);
             editFilterBtn.clicked.connect(editor, "editCurrentSetting()");
-            sqmlEditor.insertToolButton(editFilterBtn);
+            sqmlEditor.insertToolButton(editFilterBtn);            
+        }
+        {
+            sqmlEditor.setImportAccessible(false);
+            sqmlEditor.setExportAccessible(false);
         }
         setupUi();
         onChangeCurrentFilter((FilterModel) editor.getCurrentSetting());
@@ -91,7 +96,8 @@ public class FiltersManagerDialog extends ExplorerDialog implements IFiltersMana
     private void onChangeCurrentFilter(final IGroupSetting setting) {
         if (setting instanceof FilterModel) {
             final FilterModel filter = (FilterModel) setting;
-            sqmlEditor.setSqml(filter.getFinalCondition(), filter.getFilterDef().getParameters());
+            final RadFilterDef filterDef = filter.getFilterDef();
+            sqmlEditor.setSqml(filter.getFinalCondition(), filterDef.getConditionFrom(), filterDef.getParameters());
             sqmlEditor.setVisible(true);
             sqmlEditor.open();
             sqmlEditor.setFocusPolicy(FocusPolicy.NoFocus);
@@ -103,7 +109,7 @@ public class FiltersManagerDialog extends ExplorerDialog implements IFiltersMana
     }
 
     @Override
-    public void done(int result) {
+    public void done(final int result) {
         currentFilter = (FilterModel) editor.getCurrentSetting();
         editor.close();
         super.done(result);

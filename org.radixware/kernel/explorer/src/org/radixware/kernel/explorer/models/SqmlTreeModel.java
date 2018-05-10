@@ -19,6 +19,7 @@ import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QPalette;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -49,19 +50,22 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import java.util.Objects;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlSelectorPresentationDef;
 import org.radixware.kernel.common.enums.EValType;
 
 /**
  * Qt-модель древовидного представления {@link ISqmlDefinition sqml-дефиниций}
  */
 public class SqmlTreeModel extends QAbstractItemModel {
+    
+    private final static QColor DEFAULT_TEXT_COLOR = QApplication.palette().color(QPalette.ColorRole.WindowText);
 
     private static class Node {
 
         private final static QFont DEFAULT_FONT = QApplication.font();
         private final static QFont BOLD_FONT = QApplication.font().clone();
         private final static QFont STRICKE_OUT_FONT = QApplication.font().clone();
-
+        
         static {
             BOLD_FONT.setBold(true);
             STRICKE_OUT_FONT.setStrikeOut(true);
@@ -136,6 +140,11 @@ public class SqmlTreeModel extends QAbstractItemModel {
                 childNodes.add(new Node(indices.getPrimaryIndex(),this));
                 for (ISqmlTableIndexDef index : indices) {
                     childNodes.add(new Node(index, this));
+                }
+            }
+            if (itemTypes.contains(ItemType.SELECTOR)) {
+                for (ISqmlSelectorPresentationDef selectorPresentation: table.getSelectorPresentations()) {
+                    childNodes.add(new Node(selectorPresentation, this));
                 }
             }
         }
@@ -334,7 +343,7 @@ public class SqmlTreeModel extends QAbstractItemModel {
      */
     public static enum ItemType {
 
-        PROPERTY, PROPERTY_OBJECT, ENUIM_ITEM, REFERENCE, INDEX, REFERENCE_GROUP, FUNCTION, FUNCTION_PARAMETER, MODULE_INFO
+        PROPERTY, PROPERTY_OBJECT, ENUIM_ITEM, REFERENCE, INDEX, REFERENCE_GROUP, FUNCTION, FUNCTION_PARAMETER, MODULE_INFO, SELECTOR
     };
     private final EnumSet<ItemType> itemTypes = EnumSet.allOf(ItemType.class);
     private final List<Node> rootNodes = new ArrayList<>();
@@ -484,7 +493,7 @@ public class SqmlTreeModel extends QAbstractItemModel {
                 alignment.set(index.column() == 0 ? Qt.AlignmentFlag.AlignLeft : Qt.AlignmentFlag.AlignRight);
                 return alignment.value();            
             case ItemDataRole.ForegroundRole:
-                return index.column() == 0 ? QColor.black : QColor.gray;
+                return index.column() == 0 ? DEFAULT_TEXT_COLOR : QColor.gray;
             //case SqmlDefinitionsTreeItemDelegate.SELECTED_ITEM_FOREGROUND_ROLE:
             //    return markDeprecatedItems && node.isDeprecated() ? QColor.red : null;
             case ItemDataRole.UserRole:
@@ -555,7 +564,7 @@ public class SqmlTreeModel extends QAbstractItemModel {
             reinit(false);
         }
     }
-
+    
     public void addTopLevelDefinitions(final List<ISqmlDefinition> defList) {
         if (defList != null && !defList.isEmpty()) {
             for (ISqmlDefinition definition : defList) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -16,11 +16,6 @@ import org.radixware.kernel.server.units.arte.ArteUnit;
 import org.radixware.kernel.server.units.job.executor.JobExecutorUnit;
 import org.radixware.kernel.server.units.job.scheduler.JobSchedulerUnit;
 import org.radixware.kernel.server.units.netport.NetPortHandlerUnit;
-import org.radixware.kernel.server.units.persocomm.FileUnit;
-import org.radixware.kernel.server.units.persocomm.MailUnit;
-import org.radixware.kernel.server.units.persocomm.SMPPUnit;
-import org.radixware.kernel.server.units.persocomm.SMSMailUnit;
-import org.radixware.kernel.server.units.persocomm.GSMModemUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +29,7 @@ import org.radixware.kernel.server.units.persocomm.*;
 import org.radixware.kernel.server.units.snmp.SnmpAgentUnit;
 
 public final class LayerUnitFactory implements ILayerUnitFactory {
-    
+
     private final boolean USE_OLD_PERSO_UNITS = SystemPropUtils.getBooleanSystemProp("rdx.use.old.perso.modules", false);
 
     public LayerUnitFactory() {
@@ -61,67 +56,37 @@ public final class LayerUnitFactory implements ILayerUnitFactory {
             return new NetHubUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_SMPP.getValue().longValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new SMPPUnit(instance, id, title);
-            } else {
-                return new NewSMPPUnit(instance, id, title);
-            }
+            return new SmppUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_TWITTER.getValue().longValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new TwitterUnit(instance, id, title);
-            } else {
-                return new NewTwitterUnit(instance, id, title);
-            }
+            return new TwitterUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_SERVICE_BUS.getValue().longValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new ServiceBusUnit(instance, id, title);
-            } else {
-                return new NewServiceBusUnit(instance, id, title);
-            }
+            return new ServiceBusUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_SMTP.getValue().longValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new MailUnit(instance, id, title);
-            } else {
-                return new NewMailUnit(instance, id, title);
-            }
+            return new MailUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_SMSVIA_SMTP.getValue().longValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new SMSMailUnit(instance, id, title);
-            } else {
-                return new NewSMSMailUnit(instance, id, title);
-            }
+            return new SmsMailUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_FILE.getValue().longValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new FileUnit(instance, id, title);
-            } else {
-                return new NewFileUnit(instance, id, title);
-            }
+            return new FileUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_GSM_MODEM.getValue().longValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new GSMModemUnit(instance, id, title);
-            } else {
-                return new NewGSMModemUnit(instance, id, title);
-            }
+            return new GsmModemUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_GCM.getValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new GcmUnit(instance, id, title);
-            } else {
-                return new NewGcmUnit(instance, id, title);
-            }
+            return new GcmUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.DPC_APNS.getValue()) {
-            if (USE_OLD_PERSO_UNITS) {
-                return new ApnsUnit(instance, id, title);
-            } else {
-                return new NewApnsUnit(instance, id, title);
-            }
+            return new ApnsUnit(instance, id, title);
+        }
+        if (unitType.longValue() == EUnitType.DPC_WNS.getValue()) {
+            return new WnsUnit(instance, id, title);
+        }
+        if (unitType.longValue() == EUnitType.DPC_DELIVERY_ACK.getValue()) {
+            return new DeliveryAckUnit(instance, id, title);
         }
         if (unitType.longValue() == EUnitType.SNMP_AGENT.getValue().longValue()) {
             return new SnmpAgentUnit(instance, id, title);

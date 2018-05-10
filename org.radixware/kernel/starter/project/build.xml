@@ -161,6 +161,8 @@
         <jar update="true" file="${single_dist.jar}">
             <manifest>
                 <attribute name="Permissions" value="all-permissions"/>
+            	<attribute name="Premain-Class" value="org.radixware.kernel.starter.StarterAgent"/>
+	        <attribute name="Can-Redefine-Classes" value="true"/>
             </manifest>
         </jar>
     </target>

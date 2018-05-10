@@ -43,6 +43,7 @@ public abstract class EditorPageView extends Container implements IModificationL
     private final List<IModifableComponent> children = new LinkedList<>();
     private final ViewRestrictions restrictions = new ViewRestrictions(this);
     protected IView parentView;
+    private boolean wasClosed;
 
     public static abstract class EditorPageOpenHandler implements IEditorPageListener {
 
@@ -63,8 +64,7 @@ public abstract class EditorPageView extends Container implements IModificationL
     protected EditorPageView(IClientEnvironment environment, final IView parentView, final RadEditorPageDef page) {
         this.env = environment;
         this.parentView = parentView;
-        this.pageId = page.getId();
-
+        this.pageId = page.getId();        
     }
 
     public EditorPageModelItem getPage() {
@@ -116,6 +116,7 @@ public abstract class EditorPageView extends Container implements IModificationL
         parentView = null;
         children.clear();
         fireClosed();
+        wasClosed = true;
         return true;
     }
 
@@ -238,7 +239,7 @@ public abstract class EditorPageView extends Container implements IModificationL
 
     @Override
     public boolean hasUI() {
-        return true;
+        return !wasClosed;
     }
 
     @Override

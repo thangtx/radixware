@@ -197,7 +197,10 @@ public class DirectoryMeta {
                         break;
                     }
                     if (include_tag.equals(TAG_INCLUDE)) {
-                        includes.add(reader.getAttribute(ATTR_FILENAME));
+                        final String includeName = reader.getAttribute(ATTR_FILENAME);
+                        if (includeName != null && !includeName.endsWith("directory-dist.xml")) {//RADIX-12768: Runtime meta should not know about dist starter
+                            includes.add(includeName);
+                        }
                     }
                     reader.skipTag();
                 }

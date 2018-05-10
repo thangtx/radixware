@@ -34,6 +34,7 @@ import org.radixware.kernel.common.client.models.groupsettings.Filters;
 import org.radixware.kernel.common.client.models.groupsettings.IGroupSetting;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyValue;
+import org.radixware.kernel.common.client.models.items.properties.SimpleProperty;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
@@ -77,7 +78,7 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
         invalidateContition();
     }
     
-    private void invalidateContition(){
+    public final void invalidateContition(){
         conditionWasCalculated = false;
         finalCondition = null;        
     }
@@ -87,6 +88,7 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
         super.setView(view_);
         if (view_ == null) {
             cleanPages();
+            cleanPropertiesGroups();
        }
     }
 
@@ -148,7 +150,18 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
             propertiesWasActivated = true;
             activateProperties();
         }
-        return super.getActiveProperties();
+        if (isUserDefined()){
+            //Some properties may be removed from filter editor
+            final List<Property> activeProperties = new ArrayList<>(super.getActiveProperties());
+            for (int i=activeProperties.size()-1; i>=0; i--){
+                if (!filter.isPropertyDefExistsById(activeProperties.get(i).getId())){
+                    activeProperties.remove(i);
+                }
+            }
+            return activeProperties;
+        }else{
+            return super.getActiveProperties();
+        }
     }
 
     public boolean hasParameters() {
@@ -164,6 +177,7 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Property activateProperty(final Id propertyId) {
         final Property property = super.activateProperty(propertyId);
         final GroupModel ownerGroup = getFilterContext().ownerGroup;
@@ -190,7 +204,13 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
                     getEnvironment().getTracer().warning(String.format(message, paramDef.toString(), ClientException.exceptionStackToString(error)));
                 }
                 try {
-                    property.setServerValue(new PropertyValue(paramDef, val));
+                    if (property.isLocal()){
+                        if (property instanceof SimpleProperty){
+                            ((SimpleProperty)property).setInitialValue(val);
+                        }
+                    }else{
+                        property.setServerValue(new PropertyValue(paramDef, val));
+                    }
                 } catch (Exception ex) {
                     final String message = getEnvironment().getMessageProvider().translate("TraceMessage", "Can't set initial value of filter parameter %s:\n%s");
                     getEnvironment().getTracer().warning(String.format(message, paramDef.toString(), ClientException.exceptionStackToString(ex)));
@@ -207,7 +227,13 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
                 getEnvironment().getTracer().warning(String.format(message, paramDef.toString(), ClientException.exceptionStackToString(error)));
             }
             try {
-                property.setServerValue(new PropertyValue(paramDef, val));
+                if (property.isLocal()){
+                    if (property instanceof SimpleProperty){                        
+                        ((SimpleProperty)property).setInitialValue(val);
+                    }
+                }else{
+                    property.setServerValue(new PropertyValue(paramDef, val));
+                }
             } catch (Exception ex) {
                 final String message = getEnvironment().getMessageProvider().translate("TraceMessage", "Can't set initial value of filter parameter %s:\n%s");
                 getEnvironment().getTracer().warning(String.format(message, paramDef.toString(), ClientException.exceptionStackToString(ex)));
@@ -307,6 +333,11 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
         }
         return true;
     }
+    
+    @Override
+    public boolean isVisible(){
+        return true;
+    }
 
     @Override
     public boolean hasAncestor() {
@@ -379,12 +410,11 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
             return;
         }
         final ISelector selector = getFilterContext().ownerGroup.getGroupView();
-        if (edited &&  selector!= null && !doDisableView){            
+        if (selector!= null && edited && !doDisableView){
             //onStartEditPropertyValue is not invoked in web-server mode
-            doDisableView = true;//to avoid reсursive call of getGroupView().disable()
-            selector.blockRedraw();
+            doDisableView = true;//to avoid reсursive call of getGroupView().disable()            
             try{
-                isEdited = true;
+                isEdited = edited;
                 final List<Property> editableProperties = new ArrayList<>(getActiveProperties());
                 for (int i=editableProperties.size()-1;i>=0;i--){
                     final Property property = editableProperties.get(i);
@@ -394,28 +424,34 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
                         || property.isReadonly()){
                         editableProperties.remove(i);
                     }
-                }
-                if (selector.disable() && editableProperties.size()==1 && canApply()){                    
-                    final Property property = editableProperties.get(0);
-                    final boolean canApplyNow = property.getType()==EValType.PARENT_REF ||
-                                      property.isCustomEditOnly() ||
-                                      property.getEditMask() instanceof EditMaskConstSet ||
-                                      property.getEditMask() instanceof EditMaskList;
-                    if (canApplyNow){
-                        try{
-                            selector.reread();
-                        }catch(ServiceClientException exception){
-                            getEnvironment().getTracer().error(exception);
+                }                
+                selector.blockRedraw();
+                try{
+                    /*always disable selector if edited = true*/
+                    if (selector.disable() && editableProperties.size()==1 && canApply()){
+                        final Property property = editableProperties.get(0);
+                        final boolean canApplyNow = property.getType()==EValType.PARENT_REF ||
+                                          property.getType().isArrayType() ||
+                                          property.isCustomEditOnly() ||
+                                          property.getEditMask() instanceof EditMaskConstSet ||
+                                          property.getEditMask() instanceof EditMaskList;
+                        if (canApplyNow){
+                            try{
+                                selector.reread();
+                            }catch(ServiceClientException exception){
+                                getEnvironment().getTracer().error(exception);
+                            }
                         }
                     }
-                }
+                }finally{
+                    selector.unblockRedraw();
+                }                
             }finally{
-                doDisableView = false;
-                selector.unblockRedraw();
+                doDisableView = false;                
             }
         }else{
             isEdited = edited;
-        }
+        }        
     }
 
 //    public void wasModified
@@ -483,5 +519,20 @@ public class FilterModel extends ModelWithPages implements IGroupSetting {
     
     final Long getChangeTimestamp(){
         return isUserDefined() ? Long.valueOf(((RadUserFilter)filter).getChangeTimestamp()) : null;
+    }
+    
+    public final org.radixware.schemas.eas.PropertyList writeParametersToXml(final org.radixware.schemas.eas.PropertyList xml){
+        final Collection<org.radixware.kernel.common.client.models.items.properties.Property> properties = getActiveProperties();
+        if (properties==null || properties.isEmpty()){
+            return xml;
+        }else{
+            final org.radixware.schemas.eas.PropertyList list = xml==null ? org.radixware.schemas.eas.PropertyList.Factory.newInstance() : xml;
+            for (Property property: properties){
+                if (!property.isLocal()){
+                    property.writeValue2Xml(list.addNewItem());
+                }
+            }
+            return list;
+        }                        
     }
 }

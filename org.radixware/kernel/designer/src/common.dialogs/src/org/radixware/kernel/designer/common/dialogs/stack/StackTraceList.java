@@ -19,318 +19,34 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
+import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.Lookups;
 import org.radixware.kernel.common.defs.*;
-import org.radixware.kernel.common.defs.ads.AdsDefinition;
-import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef;
-import org.radixware.kernel.common.defs.ads.src.IJavaSource;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
-import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.src.SrcPositionLocator;
-import org.radixware.kernel.common.defs.ads.xml.IXmlDefinition;
-import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
-import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.resources.RadixWareIcons;
-import org.radixware.kernel.common.scml.CodePrinter;
-import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinition;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
 
 
 public class StackTraceList extends JPanel {
+    static String PROCESS = "stackAnalizerInProcess";
 
-    private static class StackTreeModelItem {
-
-        boolean isStackString = false;
-        int lineNumber = -1;
-        String text;
-        List<SrcPositionLocator.SrcLocation> locations = new LinkedList<>();
-        ERuntimeEnvironmentType environment;
-        List<Definition> defs = new LinkedList<>();
-
-        @Override
-        public String toString() {
-            if (!locations.isEmpty()) {
-                String name = "";
-                for (SrcPositionLocator.SrcLocation location : locations){
-                    name += location.getRadixObject().getQualifiedName() + "; ";
-                }
-                return name.substring(0, name.length() - 2);
-            } else {
-                return text;
-            }
-        }
-    }
-
-    private static class StackTreeModel implements ListModel {
-
-        private static class ItemInfo {
-
-            final ERuntimeEnvironmentType environment;
-            final int line;
-            final Set<Definition> defs;
-
-            public ItemInfo(ERuntimeEnvironmentType environment, int line, Set<Definition> defs) {
-                this.environment = environment;
-                this.line = line;
-                if (defs == null){
-                    this.defs = new HashSet<>();
-                } else {
-                    this.defs = new HashSet<>(defs);
-                }
-            }
-        }
-
-        private static ERuntimeEnvironmentType getEnvironment(String name) {
-            if ("common_client".equals(name)) {
-                return ERuntimeEnvironmentType.COMMON_CLIENT;
-            }
-
-            return ERuntimeEnvironmentType.getForValue(name);
-        }
-        private static final ItemInfo EMPTY_INFO = new ItemInfo(null, -1, null);
-        private static final Pattern RADIX_SOURCE_LINE = Pattern.compile(".+\\.ads\\.mdl[A-Z0-9_]{26}\\..+\\(.+\\.java\\:[0-9]+\\)");
-        private static final Pattern RADIX_ID = Pattern.compile("^[a-z]{3,6}[A-Z0-9_]{26}$");
-
-        private static ItemInfo getLineNumber(String string, Branch branch, final Map<RadixObject, SrcPositionLocator.SrcLocation> defs) {
-
-            if (!RADIX_SOURCE_LINE.matcher(string).matches()) {
-                return EMPTY_INFO;
-            }
-
-            final int lparen = string.indexOf("(");
-            final int javaMarker = string.indexOf(".java", lparen + 1);
-            final int colon = string.indexOf(":", javaMarker + 1);
-            final int rparen = string.indexOf(")", colon + 1);
-            final int moduleIdIndex = string.indexOf(".mdl");
-
-            final String lineNumberStr = string.substring(colon + 1, rparen);
-            final int lineNumber = Integer.decode(lineNumberStr);
-
-            try {
-                ERuntimeEnvironmentType environment = null;
-                Definition targetDef = null;
-                Set<Definition> targetDefs = new HashSet<>();
-                if (branch == null) {
-                    return EMPTY_INFO;
-                }
-                if (moduleIdIndex < 0 || lparen < 0 || moduleIdIndex > lparen) {
-                    return EMPTY_INFO;
-                }
-
-                final String invokedMethodStr = string.substring(moduleIdIndex + 1, lparen);
-                final String[] ids = invokedMethodStr.split("\\.");
-                if (ids.length > 1) {
-                    final Id moduleId = Id.Factory.loadFrom(ids[0]);
-                    final String envSelector = ids[1];
-                    final String asStr = ids[ids.length - 1];
-                    final Id methodId = Id.Factory.loadFrom(asStr);
-
-                    final boolean isId = RADIX_ID.matcher(asStr).matches();
-
-                    environment = getEnvironment(envSelector);
-                    if (ids.length > 2) {
-                        String definitionIdCandidate = ids[2];
-                        final int dollarIdx = definitionIdCandidate.indexOf("$");
-                        if (dollarIdx >= 0) {
-                            definitionIdCandidate = definitionIdCandidate.substring(0, dollarIdx);
-                        }
-                        if (definitionIdCandidate.length() > 3) {
-                            final Id definitionId = Id.Factory.loadFrom(definitionIdCandidate);
-                            final List<Module> modules = new LinkedList<>();
-                            branch.visit(new IVisitor() {
-                                @Override
-                                public void accept(RadixObject radixObject) {
-                                    modules.add((Module) radixObject);
-                                }
-                            }, new VisitorProvider() {
-                                @Override
-                                public boolean isTarget(RadixObject radixObject) {
-                                    if (radixObject instanceof Module) {
-                                        String finalId = String.valueOf(JavaSourceSupport.getModulePackageName((Module) radixObject));
-                                        Id id = Id.Factory.loadFrom(finalId);
-                                        if (id == moduleId) {
-                                            return true;
-                                        }
-                                    }
-                                    return false;
-                                }
-                            });
-
-                            for (final Module module : modules) {
-
-                                Definition def = null;
-                                Module m = module;
-                                while (m != null) {
-                                    def = (AdsDefinition) m.find(new VisitorProvider() {
-                                        @Override
-                                        public boolean isTarget(RadixObject radixObject) {
-                                            if (radixObject instanceof AdsUserReportClassDef) {
-                                                AdsUserReportClassDef ur = (AdsUserReportClassDef) radixObject;
-                                                if (ur.getRuntimeId() == definitionId) {
-                                                    return true;
-                                                }
-                                            }
-                                            return radixObject instanceof Definition && ((Definition) radixObject).getId() == definitionId;
-                                        }
-                                    });
-                                    if (def != null) {
-                                        if (isId) {
-                                            targetDef = (Definition) def.find(new VisitorProvider() {
-                                                @Override
-                                                public boolean isTarget(RadixObject radixObject) {
-                                                    return radixObject instanceof Definition && ((Definition) radixObject).getId() == methodId;
-                                                }
-                                            });
-                                        }
-                                        break;
-                                    }
-                                    m = m.findOverwritten();
-                                }
-
-                                if (def instanceof IJavaSource && !(def instanceof IXmlDefinition)) {
-                                    JavaSourceSupport.CodeWriter writer = ((IJavaSource) def).getJavaSourceSupport().getCodeWriter(JavaSourceSupport.UsagePurpose.getPurpose(environment, JavaSourceSupport.CodeType.EXCUTABLE));
-                                    final char[] src;
-                                    if (writer != null) {
-                                        CodePrinter printer = CodePrinter.Factory.newJavaPrinter();
-                                        if (writer.writeCode(printer)) {
-                                            src = printer.getContents();
-                                        } else {
-                                            continue;
-                                        }
-                                    } else {
-                                        continue;
-                                    }
-                                    final SrcPositionLocator locator = SrcPositionLocator.Factory.newInstance((IJavaSource) def, src);
-                                    final int position = JavaSourceSupport.lineNumber2Position(src, lineNumber);
-                                    final SrcPositionLocator.SrcLocation loc = locator.calc(position, position);
-
-                                    if (targetDef != null) {
-                                        if (loc.getRadixObject() == null || loc.getRadixObject().getOwnerDefinition() == null) {
-                                            continue;
-                                        }
-
-                                        final Definition locDef = loc.getRadixObject().getOwnerDefinition();
-                                        if (locDef.getId() != methodId) {
-                                            continue;
-                                        }
-                                        
-                                        targetDefs.add(targetDef);
-                                    }
-                                    if (isId && loc.getRadixObject() != null && loc.getRadixObject().getOwnerDefinition() != null && loc.getRadixObject().getOwnerDefinition().getId() != methodId && asStr.startsWith(loc.getRadixObject().getOwnerDefinition().getId().getPrefix().getValue())) {
-                                        continue;
-                                    }
-                                    
-                                    if (!defs.containsKey(def)){
-                                        defs.put(loc.getRadixObject(), loc);
-                                    }
-                                    
-                                    if (!isId || targetDefs.isEmpty()) break;
-                                }
-                            }
-                        }
-                    }
-                }
-                return new ItemInfo(environment, lineNumber, targetDefs);
-            } catch (NumberFormatException | NoConstItemWithSuchValueError e) {
-                final String msg = String.format(e.getMessage() + " => %s", string);
-                Logger.getLogger(StackTraceList.class.getName()).log(Level.INFO, msg);
-                return EMPTY_INFO;
-            }
-        }
-        private final LinkedList<StackTreeModelItem> items = new LinkedList<>();
-        private LinkedList<ListDataListener> listeners = null;
-
+    private static class StackTreeModel extends DefaultListModel {
+        
         StackTreeModel() {
-        }
-
-        private void setStackStrings(Branch branch, List<String> stack) {
-            items.clear();
-            final SrcPositionLocator.SrcLocation[] def = new SrcPositionLocator.SrcLocation[1];
-
-            for (final String line : stack) {
-                if (line.contains("access$")) {
-                    continue;
-                }
-                final StackTreeModelItem item = new StackTreeModelItem();
-                item.text = line;
-                item.isStackString = true;
-                def[0] = null;
-                Map<RadixObject, SrcPositionLocator.SrcLocation> locations = new HashMap<>();
-                final ItemInfo info = getLineNumber(line, branch, locations);
-                if (info != null) {
-                    item.lineNumber = info.line;
-                    item.environment = info.environment;
-                    item.defs.addAll(info.defs);
-                }
-                item.locations.addAll(locations.values());
-                items.add(item);
-            }
-            fireChange();
-        }
-
-        @Override
-        public int getSize() {
-            return items.size();
-        }
-
-        @Override
-        public Object getElementAt(int index) {
-            return items.get(index);
-        }
-
-        @Override
-        public void addListDataListener(ListDataListener l) {
-            synchronized (this) {
-                if (listeners == null) {
-                    listeners = new LinkedList<>();
-                }
-                listeners.add(l);
-            }
-        }
-
-        @Override
-        public void removeListDataListener(ListDataListener l) {
-            synchronized (this) {
-                if (listeners != null) {
-                    listeners.remove(l);
-                }
-            }
-        }
-
-        private void fireChange() {
-            ListDataEvent e = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, getSize());
-            if (listeners != null) {
-                for (ListDataListener l : listeners) {
-                    l.contentsChanged(e);
-                }
-            }
         }
     }
 
@@ -347,10 +63,12 @@ public class StackTraceList extends JPanel {
             String name = "";
             if (!item.locations.isEmpty()){
                 object = item.locations.get(0).getRadixObject().getOwnerDefinition();
-                if (item.locations.size() > 1){
-                    name = object.getName() + "...";
-                } else {
-                    name = object.getQualifiedName();
+                if (object != null){
+                    if (item.locations.size() > 1){
+                        name = object.getName() + "...";
+                    } else {
+                        name = object.getQualifiedName();
+                    }
                 }
             } else if (!item.defs.isEmpty()) {
                 object = item.defs.get(0);
@@ -378,6 +96,27 @@ public class StackTraceList extends JPanel {
     private Branch branch = null;
     private String traceText = "";
     private final StackTreeModel model;
+    private final StackAnalyzer stackAnalyzer = new StackAnalyzer();
+
+    StackAnalyzer.StackChangeListener listener = new StackAnalyzer.StackChangeListener() {
+
+        @Override
+        public void onEvent(final StackAnalyzer.StackEvent e) {
+            switch (e.getType()) {
+                case PROCESS:
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            model.addElement(e.getStackItem());
+                        }
+                    });
+                    break;
+                case STOP:
+                    firePropertyChange(PROCESS, true, false);
+            }
+        }
+    };
 
     public StackTraceList() {
         initComponents();
@@ -441,7 +180,15 @@ public class StackTraceList extends JPanel {
         });
         stackTree.setCellRenderer(new Renderer());
     }
-
+    
+    void addListner() {
+        stackAnalyzer.addEventListener(listener);
+    }
+    
+    void removeListener() {
+        stackAnalyzer.removeEventListener(listener);
+    }
+    
     void gotToSelectedItem() {
         if (stackTree.getSelectedIndex() >= 0 && stackTree.getSelectedIndex() < model.getSize()) {
             StackTreeModelItem item = (StackTreeModelItem) model.getElementAt(stackTree.getSelectedIndex());
@@ -463,7 +210,7 @@ public class StackTraceList extends JPanel {
                 }
             } else if (!item.defs.isEmpty()) {
                 Definition definition = null;
-                if (item.locations.size() == 1){
+                if (item.defs.size() == 1){
                     definition = item.defs.get(0);
                 } else {
                     panel.open(item.defs);
@@ -515,7 +262,7 @@ public class StackTraceList extends JPanel {
                 
             } else if (item != null && !item.defs.isEmpty()) {
                 Definition definition = null;
-                if (item.locations.size() == 1){
+                if (item.defs.size() == 1){
                     definition = item.defs.get(0);
                 } else {
                     panel.open(item.defs);
@@ -537,28 +284,20 @@ public class StackTraceList extends JPanel {
 
     void setBranch(final Branch branch) {
         this.branch = branch;
-        parseStackTrace(traceText);
+    }
+    
+    void parseStackTrace() {
+       firePropertyChange(PROCESS, false, true);
+       model.removeAllElements();
+       stackAnalyzer.open(branch, traceText);
+       RequestProcessor.getDefault().post(stackAnalyzer);
     }
 
     void parseStackTrace(String traceText) {
         synchronized (this) {
             this.traceText = traceText;
-
-            if (traceText == null || traceText.isEmpty()) {
-                model.setStackStrings(branch, Collections.EMPTY_LIST);
-                return;
-            }
-
-            final String[] split = traceText.split("(\\n|\\s)at\\s|\\n");
-            final List<String> lines = new ArrayList<>();
-
-            for (final String str : split) {
-                if (str != null && !str.trim().isEmpty()) {
-                    lines.add(str.trim());
-                }
-            }
-            model.setStackStrings(branch, lines);
         }
+        parseStackTrace();
     }
 
     /**

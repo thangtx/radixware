@@ -1,0 +1,4 @@
+alter table RDX_NETCHANNEL
+	add AADCAFFINITYHANDLER VARCHAR2(200 char) null
+/
+

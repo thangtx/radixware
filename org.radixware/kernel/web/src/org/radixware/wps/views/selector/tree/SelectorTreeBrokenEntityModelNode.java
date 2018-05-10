@@ -14,6 +14,7 @@ package org.radixware.wps.views.selector.tree;
 import java.awt.Color;
 import org.radixware.kernel.common.client.models.BrokenEntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
+import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.wps.rwt.tree.Node;
 
 
@@ -25,14 +26,18 @@ class SelectorTreeBrokenEntityModelNode extends Node{
         super(Children.LEAF);
         this.entityModel = entityModel;
         setUserData(entityModel);
-        
-        final String pidAsStr = entityModel.getPid() == null ? "" : entityModel.getPid().toString();
+        final Pid pid = entityModel.getPid();
+        final String pidAsStr = pid == null ? "" : pid.toString();
         if (entityModel.getExceptionMessage() == null) {
             setCellValue(0, pidAsStr + " " + entityModel.getExceptionClass());
         } else {
             setCellValue(0, pidAsStr + " " + entityModel.getExceptionClass() + ": " + entityModel.getExceptionMessage());
         }
-        
+        if (pid==null){
+            setObjectName("rx_selector_row");
+        }else{
+            setObjectName("rx_selector_row_"+pid.getTableId().toString()+"_"+pid.toString());
+        }
         setSpanned(true);
         setForeground(Color.red);
     }

@@ -439,13 +439,14 @@ public class DiagramPanel extends QWidget{
     private DiagramWidget createDiagram(final EDiagramType diagramType){
         DiagramWidget diagramWidget=null;
         if(diagramType==EDiagramType.STATISTIC){
-            diagramWidget = new StatisticalDiagramWidget(this);                
+            
+            diagramWidget = new StatisticalDiagramWidget(environment, this);                
         }else if(diagramType==EDiagramType.DOT){
-            diagramWidget = new DotDiagramWidget(this);
+            diagramWidget = new DotDiagramWidget(environment, this);
         }else if(diagramType==EDiagramType.STEP){
-            diagramWidget = new StepDiagramWidget(this) ;           
+            diagramWidget = new StepDiagramWidget(environment, this) ;           
         }if(diagramType==EDiagramType.CORRELATION){
-            diagramWidget = new CorrelationDiagramWidget(this);                
+            diagramWidget = new CorrelationDiagramWidget(environment, this);                
         }        
         return diagramWidget;
     }

@@ -17,19 +17,21 @@ import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QCursor;
+import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QMenuBar;
 import com.trolltech.qt.gui.QWidget;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
-import java.util.Stack;
 import java.util.WeakHashMap;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.client.views.IProgressHandle.Cancellable;
 import org.radixware.kernel.common.exceptions.AppError;
+import org.radixware.kernel.common.utils.SystemTools;
 import org.radixware.kernel.explorer.dialogs.WaitDialog;
 import org.radixware.kernel.explorer.env.UserInputFilter;
 
@@ -109,15 +111,21 @@ public class ExplorerProgressHandleManager extends QObject implements org.radixw
         }
     }
     
-    boolean isProgressBlocked(){
+    public boolean isProgressBlocked(){
         return hidden>0;
     }
     
     void blockUserInput() {
         if (!isBlocked) {
             traceCall("blockUserInput");
+            if (SystemTools.isOSX && environment.getMainWindow() instanceof QMainWindow){
+                final QMenuBar menuBar = ((QMainWindow)environment.getMainWindow()).menuBar();
+                if (menuBar!=null){
+                    menuBar.setDisabled(true);
+                }
+            }            
             QApplication.instance().installEventFilter(eventFilter);
-            QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.BusyCursor));
+            QApplication.setOverrideCursor(new QCursor(Qt.CursorShape.BusyCursor));            
             isBlocked = true;
             unblockTimer = startTimer(ProgressHandle.START_DURATION*2);
         }
@@ -126,6 +134,12 @@ public class ExplorerProgressHandleManager extends QObject implements org.radixw
     void unblockUserInput() {
         if (isBlocked) {
             traceCall("unblockUserInput");
+            if (SystemTools.isOSX && environment.getMainWindow() instanceof QMainWindow){
+                final QMenuBar menuBar = ((QMainWindow)environment.getMainWindow()).menuBar();
+                if (menuBar!=null){
+                    menuBar.setDisabled(false);
+                }
+            }            
             QApplication.instance().removeEventFilter(eventFilter);
             QApplication.restoreOverrideCursor();
             isBlocked = false;
@@ -208,6 +222,11 @@ public class ExplorerProgressHandleManager extends QObject implements org.radixw
             }
         }
         blockProgressTraceCall.clear();
+    }
+    
+    public boolean forceShowActive(){
+        final ProgressHandle active = (ProgressHandle)getActive();
+        return active==null ? false : active.forceShow();
     }
     
     @Override

@@ -217,7 +217,7 @@ public class FieldPanel extends AbstractEditItem implements MsdlFieldStructureCh
                 break;
             case STRUCTURE:
                 StructurePanel structurePanel = new StructurePanel();
-                structurePanel.open((StructureFieldModel)getMsdlField().getFieldModel(),null);
+                structurePanel.open((StructureFieldModel)getMsdlField().getFieldModel(), (RootPanel)null);
                 panel = structurePanel;
                 break;
         }

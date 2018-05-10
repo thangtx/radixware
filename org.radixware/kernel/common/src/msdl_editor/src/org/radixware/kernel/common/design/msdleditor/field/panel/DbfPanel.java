@@ -103,7 +103,7 @@ public class DbfPanel extends AbstractEditItem {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         EEncoding encoding = (EEncoding)jComboBox1.getSelectedItem();
-        field.getStructure().getDbf().setEncoding(encoding.getName());
+        field.getStructure().getDbf().setEncoding(encoding.getValue());
         field.setModified();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 

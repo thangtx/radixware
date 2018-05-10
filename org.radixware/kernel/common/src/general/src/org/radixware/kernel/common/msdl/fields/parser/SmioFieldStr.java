@@ -21,11 +21,16 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.msdl.fields.StrFieldModel;
 import org.radixware.kernel.common.exceptions.SmioError;
 import org.radixware.kernel.common.exceptions.SmioException;
+import org.radixware.kernel.common.msdl.enums.EXmlBadCharAction;
 import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSource;
+import org.radixware.kernel.common.trace.IRadixTrace;
 import org.radixware.kernel.common.utils.XmlUtils;
+import static org.radixware.kernel.common.utils.XmlUtils.isBadXmlChar;
 import org.radixware.schemas.msdl.StrCharSetDef;
 import org.radixware.schemas.msdl.StrField;
 import org.radixware.schemas.types.Str;
@@ -33,6 +38,7 @@ import org.radixware.schemas.types.Str;
 public final class SmioFieldStr extends SmioFieldSimple {
 
     private Str defaultVal, value;
+    private final EXmlBadCharAction actionOnXmlBadChar;
 
     public SmioFieldStr(StrFieldModel model) throws SmioError {
         super(model);
@@ -45,6 +51,12 @@ public final class SmioFieldStr extends SmioFieldSimple {
             value = Str.Factory.newInstance();
         } catch (Throwable e) {
             throw new SmioError(initError, e, getModel().getName());
+        }
+        
+        if (getField().isSetXmlBadCharAction()) {
+            actionOnXmlBadChar = EXmlBadCharAction.getInstance(getField().getXmlBadCharAction());
+        } else {
+            actionOnXmlBadChar = EXmlBadCharAction.getInstance(getModel().getXmlBadCharAction(true));
         }
     }
 
@@ -82,7 +94,7 @@ public final class SmioFieldStr extends SmioFieldSimple {
         }
         return exp;
     }
-
+    
     private void checkCharSet(String val) throws SmioException {
         if (val != null) {
             final StrCharSetDef.Enum cs = getCharSet();
@@ -112,8 +124,47 @@ public final class SmioFieldStr extends SmioFieldSimple {
         }
         checkCharSet(val);
         Str str = Str.Factory.newInstance();
-        str.setStringValue(val);
+        str.setStringValue(replaceBadXmlChars(val));
         obj.set(str);
+    }
+    
+    private boolean generateExceptionOnBadXmlChar() {
+        return actionOnXmlBadChar == EXmlBadCharAction.THROW_EXCEPTION;
+    }
+
+    private void reportBadXmlChar(int pos, char c) throws SmioException {
+        final String charHex = String.format("%04x", (int) c);
+        String fName = getModel().getQualifiedName();
+        final String errorMsg = String.format("String field '%s' contains not valid"
+                + " xml character with hex '%s' at position '%d'.",
+                fName, charHex, pos);
+        
+        if (generateExceptionOnBadXmlChar()) {
+            throw new SmioException(errorMsg);
+        } else {
+            IRadixTrace trace = getModel().getRootMsdlScheme().getTrace();
+            if (trace != null) {
+                trace.put(EEventSeverity.WARNING, errorMsg
+                        + " It was replaced by '?'.", EEventSource.APP);
+            }
+        }
+    }
+
+    private String replaceBadXmlChars(String s) throws SmioException {
+        if (s == null || s.isEmpty()) {
+            return s;
+        }
+        final char[] chars = s.toCharArray();
+        boolean converted = false;
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (isBadXmlChar(c)) {
+                reportBadXmlChar(i, c);
+                chars[i] = '?';
+                converted = true;
+            }
+        }
+        return (converted ? String.valueOf(chars) : s);
     }
 
     @Override

@@ -63,7 +63,7 @@
         <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
       <Method Id="mthSZF5V667E5ECJCITB67MTB4RY4" Name="getIsCommandRestricted" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsDeprecated="true">
           <Transparence Extendable="false" PublishedName="getIsCommandRestricted(Lorg.radixware.kernel.common.types.Id;)Z"/>
         </AccessRules>
         <Parameters>
@@ -83,6 +83,31 @@
         <AccessRules>
           <Transparence Extendable="false" PublishedName="getIsAccessRestricted()Z"/>
         </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthOQ33DABCNND5TKSAJ3KI4QKQKI" Name="getIsCommandRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsCommandRestricted(Lorg.radixware.kernel.server.meta.presentations.RadCommandDef;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="command" Id="mprZ7G7XC4HSZETXERNTZGSKBHFTI">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.meta.presentations.RadCommandDef"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthLSRQHCAUYFCCDBQQOTJMZBPWFY" Name="getIsCommandRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsCommandRestricted(Lorg.radixware.kernel.common.types.Id;Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="cmdId" Id="mprCGQHCL67XNBKHDT4JKYHI7IDJU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="isCommandReadOnly" Id="mpr47AU32D7SVGG3D4N6EGRYZDGPM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
         <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
     </Methods>

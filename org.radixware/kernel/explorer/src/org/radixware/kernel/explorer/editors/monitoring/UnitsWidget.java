@@ -82,7 +82,7 @@ public class UnitsWidget extends ExplorerWidget {
         public static final UnitsWidgetIcons STARTED = new UnitsWidgetIcons("classpath:images/run.svg");
         public static final UnitsWidgetIcons STOPPED = new UnitsWidgetIcons("classpath:images/stop.svg");
         public static final UnitsWidgetIcons NOT_USED = new UnitsWidgetIcons("classpath:images/cancel.svg");
-        public static final UnitsWidgetIcons INSTANCE_NOT_STARTED = new UnitsWidgetIcons("classpath:images/exeptionClass.svg");
+        public static final UnitsWidgetIcons INSTANCE_NOT_STARTED = new UnitsWidgetIcons("classpath:images/exceptionClass.svg");
         public static final UnitsWidgetIcons HANG = new UnitsWidgetIcons("classpath:images/percent.svg");
         public static final UnitsWidgetIcons UPDATE_PERIOD = new UnitsWidgetIcons("classpath:images/update_period.svg");
         public static final UnitsWidgetIcons UPDATE_DISABLED = new UnitsWidgetIcons("classpath:images/update_disabled.svg");

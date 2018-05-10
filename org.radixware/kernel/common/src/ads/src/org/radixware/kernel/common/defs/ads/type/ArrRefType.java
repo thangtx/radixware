@@ -82,14 +82,14 @@ public class ArrRefType extends ParentRefType.EntityObjectType {
         }
 
         @Override
-        public char[] getLocalTypeName(UsagePurpose env) {
+        public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
             switch (env.getEnvironment()) {
                 case SERVER:
                     AdsEntityObjectClassDef src = getSource();
                     if (src == null) {
                         return "ArrEntity".toCharArray();
                     } else {
-                        CodePrinter printer = CodePrinter.Factory.newJavaPrinter();
+                        CodePrinter printer = isHumanReadable? CodePrinter.Factory.newJavaHumanReadablePrinter(): CodePrinter.Factory.newJavaPrinter();
                         printer.print("ArrEntity<");
                         src.getType(EValType.USER_CLASS, null).getJavaSourceSupport().getCodeWriter(UsagePurpose.SERVER_EXECUTABLE).writeUsage(printer);
                         printer.print('>');
@@ -106,7 +106,7 @@ public class ArrRefType extends ParentRefType.EntityObjectType {
         }
 
         @Override
-        public char[][] getPackageNameComponents(UsagePurpose env) {
+        public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
 
             switch (env.getEnvironment()) {
                 case SERVER:

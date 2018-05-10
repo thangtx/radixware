@@ -11,6 +11,7 @@
 $_RWT_TAB_LAYOUT = {
     _layout: function(tab) {
         var tabHeader, tabArea, scroller, left, right;
+        var SCROLLER_WIDTH = 72;
         function paintScroller() {
             var liSumWidth = 0;
             var currentLi = null;
@@ -23,12 +24,37 @@ $_RWT_TAB_LAYOUT = {
             var needScroller = liSumWidth - tabArea.offsetWidth >= 0;
             if (needScroller && tabHeader.childElementCount > 1) {//ie scrollerWidht fix
                 $(scroller).css("display", "inline");
+                var margin = parseInt($(tabHeader).css("margin-left"));
+                var tabHeaderRightCornerY = $(tabHeader).position().left + margin + $(tabHeader).width();
+                var scrollerLeft = $(scroller).position().left;
+                
+                if (margin < 0 && tabHeaderRightCornerY < scrollerLeft) { //after resize event tabs need to move to scroll
+                    var diff = scrollerLeft - tabHeaderRightCornerY;
+                    $(tabHeader).css("margin-left", (diff < Math.abs(margin) ? diff + margin - 5 : 0) + "px");
+                }
             }
             if (!needScroller || tabHeader.childElementCount <= 1) {
                 $(scroller).css("display", "none");
                 $(tabHeader).css("margin-left", "0px");
             }
+            var scrolledTabIndex = $(tabHeader).attr('scrolledToTab'); // after choose a tab from menu need to scroll to it
+            if (scrolledTabIndex) {
+                __scrollToTab(scrolledTabIndex);
+            }
             updateButtonState();
+        }
+
+        tab.calcAdjustSize = function() {
+            var tabAdjustSize = $RWT.getAdjustSize(tabArea);
+            var tabAdjustSizeWidth = tabAdjustSize == null ? 0 : tabAdjustSize.width;
+            var tabAdjustSizeHeight = tabAdjustSize == null ? 0 : tabAdjustSize.height;
+            var adjustWidth;
+            if ($(scroller).css("display") == 'none') {
+                adjustWidth = tabAdjustSizeWidth == null ? 0 : tabAdjustSize.width;
+            } else {
+                adjustWidth = Math.max($(tabHeader).width() - $(tabHeader.parentNode).width(), (tabAdjustSizeWidth == null ? 0 : tabAdjustSizeWidth));
+            }
+            return {"width" : adjustWidth, "height" : tabAdjustSizeHeight, "final" : true}; 
         }
 
         function mouseScrollingEvent(e) {
@@ -60,7 +86,7 @@ $_RWT_TAB_LAYOUT = {
                 }
 
                 //right button
-                if (c > 40) {
+                if (c > SCROLLER_WIDTH) {
                     if (right.className.indexOf('ui-state-disabled') <= 0) {
                         $(right).addClass("ui-state-disabled");
                     }
@@ -71,6 +97,19 @@ $_RWT_TAB_LAYOUT = {
                     }
                 }
             }
+        }
+
+        function __scrollToTab(scrolledTabIndex) {
+            var tab = $(tabHeader).children()[scrolledTabIndex];
+                var tabLeft = $(tab).position().left;
+                var tabRight = tabLeft + $(tab).width();
+                var margin = parseInt($(tabHeader).css("margin-left"));
+                if (tabRight > $(scroller).position().left) {
+                    $(tabHeader).css("margin-left", (margin - (tabRight - $(scroller).position().left + 5)) + "px");
+                } else if (tabLeft < $(tabHeader).position().left) {
+                    $(tabHeader).css("margin-left", (margin + ($(tabHeader).position().left - tabLeft)) + "px");
+                }
+                $(tabHeader).attr('scrolledToTab', null);
         }
 
         function animateHeaderSlide(delta, first, last) {
@@ -94,7 +133,7 @@ $_RWT_TAB_LAYOUT = {
                         var lastEdge = parseInt(last.offsetLeft) + parseInt(last.offsetWidth);
                         var areaWidth = tabArea.offsetWidth;
                         var c = areaWidth - lastEdge;
-                        if (c > 40) {//40px==scroll buttons total width
+                        if (c > SCROLLER_WIDTH) {
                             $(tabHeader).stop();
                         }
                     }
@@ -156,17 +195,51 @@ $_RWT_TAB_LAYOUT = {
                 $(tab).height(headerH + ch + tabHBorder + 5);
             }
             var totalButtonsWidth = 0;
+            var maxHeaderHeight = 18
             var lastW;
             if (headerVisible) {
                 WpsUtils.iterateAll(tabHeader, function(button) {
-                    var size = $RWT.toolButton.size(button);
-                    if (size) {
-                        $(button).width(size.w);
-                        lastW = $(button).outerWidth();
-                        totalButtonsWidth += size.w;
-                    }
+                    if ($(button).hasClass('')) {
+                        var size = $RWT.toolButton.size(button);
+                        if (size) {
+                            $(button).width(size.w);
+                            lastW = $(button).outerWidth();
+                            totalButtonsWidth += size.w;
+                        }
+                    } else {
+                        var size = $_RWT_TAB_LAYOUT.tabSize(button);
+                        if (size) {
+                            $(button).width(size.w);
+                            lastW = $(button).outerWidth();
+                            totalButtonsWidth += size.w;
+                            if (size.h > maxHeaderHeight) {
+                                maxHeaderHeight = size.h;
+                            }
+                        }
+                    } 
+                });
+                WpsUtils.iterateAll(tabHeader, function(button) {
+                   $(button).height(maxHeaderHeight);
+                   var rightObject = WpsUtils.findChildByClassName(button, 'rightObject');
+                   if (rightObject && $(rightObject).height() < maxHeaderHeight) {
+                       $(rightObject).css('margin-top', (maxHeaderHeight - $(rightObject).height())/2);
+                       $(rightObject).css('margin-bottom', (maxHeaderHeight - $(rightObject).height())/2);
+                   }
+                   var leftObject = WpsUtils.findChildByClassName(button, 'leftObject');
+                   if (leftObject && $(leftObject).height() < maxHeaderHeight) {
+                       $(leftObject).css('margin-top', (maxHeaderHeight - $(leftObject).height())/2);
+                       $(leftObject).css('margin-bottom', (maxHeaderHeight - $(leftObject).height())/2);
+                   }
+                   var img = WpsUtils.findChildByLocalName(button, 'img');
+                   if (img && $(img).height() < maxHeaderHeight) {
+                       $(img).css('margin-top', (maxHeaderHeight - $(img).height())/2);
+                       $(img).css('margin-bottom', (maxHeaderHeight - $(img).height())/2);
+                   }
                 });
             }
+            
+            $(tabHeader).height(maxHeaderHeight + 2); //borders
+            $(tabHeader).css('line-height', (maxHeaderHeight + 2) + 'px');
             tabArea.style.width = ($(tab).innerWidth() - tabWBorder - 1) + 'px';
             tabArea.style.height = ($(tab).innerHeight() - tabHBorder - headerH) + 'px';
             if (scroller) {
@@ -245,7 +318,7 @@ $_RWT_TAB_LAYOUT = {
                                             var lastEdge = parseInt(lastLi.offsetLeft) + parseInt(lastLi.offsetWidth);
                                             var areaWidth = tabArea.offsetWidth;
                                             var c = areaWidth - lastEdge;
-                                            if (c > 40) {
+                                            if (c > SCROLLER_WIDTH) {
                                                 $(tabHeader).stop();
                                             }
                                             updateButtonState();
@@ -270,6 +343,67 @@ $_RWT_TAB_LAYOUT = {
                 }
             }
         }
+    },
+    tabSize : function(tabHandler) {
+        var img = WpsUtils.findChildByLocalName(tabHandler, 'img');
+        var label = $RWT.toolButton._findLabel(tabHandler);
+        var rightObject = WpsUtils.findChildByClassName(tabHandler, 'rightObject');
+        var leftObject = WpsUtils.findChildByClassName(tabHandler, 'leftObject');
+        var size = 0;
+        var hsize = 0;
+        if (img) {
+            size += $(img).outerWidth();
+            if (label) {
+                $(img).css('margin-left', 3);
+                size += 3;
+            } else {
+                $(img).css('margin-left', 5);
+                size += 5;
+            }
+            var oh = $(img).outerHeight();
+            if (oh > hsize)
+                hsize = oh;
+        }
+        if (label) {
+            size += $(label).outerWidth() + 1;
+            if (!img) {
+                $(label).css('margin-left', 5);
+                size += 5;
+            }
+            oh = $(img).outerHeight();
+            if (oh > hsize) {
+                hsize = oh;
+            }
+        }
+        if (rightObject) {
+            size += $(rightObject).outerWidth(true);
+            oh = $(rightObject).outerHeight();
+            if (label) {
+                $(label).css('margin-right', 0);
+            }
+            if (oh > hsize) {
+                hsize = oh;
+            } 
+        } else {
+            if (label) {
+                $(label).css('margin-right', 4);
+                size += 4;
+            }
+        }
+        if (leftObject) {
+            size += $(leftObject).outerWidth(true);
+            oh = $(leftObject).outerHeight();
+            if (oh > hsize) {
+                hsize = oh;
+            }
+        }
+        if (size < 10) {
+            size = 10;
+        }
+        return {
+            w: size,
+            h: hsize
+        };
     }
 };
 $RWT.tab_layout = $_RWT_TAB_LAYOUT;

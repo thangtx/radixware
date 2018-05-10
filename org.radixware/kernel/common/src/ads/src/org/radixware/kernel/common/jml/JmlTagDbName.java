@@ -8,19 +8,19 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
+import java.nio.file.Path;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.defs.dds.*;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.xscml.JmlType;
 import org.radixware.schemas.xscml.JmlType.Item;
-
 
 public class JmlTagDbName extends JmlTagId {
 
@@ -57,6 +57,10 @@ public class JmlTagDbName extends JmlTagId {
         public static JmlTagDbName newInstance(DdsTypeDef ref) {
             return new JmlTagDbName(ref.getIdPath());
         }
+        
+        public static JmlTagDbName newInstance(Id[] path) {
+            return new JmlTagDbName(path);
+        }
 
         public static JmlTagDbName loadFrom(JmlType.Item.IdReference idRef) {
             return new JmlTagDbName(idRef);
@@ -74,6 +78,7 @@ public class JmlTagDbName extends JmlTagId {
     @Override
     public void appendTo(Item item) {
         JmlType.Item.IdReference ref = item.addNewIdReference();
+        appendTo(ref);
         ref.setPath(path.asList());
         ref.setDbName(true);
     }
@@ -95,7 +100,7 @@ public class JmlTagDbName extends JmlTagId {
     public String getDisplayName() {
         Definition def = resolve(getOwnerJml().getOwnerDefinition());
         if (def == null) {
-            return "dbName[unknown]";
+            return "dbName[" + restoreDisplayName("unknown") + "]";
         } else {
             String name;
             if (def instanceof DdsColumnDef || def instanceof DdsIndexDef) {
@@ -103,7 +108,7 @@ public class JmlTagDbName extends JmlTagId {
             } else {
                 name = def.getQualifiedName();
             }
-            return "dbName[" + name + "]";
+            return "dbName[" + rememberDisplayName(name) + "]";
         }
     }
 
@@ -112,25 +117,31 @@ public class JmlTagDbName extends JmlTagId {
         return new JavaSourceSupport(this) {
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(null, UsagePurpose.SERVER_META) {
+                return new JmlTagWriter(null, UsagePurpose.SERVER_META, JmlTagDbName.this) {
                     @Override
                     public boolean writeCode(CodePrinter printer) {
-                        final Definition def = resolve(getOwnerJml().getOwnerDefinition());
-                        if (!(def instanceof IDdsDbDefinition)) {
-                            printer.printError();
-                            return false;
-                        }
-
-                        if (def instanceof DdsFunctionDef) {
-                            final DdsPlSqlObjectDef obj = ((DdsFunctionDef) def).getOwnerPlSqlObject();
-                            if (obj == null) {
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
+                        try {
+                            final Definition def = resolve(getOwnerJml().getOwnerDefinition());
+                            if (!(def instanceof IDdsDbDefinition)) {
+                                printer.printError();
                                 return false;
                             }
-                            printInvocation(printer, obj);
-                            printer.print("+\".\"+");
+
+                            if (def instanceof DdsFunctionDef) {
+                                final DdsPlSqlObjectDef obj = ((DdsFunctionDef) def).getOwnerPlSqlObject();
+                                if (obj == null) {
+                                    return false;
+                                }
+                                printInvocation(printer, obj);
+                                printer.print("+\".\"+");
+                            }
+                            printInvocation(printer, (IDdsDbDefinition) def);
+                            return true;
+                        } finally {
+                            WriterUtils.leaveHumanUnreadableBlock(printer);
                         }
-                        printInvocation(printer, (IDdsDbDefinition) def);
-                        return true;
                     }
 
                     @Override

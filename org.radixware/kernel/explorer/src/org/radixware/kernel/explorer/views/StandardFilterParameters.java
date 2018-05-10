@@ -63,13 +63,13 @@ public class StandardFilterParameters extends FilterParameters {
                 widget = propGrid;
             } else {//TabSet opening
 
-                final List<Id> idsWithLevelOne = new ArrayList<Id>();
+                final List<Id> idsWithLevelOne = new ArrayList<>();
 
                 for (RadEditorPageDef page : filterDef.getEditorPages().getTopLevelPages()) {
                     idsWithLevelOne.add(page.getId());
                 }
 
-                final List<EditorPageModelItem> modelItems = new ArrayList<EditorPageModelItem>();
+                final List<EditorPageModelItem> modelItems = new ArrayList<>();
                 for (Id id : idsWithLevelOne) {
                     final EditorPageModelItem modelItem = getFilterModel().getEditorPage(id);
                     modelItems.add(modelItem);
@@ -78,8 +78,7 @@ public class StandardFilterParameters extends FilterParameters {
                 widget = tabSet;
             }
             widget.bind();
-            widget.asQWidget().setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum);
-            content.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum);
+            widget.asQWidget().setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum);            
             content.layout().addWidget(widget.asQWidget());
             setFocusProxy(widget.asQWidget());
         }
@@ -98,7 +97,7 @@ public class StandardFilterParameters extends FilterParameters {
 
     @Override
     public boolean setFocusedProperty(Id propertyId) {
-        Property property = null;
+        final Property property;
         try {
             property = getFilterModel().getProperty(propertyId);
         } catch (RuntimeException ex) {
@@ -109,6 +108,14 @@ public class StandardFilterParameters extends FilterParameters {
         }
         return false;
     }
+    
+    @Override
+    public void setCollapsable(final boolean collapsable) {
+        super.setCollapsable(collapsable);
+        if (widget!=null){
+            widget.asQWidget().setSizePolicy(QSizePolicy.Policy.Minimum, collapsable ? QSizePolicy.Policy.Maximum : QSizePolicy.Policy.Minimum);
+        }
+    }    
 
     private FilterModel getFilterModel() {
         return (FilterModel) getModel();

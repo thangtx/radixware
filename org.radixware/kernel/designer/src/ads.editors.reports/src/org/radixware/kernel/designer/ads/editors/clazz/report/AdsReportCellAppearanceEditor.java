@@ -19,7 +19,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
@@ -31,6 +37,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance.Border;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportDbImageCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
@@ -39,9 +46,11 @@ import org.radixware.kernel.common.enums.EReportBorderStyle;
 import org.radixware.kernel.common.enums.EReportCellHAlign;
 import org.radixware.kernel.common.enums.EReportCellType;
 import org.radixware.kernel.common.enums.EReportCellVAlign;
+import org.radixware.kernel.common.enums.EReportTextFormat;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportWidgetUtils;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.MmUtils;
+import org.radixware.kernel.designer.ads.reports.AdsReportDialogsUtils;
 import org.radixware.kernel.designer.common.dialogs.components.BigDecimalSpinnerModel;
 import org.radixware.kernel.designer.common.dialogs.components.CheckedBigDecimalSpinnerEditor;
 import org.radixware.kernel.designer.common.dialogs.components.CheckedNumberSpinnerEditor;
@@ -73,9 +82,13 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
     private EReportCellVAlign vAlign;
     private final AdsReportCell appearance;
     private EImageScaleType scaleType = EImageScaleType.CROP;
-    private boolean ignoreZebra;
 
     private final AdsReportFontPanel innerFontPanel;
+    private final AdsReportBackgroundPanel innerBackgroundPanel;
+    
+    private final PropertyChangeListener backgroundListener;
+    private final PropertyChangeListener lineSpacingListener;
+    private final PropertyChangeListener borderSpacingListener;
 
     /**
      * Creates new form AdsReportCellAppearanceEditor
@@ -86,8 +99,6 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         this.appearance = appearance;
         initComponents();
 
-        jLabel9.setVisible(false);
-        borderSpinner.setVisible(false);
 
         northWestToggleButton.setIcon(RadixWareIcons.ALIGN.TEXT.LEFT_TOP.getIcon());
         northToggleButton.setIcon(RadixWareIcons.ALIGN.TEXT.CENTER_TOP.getIcon());
@@ -112,11 +123,20 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         imgSouthToggleButton.setIcon(RadixWareIcons.ALIGN.TEXT.CENTER_BOTTOM.getIcon());
         imgSouthEastToggleButton.setIcon(RadixWareIcons.ALIGN.TEXT.RIGHT_BOTTOM.getIcon());
 
-        iconButton.setIcon(RadixWareIcons.DIALOG.ALL.getIcon());
-        iconButton.setText("");
-
         ComponentTitledBorder border = new ComponentTitledBorder(useBandFontCheckBox, fontPanel, new TitledBorder(""));
         fontPanel.setBorder(border);
+        marginPanel.setBorder(BorderFactory.createTitledBorder("Text margins"));
+        ChangeListener marginListener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                setSampleMergins();
+            }
+        };
+        
+        marginPanel.addTopSpinnerChangeListener(marginListener);
+        marginPanel.addLeftSpinnerChangeListener(marginListener);
+        marginPanel.addBottomSpinnerChangeListener(marginListener);
+        marginPanel.addRightSpinnerChangeListener(marginListener);
 
         if (appearance.getOwnerForm().getMode() == AdsReportForm.Mode.GRAPHICS) {
 
@@ -129,25 +149,11 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             heightSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000), BigDecimal.valueOf(1)));
             heightSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(heightSpinner));
 
-            topMarginSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000), BigDecimal.valueOf(1)));
-            topMarginSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(topMarginSpinner));
-            leftMarginSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000), BigDecimal.valueOf(1)));
-            leftMarginSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(leftMarginSpinner));
-            bottomMarginSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000), BigDecimal.valueOf(1)));
-            bottomMarginSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(bottomMarginSpinner));
-            rightMarginSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000), BigDecimal.valueOf(1)));
-            rightMarginSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(rightMarginSpinner));
-
         } else {
             lblTop.setText(lblTop.getText().replace("mm.", "row"));
             lblHeight.setText(lblHeight.getText().replace("mm.", "rows"));
             lblLeft.setText(lblLeft.getText().replace("mm.", "col"));
             lblWidth.setText(lblWidth.getText().replace("mm.", "cols"));
-
-            lbTopMargin.setText(lbTopMargin.getText().replace("mm.", "rows"));
-            lbBottomMargin.setText(lbBottomMargin.getText().replace("mm.", "rows"));
-            lbLeftMargin.setText(lbLeftMargin.getText().replace("mm.", "cols"));
-            lbRightMargin.setText(lbRightMargin.getText().replace("mm.", "cols"));
 
             topSpinner.setModel(new SpinnerNumberModel(0, 0, 1000, 1));
             topSpinner.setEditor(new CheckedNumberSpinnerEditor(topSpinner));
@@ -157,20 +163,9 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             widthSpinner.setEditor(new CheckedNumberSpinnerEditor(widthSpinner));
             heightSpinner.setModel(new SpinnerNumberModel(0, 0, 1000, 1));
             heightSpinner.setEditor(new CheckedNumberSpinnerEditor(heightSpinner));
-
-            topMarginSpinner.setModel(new SpinnerNumberModel(0, 0, 1000, 1));
-            topMarginSpinner.setEditor(new CheckedNumberSpinnerEditor(topMarginSpinner));
-            leftMarginSpinner.setModel(new SpinnerNumberModel(0, 0, 1000, 1));
-            leftMarginSpinner.setEditor(new CheckedNumberSpinnerEditor(leftMarginSpinner));
-            bottomMarginSpinner.setModel(new SpinnerNumberModel(0, 0, 1000, 1));
-            bottomMarginSpinner.setEditor(new CheckedNumberSpinnerEditor(bottomMarginSpinner));
-            rightMarginSpinner.setModel(new SpinnerNumberModel(0, 0, 1000, 1));
-            rightMarginSpinner.setEditor(new CheckedNumberSpinnerEditor(rightMarginSpinner));
         }
-        lineSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(1000), BigDecimal.valueOf(1)));
-        lineSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(lineSpinner));
-        borderSpinner.setModel(new BigDecimalSpinnerModel(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(50), BigDecimal.valueOf(0.1)));
-        borderSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(borderSpinner));
+
+        
         innerFontPanel = new AdsReportFontPanel(appearance.getFont(), "Font");
         innerFontPanel.changeSupport.addChangeListener(this);
         useBandFontCheckBox.addItemListener(new ItemListener() {
@@ -231,7 +226,40 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         cbShowAlways.addActionListener(modeListener);
         cbShowInTextMode.addActionListener(modeListener);
         cbShowInGraphicalMode.addActionListener(modeListener);
+        innerBackgroundPanel = new AdsReportBackgroundPanel();
+        backgroundListener = new PropertyChangeListener() {
 
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                switch (evt.getPropertyName()){
+                    case AdsReportDialogsUtils.BACKGROUND_COLOR:
+                    case AdsReportDialogsUtils.INHERIT_BACKROUND:
+                        innerBackgroundPanel.apply(appearance);
+                        samplePanel.setBackground(appearance.getBgColor());
+                        break;
+                    case AdsReportDialogsUtils.IGNORE_ZEBRA:                        
+                            innerBackgroundPanel.apply(appearance);
+                }
+            }
+        };
+        backgroundPanel.add(innerBackgroundPanel, BorderLayout.NORTH);
+        
+        lineSpacingListener = new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                adsReportLineSpacingPanel1.apply(appearance);
+            }
+        };
+        
+        borderSpacingListener = new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                adsReportBorderPanel1.apply(appearance);
+                updateBorder();
+            }
+        };
         setupInitialValues();
     }
 
@@ -242,22 +270,15 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             leftSpinner.setValue(BigDecimal.valueOf(appearance.getLeftMm()));
             widthSpinner.setValue(BigDecimal.valueOf(appearance.getWidthMm()));
             heightSpinner.setValue(BigDecimal.valueOf(appearance.getHeightMm()));
-            topMarginSpinner.setValue(BigDecimal.valueOf(appearance.getMarginTopMm()));
-            bottomMarginSpinner.setValue(BigDecimal.valueOf(appearance.getMarginBottomMm()));
-            leftMarginSpinner.setValue(BigDecimal.valueOf(appearance.getMarginLeftMm()));
-            rightMarginSpinner.setValue(BigDecimal.valueOf(appearance.getMarginRightMm()));
+            marginPanel.open(appearance.getMarginMm());
 
         } else {
             topSpinner.setValue(appearance.getTopRow());
             leftSpinner.setValue(appearance.getLeftColumn());
             widthSpinner.setValue(appearance.getWidthCols());
             heightSpinner.setValue(appearance.getHeightRows());
-            topMarginSpinner.setValue(appearance.getMarginTopRows());
-            bottomMarginSpinner.setValue(appearance.getMarginBottomRows());
-            leftMarginSpinner.setValue(appearance.getMarginLeftCols());
-            rightMarginSpinner.setValue(appearance.getMarginRightCols());
+            marginPanel.open(appearance.getMarginTxt());
         }
-        ignoreZebra = appearance.isIgnoreAltBgColor();
         if (appearance.getCellType() == EReportCellType.DB_IMAGE) {
             scaleType = ((AdsReportDbImageCell) appearance).getScaleType();
             ((CardLayout) jPanel5.getLayout()).show(jPanel5, "card2");
@@ -278,13 +299,12 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         } else {
             ((CardLayout) jPanel5.getLayout()).show(jPanel5, "card1");
         }
-        inheritBgCheckBox.setSelected(appearance.isBgColorInherited());
-        bgButton.setColor(appearance.getBgColor());
+        innerBackgroundPanel.open(appearance);
         samplePanel.setBackground(appearance.getBgColor());
         useBandFontCheckBox.setSelected(appearance.isFontInherited());
         innerFontPanel.setFont(appearance.getFont(), true);
         updateFont();
-        lineSpinner.setValue(BigDecimal.valueOf(appearance.getLineSpacingMm()));
+        adsReportLineSpacingPanel1.open(appearance);
         wrapCheckBox.setSelected(appearance.isWrapWord());
         clipCheckBox.setSelected(appearance.isClipContent());
         inheritFgCheckBox.setSelected(appearance.isFgColorInherited());
@@ -298,30 +318,19 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         cbShowInGraphicalMode.setSelected(appearance.getPreferredMode() == AdsReportForm.Mode.GRAPHICS);
         cbShowInTextMode.setSelected(appearance.getPreferredMode() == AdsReportForm.Mode.TEXT);
         updateAlignment();
-        switch (appearance.getBorder().getStyle()) {
-            case SOLID:
-                solidRadioButton.setSelected(true);
-                break;
-            case DASHED:
-                dashedRadioButton.setSelected(true);
-                break;
-            case DOTTED:
-                dottedRadioButton.setSelected(true);
-                break;
-        }
-        topCheckBox.setSelected(appearance.getBorder().isOnTop());
-        leftCheckBox.setSelected(appearance.getBorder().isOnLeft());
-        rightCheckBox.setSelected(appearance.getBorder().isOnRight());
-        bottomCheckBox.setSelected(appearance.getBorder().isOnBottom());
-        colorButton.setColor(appearance.getBorder().getColor());
-        borderSpinner.setValue(BigDecimal.valueOf(appearance.getBorder().getThicknessMm()));
-
+        adsReportBorderPanel1.open(appearance.getBorder());
         snapTopBox.setSelected(appearance.isSnapTopEdge());
         snapBottomBox.setSelected(appearance.isSnapBottomEdge());
-        chIgnoreZebra.setSelected(ignoreZebra);
         updateEnableState();
         updateBorder();
 
+        EReportTextFormat textFormat = appearance.getTextFormat();
+        cbPlainFormat.setSelected(textFormat == EReportTextFormat.PLAIN);
+        cbRichFormat.setSelected(textFormat == EReportTextFormat.RICH);
+        cbUseSpacePadding.setSelected(appearance.isUseTxtPadding());
+        if (appearance.isUseTxtPadding() && appearance.getOwnerForm().getMode() != AdsReportForm.Mode.GRAPHICS) {
+            northWestToggleButton.setSelected(true);
+        }
         updating = false;
     }
 
@@ -332,52 +341,41 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         topSpinner.setEnabled(enabled);
         leftSpinner.setEnabled(enabled);
         widthSpinner.setEnabled(enabled);
-        inheritBgCheckBox.setEnabled(enabled);
-        bgButton.setEnabled(enabled && !inheritBgCheckBox.isSelected() && !isTextMode);
+        innerBackgroundPanel.updateEnableState();
         useBandFontCheckBox.setEnabled(enabled && !isTextMode);
-        innerFontPanel.setPanelEnabled(enabled && !useBandFontCheckBox.isSelected());
-        topMarginSpinner.setEnabled(enabled);
-        leftMarginSpinner.setEnabled(enabled);
-        bottomMarginSpinner.setEnabled(enabled);
-        rightMarginSpinner.setEnabled(enabled);
-        lineSpinner.setEnabled(enabled && !isTextMode);
+        innerFontPanel.setPanelEnabled(enabled && !isTextMode && !useBandFontCheckBox.isSelected());
+        marginPanel.setEnabled(enabled);
+        setEnabled(enabled && !isTextMode);
         wrapCheckBox.setEnabled(enabled);
         clipCheckBox.setEnabled(enabled);
         inheritFgCheckBox.setEnabled(enabled && !isTextMode);
         fgButton.setEnabled(enabled && !inheritFgCheckBox.isSelected() && !isTextMode);
         final boolean isChart = appearance.getCellType() == EReportCellType.CHART;
+        final boolean isUseAlign = !isChart && (!isTextMode || appearance.isUseTxtPadding());
         adjustCheckBox.setEnabled(enabled && !isChart);
         cbAdjustWidth.setEnabled(enabled && !isChart);
-        northEastToggleButton.setEnabled(enabled && !isChart);
-        northToggleButton.setEnabled(enabled && !isChart);
-        northWestToggleButton.setEnabled(enabled && !isChart);
-        northAdjustToggleButton.setEnabled(enabled && !isChart);
-        westToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ !isChart);
-        centerToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ !isChart);
-        eastToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ !isChart);
-        centerAdjustToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ !isChart);
-        southEastToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ !isChart);
-        southToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ !isChart);
-        southWestToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ !isChart);
-        southAdjustToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ !isChart);
+        northEastToggleButton.setEnabled(enabled && isUseAlign);
+        northToggleButton.setEnabled(enabled && isUseAlign);
+        northWestToggleButton.setEnabled(enabled && isUseAlign);
+        northAdjustToggleButton.setEnabled(enabled && isUseAlign);
+        westToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ isUseAlign);
+        centerToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ isUseAlign);
+        eastToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ isUseAlign);
+        centerAdjustToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ isUseAlign);
+        southEastToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ isUseAlign);
+        southToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ isUseAlign);
+        southWestToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ isUseAlign);
+        southAdjustToggleButton.setEnabled(enabled && /*!adjustCheckBox.isSelected()&&*/ isUseAlign);
 
-        topCheckBox.setEnabled(enabled);
-        leftCheckBox.setEnabled(enabled);
-        rightCheckBox.setEnabled(enabled);
-        bottomCheckBox.setEnabled(enabled);
-        final boolean enableBorder = enabled && !isTextMode && (topCheckBox.isSelected() || leftCheckBox.isSelected()
-                || bottomCheckBox.isSelected() || rightCheckBox.isSelected());
-        solidRadioButton.setEnabled(enableBorder);
-        dashedRadioButton.setEnabled(enableBorder);
-        dottedRadioButton.setEnabled(enableBorder);
-        colorButton.setEnabled(enableBorder);
-        borderSpinner.setEnabled(enabled);
-
+        adsReportBorderPanel1.setEnabled(enabled && !isTextMode);
         snapTopBox.setEnabled(enabled);
         snapBottomBox.setEnabled(enabled);
         cbShowAlways.setEnabled(enabled);
         cbShowInTextMode.setEnabled(enabled);
         cbShowInGraphicalMode.setEnabled(enabled);
+        
+        cbPlainFormat.setEnabled(enabled);
+        cbRichFormat.setEnabled(enabled);
 
         boolean isImageAlignEnabled = scaleType == EImageScaleType.FIT_TO_CONTAINER || scaleType == EImageScaleType.CROP || scaleType == EImageScaleType.RESIZE_CONTAINER && enabled;
         imgCenterToggleButton.setEnabled(isImageAlignEnabled);
@@ -389,7 +387,9 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         imgSouthWestToggleButton.setEnabled(isImageAlignEnabled);
         imgWestToggleButton.setEnabled(isImageAlignEnabled);
         imgNorthToggleButton.setEnabled(isImageAlignEnabled);
-        chIgnoreZebra.setEnabled(enabled && !isTextMode);
+        
+        cbUseSpacePadding.setVisible(isTextMode);
+        cbUseSpacePadding.setEnabled(enabled);
     }
 
     private void updateAlignment() {
@@ -454,58 +454,103 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         final AdsReportAbstractAppearance.Font reportFont = appearance.getFont();
         final Font font = AdsReportWidgetUtils.reportFont2JavaFont(reportFont, sampleLabel);
         sampleLabel.setFont(font);
-//        String name = fontComboBox.getSelectedItem() != null ? fontComboBox.getSelectedItem().toString() : "Arial";
-//        sampleLabel.setFont(new Font(name,
-//                (boldButton.isSelected() ? Font.BOLD : 0) |
-//                (italicButton.isSelected() ? Font.ITALIC : 0),
-//                (int) ((BigDecimal) fontSizeSpinner.getValue()).doubleValue()));
+    }
+    
+    private javax.swing.border.Border getBorder( 
+            double thicknessMm, EReportBorderStyle style, Color color, Insets ins,
+            boolean onTop, boolean onLeft, boolean onBottom, boolean onRight) {
+        if (!onTop && !onLeft && !onBottom && !onRight) {
+            return null;
+        }
+        int w = MmUtils.mm2px(thicknessMm);
+        if (w == 0) {
+            w = 1;
+        }
+        int top = onTop ? w : 0;
+        int left = onLeft ? w : 0;
+        int bottom = onBottom ? w : 0;
+        int right = onRight ? w : 0;
+        Insets insets = new Insets(top + ins.top, left + ins.left, bottom + ins.bottom, right + ins.right);
+        switch (style) {
+            case DASHED:
+                return new DashedBorder(
+                        top,
+                        left,
+                        bottom,
+                        right,
+                        color,
+                        Math.max(w * 2, 10), insets);
+            case DOTTED:
+                return new DashedBorder(
+                        top,
+                        left,
+                        bottom,
+                        right,
+                        color,
+                        Math.max(w, 1), insets);
+            default:
+                return new MatteBorder(
+                        top,
+                        left,
+                        bottom,
+                        right,
+                        color);
+        }
+        
     }
 
     private void updateBorder() {
-        final double ww = ((BigDecimal) borderSpinner.getValue()).doubleValue();
-        int w = MmUtils.mm2px(ww);
-        if (w == 0 && ww > 0) {
-            w = 1;
-        }
-        samplePanel.setBorder(new MatteBorder(
-                topCheckBox.isSelected() ? w : 0,
-                leftCheckBox.isSelected() ? w : 0,
-                bottomCheckBox.isSelected() ? w : 0,
-                rightCheckBox.isSelected() ? w : 0,
-                colorButton.getColor()));
+        Border border = appearance.getBorder();
+        samplePanel.setBorder(null);
         final Insets ins = samplePanel.getInsets();
-        if (dashedRadioButton.isSelected()) {
-            samplePanel.setBorder(new DashedBorder(
-                    topCheckBox.isSelected() ? w : 0,
-                    leftCheckBox.isSelected() ? w : 0,
-                    bottomCheckBox.isSelected() ? w : 0,
-                    rightCheckBox.isSelected() ? w : 0,
-                    colorButton.getColor(),
-                    Math.max(w * 2, 10), ins));
-        } else if (dottedRadioButton.isSelected()) {
-            samplePanel.setBorder(new DashedBorder(
-                    topCheckBox.isSelected() ? w : 0,
-                    leftCheckBox.isSelected() ? w : 0,
-                    bottomCheckBox.isSelected() ? w : 0,
-                    rightCheckBox.isSelected() ? w : 0,
-                    colorButton.getColor(),
-                    Math.max(w, 1), ins));
+        javax.swing.border.Border topBorder = getBorder(border.getTopThicknessMm(), border.getTopStyle(), border.getTopColor(),
+                ins, border.getOnTop(), false, false, false);
+        javax.swing.border.Border leftBorder = getBorder(border.getLeftThicknessMm(), border.getLeftStyle(), border.getLeftColor(), 
+                ins, false, border.getOnLeft(), false, false);
+        javax.swing.border.Border bottomBorder = getBorder(border.getBottomThicknessMm(), border.getBottomStyle(), border.getBottomColor(), 
+                ins, false, false, border.getOnBottom(), false);
+        javax.swing.border.Border rightBorder = getBorder(border.getRightThicknessMm(), border.getRightStyle(), border.getRightColor(), 
+                ins, false, false, false, border.getOnRight());
+        
+        javax.swing.border.Border compBorder = null;
+        if (topBorder != null) {
+            compBorder = topBorder;
         }
-        final boolean readonly = appearance.isReadOnly();
-        final boolean enable = !readonly && (topCheckBox.isSelected() || leftCheckBox.isSelected()
-                || bottomCheckBox.isSelected() || rightCheckBox.isSelected());
+        if (leftBorder != null){
+            if (compBorder != null){
+                compBorder = BorderFactory.createCompoundBorder(leftBorder, compBorder);
+            } else {
+                compBorder = leftBorder;
+            }
+        }
+        if (bottomBorder != null){
+            if (compBorder != null){
+                compBorder = BorderFactory.createCompoundBorder(bottomBorder, compBorder);
+            } else {
+                compBorder = bottomBorder;
+            }
+        }
+        if (rightBorder != null){
+            if (compBorder != null){
+                compBorder = BorderFactory.createCompoundBorder(rightBorder, compBorder);
+            } else {
+                compBorder = rightBorder;
+            }
+        }
+        
+        samplePanel.setBorder(compBorder);
         boolean isTextMode = appearance.getOwnerForm().getMode() != AdsReportForm.Mode.GRAPHICS;
-        colorButton.setEnabled(enable && !isTextMode);
-        solidRadioButton.setEnabled(enable && !isTextMode);
-        dottedRadioButton.setEnabled(enable && !isTextMode);
-        dashedRadioButton.setEnabled(enable && !isTextMode);
+        adsReportBorderPanel1.setEnabled(!appearance.isReadOnly() && !isTextMode);
 
-        topCheckBox.setEnabled(!readonly && !isTextMode);
-        bottomCheckBox.setEnabled(!readonly && !isTextMode);
-        leftCheckBox.setEnabled(!readonly && !isTextMode);
-        rightCheckBox.setEnabled(!readonly && !isTextMode);
-        iconButton.setEnabled(!readonly && !isTextMode);
+    }
+    private static final double MM2PTS_CONST = 25.4 / 72;
 
+    protected static BigDecimal mm2pts(BigDecimal mm) {
+        return BigDecimal.valueOf(Math.floor(10.0 * mm.doubleValue() / MM2PTS_CONST) / 10.0);
+    }
+
+    protected static BigDecimal pts2mm(BigDecimal pts) {
+        return BigDecimal.valueOf(Math.floor(10.0 * pts.doubleValue() * MM2PTS_CONST) / 10.0);
     }
 
     /**
@@ -522,11 +567,10 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         buttonGroup3 = new javax.swing.ButtonGroup();
         buttonGroup4 = new javax.swing.ButtonGroup();
         buttonGroup5 = new javax.swing.ButtonGroup();
+        textFormatGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         samplePanel = new javax.swing.JPanel();
         sampleLabel = new javax.swing.JLabel();
-        inheritBgCheckBox = new javax.swing.JCheckBox();
-        bgButton = new org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton();
         jPanel10 = new javax.swing.JPanel();
         lblLeft = new javax.swing.JLabel();
         leftSpinner = new javax.swing.JSpinner();
@@ -537,15 +581,17 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         heightSpinner = new javax.swing.JSpinner();
         lblWidth = new javax.swing.JLabel();
         widthSpinner = new javax.swing.JSpinner();
-        chIgnoreZebra = new javax.swing.JCheckBox();
+        backgroundPanel = new javax.swing.JPanel();
         fontPanel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        lineSpinner = new javax.swing.JSpinner();
         wrapCheckBox = new javax.swing.JCheckBox();
         clipCheckBox = new javax.swing.JCheckBox();
         inheritFgCheckBox = new javax.swing.JCheckBox();
         fgButton = new org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton();
+        jPanel12 = new javax.swing.JPanel();
+        cbRichFormat = new javax.swing.JRadioButton();
+        cbPlainFormat = new javax.swing.JRadioButton();
+        adsReportLineSpacingPanel1 = new org.radixware.kernel.designer.ads.editors.clazz.report.AdsReportLineSpacingPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         adjustCheckBox = new javax.swing.JCheckBox();
@@ -565,6 +611,7 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         snapTopBox = new javax.swing.JCheckBox();
         snapBottomBox = new javax.swing.JCheckBox();
         cbAdjustWidth = new javax.swing.JCheckBox();
+        cbUseSpacePadding = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         imgModeFitImageBtn = new javax.swing.JToggleButton();
         imgModeScaleImageBtn = new javax.swing.JToggleButton();
@@ -580,35 +627,12 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         imgEastToggleButton = new javax.swing.JToggleButton();
         imgWestToggleButton = new javax.swing.JToggleButton();
         imgSouthEastToggleButton = new javax.swing.JToggleButton();
-        borderPanel = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        leftCheckBox = new javax.swing.JCheckBox();
-        iconButton = new javax.swing.JButton();
-        rightCheckBox = new javax.swing.JCheckBox();
-        topCheckBox = new javax.swing.JCheckBox();
-        bottomCheckBox = new javax.swing.JCheckBox();
-        jLabel9 = new javax.swing.JLabel();
-        borderSpinner = new javax.swing.JSpinner();
-        colorButton = new org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton();
-        solidRadioButton = new javax.swing.JRadioButton();
-        dashedRadioButton = new javax.swing.JRadioButton();
-        dottedRadioButton = new javax.swing.JRadioButton();
-        textMarginsPanel = new javax.swing.JPanel();
-        middlePanel1 = new javax.swing.JPanel();
-        topMarginSpinner = new javax.swing.JSpinner();
-        lbTopMargin = new javax.swing.JLabel();
-        lbBottomMargin = new javax.swing.JLabel();
-        leftMarginSpinner = new javax.swing.JSpinner();
-        lbLeftMargin = new javax.swing.JLabel();
-        lbRightMargin = new javax.swing.JLabel();
-        rightMarginSpinner = new javax.swing.JSpinner();
-        iconPanel1 = new javax.swing.JPanel();
-        bottomMarginSpinner = new javax.swing.JSpinner();
+        marginPanel = new org.radixware.kernel.designer.ads.editors.clazz.report.MarginPanel();
         pModeSupport = new javax.swing.JPanel();
         cbShowAlways = new javax.swing.JRadioButton();
         cbShowInTextMode = new javax.swing.JRadioButton();
         cbShowInGraphicalMode = new javax.swing.JRadioButton();
+        adsReportBorderPanel1 = new org.radixware.kernel.designer.ads.editors.clazz.report.appearance.AdsReportBorderPanel();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -627,20 +651,6 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             samplePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(sampleLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        inheritBgCheckBox.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.inheritBgCheckBox.text")); // NOI18N
-        inheritBgCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                inheritBgCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        bgButton.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.bgButton.text")); // NOI18N
-        bgButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bgButtonActionPerformed(evt);
-            }
-        });
 
         lblLeft.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.lblLeft.text")); // NOI18N
 
@@ -720,13 +730,7 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
                 .addComponent(widthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        chIgnoreZebra.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.chIgnoreZebra.text")); // NOI18N
-        chIgnoreZebra.setToolTipText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.chIgnoreZebra.toolTipText")); // NOI18N
-        chIgnoreZebra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chIgnoreZebraActionPerformed(evt);
-            }
-        });
+        backgroundPanel.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -735,17 +739,11 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(inheritBgCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(bgButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(chIgnoreZebra)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(backgroundPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(samplePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE)
+                        .addComponent(samplePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -755,17 +753,15 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(samplePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(samplePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-                            .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(bgButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(inheritBgCheckBox)
-                            .addComponent(chIgnoreZebra))))
-                .addContainerGap())
+                            .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(17, 17, 17)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(backgroundPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         fontPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.fontPanel.border.title"))); // NOI18N
@@ -779,18 +775,10 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         );
         fontPanelLayout.setVerticalGroup(
             fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 32, Short.MAX_VALUE)
+            .addGap(0, 51, Short.MAX_VALUE)
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.jPanel4.border.title"))); // NOI18N
-
-        jLabel8.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.jLabel8.text")); // NOI18N
-
-        lineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                lineSpinnerStateChanged(evt);
-            }
-        });
 
         wrapCheckBox.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.wrapCheckBox.text")); // NOI18N
         wrapCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -820,6 +808,44 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             }
         });
 
+        jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.jPanel12.border.title"))); // NOI18N
+
+        textFormatGroup.add(cbRichFormat);
+        cbRichFormat.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.cbRichFormat.text")); // NOI18N
+        cbRichFormat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbRichFormatActionPerformed(evt);
+            }
+        });
+
+        textFormatGroup.add(cbPlainFormat);
+        cbPlainFormat.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.cbPlainFormat.text")); // NOI18N
+        cbPlainFormat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbPlainFormatActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(cbRichFormat)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbPlainFormat)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbRichFormat)
+                    .addComponent(cbPlainFormat))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -827,27 +853,26 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(inheritFgCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(fgButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lineSpinner))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(wrapCheckBox)
-                        .addGap(18, 18, 18)
-                        .addComponent(clipCheckBox)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(inheritFgCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(fgButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(wrapCheckBox)
+                                .addGap(18, 18, 18)
+                                .addComponent(clipCheckBox))
+                            .addComponent(adsReportLineSpacingPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 18, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(lineSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(adsReportLineSpacingPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(wrapCheckBox)
@@ -856,7 +881,9 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inheritFgCheckBox)
                     .addComponent(fgButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(10, 10, 10))
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.jPanel5.border.title"))); // NOI18N
@@ -1041,6 +1068,13 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             }
         });
 
+        cbUseSpacePadding.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.cbUseSpacePadding.text")); // NOI18N
+        cbUseSpacePadding.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbUseSpacePaddingActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1048,35 +1082,35 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(adjustCheckBox)
-                    .addComponent(cbAdjustWidth))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(snapBottomBox)
-                    .addComponent(snapTopBox))
-                .addContainerGap(49, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addContainerGap()))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(adjustCheckBox)
+                            .addComponent(cbAdjustWidth))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(snapBottomBox)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(snapTopBox)
+                                .addGap(36, 36, 36)
+                                .addComponent(cbUseSpacePadding)))
+                        .addGap(0, 51, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(adjustCheckBox)
-                    .addComponent(snapTopBox))
+                    .addComponent(snapTopBox)
+                    .addComponent(cbUseSpacePadding))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cbAdjustWidth)
                     .addComponent(snapBottomBox))
-                .addContainerGap(189, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                    .addContainerGap(56, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
+                .addGap(5, 5, 5)
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                .addGap(10, 10, 10))
         );
 
         jPanel5.add(jPanel2, "card1");
@@ -1249,7 +1283,7 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(imgModeScaleImageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                             .addComponent(imgModeCropImageBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(imgModeFitImageBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(imgModeResizeCellBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -1267,259 +1301,11 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
                     .addComponent(imgModeCropImageBtn)
                     .addComponent(imgModeFitImageBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jPanel5.add(jPanel3, "card2");
-
-        borderPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.borderPanel.border.title"))); // NOI18N
-
-        jPanel8.setLayout(new java.awt.GridBagLayout());
-
-        leftCheckBox.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.leftCheckBox.text")); // NOI18N
-        leftCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        leftCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                leftCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        iconButton.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.iconButton.text")); // NOI18N
-        iconButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                iconButtonActionPerformed(evt);
-            }
-        });
-
-        rightCheckBox.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.rightCheckBox.text")); // NOI18N
-        rightCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                rightCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        topCheckBox.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.topCheckBox.text")); // NOI18N
-        topCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                topCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        bottomCheckBox.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.bottomCheckBox.text")); // NOI18N
-        bottomCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                bottomCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(leftCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bottomCheckBox)
-                    .addComponent(topCheckBox)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(iconButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rightCheckBox))))
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(topCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(leftCheckBox)
-                    .addComponent(iconButton)
-                    .addComponent(rightCheckBox))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bottomCheckBox))
-        );
-
-        jPanel8.add(jPanel9, new java.awt.GridBagConstraints());
-
-        jLabel9.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.jLabel9.text")); // NOI18N
-
-        borderSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                borderSpinnerStateChanged(evt);
-            }
-        });
-
-        colorButton.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.colorButton.text")); // NOI18N
-        colorButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                colorButtonActionPerformed(evt);
-            }
-        });
-
-        buttonGroup2.add(solidRadioButton);
-        solidRadioButton.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.solidRadioButton.text")); // NOI18N
-        solidRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                solidRadioButtonActionPerformed(evt);
-            }
-        });
-
-        buttonGroup2.add(dashedRadioButton);
-        dashedRadioButton.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.dashedRadioButton.text")); // NOI18N
-        dashedRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dashedRadioButtonActionPerformed(evt);
-            }
-        });
-
-        buttonGroup2.add(dottedRadioButton);
-        dottedRadioButton.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.dottedRadioButton.text")); // NOI18N
-        dottedRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dottedRadioButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout borderPanelLayout = new javax.swing.GroupLayout(borderPanel);
-        borderPanel.setLayout(borderPanelLayout);
-        borderPanelLayout.setHorizontalGroup(
-            borderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(borderPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(borderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(solidRadioButton)
-                    .addComponent(dashedRadioButton)
-                    .addComponent(dottedRadioButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(borderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(borderSpinner)
-                    .addComponent(colorButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        borderPanelLayout.setVerticalGroup(
-            borderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(borderPanelLayout.createSequentialGroup()
-                .addGroup(borderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, borderPanelLayout.createSequentialGroup()
-                        .addComponent(solidRadioButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dashedRadioButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dottedRadioButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, borderPanelLayout.createSequentialGroup()
-                        .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(11, 11, 11)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(borderSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-
-        textMarginsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.textMarginsPanel.border.title"))); // NOI18N
-        textMarginsPanel.setLayout(new java.awt.GridBagLayout());
-
-        topMarginSpinner.setPreferredSize(new java.awt.Dimension(64, 20));
-        topMarginSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                topMarginSpinnerStateChanged(evt);
-            }
-        });
-
-        lbTopMargin.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.lbTopMargin.text")); // NOI18N
-
-        lbBottomMargin.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.lbBottomMargin.text")); // NOI18N
-
-        leftMarginSpinner.setPreferredSize(new java.awt.Dimension(64, 20));
-        leftMarginSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                leftMarginSpinnerStateChanged(evt);
-            }
-        });
-
-        lbLeftMargin.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.lbLeftMargin.text")); // NOI18N
-
-        lbRightMargin.setText(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.lbRightMargin.text")); // NOI18N
-
-        rightMarginSpinner.setPreferredSize(new java.awt.Dimension(64, 20));
-        rightMarginSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                rightMarginSpinnerStateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout iconPanel1Layout = new javax.swing.GroupLayout(iconPanel1);
-        iconPanel1.setLayout(iconPanel1Layout);
-        iconPanel1Layout.setHorizontalGroup(
-            iconPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
-        );
-        iconPanel1Layout.setVerticalGroup(
-            iconPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 25, Short.MAX_VALUE)
-        );
-
-        bottomMarginSpinner.setPreferredSize(new java.awt.Dimension(64, 20));
-        bottomMarginSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                bottomMarginSpinnerStateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout middlePanel1Layout = new javax.swing.GroupLayout(middlePanel1);
-        middlePanel1.setLayout(middlePanel1Layout);
-        middlePanel1Layout.setHorizontalGroup(
-            middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(middlePanel1Layout.createSequentialGroup()
-                .addGroup(middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(middlePanel1Layout.createSequentialGroup()
-                        .addComponent(lbLeftMargin)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(leftMarginSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lbTopMargin))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(topMarginSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(middlePanel1Layout.createSequentialGroup()
-                        .addComponent(iconPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbRightMargin)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rightMarginSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-            .addGroup(middlePanel1Layout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(lbBottomMargin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bottomMarginSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        middlePanel1Layout.setVerticalGroup(
-            middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(middlePanel1Layout.createSequentialGroup()
-                .addGroup(middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(topMarginSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbTopMargin))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(leftMarginSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lbLeftMargin))
-                    .addGroup(middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbRightMargin)
-                        .addComponent(rightMarginSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(iconPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(middlePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbBottomMargin)
-                    .addComponent(bottomMarginSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        textMarginsPanel.add(middlePanel1, new java.awt.GridBagConstraints());
 
         pModeSupport.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.pModeSupport.border.title"))); // NOI18N
 
@@ -1552,27 +1338,32 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
                     .addComponent(cbShowAlways)
                     .addComponent(cbShowInTextMode)
                     .addComponent(cbShowInGraphicalMode))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
+
+        adsReportBorderPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.adsReportBorderPanel1.border.title"))); // NOI18N
+        adsReportBorderPanel1.setMaximumSize(new java.awt.Dimension(435, 211));
+        adsReportBorderPanel1.setMinimumSize(new java.awt.Dimension(435, 211));
+        adsReportBorderPanel1.setPreferredSize(new java.awt.Dimension(435, 211));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fontPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fontPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pModeSupport, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(textMarginsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE))
+                            .addComponent(marginPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(borderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pModeSupport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(adsReportBorderPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1582,65 +1373,16 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fontPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(marginPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textMarginsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(borderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(adsReportBorderPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addComponent(pModeSupport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(10, 10, 10))
         );
-
-        textMarginsPanel.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(AdsReportCellAppearanceEditor.class, "AdsReportCellAppearanceEditor.jPanel12.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
-
-    private void leftCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_leftCheckBoxItemStateChanged
-        if (!updating) {
-            updateBorder();
-            apply();
-        }
-}//GEN-LAST:event_leftCheckBoxItemStateChanged
-
-    private void rightCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rightCheckBoxItemStateChanged
-        if (!updating) {
-            updateBorder();
-            apply();
-        }
-}//GEN-LAST:event_rightCheckBoxItemStateChanged
-
-    private void topCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_topCheckBoxItemStateChanged
-        if (!updating) {
-            updateBorder();
-            apply();
-        }
-}//GEN-LAST:event_topCheckBoxItemStateChanged
-
-    private void bottomCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_bottomCheckBoxItemStateChanged
-        if (!updating) {
-            updateBorder();
-            apply();
-        }
-}//GEN-LAST:event_bottomCheckBoxItemStateChanged
-
-    private void borderSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_borderSpinnerStateChanged
-        if (!updating) {
-            updateBorder();
-            apply();
-        }
-}//GEN-LAST:event_borderSpinnerStateChanged
-
-    private void inheritBgCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_inheritBgCheckBoxItemStateChanged
-        if (!updating) {
-            apply();
-            bgButton.setColor(appearance.getBgColor());
-            samplePanel.setBackground(appearance.getBgColor());
-            updateEnableState();
-        }
-    }//GEN-LAST:event_inheritBgCheckBoxItemStateChanged
 
     private void inheritFgCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_inheritFgCheckBoxItemStateChanged
         if (!updating) {
@@ -1742,10 +1484,6 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         apply();
     }//GEN-LAST:event_heightSpinnerStateChanged
 
-    private void lineSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineSpinnerStateChanged
-        apply();
-    }//GEN-LAST:event_lineSpinnerStateChanged
-
     private void wrapCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wrapCheckBoxActionPerformed
         apply();
     }//GEN-LAST:event_wrapCheckBoxActionPerformed
@@ -1753,30 +1491,6 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
     private void clipCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clipCheckBoxActionPerformed
         apply();
     }//GEN-LAST:event_clipCheckBoxActionPerformed
-
-    private void iconButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iconButtonActionPerformed
-        if (topCheckBox.isSelected() || leftCheckBox.isSelected()
-                || rightCheckBox.isSelected() || bottomCheckBox.isSelected()) {
-            topCheckBox.setSelected(false);
-            leftCheckBox.setSelected(false);
-            rightCheckBox.setSelected(false);
-            bottomCheckBox.setSelected(false);
-        } else {
-            topCheckBox.setSelected(true);
-            leftCheckBox.setSelected(true);
-            rightCheckBox.setSelected(true);
-            bottomCheckBox.setSelected(true);
-        }
-    }//GEN-LAST:event_iconButtonActionPerformed
-
-    private void bgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bgButtonActionPerformed
-        final Color clr = JColorChooser.showDialog(this, "Choose Background Color", bgButton.getColor());
-        if (clr != null) {
-            bgButton.setColor(clr);
-            samplePanel.setBackground(clr);
-            apply();
-        }
-    }//GEN-LAST:event_bgButtonActionPerformed
 
     private void fgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fgButtonActionPerformed
         final Color clr = JColorChooser.showDialog(this, "Choose Foreground Color", fgButton.getColor());
@@ -1786,64 +1500,6 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             apply();
         }
     }//GEN-LAST:event_fgButtonActionPerformed
-
-    private void colorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorButtonActionPerformed
-        final Color clr = JColorChooser.showDialog(this, "Choose Border Color", colorButton.getColor());
-        if (clr != null) {
-            colorButton.setColor(clr);
-            updateBorder();
-            apply();
-        }
-    }//GEN-LAST:event_colorButtonActionPerformed
-
-    private void solidRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_solidRadioButtonActionPerformed
-        if (!updating) {
-            updateBorder();
-            apply();
-        }
-}//GEN-LAST:event_solidRadioButtonActionPerformed
-
-    private void dashedRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashedRadioButtonActionPerformed
-        if (!updating) {
-            updateBorder();
-            apply();
-        }
-}//GEN-LAST:event_dashedRadioButtonActionPerformed
-
-    private void dottedRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dottedRadioButtonActionPerformed
-        if (!updating) {
-            updateBorder();
-            apply();
-        }
-}//GEN-LAST:event_dottedRadioButtonActionPerformed
-
-    private void topMarginSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_topMarginSpinnerStateChanged
-        if (!updating) {
-            setSampleMergins();
-            apply();
-        }
-    }//GEN-LAST:event_topMarginSpinnerStateChanged
-
-    private void leftMarginSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_leftMarginSpinnerStateChanged
-        if (!updating) {
-            setSampleMergins();
-            apply();
-        }
-    }//GEN-LAST:event_leftMarginSpinnerStateChanged
-
-    private void rightMarginSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rightMarginSpinnerStateChanged
-        if (!updating) {
-            setSampleMergins();
-            apply();
-        }
-    }//GEN-LAST:event_rightMarginSpinnerStateChanged
-
-    private void bottomMarginSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_bottomMarginSpinnerStateChanged
-        if (!updating) {
-            setSampleMergins();
-            apply();
-        }
-    }//GEN-LAST:event_bottomMarginSpinnerStateChanged
 
     private void cbAdjustWidthItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbAdjustWidthItemStateChanged
         if (updating) {
@@ -1969,17 +1625,38 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         }
     }//GEN-LAST:event_imgModeFitImageBtnActionPerformed
 
-    private void chIgnoreZebraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chIgnoreZebraActionPerformed
-        ignoreZebra = chIgnoreZebra.isSelected();
+    private void cbRichFormatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRichFormatActionPerformed
         apply();
-        updateEnableState();
-    }//GEN-LAST:event_chIgnoreZebraActionPerformed
+    }//GEN-LAST:event_cbRichFormatActionPerformed
+
+    private void cbPlainFormatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPlainFormatActionPerformed
+        apply();
+    }//GEN-LAST:event_cbPlainFormatActionPerformed
+
+    private void cbUseSpacePaddingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbUseSpacePaddingActionPerformed
+        apply();
+        if (appearance.isUseTxtPadding() && appearance.getOwnerForm().getMode() != AdsReportForm.Mode.GRAPHICS) {
+            northWestToggleButton.setSelected(true);
+        }
+        updateEnableState();      
+    }//GEN-LAST:event_cbUseSpacePaddingActionPerformed
 
     private void setSampleMergins() {
-        final int top = MmUtils.mm2px(((BigDecimal) topMarginSpinner.getValue()).doubleValue());
-        final int left = MmUtils.mm2px(((BigDecimal) leftMarginSpinner.getValue()).doubleValue());
-        final int bottom = MmUtils.mm2px(((BigDecimal) bottomMarginSpinner.getValue()).doubleValue());
-        final int right = MmUtils.mm2px(((BigDecimal) rightMarginSpinner.getValue()).doubleValue());
+        final int top;
+        final int left;
+        final int bottom;
+        final int right;
+        if (appearance.getOwnerForm().getMode() == AdsReportForm.Mode.GRAPHICS) {
+            top = MmUtils.mm2px(marginPanel.getTopValue().doubleValue());
+            left = MmUtils.mm2px(marginPanel.getLeftValue().doubleValue());
+            bottom = MmUtils.mm2px(marginPanel.getBottomValue().doubleValue());
+            right = MmUtils.mm2px(marginPanel.getRightValue().doubleValue());
+        } else {
+            top = marginPanel.getTopValue().intValue();
+            left = marginPanel.getLeftValue().intValue();
+            bottom = marginPanel.getBottomValue().intValue();
+            right = marginPanel.getRightValue().intValue();
+        }
         final EmptyBorder border = new EmptyBorder(top, left, bottom, right);
         sampleLabel.setBorder(border);
     }
@@ -1994,21 +1671,11 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             appearance.setTopMm(((BigDecimal) topSpinner.getValue()).doubleValue());
             appearance.setLeftMm(((BigDecimal) leftSpinner.getValue()).doubleValue());
 
-            appearance.setMarginTopMm(((BigDecimal) topMarginSpinner.getValue()).doubleValue());
-            appearance.setMarginLeftMm(((BigDecimal) leftMarginSpinner.getValue()).doubleValue());
-            appearance.setMarginRightMm(((BigDecimal) rightMarginSpinner.getValue()).doubleValue());
-            appearance.setMarginBottomMm(((BigDecimal) bottomMarginSpinner.getValue()).doubleValue());
-
         } else {
             appearance.setHeightRows(((Integer) heightSpinner.getValue()).intValue());
             appearance.setWidthCols(((Integer) widthSpinner.getValue()).intValue());
             appearance.setTopRow(((Integer) topSpinner.getValue()).intValue());
             appearance.setLeftColumn(((Integer) leftSpinner.getValue()).intValue());
-
-            appearance.setMarginTopRows(((Integer) topMarginSpinner.getValue()).intValue());
-            appearance.setMarginLeftCols(((Integer) leftMarginSpinner.getValue()).intValue());
-            appearance.setMarginRightCols(((Integer) rightMarginSpinner.getValue()).intValue());
-            appearance.setMarginBottomRows(((Integer) bottomMarginSpinner.getValue()).intValue());
 
         }
 
@@ -2026,16 +1693,12 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
             ((AdsReportDbImageCell) appearance).setScaleType(scaleType);
         }
 
-        appearance.setBgColorInherited(inheritBgCheckBox.isSelected());
-        appearance.setBgColor(bgButton.getColor());
         appearance.setFontInherited(useBandFontCheckBox.isSelected());
         final AdsReportAbstractAppearance.Font reportFont = appearance.getFont();
         innerFontPanel.setFont(reportFont, useBandFontCheckBox.isSelected());
         if (!useBandFontCheckBox.isSelected()) {
             innerFontPanel.apply();
         }
-        appearance.setIgnoreAltBgColor(ignoreZebra);
-        appearance.setLineSpacingMm(((BigDecimal) lineSpinner.getValue()).doubleValue());
         appearance.setWrapWord(wrapCheckBox.isSelected());
         appearance.setClipContent(clipCheckBox.isSelected());
         appearance.setFgColorInherited(inheritFgCheckBox.isSelected());
@@ -2049,53 +1712,60 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
         appearance.setVAlign(vAlign);
         //}
         appearance.setHAlign(hAlign);
-        if (solidRadioButton.isSelected()) {
-            appearance.getBorder().setStyle(EReportBorderStyle.SOLID);
-        } else if (dashedRadioButton.isSelected()) {
-            appearance.getBorder().setStyle(EReportBorderStyle.DASHED);
-        } else if (dottedRadioButton.isSelected()) {
-            appearance.getBorder().setStyle(EReportBorderStyle.DOTTED);
+        
+        if (cbPlainFormat.isSelected()){
+            appearance.setTextFormat(EReportTextFormat.PLAIN);
+        } else {
+            appearance.setTextFormat(EReportTextFormat.RICH);
         }
-
-        appearance.getBorder().setOnTop(topCheckBox.isSelected());
-        appearance.getBorder().setOnLeft(leftCheckBox.isSelected());
-        appearance.getBorder().setOnBottom(bottomCheckBox.isSelected());
-        appearance.getBorder().setOnRight(rightCheckBox.isSelected());
-        appearance.getBorder().setColor(colorButton.getColor());
-        appearance.getBorder().setThicknessMm(((BigDecimal) borderSpinner.getValue()).doubleValue());
+        
+        appearance.setUseTxtPadding(cbUseSpacePadding.isSelected());
     }
 
     private final JCheckBox useBandFontCheckBox = new JCheckBox("Use band font");
 
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        innerBackgroundPanel.addPropertyChangeListener(backgroundListener);
+        adsReportLineSpacingPanel1.addPropertyChangeListener(AdsReportDialogsUtils.LINE_SPACING, lineSpacingListener);
+        adsReportBorderPanel1.addPropertyChangeListener(AdsReportDialogsUtils.BORDER_CHANGE, borderSpacingListener);
+    }
+    
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        innerBackgroundPanel.removePropertyChangeListener(backgroundListener);
+        adsReportLineSpacingPanel1.removePropertyChangeListener(AdsReportDialogsUtils.LINE_SPACING, lineSpacingListener);
+        adsReportBorderPanel1.removePropertyChangeListener(AdsReportDialogsUtils.BORDER_CHANGE, borderSpacingListener);
+    }
+    
+    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox adjustCheckBox;
-    private org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton bgButton;
-    private javax.swing.JPanel borderPanel;
-    private javax.swing.JSpinner borderSpinner;
-    private javax.swing.JCheckBox bottomCheckBox;
-    private javax.swing.JSpinner bottomMarginSpinner;
+    private org.radixware.kernel.designer.ads.editors.clazz.report.appearance.AdsReportBorderPanel adsReportBorderPanel1;
+    private org.radixware.kernel.designer.ads.editors.clazz.report.AdsReportLineSpacingPanel adsReportLineSpacingPanel1;
+    private javax.swing.JPanel backgroundPanel;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.ButtonGroup buttonGroup4;
     private javax.swing.ButtonGroup buttonGroup5;
     private javax.swing.JCheckBox cbAdjustWidth;
+    private javax.swing.JRadioButton cbPlainFormat;
+    private javax.swing.JRadioButton cbRichFormat;
     private javax.swing.JRadioButton cbShowAlways;
     private javax.swing.JRadioButton cbShowInGraphicalMode;
     private javax.swing.JRadioButton cbShowInTextMode;
+    private javax.swing.JCheckBox cbUseSpacePadding;
     private javax.swing.JToggleButton centerAdjustToggleButton;
     private javax.swing.JToggleButton centerToggleButton;
-    private javax.swing.JCheckBox chIgnoreZebra;
     private javax.swing.JCheckBox clipCheckBox;
-    private org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton colorButton;
-    private javax.swing.JRadioButton dashedRadioButton;
-    private javax.swing.JRadioButton dottedRadioButton;
     private javax.swing.JToggleButton eastToggleButton;
     private org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton fgButton;
     private javax.swing.JPanel fontPanel;
     private javax.swing.JSpinner heightSpinner;
-    private javax.swing.JButton iconButton;
-    private javax.swing.JPanel iconPanel1;
     private javax.swing.JToggleButton imgCenterToggleButton;
     private javax.swing.JToggleButton imgEastToggleButton;
     private javax.swing.JToggleButton imgModeCropImageBtn;
@@ -2109,53 +1779,37 @@ class AdsReportCellAppearanceEditor extends JPanel implements ChangeListener {
     private javax.swing.JToggleButton imgSouthToggleButton;
     private javax.swing.JToggleButton imgSouthWestToggleButton;
     private javax.swing.JToggleButton imgWestToggleButton;
-    private javax.swing.JCheckBox inheritBgCheckBox;
     private javax.swing.JCheckBox inheritFgCheckBox;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JLabel lbBottomMargin;
-    private javax.swing.JLabel lbLeftMargin;
-    private javax.swing.JLabel lbRightMargin;
-    private javax.swing.JLabel lbTopMargin;
     private javax.swing.JLabel lblHeight;
     private javax.swing.JLabel lblLeft;
     private javax.swing.JLabel lblTop;
     private javax.swing.JLabel lblWidth;
-    private javax.swing.JCheckBox leftCheckBox;
-    private javax.swing.JSpinner leftMarginSpinner;
     private javax.swing.JSpinner leftSpinner;
-    private javax.swing.JSpinner lineSpinner;
-    private javax.swing.JPanel middlePanel1;
+    private org.radixware.kernel.designer.ads.editors.clazz.report.MarginPanel marginPanel;
     private javax.swing.JToggleButton northAdjustToggleButton;
     private javax.swing.JToggleButton northEastToggleButton;
     private javax.swing.JToggleButton northToggleButton;
     private javax.swing.JToggleButton northWestToggleButton;
     private javax.swing.JPanel pModeSupport;
-    private javax.swing.JCheckBox rightCheckBox;
-    private javax.swing.JSpinner rightMarginSpinner;
     private javax.swing.JLabel sampleLabel;
     private javax.swing.JPanel samplePanel;
     private javax.swing.JCheckBox snapBottomBox;
     private javax.swing.JCheckBox snapTopBox;
-    private javax.swing.JRadioButton solidRadioButton;
     private javax.swing.JToggleButton southAdjustToggleButton;
     private javax.swing.JToggleButton southEastToggleButton;
     private javax.swing.JToggleButton southToggleButton;
     private javax.swing.JToggleButton southWestToggleButton;
-    private javax.swing.JPanel textMarginsPanel;
-    private javax.swing.JCheckBox topCheckBox;
-    private javax.swing.JSpinner topMarginSpinner;
+    private javax.swing.ButtonGroup textFormatGroup;
     private javax.swing.JSpinner topSpinner;
     private javax.swing.JToggleButton westToggleButton;
     private javax.swing.JSpinner widthSpinner;

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aec2R4PKYCFCVHGRP2YVVFOORGWIE" Name="StackData" Type="1">
+    <AccessRules IsFinal="true" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaecZYIQXBIIGZDYJP2QLYCIFSKDGA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaecZYIQXBIIGZDYJP2QLYCIFSKDGA"/>
+    </Bodies>
+    <MethodGroup Id="cmgGUK4MC5HE5CH5AYN2UC3EGRV2Q" Name="Root"/>
+    <PropertyGroup Id="cpg5OS2ZOP23RBFFKSSXQ2PCZKVMY" Name="Root"/>
+    <Properties>
+      <Property Id="colUILPI7J34VDJTGKLOXKYLVL2K4" Name="compressedStack" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="28"/>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true" ReadSeparately="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colIAUYIKCLEBHP5MU4ELPXVEQWJU" Name="digest" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colKLS76H6PRRGDTL2GZCCMYNFJXM" Name="stackTop" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prd222VBCWD3NE7FDJQTFYYZYZD2U" Name="uncompressedStack" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE prd222VBCWD3NE7FDJQTFYYZYZD2U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>uncompressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE prd222VBCWD3NE7FDJQTFYYZYZD2U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>uncompressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="28">
+                <xsc:Presentation>Blob</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> blob = null;
+try {
+    blob = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE colUILPI7J34VDJTGKLOXKYLVL2K4" Invoke="true">
+                <xsc:Presentation>compressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U">
+                <xsc:Presentation>Exceptions::EntityObjectNotExistsError</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE prd222VBCWD3NE7FDJQTFYYZYZD2U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>uncompressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = "\"Stack not exists\" error";
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE prd222VBCWD3NE7FDJQTFYYZYZD2U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>uncompressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+
+byte[] compressedStack;
+try {
+    compressedStack = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE colUILPI7J34VDJTGKLOXKYLVL2K4" Invoke="true">
+                <xsc:Presentation>compressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? null : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE colUILPI7J34VDJTGKLOXKYLVL2K4" Invoke="true">
+                <xsc:Presentation>compressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getBytes(1L, (int)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE colUILPI7J34VDJTGKLOXKYLVL2K4" Invoke="true">
+                <xsc:Presentation>compressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.length());
+} catch (Exception e) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc7M2U2F2F7REN5IFLI44GKDBXOY mthAHB6HV7DB5CZNOPDFLWZKDFMRA" Invoke="true">
+                <xsc:Presentation>Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Failed to get compressedStack bytes", e);
+}
+
+String uncompressedStack;
+try {
+    uncompressedStack = org.radixware.kernel.common.utils.Utils.decompressString(compressedStack);
+} catch (Exception e) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc7M2U2F2F7REN5IFLI44GKDBXOY mthAHB6HV7DB5CZNOPDFLWZKDFMRA" Invoke="true">
+                <xsc:Presentation>Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Failed to decompress stack", e);
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE prd222VBCWD3NE7FDJQTFYYZYZD2U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>uncompressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = uncompressedStack == null ? "" : uncompressedStack;
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2R4PKYCFCVHGRP2YVVFOORGWIE prd222VBCWD3NE7FDJQTFYYZYZD2U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>uncompressedStack</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+    </Properties>
+    <Methods/>
+    <Entity EntityId="tbl2R4PKYCFCVHGRP2YVVFOORGWIE">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations Restrictions="28679">
+      <ObjectTitleFormat Id="etfYWTVSOI3WNDAHF4FT7GOOFX7GA"/>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

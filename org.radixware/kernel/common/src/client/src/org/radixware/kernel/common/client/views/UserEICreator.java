@@ -81,24 +81,28 @@ public abstract class UserEICreator {
                 ((IContext.TableSelect)model.getContext()).explorerItemDef;
             if (explorerItemDef.isVisible() && explorerItemDef instanceof RadSelectorExplorerItemDef){
                 final EntityModel parentEntityModel = model.getContext().getHolderEntityModel();
-                final IExplorerItemsHolder itemsHolder = parentEntityModel.getEditorPresentationDef();
-                final RadExplorerItems items = itemsHolder.getChildrenExplorerItems();                
-                final boolean isChildEI = items.findExplorerItem(explorerItemDef.getId())!=null;               
-                if (isChildEI && explorerItemDef.isVisible()){
-                    final boolean isEIVisible = explorerItemDef.isVisible() &&
-                        itemsHolder.isExplorerItemVisible(itemsHolder.getId(), explorerItemDef.getId());
-                    if (isEIVisible){
-                        if (parentEntityModel.getExplorerItemView()!=null){
-                            return parentEntityModel;
-                        }
-                        else if (parentEntityModel.getContext() instanceof IContext.InSelectorEditing){
-                            final IContext.InSelectorEditing context = 
-                                (IContext.InSelectorEditing)parentEntityModel.getContext();
-                            return context.getGroupModel();
-                        }else if (parentEntityModel.getContext() instanceof IContext.SelectorRow){
-                            final IContext.SelectorRow context = 
-                                (IContext.SelectorRow)parentEntityModel.getContext();
-                            return context.parentGroupModel;
+                if (parentEntityModel==null){
+                    return null;
+                }else{
+                    final IExplorerItemsHolder itemsHolder = parentEntityModel.getEditorPresentationDef();
+                    final RadExplorerItems items = itemsHolder.getChildrenExplorerItems();                
+                    final boolean isChildEI = items.findExplorerItem(explorerItemDef.getId())!=null;               
+                    if (isChildEI && explorerItemDef.isVisible()){
+                        final boolean isEIVisible = explorerItemDef.isVisible() &&
+                            itemsHolder.isExplorerItemVisible(itemsHolder.getId(), explorerItemDef.getId());
+                        if (isEIVisible){
+                            if (parentEntityModel.getExplorerItemView()!=null){
+                                return parentEntityModel;
+                            }
+                            else if (parentEntityModel.getContext() instanceof IContext.InSelectorEditing){
+                                final IContext.InSelectorEditing context = 
+                                    (IContext.InSelectorEditing)parentEntityModel.getContext();
+                                return context.getGroupModel();
+                            }else if (parentEntityModel.getContext() instanceof IContext.SelectorRow){
+                                final IContext.SelectorRow context = 
+                                    (IContext.SelectorRow)parentEntityModel.getContext();
+                                return context.parentGroupModel;
+                            }
                         }
                     }
                 }

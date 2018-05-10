@@ -8,24 +8,19 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.units.netport;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.sql.SQLException;
 
-/**
- * ������� ����� c LinkLevelProtocol = None.
- * �� ���������������� ��� ��� ������ � ��� ���� ������ � �������� ���� ������
- * 
- */
 final class FramerSeance extends Seance {
 //	Framer framer = null;
+
     FramerSeance(
             final NetPortHandlerUnit unit,
             final NetChannel netChannel,
-            final SocketChannel channel) throws IOException, SQLException{
-        super(unit, netChannel, channel, netChannel.inFrame, netChannel.outFrame);
+            final SocketChannel channel) throws IOException, SQLException {
+        super(unit, netChannel, channel, netChannel.options.inFrame, netChannel.options.outFrame);
     }
 }

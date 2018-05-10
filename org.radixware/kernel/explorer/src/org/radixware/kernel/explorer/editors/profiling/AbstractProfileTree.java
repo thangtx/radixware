@@ -27,6 +27,8 @@ import com.trolltech.qt.gui.QTreeWidgetItem;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -487,24 +489,36 @@ public class AbstractProfileTree {
     public QTreeWidgetItem getItemByPid(Pid pid) {
         for (int i = 0; i < tree.topLevelItemCount(); i++) {
             TreeItem item = (TreeItem) tree.topLevelItem(i);
-            TreeItem findItem = findItem(item, pid);
+            TreeItem findItem = findItem(item, Collections.singleton(pid));
             if (findItem != null) {
                 return findItem;
             }
         }
         return null;
     }
-
-    private TreeItem findItem(TreeItem parent, Pid pid) {
-        for (int i = 0; i < parent.childCount(); i++) {
-            TreeItem item = (TreeItem) parent.child(i);
-            if (item.getPid() != null && item.getPid().equals(pid)) {
-                return item;
+    
+    public QTreeWidgetItem getItemByPid(Collection<Pid> pids) {
+        for (int i = 0; i < tree.topLevelItemCount(); i++) {
+            TreeItem item = (TreeItem) tree.topLevelItem(i);
+            TreeItem findItem = findItem(item, pids);
+            if (findItem != null) {
+                return findItem;
             }
-            findItem(item, pid);
         }
         return null;
     }
+    
+
+    private TreeItem findItem(TreeItem parent, Collection<Pid> pids) {
+        for (int i = 0; i < parent.childCount(); i++) {
+            TreeItem item = (TreeItem) parent.child(i);
+            if (item.getPid() != null && pids.contains(item.getPid())) {
+                return item;
+            }
+            findItem(item, pids);
+        }
+        return null;
+    }        
 
     public void clear() {
         tree.clear();

@@ -17,7 +17,9 @@ import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.ITitledDefinition;
 import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.enums.EAccess;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.adsdef.DescribedAdsDefinition;
 import org.radixware.schemas.adsdef.TitledAdsDefinition;
@@ -79,6 +81,11 @@ public abstract class AdsClassTitledMember extends AdsClassMember implements ITi
             }
         }
     }
+    
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return ERuntimeEnvironmentType.COMMON_CLIENT;
+    }        
 
     @Override
     public void collectUsedMlStringIds(Collection<MultilingualStringInfo> ids) {

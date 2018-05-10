@@ -18,6 +18,7 @@ import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QBrush;
 import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QHeaderView;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QResizeEvent;
@@ -75,6 +76,8 @@ public class JmlProblemList extends QWidget {
     }
 
     public interface IJmlProblemTreeItemModel {
+        
+        void calcProblemsCnt(int[] errors, int[] warnings);
 
         QTreeWidgetItem getOrCreateTreeItem();
 
@@ -89,6 +92,16 @@ public class JmlProblemList extends QWidget {
         int getChildsCount();
 
         void clearChildsList();
+    }
+    
+    private static class BaseTreeItem extends QTreeWidgetItem {
+
+        //Override to implement partial order:
+        //Only top level items (UfTreeItem) are ordered
+        @Override
+        public boolean operator_less(QTreeWidgetItem other) {
+            return false;
+        }
     }
 
     public static class ProblemItem implements IJmlProblemTreeItemModel {
@@ -279,9 +292,20 @@ public class JmlProblemList extends QWidget {
         public void clearChildsList() {
             //do nothing
         }
+
+        @Override
+        public void calcProblemsCnt(int[] errors, int[] warnings) {
+           if (getSeverity() != null) {
+               if (getSeverity() == ESeverity.ERROR) {
+                   errors[0]++;
+               } else if (getSeverity() == ESeverity.WARNING) {
+                   warnings[0]++;
+               }
+           }
+        }
     }
 
-    static class ProblemTreeItem extends QTreeWidgetItem {
+    static class ProblemTreeItem extends BaseTreeItem {
 
         ProblemItem problemItem;
 
@@ -365,9 +389,16 @@ public class JmlProblemList extends QWidget {
         public void clearChildsList() {
             childs.clear();
         }
+
+        @Override
+        public void calcProblemsCnt(int[] errors, int[] warnings) {
+            for (IJmlProblemTreeItemModel child : childs) {
+                child.calcProblemsCnt(errors, warnings);
+            }
+        }
     }
 
-    static class SourceVersionTreeItem extends QTreeWidgetItem {
+    static class SourceVersionTreeItem extends BaseTreeItem {
 
         private SourceVersionItem sourceVersionItem;
 
@@ -397,11 +428,40 @@ public class JmlProblemList extends QWidget {
 
         UfItem(UfItem source) {
             this.id = source.id;
-            this.treeItemText = source.getTreeItemText();
+            this.treeItemText = source.treeItemText;
         }
-
-        public String getTreeItemText() {
-            return treeItemText;
+        
+        private void updateTreeItemText() {
+            if (treeItem == null) {
+                return;
+            }
+            final int[] errors = new int[1];
+            final int[] warnings = new int[1];
+            calcProblemsCnt(errors, warnings);
+            
+            final QBrush b;
+            final String text;
+            if (errors[0] > 0) {
+                b  = errorBrush;
+                if (warnings[0] > 0) {
+                    text = String.format("[errors: %d, warnings: %d]", errors[0], warnings[0]);
+                } else {
+                    text = String.format("[errors: %d]", errors[0]);
+                }
+            } else if (warnings[0] > 0) {
+                b  = warningBrush;
+                text = String.format("[warnings: %d]", warnings[0]);
+            } else {
+                b = null;
+                text = null;
+            }
+            treeItem.setForeground(0, b);
+            treeItem.setForeground(1, b);
+            treeItem.setText(1, text);
+        }
+        
+        private String getTreeTextWithId() {
+            return String.format("%d) %s", id, treeItemText);
         }
 
         @Override
@@ -413,10 +473,11 @@ public class JmlProblemList extends QWidget {
         public QTreeWidgetItem getOrCreateTreeItem() {
             if (treeItem == null) {
                 treeItem = new UfTreeItem(this);
-                treeItem.setText(0, treeItemText);
+                treeItem.setText(0, getTreeTextWithId());
                 for (IJmlProblemTreeItemModel child : childs) {
                     treeItem.addChild(child.getOrCreateTreeItem());
                 }
+                updateTreeItemText();
             }
             return treeItem;
         }
@@ -456,14 +517,21 @@ public class JmlProblemList extends QWidget {
         public IJmlProblemTreeItemModel getChild(int index) {
             return childs.get(index);
         }
-
+        
         @Override
         public void clearChildsList() {
             childs.clear();
         }
+        
+        @Override
+        public void calcProblemsCnt(int[] errors, int[] warnings) {
+            for (IJmlProblemTreeItemModel child : childs) {
+                child.calcProblemsCnt(errors, warnings);
+            }
+        }
     }
 
-    static class UfTreeItem extends QTreeWidgetItem {
+    static class UfTreeItem extends BaseTreeItem {
 
         private UfItem ufItem;
 
@@ -473,6 +541,14 @@ public class JmlProblemList extends QWidget {
 
         public UfItem getUfItem() {
             return ufItem;
+        }
+
+        @Override
+        public boolean operator_less(QTreeWidgetItem other) {
+            if (other instanceof UfTreeItem) {
+                return ufItem.id < ((UfTreeItem) other).ufItem.id;
+            }
+            return false;
         }
     }
 
@@ -500,8 +576,13 @@ public class JmlProblemList extends QWidget {
     private final QAction actCopyProblemText;
     private final QAction actCopyCurUfProblemsText;
     private final QAction actCopyAllProblemsText;
-
+    private final QAction actClearAllProblems;
+    
     public JmlProblemList(IUserFuncLocator locator, QWidget parent) {
+        this(locator, parent, false);
+    }
+
+    public JmlProblemList(IUserFuncLocator locator, QWidget parent, boolean showProblemCntColumn) {
         super(parent);
         this.ufLocator = locator;
         this.setLayout(new QVBoxLayout());
@@ -510,7 +591,17 @@ public class JmlProblemList extends QWidget {
         this.problemTree.setObjectName("ProblrmTree");
         this.layout().addWidget(problemTree);
         this.problemHandler = new DefaultProblemHandler(this);
-        problemTree.header().setHidden(true);
+        
+        if (showProblemCntColumn) {
+            problemTree.setColumnCount(2);
+            problemTree.header().setResizeMode(0, QHeaderView.ResizeMode.Interactive);
+            problemTree.header().setResizeMode(1, QHeaderView.ResizeMode.ResizeToContents);
+            problemTree.header().resizeSection(0, 500);
+            problemTree.setHeaderLabels(Arrays.asList("", ""));
+            problemTree.setSortingEnabled(true);
+        } else {
+            problemTree.header().hide();
+        }
         problemTree.doubleClicked.connect(this, "dblClickItem(com.trolltech.qt.core.QModelIndex)");
         problemTree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
         problemTree.customContextMenuRequested.connect(this, "customContextMenuRequested(QPoint)");
@@ -522,6 +613,14 @@ public class JmlProblemList extends QWidget {
         actCopyCurUfProblemsText.triggered.connect(this, "copyProblemText_Clicked()");
         actCopyAllProblemsText = new QAction(ExplorerIcon.getQIcon(ClientIcon.Selector.COPY_ALL), Application.translate("JmlEditor", "Copy Text of All Errors"), null);
         actCopyAllProblemsText.triggered.connect(this, "copyAllProblemText_Clicked()");
+        actClearAllProblems = new QAction(ExplorerIcon.getQIcon(ClientIcon.Selector.Editor.CLEAR), Application.translate("JmlEditor", "Clear All Errors"), null);
+        actClearAllProblems.triggered.connect(this, "actClearAllProblems_Clicked()");
+    }
+    
+    @SuppressWarnings("unused")
+    private void actClearAllProblems_Clicked() {
+        clear(-1);
+        setVisible(false);
     }
 
     @SuppressWarnings("unused")
@@ -573,6 +672,7 @@ public class JmlProblemList extends QWidget {
             QMenu menu = new QMenu(problemTree);
             menu.addAction((currentItem instanceof ProblemTreeItem) ? actCopyProblemText : actCopyCurUfProblemsText);
             menu.addAction(actCopyAllProblemsText);
+            menu.addAction(actClearAllProblems);
             menu.popup(problemTree.viewport().mapToGlobal(point));
         }
     }
@@ -626,7 +726,7 @@ public class JmlProblemList extends QWidget {
         return item;
     }
     private static final QBrush errorBrush = new QBrush(QColor.red);
-    private static final QBrush warningBrush = new QBrush(QColor.darkRed);
+    private static final QBrush warningBrush = new QBrush(QColor.fromRgb(255, 165, 0)); //orange
     private IUserFuncLocator ufLocator;
     public final Signal3<JmlProblemList, Integer, Boolean> viewStateChanged = new Signal3<>();
 

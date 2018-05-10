@@ -1,4 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
-  <AdsLocalizingBundleDefinition Id="mlbpdcCursor____________________"/>
+  <AdsLocalizingBundleDefinition Id="mlbpdcCursor____________________">
+    <String Id="mls2KDUSQTKYJHXNNN6QZSLDSON3A" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:59:01.909" Version="0">
+      <Value Language="ru" NeedsCheck="false" Agreed="false" Version="1" LastModified="2017-12-22T16:27:22.701" Author="ypaliy">Флаг, указывающий наличие предыдущей строки в выборке</Value>
+    </String>
+    <String Id="mls2QO5LQAHQVCT7ETEAVBKCZPWOI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:12:10.646" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:12:18.641" Author="Akela">Индекс строки к которой выполняется перемещение</Value>
+    </String>
+    <String Id="mls3342G7APVNDXVJOEGVFWRLTDCI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:25:09.893" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:25:17.960" Author="Akela">Устанавливаемое направление выборки</Value>
+    </String>
+    <String Id="mls3QE5UHTEURAMBHUQRZKI4Q3ZTQ" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:10:28.062" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:12:08.192" Author="Akela">Флаг, указывающий успешность перемещения. true - курсор перемещен на указанную строку, false - курсор перемещен либо перед первой строкой выборки, либо после последней строки</Value>
+    </String>
+    <String Id="mls3VX3BKQFG5BNPKEVLECIFMCIYQ" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:02:15.372" Version="0">
+      <Value Language="ru" NeedsCheck="false" Agreed="false" Version="1" LastModified="2017-12-15T17:32:52.127" Author="ypaliy">Результат проверки</Value>
+    </String>
+    <String Id="mls3Y7N44P4TZGG3KR4EJGNIJXD5M" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:01:50.814" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:01:58.351" Author="Akela">Флаг, указывающий успешность перемещения. Возвращает false, если выборка пустая.</Value>
+    </String>
+    <String Id="mls464TJNNVTFEODGI7QCPJ3KIC4U" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:24:25.224" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:24:35.711" Author="Akela">Метод проверки, что текущая строка выборки обновлена</Value>
+    </String>
+    <String Id="mls5BHTHJ22SJGGDI222VNH2IS444" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:01:38.379" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:01:48.801" Author="Akela">Метод перемещения курсора к последней строке выборки</Value>
+    </String>
+    <String Id="mls5BLPYVA4KBCMRFCZGCZVT3FLDY" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:15:38.761" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:15:42.140" Author="Akela">Размер выборки</Value>
+    </String>
+    <String Id="mls6J7EOTRIEVBEXJOUUF24JEO6EQ" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:23:32.353" Version="0">
+      <Value Language="ru" NeedsCheck="false" Agreed="false" Version="1" LastModified="2017-12-15T17:32:56.920" Author="ypaliy">Результат проверки</Value>
+    </String>
+    <String Id="mls7TPOI4E25JDGTL3NQFBN7LOLKI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:56:24.147" Version="0">
+      <Value Language="ru" NeedsCheck="false" Agreed="false" Version="1" LastModified="2017-12-22T16:28:29.577" Author="ypaliy">Флаг, указывающий наличие следующей строки в выборке</Value>
+    </String>
+    <String Id="mlsBCNXGQ3VFFCJNCAPPE63JGYRZY" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:15:47.949" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:15:52.761" Author="Akela">Метод получения предупреждений</Value>
+    </String>
+    <String Id="mlsBGZQOR7O7FA2RDWQCGUZLQVXRI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:53:23.145" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2017-02-13T08:26:30.702" Author="Akela">Метод закрытия курсора. Вызов данного метода необходим во избежание утечки ресурсов. Как правило, работа с курсором должна оборачиваться в блок try ... finally:
+&lt;p>
+&lt;code>
+try {
+  doSomethingWithCursor(cursor);
+} finally {
+  cursor.close();
+}
+&lt;/code>
+&lt;/p></Value>
+    </String>
+    <String Id="mlsDNPSMU4ICZH4VGO3XN6U4W5TAY" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:59:54.973" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:00:04.166" Author="Akela">Метод перемещения курсора к первой строке выборки</Value>
+    </String>
+    <String Id="mlsESSCWIJ3PFCS7BJMGUV4QIGSAY" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:05:33.611" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:06:10.499" Author="Akela">Результат проверки. Возвращает true если курсор указывает на предыдущую строку перед началом выборки и false в противном случае (в том числе в случае пустой выборки)</Value>
+    </String>
+    <String Id="mlsF5PCS6MC4NFCZGJBX4MLNNSGQ4" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:21:07.396" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:22:26.039" Author="Akela">Флаг, указывающий успешность перемещения. Возвращает true, если курсор указывает на строку выборки, false - если курсор оказался перед первой строкой выборки или после последней.</Value>
+    </String>
+    <String Id="mlsF63ORFR3SFHTLPXY6EUO67LTZM" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:25:21.718" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:25:28.940" Author="Akela">Метод установки размера выборки</Value>
+    </String>
+    <String Id="mlsFSEW5RDZUREXLNUXTHACY2VYOE" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:04:01.684" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:08:06.115" Author="Akela">Метод проверки что курсор указывает на строку "за концом" выборки</Value>
+    </String>
+    <String Id="mlsG6K4CWV6SNGMNHAVEZZGFR4TME" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:22:30.680" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:22:36.356" Author="Akela">Величина сдвига курсора</Value>
+    </String>
+    <String Id="mlsG7VAPEUEF5A5PMYEJJFC6VPXIY" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:22:39.965" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:23:30.170" Author="Akela">Метод проверки что текущая строка выборки удалена из БД</Value>
+    </String>
+    <String Id="mlsGFHGJQCNBVDOPNUBTOLVBDF55I" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:23:56.445" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:24:06.481" Author="Akela">Метод проверки что текущая строка выборки вставлена в таблицу</Value>
+    </String>
+    <String Id="mlsHJKSCHAXEFB6XNRJZUYXDSVO5U" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:17:46.058" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:17:55.951" Author="Akela">Метод вставки текущей строки в БД</Value>
+    </String>
+    <String Id="mlsHSWWUATXZNBC7ALTDZFKRIAOCI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:20:30.233" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:21:04.782" Author="Akela">Метод перемещения курсора на указанное количество строк вперед или назад. Если x положителен - курсор сдвигается вперед, если x отрицателен - назад.</Value>
+    </String>
+    <String Id="mlsHXGHNBEYQ5EK7NIGPQQH4C3SQE" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:24:38.325" Version="0">
+      <Value Language="ru" NeedsCheck="false" Agreed="false" Version="1" LastModified="2017-12-15T17:33:01.701" Author="ypaliy">Результат проверки</Value>
+    </String>
+    <String Id="mlsIHXYJO2MMREWNCLEGCCA5LHN2U" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:05:35.772" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:08:00.961" Author="Akela">Метод проверки что курсор указывает на строку "перед началом" выборки</Value>
+    </String>
+    <String Id="mlsIJ5RXFYDS5APHEUZHJBDNTHXEI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:18:05.758" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:18:48.428" Author="Akela">Метод перемещения курсора к новой (пустой) строке для вставки данных. После заполнения данных строка должна быть вставлена в БД с помощью метода insertRow</Value>
+    </String>
+    <String Id="mlsIJS2TQ3CXFC5BDTYB3MSEOT3IU" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:51:43.395" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T09:53:17.305" Author="Akela">Метод удаления текущей строки курсора. Генерирует исключение, если курсор закрыт, либо возникает ошибка удаления записи из таблицы</Value>
+    </String>
+    <String Id="mlsIQ6MAVKUQ5DUXL36WEW5E5HT6E" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:12:52.741" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:13:05.537" Author="Akela">Метод, отменяющий произведенные над текущей строкой изменения</Value>
+    </String>
+    <String Id="mlsK7NRP5GEJFG77CZJDYLVPGZMZM" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:07:33.082" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:07:52.177" Author="Akela">Метод перемещения курсора на позицию перед первой строкой выборки. Ничего не делает если выборка пустая</Value>
+    </String>
+    <String Id="mlsKRYKMVM4VFD5TNIIRBKNIDZMCM" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:09:07.718" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:10:22.111" Author="Akela">Метод перемещения курсора на указанную позицию. Первая строка выборки имеет индекс 1, вторая - 2 и т.д.
+Индекс 0 означает перемещение курсора на позицию перед первой строкой выборки.
+Отрицательный индекс означает перемещение на строку "с конца" выборки, -1 - последняя строка выборки, -2 - предпоследняя и т.д.</Value>
+    </String>
+    <String Id="mlsKWDBSY5KVJFL5OOOMPFNI5LDPI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:57:45.937" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T09:58:07.815" Author="Akela">Метод перемещения курсора к предыдущей строке выборки. Возвращает true, если выборка содержит предыдущую строку и false в случае если выборка исчерпана.</Value>
+    </String>
+    <String Id="mlsLWJLZYE25ZGOZLY2UWJKBUSEVQ" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:24:08.052" Version="0">
+      <Value Language="ru" NeedsCheck="false" Agreed="false" Version="1" LastModified="2017-12-15T17:33:07.156" Author="ypaliy">Результат проверки</Value>
+    </String>
+    <String Id="mlsLYXH5NERMRG6BCCDUQLUVYTOWU" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:00:50.525" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:01:30.828" Author="Akela">Флаг, указывающий успешность перемещения. Возвращает false, если выборка пустая.</Value>
+    </String>
+    <String Id="mlsNJV7VJN3YRCGRPCKGBTKPLJIVA" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:59:37.189" Version="0">
+      <Value Language="ru" NeedsCheck="false" Agreed="false" Version="1" LastModified="2017-12-15T17:33:12.106" Author="ypaliy">Результат проверки</Value>
+    </String>
+    <String Id="mlsNRHPFAAJM5HKJPKZAMI2EAOYW4" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:14:25.641" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:14:34.004" Author="Akela">Направление выборки (прямое или обратное)</Value>
+    </String>
+    <String Id="mlsNYBV6EA3NFHWBGLXM2QBTQHOFI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:24:46.797" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:25:08.270" Author="Akela">Метод установки направления выборки</Value>
+    </String>
+    <String Id="mlsPYQBFO7TDFFZBOZOTR4EQ266ME" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:03:08.741" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:03:12.435" Author="Akela">Метод проверки что курсор указывает на первую строку выборки</Value>
+    </String>
+    <String Id="mlsQ2W3XELSXJE3ZBJ4NGR4ZT7OVI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:57:15.005" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T09:57:19.807" Author="Akela">Метод открытия курсора</Value>
+    </String>
+    <String Id="mlsQF4C2TWIEZBXPD77TOAPZJWK2I" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:06:49.685" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:07:26.806" Author="Akela">Метод перемещения курсора на позицию после последней строки выборки. Ничего не делает, если выборка пустая.</Value>
+    </String>
+    <String Id="mlsQOMKIBZ4CNDP5HCNDOUY7WVCIY" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:51:21.681" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:27:08.131" Author="Akela">Класс, представляющий курсор по некоторой выборке данных из БД
+Почти все методы данного класса являются обертками над методами интерфейса java.sql.ResultSet, поэтому рекомендуется также ознакомится с документацией на java.sql.ResultSet</Value>
+    </String>
+    <String Id="mlsRXYVJWQA6ZEJVEKOQLRO2RQB3Y" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:19:03.515" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:19:47.952" Author="Akela">Метод перемещения курсора к строка, на которой он находился перед вызовом метода moveToInsertRow. Ничего не делает, если курсор находится не на строке для вставки.</Value>
+    </String>
+    <String Id="mlsV7LRDSRSIZA6DE2YX5D55JR6AI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:04:49.698" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:05:28.503" Author="Akela">Результат проверки. Возвращает true если курсор указывает на следующую строку после конца выборки и false в противном случае (в том числе в случае пустой выборки)</Value>
+    </String>
+    <String Id="mlsV7R6FHQ3FBCPXOAS5F5ZEJ453U" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:13:26.467" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:13:35.731" Author="Akela">Метод очистки имеющихся предупреждений</Value>
+    </String>
+    <String Id="mlsVIOSQXLXJFD4RFBSEZUTDJ4FCY" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:15:54.817" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:17:11.487" Author="Akela">Первое предупреждение. Остальные предупреждения в цепочке могут быть получены с помощью метода getNextWarning самого предупреждения, см. java.sql.SQLWarning</Value>
+    </String>
+    <String Id="mlsVWCFAAVXSFFW5NDZXE6KMKWNCI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:59:28.405" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T09:59:35.597" Author="Akela">Метод проверки что курсор закрыт</Value>
+    </String>
+    <String Id="mlsW2D2JKFB6BFPNGFC6PS2YU4TFQ" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:03:08.741" Version="0">
+      <Value Language="ru" NeedsCheck="false" Agreed="false" Version="1" LastModified="2017-12-15T17:33:17.465" Author="ypaliy">Результат проверки</Value>
+    </String>
+    <String Id="mlsWFZHR7F75VEWNFVK2Z7I6FS5YE" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:25:32.541" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:25:38.184" Author="Akela">Устанавливаемый размер выборки</Value>
+    </String>
+    <String Id="mlsWMSXXVCYNNGGBL6PY2BFNUL4QI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:19:56.330" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:20:06.674" Author="Akela">Метод обновления данных текущей строки из БД</Value>
+    </String>
+    <String Id="mlsX5RWTOH24JABHM4YJ72JTGE7FI" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:14:14.849" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:14:23.079" Author="Akela">Метод, возвращающий направление выборки</Value>
+    </String>
+    <String Id="mlsXCSKRTGMGVHSTO3EXZ6E523VSU" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:02:01.764" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:02:14.141" Author="Akela">Метод проверки что курсор указывает на последнюю строку выборки</Value>
+    </String>
+    <String Id="mlsXUDOK4LMXVAWZLQOLWBKNDHCZ4" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:15:02.695" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:15:36.351" Author="Akela">Метод, возвращающий размер выборки (количество строк, которые зачитываются из БД при необходимости)</Value>
+    </String>
+    <String Id="mlsYO6DFGDY45ATXK2B7RQBDDPSUA" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:57:24.021" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T09:57:39.928" Author="Akela">Результат выборки по которой перемещается курсор</Value>
+    </String>
+    <String Id="mlsYQU43RULA5B4RETP5LSMVJKI44" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T10:25:41.326" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T10:25:54.151" Author="Akela">Метод записи обновленной строки в таблицу</Value>
+    </String>
+    <String Id="mlsZYT2JSX6QVCPHGZCJV34UY5J2Q" SrcKind="3" Creator="Akela" CreationDate="2016-12-26T09:55:34.060" Version="0">
+      <Value Language="ru" NeedsCheck="true" Agreed="false" LastModified="2016-12-26T09:56:20.039" Author="Akela">Метод перемещения курсора к следующей строки выборки. Возвращает true, если выборка содержит следующую строку и false в случае если выборка исчерпана.</Value>
+    </String>
+  </AdsLocalizingBundleDefinition>
 </AdsDefinition>

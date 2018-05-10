@@ -1,0 +1,25 @@
+
+class TestProperty3 {
+
+    public Long field;
+
+    public Long getProp() {
+	return field;
+    }
+
+    public void setProp(Long l) {
+	field = l;
+    }
+}
+
+class Test {
+
+    public TestProperty3 getProp() {
+	return new TestProperty3();
+    }
+
+    public void main(String[] args) {
+	Prop.Prop = 1;
+	System.out.print(Prop.Prop);
+    }
+}

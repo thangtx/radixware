@@ -21,15 +21,18 @@ public class LanguagesTableModel extends AbstractTableModel {
   
    private final EIsoLanguage[] languages; 
    private final java.util.ArrayList<java.lang.Boolean> booleanValues;
+   private boolean[] editableRows;
 
    
    public LanguagesTableModel(final EIsoLanguage[] languages){
        this.languages = languages;
 
        booleanValues = new java.util.ArrayList<java.lang.Boolean>();
+       editableRows = new boolean[languages.length];
        for (int i = 0; i < languages.length; ++i){ 
            booleanValues.add(new java.lang.Boolean(false)); 
-       }    
+           editableRows[i] = true; 
+       }
    }
    
    public Class getColumnClass(int c){
@@ -57,8 +60,13 @@ public class LanguagesTableModel extends AbstractTableModel {
    }
    
    public boolean isCellEditable(int r, int c){
-       return c == CHECK_BOX_COLUMN;
+       return editableRows[r] && c == CHECK_BOX_COLUMN;
    }
+   
+   public void setRowEditable(int row, boolean value) {
+        this.editableRows[row] = value;
+        this.fireTableRowsUpdated(row, row);
+    }
     
    public static final int CHECK_BOX_COLUMN = 0;
    public static final int LANGUAGE_NAME_COLUMN = 1;

@@ -17,7 +17,9 @@ import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt.ItemDataRole;
+import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QPalette;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ import org.radixware.kernel.explorer.env.trace.ExplorerTraceItem;
 
 final class TraceListModel extends QAbstractListModel{
     
-    private static final QColor DEBUG_COLOR=QColor.black;
+    //private static final QColor DEBUG_COLOR=QColor.black;
     private static final QColor EVENT_COLOR=QColor.blue;
     private static final QColor WARNING_COLOR=QColor.fromRgb(243, 111, 20);
     private static final QColor ERROR_COLOR=QColor.red;
@@ -39,7 +41,7 @@ final class TraceListModel extends QAbstractListModel{
     private final List<ExplorerTraceItem> traceItems = new ArrayList<>();
     
     public TraceListModel(final int maxSize, final QObject parent, final IClientEnvironment env){
-        super(parent);
+        super(parent);        
         this.maxSize = maxSize;
         environment = env;
     }
@@ -73,7 +75,7 @@ final class TraceListModel extends QAbstractListModel{
     private QColor getForeground(final ExplorerTraceItem traceItem){
         switch (traceItem.getSeverity()){
             case DEBUG:
-                return DEBUG_COLOR;
+                return QApplication.palette().color(QPalette.ColorRole.WindowText);
             case EVENT:
                 return EVENT_COLOR;
             case WARNING:
@@ -83,7 +85,7 @@ final class TraceListModel extends QAbstractListModel{
             case ALARM:
                 return ALARM_COLOR;
             default:
-                return QColor.black;
+                return QApplication.palette().color(QPalette.ColorRole.WindowText);
         }
     }
     
@@ -128,13 +130,19 @@ final class TraceListModel extends QAbstractListModel{
             final int delta = newSize-maxSize;
             if (delta>0){
                 final int from = traceItems.size()-delta;
-                final int to = traceItems.size()-1;
-                beginRemoveRows(null, from, to);
-                for(int i=to;i>=from;i--){
-                    traceItems.remove(i);
+                if (from>0){
+                    final int to = traceItems.size()-1;
+                    beginRemoveRows(null, from, to);
+                    for(int i=to;i>=from;i--){
+                        traceItems.remove(i);
+                    }
+                    endRemoveRows();
+                    return false;
+                }else{
+                    traceItems.clear();
+                    reset();
+                    return false;
                 }
-                endRemoveRows();
-                return false;
             }else{
                 return true;
             }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="distributive" name="org.radixware-kernel-distributive">
 
-   <property name="modules" value="common/project/build.xml starter/project/build.xml explorer/project/build.xml server/project/build.xml utils/project/build.xml  web/project/build.xml  web-app/project/build.xml" />
+   <property name="modules" value="common/project/build.xml starter/project/build.xml explorer/project/build.xml jdbc/project/build.xml server/project/build.xml utils/project/build.xml web/project/build.xml web-app/project/build.xml" />
 
    <property name="devtools" value="designer/src/suite.common/build.xml designer/src/suite.reports/build.xml designer/src/suite.report-editor/build.xml designer/src/suite/build.xml" />
 
@@ -13,7 +13,7 @@
 		<arg value="directory-layer.xml"/>
 		<arg value="(\.svn/||ads/||dds/||kernel/)" />
 		<arg value="KernelCommon"/>
-		<arg value="(layer.xml||licenses.xml)" />
+		<arg value="(layer.xml)" />
 		<classpath>
    			<fileset dir="common/bin/">
 		        	<include name="**/*.jar"/>
@@ -41,7 +41,7 @@
 
     <target name="clean" depends="check-netbeans-path">
         <echo message="CLEAN ${modules}"/>
-        <subant>
+        <subant failonerror="true">
             <filelist dir="." files="${modules}"/>
             <target name="clean"/>
             <property name="j2ee.server.home" value=""/>
@@ -50,7 +50,7 @@
     </target>
 
     <target name="distributive" depends="check-netbeans-path">
-        <subant>
+        <subant failonerror="true">
             <filelist dir="." files="${modules}"/>
             <target name="distributive"/>
             <property name="j2ee.server.home" value=""/>
@@ -74,7 +74,7 @@
 
     <target name="clean-devtools" depends="check-netbeans-path">
         <echo message="CLEAN ${devtools}"/>
-        <subant>
+        <subant failonerror="true">
             <filelist dir="." files="${devtools}"/>
             <target name="clean"/>
             <property name="nbplatform.default.netbeans.dest.dir" value="${netbeans.installation.dir}"/>
@@ -84,7 +84,7 @@
     </target>
 
     <target name="distributive-devtools" depends="check-netbeans-path">
-        <subant>
+        <subant failonerror="true">
             <filelist dir="." files="${devtools}"/>
             <target name="distributive"/>
             <property name="j2ee.server.home" value=""/>
@@ -108,6 +108,7 @@
     <target name="actualize_check-3party-licenses">
         <java jar="../etc/ThirdPartyLicenseGenerator/ThirdPartyLicenseFileGenerator.jar"
              fork="true" dir="../etc/ThirdPartyLicenseGenerator/" failonerror="true">
+             <arg value="actual"/>
              <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$-7s: %5$s%6$s%n"/>
          </java>
     </target>

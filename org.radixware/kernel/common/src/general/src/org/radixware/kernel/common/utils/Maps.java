@@ -13,6 +13,7 @@ package org.radixware.kernel.common.utils;
 
 import java.util.Map;
 import java.util.HashMap;
+import org.apache.commons.lang.StringUtils;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.schemas.types.MapStrStr;
 
@@ -52,5 +53,27 @@ public class Maps {
             map.put(xEntry.getKey(), xEntry.getValue());
         }
         return map;
-    }    
+    }
+    
+    public static Map<String, String> fromKeyValuePairsString(String value, String pairSep, String keySep) {
+        if (value == null) {
+            return null;
+        }
+        
+        final String[] rows = StringUtils.split(value, pairSep);
+        final Map<String, String> keyValues = new HashMap<>();
+        for (int i = 0; i < rows.length; ++i) {
+            final String[] pair = StringUtils.split(rows[i], keySep);
+            final String k = pair != null && pair.length > 0 && StringUtils.isNotBlank(pair[0]) ? pair[0].trim() : null;
+            final String v = pair != null && pair.length > 1 && StringUtils.isNotBlank(pair[1]) ? pair[1].trim() : null;
+            if (k != null) {
+                keyValues.put(k, v);
+            }
+        }
+        return keyValues;
+    }
+    
+    public static Map<String, String> fromKeyValuePairsString(String rawString) {
+        return fromKeyValuePairsString(rawString, "\n", "=");
+    }
 }

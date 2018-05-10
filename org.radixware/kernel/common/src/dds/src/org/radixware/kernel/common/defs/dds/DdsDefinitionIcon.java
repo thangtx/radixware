@@ -51,10 +51,12 @@ public class DdsDefinitionIcon extends RadixIcon {
     public static final DdsDefinitionIcon SQL_REVERSE_SCRIPT = new DdsDefinitionIcon("sql/reverse_script.svg");
     public static final DdsDefinitionIcon SQL_SCRIPTS = new DdsDefinitionIcon("sql/scripts.svg");
     public static final DdsDefinitionIcon ORACLE = new DdsDefinitionIcon("database/oracle.svg");
+    public static final DdsDefinitionIcon POSTGRESENTERPRISE = new DdsDefinitionIcon("database/oracle.svg");
+    public static final DdsDefinitionIcon POSTGRESQL = new DdsDefinitionIcon("database/oracle.svg");
     public static final DdsDefinitionIcon SQL_POST_SCRIPTS = new DdsDefinitionIcon("sql/post_scripts.svg");
     public static final DdsDefinitionIcon SQL_PRE_SCRIPTS = new DdsDefinitionIcon("sql/pre_scripts.svg");
     public static final DdsDefinitionIcon SQL_UPGRADE_SCRIPTS = new DdsDefinitionIcon("sql/upgrade_scripts.svg");
-
+    public static final DdsDefinitionIcon SQL_OGG = new DdsDefinitionIcon("sql/ogg.svg");
     
     private DdsDefinitionIcon(String uri) {
         super(uri);

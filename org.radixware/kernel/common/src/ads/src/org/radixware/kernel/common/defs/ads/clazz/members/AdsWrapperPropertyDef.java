@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.defs.ads.clazz.members;
 
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.schemas.adsdef.AbstractPropertyDefinition;
 
@@ -29,5 +30,10 @@ public class AdsWrapperPropertyDef extends AdsPropertyDef {
     @Override
     public EPropNature getNature() {
         return EPropNature.DYNAMIC;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
     }
 }

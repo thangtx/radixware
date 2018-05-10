@@ -70,9 +70,13 @@ public final class UserInputFilter extends QEventFilter{
             final QMouseEvent mouseEvent = (QMouseEvent)event;
             final boolean isLeftButton = mouseEvent.buttons().isSet(Qt.MouseButton.LeftButton);
             if ((eventType==QEvent.Type.MouseButtonPress || eventType==QEvent.Type.MouseButtonDblClick) && isLeftButton){
-                QApplication.postEvent(target, new FilteredMouseEvent(eventType));                
+                QApplication.postEvent(target, new FilteredMouseEvent(mouseEvent));
             }else if (eventType==QEvent.Type.MouseButtonRelease){
-                return !(target instanceof com.trolltech.qt.gui.QScrollBar);//RADIX-4783
+                if (target instanceof com.trolltech.qt.gui.QScrollBar){
+                    return false;//RADIX-4783
+                }else if (mouseEvent.button()==Qt.MouseButton.LeftButton){
+                    QApplication.postEvent(target, new FilteredMouseEvent(mouseEvent));
+                }
             }
             return true;
         }

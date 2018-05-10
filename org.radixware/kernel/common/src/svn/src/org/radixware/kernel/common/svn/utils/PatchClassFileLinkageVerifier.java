@@ -11,15 +11,22 @@
 package org.radixware.kernel.common.svn.utils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -28,21 +35,32 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.lang.ClassLinkageAnalyzer;
 import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.FileUtils;
 
-public abstract class PatchClassFileLinkageVerifier extends ClassLinkageAnalyzer implements NoizyVerifier {
+public abstract class PatchClassFileLinkageVerifier extends ClassLinkageAnalyzer implements NoizyVerifierEx, IContextVerifier {
 
-    private final String branchPath;
-    private final List<String> layersPathList;
-    private final String zipFilePath;
-    private final ZipFile zipFile;
-    private SVNRepositoryAdapter repository;
-    private final boolean skipDevelopmentLayers;
-    private final String predefinedBaseDevLayerURI;
+    private final BranchHolderParams branchParams;
+    private IVerifyContext context;
+    boolean wasErrors = false;
+    
+    public PatchClassFileLinkageVerifier(SVNRepositoryAdapter curRepository, List<String> layersPathList, ZipFile upgradeFile, String upgradeFilePath, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI, boolean verbose) {
+        this(new BranchHolderParams(curRepository, layersPathList, upgradeFile, upgradeFilePath, skipDevelopmentLayers, predefinedBaseDevLayerURI), verbose);
+    }
+    
+    public PatchClassFileLinkageVerifier(SVNRepositoryAdapter curRepository, String curBranchPath, ZipFile upgradeFile, String upgradeFilePath, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI, boolean verbose) {
+        this(new BranchHolderParams(curRepository, curBranchPath, null, upgradeFile, upgradeFilePath, skipDevelopmentLayers, predefinedBaseDevLayerURI), verbose);
+    }
+
+    public PatchClassFileLinkageVerifier(BranchHolderParams branchParams, boolean verbose) {
+        super(verbose);
+        this.branchParams = branchParams;
+    }
 
     @Override
     protected KernelClassLoader createKernelClassLoader(LayerInfo layer, ERuntimeEnvironmentType env) {
@@ -52,6 +70,41 @@ public abstract class PatchClassFileLinkageVerifier extends ClassLinkageAnalyzer
     @Override
     protected AdsClassLoader createAdsClassLoader(ClassLinkageAnalyzer.LayerInfo layer, ERuntimeEnvironmentType env) {
         return new MyAdsClassLoader(layer, env);
+    }
+    
+    protected ClassLoader createBranchLoader(BranchHolder holder, ERuntimeEnvironmentType env, String extJarsPath) {
+        final BranchClassLoader branchLoader = new BranchClassLoader(holder, env);
+        if (extJarsPath != null && !extJarsPath.isEmpty()) {
+            final File dir = new File(extJarsPath);
+            if (dir.isDirectory()) {
+                final List<File> jars = new ArrayList<>();
+                dir.listFiles(new FileFilter() {
+                    @Override
+                    public boolean accept(File file) {
+                        if (file.isDirectory()) {
+                            file.listFiles(this);
+                        } else if (file.getName().endsWith(".jar")) {
+                            jars.add(file);
+                        }
+                        return false;
+                    }
+                });
+                if (!jars.isEmpty()) {
+                    final List<URL> urls = new ArrayList<>(jars.size());
+                    for (File jar : jars) {
+                        try {
+                            urls.add(new URL("file:///" + jar.getAbsolutePath()));
+                        } catch (MalformedURLException ex) {
+                            holder.verifier.error(ex);
+                        }
+                    }
+                    if (!urls.isEmpty()) {
+                        return new URLClassLoader(urls.toArray(new URL[urls.size()]), branchLoader);
+                    }
+                }
+            }
+        }
+        return branchLoader;
     }
 
     @Override
@@ -70,49 +123,12 @@ public abstract class PatchClassFileLinkageVerifier extends ClassLinkageAnalyzer
         message(message);
     }
 
-    public PatchClassFileLinkageVerifier(SVNRepositoryAdapter repository, String branchPath, String zipFilePath, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI) {
-        this(repository, branchPath, null, zipFilePath, skipDevelopmentLayers, predefinedBaseDevLayerURI, true);
-    }
-
-    public PatchClassFileLinkageVerifier(SVNRepositoryAdapter repository, String branchPath, ZipFile zipFile, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI) {
-        this(repository, branchPath, zipFile, null, skipDevelopmentLayers, predefinedBaseDevLayerURI, false);
-    }
-
-    public PatchClassFileLinkageVerifier(SVNRepositoryAdapter repository, String branchPath, ZipFile zipFile, String zipFilePath, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI, boolean verbose) {
-        super(verbose);
-        this.repository = repository;
-        this.branchPath = branchPath;
-        this.layersPathList = null;
-        this.zipFilePath = zipFilePath;
-        this.skipDevelopmentLayers = skipDevelopmentLayers;
-        this.predefinedBaseDevLayerURI = predefinedBaseDevLayerURI;
-        this.zipFile = zipFile;
-    }
-
-    public PatchClassFileLinkageVerifier(SVNRepositoryAdapter repository, final List<String> layersPathList, ZipFile zipFile, String zipFilePath, boolean skipDevelopmentLayers, String predefinedBaseDevLayerURI, boolean verbose) {
-        super(verbose);
-        this.repository = repository;
-        this.branchPath = null;
-        this.layersPathList = layersPathList;
-        this.zipFilePath = zipFilePath;
-        this.skipDevelopmentLayers = skipDevelopmentLayers;
-        this.predefinedBaseDevLayerURI = predefinedBaseDevLayerURI;
-        this.zipFile = zipFile;
-    }
-    boolean wasErrors = false;
-
     @Override
     public boolean verify() {
         BranchHolder h = new BranchHolder(this, verbose);
         try {
-            if (branchPath != null) {
-                if (!h.initialize(repository, branchPath, zipFile, zipFilePath, predefinedBaseDevLayerURI, skipDevelopmentLayers)) {
-                    return false;
-                }
-            } else {
-                if (!h.initializeEx(repository, layersPathList, zipFile, zipFilePath, predefinedBaseDevLayerURI, skipDevelopmentLayers)) {
-                    return false;
-                }
+            if (!h.initialize(branchParams)) {
+                return false;
             }
             return verifyExternalHolder(h);
         } finally {
@@ -134,63 +150,14 @@ public abstract class PatchClassFileLinkageVerifier extends ClassLinkageAnalyzer
     }
 
     private class MyKernelClassLoader extends KernelClassLoader {
-
+        
         public MyKernelClassLoader(org.radixware.kernel.common.svn.utils.Utils.LayerInfo layer, ERuntimeEnvironmentType env) {
             super(layer, env);
         }
 
         @Override
         protected byte[] findClassBytesBySlashSeparatedName(String name) throws ClassNotFoundException {
-            org.radixware.kernel.common.svn.utils.Utils.LayerInfo layerInfo = (org.radixware.kernel.common.svn.utils.Utils.LayerInfo) layer;
-
-            byte[] result = layerInfo.getLib(env).findClassBytesBySlashSeparatedName(name);
-            if (result != null) {
-                return result;
-            } else {
-                result = findClassBytesBySlashSeparatedName(layerInfo, name, env);
-                if (result != null) {
-                    return result;
-                }
-            }
-
-            if (env != ERuntimeEnvironmentType.COMMON) {
-                layerInfo = (org.radixware.kernel.common.svn.utils.Utils.LayerInfo) layer;
-                result = layerInfo.getLib(ERuntimeEnvironmentType.COMMON).findClassBytesBySlashSeparatedName(name);
-                if (result != null) {
-                    return result;
-                } else {
-                    result = findClassBytesBySlashSeparatedName(layerInfo, name, ERuntimeEnvironmentType.COMMON);
-                    if (result != null) {
-                        return result;
-                    }
-                }
-
-                return null;
-            } else {
-                return null;
-            }
-        }
-
-        private byte[] findClassBytesBySlashSeparatedName(org.radixware.kernel.common.svn.utils.Utils.LayerInfo layerInfo, String name, ERuntimeEnvironmentType env) {
-            List<LayerInfo> prevs = layerInfo.findPrevLayer();
-            for (final LayerInfo prev : prevs) {
-                final org.radixware.kernel.common.svn.utils.Utils.LayerInfo info = (org.radixware.kernel.common.svn.utils.Utils.LayerInfo) prev;
-                try {
-                    byte[] result = info.getLib(env).findClassBytesBySlashSeparatedName(name);
-                    if (result != null) {
-                        return result;
-                    }
-                } catch (ClassNotFoundException e) {
-                }
-            }
-            for (final LayerInfo prev : prevs) {
-                final org.radixware.kernel.common.svn.utils.Utils.LayerInfo info = (org.radixware.kernel.common.svn.utils.Utils.LayerInfo) prev;
-                byte[] result = findClassBytesBySlashSeparatedName(info, name, env);
-                if (result != null) {
-                    return result;
-                }
-            }
-            return null;
+            return ClassLoaderUtilExt.findClassBytesBySlashSeparatedName(name, (org.radixware.kernel.common.svn.utils.Utils.LayerInfo) layer, env);
         }
 
         @Override
@@ -246,7 +213,7 @@ public abstract class PatchClassFileLinkageVerifier extends ClassLinkageAnalyzer
     }
     List<org.radixware.kernel.common.svn.utils.Utils.ZipModule> zipModules = new LinkedList<org.radixware.kernel.common.svn.utils.Utils.ZipModule>();
 
-    private class ClassInfo {
+    static class ClassInfo {
 
         String name;
         byte[] bytes;
@@ -263,9 +230,9 @@ public abstract class PatchClassFileLinkageVerifier extends ClassLinkageAnalyzer
     }
 
     protected boolean isWarningOnErrorMessage(String message) {
-        int idx1 = message.indexOf("'");
+        int idx1 = message.indexOf('\'');
         if (idx1 > 0) {
-            int idx2 = message.indexOf("'", idx1 + 1);
+            int idx2 = message.indexOf('\'', idx1 + 1);
             if (idx2 > 0) {
                 String className = message.substring(idx1 + 1, idx2);
                 if (isWarningWhenClassMissing(className)) {
@@ -276,165 +243,125 @@ public abstract class PatchClassFileLinkageVerifier extends ClassLinkageAnalyzer
         return false;
     }
 
-    private class UserFuncClassLoader extends ClassLoader {
-
-        final List<Utils.LayerInfo> topLayers;
-        final List<ClassInfo> classFiles;
-        private final Set<String> resolvedClasses = new HashSet<String>();
-        private final BranchHolder branchHolder;
-
-        public UserFuncClassLoader(BranchHolder branchHolder, List<ClassInfo> names, List<Utils.LayerInfo> topLayers) {
-            this.topLayers = topLayers;
-            this.classFiles = names;
-            this.branchHolder = branchHolder;
-        }
-
-        public boolean verify() {
-            try {
-                for (ClassInfo info : classFiles) {
-                    info.clazz = defineClass(info.name, info.bytes, 0, info.bytes.length);
-                }
-                for (ClassInfo info : classFiles) {
-                    if (!resolve(info.clazz)) {
-                        return false;
-                    }
-                }
-                return true;
-            } catch (RuntimeException e) {
-                return false;
-            }
-        }
-
-        private boolean resolve(Class c) {
-            synchronized (resolvedClasses) {
-                if (resolvedClasses.contains(c.getName())) {
-                    return true;
-                }
-                resolvedClasses.add(c.getName());
-                try {
-                    this.resolveClass(c);
-                    c.getDeclaredClasses();
-                    c.getDeclaredAnnotations();
-                    c.getDeclaredConstructors();
-                    c.getDeclaredFields();
-                    c.getDeclaredMethods();
-                    c.getDeclaringClass();
-                    return true;
-                } catch (LinkageError e) {
-                    if (branchHolder.isClassMayBeInDevelopmentLayer(e.getMessage())) {
-                        error("Warning: can not find class " + e.getMessage() + ". Seems like class from development layer");
-                        return true;
-                    } else {
-
-                        String message = e.getMessage();
-                        if (isWarningOnErrorMessage(message)) {
-                            message("Class linkage error: " + e.getMessage());
-                            return true;
-                        } else {
-                            error("Class linkage error: " + e.getMessage());
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
-        @Override
-        protected Class<?> findClass(String name) throws ClassNotFoundException {
-            for (ClassInfo info : classFiles) {
-                if (info.name.equals(name)) {
-                    return info.clazz;
-                }
-            }
-            for (LayerInfo info : topLayers) {
-                AdsClassLoader loader = getAdsLoader(info, ERuntimeEnvironmentType.SERVER);
-                try {
-                    Class<?> c = loader.loadClass(name);
-                    if (c != null) {
-                        return c;
-                    }
-                } catch (ClassNotFoundException e) {
-                }
-            }
-            throw new ClassNotFoundException(name);
-        }
-    }
-
     boolean verifyUserFunctions(final Connection c) {
         BranchHolder holder = new BranchHolder(this, verbose);
         try {
-            if (!holder.initialize(repository, branchPath, zipFile, zipFilePath, predefinedBaseDevLayerURI, skipDevelopmentLayers)) {
+            if (!holder.initialize(branchParams)) {
                 return false;
             }
-            return verifyUserFunctions(c, holder);
+            return verifyUserFunctions(c, holder, ERuntimeEnvironmentType.SERVER, null);
         } finally {
             holder.finish();
         }
     }
 
-    boolean verifyUserFunctions(final Connection c, BranchHolder holder) {
-        try {
-            final List<Utils.LayerInfo> topLayers = Utils.topLayers(holder.layers.values());
-            PreparedStatement stmt = c.prepareStatement("select javaruntime,classguid,updefid,upownerentityid,upownerpid from rdx_userfunc where javaruntime is not null");
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Blob blob = rs.getBlob(1);
-                String updefid = rs.getString(3);
-                String upownerid = rs.getString(4);
-                String upownerpid = rs.getString(5);
-                String userFuncName = upownerid + ":" + upownerpid + ":" + updefid;
-                InputStream in = blob.getBinaryStream();
-                File tmpFile = null;
-                OutputStream out = null;
-                List<ClassInfo> allClasses = new LinkedList<ClassInfo>();
-                try {
-                    tmpFile = File.createTempFile("rdx1", "rdx1");
-                    out = new FileOutputStream(tmpFile);
-                    FileUtils.copyStream(in, out);
-                    ZipFile zip = null;
-                    try {
-                        zip = new ZipFile(tmpFile);
-                        Enumeration<? extends ZipEntry> entries = zip.entries();
-                        while (entries.hasMoreElements()) {
-                            ZipEntry e = entries.nextElement();
-                            if (!e.isDirectory() && e.getName().endsWith(".class")) {
-                                allClasses.add(new ClassInfo(e.getName().substring(0, e.getName().length() - 6), FileUtils.getZipEntryByteContent(e, zip)));
-                            }
-                        }
-                    } catch (ZipException e) {
-                        error(new RadixError("Unable to read binary data for user function " + userFuncName, e));
-                        return false;
-                    } finally {
-                        if (zip != null) {
-                            zip.close();
-                        }
-                    }
-                } catch (IOException ex) {
-                    error(new RadixError("Unable to read binary data for user function " + userFuncName, ex));
-                } finally {
-                    if (tmpFile != null) {
-                        FileUtils.deleteFile(tmpFile);
-                    }
-                    if (out != null) {
-                        try {
-                            out.close();
-                        } catch (IOException ex) {
-                        }
-                    }
-                }
-                if (allClasses.isEmpty()) {
-                    error("No classfiles found for user function " + userFuncName);
-                    return false;
-                }
-                UserFuncClassLoader cl = new UserFuncClassLoader(holder, allClasses, topLayers);
-                if (!cl.verify()) {
-                    return false;
-                }
+    public boolean verifyUserFunctions(final Connection c, BranchHolder holder, ERuntimeEnvironmentType env, String extJarsPath) {
+        int totalCnt;
+        try (PreparedStatement stmt = c.prepareStatement("select count(*) from rdx_userfunc")) {
+            try (ResultSet cntRs = stmt.executeQuery()) {
+                totalCnt = cntRs.next() ? cntRs.getInt(1) : 0;
             }
-            return true;
         } catch (SQLException e) {
             error(e);
             return false;
         }
+
+        try (PreparedStatement stmt = c.prepareStatement("select javaruntime,classguid,updefid,upownerentityid,upownerpid,id from rdx_userfunc order by id desc")) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                final ClassLoader branchClassLoader = createBranchLoader(holder, env, extJarsPath);
+                final Set<String> notFoundClasses = new HashSet<>();
+                final List<ClassInfo> allClasses = new LinkedList<>();
+                int index = 0;
+                final long startCheckMillis = System.currentTimeMillis();
+                long t0 = startCheckMillis;
+                while (rs.next()) {
+                    if (++index % 50 == 0) {
+                        final long t1 = System.currentTimeMillis();
+                        message(String.format("Processed functions: %d from %d. Took time: %d ms", index, totalCnt, t1 - t0));
+                        t0 = t1;
+                    }
+                    Blob blob = rs.getBlob(1);
+                    Id classGuid = Id.Factory.loadFrom(rs.getString(2));
+                    String updefid = rs.getString(3);
+                    String upownerid = rs.getString(4);
+                    String upownerpid = rs.getString(5);
+                    int ufId = rs.getInt(6);
+                    String userFuncName = upownerid + ":" + upownerpid + ":" + updefid;
+                    File tmpFile = null;
+                    allClasses.clear();
+                    
+                    try {
+                        setContext(new UserFuncContext(ufId, upownerid, upownerpid, updefid, classGuid));
+                        if (blob == null) {
+                            error("Function is not compiled");
+                            continue;
+                        }
+                        
+                        tmpFile = File.createTempFile("rdx1", "rdx1");
+                        try (InputStream in = blob.getBinaryStream(); OutputStream out = new FileOutputStream(tmpFile)) {
+                            FileUtils.copyStream(in, out);
+                        }
+                        try (ZipFile zip = new ZipFile(tmpFile)) {
+                            Enumeration<? extends ZipEntry> entries = zip.entries();
+                            while (entries.hasMoreElements()) {
+                                ZipEntry e = entries.nextElement();
+                                if (!e.isDirectory() && e.getName().endsWith(".class")) {
+                                    allClasses.add(new ClassInfo(e.getName().substring(0, e.getName().length() - 6), FileUtils.getZipEntryByteContent(e, zip)));
+                                }
+                            }
+                        } catch (ZipException e) {
+                            error(new RadixError("Unable to read binary data for user function " + userFuncName, e));
+                            return false;
+                        }
+
+                        if (allClasses.isEmpty()) {
+                            error("No classfiles found for user function " + userFuncName);
+                            return false;
+                        }
+                        UserFuncClassLoader cl = new UserFuncClassLoader(ufId, branchClassLoader, this, allClasses, notFoundClasses);
+                        if (!cl.verify()) {
+                            return false;
+                        }
+                    } catch (IOException ex) {
+                        error(new RadixError("Unable to read binary data for user function " + userFuncName, ex));
+                    } finally {
+                        if (tmpFile != null) {
+                            FileUtils.deleteFile(tmpFile);
+                        }
+                        leaveContext();
+                    }
+                }
+
+                final Calendar totalTime = Calendar.getInstance();
+                totalTime.setTimeInMillis(System.currentTimeMillis() - startCheckMillis);
+                final String pattern = totalTime.getTimeInMillis() > 60 * 1000 ? "mm:ss" : "ss";
+                final SimpleDateFormat timeFormat = new SimpleDateFormat(pattern);
+                message(String.format("Processed %d functions (total time: %s)", index, timeFormat.format(totalTime.getTime())));
+                return true;
+            }
+        } catch (SQLException e) {
+            error(e);
+            return false;
+        }
+    }
+    
+    @Override
+    public void message(EEventSeverity sev, String message) {
+        message(message);
+    }
+
+    @Override
+    public void setContext(IVerifyContext ctx) {
+        this.context = ctx;
+    }
+
+    @Override
+    public void leaveContext() {
+        this.context = null;
+    }
+    
+    @Override
+    public IVerifyContext getContext() {
+        return context;
     }
 }

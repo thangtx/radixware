@@ -8,50 +8,61 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.dbq;
 
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 
 public abstract class JoinSqlBuilder extends SqlBuilder {
+
     protected final QuerySqlBuilder mainBuilder;
-    protected final SqlBuilder      parentBuilder;
-    protected final boolean         isChildRef;
-    
+    protected final SqlBuilder parentBuilder;
+    protected final boolean isChildRef;
+
 //Constructor
     protected JoinSqlBuilder(
-    	final QuerySqlBuilder mainBuilder,
-    	final SqlBuilder      parentBuilder,
-    	final DdsTableDef       table,
-    	final boolean         isChildRef
+            final QuerySqlBuilder mainBuilder,
+            final SqlBuilder parentBuilder,
+            final DdsTableDef table,
+            final boolean isChildRef
     ) {
         super(
-			mainBuilder.getArte(),
-			table,SqlBuilder.TABLE_ALIAS_PREFIX + mainBuilder.incrementTableCount(),
-			mainBuilder.getQueryCntxType(),
-			mainBuilder.getAliasPolicy()
-		);
-        this.mainBuilder   = mainBuilder; 
-        this.parentBuilder = parentBuilder; 
-        this.isChildRef    = isChildRef;
+                mainBuilder.getArte(),
+                table, SqlBuilder.TABLE_ALIAS_PREFIX + mainBuilder.incrementTableCount(),
+                mainBuilder.getQueryCntxType(),
+                mainBuilder.getAliasPolicy()
+        );
+        this.mainBuilder = mainBuilder;
+        this.parentBuilder = parentBuilder;
+        this.isChildRef = isChildRef;
     }
-    
+
 //Protected methods
     @Override
-	protected final QuerySqlBuilder getMainBuilder(){
+    protected final QuerySqlBuilder getMainBuilder() {
         return mainBuilder;
     }
-    
+
     @Override
-	public final void addParameter(final DbQuery.Param param){
+    public final void addParameter(final DbQuery.Param param) {
         mainBuilder.addParameter(param);
     }
 
-    protected final static String getJoinHashKey(final Id refId,final boolean bChild){
-        return (bChild ? "C" : "P") + refId.toString();
+    @Override
+    public int getNumberOfItemsInParameterValue(final Id parameterId) {
+        return mainBuilder.getNumberOfItemsInParameterValue(parameterId);
     }
     
+    @Override
+    public boolean isParameterDefined(final Id parameterId){
+        return mainBuilder.isParameterDefined(parameterId);
+    }
+            
+        
+    protected final static String getJoinHashKey(final Id refId, final boolean bChild) {
+        return (bChild ? "C" : "P") + refId.toString();
+    }
+
     abstract protected void appendJoinCondStr();
 
     void appendJoinTypeStr() {

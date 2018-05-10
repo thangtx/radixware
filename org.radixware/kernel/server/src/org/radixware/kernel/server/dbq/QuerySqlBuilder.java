@@ -31,6 +31,8 @@ public abstract class QuerySqlBuilder extends SqlBuilder {
     public static final Id ACS_COORDINATES_AS_STR_COL_ID = Id.Factory.loadFrom(EDefinitionIdPrefix.DDS_COLUMN.getValue() + "AcsCoordinatesAsStr_______");
     public static final String ACS_COORDINATES_AS_STR_FIELD_ALIAS = "ACS_COORDS_AS_STR";
     public static final String MAIN_ALIAS = TABLE_ALIAS_PREFIX + "1";
+    public static final String ROWS_COUNT_FIELD_ALIAS = "ROWS_COUNT";
+    public static final Id ROWS_COUNT_FIELD_COL_ID = Id.Factory.loadFrom(EDefinitionIdPrefix.DDS_COLUMN.getValue() + "RowsCount_________________");    
 //Private fields    
     protected final Entity entity;
     private int tabCount;
@@ -81,10 +83,12 @@ public abstract class QuerySqlBuilder extends SqlBuilder {
     final List<DbQuery.Field> getQueryFields() {
         final List<DbQuery.Field> res = new ArrayList<DbQuery.Field>(fieldsByPropId.size());
         for (SqlBuilder.Field builderField : fieldsByPropId.values()) {
-            while (builderField instanceof SqlBuilder.JoinField) {
-                builderField = ((SqlBuilder.JoinField) builderField).joinField;
+            if (builderField instanceof IAggregationField==false){
+                while (builderField instanceof SqlBuilder.JoinField) {
+                    builderField = ((SqlBuilder.JoinField) builderField).joinField;
+                }
             }
-            res.add(new DbQuery.Field(getArte(), builderField.getProp(), builderField.getAlias(), builderField.getIndex()));
+            res.add(new DbQuery.Field(getArte(), builderField));
         }
         return Collections.unmodifiableList(res);
     }

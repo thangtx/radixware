@@ -46,7 +46,7 @@ class AdsEntityClassNode extends AdsAbstractClassNode {
     @SuppressWarnings({"unchecked", "fallthrough"})
     public void addCustomActions(List actions) {
         super.addCustomActions(actions);
-        actions.add(SystemAction.get(GenerateDrcInfoAction.class));
+//        actions.add(SystemAction.get(GenerateDrcInfoAction.class));//hide in RADIX-12593 - this action is depricated
         actions.add(SystemAction.get(CheckLoadersAction.class));
         actions.add(SystemAction.get(CreateColumnBasedPropsAction.class));
         switch (getRadixObject().getClassDefType()) {

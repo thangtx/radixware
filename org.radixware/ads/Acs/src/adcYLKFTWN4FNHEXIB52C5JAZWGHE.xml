@@ -5,7 +5,11 @@
       <Transparence Extendable="false"/>
     </AccessRules>
     <Headers>
-      <Src Name="HeaderadcI445I3EPJVAD5BUOMB2TWTFRGQ"/>
+      <Src Name="HeaderadcI445I3EPJVAD5BUOMB2TWTFRGQ">
+        <xsc:Item>
+          <xsc:Java>import org.radixware.kernel.server.arte.rights.AccessPartition;</xsc:Java>
+        </xsc:Item>
+      </Src>
     </Headers>
     <Bodies>
       <Src Name="BodyadcJWWX333IGZF6DIIPC2CHTWAI3Y">
@@ -35,13 +39,17 @@ final static public String ERR_CANT_PREPARE_DB_QRY = "Can\'t prepare Radix right
               <xsc:Java>final String roles = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="accVLI5757OLNETTOGSCOGGDTPRP4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="accVLI5757OLNETTOGSCOGGDTPRP4">
+                <xsc:Presentation>CurUserAllRolesInAllAreasCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="accVLI5757OLNETTOGSCOGGDTPRP4 mthD4SSWMLQFBHILDYAKXXNGGE4OQ" Invoke="true"/>
+              <xsc:IdReference Path="accVLI5757OLNETTOGSCOGGDTPRP4 mthD4SSWMLQFBHILDYAKXXNGGE4OQ" Invoke="true">
+                <xsc:Presentation>execute</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -55,13 +63,17 @@ final int len = idsStrArr.length;
 final java.util.Set&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> result = new java.util.HashSet&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>>(len);
@@ -71,19 +83,25 @@ for (int i=0; i&lt;len; i++){
         final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> id = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true"/>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(idStr);
@@ -113,20 +131,26 @@ return result;
 final java.util.Set&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> curUserRoleIds = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYLKFTWN4FNHEXIB52C5JAZWGHE mthKE5JROUIBZEXNMZKRETLSN7MA4" Invoke="true"/>
+              <xsc:IdReference Path="adcYLKFTWN4FNHEXIB52C5JAZWGHE mthKE5JROUIBZEXNMZKRETLSN7MA4" Invoke="true">
+                <xsc:Presentation>getCurUserAllRolesInAllAreas</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
 //if (curUserRoleIds.contains(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="rolSUPER_ADMIN_______________"/>
+              <xsc:IdReference Path="rolSUPER_ADMIN_______________">
+                <xsc:Presentation>Arte::SuperAdmin</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)){
@@ -136,19 +160,25 @@ for (String idStr : roles){
     final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> id = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true"/>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(idStr);
@@ -185,13 +215,17 @@ return false;
 final java.util.Set&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> curUserRoleIds = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYLKFTWN4FNHEXIB52C5JAZWGHE mthKE5JROUIBZEXNMZKRETLSN7MA4" Invoke="true"/>
+              <xsc:IdReference Path="adcYLKFTWN4FNHEXIB52C5JAZWGHE mthKE5JROUIBZEXNMZKRETLSN7MA4" Invoke="true">
+                <xsc:Presentation>getCurUserAllRolesInAllAreas</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -208,7 +242,9 @@ final java.util.Set&lt;</xsc:Java>
 for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> id : roles) {
@@ -246,13 +282,17 @@ for(org.radixware.kernel.server.meta.roles.RadRoleDef role :
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().Rights.getCurUserAllRolesInAllAreasWithRolesHierarchy()) {
@@ -283,20 +323,26 @@ for(org.radixware.kernel.server.meta.roles.RadRoleDef role :
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().Rights.getCurUserAllRolesInAllAreasWithRolesHierarchy()) {
     if(roles.contains(role.getId().</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true"/>
+              <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>())) {
@@ -323,13 +369,17 @@ return false;</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument">
+                <xsc:Presentation>CommandsXsd:AcceptedRolesDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> rez = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument.Factory"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument.Factory">
+                <xsc:Presentation>CommandsXsd:AcceptedRolesDocument.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.newInstance();
@@ -337,26 +387,34 @@ return false;</xsc:Java>
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;java.util.List&lt;Integer>> ignoredRoles = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(); 
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;java.util.List&lt;String>> ignoredUsersOrGroups = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -364,39 +422,51 @@ return false;</xsc:Java>
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer> addedRoleCount = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer>();
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer> replacedRoleCount = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer>(); 
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer> removedRoleCount = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer>(); 
@@ -404,26 +474,34 @@ final </xsc:Java>
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer> addedU2GCount = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer>();
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer> removedU2GCount = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLGG7SYH5H5G6NHD4CS5EH4M4AU">
+                <xsc:Presentation>Types::Reference</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>&lt;Integer>();
@@ -433,7 +511,9 @@ final </xsc:Java>
 rez.AcceptedRoles = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument.AcceptedRoles.Factory"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQLUXCQIPKNBCZIQTOHKTT5Q664" extStr="AcceptedRolesDocument.AcceptedRoles.Factory">
+                <xsc:Presentation>CommandsXsd:AcceptedRolesDocument.AcceptedRoles.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.newInstance();
@@ -444,13 +524,17 @@ if (isUser){
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().getRights().
@@ -462,13 +546,17 @@ else{
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().getRights().
@@ -509,19 +597,25 @@ if (!ignoredRolesAsList.isEmpty()){
             final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4">
+                <xsc:Presentation>User2Role</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> newUser2Role = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4">
+                <xsc:Presentation>User2Role</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4 mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4 mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ignoredRole.longValue(), true);
@@ -535,7 +629,9 @@ if (!ignoredRolesAsList.isEmpty()){
                tmpBuilder.append(newUser2Role.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>());
@@ -545,19 +641,25 @@ if (!ignoredRolesAsList.isEmpty()){
             final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecFJAEQT3TGLNRDHRZABQAQH3XQ4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecFJAEQT3TGLNRDHRZABQAQH3XQ4">
+                <xsc:Presentation>UserGroup2Role</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> newUser2Role = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecFJAEQT3TGLNRDHRZABQAQH3XQ4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecFJAEQT3TGLNRDHRZABQAQH3XQ4">
+                <xsc:Presentation>UserGroup2Role</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4 mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aec42K4K2TTGLNRDHRZABQAQH3XQ4 mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ignoredRole.longValue(), true);
@@ -571,7 +673,9 @@ if (!ignoredRolesAsList.isEmpty()){
                tmpBuilder.append(newUser2Role.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>());
@@ -599,6 +703,306 @@ if (!ignoredUsersOrGroupsAsList.isEmpty()){
 }
 
 return rez;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5TJ3WKHBFJCRFLT4PZX3OKYLQE" Name="selectEditorPresentation" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprH7AFRRL4YFBAROR7NQ2K667I3A">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcU72NB6R5FNBZFFMAC3TEOQIMVU"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcU72NB6R5FNBZFFMAC3TEOQIMVU">
+                <xsc:Presentation>Meta::EditorPresentationDef</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> allPresentations = entity.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthT7R5Q7D74ZA3NAKLGIGWEN5UYE" Invoke="true">
+                <xsc:Presentation>getPresentationMeta</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc4V2O6LISRZFZTI2GWIPBWIIFUA mth3CYKEYR26ZDM3JCH53TWPRUOVU" Invoke="true">
+                <xsc:Presentation>getEditorPresentations</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI">
+                <xsc:Presentation>Types::PresentationEntityAdapter</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________">
+                <xsc:Presentation>Types::Entity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> adapter = entity.getArte().getCache().getPresentationAdapter(entity);
+return adapter.selectEditorPresentation(allPresentations);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGUZRQL6RBVEW3FTYHNVBRWUCNY" Name="getTotalRestrictions" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprXOYRN4AEZJAU7E4VSHYIMMELGQ">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="presentation" Id="mprPZM6CGGJ6VDADPCYGVADSKAPK4">
+            <Type TypeId="411" Path="adcU72NB6R5FNBZFFMAC3TEOQIMVU"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcD4IF2ZGYX5DETIZXQQAZSPXELI"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (entity==null){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true">
+                <xsc:Presentation>IllegalArgumentException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("entity must be defined");
+}
+if (presentation==null){
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true">
+                <xsc:Presentation>IllegalArgumentException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("presentation must be defined");
+}
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD4IF2ZGYX5DETIZXQQAZSPXELI">
+                <xsc:Presentation>Meta::Restrictions</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> presentationRestrictions = presentation.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcU72NB6R5FNBZFFMAC3TEOQIMVU mthIAJZTIRZR5EYLMSPSDR7ATK4XU" Invoke="true">
+                <xsc:Presentation>getTotalRestrictions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(entity);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI">
+                <xsc:Presentation>Types::PresentationEntityAdapter</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________">
+                <xsc:Presentation>Types::Entity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> adapter = entity.getArte().getCache().getPresentationAdapter(entity);
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD4IF2ZGYX5DETIZXQQAZSPXELI">
+                <xsc:Presentation>Meta::Restrictions</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> additionalRestrictions = adapter.getAdditionalRestrictions(presentation);
+if (additionalRestrictions==</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD4IF2ZGYX5DETIZXQQAZSPXELI">
+                <xsc:Presentation>Meta::Restrictions</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ZERO){
+    return presentationRestrictions;
+}else{
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD4IF2ZGYX5DETIZXQQAZSPXELI">
+                <xsc:Presentation>Meta::Restrictions</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.sum(presentationRestrictions, additionalRestrictions);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZL7223FHYNBMRFDPANX6OBUIYE" Name="getTotalRestrictionsForSelectedEditorPresentation" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprEY5IKYES5FDC3MTPOJT2AUKV4Q">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcD4IF2ZGYX5DETIZXQQAZSPXELI"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcU72NB6R5FNBZFFMAC3TEOQIMVU">
+                <xsc:Presentation>Meta::EditorPresentationDef</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> presentation = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYLKFTWN4FNHEXIB52C5JAZWGHE mth5TJ3WKHBFJCRFLT4PZX3OKYLQE" Invoke="true">
+                <xsc:Presentation>selectEditorPresentation</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(entity);
+return presentation==null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD4IF2ZGYX5DETIZXQQAZSPXELI">
+                <xsc:Presentation>Meta::Restrictions</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.FULL : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYLKFTWN4FNHEXIB52C5JAZWGHE mthGUZRQL6RBVEW3FTYHNVBRWUCNY" Invoke="true">
+                <xsc:Presentation>getTotalRestrictions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(entity, presentation);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthB22SDZROKVFRJPPQW7OMQ4QDU4" Name="createAccessPartition" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="arte" Id="mprT3J3EMRAENCHLCYP736LJ6B7IE">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="familyId" Id="mprFSAIMIUT7NGELIYQRW7BBPVW44">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="mode" Id="mprIK4KB6Q7KFFBNAVAWAWA4QUGBQ">
+            <Type TypeId="2" Path="acsX3OOTBYTZTORDIFLABQAQH3XQ4"/>
+          </Parameter>
+          <Parameter Name="singlePartitionVal" Id="mprDIQUJHTSHVEBDOMNFYYSQUJ76I">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="partitionGroupId" Id="mprTYS4EOK3FNDL7OEJD5C5P5G7AM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.arte.rights.AccessPartition"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsX3OOTBYTZTORDIFLABQAQH3XQ4 aciKARCBQATZTORDIFLABQAQH3XQ4" Invoke="true">
+                <xsc:Presentation>AccessAreaMode:Unbounded</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == mode) {
+    return AccessPartition.Factory.createForUnbounded();
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsX3OOTBYTZTORDIFLABQAQH3XQ4 aciJYRCBQATZTORDIFLABQAQH3XQ4" Invoke="true">
+                <xsc:Presentation>AccessAreaMode:BoundedByPart</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == mode) {
+    return AccessPartition.Factory.createForBoundedByPart(singlePartitionVal);
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsX3OOTBYTZTORDIFLABQAQH3XQ4 aciJ4RCBQATZTORDIFLABQAQH3XQ4" Invoke="true">
+                <xsc:Presentation>AccessAreaMode:Prohibited</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == mode) {
+    return AccessPartition.Factory.createForProhibited();
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsX3OOTBYTZTORDIFLABQAQH3XQ4 aciRJAAJTTN7ZCPZMAOTUFZT55GJA" Invoke="true">
+                <xsc:Presentation>AccessAreaMode:BoundedByGroup</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == mode) {
+    if (partitionGroupId == null) {
+        return AccessPartition.Factory.createForProhibited();
+    }
+    return AccessPartition.Factory.createForBoundedByGroup(arte, partitionGroupId.intValue());
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsX3OOTBYTZTORDIFLABQAQH3XQ4 aciIL3ASNQD6ZATJBFLIE4KG26EJ4" Invoke="true">
+                <xsc:Presentation>AccessAreaMode:BoundedByUser</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == mode) {
+    return AccessPartition.Factory.createForBoundedByUser(arte, familyId);
+}
+
+throw new org.radixware.kernel.common.exceptions.RadixError("Invalid AccessAreaMode " + String.valueOf(mode == null ? null : mode.Value)); 
+
+</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

@@ -49,6 +49,7 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
     private final boolean isSubreport;
     private final String description;
     private final boolean isExportToCsvEnabled;
+    private final boolean isExportToXlsxEnabled;
     private final boolean isExportToTxtEnabled;
     private final boolean isMultiFileReport;
 
@@ -165,6 +166,7 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
                 description,
                 isExportToCsvEnabled,
                 false,
+                false,
                 isMultiFileReport,
                 0,
                 0);
@@ -189,6 +191,47 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
             final boolean isMultiFileReport,
             final int sizeX,
             final int sizeY) {
+        this(id,
+                name,
+                titleId,
+                iconId,
+                properties,
+                editorPages,
+                pageOrder,
+                commands,
+                commandOrder,
+                contextParameterId,
+                contextClassId,
+                isSubreport,
+                description,
+                isExportToCsvEnabled,
+                false,
+                isExportToTxtEnabled,
+                isMultiFileReport,
+                sizeX,
+                sizeY);
+    }
+
+    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
+    public RadReportPresentationDef(final Id id,
+            final String name,
+            final Id titleId,
+            final Id iconId,
+            final RadPropertyDef[] properties,
+            final RadEditorPageDef[] editorPages,
+            final RadEditorPages.PageOrder[] pageOrder,
+            final RadCommandDef[] commands,
+            final Id[] commandOrder,
+            final Id contextParameterId,
+            final Id contextClassId,
+            final boolean isSubreport,
+            final String description,
+            final boolean isExportToCsvEnabled,
+            final boolean isExportToXlsxEnabled,
+            final boolean isExportToTxtEnabled,
+            final boolean isMultiFileReport,
+            final int sizeX,
+            final int sizeY) {
         super(id, name, titleId);
         this.iconId = iconId;
         this.properties = properties;
@@ -202,6 +245,7 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
         this.isSubreport = isSubreport;
         this.description = description;
         this.isExportToCsvEnabled = isExportToCsvEnabled;
+        this.isExportToXlsxEnabled = isExportToXlsxEnabled;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.isMultiFileReport = isMultiFileReport;
@@ -235,6 +279,7 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
                 isSubreport,
                 description,
                 isExportToCsvEnabled,
+                false,
                 0,
                 0);
 
@@ -388,6 +433,7 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
      */
     protected Id[] commandOrder = null;
     private List<RadCommandDef> enabledCommands = null;
+    private final Object commandsSemaphore = new Object();
 
     private RadCommandDef findCommandDef(final Id commandId) {
         if (commands != null && commands.length > 0) {
@@ -409,7 +455,9 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
             RadCommandDef command;
             for (Id commandId : commandOrder) {
                 command = findCommandDef(commandId);
-                enabledCommands.add(command);
+                if (command!=null){
+                    enabledCommands.add(command);
+                }
             }
         }
     }
@@ -422,10 +470,12 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
      */
     @Override
     public final List<RadCommandDef> getEnabledCommands() {
-        if (enabledCommands == null) {
-            linkCommands();
+        synchronized(commandsSemaphore){
+            if (enabledCommands == null) {
+                linkCommands();
+            }
+            return Collections.unmodifiableList(enabledCommands);
         }
-        return Collections.unmodifiableList(enabledCommands);
     }
 
     /**
@@ -468,6 +518,10 @@ public class RadReportPresentationDef extends TitledDefinition implements IModel
 
     public boolean isExportToCsvEnabled() {
         return isExportToCsvEnabled;
+    }
+
+    public boolean isExportToXlsxEnabled() {
+        return isExportToXlsxEnabled;
     }
 
     public boolean isExportToTxtEnabled() {

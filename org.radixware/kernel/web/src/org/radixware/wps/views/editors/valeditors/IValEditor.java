@@ -16,12 +16,16 @@ import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.text.ITextOptionsProvider;
+import org.radixware.kernel.common.client.types.PriorityArray;
 import org.radixware.kernel.common.client.widgets.IButton;
+import org.radixware.kernel.common.html.ToolTip;
 import org.radixware.wps.rwt.ValueEditor;
 import org.radixware.wps.text.WpsTextOptions;
 
 
 public interface IValEditor<T, V extends EditMask> extends ValueEditor<T> {
+    
+    public final static int DEFAULT_BUTTON_PRIORITY = PriorityArray.DEFAULT_PRIORITY;
 
     public void setValue(T value);
 
@@ -32,8 +36,18 @@ public interface IValEditor<T, V extends EditMask> extends ValueEditor<T> {
     public void setReadOnly(boolean readOnly);
 
     public void addButton(IButton button);
+    
+    public void addButton(IButton button, int priority);
+    
+    public void removeButton(IButton button);
+    
+    public void setButtonsVisible(final boolean isVisible);
+    
+    public boolean isButtonsVisible();
 
     public void setToolTip(String toolTip);
+    
+    public void setHtmlToolTip(ToolTip toolTip);
 
     public void setValidationResult(final ValidationResult validationResult);
 

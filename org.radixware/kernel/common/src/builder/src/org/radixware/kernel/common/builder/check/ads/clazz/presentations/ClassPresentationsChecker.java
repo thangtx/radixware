@@ -79,7 +79,7 @@ public class ClassPresentationsChecker<T extends ClassPresentations> extends Rad
             }
         }
         if (prs.getObjectTitleId() != null) {
-            CheckUtils.checkMLStringId(prs.getOwnerClass(), prs.getObjectTitleId(), problemHandler, "singular title");
+            CheckUtils.checkMLStringId(prs.findOwnerTitleDefinition(), prs.getObjectTitleId(), problemHandler, "singular title");
         }
 
     }

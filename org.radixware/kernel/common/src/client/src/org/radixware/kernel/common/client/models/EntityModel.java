@@ -16,14 +16,18 @@ import java.util.*;
 
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.dialogs.IMessageBox;
 import org.radixware.kernel.common.client.eas.RequestHandle;
 import org.radixware.kernel.common.client.enums.EEntityCreationResult;
+import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.errors.ModelError;
 import org.radixware.kernel.common.client.errors.NoDefinitionWithSuchIdError;
 import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
 import org.radixware.kernel.common.client.errors.UniqueConstraintViolationError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
+import org.radixware.kernel.common.client.exceptions.InvalidPropertyValueException;
 import org.radixware.kernel.common.client.exceptions.ModelException;
+import org.radixware.kernel.common.client.exceptions.PropertyIsMandatoryException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.RadClassPresentationDef;
 import org.radixware.kernel.common.client.meta.RadCommandDef;
@@ -78,7 +82,7 @@ public abstract class EntityModel extends ModelWithPages {
         @Override
         public EntityModel onChangePresentation(RawEntityModelData rawData, Id newPresentationClassId, Id newPresentationId) {
             final EntityModel newSelectorRow =
-                    selectorRow.getParentGroupModel().onChangePresentation(rawData, newPresentationClassId, newPresentationId);
+                    selectorRow.getOwnerSelectorModel().onChangePresentation(rawData, newPresentationClassId, newPresentationId);
             actualEntityModel = newSelectorRow.openInSelectorEditModel();
             return actualEntityModel;            
         }
@@ -87,11 +91,44 @@ public abstract class EntityModel extends ModelWithPages {
             return actualEntityModel;
         }
     }    
-    
-    private EntityModel copySource = null;
+        
+    private static class InteractivePropertiesFilter implements IPropertiesFilter{
+        
+        private final IContext.Entity context;
+        private final RadEditorPresentationDef presentation;
+        
+        public InteractivePropertiesFilter(final IContext.Entity context, final RadEditorPresentationDef pres){            
+            this.context = context;
+            this.presentation = pres;
+        }
+
+        @Override
+        public boolean isFiltered(final Property property) {
+            if (context instanceof IContext.SelectorRow){
+                final GroupModel group = ((IContext.SelectorRow) context).parentGroupModel;
+                final RadSelectorPresentationDef.SelectorColumns columns = group.getSelectorPresentationDef().getSelectorColumns();
+                {
+                    for (RadSelectorPresentationDef.SelectorColumn column : columns) {
+                        if (column.getVisibility()!=ESelectorColumnVisibility.NEVER
+                            && column.getPropertyId().equals(property.getId())){
+                            return false;
+                        }
+                    }
+                }
+            }
+            if (property.hasSubscriber()){
+                return false;
+            }
+            return !presentation.getEditorPages().isPropertyDefined(property.getId());
+        }                
+    }
+        
+    private EntityModel copySource = null;    
+    private boolean propertyValuesWasSetFromCopySource;
     private EntityModel synchronizedModel = null;
     private List<Id> commandIds = null;
     private Pid pid = null;
+    private Pid srcPid = null;
     private Id classId = null;
     private EntityRestrictions restrictions = null;
     private boolean isNew = false;
@@ -99,6 +136,7 @@ public abstract class EntityModel extends ModelWithPages {
     private boolean isEdited = false;
     private boolean wasRead = false;//Флажок, что был запрос на чтение
     private boolean wasActivated = false;//Флажок, что модель активирована и готова к использованию.
+    private boolean activatePropsRecursionBlock = false;
     private ESelectorRowStyle selectorStyle = ESelectorRowStyle.NORMAL;
     private Map<Id,RawEntityModelData.ChildExplorerItemInfo> accessibleExplItemsById;
     private long lastReadTime = 0;
@@ -201,16 +239,49 @@ public abstract class EntityModel extends ModelWithPages {
         }
         return true;        
     }
+    
+    public final EDialogButtonType showUpdateMessageConfirmation(){
+        final GroupModel ownerSelectorModel = getOwnerSelectorModel();
+        final String showConfirmSettingPath;
+        if (ownerSelectorModel!=null){
+            final StringBuilder  showConfirmSettingPathBuilder = new StringBuilder();
+            showConfirmSettingPathBuilder.append(ownerSelectorModel.getConfigStoreGroupName());
+            showConfirmSettingPathBuilder.append('/');
+            showConfirmSettingPathBuilder.append(SettingNames.SYSTEM);
+            showConfirmSettingPathBuilder.append("/show_confirm_on_update");
+            showConfirmSettingPath = showConfirmSettingPathBuilder.toString();
+            final boolean showConfirm = getEnvironment().getConfigStore().readBoolean(showConfirmSettingPath, true);
+            if (!showConfirm){
+                return EDialogButtonType.YES;//auto apply
+            }
+        }else{
+            showConfirmSettingPath = null;
+        }
+        final MessageProvider mp = getEnvironment().getMessageProvider();
+        final String title = mp.translate("ExplorerDialog", "Save Changes?");
+        final String messageTemplate = mp.translate("ExplorerDialog", "Apply changes in editor of \'%s\'?");
+        final String message = String.format(messageTemplate, getTitle());
+        final Set<EDialogButtonType> buttons = EnumSet.of(EDialogButtonType.YES, EDialogButtonType.NO, EDialogButtonType.CANCEL);
+        final IMessageBox messageBox = getEnvironment().newMessageBoxDialog(message, title, EDialogIconType.QUESTION, buttons);
+        if (showConfirmSettingPath!=null){
+            final String optionText = mp.translate("ExplorerDialog", "Apply changes without confirmation next time");
+            messageBox.setOptionText(optionText);
+        }
+        final EDialogButtonType result = messageBox.execMessageBox();
+        if (showConfirmSettingPath!=null){
+            final boolean showConfirm = !messageBox.isOptionActivated();
+            if (showConfirm){
+                getEnvironment().getConfigStore().remove(showConfirmSettingPath);
+            }else{
+                getEnvironment().getConfigStore().writeBoolean(showConfirmSettingPath, false);
+            }
+        }
+        return result;
+    }
 
     protected boolean askForUpdate() {
         if (getEnvironment().getDefManager().getAdsVersion().isSupported()) {
-            final String message = getEnvironment().getMessageProvider().translate("ExplorerDialog", "Save changes in editor of \'%s\'?");
-            Set<EDialogButtonType> buttons = EnumSet.of(EDialogButtonType.YES, EDialogButtonType.NO, EDialogButtonType.CANCEL);
-            
-            final EDialogButtonType answer = getEnvironment().messageBox(getEnvironment().getMessageProvider().translate("ExplorerDialog", "Save Changes?"),
-                    String.format(message, getTitle()),
-                    EDialogIconType.QUESTION,
-                    buttons);
+            final EDialogButtonType answer = showUpdateMessageConfirmation();
             if (answer.equals(EDialogButtonType.YES)) {
                 try {
                     final boolean isUpdateSuccessfull;
@@ -267,24 +338,22 @@ public abstract class EntityModel extends ModelWithPages {
         if (properties == null || properties.isEmpty()
                 || !getEnvironment().getDefManager().getAdsVersion().isSupported()) {
             return result;
-        }
-        final List<Property> props = getActivePropertiesByOrder();
+        }        
+        final List<Property> props = getActivePropertiesByOrder(new InteractivePropertiesFilter(getEntityContext(), getEditorPresentationDef()));
         boolean registeredInEditorPage;
         for (Property property : props) {
             //поиск мандаторных свойств
-            registeredInEditorPage = getEditorPresentationDef().getEditorPages().isPropertyDefined(property.getId());
             if (!property.hasValidMandatoryValue()
-                    && property.isVisible() && (property.hasSubscriber() || registeredInEditorPage)
+                    && property.isVisible()
                     && !property.isReadonly()) {
-                //сначала проверяем видимые свойства типа parentRef
                 result.add(property);
             }
         }
         return result;
     }
-
+    
     @Override
-    protected List<Property> getActivePropertiesByOrder() {
+    protected List<Property> getActivePropertiesByOrder(final IPropertiesFilter filter) {
         if (isInSelectorRowContext()) {
             final GroupModel group = ((IContext.SelectorRow) getContext()).parentGroupModel;
             final RadSelectorPresentationDef.SelectorColumns columns = group.getSelectorPresentationDef().getSelectorColumns();
@@ -293,12 +362,12 @@ public abstract class EntityModel extends ModelWithPages {
                 Property property;
                 for (RadSelectorPresentationDef.SelectorColumn column : columns) {
                     property = getProperty(column.getPropertyId());
-                    if (property.isActivated()) {
+                    if (!filter.isFiltered(property) && property.isActivated()) {
                         result.add(property);
                     }
                 }
             }
-            final Collection<Property> allActiveProperties = getActiveProperties();
+            final Collection<Property> allActiveProperties = getActiveProperties(filter);
             for (Property property : allActiveProperties) {
                 if (!result.contains(property) && property.hasSubscriber() && property.getDefinition().getType() == EValType.PARENT_REF) {
                     result.add(property);
@@ -311,9 +380,9 @@ public abstract class EntityModel extends ModelWithPages {
             }
             return result;
         } else {
-            return super.getActivePropertiesByOrder();
+            return super.getActivePropertiesByOrder(filter);
         }
-    }
+    }        
 
 //	общие атрибуты
     public boolean isEdited() {
@@ -376,7 +445,8 @@ public abstract class EntityModel extends ModelWithPages {
         if (!isNew()) {
             throw new IllegalStateException("Object is not new");
         }
-        return copySource != null && copySource.getPid().equals(src);
+        return (copySource != null && copySource.getPid().equals(src))
+                  || (srcPid!=null && srcPid.equals(src));
     }
 
     public final boolean isAuditEnabled() {
@@ -389,6 +459,8 @@ public abstract class EntityModel extends ModelWithPages {
             throw new IllegalStateException("Object is not new");
         } else if (copySource != null) {
             return copySource.getPid();
+        } else if (srcPid != null){
+            return srcPid;
         }
         return null;
     }
@@ -487,13 +559,18 @@ public abstract class EntityModel extends ModelWithPages {
     
     private List<Property> getEditedPropertiesImpl(final boolean excludeChangedByParentRef) {
         if (properties != null) {
-            ArrayList<Property> result = new ArrayList<>(properties.size());
-            for (Property property : properties.values()) {
+            final List<Property> result = new ArrayList<>(properties.size());
+            final Collection<Property> props = new LinkedList<>(properties.values());
+            for (Property property : props) {
                 if (property.isValEdited() && !(excludeChangedByParentRef && property.isValueModifiedByChangingParentRef())) {
                     result.add(property);
                 }
             }
-            return Collections.unmodifiableList(result);
+            if (properties.size()>props.size()){
+                return getEditedPropertiesImpl(excludeChangedByParentRef);
+            }else{
+                return Collections.unmodifiableList(result);
+            }
         }
         return Collections.<Property>emptyList();        
     }
@@ -503,9 +580,15 @@ public abstract class EntityModel extends ModelWithPages {
         if (propList != null && !propList.getItemList().isEmpty()) {
             result = new ArrayList<>();
             RadPropertyDef propertyDef;
+            PropertyValue propertyValue;
             for (PropertyList.Item p : propList.getItemList()) {
                 try {
                     propertyDef = classDef.getPropertyDefById(p.getId());
+                    if (!propertyDef.isReadSeparately() || WithLOBValues || isNew()) {//RADIX-4836
+                        propertyValue = new PropertyValue(p, propertyDef, classDef.getId(), this);
+                    }else{
+                        propertyValue = null;
+                    }
                 } catch (DefinitionError error) {
                     final String msg = getEnvironment().getMessageProvider().translate("TraceMessage", "Cannot read property #%s: %s\n%s");
                     final String reason = ClientException.getExceptionReason(getEnvironment().getMessageProvider(), error);
@@ -513,8 +596,8 @@ public abstract class EntityModel extends ModelWithPages {
                     getEnvironment().getTracer().debug(String.format(msg, p.getId().toString(), reason, stack));
                     continue;
                 }
-                if (!propertyDef.isReadSeparately() || WithLOBValues || isNew()) {//RADIX-4836
-                    result.add(new PropertyValue(getEnvironment(), p, propertyDef, classDef.getTableId()));
+                if (propertyValue!=null){
+                    result.add(propertyValue);
                 }
             }
         } else {
@@ -545,10 +628,11 @@ public abstract class EntityModel extends ModelWithPages {
         }
 
         setIsEdited(false);
-        final RawEntityModelData rawData = new RawEntityModelData(rs);
-        if (checkPresentation(rawData, rs.getPresentation()) != null) {
+        final RawEntityModelData rawData = parseReadResponse(rs);
+        if (rawData==null){
             return;
         }
+        
         activate(rawData);
     }
 
@@ -568,9 +652,8 @@ public abstract class EntityModel extends ModelWithPages {
             throw error;
         }
         
-        final RawEntityModelData rawData = new RawEntityModelData(rs);
-
-        if (checkPresentation(rawData, rs.getPresentation()) != null) {
+        final RawEntityModelData rawData = parseReadResponse(rs);
+        if (rawData==null){
             return;
         }
 
@@ -622,10 +705,10 @@ public abstract class EntityModel extends ModelWithPages {
             processObjectNotFound(error);
             throw error;
         }
-
-        if (checkPresentation(new RawEntityModelData(rs), rs.getPresentation()) != null) {
+        
+        if (parseReadResponse(rs)==null){
             setIsEdited(false);
-            return;
+            return;            
         }
 
         final List<PropertyValue> vals = readProperties(rs.getData().getProperties(), getClassPresentationDef(), true);
@@ -657,10 +740,10 @@ public abstract class EntityModel extends ModelWithPages {
         }
         final ReadRs rs = (ReadRs) response;
         if (Utils.equals(rs.getData().getPID(), (getPid() == null ? null : getPid().toString()))) {
-
-            final RawEntityModelData rawData = new RawEntityModelData(rs);
             
-            if (checkPresentation(rawData, rs.getPresentation()) != null) {
+            final RawEntityModelData rawData = parseReadResponse(rs);
+            
+            if (rawData==null) {
                 return;
             }
 
@@ -771,7 +854,7 @@ public abstract class EntityModel extends ModelWithPages {
             setIsEdited(false);
             final RawEntityModelData rawData = new RawEntityModelData(response);
             final EntityModel entity = 
-                checkPresentation(rawData, response.getPresentation());
+                checkPresentation(rawData, response.getData().getPresentation());
             if (entity != null) {
                 entity.afterUpdate();//?????
                 return true;
@@ -781,9 +864,6 @@ public abstract class EntityModel extends ModelWithPages {
             setIsEdited(false);
         }
         updateLocalProperties();
-        if (synchronizedModel!=null){
-            synchronizedModel.updateLocalProperties();
-        }
         afterUpdate();
         return true;
     }
@@ -793,7 +873,17 @@ public abstract class EntityModel extends ModelWithPages {
             if (property.isValEdited()){
                 property.setValEdited(false);
             }
-        }        
+        }
+    }
+    
+    public final boolean validatePropertyValues(){
+        try{
+            checkPropertyValues();
+            return true;
+        }catch(PropertyIsMandatoryException | InvalidPropertyValueException exception){
+            showException(exception);
+            return false;
+        }
     }
 
     //фиксация вновь созданного объекта. Вызывается по окончании редактирования инициализированного объекта
@@ -850,18 +940,19 @@ public abstract class EntityModel extends ModelWithPages {
             return false;
         }
 
-        final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Object Deletion"),
-                msg = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Do you really want to delete \'%s\'?"),
-                confirmationMessage = String.format(msg, getTitle());
-
-        if ((forced || getEnvironment().messageConfirmation(title, confirmationMessage))
-                && deleteImpl(false, forced)) {
+        if ((forced || confirmToDelete()) && deleteImpl(false, forced)) {
             setExists(false);            
             afterDelete();
             onDeleteSynchronization();
             return true;
         }
         return false;
+    }
+    
+    protected boolean confirmToDelete(){
+        final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Object Deletion");
+        final String msg = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Do you really want to delete \'%s\'?");
+        return getEnvironment().messageConfirmation(title, String.format(msg, getTitle()));
     }
 
     public void cancelChanges() {
@@ -1046,7 +1137,7 @@ public abstract class EntityModel extends ModelWithPages {
         //final ReadRs rs = Environment.session.read(pid, classId, presentations, ctx);
         final ReadRs rs = 
             context.getEnvironment().getEasSession().read(pid, classId, presentations, context, true);
-        final Id presentationId = rs.getPresentation().getId();
+        final Id presentationId = rs.getData().getPresentation().getId();
         final EntityModel entity;
         final RadEditorPresentationDef presentation = context.getEnvironment().getDefManager().getEditorPresentationDef(presentationId);
         entity = presentation.createModel(context);
@@ -1146,7 +1237,7 @@ public abstract class EntityModel extends ModelWithPages {
         entity.classId = classId;
         entity.setExists(false);
         entity.copySource = src;
-
+        
         if (initialValues != null && !initialValues.isEmpty()) {
             for (Map.Entry<Id, Object> entry : initialValues.entrySet()) {
                 entity.getProperty(entry.getKey()).setValueObject(entry.getValue());
@@ -1180,7 +1271,12 @@ public abstract class EntityModel extends ModelWithPages {
             }
             throw error;
         }
-        final Id presentationId = rs.getPresentation().getId();
+        final List<org.radixware.schemas.eas.PresentableObject> newObjects = rs.getObjectList();
+        if (newObjects==null || newObjects.isEmpty()){
+            return null;
+        }
+        final org.radixware.schemas.eas.PresentableObject data = newObjects.get(0);
+        final Id presentationId = data.getPresentation().getId();
 
         if (!epd.getId().equals(presentationId)) {
             final RadEditorPresentationDef creationPresentation = ctx.getEnvironment().getDefManager().getEditorPresentationDef(presentationId);
@@ -1190,7 +1286,7 @@ public abstract class EntityModel extends ModelWithPages {
         entity.isNew = true;
         entity.setExists(false);
         entity.copySource = src;
-        entity.activate(new RawEntityModelData(rs));
+        entity.activate(new RawEntityModelData(data));        
         eventResult = src != null ? entity.afterPreparePaste(src)
                 : entity.afterPrepareCreate();
         if (!eventResult) {
@@ -1200,7 +1296,120 @@ public abstract class EntityModel extends ModelWithPages {
         msg = "model for new entity with class #%s was created by editor presentation %s.";
         ctx.getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format(msg, classId, entity.getDefinition().toString()), EEventSource.EXPLORER);
         return entity;
+    }       
+    
+    /**
+     * Метод создает одну или несколько моделей презентаций редактора, на основе которых в 
+     * последствии могут создаваться объекты сущности. Для каждого идентификатора класса сущности
+     * из списка <code>classIds</code> будет создана одна модель презентации редактора.
+     * При вызове метода выполняется запрос к серверу на подготовку к созданию объектов. 
+     * На основании ответа будут созданы и 
+     * {@link #activate(org.radixware.schemas.eas.Object, List) проинициализированы}
+     * модели новый объектов сущности. <p> В параметре epd передается желаемая
+     * презентация редактора. Фактическая презентация, на основании которой
+     * будет создана модель нового объекта сущности, определяется из ответа сервера. <p>
+     * Модели созданные в данном методе являются лишь "заготовкой" для новых
+     * объектов. Окончательное создание объекта произойдет только после вызова
+     * метода модели {@link #create()}.
+     *
+     * @param epd желаемая презентация редактора для модели новых объектов сущности.
+     * Обязательный параметр.
+     * @param classIds идентификаторы классов новых объектов сущности
+     * @param  alternativePresentationIds идентификаторы альтернативных презентаций редактора.
+     * Если у пользователя нет прав на презентацию редактора, которая была передана в параметре
+     * <code>epd</code>, то будет выбрана одна из презентаций из списка, на которую у пользователя
+     * есть права. Может быть <code>null</code>.
+     * @param initialValues начальные значения свойств создаваемых объектов. Может быть <code>null</code>.
+     * @param ctx Контекст, в котором происходит создание объектов сущности. Обязательный
+     * параметр. Допускается
+     *  {@link Context.InSelectorCreating}, {@link Context.ObjectPropCreating}
+     * либо {@link Context.ContextlessCreating}.
+     * @return список моделей сущности для создания новых объектов.
+     * @throws ServiceClientException ошибки при выполении запроса на подготовку
+     * к созданию объектов.
+     * @throws InterruptedException запрос на подготовку к созданию новых
+     * объектов был прерван.
+     * @see #isNew()
+     * @see #isExists()
+     */    
+    public static List<EntityModel> openPrepareCreateModels(final RadEditorPresentationDef epd, final List<Id> classIds,  final List<Id> alternativePresentationIds, final Map<Id, Object> initialValues, final IContext.Entity ctx) throws ServiceClientException, InterruptedException {
+        if (epd == null) {
+            throw new IllegalArgumentError("creation presentation was not defined");
+        }
+        if (ctx == null) {
+            throw new IllegalArgumentError("context was not defined");
+        }
+
+        if (!(ctx instanceof IContext.InSelectorCreating)
+                && !(ctx instanceof IContext.ObjectPropCreating)
+                && !(ctx instanceof IContext.ContextlessCreating)) {
+            throw new IllegalArgumentError("context \"" + ctx.getClass().getName() + "\" is not suitable for new entity");
+        }
+
+        final List<EntityModel> templates = new LinkedList<>();
+        for (Id classId: classIds){
+            final String msg = "creating model for new entity with class #%s was created by editor presentation %s.";
+            ctx.getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format(msg, classId, epd.toString()), EEventSource.EXPLORER);
+            
+            //Создаем модель для заполнения начальных значений свойств
+            //перед отправкой запрроса на сервер.
+            EntityModel entity = epd.createModel(ctx);
+            entity.isNew = true;
+            entity.classId = classId;
+            entity.setExists(false);            
+
+            if (initialValues != null && !initialValues.isEmpty()) {
+                for (Map.Entry<Id, Object> entry : initialValues.entrySet()) {
+                    entity.getProperty(entry.getKey()).setValueObject(entry.getValue());
+                }
+            }
+
+            if (entity.beforePrepareCreate()) {
+                templates.add(entity);
+            }
+        }
+        
+        final List<Id> creationPresentationIds = new ArrayList<>();
+        creationPresentationIds.add(epd.getId());
+        if (alternativePresentationIds != null) {
+            for (Id presentationId : alternativePresentationIds) {
+                if (presentationId != null && !creationPresentationIds.contains(presentationId)) {
+                    creationPresentationIds.add(presentationId);
+                }
+            }
+        }
+        final PrepareCreateRs rs = 
+            ctx.getEnvironment().getEasSession().prepareCreate(creationPresentationIds, ctx, templates);
+        final List<org.radixware.schemas.eas.PresentableObject> xmlObjects = rs.getObjectList();
+        if (xmlObjects==null || xmlObjects.isEmpty()){
+            return Collections.emptyList();
+        }
+        final List<EntityModel> result = new LinkedList<>();
+        for (org.radixware.schemas.eas.PresentableObject xmlObject: xmlObjects){
+            final Id presentationId = xmlObject.getPresentation().getId();
+            final RadEditorPresentationDef creationPresentation = ctx.getEnvironment().getDefManager().getEditorPresentationDef(presentationId);
+            final EntityModel entity = creationPresentation.createModel(ctx);            
+
+            entity.isNew = true;
+            entity.setExists(false);
+            entity.activate(new RawEntityModelData(xmlObject));        
+            if (entity.afterPrepareCreate()) {
+                result.add(entity);
+            }else{
+                final String msg = "model for new entity with class #%s was created by editor presentation %s.";
+                ctx.getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format(msg, entity.getClassId(), entity.getDefinition().toString()), EEventSource.EXPLORER);
+            }            
+        }
+        return result;
     }
+    
+    public static List<EntityModel> openPrepareCreateModels(final RadEditorPresentationDef epd, final List<Id> classIds,  final List<Id> alternativePresentationIds, final IContext.Entity ctx) throws ServiceClientException, InterruptedException {
+        return openPrepareCreateModels(epd, classIds, alternativePresentationIds, null, ctx);
+    }
+    
+    public static List<EntityModel> openPrepareCreateModels(final RadEditorPresentationDef epd, final List<Id> classIds,  final IContext.Entity ctx) throws ServiceClientException, InterruptedException {
+        return openPrepareCreateModels(epd, classIds, null, null, ctx);
+    }    
 
     public static EntityModel openPrepareCreateModel(final RadEditorPresentationDef epd, final Id classId, final EntityModel src, final Map<Id, Object> initialValues, final IContext.Entity ctx) throws ServiceClientException, InterruptedException {
         return openPrepareCreateModel(epd, classId, src, null, initialValues, ctx);
@@ -1238,7 +1447,7 @@ public abstract class EntityModel extends ModelWithPages {
                         && ((command.getAccessibility() != ECommandAccessibility.ONLY_FOR_EXISTENT &&
                              command.getAccessibility() != ECommandAccessibility.ONLY_FOR_FIXED)
                         || isExists())
-                        && !getContext().getRestrictions().getIsCommandRestricted(command.getId())
+                        && !getContext().getRestrictions().getIsCommandRestricted(command)
                         && isCommandAccessible(command)) {
                     commandIds.add(command.getId());
                 }
@@ -1272,11 +1481,6 @@ public abstract class EntityModel extends ModelWithPages {
      * @see #activateCopy(EntityModel)
      */
     public void activate(String pid_, String objectTitle_, Id classId_, List<PropertyValue> propVals) {
-        deactivateSeparatelyReadingProps();
-        if (propVals != null) {
-            activateProps(propVals);
-        }
-        setTitle(objectTitle_);
         if (pid_ != null && !pid_.isEmpty()) {
             pid = new Pid(getEditorPresentationDef().getTableId(), pid_);
             setExists(true);
@@ -1286,7 +1490,20 @@ public abstract class EntityModel extends ModelWithPages {
             setExists(false);
             isNew = true;
         }
-        classId = classId_;
+        classId = classId_;        
+        deactivateSeparatelyReadingProps();
+        if (propVals != null || canSetPropertyValuesFromCopySource()) {
+            activateProps(propVals);
+        }
+        if (!isNew() && !activatePropsRecursionBlock){
+            activatePropsRecursionBlock = true;
+            try{
+                setPropsToIgnoreUndefinedValCheck(findUndefinedMandatoryProperties());
+            }finally{
+                activatePropsRecursionBlock = false;
+            }
+        }
+        setTitle(objectTitle_);
         if (propVals !=null ){
             afterReadInvoke();
         }
@@ -1302,7 +1519,7 @@ public abstract class EntityModel extends ModelWithPages {
     }
     
     public void setServerPropertyValues(List<PropertyValue> propVals) {
-        if (propVals != null && !propVals.isEmpty()) {
+        if ((propVals != null && !propVals.isEmpty()) || canSetPropertyValuesFromCopySource()) {
             activateProps(propVals);
             afterReadInvoke();
             updateCommands();//RADIX-7725
@@ -1362,6 +1579,10 @@ public abstract class EntityModel extends ModelWithPages {
             setSelectorRowStyle(rowStyle);
         }        
         activate(rawModelData.getEntityObjectData().getPID(), rawModelData.getEntityObjectData().getTitle(), rawModelData.getEntityObjectData().getClassId(), vals);
+        final String srcPidAsStr = rawModelData.getEntityObjectData().getSrcPID();
+        if (srcPidAsStr!=null){
+            srcPid = new Pid(classDef.getTableId(), srcPidAsStr);
+        }
         updateServerRestrictions(rawModelData.getRestrictions());
         if (rawModelData.getEnabledEditorPages()!=null){
             updateServerEditorPageRestrictions(rawModelData.getEnabledEditorPages());
@@ -1377,7 +1598,7 @@ public abstract class EntityModel extends ModelWithPages {
     }
 
     public void activate(final RawEntityModelData rawModelData) {
-        activate(rawModelData, false);
+        activate(rawModelData, isNew());
         wasRead = true;
     }
 
@@ -1491,6 +1712,7 @@ public abstract class EntityModel extends ModelWithPages {
                 command.startSynchronization(synchronizedModel.getCommand(command.getId()));
             }
         }
+        restrictions.startSynchronization(model2.restrictions);
     }
 
     public void stopSynchronization() {
@@ -1510,7 +1732,7 @@ public abstract class EntityModel extends ModelWithPages {
             synchronizedModel = null;
         }
     }
-
+    
     @Override
     /*
      * Если чтения всей сущности еще не было, то при получении значения свойства
@@ -1518,10 +1740,10 @@ public abstract class EntityModel extends ModelWithPages {
      * новые записи. Данный метод вызывает геттеры всех свойств чтобы
      * сформировать окончательный список свойств.
      */
-    public Collection<Property> getActiveProperties() {
+    protected Collection<Property> getActiveProperties(IPropertiesFilter filter) {
         if (isNew() && !wasRead()) {
             //to avoid concurrent modification
-            Collection<Property> props = new ArrayList<>(super.getActiveProperties());
+            Collection<Property> props = new ArrayList<>(super.getActiveProperties(filter));
             Collection<Property> result = new ArrayList<>();
             //Check if property value was defined.
             for (Property property : props) {
@@ -1533,7 +1755,7 @@ public abstract class EntityModel extends ModelWithPages {
         } else {
             Collection<Property> result = new ArrayList<>();
             Collection<Property> props = new ArrayList<>();
-            props.addAll(super.getActiveProperties());
+            props.addAll(super.getActiveProperties(filter));
             for (Property property : props) {
                 if (property.isActivated()) {//to avoid unwanted read operation
                     try{
@@ -1572,6 +1794,7 @@ public abstract class EntityModel extends ModelWithPages {
         if (!propertyList.isEmpty()) {
             for (Property property : propertyList) {
                 if ((isNew() || !includeReadonlyProperties || property.isReadonly() || property.isValEdited())
+                    && (property.getType()!=EValType.OBJECT || (property.isValEdited() && !isNew()))/*RADIX-12141, RADIX-12320*/
                     && !property.isLocal()
                    ) {
                     property.writeValue2Xml(list.addNewItem());
@@ -1583,34 +1806,54 @@ public abstract class EntityModel extends ModelWithPages {
     }
 
     private void activateProps(List<PropertyValue> propVals) {
-        if (properties == null) {
-            properties = new HashMap<>(propVals.size());
-        }
-        final List<Property> modifiedProperties = new ArrayList<>();
-        for (PropertyValue val : propVals) {
-            RadPropertyDef def = val.getPropertyDef();
-            Property property = properties.get(def.getId());
-            if (property == null) {
-                property = createProperty(def);
-                properties.put(def.getId(), property);
-                if (synchronizedModel != null) {
-                    if (synchronizedModel.properties != null && synchronizedModel.properties.containsKey(def.getId())) {
-                        final Property p2 = synchronizedModel.getProperty(def.getId());
-                        modifiedProperties.add(p2);
-                        p2.setNotificationsBlocked(true);
-                        p2.setServerValue(val);
-                        property.startSynchronization(p2);
-                    } else {
-                        final Property p2 = synchronizedModel.getProperty(def.getId());//activate and startSynchronization
-                        modifiedProperties.add(p2);
-                        p2.setNotificationsBlocked(true);                        
-                        p2.setServerValue(val);
+        final List<Property> modifiedProperties = new LinkedList<>();
+        if (propVals!=null && !propVals.isEmpty()){
+            if (properties == null) {
+                properties = new HashMap<>(propVals.size());
+            }
+            for (PropertyValue val : propVals) {
+                RadPropertyDef def = val.getPropertyDef();
+                Property property = properties.get(def.getId());
+                if (property == null) {
+                    property = createProperty(def);
+                    properties.put(def.getId(), property);
+                    if (synchronizedModel != null) {
+                        if (synchronizedModel.properties != null && synchronizedModel.properties.containsKey(def.getId())) {
+                            final Property p2 = synchronizedModel.getProperty(def.getId());
+                            modifiedProperties.add(p2);
+                            p2.setNotificationsBlocked(true);
+                            p2.setServerValue(val);
+                            property.startSynchronization(p2);
+                        } else {
+                            final Property p2 = synchronizedModel.getProperty(def.getId());//activate and startSynchronization
+                            modifiedProperties.add(p2);
+                            p2.setNotificationsBlocked(true);                        
+                            p2.setServerValue(val);
+                        }
                     }
                 }
+                modifiedProperties.add(property);
+                property.setNotificationsBlocked(true);            
+                property.setServerValue(val);
             }
-            modifiedProperties.add(property);
-            property.setNotificationsBlocked(true);            
-            property.setServerValue(val);
+        }
+        if (canSetPropertyValuesFromCopySource()){
+            final Collection<Property> activeProperties = copySource.getActiveProperties();
+            Property newProperty;
+            for (Property property : activeProperties) {
+                newProperty = properties==null ? null : properties.get(property.getId());//case when property was activated in constructor of other property
+                if (newProperty==null){
+                    newProperty = activateProperty(property.getId());
+                }
+                if (newProperty!=null){
+                    if (!modifiedProperties.contains(newProperty)){
+                        modifiedProperties.add(newProperty);
+                        newProperty.setNotificationsBlocked(true);
+                    }
+                    newProperty.copy(property);
+                }
+            }
+            propertyValuesWasSetFromCopySource = true;
         }
         for (Property property: modifiedProperties){
             property.setNotificationsBlocked(false);
@@ -1618,6 +1861,10 @@ public abstract class EntityModel extends ModelWithPages {
                 property.afterModify();
             }
         }
+    }
+    
+    private boolean canSetPropertyValuesFromCopySource(){
+        return isNew() && copySource!=null  && copySource.isNew() && !propertyValuesWasSetFromCopySource;
     }
 
     @Override
@@ -1663,7 +1910,7 @@ public abstract class EntityModel extends ModelWithPages {
             try{
                 super.finishEdit();
                 if (getContext() instanceof IContext.InSelectorEditing){
-                    final GroupModel groupModel = getParentGroupModel();
+                    final GroupModel groupModel = getOwnerSelectorModel();
                     if (groupModel!=null){
                         groupModel.finishEdit();
                     }
@@ -1713,7 +1960,7 @@ public abstract class EntityModel extends ModelWithPages {
 
     private void synchronizeRemoving(final boolean synchronizeGroup, final Pid removingPid) {
 
-        final GroupModel parentGroupModel = getParentGroupModel();
+        final GroupModel parentGroupModel = getOwnerSelectorModel();
 
         if (getEnvironment().getTreeManager() != null && (!Utils.equals(getPid(), removingPid) || getView() == null)) {
             //синхронизация дерева
@@ -1734,7 +1981,7 @@ public abstract class EntityModel extends ModelWithPages {
     }
 
     private void removeFromParentGroup(final Pid removingPid) {
-        final GroupModel parentGroupModel = getParentGroupModel();
+        final GroupModel parentGroupModel = getOwnerSelectorModel();
         if (parentGroupModel != null) {
             final EntityObjectsSelection selection = parentGroupModel.getSelection();
             if (selection.isObjectSelected(removingPid)){
@@ -1751,7 +1998,7 @@ public abstract class EntityModel extends ModelWithPages {
         }
     }
 
-    private GroupModel getParentGroupModel() {
+    final public GroupModel getOwnerSelectorModel() {
         if (getContext() instanceof IContext.InSelectorEditing) {
             return ((IContext.InSelectorEditing) getContext()).getGroupModel();
         } else if (isInSelectorRowContext()) {
@@ -1775,8 +2022,7 @@ public abstract class EntityModel extends ModelWithPages {
             throw error;
         } catch (ServiceCallFault e) {
             if (e.getFaultString().equals(ExceptionEnum.CONFIRM_SUBOBJECTS_DELETE.toString())) {
-                final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Object Deletion");
-                if (forced || getEnvironment().messageConfirmation(title, e.getMessage())) {
+                if (forced || confirmToDeleteSubobjects(e.getMessage())) {
                     return deleteImpl(true, forced);
                 } else {
                     return false;
@@ -1786,6 +2032,11 @@ public abstract class EntityModel extends ModelWithPages {
         }
         setIsEdited(false);
         return true;
+    }
+    
+    protected boolean confirmToDeleteSubobjects(final String message){
+        final String title = getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Object Deletion");
+        return getEnvironment().messageConfirmation(title, message);
     }
 
     private void processObjectNotFound(final ObjectNotFoundError objNotFound) {
@@ -1837,6 +2088,14 @@ public abstract class EntityModel extends ModelWithPages {
         } else {
             super.showException(title, ex);
         }
+    }
+    
+    private RawEntityModelData parseReadResponse(final ReadRs readResponse){
+        final RawEntityModelData data = new RawEntityModelData(readResponse);
+        if (checkPresentation(data, readResponse.getData().getPresentation())!=null){
+            return null;
+        }
+        return data;
     }
 
     public boolean canInsertIntoTreeFromSelector() {

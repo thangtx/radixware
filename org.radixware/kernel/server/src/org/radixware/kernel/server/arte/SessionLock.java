@@ -24,16 +24,17 @@ import org.radixware.kernel.server.exceptions.AlreadyOwnLockError;
 import org.radixware.kernel.server.exceptions.DeadLockError;
 import org.radixware.kernel.server.exceptions.LockError;
 import org.radixware.kernel.server.exceptions.LockTimeoutError;
+import org.radixware.kernel.server.jdbc.AbstractDbQueries;
 import org.radixware.kernel.server.types.Pid;
 
-public final class SessionLock extends Object {
+public final class SessionLock {
 
     private final Arte arte;
     private final DbQueries dbQueries;
 
     SessionLock(final Arte arte) {
         this.arte = arte;
-        dbQueries = new DbQueries();
+        dbQueries = new DbQueries(this);
     }
     private final Map<Pid, Lock> locksByPid = new HashMap<Pid, Lock>();
 
@@ -174,7 +175,23 @@ public final class SessionLock extends Object {
         }
     }
 
-    private final class DbQueries {
+    private static final class DbQueries extends AbstractDbQueries {
+        private final SessionLock parent;
+        
+        private DbQueries(){
+            this.parent = null;
+        }
+
+        private DbQueries(SessionLock parent) {
+            this.parent = parent;
+        }        
+        
+        private static final String qryLockSQL  = "begin ? := RDX_LOCK.REQUEST(?, ?, ?, ?);  end;";
+        private CallableStatement qryLock = null;
+        
+        private static final String qryReleaseLockSQL = "begin ? := RDX_LOCK.RELEASE(?); end;";
+        private CallableStatement qryReleaseLock = null;
+
 
         private void closeQry(final CallableStatement qry) {
             try {
@@ -187,21 +204,20 @@ public final class SessionLock extends Object {
             }
         }
 
-        void closeAll() {
+        @Override
+        public void closeAll() {
             closeQry(qryReleaseLock);
             qryReleaseLock = null;
             closeQry(qryLock);
             qryLock = null;
         }
-        private CallableStatement qryLock = null;
 
+        private SessionLock getParent(){return parent;}
+        
         private final CallableStatement getQryLock() {
             if (qryLock == null) {
                 try {
-                    qryLock = arte.getDbConnection().get().prepareCall(
-                            "begin "
-                            + "? := RDX_LOCK.REQUEST(?, ?, ?, ?);"
-                            + " end;");//parameters: result out,  tabId, pid, timeout seconds, lockId out
+                    qryLock = getParent().arte.getDbConnection().get().prepareCall(qryLockSQL);//parameters: result out,  tabId, pid, timeout seconds, lockId out
 //                        "begin ? := DBMS_LOCK.REQUEST(?, DBMS_LOCK.X_MODE, ? , false); end;"
 //                    );//parameters: result out, lockId in, timeout seconds in
                     qryLock.registerOutParameter(1, java.sql.Types.INTEGER);
@@ -214,19 +230,17 @@ public final class SessionLock extends Object {
                     //    4 - already own lock specified by 'id' or 'lockhandle'
                     //    5 - illegal lockhandle
                 } catch (SQLException e) {
-                    throw new LockError(ERR_CANT_INIT_DB_QRY_ + arte.getTrace().exceptionStackToString(e), e);
+                    throw new LockError(ERR_CANT_INIT_DB_QRY_ + getParent().arte.getTrace().exceptionStackToString(e), e);
                 }
             }
             return qryLock;
         }
         private static final String ERR_CANT_INIT_DB_QRY_ = "Can\'t init session lock service query: ";
-        private CallableStatement qryReleaseLock = null;
 
         private final CallableStatement getQryReleaseLock() {
             if (qryReleaseLock == null) {
                 try {
-                    qryReleaseLock = arte.getDbConnection().get().prepareCall(
-                            "begin ? := RDX_LOCK.RELEASE(?); end;");//parameters: result out, lockId in
+                    qryReleaseLock = getParent().arte.getDbConnection().get().prepareCall(qryReleaseLockSQL);//parameters: result out, lockId in
                     qryReleaseLock.registerOutParameter(1, java.sql.Types.INTEGER);
                     //  Return value:
                     // 0 - success
@@ -234,10 +248,15 @@ public final class SessionLock extends Object {
                     // 4 - don't own lock specified by 'id' or 'lockhandle'
                     // 5 - illegal lockhandle
                 } catch (SQLException e) {
-                    throw new LockError(ERR_CANT_INIT_DB_QRY_ + arte.getTrace().exceptionStackToString(e), e);
+                    throw new LockError(ERR_CANT_INIT_DB_QRY_ + getParent().arte.getTrace().exceptionStackToString(e), e);
                 }
             }
             return qryReleaseLock;
+        }
+
+        @Override
+        public void prepareAll() throws SQLException {
+            prepareAll(getParent().arte.getDbConnection().get());
         }
     }
 }

@@ -61,15 +61,29 @@ public abstract class ConnectionOptions {
 
     public final static String CERTIFICATE_ALIAS = "org.radixware/explorer/key";
     private final static char[] KEYSTORE_EXPLORER_PUBLIC_PASSWORD = "password1234".toCharArray();    
+    
     private KeystoreController keystoreController;
     protected Id id;
     private final boolean isReadOnly;
+    private final boolean local;
+    private String addressTranslationFilePath;
+    private String name;
+    private final List<InetSocketAddress> initialAddresses;
+    private String initialAddressesAsStr;//В этом поле хранятся адреса в том виде как их вводил пользователь
+    //(InetSocketAddress.toString() форматирует адрес. )
+    private boolean sapDiscoveryEnabled = true;
+    private EEventSeverity eventSeverity = EEventSeverity.NONE;
+    private String userName;
+    private String stationName;
+    private String connectedUser;
+    private EIsoCountry country;
+    private EIsoLanguage language;
+    private SslOptions sslOptions;
+    private KerberosOptions krbOptions;    
 
     public Id getId() {
         return id;
-    }
-    
-    private String name;
+    }        
 
     public String getName() {
         return name;
@@ -78,8 +92,27 @@ public abstract class ConnectionOptions {
 
     public String getComment() {
         return comment;
+    }    
+    
+    public String getAddressTranslationFilePath(){
+        return addressTranslationFilePath;
     }
 
+    public void setAddressTranslationFilePath(String addressTranslationFilePath) {
+        this.addressTranslationFilePath = addressTranslationFilePath;
+    }
+    
+    public boolean isSapDiscoveryEnabled(){
+        return sapDiscoveryEnabled;
+    }
+    
+    public void setSapDiscoveryEnabled(final boolean use){
+        sapDiscoveryEnabled = use;
+    }
+    
+    protected SslOptions createSslOptions(ConnectionsDocument.Connections.Connection.SSLOptions sslOptions) {
+        return new SslOptions(sslOptions);
+    }
     /**
      * Адрес сервера, на который будет послан первый запрос
      */
@@ -105,10 +138,6 @@ public abstract class ConnectionOptions {
         return false;
     }
     
-    List<InetSocketAddress> initialAddresses = new ArrayList<>();
-    private String initialAddressesAsStr;//В этом поле хранятся адреса в том виде как их вводил пользователь
-    //(InetSocketAddress.toString() форматирует адрес. )
-
     /**
      * Уровень трассировки во время установки подключения
      */
@@ -122,18 +151,12 @@ public abstract class ConnectionOptions {
         }        
         this.eventSeverity = eventSeverity;
     }
-    
-    private EEventSeverity eventSeverity = EEventSeverity.NONE;
+        
     // Параметры запроса CreateSession:
-
     public String getStationName() {
         return stationName;
     }
     
-    private String userName;
-    private String stationName;
-    private String connectedUser;
-
     public String getUserName() {
         if (connectedUser == null) {
             return userName;
@@ -144,9 +167,7 @@ public abstract class ConnectionOptions {
 
     public void setConnectedUserName(final String userName) {
         connectedUser = userName;
-    }
-    
-    private EIsoLanguage language;
+    }        
 
     public EIsoLanguage getLanguage() {
         return language;
@@ -157,9 +178,7 @@ public abstract class ConnectionOptions {
             throw new UnsupportedOperationException("Failed to change connection options");
         }        
         this.language = language;
-    }
-    
-    private EIsoCountry country;
+    }        
 
     public EIsoCountry getCountry() {
         return country;
@@ -225,7 +244,7 @@ public abstract class ConnectionOptions {
     }
 
     //Параметры ssl
-    public final static class SslOptions {
+    public static class SslOptions {
 
         private boolean useSSLAuth;
         private EKeyStoreType keyStoreType;
@@ -234,7 +253,7 @@ public abstract class ConnectionOptions {
         private int slotId = -1;                  //only for keyStoreType=EKeyStoreType.PKCS11
         private String pkcs11Lib;                 //only for keyStoreType=EKeyStoreType.PKCS11
         private final String trustStoreFilePath;
-        private final boolean trustStorePathIsRelative;
+        private final Boolean trustStorePathIsRelative;
         private final char[] trustStorePassword;
 
         public SslOptions() {
@@ -242,6 +261,14 @@ public abstract class ConnectionOptions {
             trustStoreFilePath = null;
             trustStorePathIsRelative = false;
             trustStorePassword = null;
+        }
+        
+        public SslOptions(String trustStoreFilePath, boolean trustStorePathIsRelative, char[] trustStorePassword, boolean useSSLAuth) {
+            certificateAlias = CERTIFICATE_ALIAS;
+            this.trustStoreFilePath = trustStoreFilePath;
+            this.trustStorePathIsRelative = trustStorePathIsRelative;
+            this.trustStorePassword = trustStorePassword;
+            this.useSSLAuth = useSSLAuth;
         }
 
         public SslOptions(SslOptions source) {
@@ -267,7 +294,11 @@ public abstract class ConnectionOptions {
                 trustStorePassword = null;
             }else{
                 trustStoreFilePath = options.getTrustStoreFilePath();
-                trustStorePathIsRelative = options.getTrustStorePathIsRelative();
+                if (options.isSetTrustStorePathIsRelative()){
+                    trustStorePathIsRelative = options.getTrustStorePathIsRelative();
+                }else{
+                    trustStorePathIsRelative = null;
+                }
                 if (options.getTrustStorePassword() != null) {
                     trustStorePassword = options.getTrustStorePassword().toCharArray();
                 }else{
@@ -290,13 +321,33 @@ public abstract class ConnectionOptions {
         public char[] getTrustStorePassword() {
             return trustStorePassword;//NOPMD
         }
+        
+        public SslOptions copy() {
+            return new SslOptions(this);
+        }
 
         public String getTrustStoreFilePath() {
             return trustStoreFilePath;
         }
+        
+        public File getTrustStoreFile(final String workPath){
+            if (trustStoreFilePath==null || trustStoreFilePath.isEmpty()){
+                return null;
+            }
+            if (Boolean.FALSE.equals(trustStorePathIsRelative)){
+                return new File(trustStoreFilePath);
+            }
+            if (trustStorePathIsRelative==null){
+                final File file = new File(trustStoreFilePath);
+                if (file.isFile()){
+                    return file;
+                }
+            }
+            return new File(workPath, trustStoreFilePath);
+        }
 
         public boolean isTrustStorePathRelative() {
-            return trustStorePathIsRelative;
+            return trustStorePathIsRelative==null ? false : trustStorePathIsRelative;
         }
 
         public boolean useSSLAuth() {
@@ -314,7 +365,7 @@ public abstract class ConnectionOptions {
         public void setUseSSLAuth(boolean useSSLAuth) {
             this.useSSLAuth = useSSLAuth;
         }
-
+        
         public void setCertificateAlias(final String certificateAlias) {
             this.certificateAlias = certificateAlias;
         }
@@ -399,19 +450,16 @@ public abstract class ConnectionOptions {
             }
             return principal.getName();
         }
-    }
-    
-    private SslOptions sslOptions;
-    private KerberosOptions krbOptions;
+    }    
 
     public SslOptions getSslOptions() {
         if (isReadOnly){
-            return sslOptions == null ? null : new SslOptions(sslOptions);
+            return sslOptions == null ? null : sslOptions.copy(); 
         }else{
             return sslOptions;
         }
     }
-    
+        
     public final Pkcs11Config getPkcs11Config(){
         if (getSslOptions()!=null && getSslOptions().getKeyStoreType()==EKeyStoreType.PKCS11){
             final Pkcs11Config config = new Pkcs11Config(environment);
@@ -557,9 +605,7 @@ public abstract class ConnectionOptions {
             }
         }
         return KeystoreController.newClientInstance(workPath,connectionId,keyStoreType,ksPassword);
-    }
-    
-    private final boolean local;
+    }        
 
     public boolean isLocal() {
         return local;
@@ -579,6 +625,7 @@ public abstract class ConnectionOptions {
         country = environment.getCountry();
         local = true;
         isReadOnly = false;
+        initialAddresses = new ArrayList<>();
     }
     
     protected ConnectionOptions(final IClientEnvironment environment, final ConnectionOptions source, final String connectionName, final boolean isReadOnly) {
@@ -586,8 +633,10 @@ public abstract class ConnectionOptions {
         id = Id.Factory.newInstance(EDefinitionIdPrefix.EXPLORER_CONNECTION_OPTIONS);
         name = connectionName == null ? source.name : connectionName;
         initialAddressesAsStr = source.initialAddressesAsStr;
-        initialAddresses.addAll(source.initialAddresses);
+        initialAddresses = new ArrayList<>(source.initialAddresses);
         comment = source.comment;
+        addressTranslationFilePath = source.addressTranslationFilePath;
+        sapDiscoveryEnabled = source.sapDiscoveryEnabled;
         userName = source.userName;
         stationName = source.stationName;
         language = source.language;
@@ -614,12 +663,16 @@ public abstract class ConnectionOptions {
         id = connection.getId() != null ? connection.getId() : Id.Factory.newInstance(EDefinitionIdPrefix.EXPLORER_CONNECTION_OPTIONS);
         name = connection.getName();
         comment = connection.getComment();
+        addressTranslationFilePath = connection.getAddressTranslationFilePath();
         userName = connection.getUserName();
         stationName = connection.getStationName();
         explorerRootId = Id.Factory.loadFrom(connection.getExplorerRootId());
         initialAddressesAsStr = connection.getInitialAddress();
         initialAddresses = parseAddresses(initialAddressesAsStr);
-
+        
+        if (!connection.getSapDiscoveryEnabled()){
+            sapDiscoveryEnabled = connection.getSapDiscoveryEnabled();
+        }
 
         try {
             language = connection.getLanguage();
@@ -646,13 +699,13 @@ public abstract class ConnectionOptions {
         }
 
         if (connection.getSSLOptions() != null) {
-            sslOptions = new SslOptions(connection.getSSLOptions());
+            sslOptions = createSslOptions(connection.getSSLOptions()); 
         }
 
         if (connection.getKerberosOptions() != null) {
             krbOptions = new KerberosOptions(connection.getKerberosOptions());
         }
-
+        
         local = isLocal;
         isReadOnly = false;
         restoreSettings();
@@ -691,15 +744,34 @@ public abstract class ConnectionOptions {
         connection.setCountry(country);
         connection.setExplorerRootId(explorerRootId == null ? null : explorerRootId.toString());
         connection.setTraceLevel(eventSeverity);
-
+        if (addressTranslationFilePath != null && !addressTranslationFilePath.isEmpty()) {
+            connection.setAddressTranslationFilePath(addressTranslationFilePath);
+        }
+        if (!sapDiscoveryEnabled){
+            connection.setSapDiscoveryEnabled(false);
+        }
         if (sslOptions != null) {
             final ConnectionsDocument.Connections.Connection.SSLOptions options = connection.addNewSSLOptions();
             options.setUseSslAuth(sslOptions.useSSLAuth());
-            options.setKeyStoreType(sslOptions.getKeyStoreType());
-            options.setCertAlias(sslOptions.getCertificateAlias());
-            options.setSlotIndex(sslOptions.getSlotId());
-            options.setPkcs11Lib(sslOptions.getPkcs11Lib());
-            options.setAutoDetectSlotIndex(sslOptions.isAutoDetectSlotId());
+            EKeyStoreType keyStoreType = sslOptions.getKeyStoreType();
+            if (keyStoreType != null) {
+                options.setKeyStoreType(sslOptions.getKeyStoreType());
+                options.setCertAlias(sslOptions.getCertificateAlias());
+                options.setSlotIndex(sslOptions.getSlotId());
+                options.setPkcs11Lib(sslOptions.getPkcs11Lib());
+                options.setAutoDetectSlotIndex(sslOptions.isAutoDetectSlotId());
+            } else {
+                String trustStoreFilePath = sslOptions.getTrustStoreFilePath();
+                if (trustStoreFilePath != null && !trustStoreFilePath.isEmpty()) {
+                    options.setTrustStoreFilePath(trustStoreFilePath);
+                    options.setTrustStorePathIsRelative(sslOptions.isTrustStorePathRelative());
+                    char[] pwdArray = sslOptions.getTrustStorePassword();
+                    if (pwdArray != null) {
+                        String pwd = String.valueOf(pwdArray);
+                        options.setTrustStorePassword(pwd);
+                    }
+                }
+            }
         }
 
         if (krbOptions != null) {
@@ -797,7 +869,20 @@ public abstract class ConnectionOptions {
             return null;
         }
     }
-
+    
+    public Id selectExplorerRootId(List<ExplorerRoot> serverRoots) {
+        final List<ExplorerRoot> orderedRoots = orderedExplorerRoots(explorerRoots, serverRoots);
+        final int explorerRootIdx = showSelectRootDialog(environment, Collections.unmodifiableList(orderedRoots), 0);
+        explorerRoots.clear();
+        explorerRoots.addAll(orderedRoots);
+        if (explorerRootIdx > -1) {
+            explorerRoots.add(0, explorerRoots.remove(explorerRootIdx));
+            return explorerRoots.get(0).getId();
+        } else {
+            return null;
+        }
+    }
+    
     public abstract boolean edit(final List<String> existingConnections);
 
     /**

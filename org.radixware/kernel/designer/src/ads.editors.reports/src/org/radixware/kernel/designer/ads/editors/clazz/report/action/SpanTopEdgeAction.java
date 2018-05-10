@@ -25,7 +25,7 @@ public class SpanTopEdgeAction extends AbstractAction {
     //private final JCheckBoxMenuItem spanTopEdgeItem;
 
     public SpanTopEdgeAction(final AdsReportFormDiagram diagram/*,JCheckBoxMenuItem spanTopEdgeItem*/) {
-        super("Snap to top edge",RadixWareIcons.REPORT.SNAP_TOP_EDGE.getIcon());
+        super("Snap to Top Edge",RadixWareIcons.REPORT.SNAP_TOP_EDGE.getIcon());
         this.diagram = diagram;
         //this.spanTopEdgeItem=spanTopEdgeItem;
     }

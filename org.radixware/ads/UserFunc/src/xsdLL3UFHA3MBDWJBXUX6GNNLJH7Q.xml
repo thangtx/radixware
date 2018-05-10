@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/userfunc-impexp.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.radixware.org/userfunc-impexp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:com="http://schemas.radixware.org/common.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/userfunc-impexp.xsd">
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/userfunc-impexp.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsPublished="false"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/userfunc-impexp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:com="http://schemas.radixware.org/common.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/userfunc-impexp.xsd">
 	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
 	<xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
 	<xs:complexType name="ValueGroup">
@@ -49,6 +52,7 @@
 		<xs:attribute name="Name" type="t:Str" use="required"/>
 		<xs:attribute name="Title" type="t:Str"/>
                 <xs:attribute name="PipelineId" type="t:Int"/>
+                <xs:attribute name="PipelineExtGuid" type="t:Str"/>
 	</xs:complexType>
 	<xs:complexType name="UserFuncLibGroup">
 		<xs:sequence>

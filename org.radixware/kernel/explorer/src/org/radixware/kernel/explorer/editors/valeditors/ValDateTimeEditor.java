@@ -18,23 +18,38 @@ import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
+import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.explorer.dialogs.DateTimeDialog;
+import static org.radixware.kernel.explorer.editors.valeditors.ValEditor.createAction;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 
 public class ValDateTimeEditor extends AbstractDateTimeEditor<Timestamp> {        
-    private String dialogTitle;
-    private final QToolButton changeButton = addButton(null, createAction(this, "onChangeValueClick()"));   
+    
+    private final QToolButton setCurrentDateButton = 
+        addButton(null, createAction(this, "onSetCurrentDateClick()", "set_current_date_time"));
+    private final QToolButton changeButton = 
+        addButton(null, createAction(this, "onChangeValueClick()", "edit"));
+    private static class Icons extends ClientIcon.CommonOperations {
+        
+        private Icons(final String fileName) {
+            super(fileName, true);
+        }
+        
+        public static final ClientIcon CURRENT_TIME = new Icons("classpath:images/current_time.svg");
+    }
     
     public ValDateTimeEditor(final IClientEnvironment environment, final QWidget parent, final EditMaskDateTime editMaskDateTime,
             final boolean mandatory, final boolean readOnly) {
         super(environment, parent, editMaskDateTime, mandatory, readOnly);        
         changeButton.setToolTip(environment.getMessageProvider().translate("ValDateTimeEditor", "Edit"));
-        changeButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.ValueTypes.DATE_TIME));
+        changeButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.ValueTypes.DATE_TIME));        
         changeButton.setVisible(!readOnly);
+        setCurrentDateButton.setIcon(ExplorerIcon.getQIcon(Icons.CURRENT_TIME));
+        setCurrentDateButton.setVisible(!readOnly);
     }
 
     public ValDateTimeEditor(final IClientEnvironment environment, final QWidget parent){
@@ -43,47 +58,43 @@ public class ValDateTimeEditor extends AbstractDateTimeEditor<Timestamp> {
 
     @SuppressWarnings("unused")
     private void onChangeValueClick() {
-        final java.util.Locale locale = getEnvironment().getLocale();
+        final IClientEnvironment environmnet = getEnvironment();
         final EditMaskDateTime mask = (EditMaskDateTime) getEditMask();
         final DateTimeDialog dialog= 
-            new DateTimeDialog(getEnvironment(), parentWidget() == null ? Application.getMainWindow() : parentWidget());
+            new DateTimeDialog(environmnet, parentWidget() == null ? Application.getMainWindow() : parentWidget());
+        final String dialogTitle = getDialogTitle();
         if (dialogTitle!=null){
             dialog.setWindowTitle(dialogTitle);
         }
         dialog.setDateRange(mask.getMinimumTime(), mask.getMaximumTime());
         dialog.setCurrentDateTime(getValue());
-        dialog.setTimeFieldVisible(mask.timeFieldPresent(locale));
-        final String timeFormat = mask.getInputTimeFormat(locale);
+        dialog.setTimeFieldVisible(mask.timeFieldPresent(environmnet));
+        final String timeFormat = mask.getInputTimeFormat(environmnet);
         dialog.setTimeDisplayFormat(timeFormat);
         dialog.setMandatory(isMandatory());
         if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
             final Timestamp newValue = dialog.getCurrentDateTime();
-            setFocus();//значение модифицируется только когда редактор сфокусирован            
-            setValue(mask.copyFields(newValue, locale));                        
-            setFocus();//refresh убирает фокус.
-            getLineEdit().setSelection(0, 0);
-            updateHistory();
-            editingFinished.emit(getValue());
+            setTime(newValue, mask);
         }
     }
     
-    public void setDialogTitle(final String newTitle){
-        dialogTitle = newTitle;
-    }
-    
-    public String getDialogTitle(){
-        return dialogTitle;
+    @SuppressWarnings("unused")
+    private void onSetCurrentDateClick() {
+        final EditMaskDateTime mask = (EditMaskDateTime) getEditMask();
+        final Timestamp currentTime = getEnvironment().getCurrentServerTime();
+        setTime(currentTime, mask);
     }
 
     @Override
     protected String getInputText(final Timestamp value) {
         final EditMaskDateTime mask = (EditMaskDateTime)getEditMask();
-        return mask.getInputTextForValue(value, getEnvironment().getLocale());
+        return mask.getInputTextForValue(value, getEnvironment());
     }
     
     @Override
     public void setReadOnly(final boolean readOnly) {
-        changeButton.setVisible(!readOnly);        
+        changeButton.setVisible(!readOnly);
+        setCurrentDateButton.setVisible(!readOnly);
         super.setReadOnly(readOnly);
     }
         
@@ -106,4 +117,30 @@ public class ValDateTimeEditor extends AbstractDateTimeEditor<Timestamp> {
     protected Timestamp getValueFromTimestamp(final Timestamp timestamp) {
         return timestamp;
     }
+    
+    private void setTime(final Timestamp time, final EditMaskDateTime mask) {
+        setFocus();//значение модифицируется только когда редактор сфокусирован            
+        setValue(mask.copyFields(time, getEnvironment()));                        
+        setFocus();//refresh убирает фокус.
+        getLineEdit().setSelection(0, 0);
+        updateHistory();
+        editingFinished.emit(getValue());
+    }
+
+    @Override
+    public void setEditMask(EditMask editMask) {
+        super.setEditMask(editMask); 
+        String toolTipStr;
+        IClientEnvironment env = getEnvironment();
+        EditMaskDateTime editMaskDateTime = (EditMaskDateTime)editMask;
+        if (editMaskDateTime.dateFieldPresent(env) && editMaskDateTime.timeFieldPresent(env)) {
+            toolTipStr = env.getMessageProvider().translate("ValDateTimeEditor", "Set Current Date/Time");
+        } else if (editMaskDateTime.dateFieldPresent(env)) {
+            toolTipStr = env.getMessageProvider().translate("ValDateTimeEditor", "Set Current Date");
+        } else {
+            toolTipStr = env.getMessageProvider().translate("ValDateTimeEditor", "Set Current Time");
+        }
+        setCurrentDateButton.setToolTip(toolTipStr);
+    }
+    
 }

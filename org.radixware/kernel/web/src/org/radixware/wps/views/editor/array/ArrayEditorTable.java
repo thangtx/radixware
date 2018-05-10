@@ -12,18 +12,17 @@ package org.radixware.wps.views.editor.array;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.*;
 import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
-import org.radixware.kernel.common.defs.value.ValAsStr;
+import org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate;
+import org.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions;
 import org.radixware.kernel.common.enums.EValType;
-import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.html.Div;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.wps.rwt.AbstractContainer;
 import org.radixware.wps.rwt.Label;
 import org.radixware.wps.rwt.TableLayout;
@@ -33,7 +32,7 @@ import org.radixware.wps.rwt.ValueEditor;
 
 import org.radixware.wps.views.editors.valeditors.*;
 
-class ArrayEditorTable extends AbstractContainer {
+final class ArrayEditorTable extends AbstractContainer {
 
     public static interface IArrayChangeListener {
 
@@ -42,41 +41,41 @@ class ArrayEditorTable extends AbstractContainer {
 
     private final static class ArrItem {
 
-        private Object value;
-        private UnacceptableInput input;
+        private final Object value;
+        private final UnacceptableInput input;
+        private final AbstractArrayEditorDelegate delegate;
+        private final ArrayItemEditingOptions options;
 
-        public ArrItem(final Object val, final UnacceptableInput inp) {
-            this.value = val;
+        public ArrItem(final UnacceptableInput inp) {
             this.input = inp;
+            value = null;
+            delegate = null;
+            options = null;
         }
+        
+        public ArrItem(final AbstractArrayEditorDelegate delegate, final ArrayItemEditingOptions options, final Object value) {
+            this.input = null;
+            this.value = value;
+            this.delegate = delegate;
+            this.options = options;
+        }        
 
         public Object getValue() {
             return value;
         }
 
-        public void setValue(final Object value) {
-            this.value = value;
-        }
 
         public UnacceptableInput getUnacceptableInput() {
             return input;
-        }
-
-        public void setInput(final UnacceptableInput input) {
-            this.input = input;
         }
 
         public boolean isValidInput() {
             return input == null;
         }
 
-        public String getVisibleText(final EditMask mask, final IClientEnvironment environment) {
+        public String getVisibleText(final IClientEnvironment environment) {
             if (isValidInput()) {
-                if (value == null) {
-                    return mask.getArrayItemNoValueStr(environment.getMessageProvider());
-                } else {
-                    return mask.toStr(environment, value);
-                }
+                return delegate.getDisplayTextForValue(environment, options, value);
             } else {
                 return input.getText();
             }
@@ -84,12 +83,15 @@ class ArrayEditorTable extends AbstractContainer {
     }
 
     private TableLayout table;
-    private UIObject lbNotDefined;
+    private Html lbNotDefined;
     private int currentRow = -1;
     private int startIndex = 1;
     private ArrayList<ArrItem> array;
     private final EValType itemType;
     private EditMask itemEditMask;
+    private ValEditorController editorController;
+    private AbstractArrayEditorDelegate<ValEditorController,UIObject> arrItemDelegate;    
+    private ArrayItemEditingOptions arrItemOptions;
     private final IClientEnvironment environment;
     private final IArrayChangeListener arrayChangeListener;
     private final ArrayEditor.StartCellModificationListener startCellModificationListener;
@@ -118,16 +120,17 @@ class ArrayEditorTable extends AbstractContainer {
         arrayChangeListener = changeListener;
         this.startCellModificationListener = startModificationListener;
         getHtml().addClass("rwt-array-editor-table");
+        setBorderBoxSizingEnabled(true);
         setUndefinedImpl(noValueStr);
         html.layout("$RWT.arrayEditor.layout");
     }
 
-    public int addRow(final Object value) {
-        return addRowImpl(new ArrItem(value, null));
+    public int addRow(final AbstractArrayEditorDelegate delegate, final ArrayItemEditingOptions options, final Object value) {
+        return addRowImpl(new ArrItem(delegate, options, value));
     }
 
     public int addRow(final UnacceptableInput input) {
-        return addRowImpl(new ArrItem(null, input));
+        return addRowImpl(new ArrItem(input));
     }
 
     private int addRowImpl(final ArrItem arrItem) {
@@ -138,7 +141,7 @@ class ArrayEditorTable extends AbstractContainer {
 
         final TableLayout.Row.Cell contentCell;
 
-        contentCell = createCell(row, arrItem.getVisibleText(itemEditMask, environment));
+        contentCell = createCell(row, arrItem.getVisibleText(environment));
         contentCell.getChildren().get(0).getHtml().setCss("padding", "4px");
 
         contentCell.getHtml().setAttr("onclick", "$RWT.arrayEditor.onCellClick");
@@ -216,7 +219,7 @@ class ArrayEditorTable extends AbstractContainer {
     private static void setCellText(final TableLayout.Row.Cell cell, final String text) {
         final AbstractContainer container = new AbstractContainer(new Div());
         container.getHtml().removeClass("rwt-ui-background");
-        final Label label = new Label(text);
+        final Label label = new Label(text, true);
         label.getHtml().removeClass("rwt-ui-element-text");
         label.getHtml().addClass("rwt-ui-element");
         label.getHtml().setCss("white-space", "nowrap");
@@ -228,7 +231,7 @@ class ArrayEditorTable extends AbstractContainer {
     public final void setDefined() {
         if (table == null) {
             setTabIndex(1);
-            remove(lbNotDefined);
+            getHtml().remove(lbNotDefined);
             lbNotDefined = null;
             table = new TableLayout();
             table.getHtml().setCss("overflow-y", "auto");
@@ -243,8 +246,8 @@ class ArrayEditorTable extends AbstractContainer {
 
     public final boolean setUndefined(final String noValueStr) {
         if (table != null) {
-            final String msg = environment.getMessageProvider().translate("ArrayEditor", "Do you really want to delete all array items?");
-            final String title = environment.getMessageProvider().translate("ArrayEditor", "Confirm To Clear Array");
+            final String msg = environment.getMessageProvider().translate("ArrayEditor", "Do you really want to delete array?");
+            final String title = environment.getMessageProvider().translate("ArrayEditor", "Confirm To Delete Array");
             if (table.getRowCount() == 0 || environment.messageConfirmation(title, msg)) {
                 finishEdit(false);
                 remove(table);
@@ -253,22 +256,19 @@ class ArrayEditorTable extends AbstractContainer {
                 return false;
             }
         } else if (lbNotDefined != null) {
-            //lbNotDefined.setText(noValueStr);
-            lbNotDefined.getHtml().setInnerText(noValueStr);
+            lbNotDefined.getChildAt(0).setInnerText(noValueStr);
         }
         return true;
     }
 
     private void setUndefinedImpl(final String noValueStr) {
         table = null;
-        //lbNotDefined = new Label(noValueStr);
-        //lbNotDefined.getHtml().addClass("rwt-array-editor-label-not-defined");
-        lbNotDefined = new UIObject(new Div()) {
-        };
-        lbNotDefined.getHtml().addClass("rwt-array-editor-label-not-defined");
-        lbNotDefined.getHtml().setInnerText(noValueStr);
-        lbNotDefined.setSizePolicy(SizePolicy.EXPAND, SizePolicy.EXPAND);
-        add(lbNotDefined);
+        lbNotDefined = new Div();
+        lbNotDefined.addClass("rwt-array-editor-label-not-defined");
+        final Html span = new Html("span");
+        lbNotDefined.add(span);
+        span.setInnerText(noValueStr);
+        getHtml().add(lbNotDefined);
         getHtml().setCss("background", "#DDD");
         getHtml().setAttr("isdefined", "false");
         array = null;
@@ -332,10 +332,10 @@ class ArrayEditorTable extends AbstractContainer {
         }
     }
 
-    public void setCurrentValue(final List<Object> values) {
+    public void setCurrentValue(final AbstractArrayEditorDelegate delegate, final ArrayItemEditingOptions options, final List<Object> values) {
         clearRows();
         for (Object value : values) {
-            addRow(value);
+            addRow(delegate, options, value);
         }
     }
 
@@ -418,13 +418,14 @@ class ArrayEditorTable extends AbstractContainer {
         return values;
     }
 
-    private ValEditorController editorController;
-
-    public ValEditorController startEdit(final boolean isDuplicatesEnabled, final boolean isItemMandatory) {
+    public ValEditorController startEdit(final AbstractArrayEditorDelegate<ValEditorController,UIObject> delegate,
+                                                         final ArrayItemEditingOptions options) {
         final int row = getCurrentRow();
         if (row > -1) {
-            editorController = createteEditor(row, isDuplicatesEnabled, isItemMandatory);
+            editorController = createteEditor(row, delegate, options);
             if (editorController != null) {
+                arrItemDelegate = delegate;
+                arrItemOptions = options;
                 table.getCell(row, 1).clear();
                 final UIObject editor = (UIObject) editorController.getValEditor();
                 editorController.addStartChangeValueListener(startChangeValueListener);
@@ -439,21 +440,22 @@ class ArrayEditorTable extends AbstractContainer {
     }
 
     public void finishEdit(final boolean accept) {
-        if (editorController != null) {
+        if (editorController != null && arrItemDelegate!=null && arrItemOptions!=null) {
             editorController.removeStartChangeValueListener(startChangeValueListener);
             final int row = getCurrentRow();
             final ArrItem newItem;
             if (accept) {
                 if (editorController.hasAcceptableInput()) {
-                    newItem = new ArrItem(editorController.getValue(), null);
+                    final Object editorValue = arrItemDelegate.getValueFromEditor(editorController);
+                    newItem = new ArrItem(arrItemDelegate, arrItemOptions, editorValue);
                 } else {
-                    newItem = new ArrItem(null, editorController.getUnacceptableInput());
+                    newItem = new ArrItem(editorController.getUnacceptableInput());
                 }
             } else {
                 newItem = array.get(row);
             }
             getHtml().setAttr("editing", null);
-            setCellText(table.getCell(row, 1), newItem.getVisibleText(itemEditMask, environment));
+            setCellText(table.getCell(row, 1), newItem.getVisibleText(environment));
             array.set(row, newItem);
             if (arrayChangeListener != null && newItem.isValidInput()) {
                 arrayChangeListener.onChange(row, newItem.getValue());
@@ -463,6 +465,8 @@ class ArrayEditorTable extends AbstractContainer {
             container.getChildren().get(0).getHtml().setCss("padding", "4px");
             editorController.close();
             editorController = null;
+            arrItemDelegate = null;
+            arrItemOptions = null;
         }
     }
 
@@ -470,126 +474,11 @@ class ArrayEditorTable extends AbstractContainer {
         return editorController != null;
     }
 
-    static EditMaskConstSet excludeExistingItems(final IClientApplication application, final EditMaskConstSet sourceMask, final List<Object> itemValues) {
-        if (itemValues == null || itemValues.isEmpty()) {
-            return sourceMask;
-        } else {
-            final EditMaskConstSet resultMask = (EditMaskConstSet) EditMask.newCopy(sourceMask);
-            final EValType enumType = resultMask.getRadEnumPresentationDef(application).getItemType();
-            final RadEnumPresentationDef.Items excludedItems = resultMask.getExcludedItems(application);
-            ValAsStr valAsStr;
-            RadEnumPresentationDef.Item item;
-            for (Object itemValue : itemValues) {
-                valAsStr = ValAsStr.Factory.newInstance(itemValue, enumType);
-                item = resultMask.getRadEnumPresentationDef(application).getItems().findItemByValue(valAsStr);
-                if (item != null) {
-                    excludedItems.addItem(item);
-                }
-            }
-            resultMask.setItems(sourceMask.getItems(application));
-            resultMask.setExcludedItems(excludedItems);
-            return resultMask;
-        }
-    }
-
     @SuppressWarnings("unchecked")
-    public ValEditorController createteEditor(final int row, final boolean isDuplicatesEnabled, final boolean isItemMandatory) {        
-        final ValEditorController controller;
-        if (itemEditMask instanceof EditMaskConstSet) {
-            EditMaskConstSet mask = (EditMaskConstSet) itemEditMask;
-            if (!isDuplicatesEnabled) {
-                mask = excludeExistingItems(environment.getApplication(), mask, getValues(row));
-            }
-            controller = new ValConstSetEditorController(environment, mask);
-        } else {
-            switch (itemType) {
-                case STR:
-                case CHAR:
-                    if (itemEditMask instanceof EditMaskStr) {
-                        if (itemType == EValType.STR) {
-                            controller = new ValStrEditorController(environment);
-                        } else {
-                            controller = new ValCharEditorController(environment);
-                        }
-                        controller.setEditMask(itemEditMask);
-                    } else if (itemEditMask instanceof EditMaskList) {
-                        controller = new ValListEditorController(environment, (EditMaskList) itemEditMask);
-                    } else if (itemEditMask instanceof EditMaskBool) {
-                        controller = new AdvancedValBoolEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else if (itemEditMask instanceof EditMaskFilePath) {
-                        controller = new ValFilePathEditorController(environment, (EditMaskFilePath) itemEditMask);
-                    } else {
-                        throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + itemType.toString() + "\' type");
-                    }
-                    break;
-                case CLOB:
-                    if (itemEditMask instanceof EditMaskStr) {
-                        controller = new ValStrEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else {
-                        throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + itemType.toString() + "\' type");
-                    }
-                    break;
-                case BIN:
-                case BLOB:
-                    controller = new ValBinEditorController(environment);
-                    break;
-                case INT:
-                    if (itemEditMask instanceof EditMaskInt) {
-                        controller = new ValIntEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else if (itemEditMask instanceof EditMaskList) {
-                        controller = new ValListEditorController(environment, (EditMaskList) itemEditMask);
-                    } else if (itemEditMask instanceof EditMaskTimeInterval) {
-                        controller = new ValTimeIntervalEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else if (itemEditMask instanceof EditMaskBool) {
-                        controller = new AdvancedValBoolEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else {
-                        throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + itemType.toString() + "\' type");
-                    }
-                    break;
-                case DATE_TIME:
-                    if (itemEditMask instanceof EditMaskDateTime) {
-                        controller = new ValDateTimeEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else if (itemEditMask instanceof EditMaskTimeInterval) {
-                        controller = new ValTimeIntervalEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else {
-                        throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + itemType.toString() + "\' type");
-                    }
-                    break;
-                case NUM:
-                    if (itemEditMask instanceof EditMaskNum) {
-                        controller = new ValNumEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else if (itemEditMask instanceof EditMaskBool) {
-                        controller = new AdvancedValBoolEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else {
-                        throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + itemType.toString() + "\' type");
-                    }
-                    break;
-                case BOOL:
-                    if (itemEditMask instanceof EditMaskBool) {
-                        controller = new AdvancedValBoolEditorController(environment);
-                        controller.setEditMask(itemEditMask);
-                    } else {
-                        throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + itemType.toString() + "\' type");
-                    }
-                    break;
-                case PARENT_REF: {
-                    controller = new ValReferenceEditorController(environment);
-                    break;
-                }
-                default:
-                    throw new IllegalUsageError("type \'" + itemType.toString() + "\' is not supported");
-            }
-        }
-        controller.setMandatory(isItemMandatory);
+    public ValEditorController createteEditor(final int row,
+                                                                 final AbstractArrayEditorDelegate<ValEditorController,UIObject> delegate,
+                                                                 final ArrayItemEditingOptions options){
+        final ValEditorController controller = delegate.createEditor(this, environment, options, row, getValues(-1));
         final ArrItem item = array.get(row);
         if (item.isValidInput()){
             final Object value = item.getValue();
@@ -600,9 +489,9 @@ class ArrayEditorTable extends AbstractContainer {
                 }else{
                     val = value.equals(((EditMaskBool) itemEditMask).getTrueValue());
                 }
-                controller.setValue(val);
+                delegate.setValueToEditor(controller, val);
             } else {
-                controller.setValue(value);
+                delegate.setValueToEditor(controller, value);
             }
         }else{
             controller.setInputText(item.getUnacceptableInput().getText());
@@ -610,15 +499,15 @@ class ArrayEditorTable extends AbstractContainer {
         return controller;
     }
 
-    public void clearValue(final int row) {
+    public void clearValue(final AbstractArrayEditorDelegate delegate, final ArrayItemEditingOptions options, final int row) {
         finishEdit(false);
-        final ArrItem nullItem = new ArrItem(null, null);
+        final ArrItem nullItem = new ArrItem(delegate, options,  null);
         array.set(row, nullItem);
         if (arrayChangeListener != null) {
             arrayChangeListener.onChange(row, null);
 
         }
-        setText(row, nullItem.getVisibleText(itemEditMask, environment));
+        setText(row, nullItem.getVisibleText(environment));
     }
 
     @Override
@@ -630,8 +519,15 @@ class ArrayEditorTable extends AbstractContainer {
         }
     }
 
-    public void setStartIndex(int newIndex) {
-        startIndex = newIndex;
+    public void setStartIndex(final int newIndex) {
+        if (newIndex!=startIndex){
+            startIndex = newIndex;
+            if (table!=null){
+                for (int i = 0, count=table.getRowCount(); i <count; i++) {
+                    setHeaderText(i, String.valueOf(i + startIndex));                    
+                }            
+            }
+        }
     }
 
     public int getStartIndex() {

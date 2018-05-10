@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.general.extensions;
 
 import java.util.HashMap;
@@ -21,9 +20,8 @@ import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.exceptions.RadixObjectError;
 
 /**
- * RadixObject extensions manager.
- * Allows to find some extenstion for Radix object,
- * for example, checker, editor.
+ * RadixObject extensions manager. Allows to find some extenstion for Radix
+ * object, for example, checker, editor.
  */
 public abstract class ExtensionsManager<T> {
 
@@ -31,7 +29,8 @@ public abstract class ExtensionsManager<T> {
     private final Class<T> extensionClass;
 
     /**
-     * @param sectionName extenstion section name in layer.xml, for example, "Checker", "Editors".
+     * @param sectionName extenstion section name in layer.xml, for example,
+     * "Checker", "Editors".
      * @param extensionClass extenstion base class.
      */
     public ExtensionsManager(String sectionName, Class<T> extensionClass) {
@@ -61,6 +60,7 @@ public abstract class ExtensionsManager<T> {
 
     /**
      * Find extenstion for RadixObject class.
+     *
      * @return extenstion or null if not found.
      */
     public T find(Class<? extends RadixObject> radixObjectClass) {
@@ -80,16 +80,17 @@ public abstract class ExtensionsManager<T> {
 
     /**
      * Find extenstion for RadixObject.
+     *
      * @return extenstion or null if not found.
      */
-    
     public T find(RadixObject radixObject) {
         final Class radixObjectClass = radixObject.getClass();
-        return (T)find(radixObjectClass);
+        return (T) find(radixObjectClass);
     }
 
     /**
      * Find extenstion for RadixObject.
+     *
      * @return extenstion.
      * @throws RadixError if not found.
      */

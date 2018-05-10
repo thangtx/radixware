@@ -13,6 +13,7 @@ package org.radixware.kernel.server.algo;
 
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -35,9 +36,24 @@ import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.common.utils.Utils;
 import static org.radixware.kernel.server.algo.AppBlockFormCreatorExecutor.DWF_FORM_PROP_EDITORPRESENTATIONIDS_ID;
 import org.radixware.kernel.server.exceptions.DatabaseError;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 
 public class AppBlockDialogDuplicatorExecutor extends AppBlockFormCreatorExecutor {
 
+        private static final String qryGetActiveClerkStmtSQL = "begin ?:= RDX_WF.getActiveSuitableClerk(?); end;";
+        private static final Stmt qryGetActiveClerkStmt = new Stmt(new Stmt(qryGetActiveClerkStmtSQL,Types.VARCHAR,Types.BIGINT),1);
+
+        private static final String qryGetSiutableClerkStmtSQL = "begin ?:= RDX_WF.getSuitableClerk(?); end;";
+        private static final Stmt qryGetSiutableClerkStmt = new Stmt(new Stmt(qryGetSiutableClerkStmtSQL,Types.VARCHAR,Types.BIGINT),1);
+        
+        private final IDbQueries delegate = new DelegateDbQueries(this, null);
+        
+        private AppBlockDialogDuplicatorExecutor(){
+        }
+    
         static private Set<String> getOverrideTokens(final Algorithm algo) {
             final Set<String> tokens =  new HashSet<String>();
             final StringTokenizer t = new StringTokenizer((String)Utils.nvl(algo.getProperty("overrideMask"), ""), "\n");
@@ -85,7 +101,7 @@ public class AppBlockDialogDuplicatorExecutor extends AppBlockFormCreatorExecuto
                     form.setProp(DWF_FORM_PROP_ADMINPRESENTATIONID_ID, Utils.toString(executor.getProperty("adminPresentationId")));
                 
                 if (tokens.contains("submitVariants")) {
-                    form.setProp(DWF_FORM_PROP_SUBMITVARIANTS_ID, executor.getProperty("submitVariants"));
+                    form.setProp(DWF_FORM_PROP_SUBMITVARIANTS_ID, executor.getSubmitVariants(algo));
                     loadSubmitVariants(algo, form);
                 }
                 if (tokens.contains("contentSaving"))
@@ -140,9 +156,7 @@ public class AppBlockDialogDuplicatorExecutor extends AppBlockFormCreatorExecuto
                             try {
                                 arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                                 try {
-                                    stmt = arte.getDbConnection().get().prepareCall(
-                                        "begin ?:= RDX_WF.getActiveSuitableClerk(?); end;"
-                                        );
+                                    stmt = ((RadixConnection)arte.getDbConnection().get()).prepareCall(qryGetActiveClerkStmt);
                                 } finally {
                                     arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                                 }    
@@ -164,9 +178,7 @@ public class AppBlockDialogDuplicatorExecutor extends AppBlockFormCreatorExecuto
                             try {
                                 arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                                 try {
-                                    stmt = arte.getDbConnection().get().prepareCall(
-                                        "begin ?:= RDX_WF.getSuitableClerk(?); end;"
-                                        );
+                                    stmt = ((RadixConnection)arte.getDbConnection().get()).prepareCall(qryGetSiutableClerkStmt);
                                 } finally {
                                     arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                                 }   
@@ -286,7 +298,7 @@ public class AppBlockDialogDuplicatorExecutor extends AppBlockFormCreatorExecuto
 			form.create(null);
 			postInitForm(algo);
 			setProps(algo, form);
-        		StringTokenizer t = new StringTokenizer((String)Utils.nvl(executor.getProperty("submitVariants"), ""), ";");
+        		StringTokenizer t = executor.getSubmitVariantsTokens(algo);
 			return t.countTokens();
 		} else {
                         algo.scheduleEvent(executor.getPropertyId("submitWID")); // подписка на синхронный onEvent
@@ -333,7 +345,7 @@ public class AppBlockDialogDuplicatorExecutor extends AppBlockFormCreatorExecuto
                             Logger.getLogger(AppBlockDialogDuplicatorExecutor.class.getName()).log(Level.FINE, ex.getMessage(), ex);
                         }
 		getProps(algo, form);
-		StringTokenizer t = new StringTokenizer((String)Utils.nvl(executor.getProperty("submitVariants"), ""), ";");
+		StringTokenizer t = executor.getSubmitVariantsTokens(algo);
 		if (waitId.equals(timeoutWID)) {
 			executor.setProperty("submitVariant", null);
 			form.setProp(DWF_FORM_PROP_CLOSETIME_ID, executor.getCurrentTime());

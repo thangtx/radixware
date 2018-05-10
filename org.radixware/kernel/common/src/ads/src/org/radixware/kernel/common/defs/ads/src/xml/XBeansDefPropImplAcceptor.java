@@ -171,4 +171,44 @@ class XBeansDefPropImplAcceptor implements XBeansPropImplAcceptor {
     public void acceptSeveralPropElementRemove(SchemaType sType, String identifier, String setIdentifier) throws IOException {
         this.prop.setHasSeveralPropElementRemove(true);
     }
+
+    @Override
+    public void acceptSingletonPropGetterDateTimeWithTimezone(SchemaProperty prop, String jtargetType, String identifier, String setIdentifier, int javaType, boolean isRadix) throws IOException {
+        this.prop.setHasSingletonGetterDateTimeWithTimezone(true);
+    }
+
+    @Override
+    public void acceptSingletonPropSetterDateTimeWithTimezone(SchemaType sType, SchemaProperty prop, String jtargetType, int javaType, String identifier, String setIdentifier, boolean isRadix, boolean xmltype, String jSet, boolean optional, boolean nillable) throws IOException {
+        this.prop.setHasSingletonSetterDateTimeWithTimezone(true);
+    }
+
+    @Override
+    public void acceptListGetter15GetListDateTimeWithTimezone(boolean xget, String wrappedType, String parentThis, boolean xmltype) throws IOException {
+        this.prop.setHasListGetter15GetListDateTimeWithTimezone(true);
+    }
+
+    @Override
+    public void acceptSeveralPropArrayElementSetterDateTimeWithTimezone(SchemaType sType, SchemaProperty prop, String identifier, String setIdentifier, String jtargetType, String jSet, int javaType) throws IOException {
+        //there is no need to store info about presence of this method, because it is not included in interface
+    }
+
+    @Override
+    public void acceptSeveralPropElementInsertionDateTimeWithTimezone(SchemaType sType, String identifier, String setIdentifier, String jtargetType, boolean isSubstGroup, String jSet, int javaType) throws IOException {
+        //there is no need to store info about presence of this method, because it is not included in interface
+    }
+
+    @Override
+    public void acceptSeveralPropElementAdditionDateTimeWithTimezone(SchemaType sType, String identifier, String jtargetType, int javaType, String jSet) throws IOException {
+        //there is no need to store info about presence of this method, because it is not included in interface
+    }
+    
+    @Override
+    public void acceptSeveralPropArrayAccessDateTimeWithTimezone(SchemaProperty prop, String setIdentifier, int javaType) throws IOException {
+        //there is no need to store info about presence of this method, because it is not included in interface
+    }
+
+    @Override
+    public void acceptSeveralPropArrayElementAccessDateTimeWithTimezone(SchemaProperty prop, String identifier, String setIdentifier, String jtargetType) throws IOException {
+        //there is no need to store info about presence of this method, because it is not included in interface
+    }
 }

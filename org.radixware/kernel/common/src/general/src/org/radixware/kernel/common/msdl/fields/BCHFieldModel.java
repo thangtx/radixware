@@ -33,13 +33,4 @@ public class BCHFieldModel extends SimpleFieldModel {
     public EFieldType getType() {
         return EFieldType.BCH;
     }
-
-    @Override
-    public SmioField getParser() {
-        if (parser == null) {
-            parser = new SmioFieldBCH(this);
-        }
-        return parser;
-    }
-
 }

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcGVVWX3FVRRDYLENHIBHC2ERNXA" Name="ReportPubTreeNodeWeb" Type="3" Environment="web">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcGVVWX3FVRRDYLENHIBHC2ERNXA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGVVWX3FVRRDYLENHIBHC2ERNXA"/>
+    </Bodies>
+    <MethodGroup Id="cmgVEVPCVPTE5GKLFIUYKYPVHGPZ4" Name="Root"/>
+    <PropertyGroup Id="cpgVN6TG5S4TBDKFNJNTOUDE7AKQQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthOEVCQATUV5FO5I3IFBIJJMDHIY" Name="setCellForeground" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="cell" Id="mpr4WHSQQIYDFG6NGYMGIK7G2DHYA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="color" Id="mprXOKPO6RSDJDIHNFVMX5ZU2PCA4">
+            <Type TypeId="411" Path="adcWZMNTDGRGFGDZHH7E7GXH2MZ2M"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (cell &lt; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPLGGWBWE3VHQXOA7NOJ5JSC2CU mthILCLASIEGVHGBG2MJQX4ZCQ3XY" Invoke="true">
+                <xsc:Presentation>getCellsCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPLGGWBWE3VHQXOA7NOJ5JSC2CU mth63SA53EZDRFXPLPTLTVJLPZ62A" Invoke="true">
+                <xsc:Presentation>getCells</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().get(cell).setForeground(color);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRXQPV4V3AJDXZEWAUNJ3YC6FPA" Name="ReportPubTreeNodeWeb" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="displayName" Id="mprKVQ6JOSPQRBOJBCYMJZVGIR5MA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(displayName);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQTPYO2QVX5D2VONFFMBU5OBK6Q" Name="setCellAlignmet" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="cell" Id="mprSS6FI6DN7NEU7IGGT2GFS75XNE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="alignment" Id="mprPXWQHWQL4BDAFHFLG43IZBRMPY">
+            <Type TypeId="411" Path="adcZA5WTBL2H5DSZH3DEKE7F65TSU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (cell &lt; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPLGGWBWE3VHQXOA7NOJ5JSC2CU mthILCLASIEGVHGBG2MJQX4ZCQ3XY" Invoke="true">
+                <xsc:Presentation>getCellsCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPLGGWBWE3VHQXOA7NOJ5JSC2CU mth63SA53EZDRFXPLPTLTVJLPZ62A" Invoke="true">
+                <xsc:Presentation>getCells</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().get(cell).getHtml().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthMBHD2I3QVBD4BB4OG5FIFAYSWQ" Invoke="true">
+                <xsc:Presentation>setAttr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("align", alignment.name());
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcQNXBIZRJTFDJ7BYQJV53IYRBEU"/>
+  </AdsClassDefinition>
+</AdsDefinition>

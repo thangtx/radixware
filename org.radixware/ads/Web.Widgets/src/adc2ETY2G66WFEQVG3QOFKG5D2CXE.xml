@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="adc2ETY2G66WFEQVG3QOFKG5D2CXE" Name="ArrayEditorDialog" Type="3" Environment="web">
-    <AccessRules IsPublished="false">
+    <AccessRules>
       <Transparence Extendable="false" PublishedName="org.radixware.wps.dialogs.ArrayEditorDialog"/>
     </AccessRules>
     <Headers>
@@ -71,6 +71,40 @@
             <Type TypeId="400" extStr="org.radixware.wps.dialogs.IDialogDisplayer"/>
           </Parameter>
         </Parameters>
+      </Method>
+      <Method Id="mthLQ3DPNFGD5GP3AKDDH37FASC5U" Name="setEditorDelegate" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setEditorDelegate(Lorg.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate&lt;Lorg.radixware.wps.views.editors.valeditors.ValEditorController;Lorg.radixware.wps.rwt.UIObject;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="delegate" Id="mpr3RGV3OPGHNDMTAR3AAQMKJQVRE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.ValEditorController"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.UIObject"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthRTRTZQPUYZHWXHDGPCS6EKNUGE" Name="getEditorDelegate" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEditorDelegate()Lorg.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate&lt;Lorg.radixware.wps.views.editors.valeditors.ValEditorController;Lorg.radixware.wps.rwt.UIObject;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.views.editors.valeditors.ValEditorController"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.UIObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
       </Method>
     </Methods>
   </AdsClassDefinition>

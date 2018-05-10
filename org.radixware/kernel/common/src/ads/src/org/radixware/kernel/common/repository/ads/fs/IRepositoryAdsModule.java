@@ -23,7 +23,7 @@ import org.radixware.kernel.common.repository.fs.IRepositoryModule;
 import org.radixware.kernel.common.types.Id;
 
 
-public interface IRepositoryAdsModule extends IRepositoryModule<AdsModule> {
+public interface IRepositoryAdsModule extends IRepositoryModule<AdsModule>, IRepositoryAdsLocalizedDefinition {
 
     @Override
     IRepositoryAdsDefinition getDefinitionRepository(Definition def);

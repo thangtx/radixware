@@ -152,10 +152,10 @@ public class SvnPath {
     }
 
     public static String append(String path1, String path2) {
-        if (path2 == null) {
+        if (path2 == null || path2.isEmpty()) {
             return path1;
         }
-        if (path1 == null) {
+        if (path1 == null || path1.isEmpty()) {
             return path2;
         }
         if (path1.endsWith("/")) {

@@ -16,8 +16,8 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.prefs.Preferences;
-import javax.imageio.spi.ServiceRegistry;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
@@ -35,9 +35,10 @@ public class BuildOptions {
     private EnumSet<ERuntimeEnvironmentType> env = EnumSet.allOf(ERuntimeEnvironmentType.class);
     private boolean preview;
     private boolean verifyClassLinkage = false;
-    private boolean multythread = false;
+    private boolean multithread = false;
     private boolean skipCheck = false;
     private boolean buildUds = false;
+    private boolean suppressProblemsClear = false;
     private UserModeHandler userModeHandler;
     private Map<String, Object> props = new HashMap<>();
 
@@ -72,7 +73,7 @@ public class BuildOptions {
     public static class UserModeHandlerLookup {
 
         public static UserModeHandler getUserModeHandler() {
-            final Iterator<UserModeHandlerProvider> iter = ServiceRegistry.lookupProviders(UserModeHandlerProvider.class);
+            final Iterator<UserModeHandlerProvider> iter = ServiceLoader.load(UserModeHandlerProvider.class).iterator();
             while (iter.hasNext()) {
                 UserModeHandler handler = iter.next().getUserModeHandler();
                 if (handler != null) {
@@ -94,7 +95,7 @@ public class BuildOptions {
     private static final String VERIFY_LINKAGE_OPTION_NAME = "Verify";
     private static final String SKIP_CHECK_OPTION_NAME = "SkipCheck";
     private static final String BUILD_UDS_OPTION_NAME = "BuildUDS";
-    private static final String MULTYTHREAD_LINKAGE_OPTION_NAME = "Multythread";
+    private static final String MULTITHREAD_LINKAGE_OPTION_NAME = "Multythread";
 
     public void saveConfig() {
         Preferences prefs = Preferences.userRoot().node(option_name);
@@ -106,7 +107,7 @@ public class BuildOptions {
             }
         }
         prefs.putBoolean(VERIFY_LINKAGE_OPTION_NAME, verifyClassLinkage);
-        prefs.putBoolean(MULTYTHREAD_LINKAGE_OPTION_NAME, multythread);
+        prefs.putBoolean(MULTITHREAD_LINKAGE_OPTION_NAME, multithread);
         prefs.putBoolean(SKIP_CHECK_OPTION_NAME, skipCheck);
         prefs.putBoolean(BUILD_UDS_OPTION_NAME, buildUds);
     }
@@ -121,7 +122,7 @@ public class BuildOptions {
             }
         }
         verifyClassLinkage = prefs.getBoolean(VERIFY_LINKAGE_OPTION_NAME, false);
-        multythread = prefs.getBoolean(MULTYTHREAD_LINKAGE_OPTION_NAME, false);
+        multithread = prefs.getBoolean(MULTITHREAD_LINKAGE_OPTION_NAME, false);
         skipCheck = prefs.getBoolean(SKIP_CHECK_OPTION_NAME, false);
         buildUds = prefs.getBoolean(BUILD_UDS_OPTION_NAME, false);
     }
@@ -135,11 +136,11 @@ public class BuildOptions {
     }
 
     public boolean isMultythread() {
-        return multythread;
+        return multithread;
     }
 
     public void setMultythread(boolean multythread) {
-        this.multythread = multythread;
+        this.multithread = multythread;
     }
 
     public boolean isSkipCheck() {
@@ -154,6 +155,14 @@ public class BuildOptions {
         return buildUds;
     }
 
+    public void setSuppressProblemsClear(boolean suppressProblemsClear) {
+        this.suppressProblemsClear = suppressProblemsClear;
+    }
+
+    public boolean isSuppressProblemsClear() {
+        return suppressProblemsClear;
+    }
+    
     public void setBuildUds(boolean buildUds) {
         this.buildUds = buildUds;
     }

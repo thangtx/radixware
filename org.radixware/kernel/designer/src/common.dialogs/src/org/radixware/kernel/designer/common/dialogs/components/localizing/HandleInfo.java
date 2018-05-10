@@ -65,6 +65,7 @@ public abstract class HandleInfo {
 
     protected void addAdsMultilingualStringDef(IMultilingualStringDef adsMultilingualStringDef) {
         getAdsDefinition().findLocalizingBundle().getStrings().getLocal().add((RadixObject) adsMultilingualStringDef);
+        ILocalizingBundleDef.version.incrementAndGet();
     }
 
     public boolean createAdsMultilingualStringDef() {

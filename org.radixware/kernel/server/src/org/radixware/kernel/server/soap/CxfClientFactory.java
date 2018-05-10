@@ -63,7 +63,7 @@ import org.radixware.kernel.common.soap.RadixSoapIOExceptionOnReceive;
 import org.radixware.kernel.common.soap.RadixSoapMessage;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.SoapFormatter;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
 import org.w3c.dom.Element;
 import org.xmlsoap.schemas.soap.envelope.Detail;
 

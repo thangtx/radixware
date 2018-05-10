@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.server.arte.services.eas;
 
+import java.util.List;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.types.MultilingualString;
@@ -18,11 +19,14 @@ import org.radixware.kernel.server.meta.presentations.RadChildRefExplorerItemDef
 import org.radixware.kernel.server.meta.presentations.RadEditorPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadExplorerItemDef;
 import org.radixware.kernel.server.meta.presentations.RadParentRefExplorerItemDef;
+import org.radixware.kernel.server.meta.presentations.RadSelectorPresentationDef;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.EntityGroup;
 import org.radixware.kernel.server.types.Pid;
+import org.radixware.kernel.server.types.PresentationEntityAdapter;
 import org.radixware.kernel.server.types.Restrictions;
 import org.radixware.kernel.server.types.presctx.ChildExplorerItemPresentationContext;
+import org.radixware.kernel.server.types.presctx.UnknownPresentationContext;
 
 
 final class EdPresExplrItemContext extends TreeContext{
@@ -71,22 +75,33 @@ final class EdPresExplrItemContext extends TreeContext{
 
     @Override
     void checkAccessible() {
+        final Entity parentObject = getParentObject();
+        final List<Id> applicableRoleIds = parentObject.getCurUserApplicableRoleIds();
         final RadEditorPresentationDef parentPresentation = getParentEditorPresentation();
-		final Restrictions parentPresRightsRest = parentPresentation.getTotalRestrictions(getParentObject().getCurUserApplicableRoleIds());
-		if (parentPresRightsRest.getIsAccessRestricted()) {
-			throw EasFaults.newDefinitionAccessViolationFault(rq.getArte(), 
-                                                                          Messages.MLS_ID_INSUF_PRIV_TO_ACCESS_ED_PRES, 
-                                                                          "\"" + parentPresentation.getName() + "\"(#" + parentPresentation.getId() + ")",
-                                                                          EDefType.EDITOR_PRESENTATION,
-                                                                          new Id[]{parentPresentation.getId()});
-		}
-		if (parentPresRightsRest.getIsChildRestricted(getExplorerItem().getId())) {
-			throw EasFaults.newDefinitionAccessViolationFault(rq.getArte(), 
-                                                                          Messages.MLS_ID_INSUF_PRIV_TO_ACCESS_THIS_EI, 
-                                                                          "(#"+String.valueOf(getExplorerItem().getId())+") " + MultilingualString.get(rq.getArte(), Messages.MLS_OWNER_ID, Messages.MLS_ID_IN_PRESENTATION) +" \"" + parentPresentation.getName() + "\"(#" + parentPresentation.getId() + ")",
-                                                                          EDefType.EXPLORER_ITEM,
-                                                                          new Id[]{parentPresentation.getId(),getExplorerItem().getId()});
-		}
+        final Restrictions parentPresRightsRest = parentPresentation.getTotalRestrictions(applicableRoleIds);
+        checkParentPresentationAccessible(parentPresentation, parentPresRightsRest);
+        
+        final PresentationEntityAdapter presEntAdapter = rq.getArte().getPresentationAdapter(parentObject);
+        presEntAdapter.setPresentationContext(UnknownPresentationContext.INSTANCE);
+        final Restrictions additionalRestrictions = presEntAdapter.getAdditionalRestrictions(parentPresentation);
+        checkParentPresentationAccessible(parentPresentation, additionalRestrictions);
+    }
+    
+    private void checkParentPresentationAccessible(final RadEditorPresentationDef parentPresentation, final Restrictions restrictions){
+        if (restrictions.getIsAccessRestricted()) {
+                throw EasFaults.newDefinitionAccessViolationFault(rq.getArte(), 
+                                                                  Messages.MLS_ID_INSUF_PRIV_TO_ACCESS_ED_PRES, 
+                                                                  "\"" + parentPresentation.getName() + "\"(#" + parentPresentation.getId() + ")",
+                                                                  EDefType.EDITOR_PRESENTATION,
+                                                                  new Id[]{parentPresentation.getId()});
+        }
+        if (restrictions.getIsChildRestricted(getExplorerItem().getId())) {
+                throw EasFaults.newDefinitionAccessViolationFault(rq.getArte(), 
+                                                                  Messages.MLS_ID_INSUF_PRIV_TO_ACCESS_THIS_EI, 
+                                                                  "(#"+String.valueOf(getExplorerItem().getId())+") " + MultilingualString.get(rq.getArte(), Messages.MLS_OWNER_ID, Messages.MLS_ID_IN_PRESENTATION) +" \"" + parentPresentation.getName() + "\"(#" + parentPresentation.getId() + ")",
+                                                                  EDefType.EXPLORER_ITEM,
+                                                                  new Id[]{parentPresentation.getId(),getExplorerItem().getId()});
+        }        
     }
 
     private RadEditorPresentationDef getParentEditorPresentation() {
@@ -99,9 +114,15 @@ final class EdPresExplrItemContext extends TreeContext{
 
     @Override
     ChildExplorerItemPresentationContext getPresentationContext(final EntityGroup entityGroup) {
-        return new ChildExplorerItemPresentationContext(parentPid,explorerItemId,entityGroup);
-    }
-        
+        final RadEditorPresentationDef parentPresentation = getParentEditorPresentation();
+        final RadSelectorPresentationDef selectorPresentation = getSelectorPresentation();
+        final Id selectorPresentationId = selectorPresentation==null ? null : selectorPresentation.getId();
+        return new ChildExplorerItemPresentationContext(parentPid, 
+                                                                                    parentPresentation, 
+                                                                                    explorerItemId,
+                                                                                    entityGroup, 
+                                                                                    selectorPresentationId);
+    }        
 
     @Override
     public String toString() {

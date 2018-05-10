@@ -13,9 +13,11 @@ package org.radixware.kernel.common.defs.ads.clazz.members;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.AdsExceptionClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodThrowsList.ThrowsListItem;
 import org.radixware.kernel.common.defs.ads.command.AdsCommandDef;
 import org.radixware.kernel.common.defs.ads.type.AdsClassType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
@@ -204,5 +206,71 @@ public class ProfileUtilities {
             }
         }
         return false;
+    }
+
+    public static RadixObject getDescriptionInheritanceOwner(boolean inherited, AdsMethodDef owner, RadixObject member) {
+        if (inherited) {
+            if (owner == null){
+                return null;
+            }
+            AdsMethodDef ovr = owner.getHierarchy().findOverwritten().get();
+            while (ovr != null) {
+                RadixObject ovrMember = getDescriptionOwner(ovr, member, owner);
+                if (ovrMember != null) {
+                    return ovrMember;
+                }
+                ovr = ovr.getHierarchy().findOverwritten().get();
+            }
+            ovr = owner.getHierarchy().findOverridden().get();
+            while (ovr != null) {
+                RadixObject ovrMember = getDescriptionOwner(ovr, member, owner);
+                if (ovrMember != null) {
+                    return ovrMember;
+                }
+                ovr = ovr.getHierarchy().findOverridden().get();
+            }
+            
+        }
+        return member;
+    }
+    
+    private static RadixObject getDescriptionOwner(AdsMethodDef m, RadixObject member, AdsMethodDef owner) {
+        AdsMethodDef.Profile profile = m.getProfile();
+        if (member instanceof MethodParameter){
+            List<MethodParameter> params = profile.findMethodParameterByName(profile.getParametersList().list(), member.getName());
+            if (params != null && !params.isEmpty()) {
+                return !params.get(0).isDescriptionInherited() ? params.get(0): null;
+            }
+        }
+        if (member instanceof MethodReturnValue){
+            MethodReturnValue returnValue = profile.getReturnValue();
+            if (returnValue != null && !returnValue.isDescriptionInherited()) {
+                return returnValue;
+            }
+        }
+        if (member instanceof ThrowsListItem){
+            AdsType type = ((ThrowsListItem) member).getException().resolve(owner).get();
+            if (type instanceof AdsClassType) {
+                AdsClassDef itemClass = ((AdsClassType) type).getSource();
+                if (itemClass instanceof AdsExceptionClassDef) {
+                    AdsMethodThrowsList throwsList = profile.getThrowsList();
+                    for (AdsMethodThrowsList.ThrowsListItem item : throwsList) {
+                        AdsType exeptionType = item.getException().resolve(owner).get();
+                        if (exeptionType instanceof AdsClassType) {
+                            AdsClassDef throwListItemClass = ((AdsClassType) exeptionType).getSource();
+                            if (throwListItemClass instanceof AdsExceptionClassDef) {
+                                if (throwListItemClass == itemClass) {
+                                    if (!item.isDescriptionInherited()){
+                                        return item;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

@@ -1,0 +1,24 @@
+alter table RDX_INSTANCE
+	add AUTORESTARTDELAYSEC NUMBER(9,0) default 0 not null
+/
+
+alter table RDX_INSTANCE
+	add SELFCHECKTIMEMILLIS NUMBER(18,0) null
+/
+
+alter table RDX_SAP
+	add SELFCHECKTIMEMILLIS NUMBER(18,0) null
+/
+
+alter table RDX_UNIT
+	add SELFCHECKTIMEMILLIS NUMBER(18,0) null
+/
+
+alter table RDX_JS_TASK
+	add SELFCHECKTIMEMILLIS NUMBER(18,0) null
+/
+
+alter table RDX_JS_JOBQUEUE
+	add SELFCHECKTIMEMILLIS NUMBER(18,0) null
+/
+

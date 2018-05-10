@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.wps;
 
 import java.io.BufferedOutputStream;
@@ -17,6 +16,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateEncodingException;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -38,6 +38,7 @@ import javax.naming.ldap.Rdn;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,11 +52,14 @@ import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.exceptions.IllegalArgumentError;
+import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.kerberos.KerberosCredentials;
 import org.radixware.kernel.common.kerberos.KerberosException;
 import org.radixware.kernel.common.kerberos.KerberosUtils;
 import org.radixware.kernel.common.ssl.CertificateUtils;
 import org.radixware.kernel.common.utils.FileUtils;
+import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.wps.dialogs.IDialogDisplayer;
 
@@ -64,27 +68,29 @@ import org.radixware.wps.rwt.MessageBox;
 import org.radixware.wps.rwt.RootPanel;
 import org.radixware.wps.rwt.uploading.UploadException;
 
-
 class HttpSessionContext implements Serializable {
 
     private static final long serialVersionUID = 0;
+    private static int RQ_TOKEN_LEN_IN_BYTES = 16;
+    
     volatile WpsApplication application;
     private volatile WpsEnvironment userSession = null;
     private final Queue<HttpQuery> queries = new LinkedList<>();
     private final transient ResponseHandler responseHandler = new ResponseHandler();
     private final Lock wpsLock = new ReentrantLock(true);
     private final Object eventLoopLock = new Object();
+    private final WebServerRunParams runParams;
     private volatile boolean eventLoopIsRunning = false;
+    private volatile boolean prepareForDispose;
     final String remoteInfo;
     private final HttpConnectionOptions httpConnectionOptions;
-    private boolean isOldVersion = false;
     private long lastRsTime = -1;
     private long lastRqTime = -1;
     volatile long rqCheckDelay = 1000 * 15 * 60;
     volatile int processingQuery;
-    volatile int prepareForDispose;
+    volatile int finishRequest;    
     private final AtomicBoolean isDisposed = new AtomicBoolean(false);
-    
+
     final IDialogDisplayer dialogDisplayer = new IDialogDisplayer() {
         @Override
         public DialogResult execModal(Dialog dialog) {
@@ -122,40 +128,67 @@ class HttpSessionContext implements Serializable {
     };
 
     @SuppressWarnings("LeakingThisInConstructor")
-    HttpSessionContext(WpsApplication server, HttpConnectionOptions connectionOptions, String remoteInfo) {
+    HttpSessionContext(final WpsApplication server, 
+                                  final HttpConnectionOptions connectionOptions, 
+                                  final String remoteInfo,
+                                  final WebServerRunParams runParams) {
         this.application = server;
         this.application.register(this);
         this.httpConnectionOptions = connectionOptions;
         this.remoteInfo = remoteInfo;
+        this.runParams = runParams;
     }
     
-    private boolean prepareForDispose(){
-        if (userSession==null){
+    void beforeDispose(){
+        responseHandler.prepareForDispose();
+    }
+
+    private boolean finishRequest() {
+        if (userSession == null) {
             return false;
         }
-        final IEasSession easSession = userSession.getEasSession();            
-        if (easSession!=null && easSession.isBusy()){            
+        final IEasSession easSession = userSession.getEasSession();
+        if (easSession != null && easSession.isBusy()) {
             easSession.breakRequest();
         }
-        if (prepareForDispose==1){
+        if (finishRequest == 1) {
             return false;
-        }else if (prepareForDispose==0){
-            prepareForDispose = 100;
-        }else{
-            prepareForDispose--;
+        } else if (finishRequest == 0) {
+            finishRequest = 100;
+        } else {
+            finishRequest = 100;
         }
         return true;
     }
+    
+    public WebServerRunParams getRunParams(){
+        return runParams;
+    }
 
     public void dispose() {
-        if (processingQuery>0 && prepareForDispose()){//try to return from UIObject.accept method
+        if (processingQuery > 0 && finishRequest()) {//try to return from UIObject.accept method
             return;
         }
-        if (isDisposed.compareAndSet(false, true)){
+        if (isDisposed.compareAndSet(false, true)) {
+            WebServer.WsThread wsThread = null;
             try {
-                if (userSession != null) {                
-                    try {
-                        userSession.dispose();
+                if (userSession != null) {
+                    try {                        
+                        if (Thread.currentThread() instanceof WebServer.WsThread) {
+                            wsThread = (WebServer.WsThread) Thread.currentThread();
+                        }
+                        try {
+                            if (wsThread != null) {
+                                wsThread.userSession = userSession;
+                            }
+                            userSession.dispose();
+                        } finally {
+                            if (wsThread != null) {
+                                wsThread.userSession = null;
+                            }
+                        }
+                    } catch(HttpSessionTerminatedError e){
+                        //Already disposed - ignore
                     } catch (Throwable e) {
                         Logger.getLogger(HttpSessionContext.class.getName()).log(Level.SEVERE, "Unexpected exception on context dispose", e);
                     }
@@ -166,6 +199,9 @@ class HttpSessionContext implements Serializable {
                     application = null;
                 }
             }
+            if (wsThread==null){
+                notifyDisposed();
+            }
         }
     }
 
@@ -174,11 +210,13 @@ class HttpSessionContext implements Serializable {
         void writeResponseHeader(HttpServletResponse rs);
 
         boolean isResponseContentAllowed();
+        
+        boolean isAuthDataRequested();
     }
 
     static interface IHttpServletResponseBodyWriter {
 
-        void writeResponseBody(OutputStream stream) throws IOException;
+        void writeResponseBody(final HttpResponseContent response) throws IOException;
     }
 
     static interface IAuthDataReceiver {
@@ -187,20 +225,28 @@ class HttpSessionContext implements Serializable {
 
         void authDataReady(ClientAuthData authData);
     }
+    
 
-    private final class ResponseHandler {
-
+    private final class ResponseHandler {                
+        
         volatile CountDownLatch requestLatch = null;
         volatile CountDownLatch authLatch = null;
+        private final Object progressHandleSemaphore = new Object();
+        private final Object preparingForDisposeSemaphore = new Object();
         private WpsProgressHandleManager.ProgressHandleInfo progressHandleInfo = null;
-        private IHttpServletResponseBodyWriter responseBody;
+        private IHttpServletResponseBodyWriter responseWriter;
         private IHttpServletResponseHeaderWriter responseHeader;
         private IAuthDataReceiver authDataListener;
         private String rqId;
-        private long duration = 0;
+        private long startProcessTime = 0;
         private boolean timerStarted;
         private ClientAuthData authData;
+        private boolean invalidAuthData = false;
         private List<Runnable> scheduledTasks;
+        private final SecureRandom random = new SecureRandom();
+        private boolean preparingForDispose;
+        private String token;        
+        private String previousToken;
 
         private void engage(HttpQuery query) {
             if (this.requestLatch != null) {
@@ -208,7 +254,11 @@ class HttpSessionContext implements Serializable {
             }
             this.requestLatch = new CountDownLatch(1);
             rqId = query.getId();
-            authData = query.getAuthData();
+            final ClientAuthData newAuthData = query.getAuthData();
+            if (!Objects.equals(newAuthData, authData)){
+                authData = newAuthData;
+                invalidAuthData = false;
+            }
             if (authDataListener != null) {
                 authDataListener.authDataReady(authData);
                 authDataListener = null;
@@ -218,11 +268,11 @@ class HttpSessionContext implements Serializable {
                 }
             }
 
-            duration = System.currentTimeMillis();
+            startProcessTime = System.currentTimeMillis();
 
             enqueueQuery(query);
         }
-
+        
         private void fireWhenReady(HttpServletResponse rs) throws IOException {
             if (this.requestLatch == null) {
                 throw new IllegalStateException("Request processor is not engaged");
@@ -244,7 +294,11 @@ class HttpSessionContext implements Serializable {
                 }
                 //hint for IE (see http://msdn.microsoft.com/en-us/library/dd341152.aspx)
                 rs.setHeader(HttpHeaderConstants.PERSISTENT_AUTH_HEADER, "true");
-                this.writeResponseContent(rs);
+                if (!isPreparingForDispose()){
+                    this.writeResponseContent(rs);
+                } else {
+                    FileUtils.writeString(rs.getOutputStream(), "<disposed/>", FileUtils.XML_ENCODING);
+                }
                 startRqTimeout();
             } catch (InterruptedException ex) {
             } catch (IOException ex) {
@@ -256,64 +310,101 @@ class HttpSessionContext implements Serializable {
         }
 
         private void writeResponseContent(HttpServletResponse rs) throws IOException {
-            try {
-                synchronized (dialogs) {
-                    for (DialogHandler handler : dialogs) {
-                        if (handler.dialog.wasClosed()) {
-                            handler.closeWasSent = true;
-                        }
+            synchronized (dialogs) {
+                for (DialogHandler handler : dialogs) {
+                    if (handler.dialog.wasClosed()) {
+                        handler.closeWasSent = true;
                     }
                 }
-                synchronized (this) {
-                    try {
-                        rs.setCharacterEncoding(FileUtils.XML_ENCODING);
-                        rs.setContentType("text/xml");
+            }
+            synchronized (this) {
+                try {
+                    rs.setCharacterEncoding(FileUtils.XML_ENCODING);
+                    rs.setContentType("text/xml");
 
-                        final OutputStream out = rs.getOutputStream();
-                        try {
-                            BufferedOutputStream stream = new BufferedOutputStream(out);
-                            if (responseBody != null) {
-                                responseBody.writeResponseBody(stream);
-                                responseBody = null;
-                            } else if (progressHandleInfo != null) {
-                                progressHandleInfo.saveChanges(stream);
-                                progressHandleInfo = null;
-                            } else {
-                                if (userSession != null) {
-                                    RootPanel root = userSession.getMainWindow();
-                                    try {
-                                        root.saveChanges(rqId, stream);
-                                    } finally {
-                                        stream.flush();
-                                        stream.close();
-                                    }
-                                    root.notifySent();
-                                } else {
+                    final OutputStream out = rs.getOutputStream();
+                    try {
+                        final BufferedOutputStream stream = new BufferedOutputStream(out);
+                        final HttpResponseContent responseContent = 
+                            new HttpResponseContent(out, rqId, getNextRequestToken(), startProcessTime);
+                        final WpsProgressHandleManager.ProgressHandleInfo progressInfo = getProgressHandleInfo();
+                        if (responseWriter != null) {
+                            responseWriter.writeResponseBody(responseContent);
+                            responseWriter = null;
+                        } else if (progressInfo != null) {
+                            progressInfo.saveChanges(responseContent);
+                            setProgressHandleInfo(null);
+                        } else {
+                            if (userSession != null) {
+                                final RootPanel root = userSession.getMainWindow();
+                                try {
+                                    root.saveChanges(responseContent);
+                                } finally {
+                                    stream.flush();
                                     stream.close();
                                 }
+                                root.notifySent();
+                            } else {
+                                stream.close();
                             }
-
-                        } finally {
-                            try{
-                                out.flush();
-                            }catch(IOException exception){
-                                if ("org.apache.catalina.connector.ClientAbortException".equals(exception.getClass().getName())){
-                                    Logger.getLogger(HttpSessionContext.class.getName()).log(Level.SEVERE, "Failed to send response to client: connection was closed");
-                                }else{
-                                    throw exception;
-                                }
-                            }
-                            out.close();
                         }
 
-                    } catch (IOException ex) {
-                        throw ex;
+                    } finally {
+                        boolean connectionClosed = false;
+                        try {
+                            out.flush();
+                        } catch (IOException exception) {
+                            if ("org.apache.catalina.connector.ClientAbortException".equals(exception.getClass().getName())) {
+                                Logger.getLogger(HttpSessionContext.class.getName()).log(Level.INFO, "Failed to send response to client: connection was closed");
+                                connectionClosed = true;
+                            } else {
+                                throw exception;
+                            }
+                        }
+                        try {
+                            out.close();
+                        }catch (IOException exception) {
+                            if ("org.apache.catalina.connector.ClientAbortException".equals(exception.getClass().getName())) {
+                                if (!connectionClosed){
+                                    Logger.getLogger(HttpSessionContext.class.getName()).log(Level.INFO, "Failed to send response to client: connection was closed");
+                                }
+                            } else {
+                                throw exception;
+                            }
+                        }
                     }
-                }
-            } finally {
-                duration = System.currentTimeMillis() - duration;
-            }
 
+                } catch (IOException ex) {
+                    throw ex;
+                }
+            }        
+        }        
+        
+        private String getNextRequestToken(){   
+            if (responseHeader!=null && responseHeader.isAuthDataRequested()){
+                previousToken = token;
+            }else{
+                previousToken = null;
+            }
+            final byte[] bytes = new byte[RQ_TOKEN_LEN_IN_BYTES];
+            random.nextBytes(bytes);
+            token = Hex.encode(bytes);
+            return token;
+        }
+        
+        boolean checkToken(final String tokenToCheck, final boolean authDataReceived){
+            if (previousToken!=null){                
+                if (Objects.equals(previousToken, tokenToCheck)
+                    || Objects.equals(token, tokenToCheck)){
+                    previousToken = null;
+                    return true;
+                }else{
+                    previousToken = null;
+                    return false;                    
+                }
+            }else{
+                return Objects.equals(tokenToCheck, this.token);
+            }
         }
 
         void scheduleTask(final Runnable task) {
@@ -329,21 +420,27 @@ class HttpSessionContext implements Serializable {
             ready(false);
         }
         
-        void execScheduledTasks(){
+        void onTimeout(){
+            ready(true);
+        }
+
+        void execScheduledTasks() {
             if (scheduledTasks != null) {
                 final List<Runnable> tasks = new LinkedList<>(scheduledTasks);
                 scheduledTasks = null;
                 for (Runnable task : tasks) {
                     try {
                         task.run();
-                    } catch (Throwable exception) {
+                    } catch (HttpSessionTerminatedError e){
+                        throw e;
+                    }catch (Throwable exception) {
                         userSession.getTracer().error(exception);
                     }
                 }
-            }            
+            }
         }
 
-        void ready(boolean timeout) {
+        private void ready(final boolean timeout) {
             if (authLatch != null) {
                 try {
                     authLatch.await();
@@ -351,25 +448,34 @@ class HttpSessionContext implements Serializable {
                 }
             }
             if (timeout) {
+                prepareForDispose();
                 dispose();
             }
 
             if (this.requestLatch == null && !timeout && !isDisposed.get()) {
-                throw new IllegalStateException("Response handler was not engaged correctly");
+                throw new HttpSessionTerminatedError();
             }
 
             if (this.requestLatch != null) {
+                if (application!=null 
+                    && !application.isInGuiThread()
+                    && !isPreparingForDispose()){
+                    final IllegalUsageError error = 
+                        new IllegalArgumentError("Call of HttpSessionContext.ready from invalid thread");
+                    Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Unexpected method call", error);
+                }                
                 this.requestLatch.countDown();
             }
-
         }
 
         void startTimer() {
-            responseBody = new IHttpServletResponseBodyWriter() {
+            responseWriter = new IHttpServletResponseBodyWriter() {
                 @Override
-                public void writeResponseBody(OutputStream stream) throws IOException {
-                    final String response = "<timer command = \"start\"/>";
-                    FileUtils.writeString(stream, response, FileUtils.XML_ENCODING);
+                public void writeResponseBody(final HttpResponseContent response) throws IOException {
+                    final StringBuilder responseBuilder = new StringBuilder("<timer command = \"start\"");
+                    response.writeResponseXmlAttrs(responseBuilder, false);
+                    responseBuilder.append("/>");
+                    response.writeString(responseBuilder.toString());
                 }
             };
             timerStarted = true;
@@ -378,11 +484,13 @@ class HttpSessionContext implements Serializable {
 
         boolean stopTimer() {
             if (timerStarted) {
-                responseBody = new IHttpServletResponseBodyWriter() {
+                responseWriter = new IHttpServletResponseBodyWriter() {
                     @Override
-                    public void writeResponseBody(OutputStream stream) throws IOException {
-                        final String response = "<timer command = \"stop\"/>";
-                        FileUtils.writeString(stream, response, FileUtils.XML_ENCODING);
+                    public void writeResponseBody(final HttpResponseContent response) throws IOException {
+                        final StringBuilder responseBuilder = new StringBuilder("<timer command = \"stop\"");
+                        response.writeResponseXmlAttrs(responseBuilder, false);
+                        responseBuilder.append("/>");
+                        response.writeString(responseBuilder.toString());
                     }
                 };
                 timerStarted = false;
@@ -394,46 +502,48 @@ class HttpSessionContext implements Serializable {
         }
 
         private void signText(final String text, final String certificateDN, final String certificateThumbprint) {
-            responseBody = new IHttpServletResponseBodyWriter() {
+            responseWriter = new IHttpServletResponseBodyWriter() {
                 @Override
-                public void writeResponseBody(OutputStream stream) throws IOException {
-                    final StringBuilder response = new StringBuilder();
-                    response.append("<textsigner>\n");
-                    response.append("<Text>");
-                    response.append(text);
-                    response.append("</Text>\n");
-                    response.append("<CertificateDN>");
-                    response.append(certificateDN);
-                    response.append("</CertificateDN>\n");
-                    response.append("<CertificateThumbprint>");
-                    response.append(certificateThumbprint);
-                    response.append("</CertificateThumbprint>\n");
-                    response.append("</textsigner>");
-                    FileUtils.writeString(stream, response.toString(), FileUtils.XML_ENCODING);
+                public void writeResponseBody(final HttpResponseContent response) throws IOException {
+                    final StringBuilder responseBuilder = new StringBuilder();
+                    responseBuilder.append("<textsigner");
+                    response.writeResponseXmlAttrs(responseBuilder, false);
+                    responseBuilder.append(">\n<Text>");
+                    responseBuilder.append(text);
+                    responseBuilder.append("</Text>\n");
+                    responseBuilder.append("<CertificateDN>");
+                    responseBuilder.append(certificateDN);
+                    responseBuilder.append("</CertificateDN>\n");
+                    responseBuilder.append("<CertificateThumbprint>");
+                    responseBuilder.append(certificateThumbprint);
+                    responseBuilder.append("</CertificateThumbprint>\n");
+                    responseBuilder.append("</textsigner>");
+                    response.writeString(responseBuilder.toString());
                 }
             };
             ready();
         }
 
         private void jsInvoke(final String nodeId, final String methodName, final String methodParam) {
-            responseBody = new IHttpServletResponseBodyWriter() {
+            responseWriter = new IHttpServletResponseBodyWriter() {
                 @Override
-                public void writeResponseBody(OutputStream stream) throws IOException {
-                    final StringBuilder response = new StringBuilder();
-                    response.append("<jsinvoke>\n");
-                    response.append("<NodeId>");
-                    response.append(nodeId);
-                    response.append("</NodeId>\n");
-                    response.append("<MethodName>");
-                    response.append(methodName);
-                    response.append("</MethodName>\n");
+                public void writeResponseBody(final HttpResponseContent response) throws IOException {
+                    final StringBuilder responseBuilder = new StringBuilder();
+                    responseBuilder.append("<jsinvoke");
+                    response.writeResponseXmlAttrs(responseBuilder, false);
+                    responseBuilder.append(">\n<NodeId>");
+                    responseBuilder.append(nodeId);
+                    responseBuilder.append("</NodeId>\n");
+                    responseBuilder.append("<MethodName>");
+                    responseBuilder.append(methodName);
+                    responseBuilder.append("</MethodName>\n");
                     if (methodParam != null && !methodParam.isEmpty()) {
-                        response.append("<MethodParam>");
-                        response.append(methodParam);
-                        response.append("</MethodParam>\n");
-                        response.append("</jsinvoke>");
+                        responseBuilder.append("<MethodParam>");
+                        responseBuilder.append(methodParam);
+                        responseBuilder.append("\n</MethodParam>\n");
                     }
-                    FileUtils.writeString(stream, response.toString(), FileUtils.XML_ENCODING);
+                    responseBuilder.append("</jsinvoke>");
+                    response.writeString(responseBuilder.toString());
                 }
             };
             ready();
@@ -444,7 +554,7 @@ class HttpSessionContext implements Serializable {
         }
 
         void setAuthDataListener(final IAuthDataReceiver listener) {
-            authDataListener = listener;
+            authDataListener = listener;            
         }
 
         boolean isAuthDataRequested() {
@@ -452,7 +562,38 @@ class HttpSessionContext implements Serializable {
         }
 
         ClientAuthData getLastQueryAuthData() {
-            return authData;
+            return invalidAuthData ? null : authData;
+        }
+        
+        void markAuthDataAsInvalid(){
+            invalidAuthData = true;
+        }
+        
+        WpsProgressHandleManager.ProgressHandleInfo getProgressHandleInfo(){
+            synchronized(progressHandleSemaphore){
+                return progressHandleInfo;
+            }
+        }
+        
+        void setProgressHandleInfo(final WpsProgressHandleManager.ProgressHandleInfo info){
+            synchronized(progressHandleSemaphore){
+                if (progressHandleInfo!=null && info!=null){                    
+                    info.merge(progressHandleInfo);
+                }
+                progressHandleInfo = info;
+            }
+        }
+        
+        private void prepareForDispose(){
+            synchronized(preparingForDisposeSemaphore){
+                preparingForDispose = true;
+            }
+        }
+        
+        private boolean isPreparingForDispose(){
+            synchronized(preparingForDisposeSemaphore){
+                return preparingForDispose;
+            }
         }
     }
 
@@ -524,7 +665,7 @@ class HttpSessionContext implements Serializable {
                 return;
             }
             responseHandler.setAuthDataListener(receiver);
-            responseHandler.setResponseHeader(new KrbAuthHttpHeaderWriter(null, false));
+            responseHandler.setResponseHeader(new KrbAuthHttpHeaderWriter((byte[])null));
             userSession.forceEvents();
         }
     }
@@ -540,10 +681,10 @@ class HttpSessionContext implements Serializable {
             userSession.blockEvents();
             startTimer();
         }
-        final ClientAuthData authData = getAuthDataImpl(new KrbAuthHttpHeaderWriter(token, false));
+        final ClientAuthData authData = getAuthDataImpl(new KrbAuthHttpHeaderWriter(token));
         if (authData == null) {
-            final String message =
-                    userSession.getMessageProvider().translate("TraceMessage", "No authentication data provided for negotiate schema");
+            final String message
+                    = userSession.getMessageProvider().translate("TraceMessage", "No authentication data provided for negotiate schema");
             userSession.getTracer().debug(message);
         }
         return authData;
@@ -558,7 +699,7 @@ class HttpSessionContext implements Serializable {
                 responseHandler.setResponseHeader(headerWriter);
                 responseHandler.ready();
             }
-        }
+        }        
         return getQuery(true).getAuthData();
     }
 
@@ -600,8 +741,8 @@ class HttpSessionContext implements Serializable {
         try {
             synchronized (responseHandler) {
                 if (certificate == null) {
-                    final String message =
-                            userSession.getMessageProvider().translate("ExplorerError", "User certificate was not provided");
+                    final String message
+                            = userSession.getMessageProvider().translate("ExplorerError", "User certificate was not provided");
                     throw new SignatureException(SignatureException.EReason.NO_CERT, message);
                 }
                 try {
@@ -611,15 +752,15 @@ class HttpSessionContext implements Serializable {
                         clientDN = convert2MozillaDN(certificate.getIssuerDN().getName());
                     }
                 } catch (InvalidNameException exception) {
-                    final String message =
-                            userSession.getMessageProvider().translate("ExplorerError", "Unable to parse certificate distinguished name");
+                    final String message
+                            = userSession.getMessageProvider().translate("ExplorerError", "Unable to parse certificate distinguished name");
                     throw new SignatureException(SignatureException.EReason.FAILED_TO_GET_CERT_DN, message, exception);
                 }
                 try {
                     certThumbPrint = CertificateUtils.calcCertificateThumbPrint(certificate);
                 } catch (NoSuchAlgorithmException | CertificateEncodingException exception) {
-                    final String message =
-                            userSession.getMessageProvider().translate("ExplorerError", "Failed to calculate user certificate hash");
+                    final String message
+                            = userSession.getMessageProvider().translate("ExplorerError", "Failed to calculate user certificate hash");
                     throw new SignatureException(SignatureException.EReason.FAILED_TO_CALC_CERT_HASH, message, exception);
                 }
                 responseHandler.signText(text, clientDN, certThumbPrint);
@@ -630,39 +771,39 @@ class HttpSessionContext implements Serializable {
             userSession.unblockEvents();
         }
         if (!query.getEvents().isEmpty() && org.radixware.wps.rwt.Events.isActionEvent(query.getEvents().get(0).getEventName())) {
-            final String actionName =
-                    org.radixware.wps.rwt.Events.getActionName(query.getEvents().get(0));
+            final String actionName
+                    = org.radixware.wps.rwt.Events.getActionName(query.getEvents().get(0));
             final String actionParam = query.getEvents().get(0).getEventParam();
             if ("sign".equals(actionName)) {
                 return actionParam;
             } else if ("error".equals(actionName)) {
                 if ("canceled".equals(actionParam)) {
-                    final String message =
-                            userSession.getMessageProvider().translate("ExplorerError", "Failed to sign message: operation was canceled by user");
+                    final String message
+                            = userSession.getMessageProvider().translate("ExplorerError", "Failed to sign message: operation was canceled by user");
                     throw new SignatureException(SignatureException.EReason.USER_CANCELED, message);
                 } else if ("noMatchingCert".equals(actionParam)) {
-                    final String message =
-                            userSession.getMessageProvider().translate("ExplorerError", "Certificate with distinguished name \"%1$s\" and hash \"%2$s\" was not found");
+                    final String message
+                            = userSession.getMessageProvider().translate("ExplorerError", "Certificate with distinguished name \"%1$s\" and hash \"%2$s\" was not found");
                     final String formattedMessage = String.format(message, clientDN, certThumbPrint);
                     throw new SignatureException(SignatureException.EReason.REQUESTED_CERT_NOT_FOUND, formattedMessage);
                 } else if ("unsupported".equals(actionParam)) {
-                    final String message =
-                            userSession.getMessageProvider().translate("ExplorerError", "Failed to sign message: operation is not supported");
+                    final String message
+                            = userSession.getMessageProvider().translate("ExplorerError", "Failed to sign message: operation is not supported");
                     throw new SignatureException(SignatureException.EReason.UNSUPPORTED_OPERATION, message);
                 } else if ("internal".equals(actionParam) || actionParam == null || actionParam.isEmpty()) {
-                    final String message =
-                            userSession.getMessageProvider().translate("ExplorerError", "Failed to sign message: internal browser error");
+                    final String message
+                            = userSession.getMessageProvider().translate("ExplorerError", "Failed to sign message: internal browser error");
                     throw new SignatureException(SignatureException.EReason.FAILED_TO_SIGN, message);
                 } else {
-                    final String message =
-                            userSession.getMessageProvider().translate("ExplorerError", "Failed to sign message: %1$s");
+                    final String message
+                            = userSession.getMessageProvider().translate("ExplorerError", "Failed to sign message: %1$s");
                     final String formattedMessage = String.format(message, actionParam);
                     throw new SignatureException(SignatureException.EReason.FAILED_TO_SIGN, formattedMessage);
                 }
             }
         }
-        final String message =
-                userSession.getMessageProvider().translate("ExplorerError", "Unexpected AJAX request: %1$s");
+        final String message
+                = userSession.getMessageProvider().translate("ExplorerError", "Unexpected AJAX request: %1$s");
         final String formattedMessage = String.format(message, query.toString());
         throw new SignatureException(SignatureException.EReason.UNEXPECTED_AJAX_REQUEST, formattedMessage);
     }
@@ -680,8 +821,8 @@ class HttpSessionContext implements Serializable {
             userSession.unblockEvents();
         }
         if (!query.getEvents().isEmpty() && org.radixware.wps.rwt.Events.isActionEvent(query.getEvents().get(0).getEventName())) {
-            final String actionName =
-                    org.radixware.wps.rwt.Events.getActionName(query.getEvents().get(0));
+            final String actionName
+                    = org.radixware.wps.rwt.Events.getActionName(query.getEvents().get(0));
             final String actionParam = query.getEvents().get(0).getEventParam();
             if ("return".equals(actionName)) {
                 return actionParam;
@@ -744,7 +885,13 @@ class HttpSessionContext implements Serializable {
             if (firstToken != null && firstToken.length > 0) {
                 try {
                     final GSSContext gssContext = serviceCredentials.createSecurityContext();
-                    byte[] token = serviceCredentials.getNextHandshakeToken(gssContext, firstToken);
+                    byte[] token;
+                    try{
+                        token = serviceCredentials.getNextHandshakeToken(gssContext, firstToken);
+                    }catch(KerberosException ex){
+                        userSession.getTracer().error(ex);
+                        return null;
+                    }
                     while (token != null && token.length > 0 && !gssContext.isEstablished()) {
                         authData = getAuthData(token);
                         token = authData == null ? null : authData.getToken();
@@ -773,6 +920,10 @@ class HttpSessionContext implements Serializable {
         return httpConnectionOptions;
     }
 
+    void setAfterError() {
+        responseHandler.markAuthDataAsInvalid();
+    }
+    
     public BasicAuthResult basicAuthentication(final String realm) {
         final ClientAuthData authData;
         userSession.blockEvents();
@@ -782,16 +933,16 @@ class HttpSessionContext implements Serializable {
             userSession.unblockEvents();
         }
         if (authData == null || !authData.isBasicAuth()) {
-            final String message =
-                    userSession.getMessageProvider().translate("TraceMessage", "No authentication data provided for basic schema");
+            final String message
+                    = userSession.getMessageProvider().translate("TraceMessage", "No authentication data provided for basic schema");
             userSession.getTracer().debug(message);
             return null;
         }
         final byte[] token = authData.getToken();
 
         if (token == null || 0 == token.length) {
-            final String message =
-                    userSession.getMessageProvider().translate("TraceMessage", "No authentication data provided for basic schema");
+            final String message
+                    = userSession.getMessageProvider().translate("TraceMessage", "No authentication data provided for basic schema");
             userSession.getTracer().debug(message);
             return null;
         }
@@ -800,8 +951,8 @@ class HttpSessionContext implements Serializable {
         Arrays.fill(token, (byte) 0);
         final int deviderIndex = Utils.indexOf(basicData, ':', 0);
         if (deviderIndex <= 0) {
-            final String message =
-                    userSession.getMessageProvider().translate("ExplorerMessage", "Wrong format of authentication data");
+            final String message
+                    = userSession.getMessageProvider().translate("ExplorerMessage", "Wrong format of authentication data");
             userSession.messageError("Failed to Identify User", message);
             Arrays.fill(basicData, ' ');
             return null;
@@ -809,11 +960,11 @@ class HttpSessionContext implements Serializable {
         if (deviderIndex <= 0 || Utils.indexOf(basicData, ':', deviderIndex + 1) > 0) {
             final String message;
             if (deviderIndex <= 0) {
-                message =
-                        userSession.getMessageProvider().translate("ExplorerMessage", "Wrong format of authentication data");
+                message
+                        = userSession.getMessageProvider().translate("ExplorerMessage", "Wrong format of authentication data");
             } else {
-                message =
-                        userSession.getMessageProvider().translate("ExplorerMessage", "Wrong format of authentication data.\nUsername or password may have contained an invalid character");
+                message
+                        = userSession.getMessageProvider().translate("ExplorerMessage", "Wrong format of authentication data.\nUsername or password may have contained an invalid character");
             }
             userSession.messageError("Failed to Identify User", message);
             Arrays.fill(basicData, ' ');
@@ -827,8 +978,8 @@ class HttpSessionContext implements Serializable {
             userName = new String(Arrays.copyOf(basicData, deviderIndex));
         }
 
-        final BasicAuthResult result =
-                new BasicAuthResult(userName, Arrays.copyOfRange(basicData, deviderIndex + 1, basicData.length));
+        final BasicAuthResult result
+                = new BasicAuthResult(userName, Arrays.copyOfRange(basicData, deviderIndex + 1, basicData.length));
         Arrays.fill(basicData, ' ');
         return result;
     }
@@ -840,9 +991,12 @@ class HttpSessionContext implements Serializable {
         dialogEventLoop(dialog, false);
     }
 
-    void updateProgressManagerState(WpsProgressHandleManager.ProgressHandleInfo manager) {
+    void updateProgressManagerState(final WpsProgressHandleManager.ProgressHandleInfo info) {
         synchronized (responseHandler) {
-            responseHandler.progressHandleInfo = manager;
+            responseHandler.setProgressHandleInfo(info);
+            if (application==null || !application.isInGuiThread()){
+                return;
+            }
             responseHandler.ready();
         }
         progressManagerEventLoop();
@@ -860,7 +1014,7 @@ class HttpSessionContext implements Serializable {
                 if (!httpQuery.isDisposeRequest()) {
                     final long overallTime = System.currentTimeMillis() - startTime;
                     final String exceptionStack = ClientException.exceptionStackToString(ex);
-                    final Object[] messageParams = new Object[]{exceptionStack,MessageFormat.format("{0,time,mm:ss:S}", overallTime)};
+                    final Object[] messageParams = new Object[]{exceptionStack, MessageFormat.format("{0,time,mm:ss:S}", overallTime)};
                     Logger.getLogger(HttpSessionContext.class.getName()).log(Level.SEVERE, "Possible lost of connection, will not write response. Disposing context forcedly.\n{0}\nRequest processing time: {1}", messageParams);
                     //RADIX-9819 State of GUI at server does not match to state of GUI at browser now. So disposing context forcedly.
                     dispose();
@@ -894,6 +1048,13 @@ class HttpSessionContext implements Serializable {
             }
         });
     }
+    
+    private void notifyDisposed(){
+        synchronized (queries) {
+            queries.add(HttpQuery.DISPOSE_QUERY);
+            queries.notify();
+        }
+    }
 
     private void enqueueQuery(HttpQuery query) {
         synchronized (queries) {
@@ -909,14 +1070,14 @@ class HttpSessionContext implements Serializable {
 
     private void startRqTimeout() {
         lastRsTime = System.currentTimeMillis();
-    }    
+    }
 
     private HttpQuery getQuery(boolean wait) {
         synchronized (queries) {
-            if (prepareForDispose>1){
-                if (prepareForDispose()){
+            if (finishRequest > 1) {
+                if (finishRequest()) {
                     return HttpQuery.DISPOSE_QUERY;
-                }else{
+                } else {
                     dispose();
                     return null;
                 }
@@ -931,7 +1092,7 @@ class HttpSessionContext implements Serializable {
                     }
                     try {
                         if (!waitForNextRequest()) {//timeout
-                            responseHandler.ready(true);
+                            responseHandler.onTimeout();
                             return null;
                         }
                     } catch (InterruptedException ex) {
@@ -942,17 +1103,17 @@ class HttpSessionContext implements Serializable {
                     HttpQuery query = queries.remove();
                     if (query != null && query.isDisposeRequest()) {
                         /*isDisposed = true;
-                        if (userSession != null && userSession.getEasSession()!=null) {
-                            try {
-                                if (userSession.getEasSession().isBusy()){
-                                    userSession.getEasSession().breakRequest();
-                                }else{                                
-                                    userSession.getConfigStore().syncDb(false);
-                                }
-                            } catch (Throwable e) {
-                                userSession.getTracer().error(e);
-                            }
-                        }*/
+                         if (userSession != null && userSession.getEasSession()!=null) {
+                         try {
+                         if (userSession.getEasSession().isBusy()){
+                         userSession.getEasSession().breakRequest();
+                         }else{                                
+                         userSession.getConfigStore().syncDb(false);
+                         }
+                         } catch (Throwable e) {
+                         userSession.getTracer().error(e);
+                         }
+                         }*/
 
                         responseHandler.ready();
                         dispose();
@@ -1004,9 +1165,9 @@ class HttpSessionContext implements Serializable {
                 HttpQuery query = getQuery(!asyncMode);
                 if (asyncMode && query == HttpQuery.NO_QUERY) {
                     return null;
-                }
-                if (query == null) {//THREAD WAS INTERRUPTED            
-                    return DialogResult.REJECTED;
+                }                
+                if (query == null || query==HttpQuery.DISPOSE_QUERY) {//THREAD WAS INTERRUPTED
+                    throw new HttpSessionTerminatedError();
                 } else {
 
                     if (dialog != null) {
@@ -1019,7 +1180,9 @@ class HttpSessionContext implements Serializable {
                                 if (dialog.wasClosed() && closeWasSent()) {
                                     return dialog.getDialogResult();
                                 }
-                            } catch (Throwable e) {
+                            } catch(HttpSessionTerminatedError e){
+                                e.trace();
+                            }catch (Throwable e) {
                                 //ignore
                                 Logger.getLogger(HttpSessionContext.class.getName()).log(Level.FINE, "Error on request processing", e);
                             }
@@ -1066,9 +1229,12 @@ class HttpSessionContext implements Serializable {
         if (handler.asyncMode) {
             if (handler.dialog.isNotModalExec()) {
                 HttpQuery query = getQuery(true);
+                if (query==null || query==HttpQuery.DISPOSE_QUERY){
+                    throw new HttpSessionTerminatedError();
+                }
                 if (query != HttpQuery.NO_QUERY) {
                     handler.dialog.accept(query);
-                }
+                }                
                 return DialogResult.NONE;
             } else {
                 DialogResult result = handler.call();
@@ -1092,15 +1258,21 @@ class HttpSessionContext implements Serializable {
     }
 
     private void progressManagerEventLoop() {
-        for (;;) {
-            HttpQuery query = getQuery(true);
-            if (query == null) {//THREAD WAS INTERRUPTED            
-                return;
-            } else {
-                return;
+        final HttpQuery query = getQuery(true);
+        if (query != null) {//THREAD WAS NOT INTERRUPTED 
+            final WpsProgressHandleManager.WpsProgressHandle progressHandle;
+            if (userSession==null || userSession.getProgressHandleManager()==null){
+                progressHandle = null;                            
+            }else{
+                progressHandle = 
+                    (WpsProgressHandleManager.WpsProgressHandle)userSession.getProgressHandleManager().getActive();
+            }
+            if (progressHandle!=null){
+                progressHandle.processRequest(query);
             }
         }
     }
+    
     private static final long SYNC_SETTINGS_INTERVAL = 600000;
 
     boolean wasDisposed() {
@@ -1118,7 +1290,7 @@ class HttpSessionContext implements Serializable {
                         return;
                     }
                 }
-                if (query == null) {//THREAD WAS INTERRUPTED           
+                if (query == null || query==HttpQuery.DISPOSE_QUERY) {//THREAD WAS INTERRUPTED           
                     return;
                 } else {
                     try {
@@ -1132,29 +1304,35 @@ class HttpSessionContext implements Serializable {
                         }
                         responseHandler.execScheduledTasks();
                         processingQuery++;
-                        try{
+                        try {
                             userSession.getMainWindow().accept(query);
-                        }finally{
+                        } finally {
                             processingQuery--;
                         }
-                        if (prepareForDispose>0){
-                            if (processingQuery==0 || prepareForDispose==1){
+                        if (finishRequest > 0) {
+                            if (processingQuery == 0 || finishRequest == 1) {
                                 dispose();
-                            }else{
+                            } else {
                                 continue;
                             }
                         }
-                        if (!isDisposed.get()) {//my be disposed if modal dialog timeeut occurs
-                            checkVersionIsCurrent();
-                            userSession.getMainWindow().notifyOldVersion(this.isOldVersion);
+                        if (!isDisposed.get()) {//my be disposed if modal dialog timeeut occurs                            
+                            if (userSession.getUserName()==null){
+                                userSession.getMainWindow().notifyOldVersion(false);
+                            }else{
+                                userSession.getMainWindow().notifyOldVersion(isNewVersionAvailable());
+                            }
                             if (System.currentTimeMillis() - userSession.getConfigStore().lastSyncTime > SYNC_SETTINGS_INTERVAL
-                                && userSession.getEasSession()!=null
-                                && !userSession.getEasSession().isBusy()
-                               ) {
+                                    && userSession.getEasSession() != null
+                                    && !userSession.getEasSession().isBusy()
+                                    && userSession.getDefManager().getAdsVersion().isSupported()) {
                                 userSession.getConfigStore().syncDb(false);
                             }
                         }
-                    } catch (Throwable e) {
+                    } 
+                    catch (HttpSessionTerminatedError e){
+                        e.trace();
+                    }catch (Throwable e) {
                         if (userSession != null) {
                             userSession.getTracer().error(e);
                             userSession.messageException("Unhandled Exception", "Unhandled Exception", e);
@@ -1185,13 +1363,13 @@ class HttpSessionContext implements Serializable {
 
     @SuppressWarnings("ConvertToStringSwitch")
     WebServer.UploadSystemHandler startUpload(final String uploadContextId, final String uploadId, final String fileName) throws UploadException {
-        final WebServer.UploadSystemHandler handler =
-                application.server.requestUpload(uploadContextId, uploadId);
+        final WebServer.UploadSystemHandler handler
+                = application.server.requestUpload(uploadContextId, uploadId);
         responseHandler.ready();
         final HttpQuery query = getQuery(true);//check if "upload-started" event
         if (!query.getEvents().isEmpty() && org.radixware.wps.rwt.Events.isActionEvent(query.getEvents().get(0).getEventName())) {
-            final String actionName =
-                    org.radixware.wps.rwt.Events.getActionName(query.getEvents().get(0));
+            final String actionName
+                    = org.radixware.wps.rwt.Events.getActionName(query.getEvents().get(0));
             final String actionParam = query.getEvents().get(0).getEventParam();
             if ("upload-started".equals(actionName)) {
                 userSession.getMainWindow().accept(query);
@@ -1219,12 +1397,16 @@ class HttpSessionContext implements Serializable {
         application.server.disposeUpload(itemId, uploadId);
     }
 
-    void checkVersionIsCurrent() {
+    boolean isNewVersionAvailable() {
         long currentVersion = application.getAdsVersionNumber();
         if (currentVersion >= 0) {
-            isOldVersion = application.getDefManager().getAdsVersion().isNewVersionAvailable();
+            return application.getDefManager().getAdsVersion().getTargetVersionNumber()>0;
         } else {
-            isOldVersion = false;
+            return false;
         }
+    }
+    
+    boolean checkQueryToken(final HttpQuery query){
+        return responseHandler.checkToken(query.getToken(),  query.getAuthData()!=null);
     }
 }

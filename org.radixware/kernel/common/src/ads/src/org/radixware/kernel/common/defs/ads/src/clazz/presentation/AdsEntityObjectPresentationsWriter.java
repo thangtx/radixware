@@ -97,7 +97,8 @@ class AdsEntityObjectPresentationsWriter<T extends EntityObjectPresentations> ex
                 printer.printComma();
                 printer.println();
                 EntityPresentations epr = def instanceof EntityPresentations ? (EntityPresentations) def : null;
-                if (epr != null) {
+                
+                if (epr != null && !WriterUtils.isLightGeneration(printer)) {
                     WriterUtils.writeIdUsage(printer, epr.getIconId());
                     printer.printComma();
                     printer.println();
@@ -112,12 +113,16 @@ class AdsEntityObjectPresentationsWriter<T extends EntityObjectPresentations> ex
 
                 printer.printComma();
                 printer.println();
-                WriterUtils.writeIdUsage(printer, clazz.getTitleId());
+                if (!clazz.isTitleInherited()) {
+                    WriterUtils.writeIdUsage(printer, clazz.getTitleId());
+                } else {
+                    WriterUtils.writeNull(printer);
+                }
                 if (epr != null) {
                     printer.printComma();
                     WriterUtils.writeIdUsage(printer, epr.getEntityTitleId());
                     printer.printComma();
-                    WriterUtils.writeIdUsage(printer, epr.getObjectTitleId());
+                    WriterUtils.writeIdUsage(printer, epr.getObjectTitleId(epr.getIsObjectTitleInherited()));
                 } else {
                     printer.printComma();
                     WriterUtils.writeNull(printer);
@@ -132,42 +137,63 @@ class AdsEntityObjectPresentationsWriter<T extends EntityObjectPresentations> ex
                 }
                 printer.printComma();
                 printer.println();
-                writeCode(printer, clazz.getProperties());
-                printer.printComma();
-                printer.println();
-                writeCommandsMeta(printer);
-                printer.printComma();
-                printer.println();
-                writeFiltersMeta(printer);
-                printer.printComma();
-                printer.println();
-                writeSortingsMeta(printer);
-                printer.printComma();
-                printer.println();
+                if (!WriterUtils.isLightGeneration(printer)) {
+                    writeCode(printer, clazz.getProperties());
+                    printer.printComma();
+                    printer.println();
+                    writeCommandsMeta(printer);
+                    printer.printComma();
+                    printer.println();
+                    writeFiltersMeta(printer);
+                    printer.printComma();
+                    printer.println();
+                    writeSortingsMeta(printer);
+                    printer.printComma();
+                    printer.println();
 //                writeColorSchemesMeta(printer);
 //                printer.printComma();
 //                printer.println();
-                writeExplorerRefList(printer);
-                printer.printComma();
-                printer.println();
-                ArrayList<Id> presentationIds = new ArrayList<Id>();
-                for (AdsEditorPresentationDef e : def.getEditorPresentations().get(EScope.LOCAL_AND_OVERWRITE)) {
-                    if (e.getClientEnvironment() == usagePurpose.getEnvironment() || e.getClientEnvironment() == ERuntimeEnvironmentType.COMMON_CLIENT) {
-                        presentationIds.add(e.getId());
+                    writeExplorerRefList(printer);
+                    printer.printComma();
+                    printer.println();
+                    ArrayList<Id> presentationIds = new ArrayList<Id>();
+                    for (AdsEditorPresentationDef e : def.getEditorPresentations().get(EScope.LOCAL_AND_OVERWRITE)) {
+                        if (e.getClientEnvironment() == usagePurpose.getEnvironment() || e.getClientEnvironment() == ERuntimeEnvironmentType.COMMON_CLIENT) {
+                            presentationIds.add(e.getId());
+                        }
                     }
-                }
-                for (AdsSelectorPresentationDef s : def.getSelectorPresentations().get(EScope.LOCAL_AND_OVERWRITE)) {
-                    if (s.getClientEnvironment() == usagePurpose.getEnvironment() || s.getClientEnvironment() == ERuntimeEnvironmentType.COMMON_CLIENT) {
-                        presentationIds.add(s.getId());
+                    for (AdsSelectorPresentationDef s : def.getSelectorPresentations().get(EScope.LOCAL_AND_OVERWRITE)) {
+                        if (s.getClientEnvironment() == usagePurpose.getEnvironment() || s.getClientEnvironment() == ERuntimeEnvironmentType.COMMON_CLIENT) {
+                            presentationIds.add(s.getId());
+                        }
                     }
+                    WriterUtils.writeIdArrayUsage(printer, presentationIds);
+                    printer.printComma();//added by yremizov
+                    printer.println();//added by yremizov
+                } else {
+                    WriterUtils.writeNull(printer); //Properties
+                    printer.printComma();
+                    printer.println();
+                    WriterUtils.writeNull(printer);//Commands
+                    printer.printComma();
+                    printer.println();
+                    WriterUtils.writeNull(printer);//Filters
+                    printer.printComma();
+                    printer.println();
+                    WriterUtils.writeNull(printer);//Sortings
+                    printer.printComma();
+                    printer.println();
+                    WriterUtils.writeNull(printer);//ExplorerRefList
+                    printer.printComma();
+                    printer.println();
+                    WriterUtils.writeNull(printer);//IdArrayUsage
+                    printer.printComma();
+                    printer.println();
                 }
-                WriterUtils.writeIdArrayUsage(printer, presentationIds);
-                printer.printComma();//added by yremizov
-                printer.println();//added by yremizov
                 boolean polymorph = false;
                 boolean audit = false;
                 DdsTableDef t = clazz.findTable(def);
-                if (t != null) {
+                if (t != null && !WriterUtils.isLightGeneration(printer)) {
                     polymorph = t.getExtOptions().contains(EDdsTableExtOption.ENABLE_APPLICATION_CLASSES);
                     audit = t.getAuditInfo().isEnabled();
                 }

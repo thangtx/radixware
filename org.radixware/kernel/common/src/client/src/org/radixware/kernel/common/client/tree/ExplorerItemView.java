@@ -17,6 +17,7 @@ import java.util.List;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Objects;
 import org.radixware.kernel.common.client.meta.IExplorerItemsHolder;
 import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.meta.explorerItems.RadParentRefExplorerItemDef;
@@ -25,7 +26,9 @@ import org.radixware.kernel.common.client.meta.TitledDefinition;
 import org.radixware.kernel.common.client.meta.explorerItems.RadSelectorExplorerItemDef;
 import org.radixware.kernel.common.client.meta.explorerItems.RadSelectorUserExplorerItemDef;
 import org.radixware.kernel.common.client.meta.filters.RadContextFilter;
+import org.radixware.kernel.common.client.meta.filters.RadFilterDef;
 import org.radixware.kernel.common.client.meta.filters.RadFilterParamValue;
+import org.radixware.kernel.common.client.meta.filters.RadUserFilter;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.IContext;
@@ -34,6 +37,7 @@ import org.radixware.kernel.common.client.models.ParagraphModel;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.tree.nodes.ExplorerTreeNode;
 import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
+import org.radixware.kernel.common.client.types.ArrRef;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.Reference;
@@ -72,8 +76,7 @@ public final class ExplorerItemView implements IExplorerItemView {// implements 
         model = radixModel;
         this.explorerItemId = explorerItemId;
         definitionId = model.getDefinition().getId();
-        definitionClassId = model.getDefinition().getOwnerClassId();
-        model.setExplorerItemView(this);
+        definitionClassId = model.getDefinition().getOwnerClassId();        
         if (model instanceof EntityModel && model.getContext().getHolderModel() == null) {
             entityInfo = new EntityInfo((EntityModel) model);
         } else {
@@ -185,11 +188,17 @@ public final class ExplorerItemView implements IExplorerItemView {// implements 
 
     @Override
     public void setTitle(final String title) {
-        this.title = title;
+        if (!Objects.equals(title, this.title)){
+            this.title = title;
+            refresh();
+        }
     }
 
     public void setIcon(final Icon icon) {
-        this.icon = icon;
+        if (icon!=this.icon){
+            this.icon = icon;
+            refresh();
+        }
     }
 
     @Override
@@ -398,28 +407,23 @@ public final class ExplorerItemView implements IExplorerItemView {// implements 
             final EValType valType = ValueConverter.serverValType2ClientValType(filterParam.getType());
             if (value instanceof IKernelEnum) {
                 valAsStr = ValAsStr.Factory.newInstance(((IKernelEnum) value).getValue(),valType);
-            }
-            else if (value instanceof Reference){
-                valAsStr = ValAsStr.Factory.loadFrom(((Reference)value).toValAsStr());
-            }/*
-            else if (value instanceof ArrRef){
-                arrRefsByParamId.put(property.getId(), (ArrRef)value);
-            }*/
-            else{
-                valAsStr = ValAsStr.Factory.newInstance(value, valType);
+            }else{
+                valAsStr = ValueConverter.obj2ValAsStr(value, valType);
             }
             filterParamValues.add(new RadFilterParamValue(filterParam.getId(), filterParam.getType(), valAsStr));
         }
-        final RadContextFilter currentContextFilter = context.getFilter();
-        final RadContextFilter addintionalContextFilter = 
-            RadContextFilter.Factory.newInstance(groupModel.getCurrentFilter().getFilterDef(), 
-                                                filterParamValues, explorerItemDef.getId());
-        final RadContextFilter newContextFilter = 
-            RadContextFilter.Factory.merge(currentContextFilter, addintionalContextFilter);
+        final List<RadContextFilter> contextFilters = new LinkedList<>();
+        contextFilters.addAll(context.getFilters());
+        final RadFilterDef additionalFilter = groupModel.getCurrentFilter().getFilterDef();
+        if (additionalFilter instanceof RadUserFilter){
+            contextFilters.addAll(RadContextFilter.Factory.splitUserFilter((RadUserFilter)additionalFilter, filterParamValues, explorerItemId));
+        }else{
+            contextFilters.add(RadContextFilter.Factory.newInstance(additionalFilter, filterParamValues, explorerItemId));
+        }
         final RadSelectorUserExplorerItemDef userItem = 
             RadSelectorUserExplorerItemDef.Factory.newInstance(title, 
                                                                explorerItemDef,
-                                                               newContextFilter,
+                                                               contextFilters,
                                                                groupModel.getCurrentSorting());
         final IExplorerItemsHolder itemsHolder = node.getTopLevelExplorerItemsHolder();
         final Id ownerDefId = UserExplorerItemsStorage.getContextId(itemsHolder);

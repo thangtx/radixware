@@ -13,11 +13,14 @@ package org.radixware.wps.views.editor.property;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import org.radixware.kernel.common.client.editors.property.PropEditorOptions;
-import org.radixware.kernel.common.client.editors.property.PropertyProxy;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.env.SettingNames;
+import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyArr;
@@ -26,11 +29,13 @@ import org.radixware.kernel.common.client.text.ITextOptionsProvider;
 import org.radixware.kernel.common.client.types.CommonEditingHistory;
 import org.radixware.kernel.common.client.types.IEditingHistory;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
+import org.radixware.kernel.common.client.utils.ClientValueFormatter;
 import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.client.views.IPropLabel;
 import org.radixware.kernel.common.client.views.IPropertyStorePossibility;
 import org.radixware.kernel.common.client.views.IPropertyValueStorage;
 import org.radixware.kernel.common.client.widgets.IButton;
+import org.radixware.kernel.common.client.widgets.ICommandToolButton;
 import org.radixware.kernel.common.enums.EEditMaskType;
 import org.radixware.kernel.common.enums.EPropertyValueStorePossibility;
 import org.radixware.kernel.common.enums.ESelectorRowStyle;
@@ -53,6 +58,8 @@ import org.radixware.wps.views.editors.valeditors.ValEditorFactory;
 
 
 public abstract class PropEditor extends AbstractPropEditor implements IPropertyValueStorage {
+    
+    private final static int COMMAND_BUTTONS_PRIORITY = Integer.MAX_VALUE - 100;
 
     @Override
     public void setPropertyStorePossibility(IPropertyStorePossibility isp) {
@@ -78,8 +85,10 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
         public String getDisplayValue(T value, boolean isFocused, boolean isReadOnly) {
             final EEditMaskType maskType = property.getEditMask().getType();
             final boolean isEditMaskCompatible = maskType == EEditMaskType.BOOL ||  maskType == EEditMaskType.LIST || maskType == EEditMaskType.ENUM;
+            final EValType valType = property.getType();
+            final boolean isValTypeCompatible = valType.isArrayType() || valType==EValType.OBJECT || valType==EValType.XML;
             final String defaultDisplayString = defaultDisplayController.getDisplayValue(value, isFocused, isReadOnly);
-            if (property.getType().isArrayType() || isEditMaskCompatible || isReadOnly || property.getType()==EValType.OBJECT) {
+            if (isEditMaskCompatible || isValTypeCompatible || isReadOnly) {
                 return property.getOwner().getDisplayString(
                         property.getId(), value, defaultDisplayString, !property.hasOwnValue());
             } else {
@@ -96,7 +105,7 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
             this.property = property;
         }
 
-        protected final DisplayController<T> createDisplayControllerWrapper(final DisplayController<T> defaultController) {
+        protected DisplayController<T> createDisplayControllerWrapper(final DisplayController<T> defaultController) {
             return new PropertyDisplayController<>(defaultController, property);
         }
 
@@ -160,6 +169,7 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
     private ValEditorController valEditor;
     private final WpsEnvironment env;
     private boolean isEnabled = true;
+    private boolean wasBinded = false;
     private final ISettingsChangeListener settingsChangeListener = new ISettingsChangeListener() {
         @Override
         public void onSettingsChanged() {
@@ -173,7 +183,7 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
         setPreferredHeight(20);
         setupUi(valEditorFactory);
         this.env = (WpsEnvironment) getEnvironment();
-        this.env.addSettingsChangeListener(settingsChangeListener);
+        this.env.addSettingsChangeListener(settingsChangeListener);                
     }
 
     private void setupUi(final ValEditorFactory valEditorFactory) {
@@ -183,6 +193,7 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
         valEditor = editor.getController();
         setEditorWidget((UIObject) editor);
         ((UIObject) editor).setHeight(getPreferredHeight());
+        ((UIObject) editor).setObjectName("valEditor");
         setClientHandler("requestFocus", "$RWT.propEditor.requestFocus");
         valEditor.setTextOptionsProvider(new PropertyValueTextOptionsProvaider());
         addStandardButtons();
@@ -212,6 +223,17 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
                         break;
                 }
             }
+        }
+    }
+    
+    protected final void changeValEditor(final ValEditorFactory valEditorFactory){
+        final boolean isLabelVisible = this.getLabelVisible();
+        setupUi(valEditorFactory);
+        if (isLabelVisible){
+            setLabelVisible(true);
+        }
+        if (wasBinded){
+            setupListeners();
         }
     }
 
@@ -274,6 +296,19 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
             ((UIObject) valEditor.getValEditor()).setHeight(height);
         }
     }
+
+    @Override
+    protected void addCommandButtons(final List<ICommandToolButton> commandButtons) {
+        final List<ICommandToolButton> buttons = new ArrayList<>(commandButtons);
+        Collections.reverse(buttons);
+        for (ICommandToolButton commandButton : buttons) {
+            valEditor.addButton(commandButton, getCommandButtonPriority(commandButton));
+        }
+    }
+    
+    protected int getCommandButtonPriority(final ICommandToolButton commandButton){
+        return COMMAND_BUTTONS_PRIORITY;
+    }    
 
     @Override
     public void addButton(IButton button) {
@@ -358,9 +393,14 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
     }
 
     @Override    
-    @SuppressWarnings("unchecked")
     public void bind() {
         super.bind();
+        setupListeners();
+        wasBinded = true;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void setupListeners(){
         final ValEditorController finalValEditor = getValEditor();
         finalValEditor.addValueChangeListener(new ValueEditor.ValueChangeListener<Object>() {
             @Override
@@ -388,7 +428,7 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
             public void onUnacceptableInputChanged(final UnacceptableInput previous, final UnacceptableInput current) {
                 PropEditor.this.onUnacceptableInputChanged(current);
             }
-        });
+        });        
     }
 
     @Override
@@ -403,9 +443,21 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
         finalValEditor.setEditMask(options.getEditMask());
         finalValEditor.setMandatory(options.isMandatory());
         finalValEditor.setReadOnly(options.isReadOnly());
+        finalValEditor.setButtonsVisible(options.isEnabled());
+        if (finalValEditor instanceof  InputBoxController 
+            && RadPropertyDef.isPredefinedValuesSupported(getProperty().getType(), options.getEditMask().getType())){
+            ((InputBoxController)finalValEditor).setPredefinedValues(options.getPredefinedValues());
+        }
         finalValEditor.setInitialValue(initialValue);        
         if (unacceptableInput!=null){
             finalValEditor.setInputText(options.getUnacceptableInput().getText());
+        }
+        if (finalValEditor instanceof InputBoxController){
+            final InputBoxController inputBox = (InputBoxController)finalValEditor;
+            final String dialogTitle = 
+                    ClientValueFormatter.capitalizeIfNecessary(getEnvironment(), getProperty().getTitle());
+            inputBox.setDialogTitle(dialogTitle);
+            inputBox.setMaxPredefinedValuesInDropDownList(getProperty().getMaxPredefinedValuesInDropDownList());        
         }
     }
 
@@ -415,9 +467,9 @@ public abstract class PropEditor extends AbstractPropEditor implements IProperty
         final ValidationResult state = finalProperty.getOwner().getPropertyValueState(finalProperty.getId());
         getValEditor().setValidationResult(state);
         getValEditor().refreshTextOptions();
+        getValEditor().refresh();
     }
-    
-    
+        
     @Override
     public boolean close() {
         if (valEditor != null) {

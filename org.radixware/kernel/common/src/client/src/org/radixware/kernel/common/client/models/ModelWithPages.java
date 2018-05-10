@@ -15,11 +15,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.errors.NoDefinitionWithSuchIdError;
 import org.radixware.kernel.common.client.meta.editorpages.IEditorPagesHolder;
 import org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef;
+import org.radixware.kernel.common.client.meta.editorpages.RadStandardEditorPageDef;
 import org.radixware.kernel.common.client.models.items.EditorPageModelItem;
+import org.radixware.kernel.common.client.models.items.PropertiesGroupModelItem;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -30,6 +32,7 @@ public abstract class ModelWithPages extends Model{
     }
     
     private Map<Id, EditorPageModelItem> editorPages = null;
+    private Map<Id, PropertiesGroupModelItem> propertiesGroups = null;
     private Collection<Id> unrestrictedEditorPages;
     
     @Override
@@ -54,6 +57,34 @@ public abstract class ModelWithPages extends Model{
             }
         }
         return page;
+    }
+    
+    public final PropertiesGroupModelItem getPropertiesGroup(final Id id){
+        if (propertiesGroups == null){
+            propertiesGroups = new HashMap<>();
+        }
+        PropertiesGroupModelItem group = propertiesGroups.get(id);
+        if (group==null){
+            RadStandardEditorPageDef.PropertiesGroup groupDef = findPropertiesGroupDefById(id);
+            if (groupDef==null){
+                throw new NoDefinitionWithSuchIdError(getDefinition(), NoDefinitionWithSuchIdError.SubDefinitionType.EDITOR_PAGE_PROPERTIES_GROUP, id);
+            }
+            group = new PropertiesGroupModelItem(this, groupDef);
+            propertiesGroups.put(id, group);
+        }
+        return group;
+    }
+    
+    private RadStandardEditorPageDef.PropertiesGroup findPropertiesGroupDefById(final Id id){
+        final Collection<Id> allPagesIds = getDefinition().getEditorPages().getAllPagesIds();
+        for (Id pageId: allPagesIds){
+            RadEditorPageDef pageDef = getDefinition().getEditorPages().getPageById(pageId);
+            if (pageDef instanceof RadStandardEditorPageDef 
+                && ((RadStandardEditorPageDef)pageDef).isPropertyGroupExists(id)){
+                return ((RadStandardEditorPageDef)pageDef).getPropertiesGroup(id);
+            }
+        }
+        return null;
     }
     
     void updateServerEditorPageRestrictions(final RawEntityModelData.EnabledEditorPages enabledEditorPages){
@@ -96,12 +127,25 @@ public abstract class ModelWithPages extends Model{
         return (editorPages != null && editorPages.containsKey(pageId)) || getDefinition().getEditorPages().isEditorPageExists(pageId);
     }
     
+    public final boolean isPropertiesGroupExists(final Id groupId){
+        return (propertiesGroups!=null && propertiesGroups.containsKey(groupId)) || findPropertiesGroupDefById(groupId)!=null;
+    }
+    
     protected final void cleanPages(){
         if (editorPages != null) {
-            for (Entry<Id, EditorPageModelItem> entry : editorPages.entrySet()) {
+            for (Map.Entry<Id, EditorPageModelItem> entry : editorPages.entrySet()) {
                 entry.getValue().unsubscribeAll();
             }
             editorPages.clear();
+        }
+    }
+    
+    protected final void cleanPropertiesGroups(){
+        if (propertiesGroups!=null){
+            for (Map.Entry<Id, PropertiesGroupModelItem> entry : propertiesGroups.entrySet()){
+                entry.getValue().unsubscribeAll();
+            }
+            propertiesGroups.clear();
         }
     }
     
@@ -123,6 +167,7 @@ public abstract class ModelWithPages extends Model{
     public void clean() {
         super.clean();
         unrestrictedEditorPages = null;
-        cleanPages();        
+        cleanPages();
+        cleanPropertiesGroups();
     }
 }

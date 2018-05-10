@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.IVisitor;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.SearchResult;
 import org.radixware.kernel.common.defs.VisitorProvider;
@@ -82,11 +83,10 @@ public interface ILocalizingBundleDef<T extends Definition & IMultilingualString
                 }
             }
         }
-
-        protected List<IMultilingualStringDef> getUsedStrings(EScope scope, boolean apiMode) {
+        
+        protected java.util.Set<Id> getUsedStringsIds(EScope scope, boolean apiMode){
             java.util.Set<Id> usedMlStringIds = null;
             Definition def = getOwnerBundle().findBundleOwner();
-
             while (def != null) {
                 final Collection<ILocalizedDef.MultilingualStringInfo> stringInfos = new ArrayList<>();
                 def.visit(new IVisitor() {
@@ -117,23 +117,53 @@ public interface ILocalizingBundleDef<T extends Definition & IMultilingualString
                             usedMlStringIds.add(info.getId());
                         }
                     }
-                } else {
-                    usedMlStringIds = null;
                 }
                 if (scope == EScope.LOCAL) {
                     break;
                 }
                 def = (Definition) getOwnerBundle().findOverwrittenFor(def).get();
             }
+            
+            if (usedMlStringIds == null || usedMlStringIds.isEmpty()){
+                usedMlStringIds = null;
+            }
+            
+            return usedMlStringIds;
+        }
+
+        protected List<IMultilingualStringDef> getUsedStrings(EScope scope, boolean apiMode) {
+
+            boolean saveAll = false;
+
+            Branch branch = getBranch();
+            Layer layer = getLayer();
+            if (branch == null || layer == null) {
+                saveAll = true;
+            } else if (layer.isReadOnly()) {
+                for (Layer l : branch.getLayers()) {
+                    if (!l.isReadOnly() && l.isLocalizing() && l.getBaseLayerURIs().contains(layer.getURI())) {
+                        saveAll = true;
+                    }
+                }
+            }
+            java.util.Set<Id> usedMlStringIds = getUsedStringsIds(scope, apiMode);
+            
             List<IMultilingualStringDef> listToSave = new LinkedList<>();
             if (usedMlStringIds != null){
                 for (IMultilingualStringDef string : get(scope)) {
-                    if (!usedMlStringIds.contains(string.getId())) {//ignore unused strings
-                        if (string.findOverwritten().get() == null) {
+                    if (!saveAll && !usedMlStringIds.contains(string.getId())) {//ignore unused strings
+                        Module m = string.getModule();
+                        if ((m == null || m == getModule()) && string.findOverwritten().get() == null) {//does not ignore strings from overwritten modules
                             continue;
                         }
                     }
                     listToSave.add(string);
+                }
+            }  else {
+                if (saveAll){
+                    for (IMultilingualStringDef string : get(scope)) {
+                        listToSave.add(string);
+                    }
                 }
             }
             return listToSave;
@@ -172,6 +202,11 @@ public interface ILocalizingBundleDef<T extends Definition & IMultilingualString
             if (layer != null){
                 Set<EIsoLanguage> languages = new HashSet(layer.getLanguages());
                 Branch branch = layer.getBranch();
+                
+                if (branch == null) {
+                    return;
+                }
+                
                 for (Layer l : branch.getLayers()){
                     if (l.isLocalizing() && l.getBaseLayerURIs().contains(layer.getURI())) {
                         languages.addAll(l.getLanguages());
@@ -193,4 +228,6 @@ public interface ILocalizingBundleDef<T extends Definition & IMultilingualString
     public IMultilingualStringDef createString(ELocalizedStringKind kind);
     
     public Id getId();
+    
+    public List<EIsoLanguage> getLanguages();
 }

@@ -1,0 +1,27 @@
+
+class Test {
+
+    enum E {
+
+	A, B
+    }
+
+    enum E1 {
+
+	C, D
+    }
+
+    public void f() {
+	E e = E.A;
+	switch (e) {
+	    case E.A:
+		break;
+	    case B:
+		break;
+	    case E1.C:
+		break;
+	    case E1.D:
+		break;
+	}
+    }
+}

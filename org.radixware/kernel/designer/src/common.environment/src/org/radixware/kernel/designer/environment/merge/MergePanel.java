@@ -205,7 +205,7 @@ public class MergePanel extends JPanel {
                         doMergeDds((DdsMergeChangesOptions) options_);
                     }
 
-                } catch (RadixSvnException ex) {
+                } catch (Exception ex) {
                     MergeUtils.messageError(ex);
                 }
             }
@@ -250,7 +250,7 @@ public class MergePanel extends JPanel {
     }
     private static final String tempSuffix = ".bak";
 
-    private void doMergeAds(final AdsMergeChangesOptions adsOptions) throws ISvnFSClient.SvnFsClientException, RadixSvnException {
+    private void doMergeAds(final AdsMergeChangesOptions adsOptions) throws ISvnFSClient.SvnFsClientException, RadixSvnException, UnsupportedEncodingException {
         List<Long> priorList = new ArrayList<>();
         List<Long> currList = new ArrayList<>();
         table.getSelectedRevisions(priorList, currList);
@@ -300,9 +300,9 @@ public class MergePanel extends JPanel {
                     String pathDir = SvnPathUtils.getParentDir(itemWrapper.getToPath());
                     int cnt = editor.openDirs(pathDir);
                     if (i == 0) {
-                        editor.appendFile(bakPath, priorAsStr.get(i).getBytes());
+                        editor.appendFile(bakPath, priorAsStr.get(i).getBytes(FileUtils.XML_ENCODING));
                     } else {
-                        editor.modifyFile(bakPath, priorAsStr.get(i).getBytes());
+                        editor.modifyFile(bakPath, priorAsStr.get(i).getBytes(FileUtils.XML_ENCODING));
                     }
                     editor.closeDirs(cnt);
                     editor.commit();
@@ -313,7 +313,7 @@ public class MergePanel extends JPanel {
                     SVNRepositoryAdapter.Editor editor = adsOptions.getRepository().createEditor("Recreate mlb file \'" + removeFile.getName() + "\' r" + String.valueOf(realCurrList.get(i)));
                     String pathDir = SvnPathUtils.getParentDir(itemWrapper.getToPath());
                     int cnt = editor.openDirs(pathDir);
-                    editor.modifyFile(bakPath, currAsStr.get(i).getBytes());
+                    editor.modifyFile(bakPath, currAsStr.get(i).getBytes(FileUtils.XML_ENCODING));
                     editor.closeDirs(cnt);
                     editor.commit();
                     currList.add(adsOptions.getRepository().getLatestRevision());
@@ -369,12 +369,17 @@ public class MergePanel extends JPanel {
                         buttons.add(view_files);
                         buttons.add(close_this_dialog);
                     }
-
-                    final String result = DialogUtils.showCustomMessageBox(
-                            "In applying the changes conflict was detected (changes from "
-                            + String.valueOf(priorList.get(i))
-                            + " to "
-                            + String.valueOf(currList.get(i)) + " revision ).", buttons, DialogDescriptor.QUESTION_MESSAGE);
+                    final String result;
+                    if (itemWrapper.isPreview()) {
+                        DialogUtils.messageInformation("Unable to merge the preview file. Please regenerate it for \'" + options.getToBranchShortName() + "\' branch");
+                        result = revert_to_original_version;
+                    } else {
+                        result = DialogUtils.showCustomMessageBox(
+                                "In applying the changes conflict was detected (changes from "
+                                + String.valueOf(priorList.get(i))
+                                + " to "
+                                + String.valueOf(currList.get(i)) + " revision ).", buttons, DialogDescriptor.QUESTION_MESSAGE);
+                    }
                     if (result == null || result.isEmpty() || result.equals(close_this_dialog)) {
                         if (DialogUtils.messageConfirmation("Are you sure you want to close the dialog? Conflicting files will not be reverted.")) {
 
@@ -451,7 +456,10 @@ public class MergePanel extends JPanel {
 
                 try {
                     {
-                        XmlObject.Factory.parse(content2);
+                        if (!itemWrapper.isPreview()) {
+                            XmlObject.Factory.parse(content2);
+                        }
+
                         writeStringToFile(t, content2);
                     }
                 } catch (DefinitionError ex) {
@@ -563,9 +571,9 @@ public class MergePanel extends JPanel {
 //                    String pathDir = SvnPathUtils.getParentDir(itemWrapper.getToPath());
 //                    int cnt = editor.openDirs(pathDir);
 //                    if (i == 0) {
-//                        editor.appendFile(bakPath, priorAsStr.get(i).getBytes());
+//                        editor.appendFile(bakPath, priorAsStr.get(i).getBytes(FileUtils.XML_ENCODING));
 //                    } else {
-//                        editor.modifyFile(bakPath, priorAsStr.get(i).getBytes());
+//                        editor.modifyFile(bakPath, priorAsStr.get(i).getBytes(FileUtils.XML_ENCODING));
 //                    }
 //                    editor.closeDirs(cnt);
 //                    editor.commit();
@@ -576,7 +584,7 @@ public class MergePanel extends JPanel {
 //                    SVNEditor editor = new SVNEditor(adsOptions.getRepository(), "Recreate mlb file \'" + removeFile.getName() + "\' r" + String.valueOf(realCurrList.get(i)));
 //                    String pathDir = SvnPathUtils.getParentDir(itemWrapper.getToPath());
 //                    int cnt = editor.openDirs(pathDir);
-//                    editor.modifyFile(bakPath, currAsStr.get(i).getBytes());
+//                    editor.modifyFile(bakPath, currAsStr.get(i).getBytes(FileUtils.XML_ENCODING));
 //                    editor.closeDirs(cnt);
 //                    editor.commit();
 //                    currList.add(adsOptions.getRepository().getLatestRevision());

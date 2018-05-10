@@ -14,9 +14,6 @@ package org.radixware.kernel.common.msdl.fields;
 import com.linuxense.javadbf.DBFField;
 import org.radixware.kernel.common.msdl.EFieldType;
 import org.radixware.kernel.common.msdl.MsdlField;
-import org.radixware.kernel.common.msdl.enums.EEncoding;
-import org.radixware.kernel.common.msdl.fields.parser.SmioField;
-import org.radixware.kernel.common.msdl.fields.parser.SmioFieldNum;
 import org.radixware.schemas.msdl.NumField;
 import org.radixware.schemas.msdl.Structure;
 
@@ -38,37 +35,25 @@ public class NumFieldModel extends SimpleFieldModel {
     }
 
     @Override
-    public SmioField getParser() {
-        if (parser == null) {
-            parser = new SmioFieldNum(this);
-        }
-        return parser;
+    public String calcEncoding() {
+        return calcEncoding(true);
     }
-
+    
     @Override
-    public String getEncoding() { 
-        if (getField().isSetEncoding()) {
+    public String calcEncoding(boolean inclusive) {
+        if (inclusive && getField().isSetEncoding()) {
             return getField().getEncoding();
         } else {
-            final String[] result = new String[]{null};
-            iterateOverParents(true, new ParentAcceptor() {
-                @Override
-                public boolean accept(MsdlField field, Structure cur) {
-                    if (cur.isSetDefaultIntNumEncoding()) {
-                        result[0] = cur.getDefaultIntNumEncoding();
-                        return false;
-                    }
-                    if ((isRootMsdlSchemeDirectChild() || field.getModel().isRootMsdlScheme()) && cur.isSetDefaultEncoding()) {
-                        String encoding = cur.getDefaultEncoding();
-                        if (isAcceptableEncoding(EEncoding.getInstance(encoding))) {
-                            result[0] = encoding;
-                            return false;
-                        }
-                    }
-                    return true;
+            for (Structure cur : getParentList(true)) {
+                if (cur.isSetDefaultIntNumEncoding()) {
+                    return cur.getDefaultIntNumEncoding();
                 }
-            });
-            return result[0];
+                final String defEnc = getAcceptableEncoding(cur.getDefaultEncoding());
+                if (defEnc != null) {
+                    return defEnc;
+                }
+            }
+            return null;
         }
     }
 

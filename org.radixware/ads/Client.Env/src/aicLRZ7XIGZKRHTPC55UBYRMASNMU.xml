@@ -587,6 +587,39 @@
         </Parameters>
         <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
       </Method>
+      <Method Id="mth5G5VNJUUHJFHZHUHVAMVJ2HHB4" Name="prepareCreate" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="prepareCreate(Ljava.util.List&lt;Lorg.radixware.kernel.common.types.Id;>;Lorg.radixware.kernel.common.client.models.IContext.Entity;Ljava.util.List&lt;Lorg.radixware.kernel.common.client.models.EntityModel;>;)Lorg.radixware.schemas.eas.PrepareCreateRs;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="classIds" Id="mpr5BBGPXNO2ZCG3EIX7AUD6OWMJY">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="context" Id="mprOMTG3WWG3ZBEJHAJLVEWGLJK4A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.IContext.Entity"/>
+          </Parameter>
+          <Parameter Name="newEntityModels" Id="mprUNINIL4YXJGP5FJ2SM42WT34SI">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.eas.PrepareCreateRs"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
     </Methods>
   </AdsClassDefinition>
 </AdsDefinition>

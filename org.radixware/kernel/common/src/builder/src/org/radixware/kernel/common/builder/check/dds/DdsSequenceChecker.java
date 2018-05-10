@@ -15,6 +15,7 @@ import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.dds.DdsSequenceDef;
 import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegistration;
+import org.radixware.kernel.common.defs.dds.DdsSequenceDef.Problems;
 
 
 @RadixObjectCheckerRegistration
@@ -54,6 +55,12 @@ public class DdsSequenceChecker<T extends DdsSequenceDef> extends DdsDefinitionC
         if (cache != null && maxValue != null && minValue != null && incrementBy != null && incrementBy != 0) {
             if (cache < 2 || (cache >= Math.round(Math.ceil((maxValue - minValue)) / Math.abs(incrementBy)))) {
                 error(sequence, problemHandler, "'Cache' value is out of range");
+            }
+        }
+        
+        if ((minValue != null && minValue != 1) || (incrementBy != null && incrementBy != 1)) {
+            if (!sequence.isWarningSuppressed(Problems.AADC_SEQUENCE)) {
+                warning(sequence, problemHandler, Problems.AADC_SEQUENCE);
             }
         }
     }

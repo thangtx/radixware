@@ -14,16 +14,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.zip.GZIPOutputStream;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.ParsedURLData;
 import org.apache.batik.util.ParsedURLDefaultProtocolHandler;
@@ -43,6 +49,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportFormattedC
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportGroup;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportGroupBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportImageCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginMm;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportPropertyCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSpecialCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSummaryCell;
@@ -71,10 +78,12 @@ import org.radixware.kernel.server.exceptions.DatabaseError;
 import org.radixware.kernel.server.meta.clazzes.IRadPropAccessor;
 import org.radixware.kernel.server.meta.clazzes.IRadPropReadAccessor;
 import org.radixware.kernel.server.meta.clazzes.RadPropDef;
-import org.radixware.kernel.server.reports.fo.AdjustedCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.AdjustedCell;
+import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.server.reports.fo.ChartBuilder;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.Report;
+import org.radixware.schemas.reports.ColumnSettings;
 
 public abstract class AbstractReportGenerator {
 
@@ -188,6 +197,34 @@ public abstract class AbstractReportGenerator {
         }
     }
 
+    protected static class SubReportGenData extends ReportGenData {
+
+        private final AdsSubReport subReportInfo;
+
+        public SubReportGenData(Report report, AdsReportForm.Mode getMode, ReportGenData parent) {
+            this(report, getMode, parent, null);
+        }
+
+        public SubReportGenData(Report report, AdsReportForm.Mode genMode, ReportStateInfo stateInfo) {
+            this(report, genMode, stateInfo, null);
+        }
+
+        public SubReportGenData(Report report, AdsReportForm.Mode getMode, ReportGenData parent, AdsSubReport subReportInfo) {
+            super(report, getMode, parent);
+            this.subReportInfo = subReportInfo;
+        }
+
+        public SubReportGenData(Report report, AdsReportForm.Mode genMode, ReportStateInfo stateInfo, AdsSubReport subReportInfo) {
+            super(report, genMode, stateInfo);
+            this.subReportInfo = subReportInfo;
+        }
+
+        public AdsReportMarginMm getMargin() {
+            return subReportInfo != null ? subReportInfo.getMarginMm() : null;
+        }
+
+    }
+
     private static class GenTimeInfo implements Report.IGenTimeInfo {
 
         private final Timestamp generationTime;
@@ -282,19 +319,27 @@ public abstract class AbstractReportGenerator {
             return summaryCollector;
         }
     }
+
     private final ReportGenData rootGenData;
     private final GenTimeInfo genTimeInfo = new GenTimeInfo();
+
+    private ReportResultSetInfo resultSetInfo = null;
+    private ResultSetCacheSizeController resultSetCacheSizeController = null;
+    private final Map<Id, Integer> reportCallCount = new HashMap<>();
 
     private final AdsReportForm.Mode genMode;
     protected IReportFileController fileController;
     protected final EReportExportFormat format;
     protected int separateFileGroupNumber;
+    private final List<File> tmpFiles = new LinkedList<>();
+    
+    protected ColumnSettings columnsSettings = null;
 
     protected AbstractReportGenerator(Report report, EReportExportFormat format, AdsReportForm.Mode genMode, ReportStateInfo stateInfo) {
         this.rootGenData = new ReportGenData(report, genMode, stateInfo);
         this.genMode = genMode;
         this.separateFileGroupNumber = -1;
-        this.fileController = null;
+        this.fileController = null; 
         this.format = format;
     }
 
@@ -497,6 +542,10 @@ public abstract class AbstractReportGenerator {
                     if (data == null) {
                         return "";
                     } else {
+                        if (data.getMimeType() != null && data.getMimeType().contains("/svg")) {
+                            File file = createSvgImage(data.getData(), cell);
+                            return "url('" + file.toURI().toString() + "')";
+                        }
                         final String dataInBase64 = Base64.encode(data.getData());
                         return "url('data:" + data.getMimeType() + ";base64," + dataInBase64 + "')";
                     }
@@ -529,10 +578,16 @@ public abstract class AbstractReportGenerator {
             } catch (SQLException ex) {
                 throw new DefinitionError("Unable to get image data", ex);
             }
-            byte[] convertedImage = setupDbImageCellSize(dbImageCell, mimeType, bytes);
+            byte[] convertedImage = setupDbImageCellSize(dbImageCell, mimeType, bytes, reportGenData.report.isDbImageResizeSupressed());
             if (convertedImage != bytes) {
                 mimeType = "image/png";
                 bytes = convertedImage;
+            }
+            dbImageCell.setMimeType(mimeType);
+
+            if (mimeType.contains("/svg")) {
+                File file = createSvgImage(bytes, cell);
+                return "url('" + file.toURI().toString() + "')";
             }
             final String dataInBase64 = Base64.encode(bytes);
             //this is the place to calc cell size according to cell resize policy
@@ -548,17 +603,41 @@ public abstract class AbstractReportGenerator {
             }
             ChartBuilder cb = ChartBuilder.Factory.newInstance(chartCell, reportGenData.report, chartDataSets);//new ChartBuilder(chartCell,reportGenData.chartDataSets);
             cb.buildChart();
+            if (cb.file != null) {
+                tmpFiles.add(cb.file);
+            }
             for (ChartDataSet chartDataSet : chartDataSets) {
                 chartDataSet.getDataSetMap().clear();
             }
-            return "\"" + cb.file.getPath() + "\"";
+
+            return cb.file.toURI().toString();
+
             //return cb != null ? "\"" + cb.file.getPath() + "\"" : "";
         } else {
             return "";
         }
     }
 
-    protected byte[] setupDbImageCellSize(AdsReportDbImageCell cell, String mimeType, byte[] imageData) {
+    private File createSvgImage(byte[] bytes, AdsReportCell cell) {
+        File file = null;
+        try {
+            file = File.createTempFile("image" + cell.getName(), ".svg");
+            file.deleteOnExit();
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(bytes);
+            }
+            tmpFiles.add(file);
+
+        } catch (IOException ex) {
+            if (file != null) {
+                FileUtils.deleteFile(file);
+            }
+            throw new RadixError("Unable to create svg file for report.", ex);
+        }
+        return file;
+    }
+
+    protected byte[] setupDbImageCellSize(AdsReportDbImageCell cell, String mimeType, byte[] imageData, boolean dbImageResizeSupressed) {
         return imageData;
     }
 
@@ -570,7 +649,17 @@ public abstract class AbstractReportGenerator {
         ReportGenData parentGenData = genDataList.get(genDataList.size() - 1);
         final Report parentReport = parentGenData.report;
         final Id subReportId = subReportInfo.getReportId();
-        final Class subReportClass = parentReport.getArte().getDefManager().getClass(subReportId);
+
+        Class subReportClass = null;
+        if (Report.getPreviewEnvironment() != null) {
+            try {
+                subReportClass = Report.getPreviewEnvironment().findReportClassById(subReportId);
+            } catch (DefinitionNotFoundError e) {
+                subReportClass = parentReport.getArte().getDefManager().getClass(subReportId);
+            }
+        } else {
+            subReportClass = parentReport.getArte().getDefManager().getClass(subReportId);
+        }
         final Report subReport;
 
         try {
@@ -582,20 +671,76 @@ public abstract class AbstractReportGenerator {
             throw new DefinitionError("Unable to instantiate subreport #" + subReportId, cause);
         }
 
+        setIsFirstLine(true);
         final Map<Id, Object> parameterId2Value = new HashMap<>();
-        for (AdsSubReport.Association association : subReportInfo.getAssociations()) {
-            final Id parameterId = association.getParameterId();
-            final Id propertyId = association.getPropertyId();
-            final Object value = getPropertyValueById(parentReport, propertyId);
-            parameterId2Value.put(parameterId, value);
+
+        for (int i = genDataList.size() - 1; i >= 0; i--) {
+            parameterId2Value.clear();
+            boolean ok = true;
+            final Report paramSourceReport = genDataList.get(i).report;
+            for (AdsSubReport.Association association : subReportInfo.getAssociations()) {
+                final Id parameterId = association.getParameterId();
+                final Id propertyId = association.getPropertyId();
+                try {
+                    final Object value = getPropertyValueById(paramSourceReport, propertyId);
+                    parameterId2Value.put(parameterId, value);
+                } catch (DefinitionNotFoundError e) {
+                    if (i == 0) {
+                        final StringBuilder sb = new StringBuilder();
+                        for (ReportGenData gd : genDataList) {
+                            if (sb.length() > 0) {
+                                sb.append("->");
+                            }
+                            sb.append(gd.reportId);
+                        }
+                        throw new IllegalStateException("Unable to find parameter '" + parameterId + "' of subreport " + subReportInfo.getReportId() + ", stack: " + sb, e);
+                    } else {
+                        ok = false;
+                        break;
+                    }
+                }
+            }
+            if (ok) {
+                break;
+            }
         }
 
         try {
             subReport.open(parameterId2Value);
-            final ReportGenData subReportGenData = new ReportGenData(subReport, genMode, parentGenData);
+
+            incReportCallCount(subReportId);
+            if (resultSetInfo != null) {
+                try {
+                    int callNumber = reportCallCount.get(subReportId) - 1;
+                    String resultSetFileName = subReportId.toString() + "_" + callNumber;
+
+                    if (resultSetInfo.isResultSetFileExists(resultSetFileName)) {
+                        ResultSet resultSet = new SerializedReportFileResultSet(
+                                resultSetInfo.getResultSetFile(resultSetFileName),
+                                subReport.getColumnNames(),
+                                resultSetInfo.getReportResultColumnDescriptors(resultSetFileName),
+                                resultSetInfo.getReportResultSetSize(resultSetFileName)
+                        );
+                        subReport.open(resultSet);
+                    } else {
+                        resultSetInfo.setReportResultColumnDescriptors(resultSetFileName, subReport.getResultSet().getMetaData());
+                    }
+                } catch (IOException | SQLException ex) {
+                    throw new ReportGenerationException(ex);
+                }
+            }
+
+            final SubReportGenData subReportGenData = new SubReportGenData(subReport, genMode, parentGenData, subReportInfo);
+            if (rootGenData.form.getMode() == AdsReportForm.Mode.GRAPHICS) {
+                genTimeInfo.curHeight += subReportInfo.getMarginMm().getTopMm();
+            }
             genDataList.add(subReportGenData);
             buildReport(genDataList);
             genDataList.remove(subReportGenData);
+            if (rootGenData.form.getMode() == AdsReportForm.Mode.GRAPHICS) {
+                genTimeInfo.curHeight += subReportInfo.getMarginMm().getBottomMm();
+            }
+            afterSubReportClose(subReportGenData);
         } finally {
             subReport.close();
         }
@@ -678,7 +823,7 @@ public abstract class AbstractReportGenerator {
         if (rootGenData.form.getMode() == AdsReportForm.Mode.GRAPHICS) {
             genTimeInfo.curHeight = rootGenData.form.getMargin().getTopMm();
         } else {
-            genTimeInfo.curHeightRows = rootGenData.form.getMargin().getTopRows();
+            genTimeInfo.curHeightRows = 0;
         }
 
         rootGenData.totalSummary.incPageCount(genTimeInfo.fileNumber);
@@ -693,9 +838,11 @@ public abstract class AbstractReportGenerator {
     protected void buildPageFooter(List<ReportGenData> genDataList) throws ReportGenerationException {
         try {
             genTimeInfo.isInPageFooter = true;
-            ReportGenData genData = genDataList.get(genDataList.size() - 1);
-            for (AdsReportBand footer : genData.form.getPageFooterBands()) {
-                buildBand(genDataList, footer, EReportBandType.PAGE_FOOTER);
+            for (int i = 0; i < genDataList.size(); i++) {
+                ReportGenData genData = genDataList.get(i);
+                for (AdsReportBand footer : genData.form.getPageFooterBands()) {
+                    buildBand(genDataList, footer, EReportBandType.PAGE_FOOTER, i);
+                }
             }
         } finally {
             genTimeInfo.isInPageFooter = false;
@@ -716,20 +863,53 @@ public abstract class AbstractReportGenerator {
     }
 
     protected void buildPageHeader(List<ReportGenData> genDataList) throws ReportGenerationException {
-        for (AdsReportBand header : genDataList.get(genDataList.size() - 1).form.getPageHeaderBands()) {
-            buildBand(genDataList, header, EReportBandType.PAGE_HEADER);
+        //put all headers from all reports/subreports until root
+        for (int i = 0; i < genDataList.size(); i++) {
+            for (AdsReportBand header : genDataList.get(i).form.getPageHeaderBands()) {
+                buildBand(genDataList, header, EReportBandType.PAGE_HEADER, i);
+            }
         }
     }
 
     protected abstract Map<AdsReportCell, AdjustedCell> adjustBand(AdsReportBand band) throws ReportGenerationException;
 
+    private void adjustCellsToColumns(final ReportGenData reportGenData) {
+        if (columnsSettings == null || !columnsSettings.getIsUsed()) {
+            return;
+        }
+        
+        for (AdsReportBand band : reportGenData.form.getColumnHeaderBands()) {
+            adjustCellsToColumns(band);
+        }
+        
+        for (AdsReportBand band : reportGenData.form.getDetailBands()) {
+            adjustCellsToColumns(band);
+        }
+        
+        for (AdsReportBand band : reportGenData.form.getSummaryBands()) {
+            adjustCellsToColumns(band);
+        }
+                
+        for (AdsReportGroup group : reportGenData.form.getGroups()) {
+            if (group.getFooterBand() != null) {
+                adjustCellsToColumns(group.getFooterBand());
+            }
+        }
+    }
+    
+    protected void adjustCellsToColumns(AdsReportBand container) {
+    }
+    
     private void adjustCellsPosition(AdsReportForm.Bands container) {
         for (AdsReportBand band : container) {
             adjustCellsPosition(band);
         }
-    }
+    }        
 
     protected abstract void adjustCellsPosition(AdsReportBand container);
+
+    protected void setIsFirstLine(boolean isFirstLine) {
+    }
 
     private boolean isNewPageRequiredForBand(final ReportGenData genData, final AdsReportBand band) {
         if (!genTimeInfo.isPageOpened) {
@@ -765,7 +945,7 @@ public abstract class AbstractReportGenerator {
                 for (final AdsReportBand footer : genData.form.getPageFooterBands()) {
                     footerHeight += (footer != null && footer.isVisible() ? footer.getHeightRows() : 0);
                 }
-                return (genTimeInfo.curHeightRows + band.getHeightRows() > genData.form.getPageHeightRows() - genData.form.getMargin().getBottomRows() - footerHeight);
+                return (genTimeInfo.curHeightRows + band.getHeightRows() > genData.form.getPageHeightRows() - footerHeight);
             }
         } else {
             if (genData.form.getMode() == AdsReportForm.Mode.GRAPHICS) {
@@ -778,7 +958,7 @@ public abstract class AbstractReportGenerator {
                 }
                 return (genTimeInfo.curHeight + band.getHeightMm() > checkValue);
             } else {
-                int checkValue = genData.form.getPageHeightRows() - genData.form.getMargin().getBottomRows();
+                int checkValue = genData.form.getPageHeightRows();
                 if (!genTimeInfo.isInPageFooter) {
                     checkValue -= genTimeInfo.currentPageFooterRows;
                 } else if (!isFlowDependent()) {
@@ -790,7 +970,7 @@ public abstract class AbstractReportGenerator {
         }
     }
 
-    protected abstract void viewBand(final List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents) throws ReportGenerationException;
+    protected abstract void viewBand(final List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents, ReportGenData currentGenData) throws ReportGenerationException;
 
     protected final AdsReportForm getRootForm() {
         return rootGenData.form;
@@ -809,6 +989,10 @@ public abstract class AbstractReportGenerator {
 
     protected final int getCurHeightRows() {
         return genTimeInfo.curHeightRows;
+    }
+    
+    protected final void setCurHeightRows(int height) {
+        genTimeInfo.curHeightRows = height;
     }
 
     protected final boolean isFirstDataBandOnPage() {
@@ -879,45 +1063,42 @@ public abstract class AbstractReportGenerator {
 
     //private List<AdsReportBand> buildedBand=new LinkedList<>();
     protected void buildBand(final List<ReportGenData> genDataList, final AdsReportBand band, EReportBandType bandType) throws ReportGenerationException {
+        buildBand(genDataList, band, bandType, -1);
+    }
+
+    protected void buildBand(final List<ReportGenData> genDataList, final AdsReportBand band, EReportBandType bandType, int indexExt) throws ReportGenerationException {
         if (band == null) {
             return;
         }
 
-        final int index = genDataList.size() - 1;
+        final int index = indexExt >= 0 ? indexExt : genDataList.size() - 1;
         final BandSizes bandSizes = new BandSizes(band); // remember band and cells sizes
 
         band.onAdding();
         if (!band.isVisible()) {
-            if ((band.getType() == EReportBandType.PAGE_HEADER || band.getType() == EReportBandType.PAGE_FOOTER) && genDataList.size() > 1) {
-                List<ReportGenData> genDataBaseList = new LinkedList<>(genDataList);
-                genDataBaseList.remove(index);
-
-                EReportBandType bandBaseType;
-                final AdsReportForm.Bands bandsBase;
-                if (band.getType() == EReportBandType.PAGE_HEADER) {
-                    bandsBase = genDataBaseList.get(index - 1).form.getPageHeaderBands();
-                    bandBaseType = EReportBandType.PAGE_HEADER;
-                } else {
-                    bandsBase = genDataBaseList.get(index - 1).form.getPageFooterBands();
-                    bandBaseType = EReportBandType.PAGE_FOOTER;
-                }
-                for (AdsReportBand bandBase : bandsBase) {
-                    buildBand(genDataBaseList, bandBase, bandBaseType);
-                }
-            }
+            //RADIX-11272
+//            if ((band.getType() == EReportBandType.PAGE_HEADER || band.getType() == EReportBandType.PAGE_FOOTER) && genDataList.size() > 1) {
+//                List<ReportGenData> genDataBaseList = new ArrayList<>(genDataList);
+//                genDataBaseList.remove(index);
+//
+//                EReportBandType bandBaseType;
+//                final AdsReportForm.Bands bandsBase;
+//                if (band.getType() == EReportBandType.PAGE_HEADER) {
+//                    bandsBase = genDataBaseList.get(index - 1).form.getPageHeaderBands();
+//                    bandBaseType = EReportBandType.PAGE_HEADER;
+//                } else {
+//                    bandsBase = genDataBaseList.get(index - 1).form.getPageFooterBands();
+//                    bandBaseType = EReportBandType.PAGE_FOOTER;
+//                }
+//                for (AdsReportBand bandBase : bandsBase) {
+//                    buildBand(genDataBaseList, bandBase, bandBaseType);
+//                }
+//            }
+//            return;
             return;
         }
 
         final ReportGenData genData = genDataList.get(index);
-        if (band.getType() != EReportBandType.PAGE_HEADER && band.getType() != EReportBandType.PAGE_FOOTER && isNewPageRequiredForBand(genData, band)) {
-            if (genTimeInfo.isPageOpened) {
-                finishPage(genDataList);
-            }
-            newPage(genDataList);
-            if (bandType == EReportBandType.DETAIL) {
-                repeatGroupsOnNewPage(genDataList);
-            }
-        }
 
         for (AdsSubReport subReport : band.getPreReports()) {
             buildSubReport(genDataList, subReport);
@@ -929,8 +1110,18 @@ public abstract class AbstractReportGenerator {
         Map<AdsReportCell, AdjustedCell> adjustedCellContents = adjustBand(band);
         boolean isRootReportFooter = band.isVisible() && rootGenData.form.getPageFooterBands().contains(band);
 
+        if (band.getType() != EReportBandType.PAGE_HEADER && band.getType() != EReportBandType.PAGE_FOOTER && isNewPageRequiredForBand(genData, band)) {
+            if (genTimeInfo.isPageOpened) {
+                finishPage(genDataList);
+            }
+            newPage(genDataList);
+            if (bandType == EReportBandType.DETAIL) {
+                repeatGroupsOnNewPage(genDataList);
+            }
+        }
+
         if (!isFlowDependent()) {
-            viewBand(genDataList, band, adjustedCellContents);
+            viewBand(genDataList, band, adjustedCellContents, genData);
             if (genData.form.getMode() == AdsReportForm.Mode.GRAPHICS) {
                 genTimeInfo.curHeight += band.getHeightMm();
             } else {
@@ -943,7 +1134,7 @@ public abstract class AbstractReportGenerator {
                 if (isRootReportFooter && !isInfiniteHeight()) {
                     genTimeInfo.curHeight = genData.form.getPageHeightMm() - genData.form.getMargin().getBottomMm() - getFooterStartOffsetFromBottomMm(band);
                 }
-                viewBand(genDataList, band, adjustedCellContents);
+                viewBand(genDataList, band, adjustedCellContents, genData);
                 if (isRootReportFooter || isInfiniteHeight()) {
                     genTimeInfo.curHeight += band.getHeightMm();
                 } else {
@@ -951,9 +1142,9 @@ public abstract class AbstractReportGenerator {
                 }
             } else {
                 if (isRootReportFooter && !isInfiniteHeight()) {
-                    genTimeInfo.curHeightRows = genData.form.getPageHeightRows() - genData.form.getMargin().getBottomRows() - getFooterStartOffsetFromBottomRows(band);
+                    genTimeInfo.curHeightRows = genData.form.getPageHeightRows() - getCurPageFooterHeightRows();
                 }
-                viewBand(genDataList, band, adjustedCellContents);
+                viewBand(genDataList, band, adjustedCellContents, genData);
                 if (isRootReportFooter || isInfiniteHeight()) {
                     genTimeInfo.curHeightRows += band.getHeightRows();
                 } else {
@@ -989,6 +1180,7 @@ public abstract class AbstractReportGenerator {
                 reportGenData.report.previous();
                 final AdsReportGroup group = reportGenData.form.getGroups().get(groupNum);
                 buildBand(reportGenDataList, group.getFooterBand(), EReportBandType.GROUP_FOOTER);
+                beforeCloseGroup(reportGenData, groupNum);
                 collectDataSets(reportGenData, groupNum);
                 groupInfo.close();
                 groupInfo.getSummary().clear();
@@ -1078,12 +1270,49 @@ public abstract class AbstractReportGenerator {
         return true;
     }
 
+    public void removeTmpFiles() {
+        for (File file : tmpFiles) {
+            FileUtils.deleteFile(file);
+        }
+        tmpFiles.clear();
+    }
+
+    public List<File> getTemporaryFiles() {
+        return Collections.unmodifiableList(tmpFiles);
+    }
+
+    public void addTmpFile(File file) {
+        tmpFiles.add(file);
+    }
+
     private void buildReport(final List<ReportGenData> reportGenDataList) throws ReportGenerationException {
         ReportGenData reportGenData = reportGenDataList.get(reportGenDataList.size() - 1);
+        
+        adjustCellsToColumns(reportGenData);
         validateCellsPosition(reportGenData);
 
         reportGenData.report.setSpecialInfo(new SpecialInfo(reportGenData));
         reportGenData.report.setGenTimeInfo(genTimeInfo);
+
+        String resultSetFileName;
+        if (reportCallCount.get(reportGenData.report.getId()) != null) {
+            resultSetFileName = reportGenData.report.getId().toString() + "_" + (reportCallCount.get(reportGenData.report.getId()) - 1);
+        } else {
+            resultSetFileName = reportGenData.report.getId().toString();
+        }
+
+        ObjectOutputStream resultSetStream = null;
+        int resultSetSize = 0;
+        if (resultSetInfo != null && !resultSetInfo.isResultSetFileExists(resultSetFileName)) {
+            try {
+                ResultSetCacheOutputStream resultSetCacheStream = new ResultSetCacheOutputStream(resultSetInfo.createResultSetFile(resultSetFileName), resultSetCacheSizeController);
+                GZIPOutputStream gzipResultSetStream = new GZIPOutputStream(resultSetCacheStream);                        
+                resultSetStream = new ObjectOutputStream(gzipResultSetStream);
+                resultSetInfo.setReportResultSetSize(resultSetFileName, resultSetSize);
+            } catch (IOException ex) {
+                throw new ReportGenerationException("Unable to create result set temporary file for multiformat report", ex);
+            }
+        }
 
         final boolean wasData = reportGenData.report.next();
         for (AdsReportBand title : reportGenData.form.getTitleBands()) {
@@ -1142,12 +1371,56 @@ public abstract class AbstractReportGenerator {
             if (!genTimeInfo.isPageOpened) {
                 newPage(reportGenDataList);
             }
-            for (AdsReportBand detail : reportGenData.form.getDetailBands()) {
-                buildBand(reportGenDataList, detail, EReportBandType.DETAIL);
+            AdsReportForm.Bands detailBands = reportGenData.form.getDetailBands();
+            if (detailBands.size() > 0) {
+                for (AdsReportBand detail : detailBands) {
+                    buildBand(reportGenDataList, detail, EReportBandType.DETAIL);
+                }
+            } else {
+                buildWithoutBand(reportGenDataList, EReportBandType.DETAIL);
             }
             collectDataSets(reportGenData, -1);
 
             isInData = reportGenData.report.next();
+
+            if (resultSetStream != null) {
+                ArrayList<Serializable> columns = new ArrayList<>();
+                for (Object obj : reportGenData.report.getCache()) {
+                    if (obj instanceof Blob) {
+                        try {
+                            SerialBlob blob = new SerialBlob((Blob) obj);
+                            columns.add(blob.getBytes(1, (int) blob.length()));
+                        } catch (SQLException ex) {
+                            throw new ResultSetCacheWritingException("Unable to write record into report result set temporary file", ex);
+                        }
+                    } else if (obj instanceof Clob) {
+                        try {
+                            SerialClob clob = new SerialClob((Clob) obj);
+                            columns.add(clob.getSubString(1, (int) clob.length()));
+                        } catch (SQLException ex) {
+                            throw new ResultSetCacheWritingException("Unable to write record into report result set temporary file", ex);
+                        }
+                    } else {
+                        columns.add((Serializable) obj);
+                    }
+                }
+
+                SerializedReportFileResultSet.Record record = new SerializedReportFileResultSet.Record(columns);
+                try {
+                    resultSetStream.writeObject(record);
+                    resultSetInfo.setReportResultSetSize(resultSetFileName, ++resultSetSize);
+                } catch (IOException ex) {
+                    throw new ResultSetCacheWritingException("Unable to write record into report result set temporary file", ex);
+                }
+            }
+        }
+        if (resultSetStream != null) {
+            try {
+                resultSetStream.flush();
+                resultSetStream.close();
+            } catch (IOException ex) {
+                throw new ReportGenerationException("Unable to flush report result set records into temporary file", ex);
+            }
         }
 
         closeGroupsDownTo(reportGenDataList, 0);
@@ -1210,27 +1483,34 @@ public abstract class AbstractReportGenerator {
     }
 
     public void generateReport(IReportFileController controller) throws ReportGenerationException {
-        this.fileController = controller;
-        if (rootGenData.report.isClosed()) {
-            throw new IllegalStateException("Attempt to generate report for closed cursor");
-        }
+        try {
+            this.fileController = controller;
+            if (rootGenData.report.isClosed()) {
+                throw new IllegalStateException("Attempt to generate report for closed cursor");
+            }
 
-        final List<ReportGenData> reportGenDataList = new LinkedList<>();
-        reportGenDataList.add(rootGenData);
+            final List<ReportGenData> reportGenDataList = new LinkedList<>();
+            reportGenDataList.add(rootGenData);
 
-        calcTableStructure(rootGenData.form);
-        buildReport(reportGenDataList);
+            calcTableStructure(rootGenData.form);
+            buildReport(reportGenDataList);
 
-        if (genTimeInfo.pageNumber == 0) {
-            newPage(reportGenDataList);
-        }
+            if (genTimeInfo.pageNumber == 0) {
+                newPage(reportGenDataList);
+            }
 
-        if (genTimeInfo.isPageOpened) {
-            finishPage(reportGenDataList);
+            if (genTimeInfo.isPageOpened) {
+                finishPage(reportGenDataList);
+            }
+            if (genTimeInfo.isFileOpened) {
+                finishFile(reportGenDataList);
+            }
+        } finally {
+            closeAllResources();
         }
-        if (genTimeInfo.isFileOpened) {
-            finishFile(reportGenDataList);
-        }
+    }
+    
+    protected void closeAllResources() {
     }
 
     public static int getBandLevel(AdsReportBand band) {
@@ -1279,5 +1559,43 @@ public abstract class AbstractReportGenerator {
         }
 
         return readAccessor.get(owner, id);
+    }
+
+    protected void buildWithoutBand(final List<ReportGenData> genDataList, EReportBandType bandType) {
+    }
+
+    protected void beforeCloseGroup(final ReportGenData reportGenData, final int groupIndex) {
+    }
+
+    protected void afterSubReportClose(final SubReportGenData subReportGenData) {
+    }
+
+    private void incReportCallCount(Id reportId) {
+        int callCount = reportCallCount.get(reportId) == null ? 0 : reportCallCount.get(reportId);
+        reportCallCount.put(reportId, callCount + 1);
+    }
+
+    public ReportResultSetInfo getResultSetInfo() {
+        return resultSetInfo;
+    }
+
+    public void setResultSetInfo(ReportResultSetInfo resultSetInfo) {
+        this.resultSetInfo = resultSetInfo;
+    }
+
+    public ResultSetCacheSizeController getResultSetCacheSizeController() {
+        return resultSetCacheSizeController;
+    }
+
+    public void setResultSetCacheSizeController(ResultSetCacheSizeController resultSetCacheSizeController) {
+        this.resultSetCacheSizeController = resultSetCacheSizeController;
+    }
+
+    public ColumnSettings getColumnsSettings() {
+        return columnsSettings;
+    }
+
+    public void setColumnsSettings(ColumnSettings columnsSettings) {
+        this.columnsSettings = columnsSettings;
     }
 }

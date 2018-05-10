@@ -14,6 +14,7 @@ package org.radixware.kernel.explorer.widgets.propeditors;
 import com.trolltech.qt.gui.QWidget;
 import java.math.BigDecimal;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNum;
 import org.radixware.kernel.common.client.models.items.properties.Property;
@@ -67,4 +68,9 @@ public class PropNumEditor extends PropEditor {
             return new ValBoolEditorFactoryImpl();
         }
     }
+
+    @Override
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.NUM_PROP_EDITOR;
+    }        
 }

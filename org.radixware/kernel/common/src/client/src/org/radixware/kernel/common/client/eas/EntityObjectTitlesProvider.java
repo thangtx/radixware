@@ -283,7 +283,7 @@ public final class EntityObjectTitlesProvider {
         final Id editorPresentationId, classId;
         if (reference instanceof ResolvableReference) {
             editorPresentationId = ((ResolvableReference) reference).getEditorPresentationId();
-            classId = ((ResolvableReference) reference).getClassPresentationId();
+            classId = ((ResolvableReference) reference).getClassId();
         } else {
             editorPresentationId = null;
             classId = null;

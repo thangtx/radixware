@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.explorer.env;
 
 import com.trolltech.qt.QSignalEmitter;
@@ -29,6 +28,7 @@ import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QMenuBar;
@@ -40,15 +40,16 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -71,6 +72,7 @@ import org.radixware.kernel.common.client.errors.UnsupportedDefinitionVersionErr
 import org.radixware.kernel.common.client.exceptions.CantUpdateVersionException;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.exceptions.ExceptionMessage;
+import org.radixware.kernel.common.client.exceptions.NoSapsForCurrentVersion;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.models.groupsettings.Filters;
 import org.radixware.kernel.common.client.models.groupsettings.Sortings;
@@ -105,10 +107,14 @@ import org.radixware.kernel.explorer.dialogs.ExplorerDialog;
 import org.radixware.kernel.explorer.dialogs.ExplorerMessageBox;
 import org.radixware.kernel.explorer.dialogs.settings.SettingsDialog;
 import org.radixware.kernel.explorer.editors.editmask.EditMaskEditorFactory;
+import org.radixware.kernel.explorer.env.progress.ExplorerProgressHandleManager;
 import org.radixware.kernel.explorer.env.progress.TaskWaiter;
 import org.radixware.kernel.explorer.env.session.Connections;
 import org.radixware.kernel.explorer.env.trace.ExplorerTraceItem;
 import org.radixware.kernel.explorer.env.trace.ExplorerTracer;
+import org.radixware.kernel.explorer.inspector.InspectorDialog;
+import org.radixware.kernel.explorer.inspector.QtWidgetInspector;
+import org.radixware.kernel.explorer.inspector.WidgetInfo;
 import org.radixware.kernel.explorer.macros.gui.ExplorerMacrosWindow;
 import org.radixware.kernel.explorer.tester.TesterWindow;
 import org.radixware.kernel.explorer.text.ExplorerFontManager;
@@ -120,6 +126,8 @@ import org.radixware.kernel.explorer.utils.QtJambiExecutor;
 import org.radixware.kernel.explorer.views.MainWindow;
 import org.radixware.kernel.explorer.utils.EQtStyle;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
+import org.radixware.kernel.explorer.webdriver.WebDriverNotifier;
+import org.radixware.kernel.explorer.webdriver.WebDrvServer;
 import org.radixware.kernel.starter.Starter;
 import org.radixware.kernel.starter.meta.LayerMeta;
 import org.radixware.kernel.starter.radixloader.RadixClassLoader;
@@ -127,36 +135,63 @@ import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.schemas.eas.CreateSessionRs;
 import org.radixware.schemas.eas.Definition;
 
-
 public class Application extends QObject implements IClientApplication {
 
-    private static class UnsupportedVersionEvent extends QEvent {
-
-        public UnsupportedVersionEvent() {
-            super(QEvent.Type.User);
-        }
-    }   
-    
-    private static class ForcedDisconnectEvent extends QEvent{
+    private final static class UnsupportedVersionEvent extends QEvent {
         
+        private final boolean quiet;
+        private final long requiredVersion;
+        private boolean isProcessed;
+
+        public UnsupportedVersionEvent(final boolean quiet, final long requiredVersion) {
+            super(QEvent.Type.User);
+            this.quiet = quiet;
+            this.requiredVersion = requiredVersion;
+        }
+        
+        public boolean isQuiet(){
+            return quiet;
+        }
+        
+        public long getRequiredVersion(){
+            return requiredVersion;
+        }
+
+        public boolean isProcessed() {
+            return isProcessed;
+        }
+
+        public void setProcessed(boolean isProcessed) {
+            this.isProcessed = isProcessed;
+        }       
+    }
+
+    private final static class ForcedDisconnectEvent extends QEvent {
+
         private final boolean onExit;
         private final Runnable task;
-        
-        public ForcedDisconnectEvent(final boolean onExit, final Runnable onDisconnect){
+        private final int tryCount;
+
+        public ForcedDisconnectEvent(final boolean onExit, final Runnable onDisconnect, final int tryCount) {
             super(QEvent.Type.User);
-            this.onExit = onExit;            
+            this.onExit = onExit;
             task = onDisconnect;
+            this.tryCount = tryCount;
         }
-        
-        public boolean onExit(){
+
+        public boolean onExit() {
             return onExit;
         }
-        
-        public Runnable getAfterDisconnectTask(){
+
+        public Runnable getAfterDisconnectTask() {
             return task;
-        }        
+        }
+        
+        public int getTryCount(){
+            return tryCount;
+        }
     }
-    
+
     private final static class ExecuteEvent extends QEvent {
 
         private final Runnable task;
@@ -171,26 +206,25 @@ public class Application extends QObject implements IClientApplication {
         }
     }
 
-    
-    private final static class QuitListener implements Explorer.IQuitListener{
-                
+    private final static class QuitListener implements Explorer.IQuitListener {
+
         private final Environment environment;
-        
-        public QuitListener(final Environment environment){
+
+        public QuitListener(final Environment environment) {
             this.environment = environment;
         }
 
         @Override
         public boolean beforeQuit() {
-            if (environment.getEasSession().isBusy()){
-                environment.getEasSession().breakRequest();                
+            if (environment.getEasSession().isBusy()) {
+                environment.getEasSession().breakRequest();
                 return false;
             }
-            environment.disconnect(true, true);            
+            environment.disconnect(true, true);
             return true;
-        }                
-    }        
-   
+        }
+    }
+
     @Override
     public ERuntimeEnvironmentType getRuntimeEnvironmentType() {
         return ERuntimeEnvironmentType.EXPLORER;
@@ -219,6 +253,8 @@ public class Application extends QObject implements IClientApplication {
         public final QAction memoryLeakDetector;
         public final QAction restart;
         public final QAction exit;
+        public final QAction inspect;
+
         private final Application app;
 
         @SuppressWarnings("LeakingThisInConstructor")
@@ -227,11 +263,13 @@ public class Application extends QObject implements IClientApplication {
             connect = new QAction(mainWindow);
             connect.setIcon(ExplorerIcon.getQIcon(ClientIcon.Connection.CONNECT));
             connect.triggered.connect(this, "connectAction()");
+            connect.setObjectName("connect");
 
             disconnect = new QAction(mainWindow);
             disconnect.setIcon(ExplorerIcon.getQIcon(ClientIcon.Connection.DISCONNECT));
             disconnect.triggered.connect(this, "disconnectAction()");
             disconnect.setEnabled(false);
+            disconnect.setObjectName("disconnect");
 
             forcedDisconnect = new QAction(mainWindow);
             forcedDisconnect.triggered.connect(this, "forcedDisconnectAction()");
@@ -256,6 +294,7 @@ public class Application extends QObject implements IClientApplication {
 
             checkForUpdates = new QAction(mainWindow);
             checkForUpdates.setShortcut(new QKeySequence("Ctrl+F9"));
+            checkForUpdates.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.REFRESH));
             checkForUpdates.triggered.connect(this, "checkForUpdates()");
 
             runSettingsDialog = new QAction(mainWindow);
@@ -279,18 +318,23 @@ public class Application extends QObject implements IClientApplication {
             memoryLeakDetector.setCheckable(true);
             memoryLeakDetector.setChecked(false);
             memoryLeakDetector.setEnabled(false);
-            memoryLeakDetector.toggled.connect(this,"memoryLeakDetectorAction(boolean)");
-            
+            memoryLeakDetector.toggled.connect(this, "memoryLeakDetectorAction(boolean)");
+
             restart = new QAction(mainWindow);
             restart.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.REFRESH));
-            restart.triggered.connect(this,"restartAction()");
-            
+            restart.triggered.connect(this, "restartAction()");
+
             exit = new QAction(mainWindow);
             exit.setMenuRole(QAction.MenuRole.QuitRole);
             exit.setIcon(ExplorerIcon.getQIcon(ClientIcon.Dialog.EXIT));
             exit.triggered.connect(this, "exitAction()");
 
-            
+            inspect = new QAction(mainWindow);
+            inspect.setIcon(ExplorerIcon.getQIcon(ClientIcon.Dialog.ABOUT));
+            inspect.setShortcutContext(Qt.ShortcutContext.ApplicationShortcut);
+            inspect.setShortcut(new QKeySequence("Ctrl+Shift+I"));
+            inspect.triggered.connect(this, "inspectAction()");
+
             translate();
         }
 
@@ -305,12 +349,15 @@ public class Application extends QObject implements IClientApplication {
         @SuppressWarnings("unused")
         private void changePasswordAction() {
             if (getConnectionOptions() != null) {
-                ChangePasswordDialog dialog = new ChangePasswordDialog(app.getEnvironmentImpl(), getMainWindow());
-                {
-                    final String title = Application.translate("ChangePasswordDialog", "Change Password for '%s' Account");
-                    dialog.setTitle(String.format(title, app.getEnvironmentImpl().getUserName()));
-                }
-                while (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
+                while (true) {
+                    final ChangePasswordDialog dialog = new ChangePasswordDialog(app.getEnvironmentImpl(), getMainWindow());
+                    {
+                        final String title = Application.translate("ChangePasswordDialog", "Change Password for '%s' Account");
+                        dialog.setTitle(String.format(title, app.getEnvironmentImpl().getUserName()));
+                    }
+                    if (dialog.exec() != QDialog.DialogCode.Accepted.value()){
+                        break;
+                    }
                     try {
                         app.getEnvironmentImpl().getEasSession().changePassword(dialog.getOldPassword(), dialog.getNewPassword());
                         final String title = Application.translate("ExplorerMessage", "Success!");
@@ -320,7 +367,7 @@ public class Application extends QObject implements IClientApplication {
                     } catch (InterruptedException ex) {
                     } catch (ServiceCallFault fault) {
                         final String title = Application.translate("ChangePasswordDialog", "Can`t Change Password");
-                        if (org.radixware.schemas.eas.ExceptionEnum.INVALID_PASSWORD.toString().equals(fault.getFaultString())) {                            
+                        if (org.radixware.schemas.eas.ExceptionEnum.INVALID_PASSWORD.toString().equals(fault.getFaultString())) {
                             final String message = Application.translate("ChangePasswordDialog", "Current password is not correct");
                             Application.messageError(title, message);
                         } else {
@@ -345,18 +392,18 @@ public class Application extends QObject implements IClientApplication {
 
         @SuppressWarnings("unused")
         private void disconnectAction() {
-            final String title = 
-                app.getMessageProvider().translate("ExplorerMessage", "Confirm to Disconnect");
-            final String message = 
-                app.getMessageProvider().translate("ExplorerMessage", "Do you really want to disconnect?");
-            if (Application.messageConfirmation(title, message)){
+            final String title
+                    = app.getMessageProvider().translate("ExplorerMessage", "Confirm to Disconnect");
+            final String message
+                    = app.getMessageProvider().translate("ExplorerMessage", "Do you really want to disconnect?");
+            if (Application.messageConfirmation(title, message)) {
                 app.disconnect(false);
             }
         }
 
         @SuppressWarnings("unused")
         private void forcedDisconnectAction() {
-            app.forcedDisconnect(false,null);
+            app.forcedDisconnect(false, null);
         }
 
         @SuppressWarnings("unused")
@@ -369,7 +416,7 @@ public class Application extends QObject implements IClientApplication {
             org.radixware.kernel.explorer.tester.TesterWindow tester = new org.radixware.kernel.explorer.tester.TesterWindow(app.getEnvironmentImpl());
             tester.exec();
         }
-        
+
         private org.radixware.kernel.explorer.macros.gui.ExplorerMacrosWindow macrosWindow;
 
         @SuppressWarnings("unused")
@@ -379,20 +426,15 @@ public class Application extends QObject implements IClientApplication {
             }
             macrosWindow.show();
         }
-        
-        private void memoryLeakDetectorAction(final boolean isEnabled){
-            app.getEnvironmentImpl().getConfigStore().writeBoolean(SettingNames.SYSTEM+"/"+SettingNames.MEM_LEAK_DETECTOR, isEnabled);
+
+        private void memoryLeakDetectorAction(final boolean isEnabled) {
+            app.getEnvironmentImpl().getConfigStore().writeBoolean(SettingNames.SYSTEM + "/" + SettingNames.MEM_LEAK_DETECTOR, isEnabled);
             LeakedWidgetsDetector.getInstance().setEnabled(isEnabled);
         }
-                
-        private SettingsDialog settingsDialog = null;
 
         @SuppressWarnings("unused")
         private void runSettingsAction() {
-            if (settingsDialog == null) {
-                settingsDialog = new SettingsDialog(app.getEnvironmentImpl(), app.mainWindow);
-            }
-            settingsDialog.exec();
+            new SettingsDialog(app.getEnvironmentImpl(), app.mainWindow).exec();
         }
 
         @SuppressWarnings("unused")
@@ -420,14 +462,14 @@ public class Application extends QObject implements IClientApplication {
 
         @SuppressWarnings("unused")
         private void checkForUpdates() {
-            if (getTreeManager() != null) {
+            if (getTreeManager() != null && RunParams.isDevelopmentMode()) {
                 final Collection<Id> definitionIds = app.getDefManager().getAdsVersion().checkForUpdates(app.getEnvironment());
-                if (app.getDefManager().getAdsVersion().isNewVersionAvailable()) {
+                if (app.getDefManager().getAdsVersion().getTargetVersionNumber()>-1) {
                     final String title = Application.translate("ExplorerMessage", "Confirm to Update Version");
                     if (app.getDefManager().getAdsVersion().isKernelWasChanged()) {
                         final String message = Application.translate("ExplorerMessage", "New version found. It is necessary to restart explorer to install this version.\nDo you want to restart now ?");
                         if (messageConfirmation(title, message)) {
-                            Explorer.restart();
+                            Explorer.restart(true, -1);
                         }
                     } else {
                         final String message = Application.translate("ExplorerMessage", "New version found. Do you want to update now?");
@@ -441,10 +483,10 @@ public class Application extends QObject implements IClientApplication {
                 }
             }
         }
-        
+
         @SuppressWarnings("unused")
-        private void restartAction(){
-            Explorer.restart();
+        private void restartAction() {
+            Explorer.restart(false, -1);
         }
 
         @SuppressWarnings("unused")
@@ -453,9 +495,22 @@ public class Application extends QObject implements IClientApplication {
             dialog.exec();
         }
 
+        private InspectorDialog<QWidget> inspectorDlg;
+
+        @SuppressWarnings("unused")
+        private void inspectAction() {
+            if (inspectorDlg == null || inspectorDlg.nativeId()==0 || (inspectorDlg != null && inspectorDlg.isClosed())) {
+                WidgetInfo<QWidget> wdgtInfo = QtWidgetInspector.getInstance(app.getEnvironmentImpl()).selectWidget(instance.mainWindow);
+                if (wdgtInfo != null) {
+                    inspectorDlg = new InspectorDialog<>(wdgtInfo, app.getEnvironmentImpl(), wdgtInfo.getWidget().window());
+                    inspectorDlg.show();
+                }
+            }
+        }
+
         private void translate() {
             connect.setText(Application.translate("EnvironmentAction", "&Connect..."));
-            connect.setToolTip(Application.translate("EnvironmentAction", "Connect to Server"));
+            connect.setToolTip(Application.translate("EnvironmentAction", "Connect..."));
             disconnect.setText(Application.translate("EnvironmentAction", "&Disconnect"));
             disconnect.setToolTip(Application.translate("EnvironmentAction", "Disconnect"));
             changePassword.setText(Application.translate("EnvironmentAction", "Change &Password..."));
@@ -471,19 +526,20 @@ public class Application extends QObject implements IClientApplication {
             runMacrosWindow.setText(Application.translate("EnvironmentAction", "&Macros"));
             memoryLeakDetector.setText(Application.translate("EnvironmentAction", "Memory Leaks Detection"));
             restart.setText(Application.translate("EnvironmentAction", "Restart Application"));
-            settingsDialog = null;
+            inspect.setText(Application.translate("EnvironmentAction", "Inspect Widget"));
         }
-    }        
-    
-    private static class ShowQMessageBoxTask implements Callable<QMessageBox.StandardButton>{        
+    }
+
+    private static class ShowQMessageBoxTask implements Callable<QMessageBox.StandardButton> {
+
         private final QWidget parent;
         private final String title;
         private final String message;
         private final QMessageBox.Icon icon;
         private final QMessageBox.StandardButtons buttons;
         private final QMessageBox.StandardButton defaultButton;
-        
-        public ShowQMessageBoxTask(final QWidget parent, final String title, final String message, final QMessageBox.Icon icon, final QMessageBox.StandardButtons buttons, final QMessageBox.StandardButton defaultButton){
+
+        public ShowQMessageBoxTask(final QWidget parent, final String title, final String message, final QMessageBox.Icon icon, final QMessageBox.StandardButtons buttons, final QMessageBox.StandardButton defaultButton) {
             this.parent = parent;
             this.title = title;
             this.message = message;
@@ -491,36 +547,37 @@ public class Application extends QObject implements IClientApplication {
             this.buttons = buttons;
             this.defaultButton = defaultButton;
         }
-        
+
         @Override
         public QMessageBox.StandardButton call() {
             return ExplorerMessageBox.showMessage(parent, title, message, icon, buttons, defaultButton);
-        }                
+        }
     }
 
-    private static class ShowEMessageBoxTask implements Callable<EDialogButtonType>{        
+    private static class ShowEMessageBoxTask implements Callable<EDialogButtonType> {
+
         private final String title;
         private final String message;
         private final EDialogIconType icon;
         private final Set<EDialogButtonType> buttons;
         private final EDialogButtonType defaultButton;
-        
-        public ShowEMessageBoxTask(final String title, final String message, final EDialogIconType icon, final Set<EDialogButtonType> buttons, final EDialogButtonType defaultButton){
+
+        public ShowEMessageBoxTask(final String title, final String message, final EDialogIconType icon, final Set<EDialogButtonType> buttons, final EDialogButtonType defaultButton) {
             this.title = title;
             this.message = message;
             this.icon = icon;
             this.buttons = buttons;
             this.defaultButton = defaultButton;
         }
-        
+
         @Override
         public EDialogButtonType call() {
             return ExplorerMessageBox.showMessage(title, message, icon, buttons, defaultButton);
         }
-    }        
-    
-    private class AppTraceBufferListener implements AbstractTraceBuffer.TraceBufferListener<ExplorerTraceItem>{
-        
+    }
+
+    private class AppTraceBufferListener implements AbstractTraceBuffer.TraceBufferListener<ExplorerTraceItem> {
+
         @Override
         public void newItemInBuffer(ExplorerTraceItem traceItem) {
         }
@@ -534,32 +591,32 @@ public class Application extends QObject implements IClientApplication {
         public void cleared() {
         }
     }
-    
-    private final static class AwtWindowWaiter  extends QEventLoop{
-        
+
+    private final static class AwtWindowWaiter extends QEventLoop {
+
         private final static int CHECK_INTERVAL_MILLIS = 100;
         private final static EnumSet<QEvent.Type> INPUT_EVENT_TYPES = EnumSet.of(QEvent.Type.Shortcut,
-                                                                                 QEvent.Type.ShortcutOverride,
-                                                                                 QEvent.Type.Wheel,
-                                                                                 QEvent.Type.KeyPress,
-                                                                                 QEvent.Type.KeyRelease,
-                                                                                 QEvent.Type.Enter,
-                                                                                 QEvent.Type.Leave,
-                                                                                 QEvent.Type.MouseButtonPress, 
-                                                                                 QEvent.Type.MouseButtonDblClick, 
-                                                                                 QEvent.Type.MouseButtonRelease);
-        
+                QEvent.Type.ShortcutOverride,
+                QEvent.Type.Wheel,
+                QEvent.Type.KeyPress,
+                QEvent.Type.KeyRelease,
+                QEvent.Type.Enter,
+                QEvent.Type.Leave,
+                QEvent.Type.MouseButtonPress,
+                QEvent.Type.MouseButtonDblClick,
+                QEvent.Type.MouseButtonRelease);
+
         private final QEventFilter userInputFilter = new QEventFilter(this);
-        
+
         private java.awt.Window window;
         private int timerId;
-        
-        public AwtWindowWaiter (final QObject parent){
+
+        public AwtWindowWaiter(final QObject parent) {
             super(parent);
             userInputFilter.setProhibitedEventTypes(INPUT_EVENT_TYPES);
         }
-        
-        public void waitForClose(final java.awt.Window awtWindow){
+
+        public void waitForClose(final java.awt.Window awtWindow) {
             window = awtWindow;
             timerId = startTimer(CHECK_INTERVAL_MILLIS);
             QApplication.instance().installEventFilter(userInputFilter);
@@ -568,22 +625,61 @@ public class Application extends QObject implements IClientApplication {
 
         @Override
         protected void timerEvent(final QTimerEvent event) {
-            if (event.timerId()==timerId){
-                if (window.isDisplayable()){                    
-                    if (QApplication.activeWindow()!=null){                        
+            if (event.timerId() == timerId) {
+                if (window.isDisplayable()) {
+                    if (QApplication.activeWindow() != null) {
                         window.toFront();//Works not for all platforms
                     }
-                }else{
+                } else {
                     exit();
                     QApplication.instance().removeEventFilter(userInputFilter);
+                    killTimer(timerId);
+                    timerId = 0;
                 }
                 event.accept();
-            }else{
+            } else {
                 super.timerEvent(event);
             }
-        }                        
+        }
     }
-    
+
+    private final static class InspectorOpenEvent extends QEvent {
+
+        public InspectorOpenEvent() {
+            super(QEvent.Type.User);
+        }
+    }
+
+    private static class InspectorLaunchHotKeyListener extends QEventFilter {
+
+        public InspectorLaunchHotKeyListener(QObject parent) {
+            super(parent);
+            setProcessableEventTypes(EnumSet.of(QEvent.Type.KeyPress));
+        }
+
+        @Override
+        public boolean eventFilter(QObject target, QEvent event) {
+            if (event instanceof QKeyEvent
+                    && ((QKeyEvent) event).key() == Qt.Key.Key_I.value()) {
+                if (((QKeyEvent) event).modifiers().isSet(Qt.KeyboardModifier.ControlModifier)
+                        && ((QKeyEvent) event).modifiers().isSet(Qt.KeyboardModifier.ShiftModifier)) {
+                    QApplication.postEvent(parent(), new InspectorOpenEvent());
+                    return true;
+                }
+            }
+            return super.eventFilter(target, event);
+        }
+
+        public void start() {
+            QApplication.instance().installEventFilter(this);
+        }
+
+        public void stop() {
+            QApplication.instance().removeEventFilter(this);
+        }
+
+    }
+
     private Actions actions;
     private MainWindow mainWindow;
     private final URL baseUrl;
@@ -607,8 +703,10 @@ public class Application extends QObject implements IClientApplication {
     private AwtWindowWaiter awtWindowWaiter;//do not create instance in constructor. It does not work on OSX.
     private ExplorerStandardViewsFactory viewsFactory;
     private QObject inputFilter;
-    private static Application instance;    
-    
+    private long unsupportedVersionEventId;
+    private static Application instance;
+    private static InspectorLaunchHotKeyListener inspectorLaunchHotKeyListener;
+
     private final AdsVersion.VersionListener adsVersionListener = new AdsVersion.VersionListener() {
 
         @Override
@@ -622,8 +720,9 @@ public class Application extends QObject implements IClientApplication {
         super(window);
         baseUrl = getJnlpUrl();
         mainWindow = window;
-        environment = new Environment(this, mainWindow);
-        viewsFactory = new ExplorerStandardViewsFactory(mainWindow,environment);
+        final byte[] appState = Starter.consumeAppRestartState();
+        environment = new Environment(this, mainWindow, appState);
+        viewsFactory = new ExplorerStandardViewsFactory(mainWindow, environment);
         defManager = new DefManager(this) {
 
             @Override
@@ -634,14 +733,14 @@ public class Application extends QObject implements IClientApplication {
         if (RadixLoader.getInstance() != null) {
             defManager.getAdsVersion().addVersionListener(adsVersionListener);
         }
-        if (EQtStyle.getDefault()!=EQtStyle.Unknown){
+        if (EQtStyle.getDefault() != EQtStyle.Unknown) {
             defaultStyleName = EQtStyle.getDefault().getTitle();
             QApplication.setStyle(defaultStyleName);
-        }else{
+        } else {
             defaultStyleName = "";
         }
         currentStyleName = defaultStyleName;
-       
+
         //RADIX-2890
         Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
@@ -651,104 +750,130 @@ public class Application extends QObject implements IClientApplication {
             }
         });
         AWTExceptionHandler.register();
-       
-        if (SystemTools.isOSX){            
-            if (mainWindow!=null && mainWindow.frameGeometry().width()==mainWindow.statusBar().frameGeometry().width()){
+
+        if (SystemTools.isOSX) {
+            if (mainWindow != null && mainWindow.frameGeometry().width() == mainWindow.statusBar().frameGeometry().width()) {
                 mainWindow.statusBar().setContentsMargins(2, 0, 8, 0);
             }
         }
         eventsDispatcher = new QtEventsDispatcher(this, environment.getEasSession());
+
+        InetSocketAddress webDrvAddr = RunParams.getWebDrvServerAddress();
+        if (webDrvAddr != null) {
+            try {
+                WebDrvServer.getInstance()
+                        .start(webDrvAddr,
+                                 Collections.singletonList(new QtJambiExecutor(mainWindow)), environment,
+                                 RunParams.getWebDrvClients()
+                        );
+                WebDriverNotifier trayItem = new WebDriverNotifier(this.getMessageProvider(), mainWindow);
+                environment.getTracer().put(EEventSeverity.EVENT, String.format(
+                        getMessageProvider().translate("Explorer", "WebDriver started at %s."), webDrvAddr.toString()), EEventSource.WEB_DRIVER);
+            } catch (IOException exception) {
+                final String message = getMessageProvider().translate("ExplorerException", "Failed to start WebDriver server");
+                environment.getTracer().error(message, exception, EEventSource.WEB_DRIVER);
+            }
+        }
         Explorer.addQuitListener(new QuitListener(environment));
-    }    
-    
-    private static URL getJnlpUrl(){
+    }
+
+    private static URL getJnlpUrl() {
         final Class<?> jnlpBasicServiceClass;
         final Class<?> jnlpServiceManagerClass;
         final Method lookup;
         final Method getCodeBase;
-        try{
+        try {
             jnlpServiceManagerClass = Class.forName("javax.jnlp.ServiceManager");
             jnlpBasicServiceClass = Class.forName("javax.jnlp.BasicService");
             lookup = jnlpServiceManagerClass.getDeclaredMethod("lookup", String.class);
             getCodeBase = jnlpBasicServiceClass.getDeclaredMethod("getCodeBase");
-        }catch(ClassNotFoundException | LinkageError | NoSuchMethodException | SecurityException e){//NOPMD
+        } catch (ClassNotFoundException | LinkageError | NoSuchMethodException | SecurityException e) {//NOPMD
             return null;
         }
         final Object jnlpServiceInstance;
-        try{
+        try {
             jnlpServiceInstance = lookup.invoke(null, "javax.jnlp.BasicService");
-        }catch(IllegalArgumentException | IllegalAccessException | InvocationTargetException e){//NOPMD
+        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {//NOPMD
             return null;
         }
-        if (jnlpBasicServiceClass.isInstance(jnlpServiceInstance)){
+        if (jnlpBasicServiceClass.isInstance(jnlpServiceInstance)) {
             final Object invocationResult;
-            try{
+            try {
                 invocationResult = getCodeBase.invoke(jnlpServiceInstance);
-            }catch(IllegalArgumentException | IllegalAccessException | InvocationTargetException e){//NOPMD
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {//NOPMD
                 return null;
             }
-            return invocationResult instanceof URL ? (URL)invocationResult : null;
-        }else{
+            return invocationResult instanceof URL ? (URL) invocationResult : null;
+        } else {
             return null;
         }
     }
-            
-    private void closeTracer(){
+
+    private void closeTracer() {
         getTracer().getBuffer().removeTraceBufferListener(traceListener);
         getTracer().close();
     }
-    
-    public boolean exit(final boolean forced){
+
+    public boolean exit(final boolean forced) {
         try {
-            if (!forced){
+            if (!forced) {
+                final ExplorerProgressHandleManager progressManager = (ExplorerProgressHandleManager)getEnvironmentImpl().getProgressHandleManager();
+                if (progressManager.forceShowActive()){
+                    return false;
+                }
                 final String title = getMessageProvider().translate("ExplorerMessage", "Confirm to Close Application");
                 final String message = getMessageProvider().translate("ExplorerMessage", "Do you really want to close application?");
-                if (!messageConfirmation(title, message)){
+                if (!messageConfirmation(title, message)) {
                     return false;
                 }
             }
-            if (!disconnectImpl(forced,true)) {
+            if (!disconnectImpl(forced, true)) {
                 return false;
             }
             getEnvironmentImpl().closeTraceDialog();
             if (mainWindow != null) {
-                ((ExplorerSettings)getEnvironmentImpl().getConfigStore()).writeQByteArray(SettingNames.SYSTEM + "/" + "mainWindowGeometry", mainWindow.saveGeometry());
+                ((ExplorerSettings) getEnvironmentImpl().getConfigStore()).writeQByteArray(SettingNames.SYSTEM + "/" + "mainWindowGeometry", mainWindow.saveGeometry());
             }
             getStandardViewsFactory().blockScheduledViewCreation();
             getStandardViewsFactory().clearPools();
             getEnvironmentImpl().getConfigStore().sync();
             getTracer().debug(getMessageProvider().translate("TraceMessage", "Closing application"));
+            if (inspectorLaunchHotKeyListener != null) {
+                inspectorLaunchHotKeyListener.stop();
+            }
+            getActions().inspect.disconnect();
             getActions().exit.disconnect();
             Thread.currentThread().setUncaughtExceptionHandler(null);
+			WebDrvServer.getInstance().stop(); // до остановки tracer
+			
             closeTracer();
             UserExplorerItemsStorage.clearCache(this);
             Filters.clearCache(this);
-            Sortings.clearCache(this); 
+            Sortings.clearCache(this);
             TraceProfileTreeController.clearCache(this);
-            JavaProxyLogger.clean();            
+            JavaProxyLogger.clean();
         } catch (Throwable exception) {
             if (!ClientException.isSystemFault(exception)) {
-                if (forced){
-                    exception.printStackTrace();                    
-                }else{
+                if (forced) {
+                    exception.printStackTrace();
+                } else {
                     processException(exception);
                 }
             }
             getEnvironmentImpl().getEasSession().close(true);
         }
         Thread.currentThread().setUncaughtExceptionHandler(null);
-        if (RadixLoader.getInstance()!=null){
+        if (RadixLoader.getInstance() != null) {
             RadixLoader.getInstance().setActualizeController(null);
         }
         messageFilter = null;
-        if (mainWindow!=null){
+        if (mainWindow != null) {
             mainWindow.forceClose();
             mainWindow = null;
         }
-        if (instance.environment!=null){
+        if (instance.environment != null) {
             instance.environment.localeManager.clear();
         }
-        WidgetUtils.CustomStyle.releaseAll();
         instance = null;
         com.trolltech.qt.gui.QApplication.exit();
         return true;
@@ -816,17 +941,17 @@ public class Application extends QObject implements IClientApplication {
     public static String getDefaultStyleName() {
         return instance.defaultStyleName;
     }
-    
+
     public static String getCurrentStyleName() {
         return instance.currentStyleName;
     }
-    
-    static void setStyle(final String styleName){        
-        if (!Objects.equals(instance.currentStyleName, styleName)){
-            instance.getTracer().debug("Changing application style to "+styleName);
+
+    static void setStyle(final String styleName) {
+        if (styleName!=null && !styleName.isEmpty() && !styleName.equalsIgnoreCase(instance.currentStyleName)) {
+            instance.getTracer().debug("Changing application style to " + styleName);
             QApplication.setStyle(styleName);
             instance.currentStyleName = styleName;
-            instance.getTracer().debug("Current application style is "+QApplication.style().objectName());
+            instance.getTracer().debug("Current application style is " + QApplication.style().objectName());
         }
     }
 
@@ -838,71 +963,97 @@ public class Application extends QObject implements IClientApplication {
         return getEnvironmentImpl();
     }
 
-    private void processUnsupportedVersionException() {
-        getDefManager().getAdsVersion().makeUnsupported();
-        if (!getDefManager().getAdsVersion().isNewVersionAvailable()) {
-            getTracer().warning(translate("TraceMessage", "Current definition version is not supported by server, but client is not in old version mode"));
-            if (getDefManager().getAdsVersion().checkForUpdates(getEnvironment()) == null) {
-                getTracer().error(translate("TraceMessage", "Current definition version is not supported by server, but client have not newer version"));
-                messageError(translate("ExplorerError", "Current version is no longer supported"));
-                return;
-            }
+    private void processUnsupportedVersionException(final boolean quiet, final long requiredVersion) {        
+        final org.radixware.kernel.common.client.env.AdsVersion adsVersion = getDefManager().getAdsVersion();
+        adsVersion.makeUnsupported();
+        boolean needForRestart = false;
+        if (adsVersion.getTargetVersionNumber()<0) {
+            getTracer().debug(translate("TraceMessage", "Current definition version is not supported by server, but client is not in old version mode"));
+        }
+        
+        final long currentVersion = adsVersion.getNumber();
+        Collection<Id> definitionIds  = adsVersion.prepareSwitchVersion(environment, requiredVersion, RunParams.isDevelopmentMode());
+        final long newVersion = adsVersion.getNumber();
+        if ((requiredVersion>=0 && requiredVersion!=newVersion && requiredVersion!=adsVersion.getTargetVersionNumber())
+            || (requiredVersion<0 && adsVersion.getTargetVersionNumber()<0 && currentVersion==newVersion)){
+            getTracer().error(translate("TraceMessage", "Current definition version is not supported by server, but client have not required version"));
+            needForRestart = true;
+        }        
+        
+        if (!needForRestart){
+            needForRestart = !RunParams.isDevelopmentMode() || adsVersion.isKernelWasChanged();
         }
 
-        if (getDefManager().getAdsVersion().isKernelWasChanged()) {
+        if (needForRestart) {
             final String title = Application.translate("ExplorerMessage", "Confirm to Restart");
             final String message = translate("ExplorerMessage",
-                    "Current version is no longer supported. It is impossible to continue work until explorer will be restarted.\n"
-                    + "Do you want to restart now (all your unsaved data will be lost) ?");
-            if (messageConfirmation(title, message)) {
-                Explorer.restart();
+                    "Current version is no longer supported. It is impossible to continue work until explorer will be restarted.\nDo you want to restart now (all your unsaved data will be lost) ?");
+            if (quiet || messageConfirmation(title, message)) {
+                Explorer.restart(true, requiredVersion);
+            }else{
+                unsupportedVersionEventId = 0;
             }
             return;
+        }
+        
+        if (adsVersion.getTargetVersionNumber()<0){
+            return;//version was silently updated
+        }
+        
+        if (definitionIds==null){
+            definitionIds = Collections.emptyList();
         }
 
         final String title = Application.translate("ExplorerMessage", "Confirm to Update Version");
         final String message = translate("ExplorerMessage",
-                "Current version is no longer supported. It is impossible to continue work until updates will be installed.\n"
-                + "Do you want to update now (all your unsaved data will be lost) ?");
-
-        if (messageConfirmation(title, message)) {
-            final Collection<Id> definitionIds = getDefManager().getAdsVersion().checkForUpdates(getEnvironment());
-            getDefManager().getAdsVersion().checkForUpdates(getEnvironment());
-            try {
-                getTreeManager().updateVersion(definitionIds);
-            } catch (CantUpdateVersionException ex) {
-                ex.showMessage(getEnvironmentImpl());
-            } catch (Exception ex) {
-                processException(ex);
+                "Current version is no longer supported. It is impossible to continue work until updates will be installed.\nDo you want to update now (all your unsaved data will be lost) ?");
+        try{
+            if (messageConfirmation(title, message)) {
+                try {
+                    getTreeManager().updateVersion(definitionIds);
+                } catch (CantUpdateVersionException ex) {
+                    ex.showMessage(getEnvironmentImpl());
+                } catch (Exception ex) {
+                    processException(ex);
+                }
             }
+        }finally{
+            unsupportedVersionEventId = 0;
         }
     }
 
     @Override
     protected void customEvent(final QEvent event) {
         if (event instanceof UnsupportedVersionEvent) {
-            event.accept();
-            processUnsupportedVersionException();
+            final UnsupportedVersionEvent unsupportedVersionEvent = (UnsupportedVersionEvent)event;
+            if (!unsupportedVersionEvent.isProcessed()){
+                unsupportedVersionEvent.setProcessed(true);
+                processUnsupportedVersionException(unsupportedVersionEvent.isQuiet(), unsupportedVersionEvent.getRequiredVersion());
+            }
             return;
-        } else if (event instanceof ForcedDisconnectEvent){
+        } else if (event instanceof ForcedDisconnectEvent) {
             event.accept();
-            final ForcedDisconnectEvent disconnectEvent = (ForcedDisconnectEvent)event;
-            if (tryToForcedDisconnect(disconnectEvent.onExit(), disconnectEvent.getAfterDisconnectTask()) && inputFilter!=null){
+            final ForcedDisconnectEvent disconnectEvent = (ForcedDisconnectEvent) event;
+            if (tryToForcedDisconnect(disconnectEvent.onExit(), disconnectEvent.getAfterDisconnectTask(), disconnectEvent.getTryCount())
+                && inputFilter != null) {
                 eventsDispatcher.unblock();
                 QApplication.instance().removeEventFilter(inputFilter);
                 disconnecting = false;
                 final Runnable task = disconnectEvent.getAfterDisconnectTask();
-                if (task!=null){
+                if (task != null) {
                     task.run();
                 }
             }
-        } else if (event instanceof ExecuteEvent){
+        } else if (event instanceof ExecuteEvent) {
             event.accept();
-            ((ExecuteEvent)event).execute();
+            ((ExecuteEvent) event).execute();
+        } else if (event instanceof InspectorOpenEvent) {
+            event.accept();
+            getActions().inspect.trigger();
         }
         super.customEvent(event);
     }
-    
+
     public void processException(final Throwable e) {
         processException(null, e);
     }
@@ -911,24 +1062,36 @@ public class Application extends QObject implements IClientApplication {
         if (e instanceof InterruptedException) {
             return;
         }
-        for (Throwable err = e; err != null && err.getCause() != err; err = err.getCause()) {
-            if (err instanceof UnsupportedDefinitionVersionError) {
-                QApplication.removePostedEvents(this);//предусмотрена ситуация последовательного выполнения нескольких запросов
-                Application.processEventWhenEasSessionReady(this, new UnsupportedVersionEvent());
+        for (Throwable err = e; err != null && err.getCause() != err; err = err.getCause()) {            
+            if (err instanceof UnsupportedDefinitionVersionError){
+                if (unsupportedVersionEventId==0){//предусмотрена ситуация последовательного выполнения нескольких запросов
+                    final UnsupportedDefinitionVersionError error = (UnsupportedDefinitionVersionError)err;
+                    final boolean quiet = error.processQuiet();
+                    unsupportedVersionEventId =  
+                        Application.processEventWhenEasSessionReady(this, new UnsupportedVersionEvent(quiet, error.getRequiredVersion()));
+                }
+                return;                
+            }else if (err instanceof NoSapsForCurrentVersion) {
+                if (unsupportedVersionEventId==0){//предусмотрена ситуация последовательного выполнения нескольких запросов
+                    final NoSapsForCurrentVersion error = (NoSapsForCurrentVersion)err;
+                    final boolean quiet = !RunParams.isDevelopmentMode();
+                    unsupportedVersionEventId =  
+                        Application.processEventWhenEasSessionReady(this, new UnsupportedVersionEvent(quiet, error.getRequiredVersion()));
+                }
                 return;
             }
-        }        
+        }
         final ExceptionMessage exceptionMessage = new ExceptionMessage(getEnvironment(), e);
         final String dialogTitle;
-        if (title==null || title.isEmpty()){
+        if (title == null || title.isEmpty()) {
             dialogTitle = exceptionMessage.getDialogTitle();
-        }else{
+        } else {
             dialogTitle = ClientValueFormatter.capitalizeIfNecessary(getEnvironmentImpl(), title);
         }
         exceptionMessage.trace(getTracer(), title);
-        if (exceptionMessage.getDetails()!=null && !exceptionMessage.getDetails().isEmpty()
-            && messageFilter != null
-            && !messageFilter.beforeMessageException(dialogTitle, exceptionMessage.getDialogMessage(), exceptionMessage.getDetails(), e)) {
+        if (exceptionMessage.getDetails() != null && !exceptionMessage.getDetails().isEmpty()
+                && messageFilter != null
+                && !messageFilter.beforeMessageException(dialogTitle, exceptionMessage.getDialogMessage(), exceptionMessage.getDetails(), e)) {
             return;
         }
         if (exceptionMessage.hasDialogMessage()) {
@@ -937,7 +1100,7 @@ public class Application extends QObject implements IClientApplication {
                 exceptionMessage.display(dialogTitle, mainWindow);
             } finally {
                 getEnvironment().getProgressHandleManager().unblockProgress();
-            }            
+            }
         }
         if (exceptionMessage.getSeverity() == EEventSeverity.ALARM) {
             actions.forcedDisconnect.trigger();
@@ -985,7 +1148,7 @@ public class Application extends QObject implements IClientApplication {
 
     public static void messageError(final String title, final String message) {
         messageBox(title, message, QMessageBox.Icon.Critical,
-                new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok), null);        
+                new QMessageBox.StandardButtons(QMessageBox.StandardButton.Ok), null);
     }
 
     public static boolean messageConfirmation(final String message) {
@@ -995,7 +1158,7 @@ public class Application extends QObject implements IClientApplication {
     public static boolean messageConfirmation(final String title, final String message) {
         return messageBox(title, message, QMessageBox.Icon.Question,
                 new QMessageBox.StandardButtons(QMessageBox.StandardButton.Yes,
-                QMessageBox.StandardButton.No), null) == QMessageBox.StandardButton.Yes;
+                        QMessageBox.StandardButton.No), null) == QMessageBox.StandardButton.Yes;
     }
 
     public static Boolean messageQuestion(final String message) {
@@ -1010,52 +1173,53 @@ public class Application extends QObject implements IClientApplication {
                         QMessageBox.StandardButton.No,
                         QMessageBox.StandardButton.Cancel
                 ), null);
-        if (res == QMessageBox.StandardButton.Yes)
+        if (res == QMessageBox.StandardButton.Yes) {
             return true;
-        else if (res == QMessageBox.StandardButton.No)
+        } else if (res == QMessageBox.StandardButton.No) {
             return false;
-        else
+        } else {
             return null;
+        }
     }
 
     public static QMessageBox.StandardButton messageBox(final String title, final String message, final QMessageBox.Icon icon, final QMessageBox.StandardButtons buttons, final QMessageBox.StandardButton defaultButton) {
-        return messageBoxImpl(getMainWindow(),title, message, icon, buttons, defaultButton);
+        return messageBoxImpl(getMainWindow(), title, message, icon, buttons, defaultButton);
     }
 
     public static QMessageBox.StandardButton messageBox(final String title, final String message, final QMessageBox.Icon icon, final QMessageBox.StandardButtons buttons) {
-        return messageBoxImpl(getMainWindow(),title, message, icon, buttons, null);
+        return messageBoxImpl(getMainWindow(), title, message, icon, buttons, null);
     }
 
     public static EDialogButtonType messageBox(final String title, final String message, final EDialogIconType icon, final Set<EDialogButtonType> buttons) {
-        return messageBoxImpl(title,  message,  icon,  buttons, null);
+        return messageBoxImpl(title, message, icon, buttons, null);
     }
 
     public static EDialogButtonType messageBox(final String title, final String message, final EDialogIconType icon, final Set<EDialogButtonType> buttons, final EDialogButtonType defaultButton) {
-        return messageBoxImpl(title,  message,  icon,  buttons, defaultButton);
+        return messageBoxImpl(title, message, icon, buttons, defaultButton);
     }
-    
-    private static QMessageBox.StandardButton messageBoxImpl(final QWidget parent, final String title, final String message, final QMessageBox.Icon icon, final QMessageBox.StandardButtons buttons, final QMessageBox.StandardButton defaultButton){        
+
+    private static QMessageBox.StandardButton messageBoxImpl(final QWidget parent, final String title, final String message, final QMessageBox.Icon icon, final QMessageBox.StandardButtons buttons, final QMessageBox.StandardButton defaultButton) {
         final ShowQMessageBoxTask task = new ShowQMessageBoxTask(parent, title, message, icon, buttons, defaultButton);
-        if (QApplication.instance().thread()==Thread.currentThread()){
+        if (QApplication.instance().thread() == Thread.currentThread()) {
             return task.call();
-        }else{
-            try{
+        } else {
+            try {
                 return getInstance().qtExecutor.invoke(task);
-            }catch(InterruptedException | ExecutionException exception){
-                throw new AppError("Failed to show message box dialog",exception);
+            } catch (InterruptedException | ExecutionException exception) {
+                throw new AppError("Failed to show message box dialog", exception);
             }
         }
     }
-    
-    private static  EDialogButtonType messageBoxImpl(final String title, final String message, final EDialogIconType icon, final Set<EDialogButtonType> buttons, final EDialogButtonType defaultButton){
+
+    private static EDialogButtonType messageBoxImpl(final String title, final String message, final EDialogIconType icon, final Set<EDialogButtonType> buttons, final EDialogButtonType defaultButton) {
         final ShowEMessageBoxTask task = new ShowEMessageBoxTask(title, message, icon, buttons, defaultButton);
-        if (QApplication.instance().thread()==Thread.currentThread()){
+        if (QApplication.instance().thread() == Thread.currentThread()) {
             return task.call();
-        }else{
-            try{
+        } else {
+            try {
                 return getInstance().qtExecutor.invoke(task);
-            }catch(InterruptedException | ExecutionException exception){
-                throw new AppError("Failed to show message box dialog",exception);
+            } catch (InterruptedException | ExecutionException exception) {
+                throw new AppError("Failed to show message box dialog", exception);
             }
         }
     }
@@ -1064,12 +1228,12 @@ public class Application extends QObject implements IClientApplication {
         getInstance().messageExceptionImpl(title, message, e);
     }
 
-    private void messageExceptionImpl(final String title, final String message, final Throwable e) {        
+    private void messageExceptionImpl(final String title, final String message, final Throwable e) {
         if (ClientException.isSpecialFault(e)) {
             if (ClientException.isInformationMessage(e)) {
                 messageInformation(title, ClientException.getSpecialFaultMessage(getEnvironmentImpl(), e));
             } else {
-                messageError(ClientException.getSpecialFaultMessage(getEnvironmentImpl(), e));
+                messageError(title, ClientException.getSpecialFaultMessage(getEnvironmentImpl(), e));
             }
             return;
         }
@@ -1090,15 +1254,14 @@ public class Application extends QObject implements IClientApplication {
         if (messageFilter != null && !messageFilter.beforeMessageException(windowTitle, message, detail, e)) {
             return;
         }
-        
+
         /* boolean treeIsLocked = false;
          * if (tree != null && tree.getCurrentTreeView() != null &&
          * tree.getCurrentTreeView().isLocked()) { treeIsLocked = true;
          * tree.getCurrentTreeView().unlock(); }
          */
-
-        final ExceptionMessageDialog dialog =
-                new ExceptionMessageDialog((ExplorerSettings) getEnvironmentImpl().getConfigStore(), mainWindow);
+        final ExceptionMessageDialog dialog
+                = new ExceptionMessageDialog((ExplorerSettings) getEnvironmentImpl().getConfigStore(), mainWindow);
 
         getEnvironment().getProgressHandleManager().blockProgress();
         dialog.setTitle(windowTitle);
@@ -1135,70 +1298,45 @@ public class Application extends QObject implements IClientApplication {
         return versions;
     }
 
-    public static String getProductName() {
-        if (Starter.getProductName() != null && !Starter.getProductName().isEmpty()) {
-            return Starter.getProductName();
-        }
-        if (RadixLoader.getInstance()==null){
-            return "RadixWare";
-        }
-        final List<String> topLayerUris = RadixLoader.getInstance().getTopLayerUris();
-        if (topLayerUris == null) {
-            return "";
-        } else if (topLayerUris.size() == 1) {
-            try {
-                final String title = RadixLoader.getInstance().getCurrentRevisionMeta().getTopLayers().get(0).getTitle();
-                if (title == null || title.isEmpty()) {
-                    return topLayerUris.get(0);
-                } else {
-                    return title;
-                }
-            } catch (RuntimeException ex) {
-                return topLayerUris.get(0);
-            }
-        } else {
-            return RadixLoader.getInstance().getTopLayerUrisAsString();
-        }
-    }
-
     void afterLanguageChange(final EIsoLanguage language) {
-        mp = language==EIsoLanguage.ENGLISH ? new DummyMessageProvider() : new Mp();
-        if (actions!=null){
+        mp = language == EIsoLanguage.ENGLISH ? new DummyMessageProvider() : new Mp();
+        if (actions != null) {
             actions.translate();
-            if (mainWindow!=null){
+            if (mainWindow != null) {
                 createMenu();
+                (getTreeManager()).refreshViewManagerMenus();
             }
         }
-        if (environment!=null) {
-            if (mainWindow!=null && viewsFactory!=null){
+        if (environment != null) {
+            if (mainWindow != null && viewsFactory != null) {
+                viewsFactory.blockScheduledViewCreation();
                 viewsFactory.clearPools();
-                viewsFactory = new ExplorerStandardViewsFactory(mainWindow, environment);                
+                viewsFactory = new ExplorerStandardViewsFactory(mainWindow, environment);
             }
-            if (getTreeManager() != null){
+            if (getTreeManager() != null) {
                 getTreeManager().translate();
             }
         }
     }
-    
+
     @SuppressWarnings("SleepWhileInLoop")
     public static void showModalSwingDialog(final JFrame frame) {
-        if (canShowModalAwtWindow()){
+        if (canShowModalAwtWindow()) {
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             showModalAwtWindow(frame);
         }
     }
-        
 
     @SuppressWarnings("SleepWhileInLoop")
     public static void showModalSwingDialog(final JDialog dialog) {
-        if (canShowModalAwtWindow()){
+        if (canShowModalAwtWindow()) {
             dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             showModalAwtWindow(dialog);
         }
     }
-    
+
     static void showModalAwtWindow(final java.awt.Window window) {
-        if (SystemTools.isOSX){
+        if (SystemTools.isOSX) {
             final MessageProvider mp = getInstance().getMessageProvider();
             final String title = mp.translate("ExplorerMessage", "Unsupported operation");
             final String message = mp.translate("ExplorerMessage", "This operation is not supported on OSX platform");
@@ -1208,11 +1346,11 @@ public class Application extends QObject implements IClientApplication {
         final QWidget qtWindow = QApplication.activeWindow();
         boolean wasEnabled = false;
         final QEventFilter eventFilter;
-        if (qtWindow!=null){
+        if (qtWindow != null) {
             eventFilter = new QEventFilter(qtWindow) {
                 @Override
                 public boolean eventFilter(final QObject receiver, final QEvent event) {
-                    if (event!=null && event.type() == QEvent.Type.WindowActivate) {
+                    if (event != null && event.type() == QEvent.Type.WindowActivate) {
                         event.ignore();
                         window.toFront();//works not for all platforms
                         return true;
@@ -1228,38 +1366,38 @@ public class Application extends QObject implements IClientApplication {
             qtWindow.installEventFilter(eventFilter);
             wasEnabled = qtWindow.isEnabled();
             qtWindow.setDisabled(true);
-        }else{
+        } else {
             eventFilter = null;
         }
         window.setVisible(true);
-        if (instance.awtWindowWaiter==null){
-            instance.awtWindowWaiter=new AwtWindowWaiter(instance);
+        if (instance.awtWindowWaiter == null) {
+            instance.awtWindowWaiter = new AwtWindowWaiter(instance);
         }
         instance.awtWindowWaiter.waitForClose(window);
 
         if (qtWindow != null) {
             qtWindow.removeEventFilter(eventFilter);
             qtWindow.setEnabled(wasEnabled);
-        }        
+        }
     }
-    
-    private static boolean canShowModalAwtWindow(){
-        if (SystemTools.isOSX){
+
+    private static boolean canShowModalAwtWindow() {
+        if (SystemTools.isOSX) {
             final MessageProvider mp = getInstance().getMessageProvider();
             final String title = mp.translate("ExplorerMessage", "Unsupported operation");
             final String message = mp.translate("ExplorerMessage", "This operation is not supported on OSX platform");
             messageInformation(title, message);
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     protected void setupUi() {
-        actions = new Actions(this,mainWindow);
+        actions = new Actions(this, mainWindow);
         if (mainWindow != null) {
-            QApplication.setWindowIcon(ExplorerIcon.getQIcon(ClientIcon.EXPLORER));
-            final String topLayerName = getProductName();
+            QApplication.setWindowIcon(getApplicationIcon());
+            final String topLayerName = Explorer.getProductName();
             final String windowTitle = String.format(translate("MainWindow", "%s Explorer"), topLayerName == null ? "RadixWare" : topLayerName);
             mainWindow.setWindowTitle(windowTitle);
             mainWindow.setObjectName("wndExplorerMainWindow");
@@ -1271,7 +1409,7 @@ public class Application extends QObject implements IClientApplication {
                 mainWindow.setMenuBar(menubar);
             }
             {
-                mainToolBar.setIconSize(new QSize(24,24));
+                mainToolBar.setIconSize(new QSize(24, 24));
                 mainToolBar.addAction(actions.connect);
                 mainToolBar.addAction(actions.disconnect);
                 mainToolBar.setObjectName("main_window_toolbar");
@@ -1283,31 +1421,31 @@ public class Application extends QObject implements IClientApplication {
             {
                 //status bar setup
                 final QStatusBar statusBar = mainWindow.statusBar();
-                if (statusBar!=null){                
+                if (statusBar != null) {
                     traceTrayItem = new TraceTrayItem(statusBar, environment);
-                    statusBar.addPermanentWidget(traceTrayItem);            
+                    statusBar.addPermanentWidget(traceTrayItem);
                 }
             }
 
             createMenu();
             actions.translate();
-        
+
             final String key = SettingNames.SYSTEM + "/" + "mainWindowGeometry";
             if (environment.getConfigStore().contains(key)) {
                 mainWindow.restoreGeometry(((ExplorerSettings) environment.getConfigStore()).readQByteArray(key));
-            }else{
+            } else {
                 final QRect rec = mainWindow.rect();
                 rec.moveCenter(QApplication.desktop().frameGeometry().center());
-                mainWindow.move(rec.topLeft());                                            
+                mainWindow.move(rec.topLeft());
             }
-            
+
             getTracer().getBuffer().addTraceBufferListener(traceListener);
-            if (!getTracer().getBuffer().isEmpty()){
+            if (!getTracer().getBuffer().isEmpty()) {
                 traceListener.maxSeverityChanged(getTracer().getBuffer().getMaxSeverity());
             }
-            
+
             mainWindow.show();
-        }        
+        }
     }
 
     private void createMenu() {
@@ -1318,9 +1456,11 @@ public class Application extends QObject implements IClientApplication {
         serverMenu.addAction(actions.changePassword);
         serverMenu.addSeparator();
         serverMenu.addAction(actions.showTrace);
-        serverMenu.addAction(actions.checkForUpdates);
+        if (RunParams.isDevelopmentMode()){
+            serverMenu.addAction(actions.checkForUpdates);
+        }
         serverMenu.addSeparator();
-        if (SystemTools.isOSX){
+        if (SystemTools.isOSX) {
             serverMenu.addAction(actions.showAbout);
         }
         serverMenu.addAction(actions.exit);
@@ -1331,8 +1471,8 @@ public class Application extends QObject implements IClientApplication {
         optionsMenu.addAction(actions.clearSettings);
         optionsMenu.addSeparator();
         optionsMenu.addAction(actions.showConnectionsManager);
-        
-        if (!SystemTools.isOSX){
+
+        if (!SystemTools.isOSX) {
             final QMenu helpMenu = mainWindow.menuBar().addMenu(Application.translate("MainMenu", "&Help"));
             helpMenu.addAction(actions.showAbout);
         }
@@ -1342,8 +1482,28 @@ public class Application extends QObject implements IClientApplication {
             //developmentMenu.addAction(actions.runMacrosWindow);
             developmentMenu.addAction(actions.memoryLeakDetector);
             developmentMenu.addAction(actions.restart);
+            developmentMenu.addAction(actions.inspect);
+            if (inspectorLaunchHotKeyListener == null) {
+                inspectorLaunchHotKeyListener = new InspectorLaunchHotKeyListener(instance);
+            }
+            inspectorLaunchHotKeyListener.start();
         }
     }
+    
+    private static QIcon getApplicationIcon(){
+        final String iconPath = RunParams.getApplicationIconPath();
+        if (iconPath!=null && !iconPath.isEmpty()){
+            final File file = new File(iconPath);
+            if (file.exists() && file.canRead()){
+                final QIcon icon = new QIcon(iconPath);
+                if (!icon.isNull()){
+                    return icon;
+                }
+            }
+        }
+        return ExplorerIcon.getQIcon(ClientIcon.EXPLORER);
+    }
+    
     private TesterWindow autoTester;
 
     void startAutoTest(final String testOptionsFilePath) {
@@ -1368,7 +1528,7 @@ public class Application extends QObject implements IClientApplication {
     }
 
     @SuppressWarnings("unused")
-    private void onTestFinished() {        
+    private void onTestFinished() {
         final String reportPath;
         if (RunParams.getJUnitReportFile() == null) {
             reportPath = new File(getWorkPath(), "explorerTesting.xml").getAbsolutePath();
@@ -1402,29 +1562,29 @@ public class Application extends QObject implements IClientApplication {
 
     private static class Mp implements MessageProvider {
 
-        private final HashMap<String,String> localization = new HashMap<>(1024);
-        
+        private final HashMap<String, String> localization = new HashMap<>(1024);
+
         @Override
         public String translate(String key, String message) {
-            final String cacheKey = key+"/"+message;
+            final String cacheKey = key + "/" + message;
             String msg = localization.get(cacheKey);
-            if (msg==null){
+            if (msg == null) {
                 msg = com.trolltech.qt.core.QCoreApplication.translate(key, message);
                 localization.put(cacheKey, msg);
             }
             return msg;
         }
     }
-    
-    private static class DummyMessageProvider implements MessageProvider{
+
+    private static class DummyMessageProvider implements MessageProvider {
 
         @Override
         public String translate(final String key, final String message) {
             return message;
         }
-        
+
     }
-    
+
     private MessageProvider mp = new DummyMessageProvider();
 
     @Override
@@ -1435,13 +1595,13 @@ public class Application extends QObject implements IClientApplication {
     public static Application getInstance() {
         return instance;
     }
-    
-    public static Application newInstance(final MainWindow mainWindow){
+
+    public static Application newInstance(final MainWindow mainWindow) {
         instance = new Application(mainWindow);
         instance.setupUi();
         return instance;
     }
-    
+
     private ImageManager imageManager = null;
     private final Object lock = new Object();
 
@@ -1469,7 +1629,7 @@ public class Application extends QObject implements IClientApplication {
     public boolean isReleaseRepositoryAccessible() {
         return RadixLoader.getInstance() != null
                 && getDefManager() != null
-                && getDefManager().getAdsVersion().getNumber() > -1                
+                && getDefManager().getAdsVersion().getNumber() > -1
                 && getDefManager().getClassLoader() != null;
     }
 
@@ -1518,8 +1678,8 @@ public class Application extends QObject implements IClientApplication {
     @Override
     public TextOptionsManager getTextOptionsManager() {
         return TextOptionsManager.getInstance();
-    }     
-    
+    }
+
     private final EnvironmentCache environmentCache = new EnvironmentCache();
 
     @Override
@@ -1551,66 +1711,66 @@ public class Application extends QObject implements IClientApplication {
     public IRadixTrace getTrace() {
         return getTracer();
     }
-    
-    public void forcedDisconnect(final boolean onExit, final Runnable onDisconnect){
-        if (!disconnecting){
+
+    public void forcedDisconnect(final boolean onExit, final Runnable onDisconnect) {
+        if (!disconnecting) {
             disconnecting = true;
             eventsDispatcher.block();
-            if (inputFilter==null){
-                inputFilter = new UserInputFilter(this,true,false);
+            if (inputFilter == null) {
+                inputFilter = new UserInputFilter(this, true, false);
                 QApplication.instance().installEventFilter(inputFilter);
             }
-            QApplication.postEvent(this, new ForcedDisconnectEvent(onExit, onDisconnect));
+            QApplication.postEvent(this, new ForcedDisconnectEvent(onExit, onDisconnect, 0));
         }
     }
-    
-    private boolean tryToForcedDisconnect(final boolean onExit, final Runnable onDisconnect){
-        final QWidget modalWidget = findModalWidget();
-        if (modalWidget==null){
+
+    private boolean tryToForcedDisconnect(final boolean onExit, final Runnable onDisconnect, final int tryCount) {
+        final QWidget modalWidget = onExit && tryCount>=100 ? null : findModalWidget();
+        if (modalWidget == null) {
             disconnectImpl(true, onExit);
             return true;
-        }else{
+        } else {
             closeModalWidget(modalWidget);
-            QApplication.postEvent(this, new ForcedDisconnectEvent(onExit, onDisconnect));
+            QApplication.postEvent(this, new ForcedDisconnectEvent(onExit, onDisconnect, tryCount+1));
             return false;
-        }        
+        }
     }
-    
-    private QWidget findModalWidget(){
-        if (mainWindow!=null){
+
+    private QWidget findModalWidget() {
+        if (mainWindow != null) {
             final QWidget activeWidget = QApplication.activeModalWidget();
-            if (activeWidget !=null && activeWidget!=mainWindow){
+            if (activeWidget != null && activeWidget != mainWindow) {
                 return activeWidget;
             }
         }
         return null;
     }
-    
-    private boolean closeModalWidget(final QWidget activeWidget){
+
+    private boolean closeModalWidget(final QWidget activeWidget) {
         if (activeWidget instanceof ExplorerDialog) {
             ((ExplorerDialog) activeWidget).forceClose();
             return true;
         } else {
             return activeWidget.close();
-        }        
-    } 
-    
-    public boolean disconnect(final boolean onExit){
+        }
+    }
+
+    public boolean disconnect(final boolean onExit) {
         return disconnectImpl(false, onExit);
     }
-    
-    public Actions getActions(){
+
+    public Actions getActions() {
         return actions;
     }
-    
-    private boolean disconnectImpl(final boolean forced, final boolean onExit){
-        final boolean disconnected = getEnvironmentImpl().disconnect(forced,onExit);
+
+    private boolean disconnectImpl(final boolean forced, final boolean onExit) {
+        final boolean disconnected = getEnvironmentImpl().disconnect(forced, onExit);
         if (disconnected && !onExit) {
             actions.connect.setEnabled(true);
             actions.disconnect.setEnabled(false);
             actions.changePassword.setEnabled(false);
         }
-        if (disconnected){
+        if (disconnected) {
             eventsDispatcher.reset();
         }
         return disconnected;
@@ -1629,14 +1789,14 @@ public class Application extends QObject implements IClientApplication {
         return (QIcon) getInstance().imageManager.loadIcon(fileName);
     }
 
-    protected static QIcon loadSvgIcon(String fileName, QColor bColor) {        
+    protected static QIcon loadSvgIcon(String fileName, QColor bColor) {
         return (QIcon) getInstance().imageManager.loadSvgIcon(fileName, bColor);
     }
-        
-    private static class SecretStore implements ISecretStore{
+
+    private static class SecretStore implements ISecretStore {
 
         private QByteArray byteArray;
-        
+
         @Override
         @SuppressWarnings("PMD.MethodReturnsInternalArray")
         public byte[] getSecret() {
@@ -1658,6 +1818,11 @@ public class Application extends QObject implements IClientApplication {
                 byteArray = null;
             }
         }
+
+        @Override
+        public boolean isEmpty() {
+            return byteArray==null;
+        }
     }
 
     @Override
@@ -1667,35 +1832,40 @@ public class Application extends QObject implements IClientApplication {
 
     @Override
     public boolean isInGuiThread() {
-        return thread()==Thread.currentThread();
+        return thread() == Thread.currentThread();
     }
 
     @Override
     public boolean isExtendedMetaInformationAccessible() {
         return RunParams.isExtendedMetaInformationAccessible();
-    }        
-        
+    }
+
+    @Override
+    public boolean isSqmlAccessible() {
+        return RunParams.isSqmlAccessible();
+    }
+
     public <T> T runInGuiThread(final Callable<T> task) throws InterruptedException, ExecutionException {
         return this.qtExecutor.invoke(task);
     }
 
     public void runInGuiThreadAsync(final Runnable task) {
         QApplication.postEvent(this, new ExecuteEvent(task));
-    }    
-            
-    public static long processEventWhenEasSessionReady(final QObject receiver, final QEvent event){
-        return instance==null ? 0 : instance.eventsDispatcher.scheduleEvent(receiver, event);
     }
-    
-    public static boolean removeScheduledEvent(final long eventId){        
-        return instance==null ? true : instance.eventsDispatcher.dropEvent(eventId);
+
+    public static long processEventWhenEasSessionReady(final QObject receiver, final QEvent event) {
+        return instance == null ? 0 : instance.eventsDispatcher.scheduleEvent(receiver, event);
     }
-    
-    public static boolean isInMainThread(){
+
+    public static boolean removeScheduledEvent(final long eventId) {
+        return instance == null ? true : instance.eventsDispatcher.dropEvent(eventId);
+    }
+
+    public static boolean isInMainThread() {
         return instance.isInGuiThread();
-    }        
-    
-    public static void sleep(final int millis){
+    }
+
+    public static void sleep(final int millis) {
         QTimer.singleShot(millis, instance.pauseLoop, "quit()");
         instance.pauseLoop.exec();
     }

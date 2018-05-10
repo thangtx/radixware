@@ -18,6 +18,7 @@ import java.util.List;
 public abstract class AbstractReaderController implements IReaderController {
     private final List<EntityModel> newEntities = new LinkedList<>();
     private final int maxRowsCount;
+    private int idx;
     
     protected AbstractReaderController(final int maxRowsCount) {
         this.maxRowsCount = maxRowsCount;
@@ -27,31 +28,35 @@ public abstract class AbstractReaderController implements IReaderController {
         this.maxRowsCount = Integer.MAX_VALUE;
     }
     
-    boolean updateEntities(GroupModelData selectResult) {
+    protected boolean updateEntities(final GroupModelData selectResult) {
         boolean hasMore = selectResult.hasMore();
-    
-        int idx = 0;
+        newEntities.clear();
         for(EntityModel e : selectResult.getEntityModels()) {
-            if (++idx <= maxRowsCount && hasMore(e)) {
+            if (++idx < maxRowsCount && hasMore(e)) {
                 newEntities.add(e);
             } else {
                 hasMore = false;
                 break;
             }
         }
-                        
         return hasMore;
+    }
+    
+    protected void clear(){
+        newEntities.clear();
+        idx = 0;
     }
     
     protected List<EntityModel> getLastEntities() {
         return newEntities;
     }
     
-    protected void clear() {
-        newEntities.clear();
-    }
-    
     protected int getMaxRowsCount() {
         return maxRowsCount;
+    }
+
+    @Override
+    public boolean hasMoreAfterMerge(){
+        return false;
     }
 }

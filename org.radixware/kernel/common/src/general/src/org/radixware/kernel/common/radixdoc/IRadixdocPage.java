@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.radixdoc;
 
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.schemas.radixdoc.AbstractDefDocItem;
 import org.radixware.schemas.radixdoc.Page;
 
 
@@ -22,4 +23,8 @@ public interface IRadixdocPage<T extends RadixObject> extends IRadixdocDictionar
     T getSource();
 
     void buildPage();
+    
+    boolean isGenerateHtmlDoc();
+    
+    AbstractDefDocItem buildDocItem();
 }

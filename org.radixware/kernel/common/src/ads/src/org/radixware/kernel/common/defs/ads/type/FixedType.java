@@ -30,17 +30,17 @@ public abstract class FixedType extends AdsType {
         }
 
         @Override
-        public char[][] getPackageNameComponents(UsagePurpose env) {
+        public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
             return TypeJavaSourceSupport.DEFAULT_PACKAGE;
         }
 
         @Override
-        public char[] getQualifiedTypeName(UsagePurpose env) {
+        public char[] getQualifiedTypeName(UsagePurpose env, boolean isHumanReadable) {
             return name;
         }
 
         @Override
-        public char[] getLocalTypeName(UsagePurpose env) {
+        public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
             return name;
         }
     }

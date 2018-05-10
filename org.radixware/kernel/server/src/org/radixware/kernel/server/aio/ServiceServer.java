@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.server.aio;
 
+import org.radixware.kernel.server.instance.ServerChannelResourceItem;
 import org.radixware.kernel.common.utils.net.SapAddress;
 import java.io.Closeable;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.net.ssl.SSLContext;
 
 import org.apache.xmlbeans.XmlObject;
@@ -31,16 +33,20 @@ import org.radixware.kernel.common.exceptions.CertificateUtilsException;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
 import org.radixware.kernel.common.soap.IServerMessageProcessorFactory;
-import org.radixware.kernel.common.soap.IServerSoapMessageProcessor;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.SoapFormatter;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.common.utils.net.JmsServerChannel;
 import org.radixware.kernel.common.utils.io.pipe.BidirectionalPipe;
 import org.radixware.kernel.common.utils.io.pipe.ServerPipe;
 import org.radixware.kernel.common.utils.net.PipeServerChannel;
 import org.radixware.kernel.common.utils.net.ServerChannel;
 import org.radixware.kernel.common.utils.net.SocketServerChannel;
+import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.ResourceRegistry;
+import org.radixware.kernel.server.instance.SocketResourceRegistryItem;
 import org.radixware.kernel.server.soap.DefaultServerMessageProcessorFactory;
+import org.radixware.kernel.server.units.UnitThread;
 
 public class ServiceServer implements EventHandler {
 
@@ -88,6 +94,8 @@ public class ServiceServer implements EventHandler {
     private final EClientAuthentication sslClientAuth;
     private final List<String> cipherSuites;
     protected final IServerMessageProcessorFactory messageProcessorFactory;
+    private final String resourceRegistrationKeyPrefix;
+    private final EPortSecurityProtocol securityProtocol;
 
     /**
      * @param dispatcher
@@ -102,13 +110,15 @@ public class ServiceServer implements EventHandler {
     public ServiceServer(
             final EventDispatcher dispatcher,
             final LocalTracer tracer,
-            final SapAddress myAddress,
-            final int maxSeanceCount,
-            final int rqWaitTimeout,
+            final SapAddress myAddress, 
+            final int maxSeanceCount, 
+            final int rqWaitTimeout, 
             final SSLContext sslContext,
-            final EClientAuthentication sslClientAuth,
-            final List<String> cipherSuites) {
-        this(dispatcher, tracer, myAddress, maxSeanceCount, rqWaitTimeout, sslContext, sslClientAuth, cipherSuites, null);
+            final EPortSecurityProtocol securityProtocol, 
+            final EClientAuthentication sslClientAuth, 
+            final List<String> cipherSuites, 
+            final String resourceKeyPrefix) {
+        this(dispatcher, tracer, myAddress, maxSeanceCount, rqWaitTimeout, sslContext, securityProtocol, sslClientAuth, cipherSuites, null, resourceKeyPrefix);
     }
 
     /**
@@ -122,21 +132,24 @@ public class ServiceServer implements EventHandler {
      * @param sslClientAuth
      */
     public ServiceServer(
-            final EventDispatcher dispatcher,
-            final LocalTracer tracer,
-            final SapAddress myAddress,
+            final EventDispatcher dispatcher, 
+            final LocalTracer tracer, 
+            final SapAddress myAddress, 
             final int maxSeanceCount,
-            final int rqWaitTimeout,
+            final int rqWaitTimeout, 
             final SSLContext sslContext,
-            final EClientAuthentication sslClientAuth,
-            final List<String> cipherSuites,
-            final IServerMessageProcessorFactory messageProcessorFactory) {
+            final EPortSecurityProtocol securityProtocol,
+            final EClientAuthentication sslClientAuth, 
+            final List<String> cipherSuites, 
+            final IServerMessageProcessorFactory messageProcessorFactory,
+            final String resourceKeyPrefix) {
         this.tracer = tracer;
         this.dispatcher = dispatcher;
         this.myAddress = myAddress;
         this.maxSeanceCount = maxSeanceCount;
         this.rqWaitTimeout = rqWaitTimeout;
         this.sslContext = sslContext;
+        this.securityProtocol = sslContext == null ? EPortSecurityProtocol.NONE : Utils.nvlOf(securityProtocol, EPortSecurityProtocol.SSL);
         this.sslClientAuth = sslClientAuth;
         rsFrameAttrs.put(EHttpParameter.HTTP_RESP_STATUS_PARAM.getValue(), "200");
         rsFrameAttrs.put(EHttpParameter.HTTP_RESP_REASON_PARAM.getValue(), "OK");
@@ -146,14 +159,19 @@ public class ServiceServer implements EventHandler {
         faultFrameAttrs.put(EHttpParameter.HTTP_CONTENT_TYPE_ATTR.getValue(), "text/xml; charset=\"UTF-8\"");
         this.cipherSuites = cipherSuites;
         this.messageProcessorFactory = messageProcessorFactory == null ? new DefaultServerMessageProcessorFactory(null, tracer, null) : messageProcessorFactory;
+        this.resourceRegistrationKeyPrefix = resourceKeyPrefix;
     }
 
     public void start() throws IOException {
+        if (getResourceRegistrationKeyPrefix() != null) {
+            Instance.get().getResourceRegistry().closeAllWithKeyPrefix(getResourceRegistrationKeyPrefix(), "service start");
+        }
+
         if (myAddress.getKind() == SapAddress.EKind.INET_SOCKET_ADDRESS) {
             serverChannel = new SocketServerChannel(new SocketServerChannel.SecurityOptions() {
                 @Override
                 public EPortSecurityProtocol getSecurityProtocol() {
-                    return sslContext == null ? EPortSecurityProtocol.NONE : EPortSecurityProtocol.SSL;
+                    return securityProtocol;
                 }
 
                 @Override
@@ -179,6 +197,9 @@ public class ServiceServer implements EventHandler {
             throw new IllegalArgumentException("Unsupported channel type: " + myAddress.getKind());
         }
         serverChannel.open(myAddress);
+        if (getResourceRegistrationKeyPrefix() != null) {
+            Instance.get().getResourceRegistry().register(new ServerChannelResourceItem(ResourceRegistry.buildServerChannelKey(getResourceRegistrationKeyPrefix(), myAddress), serverChannel, null, tryGetHolderAliveChecker()));
+        }
         serverChannel.getSelectableChannel().configureBlocking(false);
         dispatcher.waitEvent(new EventDispatcher.AcceptEvent(serverChannel.getSelectableChannel()), this, -1);
     }
@@ -198,6 +219,10 @@ public class ServiceServer implements EventHandler {
         serverChannel = null;
     }
 
+    public String getResourceRegistrationKeyPrefix() {
+        return resourceRegistrationKeyPrefix;
+    }
+
     public ServiceServerSeance createSeance(ChannelPort port) {
         return new ServiceServerSeance(this, port, rqWaitTimeout);
     }
@@ -207,9 +232,13 @@ public class ServiceServer implements EventHandler {
         if (event.getClass() == EventDispatcher.AcceptEvent.class) {
             ChannelPort port = null;
             Closeable acceptedSocket = null;
+            final String resourceRegPrefix = getResourceRegistrationKeyPrefix();
             try {
                 if (myAddress.getKind() == SapAddress.EKind.INET_SOCKET_ADDRESS) {
                     final SocketChannel s = ((ServerSocketChannel) serverChannel.getSelectableChannel()).accept();
+                    if (resourceRegPrefix != null) {
+                        Instance.get().getResourceRegistry().register(new SocketResourceRegistryItem(resourceRegPrefix + "/acc/rmt-" + s.getRemoteAddress(), s, null, null));
+                    }
                     acceptedSocket = s;
                     s.configureBlocking(false);
                     try {
@@ -225,7 +254,7 @@ public class ServiceServer implements EventHandler {
                     tracer.debug("Connection accepted from " + s.socket().getRemoteSocketAddress(), false);
                     port = new SocketChannelPort(dispatcher, tracer, s, SocketChannelPort.FRAME_HTTP_RQ, SocketChannelPort.FRAME_HTTP_RS);
                     if (sslContext != null) {
-                        port.initSsl(sslContext, false, sslClientAuth, cipherSuites);
+                        port.initSsl(sslContext, false, sslClientAuth, cipherSuites, securityProtocol);
                     }
                 } else {
                     final BidirectionalPipe p;
@@ -270,6 +299,13 @@ public class ServiceServer implements EventHandler {
 
     public List<ServiceServerSeance> getSeances() {
         return new ArrayList<>(seances);
+    }
+
+    private Callable<Boolean> tryGetHolderAliveChecker() {
+        if (Thread.currentThread() instanceof UnitThread) {
+            return ((UnitThread) Thread.currentThread()).getUnit().getThisRunAliveChecker();
+        }
+        return null;
     }
 
 }

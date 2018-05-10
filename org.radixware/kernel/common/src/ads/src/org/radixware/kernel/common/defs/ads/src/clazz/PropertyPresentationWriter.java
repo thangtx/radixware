@@ -459,8 +459,14 @@ public class PropertyPresentationWriter extends RadixObjectWriter<PropertyPresen
                     printer.printComma();
                     WriterUtils.writeEnumFieldInvocation(printer, editOptions.getValueStorePossibility());
                 }
-                /*printer.printComma();
-                printer.print(ownerProp.isDeprecated());*/
+                printer.printComma();
+                printer.print(ownerProp.isDeprecated());
+                
+                if (isRefProp && (ops != null)){
+                    printer.printComma();
+                    printer.print(ops.isAutoSortClasses());
+                }
+                
                 printer.print(')');
                 printer.leaveBlock();
                 return true;

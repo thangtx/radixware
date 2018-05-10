@@ -79,7 +79,7 @@ public final class LongValidator implements org.radixware.kernel.common.client.m
         if (triadDelimeter==null || triadDelimeter.charValue()=='\0'){
             preparsedInput = input;
         }else{
-            preparsedInput = input.replaceAll(String.valueOf(triadDelimeter.charValue()), "");
+            preparsedInput = input.replace(String.valueOf(triadDelimeter.charValue()), "");
         }
         
         final long entered;
@@ -87,7 +87,7 @@ public final class LongValidator implements org.radixware.kernel.common.client.m
             entered = Long.parseLong(preparsedInput, radix);
         }
         catch(NumberFormatException ex){
-            return ValidationResult.Factory.newInvalidResult(InvalidValueReason.WRONG_FORMAT);
+            return ValidationResult.Factory.newInvalidResult(InvalidValueReason.Factory.createForWrongFormatValue(environment));
         }
         if (entered >= minValue && entered <= maxValue)
             return ValidationResult.ACCEPTABLE;

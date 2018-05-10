@@ -24,6 +24,8 @@ import org.radixware.schemas.aas.InvokeRs;
 import org.radixware.schemas.aasWsdl.InvokeDocument;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
+import org.radixware.kernel.common.utils.SoapFormatter;
+import org.radixware.kernel.server.aio.AadcAffinity;
 import org.radixware.kernel.server.aio.ServiceManifestLoader;
 import org.radixware.kernel.server.arte.services.aas.ArteAccessService;
 
@@ -65,8 +67,12 @@ public abstract class AasClient extends AsyncServiceClient implements EventHandl
     protected void invoke(final InvokeDocument invokeXml, final boolean keepConnect, final int aasInvokeTimeoutMillis, final String scpName) {
         invoke(invokeXml, null, keepConnect, aasInvokeTimeoutMillis, scpName);
     }
-
+    
     protected void invoke(final InvokeDocument invokeXml, final Map<String, String> headers, final boolean keepConnect, final int aasInvokeTimeoutMillis, final String scpName) {
+        invoke(invokeXml, headers, keepConnect, aasInvokeTimeoutMillis, scpName, null);
+    }
+
+    protected void invoke(final InvokeDocument invokeXml, final Map<String, String> headers, final boolean keepConnect, final int aasInvokeTimeoutMillis, final String scpName, final AadcAffinity aadcAffinity) {
         if (isStopped()) {
             throw new IllegalUsageError("AAS client is stopped");
         }
@@ -74,7 +80,7 @@ public abstract class AasClient extends AsyncServiceClient implements EventHandl
             throw new WrongFormatError("Wrong format of AAS invokeXml: invokeRq is null", null);
         }
         setScpName(scpName);
-        invoke(invokeXml, InvokeMess.class, headers, keepConnect, aasInvokeTimeoutMillis, this);
+        invoke(SoapFormatter.wrapToSoapEnvelope(invokeXml), InvokeMess.class, headers, keepConnect, aasInvokeTimeoutMillis, this, aadcAffinity);
     }
 
     @Override

@@ -12,9 +12,9 @@ package org.radixware.kernel.server.dbq;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import oracle.jdbc.OraclePreparedStatement;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
@@ -59,6 +59,9 @@ public abstract class DbQuery {
     private volatile boolean deletedFromCache = false; // volatile because it is read in finalize
     protected final String sqlQuery;
     private final boolean wantCloseStatementOnFree;
+    private final List<Clob> temporaryClobs = new ArrayList<>();
+    private final List<Blob> temporaryBlobs = new ArrayList<>();
+    private final ISetParamCallbackHandler setParamCallbackHandler;
 
     DbQuery(
             final Arte arte,
@@ -78,10 +81,22 @@ public abstract class DbQuery {
         } else {
             wantCloseStatementOnFree = false;
         }
+        setParamCallbackHandler = new ISetParamCallbackHandler() {
+
+            @Override
+            public void afterCreateTemporaryClob(Clob clob) {
+                temporaryClobs.add(clob);
+            }
+
+            @Override
+            public void afterCreateTemporaryBlob(Blob blob) {
+                temporaryBlobs.add(blob);
+            }
+        };
     }
 
-    protected OraclePreparedStatement asOracleStatement() {
-        return (OraclePreparedStatement) query;
+    protected PreparedStatement asStatement() {
+        return query;
     }
 
     protected int getDefaultFetchSize() {
@@ -108,8 +123,22 @@ public abstract class DbQuery {
         return deletedFromCache;
     }
 
+    protected void releaseTemporaryLobs() {
+        try {
+            if (arte != null && arte.getDbConnection() != null) {
+                arte.getDbConnection().freeTemporaryClobs(temporaryClobs);
+                temporaryClobs.clear();
+                arte.getDbConnection().freeTemporaryBlobs(temporaryBlobs);
+                temporaryBlobs.clear();
+            }
+        } catch (Throwable t) {
+            arte.getTrace().put(EEventSeverity.WARNING, "Error while releasing automatically created LOBs: " + ExceptionTextFormatter.throwableToString(t), EEventSource.ARTE_DB);
+        }
+    }
+
     public void free() {
         isBusy = false;
+        releaseTemporaryLobs();
         if (isDeletedFromCache() || (wantCloseStatementOnFree && canCloseStatmentOnFree())) {
             closeQuery();
         }
@@ -278,10 +307,14 @@ public abstract class DbQuery {
     }
 
     protected final void setParam(final int idx, final EValType valType, final String dbType, final Object val, final String nameForDebug) {
-        setParam(arte, query, idx, valType, dbType, val, nameForDebug);
+        setParam(arte, query, idx, valType, dbType, val, nameForDebug, setParamCallbackHandler);
     }
 
     public static final void setParam(final Arte arte, final PreparedStatement stmt, final int idx, final EValType valType, final String dbType, final Object val, final String nameForDebug) {
+        setParam(arte, stmt, idx, valType, dbType, val, nameForDebug, null);
+    }
+
+    public static final void setParam(final Arte arte, final PreparedStatement stmt, final int idx, final EValType valType, final String dbType, final Object val, final String nameForDebug, final ISetParamCallbackHandler callbackHandler) {
         try {
             if (val == null) {
                 stmt.setObject(idx, null);
@@ -347,8 +380,14 @@ public abstract class DbQuery {
                     final Clob clob;
                     if (val instanceof XmlObject) {
                         clob = EasValueConverter.xml2Clob(arte, (XmlObject) val);
+                        if (callbackHandler != null) {
+                            callbackHandler.afterCreateTemporaryClob(clob);
+                        }
                     } else if (val instanceof String) {
                         clob = EasValueConverter.str2Clob(arte, (String) val);
+                        if (callbackHandler != null) {
+                            callbackHandler.afterCreateTemporaryClob(clob);
+                        }
                     } else {
                         clob = (java.sql.Clob) val;
                     }
@@ -358,6 +397,9 @@ public abstract class DbQuery {
                     final Blob blob;
                     if (val instanceof XmlObject) {
                         blob = EasValueConverter.xml2Blob(arte, (XmlObject) val);
+                        if (callbackHandler != null) {
+                            callbackHandler.afterCreateTemporaryBlob(blob);
+                        }
                     } else {
                         blob = (java.sql.Blob) val;
                     }
@@ -375,6 +417,9 @@ public abstract class DbQuery {
                     if (dbType != null && OracleTypeNames.CLOB.equals(dbType.toUpperCase())) {
                         //TODO поддержка clob-а в качестве valasstr
                         final Clob c = arte.getDbConnection().createTemporaryClob();
+                        if (callbackHandler != null) {
+                            callbackHandler.afterCreateTemporaryClob(c);
+                        }
                         c.setString(1, s);
                         stmt.setClob(idx, c);
                     } else {
@@ -406,7 +451,7 @@ public abstract class DbQuery {
                 ((RadixConnection) statement.getConnection()).scheduleStatementToClose(statement);
                 if (LOG_CLOSE_FROM_NON_ARTE_THREAD) {
                     final Instance instance = Instance.get();
-                    instance.getTrace().put(EEventSeverity.WARNING, arte.getProcessorThread().getName() + ": schedule statement for close: " + query + " : " + sqlQuery , EEventSource.INSTANCE);
+                    instance.getTrace().put(EEventSeverity.WARNING, arte.getProcessorThread().getName() + ": schedule statement for close: " + query + " : " + sqlQuery, EEventSource.INSTANCE);
                 }
             } else {
                 statement.close();
@@ -426,7 +471,7 @@ public abstract class DbQuery {
             for (DdsIndexDef idx : tab.getIndices().get(ExtendableDefinitions.EScope.ALL)) {
                 if (errMatchesDbName(mess, idx.getDbName()) || errMatchesDbName(mess, idx.getUniqueConstraint() == null ? null : idx.getUniqueConstraint().getDbName())) {
                     final String mls = MultilingualString.get(arte, Messages.MLS_OWNER_ID, Messages.MLS_ID_DBQ_UNIQUE_CONSTRAINT_VIOLATION_IDX);
-                    throw new UniqueConstraintViolation(classMeta, tab, idx, String.format(mls, idx.getName()), e);
+                    throw new UniqueConstraintViolation(classMeta, tab, idx, String.format(mls, "'" + idx.getName() + "'"), e);
                 }
             }
         }
@@ -834,28 +879,36 @@ public abstract class DbQuery {
     static class Field {
         //Public fields
 
-        final Definition prop;
-        final String alias;
         private final Arte arte;
+        final String alias;
         final int index;
+        final Id id;
+        private final EValType valType;
+        private final String dbType;
         //Constructor    
 
-        Field(final Arte arte, final Definition prop, final String alias, final int index) {
-            this.prop = prop;
+        Field(final Arte arte, final SqlBuilder.Field builderField) {
+            this(arte, builderField.getId(), builderField.getValType(), builderField.getAlias() == null ? null : builderField.getDbType(), builderField.getAlias(), builderField.getIndex());
+        }
+
+        Field(final Arte arte, final Id fieldId, final EValType valType, final String dbType, final String alias, final int index) {
             this.alias = alias;
             this.arte = arte;
             this.index = index;
+            this.id = fieldId;
+            this.valType = valType;
+            this.dbType = dbType;
         }
 
         protected final Object getFieldVal(final ResultSet rs) {
             if (index > 0) {
-                return DbQuery.getFieldVal(arte, rs, index, getValType(), getDbType());
+                return DbQuery.getFieldVal(arte, rs, index, valType, dbType);
             } else {
-                return DbQuery.getFieldVal(arte, rs, alias, getValType(), getDbType());
+                return DbQuery.getFieldVal(arte, rs, alias, valType, dbType);
             }
         }
 
-        EValType getValType() {
+        private static EValType getValType(final Definition prop) {
             if (prop instanceof DdsColumnDef) {
                 return ((DdsColumnDef) prop).getValType();
             }
@@ -865,7 +918,7 @@ public abstract class DbQuery {
             throw new IllegalUsageError("Unsupported property");
         }
 
-        String getDbType() {
+        private static String getDbType(final Definition prop) {
             if (prop instanceof DdsColumnDef) {
                 return ((DdsColumnDef) prop).getDbType();
             }
@@ -874,5 +927,12 @@ public abstract class DbQuery {
             }
             throw new IllegalUsageError("Unsupported property");
         }
+    }
+
+    public static interface ISetParamCallbackHandler {
+
+        public void afterCreateTemporaryClob(Clob clob);
+
+        public void afterCreateTemporaryBlob(Blob blob);
     }
 }

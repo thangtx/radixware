@@ -24,6 +24,11 @@ public abstract class AbstractMonitor {
     private final MetricRecordWriter writer;
     private final MonitoringDbQueries dbQueries;
 
+    protected AbstractMonitor() {
+        this.writer = null;
+        this.dbQueries = null;
+    }
+    
     public AbstractMonitor(final Connection connection, final ServerTrace serverTrace, final String eventSource) {
         this.dbQueries = new MonitoringDbQueries(connection, serverTrace, eventSource);
         this.writer = new MetricRecordWriter(connection, dbQueries, serverTrace.newTracer(EEventSource.SYSTEM_MONITORING.getValue()));

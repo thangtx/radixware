@@ -357,14 +357,14 @@ public class MergeUtils {
             return false;
         }
 
-        final Definition def0 = list.get(0);
-        final Layer layer = def0.getModule().getLayer();
-
-        for (int i = 1; i < list.size(); i++) {
-            if (list.get(i).getModule().getLayer() != layer) {
-                return false;
-            }
-        }
+//        final Definition def0 = list.get(0);
+//        final Layer layer = def0.getLayer();
+//
+//        for (int i = 1; i < list.size(); i++) {
+//            if (list.get(i).getLayer() != layer) {
+//                return false;
+//            }
+//        }
         return true;
     }
 
@@ -477,14 +477,18 @@ public class MergeUtils {
 
         final URI fromBranchUrl = new URI(SVN.getFileUrl(options.getFsClient(), options.getFromBranchFile()));
 
-        String fromPath;
-        fromPath = fromBranchUrl.getPath();
-        fromPath = SvnPathUtils.removeHead(fromPath);
+        
+        String fromPath;        
+//        fromPath = fromBranchUrl.getPath();//RADIX-13491
+//        fromPath = SvnPathUtils.removeHead(fromPath);//RADIX-13491
+        fromPath = fromBranchUrl.toString().substring(options.getRepository().getRepositoryRoot().length());//RADIX-13491
 
+        
         final URI toBranchUrl = new URI(SVN.getFileUrl(options.getFsClient(), options.getToBranchFile()));
         String toPath;
-        toPath = toBranchUrl.getPath();
-        toPath = SvnPathUtils.removeHead(toPath);
+//        toPath = toBranchUrl.getPath();//RADIX-13491
+//        toPath = SvnPathUtils.removeHead(toPath);//RADIX-13491
+        toPath = toBranchUrl.toString().substring(options.getRepository().getRepositoryRoot().length());//RADIX-13491
 
         options.setFromPreffix(fromPath);
         options.setToPreffix(toPath);
@@ -500,40 +504,41 @@ public class MergeUtils {
     }
 
     protected static boolean radixVersionNotLessThen_1_2_29(final File branchFile) throws XmlException, IOException {
+        return true;
 
-        if (branchFile == null || !branchFile.exists() || !Branch.isBranchDir(branchFile)) {
-            MergeUtils.generateException("Branch not found \'" + String.valueOf(branchFile) + "\'");
-            return false;
-        }
-
-        String lastReleaseNumber = null;
-        final File branchXmlFile = new File(branchFile.getAbsolutePath() + File.separator + org.radixware.kernel.common.constants.FileNames.BRANCH_XML);
-        if (branchXmlFile.exists()) {
-            final org.radixware.schemas.product.Branch xBranch = org.radixware.schemas.product.Branch.Factory.parse(branchXmlFile);
-            lastReleaseNumber = xBranch.getLastRelease();
-        }
-
-        final File radixLayerFile = new File(branchFile.getAbsolutePath() + File.separator + FileNames.RADIX_LAYER_URI);
-
-        if (!radixLayerFile.exists() || Layer.isLayerDir(radixLayerFile)) {
-            return false;
-        }
-
-        final File radixLayerXmlFile = new File(radixLayerFile.getAbsolutePath() + File.separator + FileNames.LAYER_XML);
-        if (!radixLayerXmlFile.exists()) {
-            return false;
-        }
-
-        final org.radixware.schemas.product.Layer xLayer = org.radixware.schemas.product.Layer.Factory.parse(radixLayerXmlFile);
-        String layerReleaseNumber = xLayer.getReleaseNumber();
-        if (layerReleaseNumber == null || layerReleaseNumber.isEmpty()) {
-            layerReleaseNumber = lastReleaseNumber;
-        }
-        if (layerReleaseNumber == null || layerReleaseNumber.isEmpty()) {
-            return false;
-        }
-        final Version version = new Version(layerReleaseNumber);
-        return new Version("1.2.29").compareTo(version) >= 0;
+//        if (branchFile == null || !branchFile.exists() || !Branch.isBranchDir(branchFile)) {
+//            MergeUtils.generateException("Branch not found \'" + String.valueOf(branchFile) + "\'");
+//            return false;
+//        }
+//
+//        String lastReleaseNumber = null;
+//        final File branchXmlFile = new File(branchFile.getAbsolutePath() + File.separator + org.radixware.kernel.common.constants.FileNames.BRANCH_XML);
+//        if (branchXmlFile.exists()) {
+//            final org.radixware.schemas.product.Branch xBranch = org.radixware.schemas.product.Branch.Factory.parse(branchXmlFile);
+//            lastReleaseNumber = xBranch.getLastRelease();
+//        }
+//
+//        final File radixLayerFile = new File(branchFile.getAbsolutePath() + File.separator + FileNames.RADIX_LAYER_URI);
+//
+//        if (!radixLayerFile.exists() || Layer.isLayerDir(radixLayerFile)) {
+//            return false;
+//        }
+//
+//        final File radixLayerXmlFile = new File(radixLayerFile.getAbsolutePath() + File.separator + FileNames.LAYER_XML);
+//        if (!radixLayerXmlFile.exists()) {
+//            return false;
+//        }
+//
+//        final org.radixware.schemas.product.Layer xLayer = org.radixware.schemas.product.Layer.Factory.parse(radixLayerXmlFile);
+//        String layerReleaseNumber = xLayer.getReleaseNumber();
+//        if (layerReleaseNumber == null || layerReleaseNumber.isEmpty()) {
+//            layerReleaseNumber = lastReleaseNumber;
+//        }
+//        if (layerReleaseNumber == null || layerReleaseNumber.isEmpty()) {
+//            return false;
+//        }
+//        final Version version = new Version(layerReleaseNumber);
+//        return new Version("1.2.29").compareTo(version) >= 0;
 
     }
 
@@ -607,7 +612,12 @@ public class MergeUtils {
         options.setFromFormatVersion(fromBranch.getFormatVersion());
         options.setToFormatVersion(toBranch.getFormatVersion());
 
-        final Layer fromLayer = list.get(0).getModule().getSegment().getLayer();
+        final Layer fromLayer = list.get(0).getLayer();// RADIX-11357
+        if (fromLayer == null) {
+            messageError("Source layer for definition \'" + list.get(0).getName() + "\' not found.");
+            return null;
+        }
+        
         final Layer toLayer = toBranch.getLayers().findByURI(fromLayer.getURI());
         if (toLayer == null) {
             messageError("Destination layer \'" + fromLayer.getURI() + "\' not found.");
@@ -729,7 +739,7 @@ public class MergeUtils {
                     for (File f : listOfFiles) {
                         final RadixObject rObj = RadixFileUtil.findRadixObject(f);
                         if (rObj instanceof AdsDefinition) {
-                            AdsDefinition adef = (AdsDefinition) rObj;
+                            Definition adef = (AdsDefinition) rObj;
 
                             if (adef instanceof AdsLocalizingBundleDef) {
                                 final AdsLocalizingBundleDef bundle = (AdsLocalizingBundleDef) adef;
@@ -739,7 +749,10 @@ public class MergeUtils {
                                 adsDefList.add(adef);
                             }
                         } else if (rObj instanceof AdsModule) {
-                            adsDefList.add((AdsModule) rObj);
+                            AdsModule module = (AdsModule) rObj;
+                            if (!adsDefList.contains(module)) {
+                                adsDefList.add((AdsModule) module);
+                            }
                         }
                     }
                     try {

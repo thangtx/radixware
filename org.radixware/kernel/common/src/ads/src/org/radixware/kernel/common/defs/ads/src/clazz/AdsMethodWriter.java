@@ -31,6 +31,7 @@ import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.common.jml.JmlTagInvocation;
 import org.radixware.kernel.common.lang.ReflectiveCallable;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 
 public class AdsMethodWriter<T extends AdsMethodDef> extends AbstractDefinitionWriter<T> {
 
@@ -58,12 +59,11 @@ public class AdsMethodWriter<T extends AdsMethodDef> extends AbstractDefinitionW
             AdsType type = def.getOwnerClass().getType(EValType.USER_CLASS, null);
             writeUsage(printer, type);
         } else {
-
-            printer.print(comuteEffectiveJavaName(def));
+            printer.print(comuteEffectiveJavaName(def, printer instanceof IHumanReadablePrinter));
         }
     }
-
-    public static char[] comuteEffectiveJavaName(AdsMethodDef method) {
+    
+    public static char[] comuteEffectiveJavaName(AdsMethodDef method, boolean isHumanReadable) {
         AdsMethodDef root = method;
 
         while (root != null) {
@@ -77,9 +77,16 @@ public class AdsMethodWriter<T extends AdsMethodDef> extends AbstractDefinitionW
         if (root instanceof AdsTransparentMethodDef) {
             return ((AdsTransparentMethodDef) root).getPublishedMethodName();
         } else {
-
-            return method.getId().toCharArray();
+            if (isHumanReadable) {
+                return method.getName().toCharArray();
+            } else {
+                return method.getId().toCharArray();
+            }
         }
+    }
+
+    public static char[] comuteEffectiveJavaName(AdsMethodDef method) {
+        return comuteEffectiveJavaName(method, false);
     }
     private static final char[] REFLECTIVE_CALLABLE_CLASS_NAME = ReflectiveCallable.class.getName().toCharArray();
 
@@ -143,7 +150,7 @@ public class AdsMethodWriter<T extends AdsMethodDef> extends AbstractDefinitionW
             writeCode(printer, profile.getAccessFlags());
             printer.printSpace();
             if (def.isConstructor()) {
-                char[] clsName = ownerClass.getType(EValType.USER_CLASS, null).getJavaSourceSupport().getLocalTypeName(UsagePurpose.getPurpose(def.getUsageEnvironment(), usagePurpose.getCodeType()));
+                char[] clsName = ownerClass.getType(EValType.USER_CLASS, null).getJavaSourceSupport().getLocalTypeName(UsagePurpose.getPurpose(def.getUsageEnvironment(), usagePurpose.getCodeType()), printer instanceof IHumanReadablePrinter);
                 if (ownerClass.isNested()) {
                     for (int i = clsName.length - 1; i >= 0; i--) {
                         if (clsName[i] == '.') {

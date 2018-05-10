@@ -22,9 +22,15 @@ import org.radixware.kernel.common.defs.uds.module.UdsModule;
 
 
 public class UdsDefinitionUploader extends RadixObjectUploader<AdsDefinition> {
-
+    private boolean isDefinitions = false;
+    
     public UdsDefinitionUploader(AdsDefinition radixObject) {
         super(radixObject);
+    }
+    
+    public UdsDefinitionUploader(AdsDefinition radixObject, boolean isDefinitions) {
+        super(radixObject);
+        this.isDefinitions = isDefinitions;
     }
 
     public AdsDefinition getDefinition() {
@@ -33,12 +39,7 @@ public class UdsDefinitionUploader extends RadixObjectUploader<AdsDefinition> {
 
     @Override
     public void close() {
-        AdsDefinition definition = getDefinition();
-        AdsModule module = definition.getModule();
-        if (module != null) {
-            // do not call definition.delete(), because definition file will be deleted.
-            module.getDefinitions().remove(definition);
-        }
+        UdsUploaderUtils.close(getRadixObject());
     }
 
     @Override
@@ -55,9 +56,12 @@ public class UdsDefinitionUploader extends RadixObjectUploader<AdsDefinition> {
     @Override
     public void reload() throws IOException {
         AdsDefinition oldDefinition = getDefinition();
-
-        AdsModule module = oldDefinition.getModule();
-        module.getDefinitions().reload(oldDefinition);
+        if (isDefinitions) {
+            AdsModule module = oldDefinition.getModule();
+            module.getDefinitions().reload(oldDefinition);
+        } else {
+            UdsUploaderUtils.reload(getRadixObject());
+        }
     }
 
     // ===========================================

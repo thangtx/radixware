@@ -14,6 +14,7 @@ package org.radixware.kernel.common.defs.ads.clazz.members;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.AdsModelClassDef;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 
 import org.radixware.schemas.adsdef.AbstractPropertyDefinition;
 
@@ -38,4 +39,11 @@ public abstract class AdsClientSidePropertyDef extends AdsPropertyDef{
         else
             return null;
     }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return ERuntimeEnvironmentType.COMMON_CLIENT;
+    }
+    
+    
 }

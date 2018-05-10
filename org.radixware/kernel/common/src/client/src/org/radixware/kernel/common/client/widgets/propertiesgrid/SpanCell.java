@@ -12,49 +12,62 @@
 package org.radixware.kernel.common.client.widgets.propertiesgrid;
 
 import org.radixware.kernel.common.client.localization.MessageProvider;
-import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.models.items.ModelItem;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.propertiesgrid.IPropertiesGridCell.ELinkageDirection;
 
 
-class SpanCell<L extends IModelWidget, E extends IModelWidget> extends AbstractLinkableCell<L, E> {
+class SpanCell<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget, I extends ModelItem> extends AbstractLinkableCell<L, E, G> {
 
-    private final PropertyCell<L, E> baseCell;
-    private final int spanIndex;
+    private final EditorPageItemCell<L, E, G, I> baseCell;
+    private final int spanRow, spanColumn;
 
-    public SpanCell(final PropertyCell<L, E> baseCell, final int spanIndex) {
-        this.baseCell = baseCell;
-        this.spanIndex = spanIndex;
+    public SpanCell(final EditorPageItemCell<L, E, G, I> baseCell, final int spanColumn, final int spanRow) {
+        this.baseCell = baseCell;        
+        this.spanRow = spanRow;
+        this.spanColumn = spanColumn;
     }
 
-    private SpanCell(final SpanCell<L, E> copy) {
+    private SpanCell(final SpanCell<L, E, G, I> copy) {
         super(copy);
         baseCell = copy.baseCell;
-        spanIndex = copy.spanIndex;
+        spanRow = copy.spanRow;
+        spanColumn = copy.spanColumn;
     }
 
     @Override
     public boolean isLinked(final ELinkageDirection direction) {
-        if (direction == ELinkageDirection.LEFT) {
-            return true;
-        } else {
-            return (spanIndex + 1) == baseCell.getColumnSpan() ? baseCell.isLinked(direction) : true;
+        switch (direction){
+            case LEFT:
+                return spanColumn>0;
+            case TOP:
+                return spanRow>0;
+            case RIGHT:
+                if (spanColumn+1 >= baseCell.getColumnSpan()){
+                    return spanRow>0 ? false : baseCell.isLinked(direction);
+                }else{
+                    return true;
+                }
+            case BOTTOM:
+                return spanRow+1 < baseCell.getRowSpan();
         }
+        return false;
     }
 
     @Override
-    public String getDescription(MessageProvider mp) {
+    public String getDescription(final MessageProvider mp) {
         if (mp == null) {
-            final String message = "extention %1$s for %2$s";
-            return String.format(message, spanIndex, baseCell.getDescription(mp));
+            final String message = "extention [%1$s,%2$s]  for %3$s";
+            return String.format(message, spanColumn, spanRow,  baseCell.getDescription(mp));
         }
         final String message =
-                mp.translate("TraceMessage", "extention %1$s for %2$s");
-        return String.format(message, spanIndex, baseCell.getDescription(mp));
+                mp.translate("TraceMessage", "extention [%1$s,%2$s] for %3$s");
+        return String.format(message, spanColumn, spanRow, baseCell.getDescription(mp));
     }
 
     @Override
-    public IPropertiesGridCell<L, E> createCopy() {
+    public IPropertiesGridCell<L, E, G> createCopy() {
         return new SpanCell<>(this);
     }
 
@@ -69,18 +82,18 @@ class SpanCell<L extends IModelWidget, E extends IModelWidget> extends AbstractL
     }
 
     @Override
-    public Property getProperty() {
-        return baseCell.getProperty();
+    public I getModelItem(){
+        return baseCell.getModelItem();
     }
 
     @Override
     public int getColumn() {
-        return baseCell.getColumn() + spanIndex;
+        return baseCell.getColumn() + spanColumn;
     }
 
     @Override
     public int getRow() {
-        return baseCell.getRow();
+        return baseCell.getRow() + spanRow;
     }
 
     @Override
@@ -89,16 +102,36 @@ class SpanCell<L extends IModelWidget, E extends IModelWidget> extends AbstractL
     }
 
     @Override
+    public int getRowSpan() {
+        return 1;
+    }   
+    
+    @Override
     public boolean isVisible() {
         return baseCell.isVisible();
     }
 
     @Override
-    public void close(final IPropertiesGridPresenter<L, E> presenter) {
+    public void close(final IPropertiesGridPresenter<L, E, G> presenter) {
         baseCell.close(presenter);
     }        
 
-    public PropertyCell<L, E> getPropertyCell() {
-        return baseCell;
+    public EditorPageItemCell<L, E, G, I> getEditorPageItemCell() {
+        return baseCell;        
+    }
+
+    @Override
+    public G getPropertiesGroupWidget() {
+        return null;
+    }
+
+    @Override
+    public boolean isModelItemVisible() {
+        return baseCell.isModelItemVisible();
+    }
+
+    @Override
+    public boolean isModelItemReadOnly() {
+        return true;
     }
 }

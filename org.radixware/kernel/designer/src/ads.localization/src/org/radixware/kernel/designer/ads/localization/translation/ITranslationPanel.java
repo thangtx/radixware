@@ -41,4 +41,6 @@ public interface ITranslationPanel {
     boolean isReadOnly();
     void updateTargetLangsStatus(final RowString rowString);
     void save();
+    
+    void fireChange(String key);
 }

@@ -11,13 +11,17 @@
 
 package org.radixware.kernel.common.compiler.core.ast;
 
+import org.eclipse.jdt.internal.compiler.ads.syntetics.BaseGenerator;
 import org.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
+import org.eclipse.jdt.internal.compiler.ast.MessageSend;
+import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.jdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.jdt.internal.compiler.impl.Constant;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.jdt.internal.compiler.lookup.TypeIds;
 
 
 public class JMLAndAndExpression extends AND_AND_Expression implements IJMLExpression {
@@ -55,14 +59,44 @@ public class JMLAndAndExpression extends AND_AND_Expression implements IJMLExpre
                 this.right = subst;
             }
         }
+        
+        computeArguments(scope);
+        
+        return super.resolveType(scope); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private void computeArguments(BlockScope scope){
+        if (left instanceof NullLiteral || right instanceof NullLiteral) {
+            return;
+        }
+        final TypeBinding leftType = left.resolveType(scope);
+        final TypeBinding rightType = right.resolveType(scope);
 
-        final Expression mathOper = JMLMathOperations.computeExpression(scope, left, right, OperatorIds.AND_AND);
-        if (mathOper != null) {
-            this.substitution = mathOper;
-            return this.substitution.resolveType(scope);
+        if (leftType == null || rightType == null) {
+            return;
         }
 
-        return super.resolveType(scope); //To change body of generated methods, choose Tools | Templates.
+        final int leftTypeID = leftType.id;
+        final int rightTypeID = rightType.id;
+
+        if ((leftTypeID == TypeIds.T_JavaLangString || rightTypeID == TypeIds.T_JavaLangString)) {
+            return;
+        }
+        
+        if (leftTypeID == TypeIds.T_JavaLangBoolean){
+            this.left = getBool(left);
+            this.left.resolveType(scope);
+        }
+        
+        if (rightTypeID == TypeIds.T_JavaLangBoolean){
+            this.right = getBool(right);
+            this.right.resolveType(scope);
+        }
+    }
+    
+    private Expression getBool(Expression argument){
+        final MessageSend ms = BaseGenerator.createMessageSend(BaseGenerator.createQualifiedName(BaseGenerator.RADIX_MATHOPERATIONS_TYPE_NAME), "boolNvl".toCharArray(), new Expression[]{argument});
+        return ms;
     }
 
     @Override

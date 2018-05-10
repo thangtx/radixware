@@ -19,40 +19,44 @@ import org.radixware.kernel.common.types.Id;
 public enum EMimeType implements IKernelStrEnum {
 
     //constant values for compiling
-    HTML_TEXT("text/html", "HTML", "html"),
-    IMAGE_BMP("image/bmp", "BMP", "bmp"),
-    IMAGE_GIF("image/gif", "GIF", "gif"),
-    IMAGE_JPEG("image/jpeg", "JPEG", "jpg"),
-    IMAGE_PNG("image/png", "PNG", "png"),
-    IMAGE_PORTABLE_BITMAP("image/x-portable-bitmap", "PBM", "pbm"),
-    IMAGE_PORTABLE_GRAY_MAP("image/x-portable-graymap", "PGM" ,"pgm"),
-    IMAGE_PORTABLE_PIX_MAP("image/x-portable-pixmap", "PPM" ,"ppm"),
-    IMAGE_SVG("image/svg+xml", "SVG" ,"svg"),
-    IMAGE_TIFF("image/tiff", "TIFF", "tiff"),
-    IMAGE_XBITMAP("image/x-xbitmap", "XBM", "xbm"),
-    IMAGE_XPIX_MAP("image/x-xpixmap", "XMP" ,"xmp"),
-    PDF("application/pdf", "PDF" ,"pdf"),
-    PLAIN_TEXT("text/plain", "Text", "txt"),
-    VIDEO_XMNG("video/x-mng", "MNG" ,"mng"),
-    XML("text/xml", "XML", "xml"),
-    BINARY("application/octet-stream", "Binary", "binary"),
+    HTML_TEXT("text/html", "HyperText Markup Language (HTML)", "html", "(*.html *.htm)"),
+    IMAGE_BMP("image/bmp", "Bitmap Image File", "bmp", "(*.bmp)"),
+    IMAGE_GIF("image/gif", "Graphics Interchange Format (GIF)", "gif", "(*.gif)"),
+    IMAGE_JPEG("image/jpeg", "JPEG Image", "jpg", "(*.jpg *.jpeg)"),
+    IMAGE_PNG("image/png", "Portable Network Graphics (PNG)", "png", "(*.png)"),
+    IMAGE_PORTABLE_BITMAP("image/x-portable-bitmap", "Portable Bitmap Format (PBM)", "pbm", "(*.pbm)"),
+    IMAGE_PORTABLE_GRAY_MAP("image/x-portable-graymap", "Portable Graymap Format (PGM)" ,"pgm", "(*.pgm)"),
+    IMAGE_PORTABLE_PIX_MAP("image/x-portable-pixmap", "Portable Pixmap Format (PPM)" ,"ppm", "(*.ppm)"),
+    IMAGE_SVG("image/svg+xml", "Scalable Vector Graphics (SVG)" ,"svg", "(*.svg)"),
+    IMAGE_TIFF("image/tiff", "Tagged Image File Format (TIFF)", "tiff", "(*.tiff)"),
+    IMAGE_XBITMAP("image/x-xbitmap", "X BitMap", "xbm", "(*.xbm)"),
+    IMAGE_XPIX_MAP("image/x-xpixmap", "X PixMap" ,"xpm", "(*.xpm)"),
+    PDF("application/pdf", "Adobe Portable Document (PDF)" ,"pdf", "(*.pdf)"),
+    PLAIN_TEXT("text/plain", "Text File", "txt", "(*.txt)"),
+    CSV("text/csv", "CSV", "csv", "(*.csv)"),
+    VIDEO_XMNG("video/x-mng", "MNG" ,"mng", "(*.mng)"),
+    XML("text/xml", "XML Document", "xml", "(*.xml)"),
+    BINARY("application/octet-stream", "Binary File", "binary", "(*.bin *.binary)"),
     //MsOffice mime-types are taken from http://filext.com/faq/office_mime_types.php
-    APP_MSOFFICE_DOCUMENT("application/msword", "Microsoft Word 97/2000/XP/2003", "doc"),
-    APP_MSOFFICE_SPREADSHEET("application/vnd.ms-excel", "Microsoft Excel 97/2000/XP/2003", "xls"),
-    APP_MSOFFICE_PRESENTATION("application/vnd.ms-powerpoint", "Microsoft PowerPoint 97/2000/XP/2003", "ppt"),
-    APP_MSOFFICE_DOCUMENT_X("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Office Open XML Text" ,"docx"),
-    APP_MSOFFICE_SPREADSHEET_X("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Office Open XML Spreadsheet","xlsx"),
-    APP_MSOFFICE_PRESENTATION_X("application/vnd.openxmlformats-officedocument.presentationml.presentation", "Office Open XML Presentation","pptx"),
+    APP_MSOFFICE_DOCUMENT("application/msword", "Microsoft Word 97/2000/XP/2003", "doc", "(*.doc)"),
+    APP_MSOFFICE_SPREADSHEET("application/vnd.ms-excel", "Microsoft Excel 97/2000/XP/2003", "xls", "(*.xls)"),
+    APP_MSOFFICE_PRESENTATION("application/vnd.ms-powerpoint", "Microsoft PowerPoint 97/2000/XP/2003", "ppt", "(*.ppt)"),
+    APP_MSOFFICE_DOCUMENT_X("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Office Open XML Text" ,"docx", "(*.docx)"),
+    APP_MSOFFICE_SPREADSHEET_X("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Office Open XML Spreadsheet","xlsx", "(*.xlsx)"),
+    APP_MSOFFICE_PRESENTATION_X("application/vnd.openxmlformats-officedocument.presentationml.presentation", "Office Open XML Presentation","pptx","(*.pptx)"),
     //OpenOffice mime-types are taken from http://framework.openoffice.org/documentation/mimetypes/mimetypes.html
-    APP_OPEN_OFFICE_DOCUMENT("application/vnd.oasis.opendocument.text ", "ODF Text Document","odt"),
-    APP_OPEN_OFFICE_PRESENTATION("application/vnd.oasis.opendocument.presentation", "ODF Presentation","odp"),
-    APP_OPEN_OFFICE_SPREADSHEET("application/vnd.oasis.opendocument.spreadsheet", "ODF Spreadsheet","ods"),
-    APP_RICH_TEXT("application/rtf", "Rich Text","rtf"),
-    APP_ZIP("application/zip", "ZIP","zip");
+    APP_OPEN_OFFICE_DOCUMENT("application/vnd.oasis.opendocument.text ", "ODF Text Document","odt","(*.odt)"),
+    APP_OPEN_OFFICE_PRESENTATION("application/vnd.oasis.opendocument.presentation", "ODF Presentation","odp","(*.odp)"),
+    APP_OPEN_OFFICE_SPREADSHEET("application/vnd.oasis.opendocument.spreadsheet", "ODF Spreadsheet","ods","(*.ods)"),
+    APP_RICH_TEXT("application/rtf", "Rich Text","rtf","(*.rtf)"),
+    APP_ZIP("application/zip", "Zip Archive","zip","(*.zip)"),
+    ALL_SUPPORTED("all","All Supported Formats","",""),
+    ALL_FILES("any","All Files","*","(*.*)");
             
     private final String value;
     private final String title;
     private final String ext;
+    private final String qtFilter;
 
     @Override
     public String getValue() {
@@ -72,10 +76,15 @@ public enum EMimeType implements IKernelStrEnum {
         return title;
     }
 
-    private EMimeType(final String mimeType, final String title, final String fileExtention) {
+    public String getQtFilter() {
+        return qtFilter;
+    }        
+
+    private EMimeType(final String mimeType, final String title, final String fileExtention, final String qtFilter) {
         value = mimeType;
         this.title = title;
         this.ext = fileExtention;
+        this.qtFilter = qtFilter;
     }
 
     public static EMimeType getForValue(final String val) {

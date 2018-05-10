@@ -98,11 +98,11 @@ public class ChangePasswordDialog extends ExplorerDialog implements IChangePassw
 
     @Override
     public void accept() {
-        final String message;
-        final String title = getEnvironment().getMessageProvider().translate("ChangePasswordDialog", "Can`t Change Password");
+        final String message;        
         if (!uiCreator.leNewPassword.text().equals(uiCreator.leConfirmation.text())) {
             message = getEnvironment().getMessageProvider().translate("ChangePasswordDialog", "The new password and confirmation password do not match");
         } else if (checkPasswordRequirements) {
+            final String title = getEnvironment().getMessageProvider().translate("ChangePasswordDialog", "Failed to Change Password");
             final PasswordRequirements requirements = getPasswordRequirements(title);
             if (requirements==null){
                 return;
@@ -112,7 +112,8 @@ public class ChangePasswordDialog extends ExplorerDialog implements IChangePassw
             message = null;
         }
         if (message != null) {
-            Application.messageInformation(title, message);
+            final String title = getEnvironment().getMessageProvider().translate("ChangePasswordDialog", "The Password is Too Simple");
+            getEnvironment().messageInformation(title, message);
             uiCreator.leNewPassword.clear();
             uiCreator.leConfirmation.clear();
             refresh();

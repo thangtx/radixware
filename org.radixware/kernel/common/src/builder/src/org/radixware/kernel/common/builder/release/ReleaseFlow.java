@@ -74,7 +74,7 @@ class ReleaseFlow {
 
     public SVNRepositoryAdapter.Editor getEditor() throws RadixSvnException {
         if (editor == null) {
-            editor = repository.createEditor("Release version " + settings.getNumber());
+            editor = repository.createEditor("Release version " + settings.getNumber() + " (release based on revision " + revision + ")");
         }
         return editor;
     }

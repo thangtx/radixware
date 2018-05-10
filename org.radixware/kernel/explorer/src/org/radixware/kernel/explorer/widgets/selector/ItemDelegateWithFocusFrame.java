@@ -15,6 +15,7 @@ package org.radixware.kernel.explorer.widgets.selector;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QItemDelegate;
@@ -91,7 +92,7 @@ class ItemDelegateWithFocusFrame extends QItemDelegate{
             painter.restore();
         }
     }
-    
+            
     protected final void drawFocusFrame(final QPainter painter, final QStyleOptionViewItem option, final QModelIndex index){
         if (drawFocusFrame 
             //Вызов метода currentIndex() из QAbstractItemView снижает производительность

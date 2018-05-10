@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -12,19 +12,23 @@
 package org.radixware.kernel.server.arte.services.aas;
 
 import java.util.Map;
+
 import org.apache.xmlbeans.XmlObject;
 
-import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.exceptions.RadixError;
-import org.radixware.kernel.server.arte.Arte;
-import org.radixware.kernel.server.arte.services.Service;
 import org.radixware.kernel.common.exceptions.ServiceProcessClientFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessServerFault;
+import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.arte.ArteSocket;
 import org.radixware.kernel.server.arte.ArteTransactionParams;
+import org.radixware.kernel.server.arte.DefManager;
+import org.radixware.kernel.server.arte.services.Service;
+import org.radixware.kernel.server.meta.clazzes.RadClassDef;
+import org.radixware.kernel.server.meta.clazzes.RadMethodDef;
 import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.server.units.arte.ArteUnit;
 import org.radixware.schemas.aas.ExceptionEnum;
@@ -37,11 +41,11 @@ import org.radixware.schemas.aasWsdl.InvokeDocument;
 
 public final class ArteAccessService extends Service {
     
-    private final static class AasTransactionParams extends ArteTransactionParams{
-        
-        public AasTransactionParams(final Long version, final String userName){
-            super(version, null, userName, null, null, null, null, null);
-        }        
+    private final static class AasTransactionParams extends ArteTransactionParams {
+
+        public AasTransactionParams(final Long version, final String userName, String className, String methodName){
+            super(version, null, null, userName, null, null, null, null, null, className, methodName);
+        }
     }
     
 //Service URI
@@ -63,7 +67,30 @@ public final class ArteAccessService extends Service {
             throw new RadixError("TODO SavePoints in AAS");
         }
         final InvokeRq invokeRq = getInvokeRq(request);
-        getArte().startTransaction(new AasTransactionParams(arte.getEffectiveRequestVersion(), invokeRq.getUser()));
+        String className = invokeRq.getClassName();
+        String methodName = null;
+
+        try {
+            if (invokeRq.getMethodId() == null) {
+                // will fail later in doProcessRequest
+            } else if (className != null) {
+                methodName = invokeRq.getMethodId();
+            } else {
+                final DefManager defManager = arte.getDefManager();
+                final Id entityId = invokeRq.getEntityId();
+                final Id classId = entityId == null
+                        ? invokeRq.getClassId()
+                        : RadClassDef.getEntityClassIdByTableId(entityId);
+                final Id methodId = Id.Factory.loadFrom(invokeRq.getMethodId());
+                final RadClassDef classDef = defManager.getClassDef(classId);
+                final RadMethodDef methodDef = classDef.getMethodById(methodId);
+                className = classDef.getName();
+                methodName = methodDef.getName();
+            }
+        } catch (Exception ex) {
+            // will fail later in doProcessRequest
+        }
+        getArte().startTransaction(new AasTransactionParams(arte.getEffectiveRequestVersion(), invokeRq.getUser(), className, methodName));
     }
 
     @Override

@@ -21,8 +21,16 @@ import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.Dependences.Dependence;
 import org.radixware.kernel.common.defs.HierarchyWalker.Controller;
+import org.radixware.kernel.common.defs.localization.ILocalizedDef;
+import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
+import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
+import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.ELocalizedStringKind;
+import org.radixware.kernel.common.enums.EMultilingualStringKind;
 import org.radixware.kernel.common.enums.ERepositorySegmentType;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.Segment;
@@ -40,9 +48,14 @@ import org.radixware.kernel.common.utils.events.RadixEventSource;
  * Base class for ads and dds modules
  *
  */
-public abstract class Module extends Definition implements IDirectoryRadixObject {
+public abstract class Module extends Definition implements IDirectoryRadixObject, ILocalizedDef {
 
     private final RadixEventSource isTestSupport = new RadixEventSource();
+    private final Object renameMutex = new Object();
+
+    public void visivisitAll(VisitorProvider visitorProvider) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     public static class HierarchyWalker<T extends Module> extends org.radixware.kernel.common.defs.HierarchyWalker<T> {
 
@@ -103,12 +116,14 @@ public abstract class Module extends Definition implements IDirectoryRadixObject
         }
     }
     public static final String MODULE_XML_FILE_NAME = "module.xml";
+    public static final String PREVIEW_DIR_NAME = "preview";
     private Dependences dependences;
     private boolean isTestModule = false;
     private boolean isDeprecated = false;
     private final Object dependencesLock = new Object();
     private boolean isAutoAploadAllowed = true;
     private boolean needsDoc = false;
+    protected Id descriptionId;
 
     protected Module(Id id, String name) {
         super(id, name);
@@ -144,34 +159,36 @@ public abstract class Module extends Definition implements IDirectoryRadixObject
 
     @Override
     public boolean setName(String newName) {
-        final String oldName = getName();
-        if (Utils.equals(oldName, newName)) {
-            return false;
-        }
-
-        IRepositoryModule repository = getRepository();
-        File dir = null;
-        if (repository != null) {
-            dir = repository.getDirectory();
-        }
-        if (dir != null) {
-            try {
-                FileUtils.rename(dir, newName, "");
-            } catch (IOException cause) {
-                throw new DefinitionError("Unable to rename module.", this, cause);
+        synchronized (renameMutex) {
+            final String oldName = getName();
+            if (Utils.equals(oldName, newName)) {
+                return false;
             }
-        }
 
-        super.setName(newName);
-
-        if (dir != null) {
-            try {
-                saveDescription();
-            } catch (IOException cause) {
-                throw new DefinitionError("Unable to save module.", this, cause);
+            IRepositoryModule repository = getRepository();
+            File dir = null;
+            if (repository != null) {
+                dir = repository.getDirectory();
             }
+            if (dir != null) {
+                try {
+                    FileUtils.rename(dir, newName, "");
+                } catch (IOException cause) {
+                    throw new DefinitionError("Unable to rename module.", this, cause);
+                }
+            }
+
+            super.setName(newName);
+
+            if (dir != null) {
+                try {
+                    saveDescription();
+                } catch (IOException cause) {
+                    throw new DefinitionError("Unable to save module.", this, cause);
+                }
+            }
+            return true;
         }
-        return true;
     }
 
     public Segment getSegment() {
@@ -190,6 +207,10 @@ public abstract class Module extends Definition implements IDirectoryRadixObject
 
         final String description = xModule.getDescription();
         this.setDescription((description == null ? "" : description));
+
+        if (xModule.isSetDescriptionId()) {
+            descriptionId = xModule.getDescriptionId();
+        }
 
         isTestModule = xModule.isSetIsTest() ? xModule.getIsTest() : false;
 
@@ -396,8 +417,10 @@ public abstract class Module extends Definition implements IDirectoryRadixObject
      */
     @Override
     public File getFile() {
-        IRepositoryModule repository = getRepository();
-        return repository == null ? null : repository.getDescriptionFile();
+        synchronized (renameMutex) {
+            IRepositoryModule repository = getRepository();
+            return repository == null ? null : repository.getDescriptionFile();
+        }
     }
 
     protected void appendTo(final org.radixware.schemas.product.Module xModule) {
@@ -408,6 +431,10 @@ public abstract class Module extends Definition implements IDirectoryRadixObject
 
         if (isDeprecated) {
             xModule.setIsDeprecated(isDeprecated);
+        }
+
+        if (descriptionId != null) {
+            xModule.setDescriptionId(descriptionId);
         }
     }
 
@@ -458,6 +485,10 @@ public abstract class Module extends Definition implements IDirectoryRadixObject
         }
         if (isDeprecated) {
             xModule.setIsDeprecated(isDeprecated);
+        }
+
+        if (descriptionId != null) {
+            xModule.setDescriptionId(descriptionId);
         }
     }
 
@@ -518,6 +549,16 @@ public abstract class Module extends Definition implements IDirectoryRadixObject
     @Override
     public String getTypesTitle() {
         return MODULES_TYPES_TITLE;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.MODULE;
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return null;
     }
 
     public abstract DefinitionSearcher<? extends Definition> getDefinitionSearcher();
@@ -614,5 +655,68 @@ public abstract class Module extends Definition implements IDirectoryRadixObject
     @Override
     public boolean isDeprecated() {
         return isDeprecated;
+    }
+
+    @Override
+    public Id getDescriptionId() {
+        return descriptionId;
+    }
+
+    @Override
+    public void setDescriptionId(Id id) {
+        if (id != descriptionId) {
+            descriptionId = id;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    @Override
+    public String getDescription(EIsoLanguage language) {
+        if (descriptionId != null) {
+            final IMultilingualStringDef string = findLocalizedString(descriptionId);
+            return string == null ? null : string.getValue(language);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean setDescription(EIsoLanguage language, String description) {
+        return false;
+    }
+
+    @Override
+    public void collectUsedMlStringIds(Collection<ILocalizedDef.MultilingualStringInfo> ids) {
+        ids.add(new ILocalizedDef.MultilingualStringInfo(this) {
+            @Override
+            public String getContextDescription() {
+                return "Desctription of " + getTypeTitle() + " " + getQualifiedName();
+            }
+
+            @Override
+            public Id getId() {
+                return descriptionId;
+            }
+
+            @Override
+            public EAccess getAccess() {
+                return EAccess.PUBLIC;
+            }
+
+            @Override
+            public void updateId(Id newId) {
+                descriptionId = newId;
+            }
+
+            @Override
+            public boolean isPublished() {
+                return true;
+            }
+
+            @Override
+            public EMultilingualStringKind getKind() {
+                return EMultilingualStringKind.DESCRIPTION;
+            }
+        });
     }
 }

@@ -128,12 +128,14 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
         }
     }
     
-    public Signal1<FilterModel> onFilterSelected = new Signal1<>();
+    public final Signal1<FilterModel> onFilterSelected = new Signal1<>();
+    public final Signal0 filterParamsExpanded = new Signal0();
+    public final Signal0 filterParamsCollapsed = new Signal0();
     private final GroupModel model;
     private final ChooseGroupSetting<FilterModel> chooseFilter;
     private final ChooseGroupSetting<RadSortingDef> chooseSorting;
     private final QWidget filterAndOrderSelection = new QWidget(this);    
-    private final QToolButton applyButton = new QToolButton(this);
+    private final QToolButton applyButton = new QToolButton(this);    
     private final UserEICreator explorerItemsCreator;
     private final FilterSettingsStorage filterSettings;
     private FilterModel currentFilter;
@@ -263,7 +265,7 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
         if (initialSorting!=null){
             chooseSorting.setCurrentAddon(initialSorting);
         }
-        if (initialFilter != null && group.getCurrentFilter() != initialFilter) {
+        if (initialFilter != null) {
             chooseFilter.setCurrentAddon(initialFilter);
             setCurrentFilterImpl(initialFilter, false);
         }
@@ -314,7 +316,7 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
             }
             final RadSortingDef choosedSorting = chooseSorting.getCurrentAddon(), newSorting;
             if (choosedSorting!=null && !model.getSortings().isAcceptable(choosedSorting, filter)){
-                newSorting = model.getSortings().getDefaultSorting(filter);
+                newSorting = model.getSortings().getDefaultSorting(filter, null);
             }else{
                 newSorting = null;//keep current sorting
             }
@@ -356,8 +358,8 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
         }
     }
     
-    public void applyChanges(){
-        applyFilter(currentFilter,null);
+    public boolean applyChanges(){
+        return applyFilter(currentFilter,null);
     }
 
     @SuppressWarnings("unused")
@@ -443,7 +445,7 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
                 return false;
             }
             final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(model);
-            settings.saveLastFilter(filter != null ? filter.getId() : null, getSortingId(), true);
+            settings.saveLastFilter(filter != null ? filter.getId() : null, getSortingId(), true, isFilterParamsCollapsed(), -1);
             return true;
         } catch (ModelPropertyException ex){
             updateApplyButton();
@@ -474,8 +476,8 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
             if (sorting==null){
                 throw exception;
             }
-            final RadSortingDef defaultSorting = sortings.getDefaultSorting(filter);
-            if (sorting==defaultSorting){                
+            final RadSortingDef defaultSorting = sortings.getDefaultSorting(filter, null);
+            if (sorting==defaultSorting){
                 applySettings(filter, null);
             }
             else{
@@ -518,13 +520,7 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
     @Override
     public QSize sizeHint() {
         if (currentFilterView != null && currentFilterView.nativeId()!=0 && !currentFilterView.isHidden()) {
-            final QSize size = super.sizeHint();
-            final int height = filterAndOrderSelection.sizeHint().height()
-                    + layout().widgetSpacing()
-                    + currentFilterView.sizeHint().height()
-                    + layout().getContentsMargins().top
-                    + layout().getContentsMargins().bottom;
-            return new QSize(size.width(), height);
+            return super.sizeHint();
         } else {
             return minimumSizeHint();
         }
@@ -552,6 +548,7 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
             if (currentFilterView != null) {
                 currentFilterView.close(true);
                 layout().removeWidget(currentFilterView);
+                currentFilterView.disableGarbageCollection();
                 currentFilterView.disposeLater();
                 currentFilterView = null;
             }
@@ -577,12 +574,14 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
             currentFilterView.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose);
             currentFilterView.setObjectName("filter view");
             layout().addWidget(currentFilterView);
-            currentFilterView.open(currentFilter);            
+            currentFilterView.open(currentFilter);
+            currentFilterView.collapsed.connect(filterParamsCollapsed);
+            currentFilterView.expanded.connect(filterParamsExpanded);
             currentFilterView.show();
         }
 
         final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(model);
-        settings.saveLastFilter(currentFilter != null ? currentFilter.getId() : null, getSortingId(), false);
+        settings.saveLastFilter(currentFilter != null ? currentFilter.getId() : null, getSortingId(), false, false, -1);
 
         updateApplyButton();
         onFilterSelected.emit(filter);
@@ -623,8 +622,6 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
         }
         updateEditButtons();
         explorerItemsCreator.updateInsertButton();
-        chooseFilter.adjustSize();
-        chooseSorting.adjustSize();        
     }
     
     private void updateEditButtons(){
@@ -668,10 +665,18 @@ public class FilterAndOrderToolBar extends ExplorerFrame {
     public void storeSettings() {
         final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(model);
         if (currentFilter != null) {
-            settings.saveLastFilter(currentFilter.getId(), getSortingId(), applyButton.isChecked());
+            final int height = currentFilterView==null ? -1 : height();
+            settings.saveLastFilter(currentFilter.getId(), getSortingId(), applyButton.isChecked(), isFilterParamsCollapsed(), height);
         } else {
-            settings.saveLastFilter(null, null, false);
+            settings.saveLastFilter(null, null, false, false, -1);
         }
+    }
+    
+    private boolean isFilterParamsCollapsed(){
+        return currentFilter!=null
+                  && currentFilterView!=null 
+                  && currentFilterView.isCollapsable()
+                  && currentFilterView.isCollapsed();
     }
 
     @Override

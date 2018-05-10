@@ -19,6 +19,8 @@ import org.radixware.kernel.common.types.Id;
 
 public enum ERestriction implements IKernelIntEnum {
 
+    CALC_STATISTIC(0x4000000),
+    MULTIPLE_CREATE(0x2000000),
     MULTIPLE_DELETE(0x1000000),
     SELECT_ALL(0x800000),
     MULTIPLE_SELECTION(0x400000),
@@ -145,6 +147,16 @@ public enum ERestriction implements IKernelIntEnum {
                 return "Transfer out all";
             case UPDATE:
                 return "Update";
+            case MULTIPLE_SELECTION:
+                return "Multiple selection";
+            case SELECT_ALL:
+                return "Select all";
+            case MULTIPLE_DELETE:
+                return "Multiple delete";
+            case MULTIPLE_CREATE:
+                return "Multiple create";
+            case CALC_STATISTIC:
+                return "Calculate selection statistic";
             default:
                 return "not defined";
         }

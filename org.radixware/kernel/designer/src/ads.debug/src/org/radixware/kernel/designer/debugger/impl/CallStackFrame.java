@@ -234,7 +234,7 @@ public class CallStackFrame {
                             if (info != null && info.definitionPath != null && info.definitionPath.length != 0) {
                                 Module module = info.findModule(branch, ERepositorySegmentType.ADS);
                                 if (module instanceof AdsModule) {
-                                    AdsDefinition root = ((AdsModule) module).getDefinitions().findById(info.definitionPath[0]);
+                                    AdsDefinition root = ((AdsModule) module).getTopContainer().findById(info.definitionPath[0]);
                                     if (root != null) {
                                         Definition target = root.findComponentDefinition(info.definitionPath);
                                         if (target != null && target instanceof IJmlSource) {

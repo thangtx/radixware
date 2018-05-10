@@ -138,11 +138,11 @@ public final class MetaInfServicesCatalog {
             final StringBuilder builder = new StringBuilder();
 
             for (final AdsPath path : getImplementations(environment)) {
-                builder.append(JavaSourceSupport.getClassFullQualifiedJavaName(path, module));
+                builder.append(JavaSourceSupport.getClassFullQualifiedJavaName(path, module, false)); //TODO:!!!
                 builder.append("\n");
             }
 
-            return new ServiceContent(JavaSourceSupport.getClassFullQualifiedJavaName(interfaceIdPath, module), builder.toString());
+            return new ServiceContent(JavaSourceSupport.getClassFullQualifiedJavaName(interfaceIdPath, module, false), builder.toString());
         }
     }
 

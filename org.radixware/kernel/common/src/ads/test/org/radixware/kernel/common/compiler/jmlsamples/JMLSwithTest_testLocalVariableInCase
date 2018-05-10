@@ -1,0 +1,34 @@
+
+class A {
+
+    static A create() {
+	return null;
+    }
+
+    static A x() {
+	return null;
+    }
+}
+
+class Test {
+
+    static public A getB() {
+	return null;
+    }
+
+    static public void setB(A b) {
+    }
+
+    static public void f(int s) {
+	switch (s) {
+	    case 1:
+		A a = A.create();
+		try {
+		    B = a.x();
+		} catch(NullPointerException ex) {
+		    System.out.print(s);
+		}
+		break;
+	}
+    }
+}

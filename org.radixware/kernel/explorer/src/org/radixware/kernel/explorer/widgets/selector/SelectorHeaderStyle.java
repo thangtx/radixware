@@ -62,7 +62,7 @@ final class SelectorHeaderStyle extends WidgetUtils.CustomStyle {
         if(headerOpt!=null && subElement == SubElement.SE_HeaderArrow) {            
             headerOpt.setTextAlignment(ALIGNMENT_LEFT);
             final QFont font = (QFont) model.headerData(headerOpt.section(), Qt.Orientation.Horizontal, Qt.ItemDataRole.FontRole);
-            final String indicator = (String) model.headerData(headerOpt.section(), Qt.Orientation.Horizontal, Qt.ItemDataRole.UserRole + 1);            
+            final String indicator = (String) model.headerData(headerOpt.section(), Qt.Orientation.Horizontal, SelectorModel.SORT_INDICATOR_ITEM_ROLE);
             return calcArrowRect(font.family(), indicator, styleOpt, widget);
         } else {
             return super.subElementRect(subElement, styleOpt, widget);

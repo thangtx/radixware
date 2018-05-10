@@ -30,6 +30,7 @@ import org.radixware.schemas.xscml.SqmlDocument;
 public final class RadFilterDef extends RadTitledDef implements IRadFilter {
 
     private final Sqml condition;
+    private final Sqml from;
     private final Sqml hint;
     private final boolean isAnyBaseSortingEnabled;
     private final List<EnabledSorting> enabledBaseSortings;
@@ -50,7 +51,23 @@ public final class RadFilterDef extends RadTitledDef implements IRadFilter {
             final boolean isAnyBaseSortingEnabled,
             final EnabledSorting[] enabledBaseSortings,
             final boolean isAnyCustomSortingEnabled) {
-        this(id, ownerDefId, name, titleId, condition, hint, defaultSortingId, isAnyBaseSortingEnabled, enabledBaseSortings, isAnyCustomSortingEnabled, null);
+        this(id, ownerDefId, name, titleId, condition, null, hint, defaultSortingId, isAnyBaseSortingEnabled, enabledBaseSortings, isAnyCustomSortingEnabled, null);
+    }
+    
+    //Constructor
+    public RadFilterDef(
+            final Id id,
+            final Id ownerDefId,
+            final String name,
+            final Id titleId,
+            final String condition,
+            final String hint,
+            final Id defaultSortingId,
+            final boolean isAnyBaseSortingEnabled,
+            final EnabledSorting[] enabledBaseSortings,
+            final boolean isAnyCustomSortingEnabled,
+            final String layerUri) {
+        this(id, ownerDefId, name, titleId, condition, null, hint, defaultSortingId, isAnyBaseSortingEnabled, enabledBaseSortings, isAnyCustomSortingEnabled, layerUri);
     }
 
     //Constructor
@@ -60,6 +77,7 @@ public final class RadFilterDef extends RadTitledDef implements IRadFilter {
             final String name,
             final Id titleId,
             final String condition,
+            final String conditionFrom,
             final String hint,
             final Id defaultSortingId,
             final boolean isAnyBaseSortingEnabled,
@@ -90,6 +108,17 @@ public final class RadFilterDef extends RadTitledDef implements IRadFilter {
             this.hint.switchOnWriteProtection();
         }
 
+        try{
+            expr = conditionFrom == null || conditionFrom.length() == 0 ? null : SqmlDocument.Factory.parse(conditionFrom);
+        } catch (XmlException e) {
+            throw new WrongFormatError("Can't parse filter (ID=\"" + id + "\") from SQML: " + ExceptionTextFormatter.getExceptionMess(e), e);
+        }
+        this.from = expr != null ? Sqml.Factory.loadFrom("FltFromt", expr.getSqml()) : null;
+        if (this.from != null) {
+            this.from.setLayerUri(layerUri);
+            this.from.switchOnWriteProtection();
+        }
+        
         this.isAnyBaseSortingEnabled = isAnyBaseSortingEnabled;
         if (enabledBaseSortings != null) {
             this.enabledBaseSortings = Collections.unmodifiableList(Arrays.asList(enabledBaseSortings));
@@ -113,6 +142,11 @@ public final class RadFilterDef extends RadTitledDef implements IRadFilter {
     public Sqml getCondition() {
         return condition;
     }
+
+    @Override
+    public Sqml getAdditionalFrom() {
+        return from;
+    }        
 
     /**
      * @return the hint

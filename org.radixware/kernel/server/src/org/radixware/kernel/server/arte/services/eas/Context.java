@@ -73,6 +73,10 @@ abstract class Context {
             }                        
         }
     }    
+    
+    public final org.radixware.schemas.eas.PropertyList getGroupProperties(){
+        return groupPropsXml;
+    }
 
     static enum EContextRefRole{
         CHILDREN_SCOPE,

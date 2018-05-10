@@ -204,14 +204,14 @@ public class AdsEnumWriter extends AbstractDefinitionWriter<AdsEnumDef> {
             printer.print(WriterUtils.RADIX_ID_CLASS_NAME);
             printer.print(" domainId){return getItemMeta(id).getIsInDomain(");
             printer.print(ENV_STORAGE_NAME);
-            printer.println("(),domainId);}");
+            printer.println(",domainId);}");
             
             printer.print("public boolean isInDomains(");
             printer.print(" java.util.List<");
             printer.print(WriterUtils.RADIX_ID_CLASS_NAME);
             printer.print(">ids){return getItemMeta(id).getIsInDomains(");
             printer.print(ENV_STORAGE_NAME);
-            printer.println("(),ids);}");
+            printer.println(",ids);}");
 
 
             //write getValue() method
@@ -329,6 +329,7 @@ public class AdsEnumWriter extends AbstractDefinitionWriter<AdsEnumDef> {
             
         }
         
+        printer.enterBlock();;
         printer.print("public static final ");
         printer.print(ENUM_META_CLASS_NAME);
         printer.print(" getRadMeta(){ return ");
@@ -342,6 +343,7 @@ public class AdsEnumWriter extends AbstractDefinitionWriter<AdsEnumDef> {
 
         // writeMeta(printer);
         writeAddon(printer);
+        printer.leaveBlock();
         printer.println('}');
         return true;
     }
@@ -424,12 +426,8 @@ public class AdsEnumWriter extends AbstractDefinitionWriter<AdsEnumDef> {
         printer.leaveBlock(3);
         printer.print("item_meta_arr,");
         printer.print(ENV_STORAGE_NAME);
-        printer.println("());");
-        
-        
+        printer.println(");");
         printer.println('}');
-        
-        
         printer.leaveBlock();
         printer.println();
         
@@ -534,23 +532,16 @@ public class AdsEnumWriter extends AbstractDefinitionWriter<AdsEnumDef> {
     private static final char[] ENV_STORAGE_NAME = "$env_instance_storage_for_internal_usage$".toCharArray();
     
     private void writeEnvironmentAccessor(CodePrinter printer) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.println("/*Internal arte accessor Used in generated code. Warning: never call this method directly*/");
-        printer.print("private static ");
-        printer.print(WriterUtils.RADIX_ENVIRONMENT_CLASS_NAME);
-        printer.printSpace();
-        printer.print(ENV_STORAGE_NAME);
-        printer.println(" = null;");
         printer.println("@SuppressWarnings(\"unused\")");
-        printer.print("private static ");
+        printer.print("private static final ");
         printer.print(WriterUtils.RADIX_ENVIRONMENT_CLASS_NAME);
         printer.printSpace();
         printer.print(ENV_STORAGE_NAME);
-        printer.enterBlock(1);
-        printer.println("(){");
-        printer.print("if(");
-        printer.print(ENV_STORAGE_NAME);
-        printer.enterBlock(1);
-        printer.println("==null){");
+        printer.println(";");        
+        printer.println("static{");
+        printer.enterBlock();
         printer.print(ENV_STORAGE_NAME);
         printer.print(" = ");
         printer.print(def.getId());
@@ -561,14 +552,10 @@ public class AdsEnumWriter extends AbstractDefinitionWriter<AdsEnumDef> {
         printer.print(WriterUtils.RADIX_CLASS_LOADER_CLASS_NAME);
         printer.print(")");
         printer.print(def.getId());
-        printer.print("_mi");
-        printer.leaveBlock(1);
+        printer.print("_mi");        
         printer.println(".class.getClassLoader()).getEnvironment() : null;");
+        printer.leaveBlock();
         printer.println("}");
-        printer.leaveBlock(1);
-        printer.print("return ");
-        printer.print(ENV_STORAGE_NAME);
-        printer.printlnSemicolon();
-        printer.println("}");
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 }

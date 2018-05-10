@@ -14,16 +14,15 @@ package org.radixware.kernel.explorer.dialogs.settings;
 import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.gui.*;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
-public class ColorSettingsWidget extends SettingsWidget {
+final class ColorSettingsWidget extends SettingsWidget {
 
     private final QLabel labelTitle;
     private final ColoredFrame coloredFrame;
-    public final Signal1<QColor> updateColorSignal = new Signal1<QColor>();
-//	private boolean enabled;
-    private QColor defaultColor;
+    private final QColor defaultColor;
+    public  final Signal1<QColor> updateColorSignal = new Signal1<>();
 
     public ColorSettingsWidget(final IClientEnvironment environment, final QWidget parent, final String gr, final String sub, final String n, final String description) {
         super(environment, parent, gr, sub, n);
@@ -56,14 +55,14 @@ public class ColorSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {        
         final QColor color = src.readQColor(getSettingCfgName());
-        coloredFrame.setColor(color);
-        updateColorSignal.emit(color);
+        coloredFrame.setColor(color==null ? defaultColor : color);
+        updateColorSignal.emit(color==null ? defaultColor : color);
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         dst.writeQColor(getSettingCfgName(), coloredFrame.getColor());
     }
 

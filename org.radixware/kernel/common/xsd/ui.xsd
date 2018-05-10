@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.radixware.org/ui.xsd" 
-xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" targetNamespace="http://schemas.radixware.org/ui.xsd" elementFormDefault="qualified">
+xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" targetNamespace="http://schemas.radixware.org/ui.xsd" elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1">
     <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
@@ -232,8 +232,20 @@ xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:xscml="http://schemas
             <xs:element name="horStretch" type="xs:int"/>
             <xs:element name="verStretch" type="xs:int"/>
         </xs:sequence>
-        <xs:attribute name="hSizeType" type="xs:string"/>
-        <xs:attribute name="vSizeType" type="xs:string"/>
+        <xs:attribute name="hSizeType" type="xs:string">
+            <xs:annotation>
+                <xs:appinfo>
+                    <jaxb:property name="hSizeType2"/>
+                </xs:appinfo>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="vSizeType" type="xs:string">
+            <xs:annotation>
+                <xs:appinfo>
+                    <jaxb:property name="vSizeType2"/>
+                </xs:appinfo>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="Size">
         <xs:sequence>

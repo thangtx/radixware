@@ -11,18 +11,16 @@
 
 package org.radixware.kernel.common.sqlscript.parser;
 
-
 public class StringTokenizer extends Tokenizer {
-
-    public StringTokenizer(String str) {
+    public StringTokenizer(final String str) {
         super(new StringReader(str));
     }
 
-    public StringTokenizer(String str, String delim) {
+    public StringTokenizer(final String str, final String delim) {
         super(new StringReader(str), delim);
     }
 
-    public StringTokenizer(String str, String delim, String quotes) {
+    public StringTokenizer(final String str, final String delim, final String quotes) {
         super(new StringReader(str), delim, quotes);
     }
 

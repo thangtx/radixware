@@ -11,6 +11,7 @@
 package org.radixware.kernel.utils.nblauncher;
 
 import java.io.*;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,19 +27,71 @@ import org.radixware.kernel.starter.Starter;
 import org.radixware.kernel.starter.utils.FileUtils;
 import org.radixware.kernel.starter.utils.SystemTools;
 import java.text.SimpleDateFormat;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import javax.swing.JOptionPane;
 import org.radixware.kernel.common.client.trace.ClientTracer;
 import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.starter.StarterArguments;
-import sun.misc.BASE64Encoder;
+import org.radixware.kernel.common.utils.Base64;
 
 public class NbLauncher {
+    
+    private static final String RDX_REPORT_EDITOR_DBG_MODE_ENV_VAR_NAME = "RDX_REPORT_EDITOR_DBG_MODE";
+    private static final String WAIT_FOR_STARTER_ACTUALIZE_PROP_NAME = "rdx.report.designer.wait.for.starter.actualize.millis";
+    private static final Logger log = Logger.getLogger(NbLauncher.class.getName());
+    private static final boolean debug;
+    private static final Set<String> ignoreParentStarterParams = new HashSet<>();
+    private static final int WAIT_FOR_STARTER_ACTUALIZE_MILLIS = 
+            SystemPropUtils.getIntSystemProp(WAIT_FOR_STARTER_ACTUALIZE_PROP_NAME, 180000);
+    
+    static {
+        final String dbgMode = System.getenv(RDX_REPORT_EDITOR_DBG_MODE_ENV_VAR_NAME);
+        if (dbgMode != null) {
+            debug = "debugger".equals(dbgMode.toLowerCase());
+            
+            log.setLevel(Level.ALL);
+            log.addHandler(new ConsoleHandler());
+            for (Handler h : log.getHandlers()) {
+                h.setLevel(Level.ALL);
+            }
+            log.setUseParentHandlers(false);
+        } else {
+            debug = false;
+        }
+        
+        ignoreParentStarterParams.add("downloadServer");
+        ignoreParentStarterParams.add("downloadExplorer");
+        ignoreParentStarterParams.add("downloadWeb");
+        ignoreParentStarterParams.add(StarterArguments.SHOW_SPLASH_SCREEN);
+    }
+    
+    public static enum ENbLauncherFailCause {
+        STARTER_ACTUALIZE_TIMEOUT,
+        APPLICATION_ALREADY_STARTED
+    }
+    
+    public static final class NbLauncherException extends IllegalStateException {
 
+        private ENbLauncherFailCause cause;
+        
+        public NbLauncherException(ENbLauncherFailCause cause) {
+            super();
+            this.cause = cause;
+        }
+        
+        public ENbLauncherFailCause getFailCause() {
+            return cause;
+        }
+    }
+        
     public static class ApplicationConfig {
 
         public static final String EAS_SESSION = "eas-session";
         public static final String FEATURES = "features";
         public static final String TIMEOUT = "timeout";
+        public static final String CONNECTION_NAME = "connection-name";
         private static ApplicationConfig instance;
         private Map<String, Object> properties = new HashMap<>();
         private final String appName;
@@ -80,7 +133,7 @@ public class NbLauncher {
             return properties.get(key);
         }
     }
-
+    
     private static boolean deleteDirectory(File path) {
         if (path != null && path.exists()) {
             final String[] names = path.list();
@@ -131,6 +184,7 @@ public class NbLauncher {
     }
 
     public static void main(String[] args) {
+        log.log(Level.FINE, "NbLauncher: starting report-editor...");
         try {
 
             File lockFileDir = new File(SystemTools.getApplicationDataPath("radixware.org"), "report-editor");
@@ -147,7 +201,11 @@ public class NbLauncher {
             File lockFile = new File(lockFileDir, "ts_lock");
 
             if (lockFile.exists()) {
-                FileUtils.deleteFile(lockFile);
+                if (!FileUtils.deleteFile(lockFile)) {
+                    log.log(Level.FINE, "Error on NbLauncher start: failed to remove ts_lock file");
+                }
+            } else {
+                log.log(Level.FINE, "Error on NbLauncher start: ts_lock file not exists");
             }
 
             RunParams.initialize(args);
@@ -169,13 +227,27 @@ public class NbLauncher {
             }
             if (!start) {
                 //config.await = true;
+                log.log(Level.FINE, "NbLauncher: waiting for auth info...");
                 try {
                     InputStreamReader reader = new InputStreamReader(System.in);
                     char[] cbuf = new char[1024];
                     int count;
                     StringBuilder pipeInput = new StringBuilder();
-                    while ((count = reader.read(cbuf)) >= 0) {
-                        pipeInput.append(cbuf, 0, count);
+                    
+                    boolean readyToRead = false;
+                    final long startWait = System.currentTimeMillis();
+                    final long timeOut = WAIT_FOR_STARTER_ACTUALIZE_MILLIS - ManagementFactory.getRuntimeMXBean().getUptime();
+                    while ((readyToRead = reader.ready()) == false) {
+                        if (System.currentTimeMillis() - startWait < timeOut) {
+                            Thread.sleep(500);
+                        } else {
+                            break;
+                        }
+                    }
+                    if (readyToRead) {
+                        while ((count = reader.read(cbuf)) >= 0) {
+                            pipeInput.append(cbuf, 0, count);
+                        }
                     }
 
                     String in = pipeInput.toString();
@@ -190,7 +262,8 @@ public class NbLauncher {
                     return;
                 }
             }
-
+            
+            log.log(Level.FINE, "NbLauncher: startup procedure launched...");
             config.await = true;
             config.putValue("timeout", 3000);
             launchNbApplicationImpl(config);
@@ -273,13 +346,17 @@ public class NbLauncher {
             }
         }
     }
-    private static final boolean debug = false;
-
+    
     public static boolean launchNbApplication(final ApplicationConfig config, final ClientTracer tracer) {
         StarterArguments starterArgs = Starter.getStarterArguments();
         Map<String, String> params = starterArgs.getStarterParameters();
         String[] args = RunParams.getArgs();
-        final String java_home = System.getProperty("java.home");
+        // Check if there is specific Java home specified for NetBeans
+        String java_home = System.getProperty("netbeans.jdkhome");
+        // and use default java home if there is no NetBeans specific one
+        if (java_home == null) {
+            java_home = System.getProperty("java.home");
+        }
         final String excutable = java_home + "/bin/java";
         List<String> allArgs = new LinkedList<>();
 
@@ -287,6 +364,7 @@ public class NbLauncher {
         if (debug) {
             allArgs.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009");
         }
+        allArgs.add("-D" + WAIT_FOR_STARTER_ACTUALIZE_PROP_NAME + "=" + (WAIT_FOR_STARTER_ACTUALIZE_MILLIS + 5000));
 
         String heapSize = RunParams.getExtDesignerMaxHeapSize();
         if (heapSize == null) {
@@ -312,7 +390,7 @@ public class NbLauncher {
                 wantedMemSize = 800;
             }
             heapSize = String.valueOf(wantedMemSize) + "m";
-            Logger.getLogger(NbLauncher.class.getName()).log(Level.FINE, "Calculated mem size" + heapSize);
+            log.log(Level.FINE, "Calculated mem size" + heapSize);
         }
 
         String permGenSize = RunParams.getExtDesignerMaxPermSize();
@@ -336,17 +414,27 @@ public class NbLauncher {
         allArgs.add(classPath);
 
         for (Map.Entry<String, String> e : params.entrySet()) {
+            if (ignoreParentStarterParams.contains(e.getKey())) {
+                continue;
+            }
             if (e.getValue() == null) {
                 allArgs.add("-" + e.getKey());
                 continue;
             }
             allArgs.add("-" + e.getKey() + "=" + e.getValue());
         }
+        allArgs.add("-" + StarterArguments.SHOW_SPLASH_SCREEN + "=Starter");
 
         allArgs.add("-devTools");
         allArgs.add("org.radixware.kernel.utils.nblauncher.NbLauncher");
         allArgs.add("reporteditor");
 
+        
+        if (config.getValue(ApplicationConfig.CONNECTION_NAME) != null) {
+            allArgs.add("-connection");
+            allArgs.add(String.valueOf(config.getValue(ApplicationConfig.CONNECTION_NAME)));
+        }
+        
         final String featuresStr;
         if (config.getValue(ApplicationConfig.FEATURES) != null) {
             allArgs.add("-feature=" + config.getValue(ApplicationConfig.FEATURES));
@@ -365,11 +453,11 @@ public class NbLauncher {
                         Object obj = f.get(easSession);
 
                         if (obj != null) {
-                            Method getter = obj.getClass().getDeclaredMethod("getSecret", new Class[0]);
+                            Method getter = obj.getClass().getDeclaredMethod("getSecret");
                             if (getter != null) {
                                 try {
                                     getter.setAccessible(true);
-                                    bytes = (byte[]) getter.invoke(obj, new Object[0]);
+                                    bytes = (byte[]) getter.invoke(obj);
                                 } finally {
                                     getter.setAccessible(false);
                                 }
@@ -392,6 +480,7 @@ public class NbLauncher {
         final CountDownLatch startLock = new CountDownLatch(1);
         final boolean[] started = new boolean[]{false};
         final boolean[] already_started = new boolean[]{false};
+        final boolean[] timeout_is_out = new boolean[]{false};
         Thread processThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -409,23 +498,27 @@ public class NbLauncher {
                         File lockFileDir = new File(SystemTools.getApplicationDataPath("radixware.org"), "report-editor");
                         lockFileDir.mkdirs();
                         if (!lockFileDir.exists()) {
+                            log.log(Level.FINE, "NbLauncher:mkdirs report-editor directory not exsists");
                             return;
                         }
 
                         File lockFile = new File(lockFileDir, "ts_lock");
-                        RandomAccessFile fs = new RandomAccessFile(lockFile, "rw");
-                        fs.write(0);
-                        fs.close();
-
+                        try (RandomAccessFile fs = new RandomAccessFile(lockFile, "rw")) {
+                            fs.write(0);
+                        }
+                        
                         process = pb.start();
 
-                        final long awaitTime = debug ? 120000 : 60000;
+                        final long awaitTime = WAIT_FOR_STARTER_ACTUALIZE_MILLIS;
                         long cs = System.currentTimeMillis();
                         while (true) {
                             if (lockFile.exists()) {
                                 Thread.sleep(100);
                                 if (System.currentTimeMillis() - cs > awaitTime) {
-                                    FileUtils.deleteFile(lockFile);
+                                    final boolean wasDeleted = FileUtils.deleteFile(lockFile);
+                                    log.log(Level.FINE, 
+                                            "NbLauncher: Failed to start report-editor, exit by timeout. File deletion status: {0}", wasDeleted ? "SUCCESS" : "FAIL");
+                                    timeout_is_out[0] = true;
                                     return;
                                 }
                                 continue;
@@ -438,7 +531,7 @@ public class NbLauncher {
                         try (OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream())) {
 
                             if (data != null) {
-                                BASE64Encoder encoder = new BASE64Encoder();
+                                Base64 encoder = new Base64();
                                 String encodedStirng = encoder.encode(data);
                                 writer.write("--");
                                 writer.write(encodedStirng);
@@ -469,10 +562,8 @@ public class NbLauncher {
                         }
                     }
 
-                } catch (IOException ex) {
-                    Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (Throwable e) {
-                    Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, e);
+                    log.log(Level.SEVERE, "Error on launch User Report Designer", e);
                 } finally {
                     if (!started[0]) {
                         startLock.countDown();
@@ -488,14 +579,17 @@ public class NbLauncher {
         } catch (InterruptedException ex) {
         }
         if (already_started[0]) {
-            throw new IllegalStateException("STARTED");
+            throw new NbLauncherException(ENbLauncherFailCause.APPLICATION_ALREADY_STARTED);
+        }
+        if (timeout_is_out[0]) {
+            throw new NbLauncherException(ENbLauncherFailCause.STARTER_ACTUALIZE_TIMEOUT);
         }
         return started[0];
 
 //            try {
 //                process.waitFor();
 //            } catch (InterruptedException ex) {
-//                Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, ex);
+//                log.log(Level.SEVERE, null, ex);
 //            }
 //            InputStream s = process.getInputStream();
 //            InputStreamReader reader = new InputStreamReader(s);
@@ -512,7 +606,7 @@ public class NbLauncher {
 //            f.setAccessible(true);
 //            return (URLStreamHandlerFactory) f.get(null);
 //        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex) {
-//            Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, ex);
+//            log.log(Level.SEVERE, null, ex);
 //            return null;
 //        }
 //    }
@@ -524,7 +618,7 @@ public class NbLauncher {
 //            f.set(null, null);
 //            URL.setURLStreamHandlerFactory(factory);
 //        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex) {
-//            Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, ex);
+//            log.log(Level.SEVERE, null, ex);
 //
 //        }
 //    }
@@ -657,14 +751,14 @@ public class NbLauncher {
 //                        try {
 //                            holdAction.await();
 //                        } catch (InterruptedException ex) {
-//                            Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, ex);
+//                            log.log(Level.SEVERE, null, ex);
 //                        }
 //                    }
 //
 //
 //
 //                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException ex) {
-//                    Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, ex);
+//                    log.log(Level.SEVERE, null, ex);
 //                }
 //            } finally {
 //                //ApplicationConfig.setInstance(null);
@@ -728,12 +822,12 @@ public class NbLauncher {
                         try {
                             holdAction.await();
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, ex);
+                            log.log(Level.SEVERE, null, ex);
                         }
                     }
 
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException ex) {
-                    Logger.getLogger(NbLauncher.class.getName()).log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 }
             } finally {
                 //ApplicationConfig.setInstance(null);

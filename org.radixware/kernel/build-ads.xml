@@ -5,45 +5,50 @@
     <property name="common.bin" value="common/bin"/>
     <property name="common.lib" value="common/lib"/>
     <property name="server.lib" value="server/lib"/>
-    <property name="branch.dir" value="../.."/>	
+    <property name="branch.dir" value="../.."/>
     <property environment="env"/>
     <property name="ojdbc.jar" value="${env.OJDBC_JAR}"/>
     <property name="builder.args" value="${branch.dir}"/>
     <property name="run.jvmargs" value="-ea -Xmx1024m -XX:MaxPermSize=128m"/>
 
     <path id="builder.classpath">
-	<fileset dir="${common.bin}">
-	    <include name="*.jar"/>
-	</fileset>
-	<fileset dir="${common.lib}">
-	    <include name="*.jar"/>
-	</fileset>
-    <pathelement path="${ojdbc.jar}"/>
-    <pathelement path="server/lib/ojdbc6.jar"/>
+        <fileset dir="${common.bin}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${common.lib}">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement path="${ojdbc.jar}"/>
+        <pathelement path="server/lib/ojdbc6.jar"/>
     </path>
 
     <target name="clean-and-build">
         <java classname="${builder.main.class}" fork="true" jvmargs="${run.jvmargs}" failonerror="true" args="${branch.dir}">
-		<classpath refid="builder.classpath"/>
-	</java>
+            <classpath refid="builder.classpath"/>
+        </java>
     </target>
 
-   <target name="api-doc-stat">
-        <java classname="${builder.main.class}" fork="true" jvmargs="${run.jvmargs}" failonerror="true" args="api-doc-stat ${branch.dir}">
-		<classpath refid="builder.classpath"/>
-	</java>
+    <condition property="doc.ext.agrs" value="">
+        <not>
+            <isset property="doc.ext.agrs"/>
+        </not>
+    </condition>
+    <target name="api-doc-stat">
+        <java classname="${builder.main.class}" fork="true" jvmargs="${run.jvmargs}" failonerror="true" args="api-doc-stat ${doc.ext.agrs} ${branch.dir}">
+            <classpath refid="builder.classpath"/>
+        </java>
     </target>
 
     <target name="clean-and-build-quiet">
         <java classname="${builder.main.class}" fork="true" jvmargs="${run.jvmargs}" failonerror="true" args="check clean build ${branch.dir} -quiet">
-		<classpath refid="builder.classpath"/>
-	</java>
+            <classpath refid="builder.classpath"/>
+        </java>
     </target>
 
     <target name="run">
         <java classname="${builder.main.class}" fork="true" jvmargs="${run.jvmargs}" failonerror="true" args="${builder.args}">
-		<classpath refid="builder.classpath"/>
-	</java>
+            <classpath refid="builder.classpath"/>
+        </java>
     </target>
 
 </project>

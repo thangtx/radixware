@@ -74,9 +74,15 @@ public abstract class RadSelectorExplorerItemDef extends RadExplorerItemDef {
     }
 
     @Override
+    @Deprecated
     public final boolean isCommandEnabled(final Id cmdId) {
         return !restrictions.getIsCommandRestricted(cmdId);
     }
+    
+    @Override
+    public final boolean isCommandEnabled(final Id cmdId, final boolean isReadOnlyCommand) {
+        return !restrictions.getIsCommandRestricted(cmdId,isReadOnlyCommand);
+    }    
 
     public Id getClassCatalogId() {
         if (classCatalogId == null) {

@@ -30,7 +30,7 @@ public class UnitMenu extends JMenuBar {
     private final JMenuItem menuItemStop;
     private final JMenuItem menuItemRestart;
     private final JMenuItem menuItemSrvTrcOptDlg;
-    private final JMenuItem menuItemInterrupt;
+    private final JMenuItem menuItemAbort;
     protected UnitView view;
     
     public UnitMenu(final UnitView view) {
@@ -47,9 +47,9 @@ public class UnitMenu extends JMenuBar {
         menuItemRestart = new JMenuItem(MenuText.RESTART);
         menuItemRestart.addActionListener(new RestartActionListener());
         mainMenu.add(menuItemRestart);
-        menuItemInterrupt = new JMenuItem(MenuText.INTERRUPT);
-        menuItemInterrupt.addActionListener(new InterruptActionListener());
-        mainMenu.add(menuItemInterrupt);
+        menuItemAbort = new JMenuItem(MenuText.ABORT);
+        menuItemAbort.addActionListener(new AbortActionListener());
+        mainMenu.add(menuItemAbort);
         mainMenu.addSeparator();
         menuItemSrvTrcOptDlg = new StartSrvTraceOptDlgMenuItem();
         mainMenu.add(menuItemSrvTrcOptDlg);
@@ -79,15 +79,14 @@ public class UnitMenu extends JMenuBar {
         menuItemRestart.setEnabled(st == UnitState.STARTED);
         menuItemStart.setEnabled(st == UnitState.STOPPED || st == UnitState.START_POSTPONED);
         menuItemSrvTrcOptDlg.setEnabled(st == UnitState.STARTED && view.getUnit().getDbConnection() != null);
-        menuItemInterrupt.setEnabled(st != UnitState.STOPPED);
-        menuItemInterrupt.setVisible(Unit.isInterruptionAllowed());
+        menuItemAbort.setEnabled(st != UnitState.STOPPED);
     }
     
-    private final class InterruptActionListener implements ActionListener {
+    private final class AbortActionListener implements ActionListener {
         
         @Override
         public void actionPerformed(ActionEvent e) {
-            view.getController().interrupt();
+            view.getController().abort();
         }
     }
     
@@ -141,13 +140,13 @@ public class UnitMenu extends JMenuBar {
             START = bundle.getString("MNU_START_UNIT");
             STOP = bundle.getString("MNU_STOP_UNIT");
             SRV_SQL_TRACE_CFG = bundle.getString("MNU_SRV_SQL_TRACE_CFG");
-            INTERRUPT = bundle.getString("MNU_INTERRUPT_UNIT");
+            ABORT = bundle.getString("MNU_ABORT_UNIT");
         }
         static final String MENU;
         static final String START;
         static final String STOP;
         static final String RESTART;
-        static final String INTERRUPT;
+        static final String ABORT;
         static final String SRV_SQL_TRACE_CFG;
     }
 }

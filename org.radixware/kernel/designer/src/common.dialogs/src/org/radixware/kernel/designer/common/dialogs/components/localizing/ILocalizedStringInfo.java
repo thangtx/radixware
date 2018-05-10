@@ -28,5 +28,11 @@ public interface ILocalizedStringInfo {
     
     boolean isNeedsCheck(EIsoLanguage language);
     
-    String asHtml(EIsoLanguage language);
+    boolean isAgreed(EIsoLanguage language);
+    
+    String isCheckedHtml(EIsoLanguage language);
+    
+    String isAgreedHtml(EIsoLanguage language);
+    
+    String asHtml(EIsoLanguage language, boolean isNeedsCheckedInfo, boolean isNeedAgreedInfo);
 }

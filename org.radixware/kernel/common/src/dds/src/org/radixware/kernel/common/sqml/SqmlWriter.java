@@ -87,6 +87,9 @@ class SqmlWriter {
             } else if (item instanceof ParameterTag) {
                 final ParameterTag parameterTag = (ParameterTag) item;
                 write(parameterTag, xSqml.addNewItem().addNewParameter());
+            } else if (item instanceof ParamValCountTag){
+                final ParamValCountTag paramValCountTag = (ParamValCountTag) item;
+                write(paramValCountTag, xSqml.addNewItem().addNewParamValCount());
             } else if (item instanceof ParentConditionTag) {
                 final ParentConditionTag ParentConditionTag = (ParentConditionTag) item;
                 write(ParentConditionTag, xSqml.addNewItem().addNewParentCondition());
@@ -261,6 +264,14 @@ class SqmlWriter {
         if (parameterTag.getPropId() != null) {
             xParameterTag.setPropId(parameterTag.getPropId());
         }
+        
+        if (parameterTag.isExpressionList()){
+            xParameterTag.setExpressionList(true);
+        }
+    }
+    
+    private static void write(final ParamValCountTag paramValCountTag, final org.radixware.schemas.xscml.Sqml.Item.ParamValCount xParamValCountTag){
+        xParamValCountTag.setParamId(paramValCountTag.getParameterId());
     }
 
     private static void write(final ParentConditionTag parentConditionTag, final org.radixware.schemas.xscml.Sqml.Item.ParentCondition xParentConditionTag) {
@@ -411,6 +422,12 @@ class SqmlWriter {
         xTag.setReferencedTableId(tag.getReferencedTableId());
         xTag.setPidTranslationSecondaryKeyId(tag.getPidTranslationSecondaryKeyId());
         xTag.setPidTranslationMode(tag.getPidTranslationMode());
+        if (tag.isExpressionList()){
+            xTag.setExpressionList(true);
+        }
+        if (tag.isLiteral()){
+            xTag.setLiteral(true);
+        }
     }
 
     private static void write(final EntityRefValueTag tag, final EntityRefValue xTag) {

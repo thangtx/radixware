@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="adcESHXGQZDWJCJ3KLYYC6KX6SYJI" Name="MetricCalculateUtils" Type="3" Environment="server">
-    <AccessRules IsPublished="false">
+    <AccessRules>
       <Transparence Extendable="false"/>
     </AccessRules>
     <Headers>
@@ -23,10 +23,10 @@ import org.radixware.kernel.server.dbq.SqmlTranslator;</xsc:Java>
     <Properties/>
     <Methods>
       <Method Id="mthXCNK2GK5VNDLDDZ5A7G4FMFBZA" Name="calculateInterval" Nature="0" IsOverride="false">
-        <AccessRules IsPublished="false"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="metricTypeId" Id="mprM5UTK5O7GRHNNNHKRYJXT2BLBI">
-            <Type TypeId="401" extStr="int"/>
+            <Type TypeId="2"/>
           </Parameter>
           <Parameter Name="prevExecTime" Id="mprYUNSBIX6NNBOVDSN3TU5BMTIWM">
             <Type TypeId="12"/>
@@ -39,259 +39,412 @@ import org.radixware.kernel.server.dbq.SqmlTranslator;</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcNKEVSFTMMFD6VJVO5E4UO5KDHI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNKEVSFTMMFD6VJVO5E4UO5KDHI">
+                <xsc:Presentation>MetricValue</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> metricVal = null;
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM">
+                <xsc:Presentation>MetricType</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> metricType = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM">
+                <xsc:Presentation>MetricType</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(metricTypeId, false);
 if (metricType.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI" Invoke="true"/>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI" Invoke="true">
+                <xsc:Presentation>kind</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciJG57PBLAWRCQVG2HZLZWKTSJME" Invoke="true"/>
+              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciJG57PBLAWRCQVG2HZLZWKTSJME" Invoke="true">
+                <xsc:Presentation>MetricKind:User.Query.Point</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value) {//user SQL metric 
-    Double d = </xsc:Java>
+    Double[] d = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcESHXGQZDWJCJ3KLYYC6KX6SYJI mthOAMCIUB36NAWTNNIOTQ34T7S2A" Invoke="true"/>
+              <xsc:IdReference Path="adcESHXGQZDWJCJ3KLYYC6KX6SYJI mthOAMCIUB36NAWTNNIOTQ34T7S2A" Invoke="true">
+                <xsc:Presentation>calcUserQuery</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclQDZGCRNJLJCMTPNAHQR2NYZY6Q"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAHCHZGQJUZA67LQUVMOZLDWRSU">
+                <xsc:Presentation>MetricType.UserQuery</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) metricType).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclQDZGCRNJLJCMTPNAHQR2NYZY6Q col3MOMAPD33ZDATALTAP45PLIN5Y" Invoke="true"/>
+              <xsc:IdReference Path="aclAHCHZGQJUZA67LQUVMOZLDWRSU col3MOMAPD33ZDATALTAP45PLIN5Y" Invoke="true">
+                <xsc:Presentation>userQuery</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, metricType.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU" Invoke="true"/>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>, prevExecTime, curExecTime);       
-    if (d == null) {
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthUVXH2WARWLOBDLJLAAMPGXSZKU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:EventCode StringId="mlsZ3DWC4IA2ZEWLL2LZP73VB7CXQ"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, metricType.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.toString());
-        d = 0;
-    } else {
+              <xsc:Java>, prevExecTime, curExecTime);
+    if (d != null) {
         metricVal = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcTS3X67BRTBDK7GGP26KPMKP6KE mth4ENDGHWNJ5HCBKLTV5HXMH6GOE" Invoke="true"/>
+              <xsc:IdReference Path="adcTS3X67BRTBDK7GGP26KPMKP6KE mth4ENDGHWNJ5HCBKLTV5HXMH6GOE" Invoke="true">
+                <xsc:Presentation>MetricValue.Event</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(null, d, curExecTime.getTime());
+              <xsc:Java>(null, d[0], curExecTime.getTime());
     }
 } else if (metricType.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI" Invoke="true"/>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI" Invoke="true">
+                <xsc:Presentation>kind</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciN5HFLHHNURAKVPKT6YEIJPSHAY" Invoke="true"/>
+              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciOVR5CJIBJFEABDXN4KPOYMQKNE" Invoke="true">
+                <xsc:Presentation>MetricKind:User.Query.Stat</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value) {
-    final double val = ((</xsc:Java>
+    Double[] d = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclZFOH5AAO5ZCRVDLVJJGQEPXTMU"/>
+              <xsc:IdReference Path="adcESHXGQZDWJCJ3KLYYC6KX6SYJI mthOAMCIUB36NAWTNNIOTQ34T7S2A" Invoke="true">
+                <xsc:Presentation>calcUserQuery</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAHCHZGQJUZA67LQUVMOZLDWRSU">
+                <xsc:Presentation>MetricType.UserQuery</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) metricType).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclZFOH5AAO5ZCRVDLVJJGQEPXTMU pruLQHRIQUNLZC2DJXETRM5QKOWMY" Invoke="true"/>
+              <xsc:IdReference Path="aclAHCHZGQJUZA67LQUVMOZLDWRSU col3MOMAPD33ZDATALTAP45PLIN5Y" Invoke="true">
+                <xsc:Presentation>userQuery</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, metricType.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, prevExecTime, curExecTime);
+    if (d != null) {
+        if (d.length == 3) {
+            metricVal = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRF4NNLJCFRETZC4NEP3XLVK5BI mthZIZWLXWGJVANDCYYNL7NSLXVTA" Invoke="true">
+                <xsc:Presentation>MetricValue.Stat</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+                    d[0],
+                    d[1],
+                    d[2].doubleValue(),
+                    prevExecTime == null ? curExecTime.Time : prevExecTime.Time,
+                    curExecTime.Time);
+        }
+    } else {
+        metricVal = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRF4NNLJCFRETZC4NEP3XLVK5BI mthZIZWLXWGJVANDCYYNL7NSLXVTA" Invoke="true">
+                <xsc:Presentation>MetricValue.Stat</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+                0,
+                0,
+                0,
+                prevExecTime == null ? curExecTime.Time : prevExecTime.Time,
+                curExecTime.Time);
+    }
+} else if (metricType.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI" Invoke="true">
+                <xsc:Presentation>kind</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciN5HFLHHNURAKVPKT6YEIJPSHAY" Invoke="true">
+                <xsc:Presentation>MetricKind:User.Func.Point</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value) {
+    if (((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclZFOH5AAO5ZCRVDLVJJGQEPXTMU">
+                <xsc:Presentation>MetricType.UserFunc.Point</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) metricType).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclZFOH5AAO5ZCRVDLVJJGQEPXTMU pruLQHRIQUNLZC2DJXETRM5QKOWMY" Invoke="true">
+                <xsc:Presentation>calcEventValueFunction</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        final double val = ((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclZFOH5AAO5ZCRVDLVJJGQEPXTMU">
+                <xsc:Presentation>MetricType.UserFunc.Point</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) metricType).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclZFOH5AAO5ZCRVDLVJJGQEPXTMU pruLQHRIQUNLZC2DJXETRM5QKOWMY" Invoke="true">
+                <xsc:Presentation>calcEventValueFunction</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclAPQMCEE7LJD5BJR2BJQWYGKJNE mth7XSYJBRK6JEF5BBSV4TU6BILFM" Invoke="true"/>
+              <xsc:IdReference Path="aclAPQMCEE7LJD5BJR2BJQWYGKJNE mth7XSYJBRK6JEF5BBSV4TU6BILFM" Invoke="true">
+                <xsc:Presentation>calcPointValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclZFOH5AAO5ZCRVDLVJJGQEPXTMU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclZFOH5AAO5ZCRVDLVJJGQEPXTMU">
+                <xsc:Presentation>MetricType.UserFunc.Point</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) metricType, prevExecTime, curExecTime);
-    metricVal = new </xsc:Java>
+        metricVal = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcTS3X67BRTBDK7GGP26KPMKP6KE mth4ENDGHWNJ5HCBKLTV5HXMH6GOE" Invoke="true"/>
+              <xsc:IdReference Path="adcTS3X67BRTBDK7GGP26KPMKP6KE mth4ENDGHWNJ5HCBKLTV5HXMH6GOE" Invoke="true">
+                <xsc:Presentation>MetricValue.Event</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(null, val, curExecTime.Time); 
+              <xsc:Java>(null, val, curExecTime.Time);
+    } else {
+        metricVal = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTS3X67BRTBDK7GGP26KPMKP6KE mth4ENDGHWNJ5HCBKLTV5HXMH6GOE" Invoke="true">
+                <xsc:Presentation>MetricValue.Event</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, 0, curExecTime.Time);
+    }
 } else if (metricType.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI" Invoke="true"/>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM col2JJNBDFWIVG47OCFOCMCXVBFXI" Invoke="true">
+                <xsc:Presentation>kind</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciCAT24UCBKJFCVMBUMZUTVSLB2E" Invoke="true"/>
+              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciCAT24UCBKJFCVMBUMZUTVSLB2E" Invoke="true">
+                <xsc:Presentation>MetricKind:User.Func.Stat</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value) {
-    </xsc:Java>
+    if (((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="acl5EFI4BGH6JEFVEZWH6L2LSVQK4">
+                <xsc:Presentation>MetricType.UserFunc.Stat</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) metricType).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl5EFI4BGH6JEFVEZWH6L2LSVQK4 pru6PA7ZCF6TVAM5HWW6FHC2T4J44" Invoke="true">
+                <xsc:Presentation>calcStatValueFunction</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ">
+                <xsc:Presentation>StatMetricValue</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> val = ((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="acl5EFI4BGH6JEFVEZWH6L2LSVQK4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="acl5EFI4BGH6JEFVEZWH6L2LSVQK4">
+                <xsc:Presentation>MetricType.UserFunc.Stat</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) metricType).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl5EFI4BGH6JEFVEZWH6L2LSVQK4 pru6PA7ZCF6TVAM5HWW6FHC2T4J44" Invoke="true"/>
+              <xsc:IdReference Path="acl5EFI4BGH6JEFVEZWH6L2LSVQK4 pru6PA7ZCF6TVAM5HWW6FHC2T4J44" Invoke="true">
+                <xsc:Presentation>calcStatValueFunction</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclZUPKE7H3JBCBPN7L6CCKBPB7ZA mthLRXDXQBWCFGMVBMVNJSTBES5XM" Invoke="true"/>
+              <xsc:IdReference Path="aclZUPKE7H3JBCBPN7L6CCKBPB7ZA mthLRXDXQBWCFGMVBMVNJSTBES5XM" Invoke="true">
+                <xsc:Presentation>calcStatValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="acl5EFI4BGH6JEFVEZWH6L2LSVQK4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="acl5EFI4BGH6JEFVEZWH6L2LSVQK4">
+                <xsc:Presentation>MetricType.UserFunc.Stat</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) metricType, prevExecTime, curExecTime);
-    if (val == null) {
-        </xsc:Java>
+        if (val != null) {
+            metricVal = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:IdReference Path="adcRF4NNLJCFRETZC4NEP3XLVK5BI mthZIZWLXWGJVANDCYYNL7NSLXVTA" Invoke="true">
+                <xsc:Presentation>MetricValue.Stat</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.</xsc:Java>
+              <xsc:Java>(
+                    val.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthUVXH2WARWLOBDLJLAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prdPMN62R4A3ZEIXDT5QZNHYBRRZQ" Invoke="true">
+                <xsc:Presentation>minValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(</xsc:Java>
+              <xsc:Java> == null ? null : val.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:EventCode StringId="mlsYULSYRLR4RFB7JVPXQRK4JBBLE"/>
+              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prdPMN62R4A3ZEIXDT5QZNHYBRRZQ" Invoke="true">
+                <xsc:Presentation>minValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>, metricType.</xsc:Java>
+              <xsc:Java>.doubleValue(),
+                    val.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU" Invoke="true"/>
+              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prd6ZNTDU7HANFVDIILT65HM4MHQA" Invoke="true">
+                <xsc:Presentation>maxValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.toString());
+              <xsc:Java> == null ? null : val.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prd6ZNTDU7HANFVDIILT65HM4MHQA" Invoke="true">
+                <xsc:Presentation>maxValue</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.doubleValue(),
+                    val.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prdQLLPTBZLJFGBPO54LHCGX2BML4" Invoke="true">
+                <xsc:Presentation>avgValue</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                    prevExecTime == null ? curExecTime.Time : prevExecTime.Time,
+                    curExecTime.Time);
+        }
     } else {
         metricVal = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRF4NNLJCFRETZC4NEP3XLVK5BI mthZIZWLXWGJVANDCYYNL7NSLXVTA" Invoke="true"/>
+              <xsc:IdReference Path="adcRF4NNLJCFRETZC4NEP3XLVK5BI mthZIZWLXWGJVANDCYYNL7NSLXVTA" Invoke="true">
+                <xsc:Presentation>MetricValue.Stat</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
-                val.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prdPMN62R4A3ZEIXDT5QZNHYBRRZQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> == null ? null : val.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prdPMN62R4A3ZEIXDT5QZNHYBRRZQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.doubleValue(),
-                val.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prd6ZNTDU7HANFVDIILT65HM4MHQA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> == null ? null : val.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prd6ZNTDU7HANFVDIILT65HM4MHQA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.doubleValue(),
-                val.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcFONHNOJX6JEG3JTWB4NEWREMWQ prdQLLPTBZLJFGBPO54LHCGX2BML4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>,
+                0,
+                0,
+                0,
                 prevExecTime == null ? curExecTime.Time : prevExecTime.Time,
                 curExecTime.Time);
     }
@@ -299,43 +452,20 @@ if (metricType.</xsc:Java>
     metricVal = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcESHXGQZDWJCJ3KLYYC6KX6SYJI mthP2PCR2BYOFCSFDPUSHEWBD3BV4" Invoke="true"/>
+              <xsc:IdReference Path="adcESHXGQZDWJCJ3KLYYC6KX6SYJI mthP2PCR2BYOFCSFDPUSHEWBD3BV4" Invoke="true">
+                <xsc:Presentation>calcAppMetric</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(metricType.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU" Invoke="true"/>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.longValue(), prevExecTime, curExecTime);
-    if (metricVal == null) {
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthUVXH2WARWLOBDLJLAAMPGXSZKU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:EventCode StringId="mlsMMP56VNZA5B5TFG3FB2MXEJHYY"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, metricType.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM colNS4TO66OSNH3DCZS64EDNL7VDU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.toString());
-    }
 }
 return metricVal;</xsc:Java>
             </xsc:Item>
@@ -343,7 +473,7 @@ return metricVal;</xsc:Java>
         </Sources>
       </Method>
       <Method Id="mthP2PCR2BYOFCSFDPUSHEWBD3BV4" Name="calcAppMetric" Nature="0" IsOverride="false">
-        <AccessRules IsPublished="false"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="metricTypeId" Id="mpr4XT67DZDZFA37EYKLYYHVTM56M">
             <Type TypeId="2"/>
@@ -359,46 +489,60 @@ return metricVal;</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM">
+                <xsc:Presentation>MetricType</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> metricType = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM">
+                <xsc:Presentation>MetricType</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(metricTypeId, true);
 if(metricType instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ">
+                <xsc:Presentation>MetricType.AppMetric.Event</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ">
+                <xsc:Presentation>MetricType.AppMetric.Event</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> eventMetricType = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ">
+                <xsc:Presentation>MetricType.AppMetric.Event</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) metricType;
     return eventMetricType.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ mthBGY2OJS6LFCD5B3BNBHXUSGX6A" Invoke="true"/>
+              <xsc:IdReference Path="aclIQCN5O35ZJHYRBCK4IE6RKQYRQ mthBGY2OJS6LFCD5B3BNBHXUSGX6A" Invoke="true">
+                <xsc:Presentation>calcValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(lastControlTime, curControlTime);
@@ -406,20 +550,26 @@ if(metricType instanceof </xsc:Java>
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclJFUUR32PQ5BTLNMJVOAKUJZOUA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclJFUUR32PQ5BTLNMJVOAKUJZOUA">
+                <xsc:Presentation>MetricType.AppMetric.Stat</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> statMetricType = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclJFUUR32PQ5BTLNMJVOAKUJZOUA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclJFUUR32PQ5BTLNMJVOAKUJZOUA">
+                <xsc:Presentation>MetricType.AppMetric.Stat</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) metricType;
     return statMetricType.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclJFUUR32PQ5BTLNMJVOAKUJZOUA mthBS7ODJBINFEE3ESFD3EK7RWYPM" Invoke="true"/>
+              <xsc:IdReference Path="aclJFUUR32PQ5BTLNMJVOAKUJZOUA mthBS7ODJBINFEE3ESFD3EK7RWYPM" Invoke="true">
+                <xsc:Presentation>calcValue</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(lastControlTime, curControlTime);
@@ -429,7 +579,7 @@ if(metricType instanceof </xsc:Java>
         </Sources>
       </Method>
       <Method Id="mthOAMCIUB36NAWTNNIOTQ34T7S2A" Name="calcUserQuery" Nature="0" IsOverride="false">
-        <AccessRules IsPublished="false"/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="userQuery" Id="mprPX3PTXMT6JHIHEYBF3TFYPTMDU">
             <Type TypeId="27"/>
@@ -444,7 +594,7 @@ if(metricType instanceof </xsc:Java>
             <Type TypeId="12"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="400" extStr="java.lang.Double"/>
+        <ReturnType TypeId="400" extStr="java.lang.Double" Dimension="1"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -459,13 +609,17 @@ try {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthUALS3BVVSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthUALS3BVVSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
@@ -477,110 +631,162 @@ try {
               <xsc:Java>, new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(ex)));
     return null;   
 }
+if (sqml == null) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsM2TIAIR7GZAZBIRSFA6FLJ5VC4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
 QueryTranslateResult result = SqmlTranslator.translateSingleQuery(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), sqml, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+              <xsc:IdReference Path="aec2H6SULJHXJGFVIS6UVHRWQS4AM">
+                <xsc:Presentation>MetricType</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>); 
+
 final Map&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, Object> paramValues = new HashMap&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, Object>();
 paramValues.put(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aciC3NWY5INJVBYRJZM7GAJYDPWNI" Invoke="true"/>
+              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aciC3NWY5INJVBYRJZM7GAJYDPWNI" Invoke="true">
+                <xsc:Presentation>UserQueryParameterId:END_TIME</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value), curControlTime);
 paramValues.put(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aci4B35LNXOUFCMRC3TKPPODMMACU" Invoke="true"/>
+              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aci4B35LNXOUFCMRC3TKPPODMMACU" Invoke="true">
+                <xsc:Presentation>UserQueryParameterId:METRIC_ID</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value), metricTypeId);
 paramValues.put(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aciHOJ7COZO4ZGQHAPJRJV2KZIJ3M" Invoke="true"/>
+              <xsc:IdReference Path="acs563QRZVDBBFOJIHDROPZ6NROWQ aciHOJ7COZO4ZGQHAPJRJV2KZIJ3M" Invoke="true">
+                <xsc:Presentation>UserQueryParameterId:BEG_TIME</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value), lastControlTime);
@@ -588,21 +794,29 @@ try {
     final java.sql.PreparedStatement statement = result.prepare(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), paramValues);
     try {
-        java.sql.ResultSet rs = statement.executeQuery();
-        if (rs.next()) {
-            final Double d = rs.getDouble(1);
-            return d;
+        java.sql.ResultSet rs = statement.executeQuery();                
+        if (rs.next()) {            
+            int columnCount = rs.getMetaData().getColumnCount();
+            final Double[] res = new Double[columnCount];
+            for (int i = 0; i &lt; columnCount; i++) {
+                res[i] = rs.getDouble(i + 1);
+            }
+            return res;
         }
     } finally {
         statement.close();
@@ -610,38 +824,50 @@ try {
 } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA">
+                <xsc:Presentation>Exceptions::SQLException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> exception) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(exception), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci4VSRGAWJBFEH3IAVZIWZJQVMTI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci4VSRGAWJBFEH3IAVZIWZJQVMTI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:SystemMonitoring</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -649,31 +875,41 @@ try {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(exception), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci4VSRGAWJBFEH3IAVZIWZJQVMTI" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci4VSRGAWJBFEH3IAVZIWZJQVMTI" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:SystemMonitoring</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -684,10 +920,10 @@ return null;</xsc:Java>
         </Sources>
       </Method>
       <Method Id="mthBM5QZ4HJQVEQLMHH5NMBSQTLEY" Name="calculate" Nature="0" IsOverride="false">
-        <AccessRules/>
+        <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="metricTypeId" Id="mprA22SW7TS4RAMTJT76Q3IVHVQUY">
-            <Type TypeId="401" extStr="int"/>
+            <Type TypeId="2"/>
           </Parameter>
           <Parameter Name="prevExecTime" Id="mprY7CPBORPN5CYNOEXTWRP34MF7M">
             <Type TypeId="12"/>
@@ -712,39 +948,51 @@ return null;</xsc:Java>
               <xsc:Java>java.util.List&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcNKEVSFTMMFD6VJVO5E4UO5KDHI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNKEVSFTMMFD6VJVO5E4UO5KDHI">
+                <xsc:Presentation>MetricValue</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> metricList = new java.util.ArrayList&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcNKEVSFTMMFD6VJVO5E4UO5KDHI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNKEVSFTMMFD6VJVO5E4UO5KDHI">
+                <xsc:Presentation>MetricValue</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>>();
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> oldDate = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(prevExecTime.getTime());
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> newDate = new </xsc:Java>
+              <xsc:Java> newDate = period == null ? curExecTime : new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="12"/>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(prevExecTime.getTime() + period.intValue() * 1000);
@@ -753,19 +1001,27 @@ while (newDate.getTime() &lt;= curExecTime.getTime()) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcNKEVSFTMMFD6VJVO5E4UO5KDHI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNKEVSFTMMFD6VJVO5E4UO5KDHI">
+                <xsc:Presentation>MetricValue</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> mtrVal = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcESHXGQZDWJCJ3KLYYC6KX6SYJI mthXCNK2GK5VNDLDDZ5A7G4FMFBZA" Invoke="true"/>
+              <xsc:IdReference Path="adcESHXGQZDWJCJ3KLYYC6KX6SYJI mthXCNK2GK5VNDLDDZ5A7G4FMFBZA" Invoke="true">
+                <xsc:Presentation>calculateInterval</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(metricTypeId, oldDate, newDate);
     metricList.add(mtrVal);
-    oldDate.setTime(oldDate.getTime() + period.intValue() * 1000);
-    newDate.setTime(newDate.getTime() + period.intValue() * 1000);
+    if (period != null) {
+        oldDate.setTime(oldDate.getTime() + period.intValue() * 1000);
+        newDate.setTime(newDate.getTime() + period.intValue() * 1000);
+    } else {
+        break;
+    }
 }
 return metricList;</xsc:Java>
             </xsc:Item>

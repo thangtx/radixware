@@ -14,12 +14,16 @@ import java.util.List;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.utils.Utils;
 
-public abstract class AdsReportWidget extends AdsReportAbstractAppearance {
+public abstract class AdsReportWidget extends AdsReportAbstractAppearance implements IReportNavigatorObject<AdsReportWidget>{
 
     //  public GroupData positionGroup;
     //  public GroupData heightGroup;
+    private static int DEFAULT_TXT_COL = 0;
+    private static int DEFAULT_TXT_ROW = 0;
+    private static int DEFAULT_TXT_WIDTH = 10;
+    private static int DEFAULT_TXT_HEIGHT = 1;
     private double leftMm = 0.0, topMm = 0.0, widthMm = 50.0, heightMm = 12.5;
-    private int textCol = 0, textRow = 0, textWidth = 10, textHeight = 1;
+    private int textCol = DEFAULT_TXT_COL, textRow = DEFAULT_TXT_ROW, textWidth = DEFAULT_TXT_WIDTH, textHeight = DEFAULT_TXT_HEIGHT;
     private int row = -1;
     private int column = -1;
     private int rowSpan = 1, columnSpan = 1;
@@ -89,14 +93,20 @@ public abstract class AdsReportWidget extends AdsReportAbstractAppearance {
     }
 
     public abstract boolean isReportContainer();
-
-    public IReportWidgetContainer getOwnerWidget() {
+    
+    @Override
+    public RadixObject getParent() {
         for (RadixObject container = this.getContainer(); container != null; container = container.getContainer()) {
             if (container instanceof IReportWidgetContainer) {
-                return (IReportWidgetContainer) container;
+                return container;
             }
         }
         return null;
+    }
+    
+
+    public IReportWidgetContainer getOwnerWidget() {
+        return (IReportWidgetContainer) getParent();
     }
 
     /**
@@ -288,9 +298,7 @@ public abstract class AdsReportWidget extends AdsReportAbstractAppearance {
         }
     }
 
-    /**
-     * Grid layout workaround
-     */
+    //Grid layout workaround
     public int getRow() {
         return row;
     }
@@ -351,9 +359,9 @@ public abstract class AdsReportWidget extends AdsReportAbstractAppearance {
         }
     }
 
-    /**
-     * @return true if font inherited from band, false otherwise
-     */
+//    /**
+//     * @return true if font inherited from band, false otherwise
+//     */
     /* public boolean isFontInherited() {
      return fontInherited;
      }
@@ -369,13 +377,22 @@ public abstract class AdsReportWidget extends AdsReportAbstractAppearance {
      // }
      } */
     public void convertToTextMode() {
-        final double CONVERSION_Y = 5;
-        final double CONVERSION_X = 5;
-        this.textHeight = (int) Math.round(this.heightMm / CONVERSION_Y);
-        this.textWidth = (int) Math.round(this.widthMm / CONVERSION_X);
-        this.textCol = (int) Math.round(this.leftMm / CONVERSION_X);
-        this.textRow = (int) Math.round(this.topMm / CONVERSION_Y);
+        if (textHeight == DEFAULT_TXT_HEIGHT
+                && textWidth == DEFAULT_TXT_WIDTH
+                && textCol == DEFAULT_TXT_COL
+                && textRow == DEFAULT_TXT_ROW) {
+            final double CONVERSION_Y = 5;
+            final double CONVERSION_X = 5;
+            this.textHeight = (int) Math.round(this.heightMm / CONVERSION_Y);
+            this.textWidth = (int) Math.round(this.widthMm / CONVERSION_X);
+            this.textCol = (int) Math.round(this.leftMm / CONVERSION_X);
+            this.textRow = (int) Math.round(this.topMm / CONVERSION_Y);
+        }
     }
 
-   
+    @Override
+    public List<AdsReportWidget> getChildren() {
+        return null;
+    }
+
 }

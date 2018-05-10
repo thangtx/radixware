@@ -13,8 +13,11 @@ package org.radixware.kernel.explorer.widgets.propeditors;
 
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
@@ -28,6 +31,7 @@ import org.radixware.kernel.common.client.models.ModifiedEntityModelFinder;
 import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyReference;
+import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.views.IExplorerItemView;
 import org.radixware.kernel.common.client.views.IView;
@@ -41,6 +45,12 @@ import org.radixware.kernel.explorer.views.selector.Selector;
 
 
 public abstract class PropReferenceEditor extends PropEditor {
+    
+    private static class CtrlClickEvent extends QEvent{        
+        public CtrlClickEvent(){
+            super(QEvent.Type.User);
+        }        
+    }
     
     private static class ValEditorFactoryImpl extends ValEditorFactory{
         
@@ -56,6 +66,18 @@ public abstract class PropReferenceEditor extends PropEditor {
                         @Override
                         protected boolean eq(final Reference value1, final Reference value2) {
                             return Reference.exactlyMatch(value1, value2);
+                        }
+
+                        @Override
+                        protected void onMouseClick() {
+                            final QWidget parentWidget = parentWidget();
+                            if (parentWidget!=null 
+                                && isEnabled()
+                                && isEmbeddedWidgetsVisible()
+                                && QApplication.keyboardModifiers().value()==Qt.KeyboardModifier.ControlModifier.value()){
+                                QApplication.postEvent(parentWidget, new CtrlClickEvent());
+                            }
+                            super.onMouseClick(); 
                         }
                     };
         }
@@ -115,51 +137,54 @@ public abstract class PropReferenceEditor extends PropEditor {
     @Override
     @SuppressWarnings("unchecked")
     public void refresh(final ModelItem changedItem) {
-        super.refresh(changedItem);
-        final PropertyReference property = (PropertyReference) getProperty();
-        changeReferenceButton.setVisible(!isReadonly());
+        if (getProperty()!=null){
+            super.refresh(changedItem);
+            final PropertyReference property = (PropertyReference) getProperty();
+            changeReferenceButton.setVisible(!isReadonly() && !controller.isInheritedValue());
 
-        // refresh checkForInherit
-        editButton.hide();
-        insertButton.hide();
+            // refresh checkForInherit
+            editButton.hide();
+            insertButton.hide();
 
-        if (property.canOpenEntityModelView()) {
-            final RadParentRefPropertyDef def = (RadParentRefPropertyDef) property.getDefinition();
-            editButton.show();
-            final boolean isReadonly;
+            if (property.canOpenEntityModelView()) {
+                final RadParentRefPropertyDef def = (RadParentRefPropertyDef) property.getDefinition();
+                editButton.show();
+                final boolean isReadonly;
 
-            if (def.getType() == EValType.OBJECT) {
-                isReadonly = isReadonly() || !property.canModifyEntityObject();
-            } else {
-                final IView view = property.getOwner().getView();
-                if (view!=null && view.getRestrictions().isRestrictedInView(ERestriction.UPDATE)){
-                    isReadonly = true;
-                }else if (!property.canModifyEntityObject()){                
-                    isReadonly = true;
-                }else {                                        
-                    isReadonly = 
-                        property.getOwner().findOwner( new ModifiedEntityModelFinder(property.getVal().getPid()) )!=null;
+                if (def.getType() == EValType.OBJECT) {
+                    isReadonly = isReadonly() || !property.canModifyEntityObject();
+                } else {
+                    final IView view = property.getOwner().getView();
+                    if (view!=null && view.getRestrictions().isRestrictedInView(ERestriction.UPDATE)){
+                        isReadonly = true;
+                    }else if (!property.canModifyEntityObject()){                
+                        isReadonly = true;
+                    }else {                                        
+                        isReadonly = 
+                            property.getOwner().findOwner( new ModifiedEntityModelFinder(property.getVal().getPid()) )!=null;
+                    }
                 }
-            }
 
-            if (isReadonly) {
-                editButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.VIEW));
-                editButton.setToolTip(getEnvironment().getMessageProvider().translate("PropRefEditor", "View Object"));
-            } else {
-                editButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.Definitions.EDITOR));
-                editButton.setToolTip(getEnvironment().getMessageProvider().translate("PropRefEditor", "Edit Object"));
-            }
+                if (isReadonly) {
+                    editButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.VIEW));
+                    editButton.setToolTip(getEnvironment().getMessageProvider().translate("PropRefEditor", "View Object"));
+                } else {
+                    editButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.Definitions.EDITOR));
+                    editButton.setToolTip(getEnvironment().getMessageProvider().translate("PropRefEditor", "Edit Object"));
+                }
 
-            if (property.canInsertEntityIntoTree() && !theSameEntityModel(property.getOwner().findNearestExplorerItemView())) {
-                insertButton.show();
+                if (property.canInsertEntityIntoTree() && !theSameEntityModel(property.getOwner().findNearestExplorerItemView())) {
+                    insertButton.show();
+                }
             }
         }
     }
     
-    private boolean theSameEntityModel(final IExplorerItemView itemView){
+    private boolean theSameEntityModel(final IExplorerItemView itemView){        
         final PropertyReference property = (PropertyReference) getProperty();   
-        final IExplorerItemView currentItemView = itemView.getExplorerTree().getCurrent().getView();
-        if (property.getVal()!=null && currentItemView.isEntityView()){
+        final IExplorerTreeNode currentTreeNode = itemView.getExplorerTree().getCurrent();
+        final IExplorerItemView currentItemView = currentTreeNode==null ? null : currentTreeNode.getView();
+        if (property.getVal()!=null && currentItemView!=null && currentItemView.isEntityView()){
             final EntityModel insertedEntityModel = (EntityModel)currentItemView.getModel();            
             return property.getVal().getPid().equals(insertedEntityModel.getPid());
         }        
@@ -171,8 +196,7 @@ public abstract class PropReferenceEditor extends PropEditor {
         getValEditor().getLineEdit().setFocus();
         return true;
     }
-
-    @SuppressWarnings("unused")
+    
     private void editEntity() {
         final PropertyReference property = (PropertyReference) getProperty();
         try {
@@ -212,5 +236,21 @@ public abstract class PropReferenceEditor extends PropEditor {
         else{
             return super.eventFilter(source, event);
         }
+    }
+
+    @Override
+    protected void customEvent(final QEvent event) {
+        if (event instanceof CtrlClickEvent){
+            event.accept();
+            onCtrlClick();
+        }else{
+            super.customEvent(event);
+        }
+    }
+    
+    protected void onCtrlClick(){
+        if (editButton.isVisible() && editButton.isEnabled()){
+            editEntity();
+        }        
     }
 }

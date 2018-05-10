@@ -68,5 +68,36 @@
     </xs:complexType>
     <xs:element name="ClipboardInfo" type="this:CbInfo"/>
     
-    
+    <xs:complexType name="ChangeLogItem">
+        <xs:sequence>
+            <xs:element name="Description" type="types:Str" minOccurs="0"/>
+            <xs:element name="RefDoc" type="types:Str" minOccurs="0"/>
+            <xs:element name="LocalNotes" type="types:Str" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="Date" type="types:DateTime" use="required"/>
+        <xs:attribute name="RevisionNumber" type="types:Int"/>
+        <xs:attribute name="SinceVersion" type="types:Str"/>
+        <xs:attribute name="DescriptionMlsId" type="types:Id"/>
+        <xs:attribute name="Author" type="types:Str"/>
+        <xs:attribute name="AppVer" type="types:Str"/>
+        <xs:attribute name="Kind">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EChangelogItemKind</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:element name="ChangeLogItem" type="this:ChangeLogItem"/>
+    <xs:complexType name="ChangeLog">
+        <xs:sequence>
+            <xs:element name="ChangeLogItem" type="this:ChangeLogItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Comments" type="types:Str" minOccurs="0"/>
+            <xs:element name="LocalNotes" type="types:Str" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="ChangeLog" type="this:ChangeLog"/>
 </xs:schema>

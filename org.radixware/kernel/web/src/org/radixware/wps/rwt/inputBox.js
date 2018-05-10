@@ -43,13 +43,13 @@ $RWT.inputBox = {
         box.maxSpinUpStepCount = box.getAttribute("maxSpinUpStepCount") == null ? 0 : parseInt(box.getAttribute("maxSpinUpStepCount"));
         box.maxSpinDownStepCount = box.getAttribute("maxSpinDownStepCount") == null ? 0 : parseInt(box.getAttribute("maxSpinDownStepCount"));
         var textField = $RWT.inputBox._findTextField(box);
-        if (textField && textField.getAttribute("inputType") == "Int") {
+        if (textField && textField.getAttribute("inputtype") == "Int") {
             $(box).bind('keydown', 'up', eval("$RWT.inputBox.keyUp"));
             $(box).bind('keydown', 'down', eval("$RWT.inputBox.keyDown"));
             $(box).bind('keydown', 'pageup', eval("$RWT.inputBox.keyPageUp"));
             $(box).bind('keydown', 'pagedown', eval("$RWT.inputBox.keyPageDown"));
         }
-        else if (textField && textField.getAttribute("inputType") == "Bool") {
+        else if (textField && textField.getAttribute("inputtype") == "Bool") {
             $(box).css('width', $(box).outerHeight() + 'px');
             $(box).bind('keydown', 'space', eval("$RWT.inputBox.keySpace"));
         } else if (textField && box.getAttribute("inputHandlers") != null) {
@@ -68,6 +68,19 @@ $RWT.inputBox = {
             }
         }
         $(box).bind('keydown', 'ctrl+space', eval("$RWT.inputBox.clearValue"));
+        if (box.hasFocus==true 
+            && box.focusProcessed!=null 
+            && box.focusProcessed==false){
+            //processing of 'focus in' event depends from readOnly state
+            //so it is need to process second time if this state was changed
+            var input = $RWT.inputBox.findInput(box);
+            if (input==null){
+                input = $RWT.inputBox.findTextArea(box);
+            }
+            if (input!=null && !input.readOnly){
+                $(input).focus();
+            }
+        }        
     },
     setValue: function(box, value) {
         var input = $RWT.inputBox.findInput(box);
@@ -181,7 +194,10 @@ $RWT.inputBox = {
     textFieldFocusIn: function() {
 
         var inputBox = WpsUtils.findParentByClassName(this, "rwt-input-box");//upper div
-        if (!this.readOnly) {
+        if (this.readOnly) {
+            inputBox.focusProcessed = false;
+        }else{
+            inputBox.focusProcessed = true;
             var textField = WpsUtils.findParentByClassName(this, "rwt-text-field");//first inner div
             if (!textField) {
                 var e = WpsUtils.findParentByClassName(this, "rwt-text-area");
@@ -254,7 +270,7 @@ $RWT.inputBox = {
             if (e && e.getAttribute("name") == "propTextEditor")
                 textField = e;
         }
-        if ($(this).attr("value") != textField.oldText && !textField.getAttribute("value_is_null")) {
+        if (textField.oldText!=null && $(this).attr("value") != textField.oldText && !textField.getAttribute("value_is_null")) {
             textField.wasChanged = true;
             $(this).attr("value", this.value);
 
@@ -341,6 +357,7 @@ $RWT.inputBox = {
                             button.className.indexOf('rwt-tool-button') > 0 && button.className.indexOf('rwt-clear-button') < 0 && button.className.indexOf('rwt-input-box-spin') < 0) {
                         if ($(button).is(":visible") && !button.attributes.disabled && button.onclick) {
                             button.onclick();
+                            return true;
                         }
                     }
                 });
@@ -445,7 +462,7 @@ $RWT.textField = {
     layout: function(tf) {
         var div = WpsUtils.findChildByLocalName(tf, 'div');
         var input = WpsUtils.findChildByLocalName(div, 'input');
-        if (input != null && input.hidden) {
+        if (input != null && input.hidden && input.pwdInput == null) {
             return;
         }
         input.disabled = !WpsUtils.isEnabled(input);
@@ -537,9 +554,23 @@ $RWT.textField = {
                 input.maxlength = maskData.tokens.length;
             }
         }
-        if (tf.isPassword && input.type == 'text' && tf.getAttribute("value_is_null") != 'true') {
-            $RWT.textField.__changeInputTypeToPassword(input);
-        }
+        if (tf.isPassword && input.type == 'text') {
+            if (tf.getAttribute("value_is_null") != 'true' && input.pwdInput == null) {
+                $RWT.textField.__changeInputTypeToPassword(input);
+            } else {
+                if (tf.getAttribute("value_is_null") == 'true' && input.pwdInput != null) {
+                    $RWT.textField.__changeInputTypeToText(input.pwdInput, tf);
+                }
+            }
+            if (input.pwdInput != null) {
+                input.pwdInput.disabled = $(input).hasClass("ui-state-disabled");
+                if (input.pwdInput.disabled) {
+                    $(input.pwdInput).addClass("ui-state-disabled");
+                } else {
+                    $(input.pwdInput).removeClass("ui-state-disabled");
+                }
+            }
+        } 
         input.rwt_f_finishEdit = $RWT.textField.rwt_f_finishEdit;
     }, //c = f.valHooks[e.nodeName.toLowerCase()] || f.valHooks[e.type];
     clientTextChange: function(e) {
@@ -650,6 +681,9 @@ $RWT.textField = {
         }
         if (!this.readOnly) {
             textField.oldText = $(this).val();
+            if (textField.oldText==null){
+                textField.oldText = "";
+            }
             textField.isValid = true;
             textField.lastChange = null;
             if (textField.inputType != 'Bool') {
@@ -692,12 +726,51 @@ $RWT.textField = {
         input.rwt_f_onChangeValue = $RWT.textField.rwt_f_onChangeValue;
         return pwdInput;
     },
+    __changeInputTypeToText: function(input, textField) {
+        var originalInput = input.originalInput;
+        var pwd = $(input).val();
+        var wasChanged = textField.wasChanged != null && textField.wasChanged;
+        originalInput.wasChanged = textField.wasChanged;
+        if (textField.getAttribute("value_is_null") == 'true' || wasChanged) {
+            originalInput.onblur = input.onblur;
+            $(originalInput).bind('blur', $RWT.textField.focusOut);
+            $(input).hide().remove();
+            if (originalInput.rwt_f_focusOut) {
+                originalInput.rwt_f_focusOut();
+            }
+            originalInput.pwdInput = null;
+            attrUpdate(originalInput, 'onchange', null);
+            originalInput.hidden = false;
+            $(originalInput).show();
+        }
+        if (wasChanged) {
+            if (originalInput.rwt_f_onchange) {
+                originalInput.rwt_f_onchange(originalInput);
+            }
+            if (textField.eventsBlocked == null || !textField.eventsBlocked) {
+                $RWT.actions.event(originalInput, 'change', pwd);
+            }
+
+        }
+    },
     rwt_f_onChangeValue: function(node, newValue) {
         if (node.pwdInput != null) {
             node.pwdInput.value = newValue;
         }
     },
-    rwt_f_finishEdit: function(input, discard) {
+    discardChanges: function(input){
+        var textField = WpsUtils.findParentByClassName(input, "rwt-text-field");
+        if (!textField) {
+            var e = WpsUtils.findParentByClassName(input, "rwt-text-area");
+            if (e && e.getAttribute("name") == "propTextEditor")
+                textField = e;
+        }
+        if (textField != null && textField.oldText != null && !input.readOnly) {
+            input.value = textField.oldText;
+            textField.wasChanged = false;            
+        }
+    },
+    rwt_f_finishEdit: function(input) {
         var textField = WpsUtils.findParentByClassName(input, "rwt-text-field");
         if (!textField) {
             var e = WpsUtils.findParentByClassName(input, "rwt-text-area");
@@ -713,11 +786,7 @@ $RWT.textField = {
             attrUpdate(input, 'onkeyup', null);
             inputValue = input.value;
             if (textField.oldText != null) {
-                if (discard != null && discard == true) {
-                    input.value = textField.oldText;
-                    textField.wasChanged = false;
-                }
-                else if ((textField.inputType == 'Int' || textField.inputType == 'Num') && ($(input).val() === '-' || $(input).val() === '.')) {
+                if ((textField.inputType == 'Int' || textField.inputType == 'Num') && ($(input).val() === '-' || $(input).val() === '.')) {
                     input.value = textField.oldText;
                     textField.wasChanged = false;
                 }
@@ -727,34 +796,9 @@ $RWT.textField = {
             }
         }
         if (input.type == 'password' && input.originalInput != null) {
-            var originalInput = input.originalInput;
-            var pwd = $(input).val();
-            var wasChanged = textField.wasChanged != null && textField.wasChanged;
-            originalInput.wasChanged = textField.wasChanged;
-            if (textField.getAttribute("value_is_null") == 'true' || wasChanged) {
-                originalInput.onblur = input.onblur;
-                $(originalInput).bind('blur', $RWT.textField.focusOut);
-                $(input).hide().remove();
-                if (originalInput.rwt_f_focusOut) {
-                    originalInput.rwt_f_focusOut();
-                }
-                originalInput.pwdInput = null;
-                attrUpdate(originalInput, 'onchange', null);
-                originalInput.hidden = false;
-                $(originalInput).show();
-            }
-            if (wasChanged) {
-                if (originalInput.rwt_f_onchange) {
-                    originalInput.rwt_f_onchange(originalInput);
-                }
-                if (textField.eventsBlocked == null || !textField.eventsBlocked) {
-                    $RWT.actions.event(originalInput, 'change', pwd);
-                }
-
-            }
-        }
-        else {
-            if (input.rwt_f_focusOut && (discard == null)) {
+            $RWT.textField.__changeInputTypeToText(input, textField);
+        } else {
+            if (input.rwt_f_focusOut) {
                 input.rwt_f_focusOut();
                 if ($(input).attr("value") != inputValue && !textField.getAttribute("value_is_null")) {
                     textField.wasChanged = true;
@@ -906,10 +950,9 @@ $RWT.textField = {
             var keyCode = event.which;
             var valueChanged = false;
             if (keyCode === ESCAPE_KEYCODE) {
-                $RWT.textField.rwt_f_finishEdit(this, true);
+                $RWT.textField.discardChanges(this);
                 this.blur();
-            } else if (keyCode === ENTER_KEYCODE) {
-                $RWT.textField.rwt_f_finishEdit(this, false);
+            } else if (keyCode === ENTER_KEYCODE) {                
                 this.blur();
             } else if (textField.inputType === 'Mask') {
                 if (keyCode === RIGHT_ARROW_KEYCODE) {
@@ -1634,6 +1677,9 @@ $RWT.textArea = {
         }
         if (!this.readOnly) {
             textArea.oldText = $(this).val();
+            if (textArea.oldText==null){
+                textArea.oldText = "";
+            }
             attrUpdate(this, 'oninput', '$RWT.textArea._onInput');
             if ($RWT.BrowserDetect.browser == 'Explorer') {
                 attrUpdate(this, 'onkeyup', '$RWT.textArea._onKeyUp');

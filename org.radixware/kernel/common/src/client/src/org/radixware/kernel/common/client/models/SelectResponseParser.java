@@ -52,19 +52,13 @@ class SelectResponseParser {
         if (response.getDataSet() != null && response.getDataSet().getRows() != null && response.getDataSet().getRows().getItemList() != null) {
             for (ObjectList.Rows.Item data : response.getDataSet().getRows().getItemList()) {
                 if (data.isSetObject()){
-                    final ObjectList.Rows.Item.Object objectInSelector = data.getObject();
+                    final org.radixware.schemas.eas.PresentableObject objectInSelector = data.getObject();
                     final Pid entityPid = new Pid(tableId, objectInSelector.getPID());
-                    final ESelectorRowStyle rowStyle = objectInSelector.getRowStyle();
                     final EntityModel entity;
                     try{
                         final RadEditorPresentationDef epd = env.getDefManager().getEditorPresentationDef(objectInSelector.getPresentation().getId());
                         entity = epd.createModel(rowContext);                        
-                        final RawEntityModelData rawData = 
-                            new RawEntityModelData(objectInSelector, 
-                                                   objectInSelector.getDisabledActions() != null ? objectInSelector.getDisabledActions().getItemList() : null,
-                                                   objectInSelector.getEnabledEditorPages(),
-                                                   objectInSelector.getAccessibleExplorerItems(),
-                                                   rowStyle);
+                        final RawEntityModelData rawData = new RawEntityModelData(objectInSelector);
                         entity.activate(rawData, false);
                     }
                     catch(Throwable exception){

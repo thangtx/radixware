@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.utils;
 
 import java.util.ArrayList;
@@ -19,6 +18,51 @@ import java.util.Map;
 import org.radixware.kernel.server.types.ProfileStatisticEntry;
 
 public final class ProfileStatistic {
+
+    private final Map<Key, Value> data = new HashMap<>();
+
+    public void register(final ProfileStatisticEntry e) {
+        register(e.getContext(), e.getSectionId(), e.getDurationNanos(), e.getCount(), e.getMinDurationNanos(), e.getMaxDurationNanos());
+    }
+
+    public void register(final String context, final String section, final long durationNanos) {
+        register(context, section, durationNanos, 1, durationNanos, durationNanos);
+    }
+
+    public void register(final String context, final String section, final long durationNanos, final long count, final long minDuration, final long maxDuration) {
+        final Key key = new Key(context, section);
+        final Value val = data.get(key);
+        if (val == null) {
+            data.put(key, new Value(durationNanos, count, minDuration, maxDuration));
+        } else {
+            val.register(durationNanos, count, minDuration, maxDuration);
+        }
+    }
+
+    public void clear() {
+        data.clear();
+    }
+
+    public Collection<ProfileStatisticEntry> getResult() {
+        if (isEmpty()) {
+            return Collections.emptyList();
+        }
+        final Collection<ProfileStatisticEntry> res = new ArrayList<ProfileStatisticEntry>(data.size());
+        for (Map.Entry<Key, Value> e : data.entrySet()) {
+            res.add(new ProfileStatisticEntry(
+                    e.getKey().context,
+                    e.getKey().section,
+                    e.getValue().durationNano,
+                    e.getValue().count,
+                    e.getValue().minDurationNano,
+                    e.getValue().maxDurationNano));
+        }
+        return res;
+    }
+
+    public boolean isEmpty() {
+        return data.isEmpty();
+    }
 
     static final class Key {
 
@@ -77,49 +121,5 @@ public final class ProfileStatistic {
             minDurationNano = Math.min(minDurationNano, minDuration);
             maxDurationNano = Math.max(maxDurationNano, maxDuration);
         }
-    }
-    private final Map<Key, Value> data = new HashMap<Key, Value>();
-
-    public void register(final ProfileStatisticEntry e) {
-        register(e.getContext(), e.getSectionId(), e.getDurationNanos(), e.getCount(), e.getMinDurationNanos(), e.getMaxDurationNanos());
-    }
-
-    public void register(final String context, final String section, final long durationNanos) {
-        register(context, section, durationNanos, 1, durationNanos, durationNanos);
-    }
-
-    public void register(final String context, final String section, final long durationNanos, final long count, final long minDuration, final long maxDuration) {
-        final Key key = new Key(context, section);
-        final Value val = data.get(key);
-        if (val == null) {
-            data.put(key, new Value(durationNanos, count, minDuration, maxDuration));
-        } else {
-            val.register(durationNanos, count, minDuration, maxDuration);
-        }
-    }
-
-    public void clear() {
-        data.clear();
-    }
-
-    public Collection<ProfileStatisticEntry> getResult() {
-        if (isEmpty()) {
-            return Collections.emptyList();
-        }
-        final Collection<ProfileStatisticEntry> res = new ArrayList<ProfileStatisticEntry>(data.size());
-        for (Map.Entry<Key, Value> e : data.entrySet()) {
-            res.add(new ProfileStatisticEntry(
-                    e.getKey().context,
-                    e.getKey().section,
-                    e.getValue().durationNano,
-                    e.getValue().count,
-                    e.getValue().minDurationNano,
-                    e.getValue().maxDurationNano));
-        }
-        return res;
-    }
-
-    public boolean isEmpty() {
-        return data.isEmpty();
     }
 }

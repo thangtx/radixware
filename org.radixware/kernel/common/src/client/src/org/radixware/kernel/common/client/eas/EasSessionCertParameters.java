@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.eas;
 
 import java.security.cert.X509Certificate;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.enums.EAuthType;
 
 
@@ -19,15 +20,26 @@ class EasSessionCertParameters extends AbstractEasSessionParameters{
     
     private final X509Certificate[] certificates;
     
-    public EasSessionCertParameters(final String userName, final String stationName, final X509Certificate[] userCertificates){
-        super(userName,stationName);
+    public EasSessionCertParameters(final String userName,
+                                                      final String stationName, 
+                                                      final X509Certificate[] userCertificates,
+                                                      final boolean isWebDriverEnabled){
+        this(userName, stationName, userCertificates, null, isWebDriverEnabled);
+    }
+    
+    protected EasSessionCertParameters(final String userName, 
+                                                           final String stationName, 
+                                                           final X509Certificate[] userCertificates, 
+                                                           final PasswordHash.Algorithm hashAlgo,
+                                                           final boolean isWebDriverEnabled){
+        super(userName, stationName, hashAlgo, isWebDriverEnabled);
         final int length = userCertificates==null ? 0 :userCertificates.length;
         if (length==0){
             certificates = null;
         }else{
             certificates = new X509Certificate[length];
             System.arraycopy(userCertificates, 0, certificates, 0, length);
-        }
+        }        
     }
     
     public ITokenCalculator createTokenCalculator(){
@@ -57,8 +69,10 @@ class EasSessionCertParameters extends AbstractEasSessionParameters{
     }
 
     @Override
-    public EasSessionCertParameters createCopy(final String newUserName) {
+    public EasSessionCertParameters createCopy(final String newUserName, final PasswordHash.Algorithm newHashAlgo) {
         return new EasSessionCertParameters(newUserName==null ? getUserName() : newUserName, 
-                                            getStationName(), certificates);
+                                            getStationName(), certificates,
+                                            newHashAlgo==null ? getPwdHashAlgorithm(): newHashAlgo,
+                                            isWebDriverEnabled());
     }     
 }

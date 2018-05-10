@@ -99,7 +99,7 @@ public class BandCountEditor extends javax.swing.JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                AdsReportBand band = new AdsReportBand();
+                AdsReportBand band = AdsReportBand.createNewStyleBand();
                 bands.add(band);
                 updateEditorState();
             }

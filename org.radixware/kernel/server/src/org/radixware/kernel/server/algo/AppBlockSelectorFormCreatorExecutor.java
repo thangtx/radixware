@@ -65,7 +65,7 @@ public class AppBlockSelectorFormCreatorExecutor extends AppBlockFormCreatorExec
             }
             form.create(null);
             postInitForm(algo);
-            StringTokenizer t = new StringTokenizer((String) Utils.nvl(executor.getProperty("submitVariants"), ""), ";");
+            StringTokenizer t = executor.getSubmitVariantsTokens(algo);
             return t.countTokens();
         } else {
             algo.scheduleEvent(executor.getPropertyId("submitWID")); // подписка на синхронный onEvent
@@ -104,7 +104,7 @@ public class AppBlockSelectorFormCreatorExecutor extends AppBlockFormCreatorExec
         }
 
         done(algo);
-        StringTokenizer t = new StringTokenizer((String) Utils.nvl(algo.getProperty("submitVariants"), ""), ";");
+        StringTokenizer t = executor.getSubmitVariantsTokens(algo);
         if (waitId.equals(timeoutWID)) {
             algo.setProperty("submitVariant", null);
             form.setProp(DWF_FORM_PROP_CLOSETIME_ID, executor.getCurrentTime());

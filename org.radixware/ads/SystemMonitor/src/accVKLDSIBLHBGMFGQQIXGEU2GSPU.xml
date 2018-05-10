@@ -197,12 +197,33 @@
           <Editing IsDuplicatesEnabled="true"/>
         </Presentation>
       </Property>
+      <Property Id="prmD75VUPLE6VDGPK5YCVDIYVZNMQ" Name="expandedUnitIds" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="202"/>
+      </Property>
+      <Property Id="prfJ4LTCKP7W5EPVAYFP2RM4FLFD4" Name="netChannelBusySessionCnt" Nature="3" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfZTCW3BH7NNER7CIOVQALGOZZ6Y" Name="netChannelSyncMode" Nature="3" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="1"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
     </Properties>
     <Methods>
       <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
         <AccessRules IsPublished="false" IsStatic="true"/>
         <Parameters>
           <Parameter Name="expandedInstanceIds" Id="mprL7C4VNUEVBC5RIV6ZRUFHQFUSY">
+            <Type TypeId="202"/>
+          </Parameter>
+          <Parameter Name="expandedUnitIds" Id="mprD75VUPLE6VDGPK5YCVDIYVZNMQ">
             <Type TypeId="202"/>
           </Parameter>
         </Parameters>
@@ -430,10 +451,24 @@
         </xsc:Item>
         <xsc:Item>
           <xsc:Sql>,
+  nc_BusySessionCnt as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accVKLDSIBLHBGMFGQQIXGEU2GSPU" PropId="prfJ4LTCKP7W5EPVAYFP2RM4FLFD4" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
   nc_MaxSessionCnt as </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:PropSqlName TableId="accVKLDSIBLHBGMFGQQIXGEU2GSPU" PropId="prfKZVU3HCNRZDERJLKGG233LTB5Y" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+  nc_SyncMode as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accVKLDSIBLHBGMFGQQIXGEU2GSPU" PropId="prfZTCW3BH7NNER7CIOVQALGOZZ6Y" Owner="THIS"/>
         </xsc:Item>
         <xsc:Item>
           <xsc:Sql>,
@@ -666,7 +701,25 @@ from
           </xsc:PropSqlName>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql> nc_IsListener
+          <xsc:Sql> nc_IsListener,
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHBE24OUE2DNRDB7AAALOMT5GDM" PropId="colPRKQ2IQSPJDUJFZWAVDVZYN6ZI" Owner="TABLE">
+            <xsc:TableAlias>nc</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> nc_SyncMode,
+        </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblHBE24OUE2DNRDB7AAALOMT5GDM" PropId="colN7MFLE4DNJB3RIQUOC2I37BXPI" Owner="TABLE">
+            <xsc:TableAlias>nc</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> nc_BusySessionCnt
       from
         </xsc:Sql>
         </xsc:Item>
@@ -774,6 +827,20 @@ from
           <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colEVLUYADHR5VDBNSIAAUMFADAIA" Owner="TABLE">
             <xsc:TableAlias>u</xsc:TableAlias>
           </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colEVLUYADHR5VDBNSIAAUMFADAIA" Owner="TABLE">
+            <xsc:TableAlias>u</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> in </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmD75VUPLE6VDGPK5YCVDIYVZNMQ"/>
         </xsc:Item>
         <xsc:Item>
           <xsc:Sql>

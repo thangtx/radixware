@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.Socket;
 import java.nio.channels.CancelledKeyException;
+import java.nio.channels.SocketChannel;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -59,6 +60,8 @@ import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.HttpFormatter;
 import org.radixware.kernel.common.utils.SoapFormatter;
+import org.radixware.kernel.common.utils.SoapFormatter.DefaultFaultDetailWriter;
+import static org.radixware.kernel.common.utils.SoapFormatter.FLT_DET_XSD;
 import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.common.utils.net.SapAddress;
 import org.radixware.kernel.common.utils.net.SocketServerChannel.SecurityOptions;
@@ -69,12 +72,16 @@ import org.radixware.kernel.server.aio.EventDispatcher;
 import org.radixware.kernel.server.aio.EventDispatcher.AcceptEvent;
 import org.radixware.kernel.server.aio.EventDispatcher.TimerEvent;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.ResourceRegistry;
+import org.radixware.kernel.server.instance.ServerChannelResourceItem;
+import org.radixware.kernel.server.instance.SocketResourceRegistryItem;
 import org.radixware.kernel.server.instance.UnitCommand;
 import org.radixware.kernel.server.instance.UnitCommandResponse;
 import org.radixware.kernel.server.instance.arte.ArtePool;
 import org.radixware.kernel.server.instance.arte.IArteRequest;
 import org.radixware.kernel.server.instance.arte.IArteRequestCallback;
 import org.radixware.kernel.server.instance.arte.ArtePool.InsufficientArteInstanceCountException;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.monitoring.IStatValue;
 import org.radixware.kernel.server.monitoring.IntegralCountStat;
 import org.radixware.kernel.server.monitoring.MetricParameters;
@@ -85,9 +92,12 @@ import org.radixware.kernel.server.soap.ServerSoapUtils;
 import org.radixware.kernel.server.units.AsyncEventHandlerUnit;
 import org.radixware.kernel.server.units.Messages;
 import org.radixware.kernel.server.units.UnitView;
-import org.radixware.kernel.server.utils.PriorityResourceManager;
+import org.radixware.kernel.server.utils.IPriorityResourceManager;
 import org.radixware.schemas.types.NumDocument;
 import org.radixware.schemas.types.StrDocument;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xmlsoap.schemas.soap.envelope.Fault;
 
 /**
  * Модуль ARTE. Принимает соединение на серверный сокет и отдает его свободной
@@ -131,7 +141,7 @@ public class ArteUnit extends AsyncEventHandlerUnit {
     private volatile SSLContext sslContext = null;
     private volatile CountDownLatch shutdownLatch = null;//used to wait for currently processed requests during shutdown
     private final AtomicInteger activeArteCount = new AtomicInteger(0);
-    private final DbQueries arteUnitDbQueries;
+    private final ArteDbQueries arteUnitDbQueries;
     private final ArrayBlockingQueue<RequestChannel> channelsToClose = new ArrayBlockingQueue<>(MAX_SCHEDULED_CHANNELS);
     private final ArrayBlockingQueue<RequestChannel> channelsToReuse = new ArrayBlockingQueue<>(MAX_SCHEDULED_CHANNELS);
     private final List<RequestChannel> freeChannels = new ArrayList<>();
@@ -152,7 +162,7 @@ public class ArteUnit extends AsyncEventHandlerUnit {
 
     public ArteUnit(final Instance instModel, final Long id, final String title) {
         super(instModel, id, title);
-        arteUnitDbQueries = new DbQueries(this);
+        arteUnitDbQueries = new ArteDbQueries(this);
     }
 
     @Override
@@ -161,11 +171,26 @@ public class ArteUnit extends AsyncEventHandlerUnit {
     }
 
     @Override
+    public boolean isSingletonUnit() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingletonByPrimary() {
+        return true;
+    }
+
+    @Override
+    protected String getIdForSingletonLock() {
+        return "ArteUnit#" + getPrimaryUnitId();
+    }
+
+    @Override
     public Long getUnitType() {
         return EUnitType.ARTE.getValue();
     }
 
-    final DbQueries getArteUnitDbQueries() {
+    final ArteDbQueries getArteUnitDbQueries() {
         return arteUnitDbQueries;
     }
 
@@ -205,7 +230,7 @@ public class ArteUnit extends AsyncEventHandlerUnit {
             return false;
         }
 
-        getDispatcher().waitEvent(new EventDispatcher.TimerEvent(), this, System.currentTimeMillis() + DB_I_AM_ALIVE_PERIOD_MILLIS);
+        getDispatcher().waitEvent(new EventDispatcher.TimerEvent(), this, System.currentTimeMillis() + TIC_MILLIS);
 
         shutdownLatch = new CountDownLatch(1);
         isWaitingForRequestsToFinish = false;
@@ -349,7 +374,11 @@ public class ArteUnit extends AsyncEventHandlerUnit {
             } else if (getAddress().getKind() == SapAddress.EKind.JMS_ADDRESS) {
                 serverChannel = new JmsServerChannel(getTrace().newTracer(EEventSource.UNIT.getValue()));
             }
+
+            final String serverChannelKey = ResourceRegistry.buildServerChannelKey(getResourceKeyPrefix(), getAddress());
+            Instance.get().getResourceRegistry().closeAllWithKeyPrefix(serverChannelKey, "server channel start");
             serverChannel.open(getAddress());
+            Instance.get().getResourceRegistry().register(new ServerChannelResourceItem(serverChannelKey, serverChannel, null, getThisRunAliveChecker()));
             serverChannel.getSelectableChannel().configureBlocking(false);
             getDispatcher().waitEvent(new EventDispatcher.AcceptEvent(serverChannel.getSelectableChannel()), this, -1);
             getDispatcher().waitEvent(new EventDispatcher.TimerEvent(), this, System.currentTimeMillis() + DB_I_AM_ALIVE_PERIOD_MILLIS);
@@ -456,7 +485,7 @@ public class ArteUnit extends AsyncEventHandlerUnit {
     }
 
     @Override
-    protected void setDbConnection(final Connection dbConnection) {
+    protected void setDbConnection(final RadixConnection dbConnection) {
         arteUnitDbQueries.closeAll();
         super.setDbConnection(dbConnection);
     }
@@ -700,6 +729,9 @@ public class ArteUnit extends AsyncEventHandlerUnit {
                 if (acceptedChannel == null) {
                     throw new IOException("Accept event is reported, but there is no accepted connection. Maybe, client has disconnected.");
                 }
+                if (acceptedChannel.getSelectableChannel() instanceof SocketChannel) {
+                    getInstance().getResourceRegistry().register(new SocketResourceRegistryItem(ResourceRegistry.buildConnectedSocketChannelKey(getResourceKeyPrefix(), (SocketChannel) acceptedChannel.getSelectableChannel()), (SocketChannel) acceptedChannel.getSelectableChannel(), null, getThisRunAliveChecker()));
+                }
                 processRequest(acceptedChannel, EConnectionState.NEW);
                 doClose = false;
             } catch (Throwable e) {
@@ -766,7 +798,7 @@ public class ArteUnit extends AsyncEventHandlerUnit {
         }
         final boolean shouldInitSsl;
         final SecurityOptions securityOptions;
-        if (connectionState == EConnectionState.NEW && options.sapOptions.getSecurityProtocol() == EPortSecurityProtocol.SSL) {
+        if (connectionState == EConnectionState.NEW && options.sapOptions.getSecurityProtocol().isTls()) {
             shouldInitSsl = true;
             if (sslContext == null) {
                 sslContext = CertificateUtils.prepareServerSslContext(options.sapOptions.getServerKeyAliases(), options.sapOptions.getClientCertAliases());
@@ -798,16 +830,17 @@ public class ArteUnit extends AsyncEventHandlerUnit {
 
                         channel.setReadTimeout(READ_HEADER_TIMEOUT_MILLIS);
 
-                        BufferedInputStream bis = new BufferedInputStream(channel.getInputStream());
-                        bis.mark(MAX_HTTP_HEADER_LEN_BYTES);
+                        BufferedInputStream bis = new BufferedInputStream(channel.getInputStream(), MAX_HTTP_HEADER_LEN_BYTES);
+                        bis.mark(MAX_HTTP_HEADER_LEN_BYTES + 1);
                         Map<String, String> headers = new HashMap<>();
                         HttpFormatter.readHeader(bis, headers);
+                        bis.reset();
 
                         final String httpRqString = headers.get(HttpFormatter.REQUEST_LINE_HEADER_KEY);
-
                         final boolean keepAlive = HttpFormatter.getKeepConnectionAlive(headers);
 
                         if (httpRqString != null && httpRqString.startsWith(GET_STATUS_HTTP_RQ)) {
+                            HttpFormatter.readMessage(bis, null);//read all request prior to responding
                             notifyStatus(channel, STATUS_ALIVE, keepAlive);
                             if (keepAlive) {
                                 freeChannel(channel);
@@ -818,7 +851,6 @@ public class ArteUnit extends AsyncEventHandlerUnit {
 
                         boolean keepConnectOnBusy = keepAlive && allowKeepConnectOnBusy;
 
-                        bis.reset();
                         int priority = HttpFormatter.getRadixPriorityFromHeaders(headers);
                         if (priority == -1) {
                             priority = getRequestsPriority();
@@ -834,7 +866,8 @@ public class ArteUnit extends AsyncEventHandlerUnit {
                                 autoClose = false;
                             } catch (InsufficientArteInstanceCountException t) {
                                 wasException = true;
-                                notifyInstanceArteLimitExceeded(channel, keepConnectOnBusy);
+                                HttpFormatter.readMessage(bis, null);//read all request prior to responding
+                                notifyInstanceArteLimitExceeded(t.getCaptureResult(), channel, keepConnectOnBusy, getInstance().getArtePoolLoadPercent(priority));
                                 autoClose = false;
                             } catch (InterruptedException | RuntimeException ex) {
                                 wasException = true;
@@ -852,7 +885,8 @@ public class ArteUnit extends AsyncEventHandlerUnit {
                                     getTrace().put(EEventSeverity.WARNING, ArteUnitMessages.ARTE_INST_USAGE_LIMIT_EXCEEDED, ArteUnitMessages.MLS_ID_ARTE_INST_USAGE_LIMIT_EXCEEDED, null, EEventSource.ARTE_UNIT, false);
                                 }
                             }
-                            notifyUnitArteLimitExceeded(channel, keepConnectOnBusy);
+                            HttpFormatter.readMessage(bis, null);//read all request prior to responding
+                            notifyUnitArteLimitExceeded(channel, keepConnectOnBusy, getInstance().getArtePoolLoadPercent(priority));
                             autoClose = false;
                         }
                     } finally {
@@ -964,7 +998,11 @@ public class ArteUnit extends AsyncEventHandlerUnit {
         }
     }
 
-//	Event source
+    @Override
+    public String getStatus() {
+        return "Listening: " + options.sapOptions.getAddress() + "; " + super.getStatus();
+    }
+    
     @Override
     public String getEventSource() {
         return EEventSource.ARTE_UNIT.getValue();
@@ -992,12 +1030,22 @@ public class ArteUnit extends AsyncEventHandlerUnit {
         }
     }
 
-    private void notifyInstanceArteLimitExceeded(final RequestChannel channel, boolean keepConnect) throws IOException, InterruptedException {
-        sendFault(channel, ServiceProcessFault.FAULT_CODE_SERVER_BUSY, "Instance Arte Limit Exceeded", new SoapFormatter.DefaultFaultDetailWriter("Service Access Point at " + getAddress().toString() + " is busy (instance ARTE usage limit exceeded)", null, null), keepConnect);
+    private void notifyInstanceArteLimitExceeded(final ArtePool.ECaptureResult captureResult, final RequestChannel channel, boolean keepConnect, final int loadPercent) throws IOException, InterruptedException {
+        String faultCode;
+        Long availableVersion = null;
+        switch (captureResult) {
+            case INVALID_VERSION:
+                faultCode = ServiceProcessFault.FAULT_CODE_SERVER_BUSY_INVALID_VERSION;
+                availableVersion = getInstance().getLastMaxAcceptableRevision();
+                break;
+            default:
+                faultCode = ServiceProcessFault.FAULT_CODE_SERVER_BUSY;
+        }
+        sendFault(channel, faultCode, "Instance Arte Limit Exceeded", new ArteFaultDetailWriter("Service Access Point at " + getAddress().toString() + " is busy (instance ARTE usage limit exceeded)", null, null, availableVersion), keepConnect, loadPercent);
     }
 
-    private void notifyUnitArteLimitExceeded(final RequestChannel channel, boolean keepConnect) throws IOException, InterruptedException {
-        sendFault(channel, ServiceProcessFault.FAULT_CODE_SERVER_BUSY, "Unit Arte Limit Exceeded", new SoapFormatter.DefaultFaultDetailWriter("Service Access Point at " + getAddress().toString() + " is busy (unit ARTE usage limit exceeded)", null, null), keepConnect);
+    private void notifyUnitArteLimitExceeded(final RequestChannel channel, boolean keepConnect, final int loadPercent) throws IOException, InterruptedException {
+        sendFault(channel, ServiceProcessFault.FAULT_CODE_SERVER_BUSY, "Unit Arte Limit Exceeded", new SoapFormatter.DefaultFaultDetailWriter("Service Access Point at " + getAddress().toString() + " is busy (unit ARTE usage limit exceeded)", null, null), keepConnect, loadPercent);
     }
 
     private void notifyStatus(final RequestChannel channel, final String status, final boolean keepConnect) {
@@ -1013,12 +1061,16 @@ public class ArteUnit extends AsyncEventHandlerUnit {
             //ignore
         }
     }
-
-    private void sendFault(final RequestChannel channel, final String faultCode, final String faultString, final SoapFormatter.FaultDetailWriter faultWriter, final boolean keepConnect) {
+    
+    private void sendFault(final RequestChannel channel, final String faultCode, final String faultString, final SoapFormatter.FaultDetailWriter faultWriter, final boolean keepConnect, final int loadPercent) {
         boolean canKeepConnect = true;
         try {
             final OutputStream out = channel.getOutputStream();
-            SoapFormatter.sendFault(SoapFormatter.prepareFault(faultCode, faultString, faultWriter, null), out, keepConnect);
+            Map<String, String> headers = null;
+            if (loadPercent >= 0) {
+                headers = HttpFormatter.appendRadixLoadHeaderAttr(null, loadPercent);
+            }
+            SoapFormatter.sendFault(SoapFormatter.prepareFault(faultCode, faultString, faultWriter, null), out, headers, keepConnect);
             getTrace().put(EEventSeverity.DEBUG, "Fault '" + faultString + "' sent: " + channel.getRemoteAddress(), EEventSource.ARTE_UNIT);
         } catch (IOException ex) {
             canKeepConnect = false;
@@ -1077,8 +1129,8 @@ public class ArteUnit extends AsyncEventHandlerUnit {
         private final SapOptions sapOptions;
         private final int radixPriority;
         private final InputStream overriddenInput;
-        private volatile PriorityResourceManager.Ticket countTicket;
-        private volatile PriorityResourceManager.Ticket activeTicket;
+        private volatile IPriorityResourceManager.Ticket countTicket;
+        private volatile IPriorityResourceManager.Ticket activeTicket;
         private final long version;
         private final Map<String, String> headers;
         private final long createTimeMillis = System.currentTimeMillis();
@@ -1130,22 +1182,22 @@ public class ArteUnit extends AsyncEventHandlerUnit {
         }
 
         @Override
-        public PriorityResourceManager.Ticket getCountTicket() {
+        public IPriorityResourceManager.Ticket getCountTicket() {
             return countTicket;
         }
 
         @Override
-        public void setCountTicket(PriorityResourceManager.Ticket ticket) {
+        public void setCountTicket(IPriorityResourceManager.Ticket ticket) {
             this.countTicket = ticket;
         }
 
         @Override
-        public PriorityResourceManager.Ticket getActiveTicket() {
+        public IPriorityResourceManager.Ticket getActiveTicket() {
             return activeTicket;
         }
 
         @Override
-        public void setActiveTicket(PriorityResourceManager.Ticket ticket) {
+        public void setActiveTicket(IPriorityResourceManager.Ticket ticket) {
             this.activeTicket = ticket;
         }
 
@@ -1171,5 +1223,27 @@ public class ArteUnit extends AsyncEventHandlerUnit {
         public final long createTimeMillis = System.currentTimeMillis();
 
         public abstract RequestChannel getRawRequestChannel();
+    }
+
+    private static class ArteFaultDetailWriter extends DefaultFaultDetailWriter {
+
+        private final Long availableVersion;
+
+        public ArteFaultDetailWriter(String faultMessage, Throwable cause, String preprocessedCauseStack, final Long availableVersion) {
+            super(faultMessage, cause, preprocessedCauseStack);
+            this.availableVersion = availableVersion;
+        }
+
+        @Override
+        public void writeTo(Fault fault, List<SoapFormatter.ResponseTraceItem> traceItems) {
+            super.writeTo(fault, traceItems);
+            if (availableVersion != null) {
+                final Node detail = fault.getDetail().getDomNode();
+                final Element message = detail.getOwnerDocument().createElementNS(FLT_DET_XSD, ServiceProcessFault.AVAILABLE_VERSION);
+                message.appendChild(detail.getOwnerDocument().createTextNode(String.valueOf(availableVersion)));
+                detail.appendChild(message);
+            }
+        }
+
     }
 }

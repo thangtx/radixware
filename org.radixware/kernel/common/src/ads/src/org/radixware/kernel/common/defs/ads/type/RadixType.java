@@ -105,7 +105,7 @@ public final class RadixType extends AdsType {
                 support = new TypeJavaSourceSupport(this) {
 
                     @Override
-                    public char[][] getPackageNameComponents(UsagePurpose env) {
+                    public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
                         switch (typeId) {
                             case ARR_BIN:
                             case ARR_CHAR:
@@ -147,7 +147,7 @@ public final class RadixType extends AdsType {
                     }
 
                     @Override
-                    public char[] getLocalTypeName(UsagePurpose env) {
+                    public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
                         switch (typeId) {
                             case ARR_BIN:
                                 return LOCAL_TYPE_NAME[0];

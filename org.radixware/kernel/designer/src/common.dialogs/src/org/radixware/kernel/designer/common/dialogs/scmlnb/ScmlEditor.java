@@ -92,6 +92,7 @@ public class ScmlEditor<T extends Scml> extends JPanel implements Lookup.Provide
     private int toolbarItemsCount = 0;
     public static final String SQML_MIME_TYPE = "text/x-sqml";
     public static final String JML_MIME_TYPE = "text/x-jml";
+    public static final String MML_MIME_TYPE = "text/x-mml";
     public static final String DEFAULT_SCML_MIME_TYPE = "text/x-scml";
     private static final String EDITABLE_BEFORE_PREVIEW = "editable-before-preview";
     private final InstanceContent lookupContent = new InstanceContent();

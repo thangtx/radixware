@@ -15,6 +15,7 @@ import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.xscml.Sqml;
 
 
 public interface ISqmlModifiableParameter extends ISqmlParameter {
@@ -32,6 +33,16 @@ public interface ISqmlModifiableParameter extends ISqmlParameter {
     void setMandatory(boolean isMandatory);
 
     void setParentSelectorPresentation(final Id ownerClassId, final Id presentationId);
+    
+    void setParentSelectorAdditionalCondition(final Sqml condition);
+    
+    void setUseDropDownList(Boolean useDropDownList);
+    
+    Boolean getUseDropDownList();
+    
+    void setMinArrayItemsCount(final int count);
+    
+    void setMaxArrayItemsCount(final int count);
 
     void setInitialValue(ValAsStr value);
 

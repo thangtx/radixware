@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.explorer.editors.monitoring.tree;
 
 import com.trolltech.qt.core.QModelIndex;
@@ -33,7 +32,6 @@ import com.trolltech.qt.gui.QStyledItemDelegate;
 import com.trolltech.qt.gui.QTextDocument;
 import java.text.DecimalFormat;
 import java.util.List;
-
 
 public class ItemDelegate extends QStyledItemDelegate {
 
@@ -88,16 +86,16 @@ public class ItemDelegate extends QStyledItemDelegate {
         if (metricData.getVal() != null) {
             painter.save();
             QStyleOptionProgressBar opt = new QStyleOptionProgressBar();
-            QRect progressRect = option.rect();       
+            QRect progressRect = option.rect();
             opt.setRect(progressRect);
             opt.setMinimum(metricData.getMinVal());
             opt.setMaximum(metricData.getMaxVal());
             String text = null;
             if (metricData.getText() != null && !metricData.getText().isEmpty()) {
-                text = metricData.getText();             
+                text = metricData.getText();
             } else {
                 DecimalFormat f = new DecimalFormat("0.0");
-                text = /*metricData.getText();*/ f.format(metricData.getVal()) + "%";           
+                text = /*metricData.getText();*/ f.format(metricData.getVal()) + "%";
             }
             int progress = metricData.getVal().intValue();
             progress = progress > metricData.getMaxVal() ? metricData.getMaxVal() : (progress < metricData.getMinVal() ? metricData.getMinVal() : progress);
@@ -115,20 +113,13 @@ public class ItemDelegate extends QStyledItemDelegate {
             opt.setText(text);
             opt.setTextAlignment(AlignmentFlag.AlignCenter);
             opt.setTextVisible(true);
-             QApplication.style().drawControl(QStyle.ControlElement.CE_ProgressBar, opt, painter);
-//            int x1 = (int) (0.7 * option.rect().width()) + option.rect().left();
-//            int x2 = (int) (0.75 * option.rect().width()) + option.rect().left();
-//            int y1 = (int) (option.rect().height()) + option.rect().top();
-//            int y2 = (int) (0.7 * option.rect().height()) + option.rect().top();     
-//            QPolygon poly = new QPolygon(Arrays.asList(new QPoint(x1, y1), new QPoint((x1 + x2) / 2, y2), new QPoint(x2, y1)));
-//            painter.setBrush(QColor.red);
-//            painter.drawPolygon(poly);    
+            QApplication.style().drawControl(QStyle.ControlElement.CE_ProgressBar, opt, painter);
             painter.restore();
         } else {
             super.paint(painter, option, index);
         }
     }
-    
+
     private QColor calcColor(MetricData metricData) {
         if (metricData.getRange() == MetricData.Range.ERROR) {
             return error_val_color;
@@ -166,8 +157,8 @@ public class ItemDelegate extends QStyledItemDelegate {
         //initStyleOption(optionV4,index);
         String text = (String) index.data(ItemDataRole.DisplayRole);
         painter.drawText(textRect, AlignmentFlag.AlignLeft.value() | AlignmentFlag.AlignVCenter.value(), text/*
-                 * optionV4.text()
-                 */);
+         * optionV4.text()
+         */);
         painter.restore();
     }
 

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc73CGVQGAVVCVLJ6LNRQ27CKK7Y" Name="ColumnsLicenseReportCellDelegate" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc73CGVQGAVVCVLJ6LNRQ27CKK7Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc73CGVQGAVVCVLJ6LNRQ27CKK7Y"/>
+    </Bodies>
+    <MethodGroup Id="cmgRMTCFG2FUVEVBPIG34WME5Q3AA" Name="Root"/>
+    <PropertyGroup Id="cpgLWYPSOMOPFGNVGTIGVEY2LL33Y" Name="Root"/>
+    <Properties>
+      <Property Id="prdLAPVUFV6EZBXJJSJD5T66VZMFE" Name="columnDelegates" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Type TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcTU24X65B45BANKTT7ZHOE44ZWU"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new java.util.ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTU24X65B45BANKTT7ZHOE44ZWU">
+                <xsc:Presentation>ColumnLicenseReportCellDelegate</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>()</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthNUBN2T7BIVCWDOSANNLRZHPNUQ" Name="getCellText" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="row" Id="mprGMABR2PNY5EORHRNNDY3ZGHQUI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="column" Id="mprVHOPHY22UVHOZORLEETZIIZLLI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="columnName" Id="mprYK475EUWPRGKPPODW7ITFUOI54">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprOOEV3P5JINHH3HXHTKDPMDUOLA">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTU24X65B45BANKTT7ZHOE44ZWU">
+                <xsc:Presentation>ColumnLicenseReportCellDelegate</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> delegate : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc73CGVQGAVVCVLJ6LNRQ27CKK7Y prdLAPVUFV6EZBXJJSJD5T66VZMFE" Invoke="true">
+                <xsc:Presentation>columnDelegates</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    if (delegate.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTU24X65B45BANKTT7ZHOE44ZWU prd6HN4GPBKKJFBZN7US2K73MDO44" Invoke="true">
+                <xsc:Presentation>colIndex</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == column || (columnName != null &amp;&amp; columnName.equalsIgnoreCase(delegate.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTU24X65B45BANKTT7ZHOE44ZWU prdQ6JA424Y7NGS3HONEXL2UWJGJE" Invoke="true">
+                <xsc:Presentation>colName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>))) {
+        return delegate.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicO3PELDMZ5ZA5DJJ5TKQF5MKTUE mthNUBN2T7BIVCWDOSANNLRZHPNUQ" Invoke="true">
+                <xsc:Presentation>getCellText</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(row, column, columnName, value);
+    } 
+}
+return String.valueOf(value);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUZFN2AXVKZBWFMGPHW7HNCOJEQ" Name="ColumnsLicenseReportCellDelegate" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="delegates" Variable="true" Id="mprRYWJN2R4SBAZPGCEBWF5DA3D7E">
+            <Type TypeId="411" Path="adcTU24X65B45BANKTT7ZHOE44ZWU" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (delegates != null) {
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTU24X65B45BANKTT7ZHOE44ZWU">
+                <xsc:Presentation>ColumnLicenseReportCellDelegate</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> delegate : delegates) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc73CGVQGAVVCVLJ6LNRQ27CKK7Y prdLAPVUFV6EZBXJJSJD5T66VZMFE" Invoke="true">
+                <xsc:Presentation>columnDelegates</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(delegate);
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicO3PELDMZ5ZA5DJJ5TKQF5MKTUE"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

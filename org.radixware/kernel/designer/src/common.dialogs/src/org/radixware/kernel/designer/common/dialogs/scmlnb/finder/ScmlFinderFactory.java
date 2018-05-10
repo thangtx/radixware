@@ -33,6 +33,10 @@ public final class ScmlFinderFactory {
     public static IFinder createEventCodePropFinderfinal(String searchString, final boolean matchCase, final boolean wholeWords, final boolean trueRegex) {
         return new EventCodePropTextFinder(createPattern(searchString, matchCase, wholeWords, trueRegex));
     }
+    
+    public static IFinder createXmlSchemeFinder(String searchString, final boolean matchCase, final boolean wholeWords, final boolean trueRegex) {
+        return new XmlSchemeFinder(createPattern(searchString, matchCase, wholeWords, trueRegex));
+    }
 
     private static Pattern createPattern(final String searchString, final boolean matchCase, final boolean wholeWords, final boolean trueRegex) {
         if (searchString == null || searchString.length() == 0) {

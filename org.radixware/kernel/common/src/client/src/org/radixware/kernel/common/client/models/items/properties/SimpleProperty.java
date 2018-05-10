@@ -14,6 +14,7 @@ package org.radixware.kernel.common.client.models.items.properties;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
 import org.radixware.kernel.common.client.dialogs.FileDialogSettings;
 import org.radixware.kernel.common.client.dialogs.IFileDialogSettings;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
@@ -29,8 +30,6 @@ import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.utils.FileUtils;
 
 public abstract class SimpleProperty<E> extends Property {
-
-    private IFileDialogSettings fileDialogSettings;
 
     public SimpleProperty(final Model owner, final RadPropertyDef propDef) {
         super(owner, propDef);
@@ -88,24 +87,17 @@ public abstract class SimpleProperty<E> extends Property {
 
     @SuppressWarnings("unchecked")
     public void setInitialValue(final E value) {
-        this.setInitialValObject(value);
+        super.setInitialValObject(value);
         if (getSynchronizedProperty() != null) {
             ((SimpleProperty) getSynchronizedProperty()).setInitialValue(value);
         }
     }
 
-    public IFileDialogSettings getFileDialogSettings(IFileDialogSettings.EFileDialogOpenMode openMode) {
-        if (getEditMask() != null && getEditMask() instanceof EditMaskFilePath) {
-
-            final EditMaskFilePath mask = (EditMaskFilePath) EditMaskFilePath.newCopy(getEditMask());
-            final String title = mask.getFileDialogTitleAsStr();
-            final EMimeType type = mask.getMimeType();
-            final EFileSelectionMode mode = mask.getSelectionMode();
-            fileDialogSettings = new FileDialogSettings(title, type, mode, "", openMode);
-            return fileDialogSettings;
+    public IFileDialogSettings getFileDialogSettings(final EFileDialogOpenMode openMode) {
+        if (getEditMask() instanceof EditMaskFilePath) {
+            return new FileDialogSettings(getEnvironment(), (EditMaskFilePath)getEditMask());
         }
-        fileDialogSettings = new FileDialogSettings(openMode);
-        return fileDialogSettings;
+        return new FileDialogSettings(openMode);
     }
     
     public void saveToStream(final OutputStream output, final E value) throws IOException {

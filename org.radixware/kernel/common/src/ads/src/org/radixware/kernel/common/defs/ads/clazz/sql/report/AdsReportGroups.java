@@ -42,6 +42,20 @@ public class AdsReportGroups extends RadixObjects<AdsReportGroup> {
         }
     }
 
+    @Override
+    protected void onAdd(AdsReportGroup object) {
+        super.onAdd(object);
+        fireEvent(new AdsReportForm.ChangedEvent(object, AdsReportForm.ChangedEvent.ChangeEventType.ADD));
+    }
+
+    @Override
+    protected void onRemove(AdsReportGroup object) {
+        super.onRemove(object);
+        fireEvent(new AdsReportForm.ChangedEvent(object, AdsReportForm.ChangedEvent.ChangeEventType.REMOVE));
+    }
+    
+    
+
     public AdsReportForm getOwnerForm() {
         for (RadixObject container = this.getContainer(); container != null; container = container.getContainer()) {
             if (container instanceof AdsReportForm) {
@@ -49,5 +63,12 @@ public class AdsReportGroups extends RadixObjects<AdsReportGroup> {
             }
         }
         return null;
+    }
+    
+    void fireEvent(AdsReportForm.ChangedEvent changedEvent) {
+        final AdsReportForm form = getOwnerForm();
+        if (form != null) {
+            form.fireEvent(changedEvent);
+        }
     }
 }

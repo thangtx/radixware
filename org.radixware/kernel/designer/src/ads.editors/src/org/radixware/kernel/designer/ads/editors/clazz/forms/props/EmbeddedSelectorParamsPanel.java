@@ -239,11 +239,7 @@ final class EmbeddedSelectorParamsPanel extends JPanel implements PropertyChange
             prop.setExplorerItemId(explorerItem != null ? explorerItem.getId() : null);
 
             editor.setValue(prop);
-            try {
-                ((UIPropertySupport)editor.getSource()).setValue(prop);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                Logger.getLogger(EmbeddedSelectorParamsPanel.class.getName()).log(Level.SEVERE, null, e);
-            }
+            ((UIPropertySupport)editor.getSource()).setValue(prop);
         }
     }
 }

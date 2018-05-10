@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.editors.monitoring.diagram;
 
+import org.radixware.kernel.common.client.dashboard.FastMetricRecordIterator;
 import com.trolltech.qt.gui.QWidget;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -30,6 +31,7 @@ import org.jfree.data.time.TimePeriod;
 import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.data.xy.DefaultIntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dashboard.DiagramSettings;
 import org.radixware.kernel.explorer.editors.monitoring.diagram.AbstaractMetricView.MetricValue;
 import org.radixware.kernel.explorer.env.Application;
@@ -41,9 +43,9 @@ public class StepDiagramWidget extends DiagramWidget {
 
     private XYItemRenderer renderer;
 
-    public StepDiagramWidget(final QWidget parent/*,boolean hystogram*/) {
-        super(parent);
-        String sTime = Application.translate("SystemMonitoring", "Time");
+    public StepDiagramWidget(final IClientEnvironment env, final QWidget parent/*,boolean hystogram*/) {
+        super(env, parent);
+        String sTime = Application.translate("SystemMonitoring", null);
         String sValue = Application.translate("SystemMonitoring", "Value");
         chart = ChartFactory.createTimeSeriesChart(null, sTime, sValue, null, false, false, false);
         final XYPlot plot = chart.getXYPlot();
@@ -52,7 +54,7 @@ public class StepDiagramWidget extends DiagramWidget {
         plot.setRangeGridlineStroke(new BasicStroke(0.8f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[]{2.0f, 2.0f}, 0.0f));
         plot.getDomainAxis().setLowerMargin(0);
         plot.getDomainAxis().setUpperMargin(0);
-
+        
         YIntervalRenderer intervalRend = new YIntervalRenderer();
         intervalRend.setSeriesPaint(0, Color.GRAY);
         intervalRend.setSeriesStroke(0, new BasicStroke(1f));
@@ -81,26 +83,28 @@ public class StepDiagramWidget extends DiagramWidget {
 
         List<MetricValue> listOfVals = new ArrayList<>();
         if (!diagRs.getHistoryRs().getRecords().getRecordList().isEmpty()) {
-            for (MetricRecord rec : diagRs.getHistoryRs().getRecords().getRecordList()) {
-
-                if (rec.getAvgVal() != null) {
-                    listOfVals.add(new AbstaractMetricView.StepMetricValue(rec.getEndTime().getTime(), rec.getBegVal().doubleValue(), rec.getEndVal().doubleValue(), rec.getMaxVal().doubleValue(), rec.getMinVal().doubleValue(), rec.getAvgVal().doubleValue()));
-                } else if (rec.getEndTime() != null && rec.getEndVal() != null) {
-                    listOfVals.add(new AbstaractMetricView.StepMetricValue(rec.getEndTime().getTime(), rec.getBegVal().doubleValue(), rec.getEndVal().doubleValue()));
+            try (FastMetricRecordIterator iter = new FastMetricRecordIterator(diagRs.getHistoryRs().getRecords())) {
+                while (iter.hasNext()) {
+                    MetricRecord rec = iter.next();
+                    if (rec.getAvgVal() != null) {
+                        listOfVals.add(new AbstaractMetricView.StepMetricValue(rec.getEndTime().getTime(), rec.getBegVal().doubleValue(), rec.getEndVal().doubleValue(), rec.getMaxVal().doubleValue(), rec.getMinVal().doubleValue(), rec.getAvgVal().doubleValue()));
+                    } else if (rec.getEndTime() != null && rec.getEndVal() != null) {
+                        listOfVals.add(new AbstaractMetricView.StepMetricValue(rec.getEndTime().getTime(), rec.getBegVal().doubleValue(), rec.getEndVal().doubleValue()));
+                    }
                 }
             }
         } else {
             MetricRecord rec = diagRs.getHistoryRs().getPrevRecord();
             if (rec != null) {
                 if (rec.getAvgVal() != null) {
-                    listOfVals.add(new AbstaractMetricView.StepMetricValue(rec.getEndTime().getTime(), rec.getEndVal().doubleValue(), rec.getEndVal().doubleValue(), rec.getMaxVal().doubleValue(), rec.getMinVal().doubleValue(), rec.getAvgVal().doubleValue()));
+                    listOfVals.add(new AbstaractMetricView.StepMetricValue(rec.getEndTime().getTime(), rec.getBegVal().doubleValue(), rec.getEndVal().doubleValue(), rec.getMaxVal().doubleValue(), rec.getMinVal().doubleValue(), rec.getAvgVal().doubleValue()));
                 } else if (rec.getEndTime() != null && rec.getEndVal() != null) {
-                    listOfVals.add(new AbstaractMetricView.StepMetricValue(rec.getEndTime().getTime(), rec.getEndVal().doubleValue(), rec.getEndVal().doubleValue()));
+                    listOfVals.add(new AbstaractMetricView.StepMetricValue(rec.getEndTime().getTime(), rec.getBegVal().doubleValue(), rec.getEndVal().doubleValue()));
                 }
             }
         }
-        Timestamp begTime = diagRs.getHistoryRs().getTimeFrom();
-        Timestamp endTime = diagRs.getHistoryRs().getTimeTo();
+        begTime = diagRs.getHistoryRs().getTimeFrom();
+        endTime = diagRs.getHistoryRs().getTimeTo();
         updateDataset(listOfVals, begTime, endTime, metricSettings);
         metricSettings.getHistSettings().setValueScale(getMinVal(), getMaxVal());
     }

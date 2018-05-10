@@ -199,10 +199,7 @@ public class DdsUniqueConstraintScriptGenerator extends DdsConstraintScriptGener
             cp.print("table ");
         }
 
-        cp.print(tableDbName);
-        cp.print(" add constraint ");
-        cp.print(uc.getDbName());
-        cp.print(idx instanceof DdsPrimaryKeyDef ? " primary key (" : " unique (");
+        cp.print(tableDbName).print(" add constraint ").print(uc.getDbName()).print(idx instanceof DdsPrimaryKeyDef ? " primary key (" : " unique (");
 
         boolean uniqueFlag = false;
         for (DdsIndexDef.ColumnInfo columnInfo : idx.getColumnsInfo()) {
@@ -221,6 +218,15 @@ public class DdsUniqueConstraintScriptGenerator extends DdsConstraintScriptGener
 
         cp.printCommandSeparator();
     }
+
+    @Override
+    public void getReCreateScript(CodePrinter printer, DdsUniqueConstraintDef definition, boolean storeData) {
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, DdsUniqueConstraintDef definition, boolean enable) {
+    }
+    
     private final static Map<EValType, String> type2UpValTable = new HashMap<>();
 
     static {
@@ -256,16 +262,14 @@ public class DdsUniqueConstraintScriptGenerator extends DdsConstraintScriptGener
 
     private void printPkModifyScriptHeader(CodePrinter cp, DdsTableDef table) {
         if (showHeader) {
-            cp.println("-- !!! PRIMARY KEY FOR TABLE " + table.getDbName() + " WAS CHANGED, PLEASE UPDATE REFERENCE VALUES");
-            cp.println();
+            cp.println("-- !!! PRIMARY KEY FOR TABLE " + table.getDbName() + " WAS CHANGED, PLEASE UPDATE REFERENCE VALUES").println();
             showHeader = false;
         }
     }
 
     private void printPkModifyScriptTrailer(CodePrinter cp) {
         if (!showHeader) {
-            cp.println("-- !!! PRIMARY KEY UPDATE REFERENCE VALUES FINISHED");
-            cp.println();
+            cp.println("-- !!! PRIMARY KEY UPDATE REFERENCE VALUES FINISHED").println();
             showHeader = true;
         }
     }

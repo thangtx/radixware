@@ -16,19 +16,27 @@ import org.radixware.kernel.common.sqlscript.parser.SQLScriptValue.Type;
 
 
 public class SQLParseAcceptStatement extends SQLParseStatement {
-    private SQLScriptValue.Type varType;
-    private String var;
+    private final SQLScriptValue.Type varType;
+    private final String var;
     private final String defaultValue;
-    private String prompt;
-    private boolean hide;
+    private final String prompt;
+    private final boolean hide;
 
-    public SQLParseAcceptStatement(SQLPosition position, Type varType, String var, String defaultValue, String prompt, boolean hide) {
+    public SQLParseAcceptStatement(final SQLPosition position, final Type varType, final String var, final String defaultValue, final String prompt, final boolean hide) {
         super(position, StatementType.ST_ACCEPT);
-        this.varType = varType;
-        this.var = var;
-        this.defaultValue = defaultValue;
-        this.prompt = prompt;
-        this.hide = hide;
+        if (varType == null) {
+            throw new IllegalArgumentException("Variable type can't be null");
+        }
+        else if (var == null || var.isEmpty()) {
+            throw new IllegalArgumentException("Variable name can't be null or empty");
+        }
+        else {
+            this.varType = varType;
+            this.var = var;
+            this.defaultValue = defaultValue;
+            this.prompt = prompt;
+            this.hide = hide;
+        }
     }
 
     public Type getVarType() {
@@ -51,4 +59,8 @@ public class SQLParseAcceptStatement extends SQLParseStatement {
         return hide;
     }
 
+    @Override
+    public String toString() {
+        return "SQLParseAcceptStatement{" + "varType=" + varType + ", var=" + var + ", defaultValue=" + defaultValue + ", prompt=" + prompt + ", hide=" + hide + '}';
+    }
 }

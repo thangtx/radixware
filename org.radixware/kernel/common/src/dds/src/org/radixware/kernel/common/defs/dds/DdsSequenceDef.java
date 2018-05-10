@@ -8,10 +8,12 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.dds;
 
+import java.util.List;
+import org.radixware.kernel.common.defs.dds.radixdoc.DdsSequenceRadixdocSupport;
 import org.apache.xmlbeans.XmlObject;
+import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.ClipboardSupport;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.dds.utils.DbNameUtils;
@@ -62,9 +64,10 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
     private Long startWith = null;
 
     /**
-     * Получить значение, подставляемое в качестве атрибута 'start with' 
-     * при генерации скрипта создания sequence'а в базе данных.
-     * Задает результат первого обращения к значению sequence'а.
+     * Получить значение, подставляемое в качестве атрибута 'start with' при
+     * генерации скрипта создания sequence'а в базе данных. Задает результат
+     * первого обращения к значению sequence'а.
+     *
      * @return 'start with' value, or null, if not used.
      */
     public Long getStartWith() {
@@ -80,9 +83,10 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
     private Long incrementBy = null;
 
     /**
-     * Получить значение, подставляемое в качестве атрибута 'increment by' 
-     * при генерации скрипта создания sequence'а в базе данных.
-     * Задает разницу между двумя последовательными значениями sequence'а.
+     * Получить значение, подставляемое в качестве атрибута 'increment by' при
+     * генерации скрипта создания sequence'а в базе данных. Задает разницу между
+     * двумя последовательными значениями sequence'а.
+     *
      * @return 'increment by' value, or null, if not used.
      */
     public Long getIncrementBy() {
@@ -98,8 +102,8 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
     boolean cycled = false;
 
     /**
-     * Является-ли sequence циклическим.
-     * Используется при генерации скрипта создания sequence'а в базе данных.
+     * Является-ли sequence циклическим. Используется при генерации скрипта
+     * создания sequence'а в базе данных.
      */
     public boolean isCycled() {
         return cycled;
@@ -114,8 +118,9 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
     private Long minValue = null;
 
     /**
-     * Получить минимальное значение sequence'а.
-     * Используется при генерации скрипта создания sequence'а в базе данных.
+     * Получить минимальное значение sequence'а. Используется при генерации
+     * скрипта создания sequence'а в базе данных.
+     *
      * @return 'min value' value, or null, if not used.
      */
     public Long getMinValue() {
@@ -131,8 +136,9 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
     private Long maxValue;
 
     /**
-     * Получить максимальное значение sequence'а.
-     * Используется при генерации скрипта создания sequence'а в базе данных.
+     * Получить максимальное значение sequence'а. Используется при генерации
+     * скрипта создания sequence'а в базе данных.
+     *
      * @return 'max value' value, or null, if not used.
      */
     public Long getMaxValue() {
@@ -148,8 +154,8 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
     private boolean ordered = true;
 
     /**
-     * Возвращает-ли sequence последовательные значения.
-     * Используется при генерации скрипта создания sequence'а в базе данных.
+     * Возвращает-ли sequence последовательные значения. Используется при
+     * генерации скрипта создания sequence'а в базе данных.
      */
     public boolean isOrdered() {
         return ordered;
@@ -164,8 +170,9 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
     private Long cache = 20L;
 
     /**
-     * Получить значение, подставляемое в качестве атрибута 'cache' 
-     * при генерации скрипта создания sequence'а в базе данных.
+     * Получить значение, подставляемое в качестве атрибута 'cache' при
+     * генерации скрипта создания sequence'а в базе данных.
+     *
      * @return size of cache, null for NOCACHE.
      */
     public Long getCache() {
@@ -223,6 +230,10 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
             this.cache = xSequence.getCache();
         } else {
             this.cache = null;
+        }
+
+        if (xSequence.isSetSuppressedWarnings()) {
+            this.warningsSupport = new Problems(this, xSequence.getSuppressedWarnings());
         }
 
         this.placement = DdsDefinitionPlacement.Factory.loadFrom(this, xSequence.getPlacement());
@@ -332,8 +343,8 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
     public String getTypesTitle() {
         return SEQUENCE_TYPES_TITLE;
     }
-    
-       @Override
+
+    @Override
     public RadixdocSupport<? extends RadixObject> getRadixdocSupport() {
         return new RadixdocSupport(this) {
 
@@ -341,12 +352,49 @@ public class DdsSequenceDef extends DdsDefinition implements IPlacementSupport, 
             public IRadixdocPage document(Page page, DocumentOptions options) {
                 return new DdsSequenceRadixdocSupport((DdsSequenceDef) getSource(), page, options);
             }
-          
+
         };
     }
 
     @Override
     public boolean isRadixdocProvider() {
         return true;
+    }
+
+    public static class Problems extends RadixProblem.WarningSuppressionSupport {
+
+        public static final int AADC_SEQUENCE = 300000;
+
+        public Problems(DdsDefinition owner, List<Integer> warnings) {
+            super(owner);
+            if (warnings != null) {
+                int arr[] = new int[warnings.size()];
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = warnings.get(i);
+                }
+                setSuppressedWarnings(arr);
+            }
+        }
+
+        @Override
+        public boolean canSuppressWarning(int code) {
+            switch (code) {
+                case AADC_SEQUENCE:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+    private Problems warningsSupport = null;
+
+    @Override
+    public RadixProblem.WarningSuppressionSupport getWarningSuppressionSupport(boolean createIfAbsent) {
+        synchronized (this) {
+            if (warningsSupport == null && createIfAbsent) {
+                warningsSupport = new Problems(this, null);
+            }
+            return warningsSupport;
+        }
     }
 }

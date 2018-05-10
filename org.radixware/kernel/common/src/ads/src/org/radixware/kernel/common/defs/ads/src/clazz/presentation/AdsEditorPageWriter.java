@@ -17,6 +17,8 @@ import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPageDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPageDef.PagePropertyRef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsProperiesGroupDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.IPagePropertyGroup;
 import org.radixware.kernel.common.defs.ads.src.AbstractDefinitionWriter;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
@@ -38,6 +40,7 @@ public class AdsEditorPageWriter extends AbstractDefinitionWriter<AdsEditorPageD
     private static final char[] CUSTOM_PAGE_CLASS_NAME = CharOperations.merge(EDITOR_PRESENTATION_PAGE_META_EXPLORER_PACKAGE_NAME, "RadCustomEditorPageDef".toCharArray(), '.');
     private static final char[] STD_PAGE_CLASS_NAME = CharOperations.merge(EDITOR_PRESENTATION_PAGE_META_EXPLORER_PACKAGE_NAME, "RadStandardEditorPageDef".toCharArray(), '.');
     private static final char[] STD_PAGE_ITEM_CLASS_NAME = CharOperations.merge(STD_PAGE_CLASS_NAME, "PageItem".toCharArray(), '.');
+    private static final char[] STD_PAGE_GROUP_CLASS_NAME = CharOperations.merge(STD_PAGE_CLASS_NAME, "PropertiesGroup".toCharArray(), '.');
 
     @Override
     protected boolean writeMeta(CodePrinter printer) {
@@ -109,36 +112,28 @@ public class AdsEditorPageWriter extends AbstractDefinitionWriter<AdsEditorPageD
                     case STANDARD:
                         //PageItem array required
                         printer.printComma();
-                        new WriterUtils.SameObjectArrayWriter<AdsEditorPageDef.PagePropertyRef>(STD_PAGE_ITEM_CLASS_NAME) {
+                        writePageItems(def.getProperties(), printer, env);
+                        printer.printComma();
+                        new WriterUtils.SameObjectArrayWriter<AdsProperiesGroupDef>(STD_PAGE_GROUP_CLASS_NAME) {
 
                             @Override
-                            public void writeItemConstructorParams(CodePrinter printer, PagePropertyRef item) {
-                                WriterUtils.writeIdUsage(printer, item.getId());
+                            public void writeItemConstructorParams(CodePrinter printer, AdsProperiesGroupDef group) {
+                                WriterUtils.writeIdUsage(printer, group.getId());
                                 printer.printComma();
-                                printer.print(item.getColumn());
+                                printer.printStringLiteral(group.getName());
                                 printer.printComma();
-                                printer.print(item.getRow());
+                                WriterUtils.writeIdUsage(printer, group.getTitleId());
                                 printer.printComma();
-                                printer.print(item.getColumnSpan());
+                                WriterUtils.writeIdUsage(printer, def.getOwnerClass().getId());
                                 printer.printComma();
-                                printer.print(item.isGlueToLeft());
+                                printer.print(false);
                                 printer.printComma();
-                                printer.print(item.isGlueToRight());
+                                printer.print(group.isShowFrame());
+                                printer.printComma();
+                                writePageItems(group, printer, env);
 
                             }
-                        }.write(printer, def.getProperties().list(new IFilter<PagePropertyRef>() {
-
-                            @Override
-                            public boolean isTarget(PagePropertyRef radixObject) {
-                                AdsDefinition propCandidate = radixObject.findProperty();
-                                if (propCandidate instanceof AdsPropertyDef) {
-                                    AdsPropertyDef prop = (AdsPropertyDef) propCandidate;
-                                    return prop.isTransferableAsMeta(env);
-                                } else {
-                                    return true;
-                                }
-                            }
-                        }));
+                        }.write(printer, def.getProperties().getProperiesGroups());
                         break;
                 }
                 printer.print(')');
@@ -147,5 +142,42 @@ public class AdsEditorPageWriter extends AbstractDefinitionWriter<AdsEditorPageD
             default:
                 return false;
         }
+    }
+    
+    private void writePageItems(final IPagePropertyGroup group, final CodePrinter printer, final ERuntimeEnvironmentType env) {
+        new WriterUtils.SameObjectArrayWriter<AdsEditorPageDef.PagePropertyRef>(STD_PAGE_ITEM_CLASS_NAME) {
+
+            @Override
+            public void writeItemConstructorParams(CodePrinter printer, PagePropertyRef item) {
+                if (item.getId() != null) {
+                    WriterUtils.writeIdUsage(printer, item.getId());
+                } else if (item.getGroupDef() != null) {
+                    WriterUtils.writeIdUsage(printer, item.getGroupDef().getId());
+                }
+                printer.printComma();
+                printer.print(item.getColumn());
+                printer.printComma();
+                printer.print(item.getRow());
+                printer.printComma();
+                printer.print(item.getColumnSpan());
+                printer.printComma();
+                printer.print(item.isGlueToLeft());
+                printer.printComma();
+                printer.print(item.isGlueToRight());
+
+            }
+        }.write(printer, group.list(new IFilter<PagePropertyRef>() {
+
+            @Override
+            public boolean isTarget(PagePropertyRef radixObject) {
+                AdsDefinition propCandidate = radixObject.findItem();
+                if (propCandidate instanceof AdsPropertyDef) {
+                    AdsPropertyDef prop = (AdsPropertyDef) propCandidate;
+                    return prop.isTransferableAsMeta(env);
+                } else {
+                    return true;
+                }
+            }
+        }));
     }
 }

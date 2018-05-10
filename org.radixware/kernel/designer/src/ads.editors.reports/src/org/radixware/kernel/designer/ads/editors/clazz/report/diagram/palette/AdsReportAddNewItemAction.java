@@ -13,8 +13,13 @@ package org.radixware.kernel.designer.ads.editors.clazz.report.diagram.palette;
 
 import java.awt.Dialog;
 import java.awt.Dimension;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.openide.DialogDisplayer;
+import org.radixware.kernel.common.defs.IVisitor;
+import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCellFactory;
@@ -23,6 +28,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportChartSerie
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportDbImageCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportExpressionCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportImageCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportPropertyCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSummaryCell;
@@ -35,6 +41,7 @@ import org.radixware.kernel.common.enums.EReportCellType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.ads.editors.clazz.report.chart.Wizard;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.MmUtils;
+import org.radixware.kernel.designer.ads.reports.AdsReportDialogsUtils;
 import org.radixware.kernel.designer.common.dialogs.wizards.WizardDescriptor;
 import org.radixware.kernel.designer.common.general.editors.EditorsManager;
 
@@ -75,7 +82,6 @@ public abstract class AdsReportAddNewItemAction {
     }
 
     public static class AddNewCellAction extends AdsReportAddNewItemAction {
-
         private final EReportCellType cellType;
         private final Id id;
 
@@ -101,45 +107,47 @@ public abstract class AdsReportAddNewItemAction {
             AdsReportCell cell;
             switch (cellType) {
                 case PROPERTY:
-                    final AdsReportPropertyCell propertyCell = AdsReportCellFactory.newPropertyCell();
+                    final AdsReportPropertyCell propertyCell = AdsReportCellFactory.newPropertyCell(true);
                     propertyCell.setPropertyId(id);
                     cell = propertyCell;
                     break;
                 case IMAGE:
-                    final AdsReportImageCell imageCell = AdsReportCellFactory.newImageCell();
+                    final AdsReportImageCell imageCell = AdsReportCellFactory.newImageCell(true);
                     imageCell.setImageId(id);
                     cell = imageCell;
                     break;
                 case DB_IMAGE:
-                    final AdsReportDbImageCell dbImageCell = AdsReportCellFactory.newDbImageCell();
+                    final AdsReportDbImageCell dbImageCell = AdsReportCellFactory.newDbImageCell(true);
                     dbImageCell.setDataPropertyId(id);
                     cell = dbImageCell;
                     break;
                 case TEXT:
-                    cell = AdsReportCellFactory.newTextCell();
+                    cell = AdsReportCellFactory.newTextCell(true);
                     break;
                 case SPECIAL:
-                    cell = AdsReportCellFactory.newSpecialCell();
+                    cell = AdsReportCellFactory.newSpecialCell(true);
                     break;
                 case SUMMARY:
-                    final AdsReportSummaryCell summaryCell = AdsReportCellFactory.newSummaryCell();
+                    final AdsReportSummaryCell summaryCell = AdsReportCellFactory.newSummaryCell(true);
                     summaryCell.setPropertyId(id);
                     cell = summaryCell;
                     break;
                 case EXPRESSION:
-                    final AdsReportExpressionCell expressionCell = AdsReportCellFactory.newExpressionCell();
+                    final AdsReportExpressionCell expressionCell = AdsReportCellFactory.newExpressionCell(true);
                     cell = expressionCell;
                     break;
                 case CHART:
-                    final AdsReportChartCell chartCell = AdsReportCellFactory.newChartCell();
+                    final AdsReportChartCell chartCell = AdsReportCellFactory.newChartCell(true);
                     cell = chartCell;
                     break;
                 default:
                     throw new IllegalStateException();
             }
+            final AdsReportForm form = band.getOwnerForm();
+            AdsReportDialogsUtils.setNewCellName(form, cell);
             if (cellType == EReportCellType.CHART) {
                 final AdsReportChartCell chartCell = (AdsReportChartCell) cell;
-                final AdsReportClassDef report = band.getOwnerForm().getOwnerReport();
+                final AdsReportClassDef report = form.getOwnerReport();
                 final Wizard wizard = new Wizard(chartCell, band);
                 final WizardDescriptor desc = new WizardDescriptor(wizard);
                 final Dialog dialog = DialogDisplayer.getDefault().createDialog(desc);
@@ -149,10 +157,10 @@ public abstract class AdsReportAddNewItemAction {
 
                 final Object descValue = desc.getValue();
                 if (descValue != null && descValue.equals(WizardDescriptor.FINISH_OPTION)) {
-                    chartCell.setLeftMm(MmUtils.snapToGrid(MmUtils.px2mm(x)));
-                    chartCell.setTopMm(MmUtils.snapToGrid(MmUtils.px2mm(y)));
+                    chartCell.setLeftMm(MmUtils.snapToGrid(MmUtils.px2mm(x), form));
+                    chartCell.setTopMm(MmUtils.snapToGrid(MmUtils.px2mm(y), form));
                     final double bandFontSize = band.getFont().getSizeMm();
-                    final double heightMm = AdsReportBand.GRID_SIZE_MM * (int) (1 + (bandFontSize / AdsReportBand.GRID_SIZE_MM));
+                    final double heightMm = form.getGridSizeMm() * (int) (1 + (bandFontSize / form.getGridSizeMm()));
                     chartCell.setHeightMm(heightMm);
 
                     setTitle(chartCell.getTitleId(), report, wizard.getMlStrings());
@@ -163,10 +171,11 @@ public abstract class AdsReportAddNewItemAction {
                     band.getWidgets().add(chartCell);
                 }
             } else {
-                cell.setLeftMm(MmUtils.snapToGrid(MmUtils.px2mm(x)));
-                cell.setTopMm(MmUtils.snapToGrid(MmUtils.px2mm(y)));
+                double gridSizeMm = form.getGridSizeMm();
+                cell.setLeftMm(MmUtils.snapToGrid(MmUtils.px2mm(x), form));
+                cell.setTopMm(MmUtils.snapToGrid(MmUtils.px2mm(y), form));
                 final double bandFontSize = band.getFont().getSizeMm();
-                final double heightMm = AdsReportBand.GRID_SIZE_MM * (int) (1 + (bandFontSize / AdsReportBand.GRID_SIZE_MM));
+                final double heightMm = gridSizeMm * (int) (1 + (bandFontSize / gridSizeMm));
                 cell.setHeightMm(heightMm);
                 band.getWidgets().add(cell);
                 if (id == null) {
@@ -192,7 +201,7 @@ public abstract class AdsReportAddNewItemAction {
             if (widgetContainer instanceof AdsReportBand) {
                 final AdsReportBand band = (AdsReportBand) widgetContainer;
                 final AdsSubReport subReport = AdsSubReport.Factory.newInstance();
-                final Double topMm = MmUtils.snapToGrid(MmUtils.px2mm(y));
+                final Double topMm = MmUtils.snapToGrid(MmUtils.px2mm(y), band.getOwnerForm());
                 if (topMm <= band.getHeightMm() / 2) {
                     band.getPreReports().add(subReport);
                 } else {
@@ -260,13 +269,16 @@ public abstract class AdsReportAddNewItemAction {
                 } else {
                     band = ((AdsReportWidgetContainer) widgetContainer).getOwnerBand();
                 }
+                AdsReportForm form = band.getOwnerForm();
+                double gridSizeMm = form != null? form.getGridSizeMm() : AdsReportForm.DEFAULT_GRID_SIZE_MM;
                 final AdsReportWidgetContainer cellContainer = new AdsReportWidgetContainer();
-                cellContainer.setLeftMm(MmUtils.snapToGrid(MmUtils.px2mm(x)));
-                cellContainer.setTopMm(MmUtils.snapToGrid(MmUtils.px2mm(y)));
+                cellContainer.setLeftMm(MmUtils.snapToGrid(MmUtils.px2mm(x), form));
+                cellContainer.setTopMm(MmUtils.snapToGrid(MmUtils.px2mm(y), form));
                 final double bandFontSize = band.getFont().getSizeMm();
-                final double heightMm = AdsReportBand.GRID_SIZE_MM * (int) (1 + (bandFontSize / AdsReportBand.GRID_SIZE_MM));
+                final double heightMm = gridSizeMm * (int) (1 + (bandFontSize / gridSizeMm));
                 cellContainer.setHeightMm(heightMm);
                 widgetContainer.getWidgets().add(cellContainer);
+                AdsReportDialogsUtils.setNewContainerName(form, cellContainer);
               //  return true;
             //}
             return true;

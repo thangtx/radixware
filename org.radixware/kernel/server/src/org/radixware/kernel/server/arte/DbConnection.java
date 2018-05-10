@@ -10,6 +10,8 @@
  */
 package org.radixware.kernel.server.arte;
 
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
@@ -43,10 +45,10 @@ public class DbConnection {
         this.arte = arte;
     }
 
-    public java.sql.Clob createTemporaryClob() throws SQLException {
+    public Clob createTemporaryClob() throws SQLException {
         arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_LOB_TMP_CREATE);
         try {
-            final oracle.sql.CLOB res = oracle.sql.CLOB.createTemporary(get(), true, oracle.sql.CLOB.DURATION_SESSION);
+            final Clob res = connection.createTemporaryClob();
             arte.getCache().registerTemporaryClob(res);
             return res;
         } finally {
@@ -54,29 +56,29 @@ public class DbConnection {
         }
     }
 
-    public java.sql.Blob createTemporaryBlob() throws SQLException {
+    public Blob createTemporaryBlob() throws SQLException {
         arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_LOB_TMP_CREATE);
         try {
-            final oracle.sql.BLOB res = oracle.sql.BLOB.createTemporary(get(), true, oracle.sql.BLOB.DURATION_SESSION);
+            final Blob res = connection.createTemporaryBlob();
             arte.getCache().registerTemporaryBlob(res);
             return res;
         } finally {
             arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_LOB_TMP_CREATE);
         }
     }
-    
-    public void freeTemporaryBlob(final java.sql.Blob blob) {
+
+    public void freeTemporaryBlob(final Blob blob) {
         freeTemporaryBlobs(Collections.singleton(blob));
     }
-    
-    public void freeTemporaryClob(final java.sql.Clob clob) {
+
+    public void freeTemporaryClob(final Clob clob) {
         freeTemporaryClobs(Collections.singleton(clob));
     }
-    
+
     public void freeTemporaryBlobs(final Collection<java.sql.Blob> blobs) {
         arte.getCache().freeTemporaryBlobs(blobs);
     }
-    
+
     public void freeTemporaryClobs(final Collection<java.sql.Clob> clobs) {
         arte.getCache().freeTemporaryClobs(clobs);
     }

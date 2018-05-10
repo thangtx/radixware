@@ -182,12 +182,11 @@ public class EditMaskNum extends EditMask {
             }
             if (lp[0] <= 0) {
                 this.setMaxValue(null);
+                this.setMinValue(null);
             } else {
-                char[] digits = new char[lp[0]];
-                for (int i = 0; i < digits.length; i++) {
-                    digits[i] = '9';
-                }
-                this.setMaxValue(new BigDecimal(String.valueOf(digits)));
+                String number = getDigets(lp);
+                this.setMaxValue(new BigDecimal(number));
+                this.setMinValue(new BigDecimal("-" + number));
             }
         }
     }
@@ -198,14 +197,33 @@ public class EditMaskNum extends EditMask {
             if (lp[0] <= 0) {
                 return null;
             }
-            char[] digits = new char[lp[0]];
-            for (int i = 0; i < digits.length; i++) {
-                digits[i] = '9';
-            }
-            return new BigDecimal(String.valueOf(digits));
+            return new BigDecimal(getDigets(lp));
         } else {
             return null;
         }
+    }
+    
+    private String getDigets(final int[] lp) {
+        char[] digits;
+        if (lp[1] > 0 && lp[1] < lp[0]) {
+            digits = new char[lp[0] + 1];
+            
+            for (int i = 0; i < digits.length; i++) {
+                if (i == (lp[0] - lp[1])) {
+                    digits[i] = '.';
+                } else {
+                    digits[i] = '9';
+                }
+            }
+        } else {
+            digits = new char[lp[0]];
+
+            for (int i = 0; i < digits.length; i++) {
+                digits[i] = '9';
+            }
+        }
+        
+        return String.valueOf(digits);
     }
 
     public Byte getDbPrecision() {

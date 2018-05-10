@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
 import java.util.List;
@@ -30,7 +29,6 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.CodeWriter;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 
-
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.type.IAdsTypedObject;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
@@ -40,6 +38,7 @@ import org.radixware.kernel.common.scml.LineMatcher.DefaultLocationDescriptor;
 import org.radixware.kernel.common.scml.LineMatcher.ILocationDescriptor;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.scml.ScmlProcessor;
+import org.radixware.schemas.xscml.JmlTagItem;
 import org.radixware.schemas.xscml.JmlType;
 
 /**
@@ -53,6 +52,10 @@ public class Jml extends Scml implements IJavaSource, IAdsTypedObject, IEnvDepen
     protected Jml(RadixObject context, String name) {
         super(name);
         setContainer(context);
+    }
+
+    protected Jml() {
+        super(null);
     }
 
     public AdsDefinition getOwnerDef() {
@@ -78,6 +81,10 @@ public class Jml extends Scml implements IJavaSource, IAdsTypedObject, IEnvDepen
                 return jml;
             }
             return null;
+        }
+
+        public static final Jml newInstance() {
+            return new Jml();
         }
 
         public static final Jml newInstance(RadixObject context, String name) {
@@ -119,6 +126,7 @@ public class Jml extends Scml implements IJavaSource, IAdsTypedObject, IEnvDepen
         public static final char[] TAG_LEAD_MARKER = " /*##JIS##".toCharArray();
         public static final char[] TAG_TAIL_MARKER = "/*##JIE##".toCharArray();
         public static final char[] TAG_MARKER_TAIL = "##*/".toCharArray();
+        private String displayString = null;
 
         public static final class Factory {
 
@@ -157,7 +165,18 @@ public class Jml extends Scml implements IJavaSource, IAdsTypedObject, IEnvDepen
             }
         }
 
-        protected Tag() {
+        protected Tag(JmlTagItem xTag) {
+            if (xTag != null) {
+                this.displayString = xTag.getPresentation();
+            }
+        }
+
+        protected String rememberDisplayName(String displayName) {
+            return displayString = displayName;
+        }
+
+        protected String restoreDisplayName(String displayName) {
+            return displayString == null ? displayName : displayString;
         }
 
         public Jml getOwnerJml() {
@@ -165,6 +184,12 @@ public class Jml extends Scml implements IJavaSource, IAdsTypedObject, IEnvDepen
         }
 
         public abstract void appendTo(JmlType.Item item);
+
+        protected void appendTo(JmlTagItem xItem) {
+            if (displayString != null) {
+                xItem.setPresentation(displayString);
+            }
+        }
 
         public abstract String getDisplayName();
 
@@ -313,7 +338,7 @@ public class Jml extends Scml implements IJavaSource, IAdsTypedObject, IEnvDepen
 //                ((Jml.Tag) tag).check(problemHandlerProxy);
 //            }
         }
-        
+
         @Override
         protected CommentsAnalizer getCommentsAnalizer() {
             return CommentsAnalizer.Factory.newJavaCommentsAnalizer();

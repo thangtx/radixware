@@ -62,17 +62,17 @@ public abstract class AasClientPool<T extends AasInvokeItem> {
         return options;
     }
     
-    protected void onQueueOverflow(final AasInvokeItem item) {
+    protected void onQueueOverflow(final T item) {
         throw new IllegalStateException("Invoke queue oveflow");
     }
 
-    protected void onTimeoutInQueue(final AasInvokeItem item) {
+    protected void onTimeoutInQueue(final T item) {
         tracer.putFloodControlled(getClass().getName(), EEventSeverity.WARNING, "There were timed out itmes in AAS invoke queue", null, null, false);
     }
 
     public void tryInvoke() {
         if (!queue.isEmpty()) {
-            for (SingleSeanceAasClient client : clients) {
+            for (SingleSeanceAasClient client : new ArrayList<>(clients)) {
                 if (!client.busy()) {
                     client.invoke(queue.remove(0));
                     if (queue.isEmpty()) {
@@ -87,6 +87,9 @@ public abstract class AasClientPool<T extends AasInvokeItem> {
             }
         }
     }
+    
+    protected void beforeDoInvoke(final T item) {
+    }
 
     public void maintenance() {
         adjustPoolSize();
@@ -95,15 +98,15 @@ public abstract class AasClientPool<T extends AasInvokeItem> {
 
     private void removeTimedOutQueueItems() {
         final Iterator<T> it = queue.iterator();
-        final List<AasInvokeItem> removed = new ArrayList<>();
+        final List<T> removed = new ArrayList<>();
         while (it.hasNext()) {
-            final AasInvokeItem item = it.next();
+            final T item = it.next();
             if (item.getCreateTimeMillis() + item.getTimeoutMillis() < System.currentTimeMillis()) {
                 it.remove();
                 removed.add(item);
             }
         }
-        for (AasInvokeItem item : removed) {
+        for (T item : removed) {
             onTimeoutInQueue(item);
         }
     }
@@ -143,6 +146,10 @@ public abstract class AasClientPool<T extends AasInvokeItem> {
     
     public int getFreeCount() {
         return Math.max(0, getOptions().getMaxSeancesCount() - getBusyCount());
+    }
+    
+    public int getQueueSize() {
+        return queue.size();
     }
 
     protected abstract SingleSeanceAasClient<T> createAasClient();

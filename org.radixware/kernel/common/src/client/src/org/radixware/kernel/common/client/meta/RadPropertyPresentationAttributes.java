@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.meta;
 
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.enums.EEditPossibility;
 import org.radixware.kernel.common.enums.EPropertyVisibility;
 import org.radixware.kernel.common.types.Id;
@@ -192,4 +193,14 @@ public final class RadPropertyPresentationAttributes extends Definition{
     public String getTitle(){
         return getTitleSource()==null ? null : getTitleSource().getTitle();
     }
+    
+    public String getTitle(final IClientEnvironment environment){
+        final TitledDefinition source = getTitleSource();
+        if (source instanceof RadPropertyDef){
+            return ((RadPropertyDef)source).getTitle(environment);
+        }else{
+            return source==null ? null : source.getTitle();
+        }        
+    }
+    
 }

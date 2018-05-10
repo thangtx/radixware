@@ -39,12 +39,14 @@ public class MessageBox extends Dialog implements IMessageBox {
 
     private String optionText;
     private int optionTextRow = -1;
-    private final int linesInMessage;
+    private int linesInMessage;
     private String messagetext;
     private UIObject content;
-    private int maxContentHeight;
+    private UIObject iconSpacer;
+    private int contentMaxHeight;
     
-    private final GridBoxContainer mainLayout = new GridBoxContainer();    
+    private final GridBoxContainer mainLayout = new GridBoxContainer();
+    
     private final CheckBox option = new CheckBox();
     private final int textColumn;
 
@@ -183,11 +185,11 @@ public class MessageBox extends Dialog implements IMessageBox {
                mainLayout:
             ?
         ----------------------------
-        |spacer |                  |
-        | ICON  |                  |
-        |       |       TEXT       |
-        |       |                  |
-        |       |                  |
+        |spacer|                   |
+        | ICON |                   |
+        |          |   TEXT        |
+        |          |                   |
+        |          |                   |
         ----------------------------
         |       | details button   | ?
         ----------------------------
@@ -201,10 +203,9 @@ public class MessageBox extends Dialog implements IMessageBox {
         final IClientApplication application = environment.getApplication();
         traceParser = new ClientTraceParser(displayer.getEnvironment());
         setWidth(20);
-        setAutoWidth(true);
-        setMaxWidth(640);
-        setAutoHeight(true);
-        setMaxHeight(480);
+        setHeight(60);
+        setAutoWidth(false);
+        setAutoHeight(false);
         WpsIcon iconImage;        
         if (icon==null){
             iconImage = null;            
@@ -226,45 +227,29 @@ public class MessageBox extends Dialog implements IMessageBox {
             }catch(DefinitionError e){
                 iconImage = null;
             }            
-        }        
-        final UIObject spacer;
+        }                
         if (iconImage == null) {
             textColumn = 0;
-            spacer = null;
+            iconSpacer = null;
         }else{
             textColumn = 1;
             final Image image = new Image();
             image.setWidth(30);
             image.setHeight(30);
             image.setIcon(iconImage);
-            spacer = new UIObject(new Div());
-            spacer.setHeight(20);
-            spacer.getHtml().setCss("min-height", "20px");
-            spacer.getHtml().setCss("max-height", "20px");
-            mainLayout.add(spacer, 0, 0);
-            mainLayout.add(image, 0, 0);
+            iconSpacer = new UIObject(new Div());
+            iconSpacer.setHeight(20);
+            iconSpacer.getHtml().setCss("min-height", "20px");
+            iconSpacer.getHtml().setCss("max-height", "20px");
+            final AbstractContainer imgContainer = new AbstractContainer();
+            imgContainer.add(iconSpacer);
+            imgContainer.add(image);
+            mainLayout.add(imgContainer, 0, 0);
             mainLayout.setCellVerticalAlign(0, 0, Alignment.TOP);
-        }
-        message = (message == null || message.isEmpty()) ? getMessageText() : message;
-        if (isTextHtml(message)) {
-            final HtmlText htmlText = new HtmlText();
-            htmlText.setHtmlText(message);
-            linesInMessage = -1;
-            mainLayout.add(htmlText, 0, textColumn);   
-            content = htmlText;
-        } else {
-            final StaticText messageText = new StaticText();            
-            messageText.setText(message);
-            if (messageText.getLinesCount()<3 && spacer!=null){
-                spacer.setVisible(false);
-            }            
-            linesInMessage = messageText.getLinesCount();
-            messageText.setSizePolicy(SizePolicy.MINIMUM_EXPAND, SizePolicy.MINIMUM_EXPAND);
-            mainLayout.add(messageText, 0, textColumn);
-            content = messageText;            
-        }
-        setContentMaxHeight(400);        
-        if (details != null) {            
+        }        
+        contentMaxHeight = 400;
+        setMessageText(message==null ? "" : message);
+        if (details != null) {
             final HrefButton button = new HrefButton(mp.translate("ExceptionDialog", "show details"));
             button.addClickHandler(new ClickHandler() {
                 @Override
@@ -308,7 +293,7 @@ public class MessageBox extends Dialog implements IMessageBox {
                 }
             });            
             mainLayout.add(button, 1, textColumn, Alignment.CENTER);
-            setContentMaxHeight(maxContentHeight-25);
+            contentMaxHeight-=25;
         }
         
         add(mainLayout);
@@ -316,11 +301,26 @@ public class MessageBox extends Dialog implements IMessageBox {
         mainLayout.setLeft(10);
         mainLayout.unsetPosition();
         mainLayout.setColummnExpand(textColumn, 100);
+        mainLayout.setAutoAdjustColWidth(false);
         //mainLayout.getAnchors().setLeft(new Anchors.Anchor(0, 10));
-        mainLayout.getAnchors().setRight(new Anchors.Anchor(1, -3));
+        
         //mainLayout.setHSizePolicy(SizePolicy.EXPAND);
         mainLayout.getHtml().setCss("display", "inline-block");//size by inner table
-        addSpacer();
+       
+        mainLayout.getHtml().setAttr("isAdjustWidth", true);
+        mainLayout.getHtml().setAttr("isAdjustHeight", true);
+        if (isTextHtml(message)) {
+            getHtml().layout("$RWT.messageBox.layout");
+            mainLayout.setColWidthByContent(textColumn);
+            mainLayout.setAutoHeight(content, true);
+            mainLayout.getHtml().setCss("width", "auto");
+            mainLayout.getHtml().setCss("height", "auto");
+        } else {
+            mainLayout.getHtml().setCss("width", "100%");
+            mainLayout.getHtml().setCss("height", "100%");
+            mainLayout.getAnchors().setRight(new Anchors.Anchor(1, -3));
+        } 
+            addSpacer();
         
         if (buttons != null) {
             for (EDialogButtonType button : buttons) {
@@ -329,15 +329,9 @@ public class MessageBox extends Dialog implements IMessageBox {
         }
 
         setupDefaultButtons(buttons);
-        updateContentMaxWidth();
-    }
+    }    
     
-    private void setContentMaxHeight(final int maxHeight){
-        content.getHtml().setCss("max-height", String.valueOf(maxHeight)+"px");
-        maxContentHeight = maxHeight;
-    }
-    
-    private void updateContentMaxWidth(){
+    private void updateContentMaxSize(){
         final boolean hasIcon = mainLayout.getCellCount(0)>1;
         int maxWidth = hasIcon ? 599 : 635;
         if (linesInMessage>0){            
@@ -358,8 +352,9 @@ public class MessageBox extends Dialog implements IMessageBox {
                 this.getHtml().setAttr("addintional-width", String.valueOf(verticalScrollBarWidth));
                 maxWidth+=verticalScrollBarWidth;
             }                     
+            content.getHtml().setCss("max-width", String.valueOf(maxWidth)+"px");
+            content.getHtml().setCss("max-height", String.valueOf(contentMaxHeight)+"px");
         }
-        content.getHtml().setCss("max-width", String.valueOf(maxWidth)+"px");
     }
     
     private void addSpacer(){
@@ -371,7 +366,7 @@ public class MessageBox extends Dialog implements IMessageBox {
         mainLayout.setRowHeight(spacerRow, 3);
     }
 
-    private boolean isTextHtml(final String str) {
+    private static boolean isTextHtml(final String str) {
         if (str == null) {
             return false;
         }
@@ -413,7 +408,7 @@ public class MessageBox extends Dialog implements IMessageBox {
                 if (optionTextRow>-1){
                     mainLayout.removeRow(optionTextRow);
                     optionTextRow = -1;
-                    setContentMaxHeight(maxContentHeight+25);
+                    contentMaxHeight+=25;
                 }
             }else{                
                 option.setText(text);
@@ -422,18 +417,39 @@ public class MessageBox extends Dialog implements IMessageBox {
                     optionTextRow = rowCount-1;
                     mainLayout.removeRow(optionTextRow);//remove spacer
                     mainLayout.add(option, optionTextRow, textColumn);
-                    setContentMaxHeight(maxContentHeight-25);
+                    contentMaxHeight-=25;
                     addSpacer();
                 }
             }
             this.optionText = text;
-        } 
-        updateContentMaxWidth();
-    }
-            
+        }         
+    }            
 
     public final void setMessageText(final String text) {
+        if (content!=null){
+            mainLayout.removeObject(content);
+            content = null;
+        }
+        if (isTextHtml(text)) {
+            final HtmlText htmlText = new HtmlText();
+            mainLayout.getHtml().addClass("gridBox");
+            htmlText.setHtmlText(text);
+            mainLayout.add(htmlText, 0, textColumn);
+            linesInMessage = -1;
+            content = htmlText;
+        } else {
+            final StaticText messageText = new StaticText();            
+            messageText.setText(text);
+            linesInMessage = messageText.getLinesCount();
+            if (messageText.getLinesCount()<3 && iconSpacer!=null){
+                iconSpacer.setVisible(false);
+            }
+            messageText.setSizePolicy(SizePolicy.MINIMUM_EXPAND, SizePolicy.MINIMUM_EXPAND);
+            mainLayout.add(messageText, 0, textColumn);
+            content = messageText;            
+        }      
         this.messagetext = text;
+        
     }
 
     public final String getMessageText() {
@@ -456,6 +472,14 @@ public class MessageBox extends Dialog implements IMessageBox {
 
     @Override
     public DialogResult execDialog(final IWidget parentWidget) {
+        if (linesInMessage>-1){
+            setMaxWidth(640);
+            setMaxHeight(480);
+            setResizable(false);
+            updateContentMaxSize();
+        } else if (content != null && content instanceof HtmlText) {
+            setResizable(false);
+        }
         getEnvironment().getProgressHandleManager().blockProgress();
         try{
             return super.execDialog(parentWidget);

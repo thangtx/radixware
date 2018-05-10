@@ -1,0 +1,3907 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcVXUX5KTNEBGYNALK4JPIC22X7I" Name="SysManagementUtils" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVXUX5KTNEBGYNALK4JPIC22X7I"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVXUX5KTNEBGYNALK4JPIC22X7I"/>
+    </Bodies>
+    <MethodGroup Id="cmgKHFSGU3F2FC7HKEJU3IQV6DKZY" Name="Root"/>
+    <PropertyGroup Id="cpgFDTHBS4BMFGFZC5R7LVYTHSM3A" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthTDEBS537GBG4BP37BVRQNFYONA" Name="getInstancesInfo" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="ids" Id="mprQ7K7OXTDK5GD5CBYMD5I3WYGCA">
+            <Type TypeId="202"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstancesInfoDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstancesInfoDocument">
+                <xsc:Presentation>SysManagementXsd:SystemInstancesInfoDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xDoc = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstancesInfoDocument">
+                <xsc:Presentation>SysManagementXsd:SystemInstancesInfoDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+
+xDoc.ensureSystemInstancesInfo();
+
+org.radixware.kernel.server.instance.VersionInfo repoVerInfo = null;
+
+try {
+    repoVerInfo = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().rereadAndGetRepoVersionInfo(10000);
+} catch (java.util.concurrent.TimeoutException ex) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsCLPL2V6IEBBFHL3GR74W3VUSTE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+if (repoVerInfo != null) {
+    xDoc.getSystemInstancesInfo().RepoAppVersion = repoVerInfo.getAppVersion();
+    xDoc.getSystemInstancesInfo().RepoKernelVersion = repoVerInfo.getKernelVersion();
+    xDoc.getSystemInstancesInfo().RepoRevision = repoVerInfo.getRevision();
+}
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getDdsVersionInfo() != null) {
+    xDoc.getSystemInstancesInfo().DbVersion = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getDdsVersionInfo().getVersionAsString();
+}
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().isInAadc()) {
+    try {
+        long[] stickedVersions = org.radixware.kernel.starter.Starter.readAadcStickedVersions();
+        xDoc.getSystemInstancesInfo().AadcMember1StickedVersion = stickedVersions[0];
+        xDoc.getSystemInstancesInfo().AadcMember2StickedVersion = stickedVersions[1];
+    } catch (Exception ex) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to read AADC sticked versions", ex);
+    }
+}
+
+if (ids == null || ids.isEmpty()) {
+    return xDoc;
+}
+
+xDoc.ensureSystemInstancesInfo().ensureSystemInstances();
+
+java.util.Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, Boolean> kernelCompatibilityMap = new java.util.HashMap&lt;>();
+
+for (Int id : ids) {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, true);
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstanceInfo">
+                <xsc:Presentation>SysManagementXsd:SystemInstanceInfo</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> info = xDoc.getSystemInstancesInfo().getSystemInstances().addNewSystemInstanceInfo();
+    info.setId(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    if (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colGERU3AQZS5VDBFCXAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>title</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        info.setTitle(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colGERU3AQZS5VDBFCXAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>title</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+    if (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colFPV5MEWHSNFFRGQN4V5CEMIXXQ" Invoke="true">
+                <xsc:Presentation>kernelVersion</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        info.setKernelVersion(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colFPV5MEWHSNFFRGQN4V5CEMIXXQ" Invoke="true">
+                <xsc:Presentation>kernelVersion</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+    if (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colQYGFOEBBHJEPHGO5B2Y4E6QUBA" Invoke="true">
+                <xsc:Presentation>appVersion</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        info.setAppVersion(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colQYGFOEBBHJEPHGO5B2Y4E6QUBA" Invoke="true">
+                <xsc:Presentation>appVersion</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager().isInAadc() &amp;&amp; instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colP5PSVWUEQBHPTA6CXUPA2UVOWI" Invoke="true">
+                <xsc:Presentation>aadcMemberId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        info.setAadcMemberId(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colP5PSVWUEQBHPTA6CXUPA2UVOWI" Invoke="true">
+                <xsc:Presentation>aadcMemberId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+
+    Boolean kernelCompatible = null;
+
+    if (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colL3YVJTL7CFCALHOXPVVDPZID7Q" Invoke="true">
+                <xsc:Presentation>revision</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        info.setRevision(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colL3YVJTL7CFCALHOXPVVDPZID7Q" Invoke="true">
+                <xsc:Presentation>revision</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        kernelCompatible = kernelCompatibilityMap.get(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colL3YVJTL7CFCALHOXPVVDPZID7Q" Invoke="true">
+                <xsc:Presentation>revision</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        if (kernelCompatible == null) {
+            try {
+                final org.radixware.kernel.starter.meta.RevisionMeta repoMeta = org.radixware.kernel.starter.radixloader.RadixLoader.getInstance().getRevisionMeta(repoVerInfo.Revision, org.radixware.kernel.starter.radixloader.ERevisionMetaType.LAYERS_ONLY);
+                final org.radixware.kernel.starter.meta.RevisionMeta instMeta = org.radixware.kernel.starter.radixloader.RadixLoader.getInstance().getRevisionMeta(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colL3YVJTL7CFCALHOXPVVDPZID7Q" Invoke="true">
+                <xsc:Presentation>revision</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue(), org.radixware.kernel.starter.radixloader.ERevisionMetaType.LAYERS_ONLY);
+                kernelCompatible = instMeta.isKernelCompatibleWhenUpgradingTo(repoMeta);
+            } catch (Exception ex) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthUALS3BVVSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:EventCode StringId="mlsZY25JKAXF5AQJA45UMKLU2YIEI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                        new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+                                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString(repoVerInfo == null ? -1l : repoVerInfo.Revision),
+                                instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colL3YVJTL7CFCALHOXPVVDPZID7Q" Invoke="true">
+                <xsc:Presentation>revision</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString(),
+                                instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString(),
+                                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U">
+                <xsc:Presentation>Utils::ExceptionTextFormatter</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthPEFBTLSR3JAPDAACBUPT7QLKBU" Invoke="true">
+                <xsc:Presentation>throwableToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex)));
+                kernelCompatible = false;
+            }
+            kernelCompatibilityMap.put(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colL3YVJTL7CFCALHOXPVVDPZID7Q" Invoke="true">
+                <xsc:Presentation>revision</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, kernelCompatible);
+        }
+    } else {
+        kernelCompatible = repoVerInfo != null &amp;&amp; java.util.Objects.equals(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colFPV5MEWHSNFFRGQN4V5CEMIXXQ" Invoke="true">
+                <xsc:Presentation>kernelVersion</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, repoVerInfo.getKernelVersion());
+    }
+
+    info.setKernelCompatibleToRepo(kernelCompatible);
+
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId() == id) {
+        info.setArteCount(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getArtePool().getSize());
+        info.setAvgActiveArteCount(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getInstanceMonitor().getAvgActiveArteCount());
+    } else {
+        info.setArteCount(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colEBCHU436MFFEPLQPW6H6QGHNOE" Invoke="true">
+                <xsc:Presentation>arteInstCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        info.setAvgActiveArteCount(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col5F32BDXFU5GLJDKLCF5OHFYQDI" Invoke="true">
+                <xsc:Presentation>avgActiveArteCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+    info.setActivityStatus(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E prdSCFDPNGA3FGNPGSWPBLQV2SLZQ" Invoke="true">
+                <xsc:Presentation>activityStatus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+    if (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col55KRIWQ6TVBX3CIF4UY25YTMZE" Invoke="true">
+                <xsc:Presentation>osPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        info.setOsPid(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col55KRIWQ6TVBX3CIF4UY25YTMZE" Invoke="true">
+                <xsc:Presentation>osPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+    if (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colZ6GOA7GCZ5C7JLT7TXUKT7JVHA" Invoke="true">
+                <xsc:Presentation>startTimeMillis</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        info.setStartTimeMillis(instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colZ6GOA7GCZ5C7JLT7TXUKT7JVHA" Invoke="true">
+                <xsc:Presentation>startTimeMillis</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+
+return xDoc;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPGEA7G32OFC2FDIN5SSNUEL334" Name="doExecTask" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprNGNIJYV2JJA4NHBDFIOCLABDEE">
+            <Type TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ">
+                <xsc:Presentation>InstanceManagementAction</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> action = task.Action;
+
+final String actionTitle = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ">
+                <xsc:Presentation>InstanceManagementAction</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getRadMeta().getItemByVal(action.Value).getTitle(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+
+if (action == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    int thisInstanceIdx = -1;
+    for (int i = 0; i &lt; task.getTaskItemList().size(); i++) {
+        if (task.getTaskItemList().get(i).getId() == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId()) {
+            thisInstanceIdx = i;
+            break;
+        }
+    }
+
+    if (thisInstanceIdx >= 0 &amp;&amp; task.getTaskItemList().get(task.getTaskItemList().size() - 1).Id != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId()) {
+        try {
+            task = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask">
+                <xsc:Presentation>SysManagementXsd:ManageInstancesTask</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) task.copy();
+            final String title = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls5SQSSZUIYVBPDICP2PVEUVKXFY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+            final String text = String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsYFT6YLOVSVBOTCBVSKPL42L6QI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId(), true).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+            if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcMessageDialogResource_____">
+                <xsc:Presentation>Client.Resources::MessageDialogResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcMessageDialogResource_____ mth4C5WVL4T2RF3DCSOBMQJ2TS6PM" Invoke="true">
+                <xsc:Presentation>confirmation</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), title, text)) {
+                return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZD7HTRF3JJCKXH65HUPW2OMVU4 mthA27O2EJ6YFC2FCE6NL2Y56HE3I" Invoke="true">
+                <xsc:Presentation>FormHandlerMessageBoxRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4GAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogType:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, null, null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsLKLL2KMEIBDM7KYUTFPWU3447I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>), null);
+            } else {
+                task.addNewTaskItem().set(task.getTaskItemList().get(thisInstanceIdx));
+                task.getTaskItemList().remove(thisInstanceIdx);
+                if (thisInstanceIdx == 0) {
+                    Long maxDelaySec = null;
+                    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask.TaskItem">
+                <xsc:Presentation>SysManagementXsd:ManageInstancesTask.TaskItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java><![CDATA[ item : task.getTaskItemList()) {
+                        if (maxDelaySec == null || (item.getDelaySec() != null && maxDelaySec.longValue() < item.getDelaySec().longValue())) {
+                            maxDelaySec = item.getDelaySec();
+                        }
+                    }
+                    task.getTaskItemList().get(0).setDelaySec(0);
+                    final Long thisDelaySec = task.getTaskItemList().get(task.getTaskItemList().size() - 1).getDelaySec();
+                    if ((thisDelaySec == null || thisDelaySec == 0) && maxDelaySec != null && maxDelaySec.longValue() > 0) {
+                        if (!]]></xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcMessageDialogResource_____">
+                <xsc:Presentation>Client.Resources::MessageDialogResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcMessageDialogResource_____ mth4C5WVL4T2RF3DCSOBMQJ2TS6PM" Invoke="true">
+                <xsc:Presentation>confirmation</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsE5S6MFKV5BFT5GIJKUOKJ52RGI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsVPRSEIHY7FDVPFQEFYBKJXUKSU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, maxDelaySec))) {
+                            return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZD7HTRF3JJCKXH65HUPW2OMVU4 mthA27O2EJ6YFC2FCE6NL2Y56HE3I" Invoke="true">
+                <xsc:Presentation>FormHandlerMessageBoxRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4GAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogType:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, null, null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsU22DWIVDLREC3IGJFRV7JCNCDY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>), null);
+                        } else {
+                            task.getTaskItemList().get(task.getTaskItemList().size() - 1).setDelaySec(maxDelaySec);
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error", ex);
+        }
+    }
+}
+
+final String warningColor = "darkorange";
+final String errorColor = "red";
+final String goodColor = "green";
+
+class Tracer {
+
+    final java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTCAVHFXNQZFRXNABN7LO7VDEYI">
+                <xsc:Presentation>Meta::TraceItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> log = new java.util.ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTCAVHFXNQZFRXNABN7LO7VDEYI">
+                <xsc:Presentation>Meta::TraceItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcProgressDialogResourceProc">
+                <xsc:Presentation>Client.Resources::ProgressDialogProcessResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> process;
+    final java.text.SimpleDateFormat timeFormat = new java.text.SimpleDateFormat("HH:mm:ss.SSS");
+    final java.text.SimpleDateFormat dateTimeFormat = new java.text.SimpleDateFormat(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTCAVHFXNQZFRXNABN7LO7VDEYI">
+                <xsc:Presentation>Meta::TraceItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getTimeFormat());
+
+    public Tracer(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcProgressDialogResourceProc">
+                <xsc:Presentation>Client.Resources::ProgressDialogProcessResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> process) {
+        this.process = process;
+    }
+
+    public void trace(org.radixware.schemas.eas.TraceLevelEnum.Enum level, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> message) throws </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4">
+                <xsc:Presentation>Exceptions::ResourceUsageException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+                <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> sev = getForValue(level);
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTCAVHFXNQZFRXNABN7LO7VDEYI">
+                <xsc:Presentation>Meta::TraceItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTCAVHFXNQZFRXNABN7LO7VDEYI">
+                <xsc:Presentation>Meta::TraceItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, sev, null, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(message), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciPIBLCGW5JZD3FBY4L3V5ZMETUQ" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:Upgrade</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+        log.add(item);
+        process.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResourceProc mthZEWJOWXGM5DOFJJ43H6S435JUQ" Invoke="true">
+                <xsc:Presentation>trace</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(level, timeFormat.format(new java.util.Date(item.time)) + " : " + message);
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(sev, message, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciPIBLCGW5JZD3FBY4L3V5ZMETUQ" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:Upgrade</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+
+    public boolean flushTrace() throws </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4">
+                <xsc:Presentation>Exceptions::ResourceUsageException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU">
+                <xsc:Presentation>Exceptions::ResourceUsageTimeout</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> {
+        return process.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResourceProc mthUKXJNOGBTBFARGCZ52AQVJXHWM" Invoke="true">
+                <xsc:Presentation>flushTrace</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+
+    public java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTCAVHFXNQZFRXNABN7LO7VDEYI">
+                <xsc:Presentation>Meta::TraceItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> getLog() {
+        return log;
+    }
+
+    private </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+                <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> getForValue(org.radixware.schemas.eas.TraceLevelEnum.Enum level) {
+        if (level == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ALARM) {
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5OAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Alarm</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        } else if (level == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ERROR) {
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        } else if (level == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.WARNING) {
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        } else if (level == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT) {
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Event</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        } else if (level == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.DEBUG) {
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Debug</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        } else if (level == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.NONE) {
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci56AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:None</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        } else {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true">
+                <xsc:Presentation>IllegalArgumentException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Not defined severity type: " + level);
+        }
+    }
+
+    public String eventColor(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2" Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4">
+                <xsc:Presentation>Arte::EventSeverity</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> sev) {
+        if (sev == null) {
+            return null;
+        }
+        switch (sev) {
+            case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5OAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Alarm</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+            case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                return errorColor;
+            case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                return warningColor;
+            default:
+                return null;
+        }
+    }
+
+    public String[] dateAndTime(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTCAVHFXNQZFRXNABN7LO7VDEYI">
+                <xsc:Presentation>Meta::TraceItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item) {
+        return dateTimeFormat.format(new java.util.Date(item.time)).split(" ");
+    }
+
+}
+
+class InstanceInfo {
+
+    long id;
+    String title;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI">
+                <xsc:Presentation>ActivityStatus</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> activityStatus;
+    int startedUnitsCount;
+    int arteCount;
+    double avgActiveArteCount;
+    int dbSessionsCount;
+    String comment = "";
+    String commentColor = null;
+    long startTimeMillis;
+    long initialStartTimeMillis = -1;
+    boolean reachable = false;
+    long pid;
+    boolean restartSent = false;
+    boolean startUsingNewVerSent = false;
+    Tracer tracer;
+    long delayMillis = 0;
+    boolean preloadedNextVer = false;
+    boolean stoppedUsingCurVer = false;
+    boolean startedUsingNewVer = false;
+
+    public void check() {
+        try {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, true);
+            instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthKMY4TW32MFB2ZMKABNFN4W6PPY" Invoke="true">
+                <xsc:Presentation>getStatus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();//check availability
+            reachable = true;
+            commentColor = goodColor;
+            comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsKTH3QXY2ZNGSZL3YA73NF5K37I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        } catch (Exception ex) {
+            comment = ex.getClass().getSimpleName() + ": " + ex.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            commentColor = errorColor;
+        }
+    }
+
+    public void sendRestart(Long hardStopDelaySec) throws Exception {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, true);
+        instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthOKUR3OKKDRHMTDOT5RMHQYAGUE" Invoke="true">
+                <xsc:Presentation>restartInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(hardStopDelaySec);
+        comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsD4RF5N64E5GJFN2FF6SKUKTO4I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        commentColor = warningColor;
+        tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsPTAN5GUY7FFRTNMGWRNKHFWYQM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, title));
+        tracer.flushTrace();
+        restartSent = true;
+    }
+
+    public boolean sendStartUsingNewVer() throws Exception {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, true);
+        try {
+            if (!startUsingNewVerSent) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> mess = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+                mess.addNewStartUsingNextAppVersionMess().addNewStartUsingNextAppVersionRq().setUser(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getUserName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> startUsingNewVer = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthEKNTFC2QHNGIXJYNXIJ5FEZU2Q" Invoke="true">
+                <xsc:Presentation>execUpgradeTask</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mess);
+                comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsXZGE37SXWVFCNNTHH5T2MGKOLU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + " - " + startUsingNewVer.getStartUsingNextAppVersionMess().getStartUsingNextAppVersionRs().Result;
+                commentColor = warningColor;
+                tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsVNMA22ING5EPJHQQNIOAU5CSBQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, title));
+                startUsingNewVerSent = true;
+            }
+            return true;
+        } catch (Exception ex) {
+            final String errorText = ex.getClass().getSimpleName() + ": " + ex.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsZIKF4DOB4ZDYFKAB7OZ7X5PXH4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ": " + errorText;
+            commentColor = errorColor;
+            tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ERROR, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsTJPPCYD5GNDBXERN4CUAW77BVE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, title, errorText));
+            return false;
+        }
+    }
+
+    public boolean isRestartSent() {
+        return restartSent;
+    }
+
+    public boolean isRestarted() {
+        return startTimeMillis != initialStartTimeMillis;
+    }
+
+    public void reread() {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, true);
+        instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthYXHXCUYRXTNRDCJ3ABIFNQAABA" Invoke="true">
+                <xsc:Presentation>reread</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        title = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>calcTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        activityStatus = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E prdSCFDPNGA3FGNPGSWPBLQV2SLZQ" Invoke="true">
+                <xsc:Presentation>activityStatus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        if (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colZ6GOA7GCZ5C7JLT7TXUKT7JVHA" Invoke="true">
+                <xsc:Presentation>startTimeMillis</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+            startTimeMillis = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E colZ6GOA7GCZ5C7JLT7TXUKT7JVHA" Invoke="true">
+                <xsc:Presentation>startTimeMillis</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue();
+            if (initialStartTimeMillis &lt; 0) {
+                initialStartTimeMillis = startTimeMillis;
+            }
+        }
+        pid = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col55KRIWQ6TVBX3CIF4UY25YTMZE" Invoke="true">
+                <xsc:Presentation>osPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null ? instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col55KRIWQ6TVBX3CIF4UY25YTMZE" Invoke="true">
+                <xsc:Presentation>osPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue() : -1;
+        try (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accCG32YMMPDFGUPEY6JZ6CXJLS7I">
+                <xsc:Presentation>InstanceExtendedStateCur</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> extStateCur = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accCG32YMMPDFGUPEY6JZ6CXJLS7I">
+                <xsc:Presentation>InstanceExtendedStateCur</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accCG32YMMPDFGUPEY6JZ6CXJLS7I mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>open</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id)) {
+            if (extStateCur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+                <xsc:Presentation>next</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+                startedUnitsCount = extStateCur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accCG32YMMPDFGUPEY6JZ6CXJLS7I prfZ3HGVU2UEVBIFHMCTYXACFP2B4" Invoke="true">
+                <xsc:Presentation>startedUnitsCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue();
+                dbSessionsCount = extStateCur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accCG32YMMPDFGUPEY6JZ6CXJLS7I prfT3K4BMGN6JFYPPNQQK76C7CPMU" Invoke="true">
+                <xsc:Presentation>dbSessionsCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue();
+                if (id == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId()) {
+                    arteCount = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getArtePool().getSize();
+                    avgActiveArteCount = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getInstanceMonitor().getAvgActiveArteCount();
+                } else {
+                    arteCount = extStateCur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accCG32YMMPDFGUPEY6JZ6CXJLS7I prfZQHTOQS7ABAZDFBQ6CMLQ6655E" Invoke="true">
+                <xsc:Presentation>arteCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue();
+                    avgActiveArteCount = extStateCur.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accCG32YMMPDFGUPEY6JZ6CXJLS7I prf5BCIAOO2JNCEFGQLPUJXPCT2FI" Invoke="true">
+                <xsc:Presentation>avgActiveArteCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.doubleValue();
+                }
+            } else {
+                startedUnitsCount = -1;
+                arteCount = -1;
+                dbSessionsCount = -1;
+                avgActiveArteCount = -1;
+            }
+        }
+    }
+
+    public String getComment() {
+        return comment + (id == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId() ? " (" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsCJ74GET67VCDZHWJDEN5QBNMKA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ")" : "");
+    }
+}
+
+class InstanceInfos {
+
+    java.util.List&lt;InstanceInfo> list = new java.util.ArrayList&lt;InstanceInfo>();
+    String comment = "";
+    long startMillis = -1;
+    long timeoutMillis = -1;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask">
+                <xsc:Presentation>SysManagementXsd:ManageInstancesTask</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> task;
+    boolean needProcessThis = false;
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcProgressDialogResourceProc">
+                <xsc:Presentation>Client.Resources::ProgressDialogProcessResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> process;
+    Tracer tracer;
+    long firstStopUsingVerRqMillis = -1;
+
+    InstanceInfos(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask">
+                <xsc:Presentation>SysManagementXsd:ManageInstancesTask</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> task) {
+        this.task = task;
+        for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask.TaskItem">
+                <xsc:Presentation>SysManagementXsd:ManageInstancesTask.TaskItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : task.getTaskItemList()) {
+            add(item.getId().longValue());
+            list.get(list.size() - 1).delayMillis = item.getDelaySec() == null ? 0 : item.getDelaySec().longValue() * 1000;
+        }
+    }
+
+    public void add(long id) {
+        InstanceInfo info = new InstanceInfo();
+        info.id = id;
+        info.reread();
+        info.check();
+        list.add(info);
+        if (id == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId()) {
+            needProcessThis = true;
+        }
+    }
+
+    public void rereadAll() {
+        for (InstanceInfo info : list) {
+            info.reread();
+        }
+    }
+
+    public void sendStopToAll() throws Exception {
+        for (InstanceInfo info : list) {
+            if (info.reachable) {
+                final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.id, true);
+                rereadAll();
+                update();
+                try {
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="StopInstanceRs">
+                <xsc:Presentation>InstanceControlServiceXsd:StopInstanceRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> stopInstanceRs = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthDK6FEQYOWVFINIJ7FSXKRBUKWM" Invoke="true">
+                <xsc:Presentation>stopInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(timeoutMillis / 1000 + (instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId() ? 5 : 0));
+                    info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsAMNPKWNGDBAAPAT7U6UXSMXOYM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ": " + stopInstanceRs.Result;
+                    info.commentColor = warningColor;
+                } catch (Exception ex) {
+                    info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsVQLZM6X7FNHT5IMB5DSWMI623Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ": " + ex.getClass().getSimpleName() + ": " + ex.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                    info.commentColor = errorColor;
+                }
+                rereadAll();
+                update();
+            }
+        }
+    }
+
+    public boolean sendPreloadToAll() throws Exception {
+        boolean ok = true;
+        for (InstanceInfo info : list) {
+            if (info.reachable) {
+                final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.id, true);
+                try {
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> mess = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+                    mess.addNewPreloadNextVersionMess().addNewPreloadNextVersionRq().setUser(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getUserName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> preloadNextRs = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthEKNTFC2QHNGIXJYNXIJ5FEZU2Q" Invoke="true">
+                <xsc:Presentation>execUpgradeTask</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mess);
+                    info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls2AHALY4PWBFMBGB24UNSXFXYXI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + " - " + preloadNextRs.getPreloadNextVersionMess().getPreloadNextVersionRs().Result;
+                    info.commentColor = warningColor;
+                    tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsYF37HBPLANEJXFGU6BE4WP3OGE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, info.title));
+                } catch (Exception ex) {
+                    final String errorText = ex.getClass().getSimpleName() + ": " + ex.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                    info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUG4WPLLTIRG45LH22VZ3VW4S2A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ": " + errorText;
+                    info.commentColor = errorColor;
+                    tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ERROR, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsYRIBJZ45RVFE7N5IKXVORN3HRQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, info.title, errorText));
+                    ok = false;
+                }
+                rereadAll();
+                update();
+            }
+        }
+        return ok;
+    }
+
+    public boolean sendStopUsingCurVerToAll() throws Exception {
+        for (InstanceInfo info : list) {
+            if (info.reachable) {
+                final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.id, true);
+                try {
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> mess = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+                    mess.addNewStopUsingCurAppVersionMess().addNewStopUsingCurAppVersionRq().setUser(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getUserName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+                    if (task.getHardStopDelaySec() != null) {
+                        mess.getStopUsingCurAppVersionMess().getStopUsingCurAppVersionRq().MaxWaitSec = task.getHardStopDelaySec();
+                    }
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="UpgradeInstanceMess">
+                <xsc:Presentation>InstanceControlServiceXsd:UpgradeInstanceMess</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> stopUsingCurVer = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthEKNTFC2QHNGIXJYNXIJ5FEZU2Q" Invoke="true">
+                <xsc:Presentation>execUpgradeTask</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(mess);
+                    info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsRLRIRTSJUJC3PCIG24ZESKNWDA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + " - " + stopUsingCurVer.getStopUsingCurAppVersionMess().getStopUsingCurAppVersionRs().Result;
+                    info.commentColor = warningColor;
+                    tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsOJIKUDHFFFEG7C3VX7KTI2GL6Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, info.title));
+                    if (firstStopUsingVerRqMillis == -1) {
+                        firstStopUsingVerRqMillis = System.currentTimeMillis();
+                    }
+                } catch (Exception ex) {
+                    final String errorText = ex.getClass().getSimpleName() + ": " + ex.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                    info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsGP2PGND5CBHGFI6HYUGD2FFGGE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ": " + errorText;
+                    info.commentColor = errorColor;
+                    tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ERROR, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsXCCMPKB4R5DDBNFB44PUOM2FOY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, info.title, errorText));
+                    return false;
+                }
+
+            }
+        }
+        rereadAll();
+        update();
+        return true;
+    }
+
+    public </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA">
+                <xsc:Presentation>Types::FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> checkStopIsDone() {
+        System.out.println("Check stop is done");
+        if (checkOnlyThisIsIsLeft()) {
+            String inactiveMarkedAsStopped = "";
+            if (task.MarkInactiveAsStopped != null &amp;&amp; task.MarkInactiveAsStopped.booleanValue()) {
+                final java.lang.StringBuilder sb = new java.lang.StringBuilder();
+                for (InstanceInfo info : list) {
+                    if (info.activityStatus == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI aci5HWLDK26TJABXEOH26HP23LNJA" Invoke="true">
+                <xsc:Presentation>ActivityStatus:INACTIVE</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="sscSXNBHSDT65AHLPIG2TEWGZZTEA">
+                <xsc:Presentation>SetInstanceStoppedWithUnitsCur</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="sscSXNBHSDT65AHLPIG2TEWGZZTEA mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>execute</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.id);
+                        sb.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVXUX5KTNEBGYNALK4JPIC22X7I mthPFB5IBUOOJGABLWF4RLZ6UQHRU" Invoke="true">
+                <xsc:Presentation>escapeHtml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.title));
+                        sb.append("&lt;br/>");
+                    }
+                }
+                if (sb.length() > 0) {
+                    inactiveMarkedAsStopped = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsZSBFYBNFDNG55GKEAOSYLAOOMU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ":&lt;br/>&lt;br/>" + sb.toString();
+                    rereadAll();
+                }
+
+            }
+            return prepareFinalResponse(inactiveMarkedAsStopped);
+
+        }
+        return null;
+    }
+
+    public </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA">
+                <xsc:Presentation>Types::FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> prepareFinalResponse(final String prefix) {
+        return prepareFinalResponse(prefix, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogType:Information</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+
+    public </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA">
+                <xsc:Presentation>Types::FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> prepareFinalResponse(final String prefix, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsA6YQGK7TJXNRDCHCABIFNQAABA">
+                <xsc:Presentation>Client.Resources::DialogType</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialogType) {
+        final String endHtml = prefix
+                + "&lt;br/>"
+                + (needProcessThis &amp;&amp; action != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsMZCHW2DH4NG6VOJREZLE3HRSNI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> : "")
+                + "&lt;br/>"
+                + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls3NZUAFQZJ5DHTJ6T5GQCJW5FBE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+        comment = endHtml;
+
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhD26UWY774BFENNOMSKTKOAYR4E">
+                <xsc:Presentation>SysManagementResultForm</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> form = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhD26UWY774BFENNOMSKTKOAYR4E">
+                <xsc:Presentation>SysManagementResultForm</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null);
+        form.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhD26UWY774BFENNOMSKTKOAYR4E prdCX4QFHMXBVEQZDVPMIRKSMVCNM" Invoke="true">
+                <xsc:Presentation>htmlReport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = toHtml(true);
+        return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, form);
+    }
+
+    public boolean checkOnlyThisIsIsLeft() {
+        for (InstanceInfo info : list) {
+            if (info.id != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId()) {
+                if (info.activityStatus == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI aciBTRZ4SFW6JGJLFVHCXNSLARBUM" Invoke="true">
+                <xsc:Presentation>ActivityStatus:RUNNING</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                    return false;
+                }
+                if (action == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                    info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsMHTJUOMWWBA45M3OTXCIN67TNA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                    info.commentColor = errorColor;
+                }
+            } else {
+                if (info.reachable) {
+                    if (!stopAllInThisInstanceExceptThisArte()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean checkAllPreloadedNextVer() {
+        boolean ok = true;
+        for (InstanceInfo info : list) {
+            if (!info.preloadedNextVer) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> inst = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.id, true);
+                try {
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="GetStatusRs">
+                <xsc:Presentation>InstanceControlServiceXsd:GetStatusRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = inst.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthKMY4TW32MFB2ZMKABNFN4W6PPY" Invoke="true">
+                <xsc:Presentation>getStatus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                    final int exceptThis = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId() == info.id ? 1 : 0;
+                    if (rs.isSetPendingAppVersion()) {
+                        if (rs.isSetArteWithoutPendingVersionCount() &amp;&amp; (rs.getArteWithoutPendingVersionCount().longValue() - exceptThis &lt;= 0)) {
+                            info.preloadedNextVer = true;
+                            info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls7TAJVEM6WFCVNFFA2WN7MSAGCA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                            info.commentColor = warningColor;
+                            tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsGQUSCGIBHJF6RPP2WTPE6DLBKI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, info.title));
+                        } else {
+                            ok = false;
+                            info.comment = String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsICKFLE3NRFFADPLAMRGF7NRAO4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, rs.getArteWithoutPendingVersionCount().longValue() - exceptThis);
+                            info.commentColor = warningColor;
+                        }
+                    } else {
+                        ok = false;
+                    }
+                } catch (Exception ex) {
+                    info.comment = prepareErrorComment(ex);
+                    info.commentColor = errorColor;
+                    ok = false;
+                }
+            }
+        }
+        return ok;
+    }
+
+    public boolean checkAllStoppedUsingCurVer() {
+        boolean ok = true;
+        for (InstanceInfo info : list) {
+            if (!info.stoppedUsingCurVer) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> inst = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.id, true);
+                try {
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="GetStatusRs">
+                <xsc:Presentation>InstanceControlServiceXsd:GetStatusRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = inst.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthKMY4TW32MFB2ZMKABNFN4W6PPY" Invoke="true">
+                <xsc:Presentation>getStatus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                    final int exceptThis = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getId() == info.id ? 1 : 0;
+                    if (rs.isSetArteProcessingCurVerCount() &amp;&amp; (rs.getArteProcessingCurVerCount().longValue() - exceptThis &lt;= 0)) {
+                        info.stoppedUsingCurVer = true;
+                        info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls2Y275BFOWFBJBIDCFH6FV5JT5Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                        info.commentColor = warningColor;
+                        tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls7AK3IRPFWRGSJBC3VQZZMASIBE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, info.title));
+                    } else {
+                        if (rs.isSetArteProcessingCurVerCount()) {
+                            info.comment = String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsCOXK4HZAZNEGXBUQMKGFCIUNKU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, rs.getArteProcessingCurVerCount().longValue() - exceptThis);
+                            info.commentColor = warningColor;
+                        }
+                        ok = false;
+                    }
+                } catch (Exception ex) {
+                    info.comment = prepareErrorComment(ex);
+                    info.commentColor = errorColor;
+                    ok = false;
+                }
+            }
+        }
+        return ok;
+    }
+
+    public boolean checkAllUsingNewVer() {
+        boolean ok = true;
+        for (InstanceInfo info : list) {
+            if (!info.startUsingNewVerSent) {
+                ok = false;
+            } else if (!info.startedUsingNewVer) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> inst = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.id, true);
+                try {
+                    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="GetStatusRs">
+                <xsc:Presentation>InstanceControlServiceXsd:GetStatusRs</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> rs = inst.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E mthKMY4TW32MFB2ZMKABNFN4W6PPY" Invoke="true">
+                <xsc:Presentation>getStatus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+                    if (!rs.isSetPendingAppVersion()) {
+                        info.startedUsingNewVer = true;
+                        info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls5VVQ6AWXN5D4LHZBU5CTVQMKSI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                        info.commentColor = goodColor;
+                        tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsXPIJ37IRJVD35HVRMFEIXBR6RM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, info.title));
+                    }
+                } catch (Exception ex) {
+                    info.comment = prepareErrorComment(ex);
+                    info.commentColor = errorColor;
+                    ok = false;
+                }
+            }
+        }
+        return ok;
+    }
+
+    private String prepareErrorComment(final Throwable t) {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsRGEAL7XWDZHRZIVCKX2GEK726A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ": " + t.getClass().getName() + ": " + t.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+
+    public boolean stopAllInThisInstanceExceptThisArte() {
+        int runningNonArteUnits = 0;
+        for (org.radixware.kernel.server.units.Unit u : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getUnits()) {
+            if (u.getState() != org.radixware.kernel.server.units.UnitState.STOPPED &amp;&amp; !(u instanceof org.radixware.kernel.server.units.arte.ArteUnit)) {
+                runningNonArteUnits++;
+            }
+        }
+        if (runningNonArteUnits > 0) {
+            return false;
+        }
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getArtePool().shutdown(0);
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java><![CDATA[().getInstance().getArtePool().getSize() > 1) {
+            return false;
+        }
+        return true;
+    }
+
+    public String toHtml(boolean includeLog) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<html>");
+        sb.append("<head><meta charset=\"utf-8\"></head>");
+        sb.append("<div style=\"max-width:960px; margin:auto\">"); //content div to center tables
+        sb.append(comment);
+        sb.append("<table width=\"100%\" align=\"center\" border=1>");
+        sb.append("<tr>"
+                + "<th>" + ]]></xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsTAYPQE56VZB3BKXJUPLSN7WVBU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsH5IQMPT3PRA5TDJIX7YOQ24DNU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsBHQQDZ2VFREQJNRWOW4KMT5BYU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls47WO4OXBYNBRRMGKMU6JNQ2EDY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsEBAAW7VTKJDQLKOAIPGDD4FQTM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsG6J4BCJB2REG5HD3GLLBGAQGNQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                + "&lt;/tr>"
+        );
+        final long curMillis = System.currentTimeMillis();
+        for (InstanceInfo info : list) {
+            final String statusStr = info.activityStatus.Title + (info.activityStatus == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI aciBTRZ4SFW6JGJLFVHCXNSLARBUM" Invoke="true">
+                <xsc:Presentation>ActivityStatus:RUNNING</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> &amp;&amp; info.startTimeMillis >= 0 ? " (" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA">
+                <xsc:Presentation>Utils::Timing</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZTDZERY2EFG4BKALU6UDNWC22Y" Invoke="true">
+                <xsc:Presentation>millisToDurationString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(curMillis - info.startTimeMillis) + ", PID: " + info.pid + ")" : "");
+            sb.append("&lt;tr>"
+                    + cell(info.title)
+                    + cell(statusStr, statusColor(info.activityStatus))
+                    + cell(String.valueOf(info.startedUnitsCount))
+                    + cell(String.valueOf(info.arteCount) + " (~ " + String.format("%.2f", info.avgActiveArteCount) + " " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsPMKSSTAPOJFCHH4MJWC3KVTY4I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java><![CDATA[ + ")")
+                    + cell(String.valueOf(info.dbSessionsCount))
+                    + cell(info.getComment(), info.commentColor)
+                    + "</tr>"
+            );
+        }
+        sb.append("</table>");
+        if (includeLog && tracer != null && !tracer.getLog().isEmpty()) {
+            sb.append(]]></xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUOAWQNQAO5C3NNYELNK7CIO56Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            sb.append("&lt;table width=\"100%\" align=\"center\" border=1>");
+            sb.append("&lt;tr>"
+                    + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsKC4WEQGBMZFLBCIGA76KZW47NA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                    + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsYTP54F5JNJHRLP3LOZOHX2DZJA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                    + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsU7GPEGY5UBHD3ORIM2H424QORQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                    + "&lt;th>" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsLJGNW25GPFFFTERNLUXUV6ZTYI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "&lt;/th>"
+                    + "&lt;/tr>"
+            );
+            for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcTCAVHFXNQZFRXNABN7LO7VDEYI">
+                <xsc:Presentation>Meta::TraceItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> it : tracer.getLog()) {
+                final String color = tracer.eventColor(it.severity);
+                final String[] dateAndTime = tracer.dateAndTime(it);
+                sb.append("&lt;tr>")
+                        .append(cell(it.severity.Name, "left", color))
+                        .append(cell(dateAndTime[0], "left", color))
+                        .append(cell(dateAndTime[1], "left", color))
+                        .append(cell(it.getMess(), "left", color))
+                        .append("&lt;/tr>");
+            }
+            sb.append("&lt;/table>");
+        }
+        sb.append("&lt;/div>");
+        sb.append("&lt;/html>");
+        return sb.toString();
+    }
+
+    private String statusColor(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI">
+                <xsc:Presentation>ActivityStatus</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> status) {
+        if (status == null) {
+            return null;
+        }
+        switch (status) {
+            case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI aci5HWLDK26TJABXEOH26HP23LNJA" Invoke="true">
+                <xsc:Presentation>ActivityStatus:INACTIVE</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                return warningColor;
+            case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI aciBTRZ4SFW6JGJLFVHCXNSLARBUM" Invoke="true">
+                <xsc:Presentation>ActivityStatus:RUNNING</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                return goodColor;
+            case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI aciMPWAGZE5PVG4VGQ4A2YDJ3J77I" Invoke="true">
+                <xsc:Presentation>ActivityStatus:STOPPED</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                return errorColor;
+            default:
+                return null;
+        }
+    }
+
+    private String cell(final String text) {
+        return cell(text, "center", null);
+    }
+
+    private String cell(final String text, final String rgbColor) {
+        return cell(text, "center", rgbColor);
+    }
+
+    private String cell(final String text, final String align, final String rgbColor) {
+        return "&lt;td align=\"" + align + "\">"
+                + (rgbColor == null ? "" : ("&lt;font color=\"" + rgbColor + "\">"))
+                + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVXUX5KTNEBGYNALK4JPIC22X7I mthYWZPZQ3LHRDLLE3MROPDZEVGAI" Invoke="true">
+                <xsc:Presentation>getHtmlTextWithWrapWords</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVXUX5KTNEBGYNALK4JPIC22X7I mthPFB5IBUOOJGABLWF4RLZ6UQHRU" Invoke="true">
+                <xsc:Presentation>escapeHtml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(text))
+                + (rgbColor == null ? "" : "&lt;/font>")
+                + "&lt;/td>";
+    }
+
+    public void update() throws Exception {
+        Float progress = timeoutMillis &lt; 0 ? null : (startMillis == -1 ? null : 100 * Math.min((System.currentTimeMillis() - startMillis) / 1000f / timeoutMillis, 1f));
+        tracer.flushTrace();
+        if (process.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResourceProc mthAE7I7CG6LRCUTPDSXDSOB7YV2I" Invoke="true">
+                <xsc:Presentation>set</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(toHtml(false), progress, true)) {
+            throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsHOHDNFOUIRFODCLTUX2MOVZRPM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+    }
+}
+
+InstanceInfos infos = new InstanceInfos(task);
+
+if (infos.list.isEmpty()) {
+    return infos.prepareFinalResponse(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsM6PHH3B7DZFRFHKDEVCFTQWAIQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+try {
+    final java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    for (InstanceInfo info : infos.list) {
+        if (!info.reachable) {
+            sb.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVXUX5KTNEBGYNALK4JPIC22X7I mthPFB5IBUOOJGABLWF4RLZ6UQHRU" Invoke="true">
+                <xsc:Presentation>escapeHtml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(info.title));
+            sb.append("&lt;br/>");
+        }
+    }
+    if (!</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcMessageDialogResource_____">
+                <xsc:Presentation>Client.Resources::MessageDialogResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcMessageDialogResource_____ mth4C5WVL4T2RF3DCSOBMQJ2TS6PM" Invoke="true">
+                <xsc:Presentation>confirmation</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsNHJTBXXGCBDQRN7ITWOK5PPKGA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, actionTitle), String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsAVNJHEN5A5AI7KST6QHWK4VP6Y"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, actionTitle) + "&lt;br>" + (sb.length() > 0 ? "&lt;br/>&lt;font color=\"" + warningColor + "\">" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsML7JGL7HA5AZDOK6AHB3QPEAYA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + ":&lt;/font>&lt;br/>" + sb.toString() + "&lt;br/>" : "") + infos.toHtml(false))) {
+        return null;
+    }
+} catch (Exception ex) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Error", ex);
+}
+
+infos.startMillis = System.currentTimeMillis();
+int timeoutMillis = action == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ? task.getHardStopDelaySec().intValue() * 1000 : -1;
+infos.timeoutMillis = timeoutMillis;
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcProgressDialogResource____">
+                <xsc:Presentation>Client.Resources::ProgressDialogResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> progress = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResource____ mthC5IM4X76VRD6XN4BV3ALQXGFYU" Invoke="true">
+                <xsc:Presentation>ProgressDialogResource</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), actionTitle, action != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+try {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcProgressDialogResourceProc">
+                <xsc:Presentation>Client.Resources::ProgressDialogProcessResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> process = progress.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResource____ mthODOXK22HZJBINCRNIGWLD5DJGY" Invoke="true">
+                <xsc:Presentation>startNewProcess</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(actionTitle, true, true);
+    final Tracer tracer = new Tracer(process);
+
+    try {
+
+        infos.process = process;
+        infos.tracer = tracer;
+        for (InstanceInfo info : infos.list) {
+            info.tracer = tracer;
+        }
+
+        if (action == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            infos.sendStopToAll();
+        }
+
+        int curIndex = 0;
+        long prevInstTimeMillis = System.currentTimeMillis();
+        long delayMillis = 0;
+        boolean preloadSent = false;
+        boolean stopUsingCurVerSent = false;
+        boolean startUsingNewVerSent = false;
+        final boolean rollingSwitch = task.SwitchRolling != null &amp;&amp; task.SwitchRolling.booleanValue();
+
+        while (timeoutMillis &lt; 0 || System.currentTimeMillis() - infos.startMillis &lt; timeoutMillis) {
+            infos.rereadAll();
+
+            if (action == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> stopResult = infos.checkStopIsDone();
+                if (stopResult != null) {
+                    return stopResult;
+                }
+            }
+
+            if (action == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                if (System.currentTimeMillis() - prevInstTimeMillis > delayMillis) {
+                    InstanceInfo info = infos.list.get(curIndex);
+                    if (!info.isRestartSent()) {
+                        info.sendRestart(task.getHardStopDelaySec());
+                    }
+                    boolean allDone = false;
+                    if (info.isRestarted()) {
+                        tracer.trace(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd6JHHAUMDPXORDBMMABIFNQAABA" extStr="TraceLevelEnum">
+                <xsc:Presentation>Arte::EasXsd:TraceLevelEnum</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.EVENT, String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsHGCC7OYYPFBCJFVN2Z7362DBWA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, info.title));
+                        tracer.flushTrace();
+                        info.comment = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsD3SUXUGCQBAV7JAH2BWXSTBBIA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+                        info.commentColor = goodColor;
+                        if (curIndex == infos.list.size() - 1) {
+                            allDone = true;
+                        } else {
+                            curIndex++;
+                            delayMillis = infos.list.get(curIndex).delayMillis;
+                            prevInstTimeMillis = System.currentTimeMillis();
+                        }
+                    }
+                    if (curIndex == infos.list.size() - 1 &amp;&amp; infos.needProcessThis) {//this is always the last
+                        if (infos.stopAllInThisInstanceExceptThisArte()) {
+                            allDone = true;
+                            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthONIEWR6P33OBDCSKABIFNQAABA" Invoke="true">
+                <xsc:Presentation>sleep</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(2000);//let ARTE pool on this instance stop to receive nice stats in final form (running ARTE = 1)
+                        }
+                    }
+                    if (allDone) {
+                        infos.rereadAll();
+                        return infos.prepareFinalResponse("");
+                    }
+                }
+            }
+
+            if (action == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+                if (!preloadSent) {
+                    preloadSent = infos.sendPreloadToAll();
+                    if (!preloadSent) {
+                        return infos.prepareFinalResponse(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls6VV745OUFBB2HE4M7KTZQFJK5I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4GAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogType:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                    }
+                }
+                if (infos.checkAllPreloadedNextVer()) {
+                    if (rollingSwitch) {
+                        stopUsingCurVerSent = true;
+                    }
+                    if (!stopUsingCurVerSent) {
+                        stopUsingCurVerSent = infos.sendStopUsingCurVerToAll();
+                        if (!stopUsingCurVerSent) {
+                            return infos.prepareFinalResponse(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsIAAGTXW7CJGUFPE2NZX6SKQGHU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4GAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogType:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+                        }
+                    } else {
+                        if (rollingSwitch || infos.checkAllStoppedUsingCurVer()) {
+                            if (!startUsingNewVerSent) {
+                                if (rollingSwitch) {
+                                    infos.checkAllUsingNewVer();
+                                    if (System.currentTimeMillis() - prevInstTimeMillis > delayMillis) {
+                                        InstanceInfo info = infos.list.get(curIndex);
+                                        if (info.sendStartUsingNewVer()) {
+                                            curIndex++;
+                                            if (curIndex &lt; infos.list.size()) {
+                                                delayMillis = infos.list.get(curIndex).delayMillis;
+                                                prevInstTimeMillis = System.currentTimeMillis();
+                                            } else {
+                                                startUsingNewVerSent = true;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    startUsingNewVerSent = true;
+                                    for (InstanceInfo info : infos.list) {
+                                        if (!info.startUsingNewVerSent &amp;&amp; !info.sendStartUsingNewVer()) {
+                                            startUsingNewVerSent = false;
+                                        }
+                                    }
+                                }
+                            }
+                            if (startUsingNewVerSent &amp;&amp; infos.checkAllUsingNewVer()) {
+                                return infos.prepareFinalResponse(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsJR5LB2MJYFGA3H2RTIN5LGKF7I"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + (infos.firstStopUsingVerRqMillis != -1 ? (". " + String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsKRFZDJRDIRFRNFCL7TPAUIZPD4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, (System.currentTimeMillis() - infos.firstStopUsingVerRqMillis) / 1000)) : ""));
+                            }
+                        }
+                    }
+                }
+            }
+            infos.update();
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthONIEWR6P33OBDCSKABIFNQAABA" Invoke="true">
+                <xsc:Presentation>sleep</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(1000);
+        }
+
+        return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZD7HTRF3JJCKXH65HUPW2OMVU4 mthA27O2EJ6YFC2FCE6NL2Y56HE3I" Invoke="true">
+                <xsc:Presentation>FormHandlerMessageBoxRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4GAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogType:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, null, null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsPNSCV6LJYZDJLJBWKUDO5ZFLC4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>), null);
+    } finally {
+        process.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResourceProc mthAE7I7CG6LRCUTPDSXDSOB7YV2I" Invoke="true">
+                <xsc:Presentation>set</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(actionTitle, null, false);
+        process.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcProgressDialogResourceProc mthWSRVEVBSWNGHJMYBYUMIR3THI4" Invoke="true">
+                <xsc:Presentation>close</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    }
+} catch (Exception ex) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsHJXA72ZMIJFAFFT563EAZNO3ZQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, actionTitle) + ": " + ex.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), ex);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAYBWXY4GJFG3XA2JVPTMZHOAV4" Name="execTask" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="task" Id="mprNGNIJYV2JJA4NHBDFIOCLABDEE">
+            <Type TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().setUpgraderArte(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+try {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVXUX5KTNEBGYNALK4JPIC22X7I mthPGEA7G32OFC2FDIN5SSNUEL334" Invoke="true">
+                <xsc:Presentation>doExecTask</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(task);
+} finally {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().setUpgraderArte(null);
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYWZPZQ3LHRDLLE3MROPDZEVGAI" Name="getHtmlTextWithWrapWords" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="text" Id="mprO2U6PFWNERFWVDXHNMDXUGS4KA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final int lineLength = 80;
+final int minLineLength = 40;
+if (text.length() &lt;= lineLength) {
+    return text;
+} else {
+    final java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    int lineStart = 0;
+    int lineEnd = lineLength;
+    while (lineEnd &lt; text.length()) {
+        for (int pos = lineEnd; pos >= lineStart + minLineLength; pos--) {
+            if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="3">
+                <xsc:Presentation>Char</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.isWhitespace(text.charAt(pos)) || pos == lineStart + minLineLength) {
+                if (pos == lineStart + minLineLength) {
+                    pos = lineEnd;
+                }
+                sb.append(text.substring(lineStart, pos));
+                sb.append("&lt;br/>");
+                lineStart = pos;
+                lineEnd = lineStart + lineLength;
+                break;
+            }
+        }
+    }
+    sb.append(text.substring(lineStart));
+    return sb.toString();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPFB5IBUOOJGABLWF4RLZ6UQHRU" Name="escapeHtml" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="str" Id="mpr74UG46X4RZEY5H4U6VPJ2T4H4Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java><![CDATA[//return org.apache.commons.lang.StringEscapeUtils.escapeHtml(str);
+//Html page charset always utf-8 in this case need to replace only: <, >, ', &, "
+if (str == null || !(str.contains("<") || str.contains(">") || str.contains("&") || str.contains("'") || str.contains("\""))) {
+    return str;
+}
+
+final java.lang.StringBuilder sb = new StringBuilder(str.length());
+char ch;
+for (int pos = 0; pos < str.length(); pos++) {
+    ch = str.charAt(pos);
+    if (ch == '<') {
+        sb.append("&lt;");
+    } else if (ch == '>') {
+        sb.append("&gt;");
+    } else if (ch == '&') {
+        sb.append("&amp;");
+    } else if (ch == '\'') {
+        sb.append("&apos;");
+    } else if (ch == '"') {
+        sb.append("&quot;");
+    } else {
+        sb.append(ch);
+    }
+}
+return sb.toString();]]></xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

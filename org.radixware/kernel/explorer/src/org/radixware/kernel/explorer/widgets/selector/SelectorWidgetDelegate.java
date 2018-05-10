@@ -21,11 +21,16 @@ final class SelectorWidgetDelegate implements ISelectorWidgetDelegate{
     
     private final SelectorModel model;
     private final QModelIndex currentIndex;
+    private final boolean updateRowsCount;
     
-    
-    public SelectorWidgetDelegate(SelectorModel model, QModelIndex index){
+    public SelectorWidgetDelegate(final SelectorModel model, final QModelIndex index, final boolean updateRowsCount){
         this.model = model;
         this.currentIndex = index;
+        this.updateRowsCount = updateRowsCount;
+    }
+    
+    public SelectorWidgetDelegate(final SelectorModel model, final QModelIndex index){
+        this(model, index, true);
     }
 
     @Override
@@ -49,12 +54,14 @@ final class SelectorWidgetDelegate implements ISelectorWidgetDelegate{
     }
 
     @Override
-    public void updateRowsCount(GroupModel g) {
-        model.updateRowsCount(currentIndex, g);
+    public void updateRowsCount(final GroupModel groupModel) {
+        if (updateRowsCount || model.rowCount(currentIndex)>0){
+            model.updateRowsCount(currentIndex);
+        }
     }
 
     @Override
-    public void increaseRowsLimit() {
-        model.increaseRowsLimit();
+    public void increaseRowsLimit() {        
+        model.increaseRowsLimit();        
     }
 }

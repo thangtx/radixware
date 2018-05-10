@@ -14,9 +14,13 @@ package org.radixware.kernel.explorer.tester;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QFileDialog;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.SettingNames;
+import org.radixware.kernel.common.client.exceptions.ExceptionMessage;
+import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
 import org.radixware.kernel.explorer.env.MessageFilter;
@@ -33,10 +37,26 @@ public class TesterEnvironment {
     private final IClientEnvironment environment;
     private final ExplorerTraceBuffer nativeTraceBuffer;    
     private final MessageFilter messageFilter;
+    private final List<Throwable> exceptions = new LinkedList<>();
     private final QFileDialog.DialogHandler fileDialogHandler = new QFileDialog.DialogHandler(){
+
         @Override
-        public List<String> handle(QFileDialog.AcceptMode am, String string, String string1, String string2, QFileDialog.Options optns) {
-            return Collections.<String>emptyList();//cancel file selection;
+        public List<String> beforeOpen(final QFileDialog.AcceptMode mode, 
+                                       final String caption, 
+                                       final String dir, 
+                                       final String filter, 
+                                       final QFileDialog.Options options) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<String> afterOpen(final QFileDialog.AcceptMode mode, 
+                                      final String caption, 
+                                      final String dir, 
+                                      final String filter, 
+                                      final QFileDialog.Options options, 
+                                      final List<String> result) {
+            return result;
         }        
     };
 
@@ -46,6 +66,10 @@ public class TesterEnvironment {
         nativeTraceBuffer = (ExplorerTraceBuffer)environment.getTracer().getBuffer();
         messageFilter = new TesterMessageFilter(environment);
         testerTraceBuffer = (ExplorerTraceBuffer)environment.getTracer().createTraceBuffer();
+    }
+    
+    public void registerException(final Throwable ex){
+        exceptions.add(ex);
     }
 
     public IClientEnvironment getEnvironment() {
@@ -100,6 +124,11 @@ public class TesterEnvironment {
         ((ExplorerTracer)environment.getTracer()).setBuffer(nativeTraceBuffer);
         Application.applySettings(nativeSettings);
         Application.removeMessageFilter();
-        QFileDialog.removeDialogHandler();
+        QFileDialog.removeDialogHandler(fileDialogHandler);
+        AdsUserFuncDef.Lookup.clearCaches();
+        final MessageProvider mp = environment.getMessageProvider();
+        for (Throwable ex: exceptions){
+            new ExceptionMessage(environment, ex).trace(environment.getTracer(), mp.translate("TesterDialog", "Exception detected during test execution"));
+        }
     }
 }

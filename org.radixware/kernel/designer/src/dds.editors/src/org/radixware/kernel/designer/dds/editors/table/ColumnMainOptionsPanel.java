@@ -33,6 +33,7 @@ import org.radixware.kernel.designer.dds.editors.DdsColumnTemplateEditor;
 
 
 public class ColumnMainOptionsPanel extends javax.swing.JPanel implements IUpdateable {
+    private static final String ILLEGAL_NAME_SUFFIX = " (ILLEGAL NAME)";
 
     @Override
     public void update() {

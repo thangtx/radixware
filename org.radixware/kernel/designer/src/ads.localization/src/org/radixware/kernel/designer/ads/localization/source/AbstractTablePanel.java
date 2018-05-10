@@ -105,6 +105,9 @@ public abstract class AbstractTablePanel extends javax.swing.JPanel {
     protected abstract  void setCurrentRowString();
 
     public void setNextString(){
+        if (table.getRowCount() == 0){
+            return;
+        }
         int row = table.getSelectedRow();
         if(row+1 < table.getRowCount()){
             row=row+1;

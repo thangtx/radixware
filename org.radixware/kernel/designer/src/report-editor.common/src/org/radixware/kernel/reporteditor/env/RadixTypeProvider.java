@@ -21,9 +21,9 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
 import org.radixware.kernel.common.defs.ads.type.IAdsTypeSource;
 import org.radixware.kernel.common.repository.Branch;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.EChooseDefinitionDisplayMode;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.NameMatcher;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.NameMatcherFactory;
+import org.radixware.kernel.common.utils.namefilter.NameMatcher;
+import org.radixware.kernel.common.utils.namefilter.NameMatcherFactory;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.SearchTypeConverter;
 import org.radixware.kernel.designer.common.general.filesystem.RadixFileUtil;
 
 
@@ -130,7 +130,7 @@ public class RadixTypeProvider implements TypeProvider {
 
     @Override
     public void computeTypeNames(final Context context, final Result result) {
-        final NameMatcher matcher = NameMatcherFactory.createNameMatcher(context.getText(), context.getSearchType(), EChooseDefinitionDisplayMode.NAME_AND_LOCATION);
+        final NameMatcher matcher = NameMatcherFactory.createNameMatcher(context.getText(), SearchTypeConverter.convertNb2RdxSearchType(context.getSearchType()));
         if (matcher == null) {
             return;
         }

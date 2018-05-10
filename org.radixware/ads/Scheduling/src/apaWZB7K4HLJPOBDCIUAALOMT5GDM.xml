@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="apaWZB7K4HLJPOBDCIUAALOMT5GDM" Name="TaskAdapter" Type="20">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderapaX5NTH5GBXVCUFOCMC7GHNHXTNI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyapaX5NTH5GBXVCUFOCMC7GHNHXTNI"/>
+    </Bodies>
+    <MethodGroup Id="cmgFTLRN6BG75CHDNEOYBRZUNVDOY" Name="Root"/>
+    <PropertyGroup Id="cpgAU2IL2XYQVHMVEEHLAWLWZVFZU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDVPR662MUFCB7O6X425DBXV2E4" Name="doInit" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="initialPropValsById" Id="mprBTGNRIJBLFCOPB4SUNLMNN4NOE">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandlersByIdMap"/>
+          </Parameter>
+          <Parameter Name="src" Id="mprGZNDBTR44ZDLFH6CQJTW4GB26M">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mprTP22J3LGTZDKXB4562LS7SHWK4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (src != null &amp;&amp; this.getPresentationContext() != null &amp;&amp; this.getPresentationContext() instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcXFUIDETSGJE2LMPQ27CX52VLR4">
+                <xsc:Presentation>Types.Context::RootExplorerItemPresentationContext</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    if (this.getEntity() != null) {
+        this.getEntity().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colP2PKJLPLJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>unitId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = null;
+    }
+}
+
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthDVPR662MUFCB7O6X425DBXV2E4" Invoke="true">
+                <xsc:Presentation>doInit</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(initialPropValsById, src, phase);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthAGX4ROZ7ORGMXOXCORRZJUIWOY" Name="getProp" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="id" Id="mprCPDK3RVBUFG6LDSO3TS22KYGAQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (id == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colN4UP2RJZNVGGFHJ2O6GKFQNLAI">
+                <xsc:Presentation>Task:hasChildren</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    final org.radixware.kernel.server.types.EntityGroup group = this.PresentationContext.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRSQ4BOK7IRA4NC4VZ6GMKCTL4E mthQJGSBXGEQRDVBIYWKXGCJOS6RE" Invoke="true">
+                <xsc:Presentation>getEntityGroup</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    if (group != null &amp;&amp; group.getProp(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcWZB7K4HLJPOBDCIUAALOMT5GDM pgpA4UVFEA7ABACRAXLSXMAUADMSA">
+                <xsc:Presentation>TaskGroup:taskToMoveId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) != null) {
+        return super.getProp(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colUCM3D2EBDVCBBKQVOJWCRM4XSY">
+                <xsc:Presentation>Task:hasChildrenOnlyDirs</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+
+return super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthAGX4ROZ7ORGMXOXCORRZJUIWOY" Invoke="true">
+                <xsc:Presentation>getProp</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+  </AdsClassDefinition>
+</AdsDefinition>

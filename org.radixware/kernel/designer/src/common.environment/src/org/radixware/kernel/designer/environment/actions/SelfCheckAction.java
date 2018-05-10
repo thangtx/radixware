@@ -118,6 +118,7 @@ import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 import org.radixware.kernel.designer.common.general.editors.EditorsManager;
 import org.radixware.kernel.designer.common.general.filesystem.RadixFileUtil;
 import org.radixware.kernel.designer.dds.script.ScriptGenerator;
+import org.radixware.kernel.designer.dds.script.ScriptGeneratorImpl;
 import org.radixware.schemas.adsdef.AdsDefinitionDocument;
 import org.radixware.schemas.adsdef.MethodDefinition;
 import org.radixware.schemas.xscml.TypeDeclaration;
@@ -3660,7 +3661,7 @@ public final class SelfCheckAction implements ActionListener {
             final DdsSegment segment = (DdsSegment) radixObjects.get(0).getLayer().getDds();
 
 //            if (hasOwnModifiedModules(segment)) {
-            final ScriptGenerator scriptGenerator = ScriptGenerator.Factory.newCreationInstance(segment);
+            final ScriptGenerator scriptGenerator = ScriptGeneratorImpl.Factory.newCreationInstance(segment);
             final CodePrinter cp = CodePrinter.Factory.newSqlPrinter();
             scriptGenerator.generateModificationScript(cp);
             final String installScript = cp.toString();

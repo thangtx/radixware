@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/sb-commands.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/sb-commands.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sb="http://schemas.radixware.org/sb.xsd" xmlns:com="http://schemas.radixware.org/common.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:ie="http://schemas.radixware.org/sb-diagram.xsd" xmlns:this="http://schemas.radixware.org/sb-commands.xsd">
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/sb-commands.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsFinal="true"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/sb-commands.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sb="http://schemas.radixware.org/sb.xsd" xmlns:com="http://schemas.radixware.org/common.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:ie="http://schemas.radixware.org/sb-diagram.xsd" xmlns:this="http://schemas.radixware.org/sb-commands.xsd">
   <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
   <xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
   <xs:import namespace="http://schemas.radixware.org/sb-diagram.xsd" schemaLocation="sb-diagram.xsd"/>
@@ -201,4 +206,5 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetPropsInfoByRid" type="com:EditableProperties"/>
 </xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

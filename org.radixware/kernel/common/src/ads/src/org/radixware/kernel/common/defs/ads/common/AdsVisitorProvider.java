@@ -14,8 +14,8 @@ package org.radixware.kernel.common.defs.ads.common;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.VisitorProvider;
+import org.radixware.kernel.common.defs.ads.ITopContainer;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
-import org.radixware.kernel.common.defs.ads.module.ModuleDefinitions;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.Segment;
@@ -30,7 +30,7 @@ public abstract class AdsVisitorProvider extends VisitorProvider {
 
         @Override
         public boolean isContainer(RadixObject object) {
-            if (object instanceof ModuleDefinitions) {
+            if (object instanceof ITopContainer) {
                 return true;
             }if (object instanceof Module) {
                 return object instanceof AdsModule;

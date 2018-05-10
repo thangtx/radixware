@@ -50,6 +50,11 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
     public static final AdsLocalizingBundleDef NO_BUNDLE = new AdsLocalizingBundleDef(Id.Factory.newInstance(EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE));
 
     @Override
+    public boolean needsDocumentation() {
+        return false;
+    }
+
+    @Override
     public JavaSourceSupport getJavaSourceSupport() {
         return new JavaSourceSupport(this) {
             @Override
@@ -167,6 +172,13 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
         if (def instanceof AdsDefinition) {
             Hierarchy<AdsDefinition> h = ((AdsDefinition) def).getHierarchy();
             return h.findOverwritten();
+        } else if (def instanceof AdsModule) {
+            final AdsModule overwrittenModule = ((AdsModule) def).findOverwritten();
+            if (overwrittenModule != null) {
+                return SearchResult.single(overwrittenModule);
+            } else {
+                return SearchResult.empty();
+            }
         }
         return null;
     }
@@ -175,6 +187,7 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
         return strings.getUsedStrings(ESaveMode.NORMAL, scope);
     }
 
+    @Override
     public List<EIsoLanguage> getLanguages() {
         return strings.getLanguages();
     }
@@ -185,7 +198,7 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
 
     @Override
     public String getName() {
-        final AdsDefinition owner = findBundleOwner();
+        final Definition owner = findBundleOwner();
         return (owner != null ? owner.getName() + " - " : "") + "Localizing Bundle";
     }
 
@@ -225,12 +238,19 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
         return Id.Factory.loadFrom(getId().toString().substring(3));
     }
 
-    public AdsDefinition findBundleOwner() {
+    public Definition findBundleOwner() {
         AdsModule module = getModule();
         if (module == null) {
             return null;
         }
-        return module.getDefinitions().findById(getBundleOwnerId());
+        
+        Id bundleOwnerId = getBundleOwnerId();
+        
+        if (module.getId() == bundleOwnerId){
+            return module;
+        }
+        
+        return module.getTopContainer().findById(bundleOwnerId);
     }
 
     @Override
@@ -251,7 +271,7 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
     private Id runtimeId = null;
 
     public Id getRuntimeId() {
-        AdsDefinition owner = findBundleOwner();
+        Definition owner = findBundleOwner();
         if (owner instanceof AdsUserReportClassDef) {
             synchronized (this) {
                 if (runtimeId == null) {
@@ -284,21 +304,36 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
         List<File> files = new ArrayList<>();
         final Definition ownerDefinition = getOwnerDefinition();
         if (ownerDefinition instanceof AdsModule) {
+            collectFiles(true, files, files);
+        } else {
+            final File file = getFile();
+            if (file != null) {
+                files.add(file);
+            }
+        }
+        return files;
+    }
+    
+    public void collectFiles(boolean all, List<File> moduleFiles, List<File> localizingFiles) {
+        final Definition ownerDefinition = getOwnerDefinition();
+        if (all || !ownerDefinition.isReadOnly()) {
             IRepositoryAdsModule r = ((AdsModule) ownerDefinition).getRepository();
             if (r != null) {
                 IRepositoryAdsDefinition rd = r.getDefinitionRepository(this);
                 if (rd instanceof IRepositoryAdsLocaleDefinition) {
-                    getFiles((IRepositoryAdsLocaleDefinition) rd, files);
+                    getFiles((IRepositoryAdsLocaleDefinition) rd, moduleFiles);
                 }
             }
-            final Branch branch = getBranch();
-            if (branch == null) {
-                return Collections.emptyList();
-            }
-            for (Layer l : branch.getLayers()) {
-                if (l.isLocalizing() && l.getBaseLayerURIs().contains(getLayer().getURI())) {
-                    AdsModule m = (AdsModule) l.getAds().getModules().findById(getModule().getId());
-                    if (m != null) {
+        }
+        final Branch branch = getBranch();
+        if (branch == null) {
+            return;
+        }
+        for (Layer l : branch.getLayers()) {
+            if (l.isLocalizing() && l.getBaseLayerURIs().contains(getLayer().getURI())) {
+                AdsModule m = (AdsModule) l.getAds().getModules().findById(getModule().getId());
+                if (m != null) {
+                    if (all || !m.isReadOnly()) {
                         File localeDir = new File(m.getSrcDirContainer(), AdsModule.LOCALE_DIR_NAME);
                         if (localeDir.exists()) {
                             for (File langDir : localeDir.listFiles()) {
@@ -313,20 +348,13 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
                                     }
                                 });
                                 if (arrfiles.length > 0) {
-                                    files.add(arrfiles[0]);
+                                    localizingFiles.add(arrfiles[0]);
                                 }
                             }
                         }
                     }
                 }
             }
-            return files;
-        } else {
-            final File file = getFile();
-            if (file != null) {
-                files.add(file);
-            }
-            return files;
         }
     }
 
@@ -369,5 +397,26 @@ public class AdsLocalizingBundleDef extends AdsDefinition implements IJavaSource
     @Override
     public IMultilingualStringDef createString(ELocalizedStringKind kind) {
         return AdsMultilingualStringDef.Factory.newInstance(kind);
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        boolean result = super.isReadOnly();
+        
+        if (result){
+            Layer layer = getLayer();
+            if (layer != null){
+                Branch branch = layer.getBranch();
+                if (branch != null) {
+                    for (Layer l : branch.getLayers()) {
+                        if (l.isLocalizing() && l.getBaseLayerURIs().contains(getLayer().getURI()) && !l.isReadOnly()) {
+                            result = false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return result;
     }
 }

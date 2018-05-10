@@ -39,7 +39,7 @@ public class ThreadDumpWriter extends Thread {
     public static enum EThreadDumpReason {
 
         USER_REQUEST(2000),
-        INSUF_ARTE(10000);
+        INSUF_ARTE(300000);
         private final long minIntervalMillis;
 
         private EThreadDumpReason(long minIntervalMillis) {

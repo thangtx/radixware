@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.views;
 
 import java.util.List;
+import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.types.Arr;
 
 
@@ -39,6 +40,22 @@ public interface IArrayEditorDialog extends IDialogWithStandardButtons {
     
     boolean isDuplicatesEnabled();
     
+    void setFirstArrayItemIndex(int index);
+    
+    int getFirstArrayItemIndex();
+    
+    int getCurrentItemIndex();
+    
+    void setCurrentItemIndex(int index);
+    
+    void setMinArrayItemsCount(int count);
+    
+    int getMinArrayItemsCount();
+    
+    void setMaxArrayItemsCount(int count);
+    
+    int getMaxArrayItemsCount();
+    
     void setItemsMovable(boolean isMovable);
     
     boolean isItemsMovable();
@@ -50,6 +67,10 @@ public interface IArrayEditorDialog extends IDialogWithStandardButtons {
     Object getSelectedValue();
     
     void setPredefinedValues(List<Object> values);
+    
+    void addCustomAction(Action action);
+    
+    void removeCustomAction(Action action);
     
     void addEventListener(ArrayEditorEventListener listener);
     

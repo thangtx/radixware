@@ -56,7 +56,7 @@ public class FiltersManager extends GroupSettingsEditor<FilterModel> {
     private final Filters filters;
     private static final Id CMD_CONVERT_ID= Id.Factory.loadFrom("clcYNPNRKD6R5GLVDVVORCDQ2QL3I");
 
-    public FiltersManager(IClientEnvironment environment, final QWidget parent, final Filters filters) {
+    public FiltersManager(final IClientEnvironment environment, final QWidget parent, final Filters filters) {
         super(environment, parent, filters);
         this.filters = filters;        
         setSettingsGroupIcon(ExplorerIcon.getQIcon(Icons.FILTER_GROUP));
@@ -65,7 +65,7 @@ public class FiltersManager extends GroupSettingsEditor<FilterModel> {
     }
 
     @Override
-    protected void setupAction(QAction action) {
+    protected void setupAction(final QAction action) {
         if (action == createSettingAction) {
             action.setIcon(ExplorerIcon.getQIcon(Icons.CREATE_FILTER));
             action.setToolTip(getEnvironment().getMessageProvider().translate("SelectorAddons", "Create Filter"));
@@ -105,7 +105,10 @@ public class FiltersManager extends GroupSettingsEditor<FilterModel> {
                         new QFileDialog.Filter(String.format(fileFilter, "*.xml", "*.*")));
                 if (fileName != null && !fileName.isEmpty()) {
                     final String filterAsStr = userFilter.saveToString();
-                    final File xmlFile = new File(fileName);
+                    File xmlFile = new File(fileName);
+                    if (xmlFile.getName().indexOf('.')<0){
+                        xmlFile = new File(fileName+".xml");
+                    }
                     try {
                         FileUtils.writeString(xmlFile, filterAsStr, FileUtils.XML_ENCODING);
                     } catch (IOException exception) {
@@ -128,10 +131,10 @@ public class FiltersManager extends GroupSettingsEditor<FilterModel> {
         final IGroupSetting currentSetting = getCurrentSetting();
         if (currentSetting instanceof FilterModel) {
             final FilterModel model = (FilterModel) currentSetting;
-            org.radixware.schemas.xscml.Sqml  sqml=model.getFinalCondition();
+            final org.radixware.schemas.xscml.Sqml  sqml=model.getFinalCondition();
             if(sqml==null || sqml.getItemList()==null|| sqml.getItemList().isEmpty()){
-                final String title = getEnvironment().getMessageProvider().translate("SelectorAddons", "Can't convert filter!");
-                final String message = getEnvironment().getMessageProvider().translate("SelectorAddons", "Can't convert current filter to common filter. Condition must be set.");
+                final String title = getEnvironment().getMessageProvider().translate("SelectorAddons", "Unable to convert filter");
+                final String message = getEnvironment().getMessageProvider().translate("SelectorAddons", "Unable to convert current filter to common filter. Condition must be set.");
                 getEnvironment().messageError(title, message);
                 
             }else if (model.getDefinition() instanceof RadUserFilter) {
@@ -139,13 +142,17 @@ public class FiltersManager extends GroupSettingsEditor<FilterModel> {
                
                 final org.radixware.schemas.groupsettings.FilterDocument document =
                 org.radixware.schemas.groupsettings.FilterDocument.Factory.newInstance(); 
-                CustomFilter xFilter=document.addNewFilter();
+                final CustomFilter xFilter=document.addNewFilter();
                 userFilter.writeToXml(xFilter);
                 
-                Id newId=executeConvertCmd(document);
+                final Id newId=executeConvertCmd(document);
                 if(newId!=null){
-                    xFilter.setId(newId);                
-                    filters.addCommonFilter(xFilter); 
+                    final String title = getEnvironment().getMessageProvider().translate("SelectorAddons", "Conversion complete");
+                    final String message = getEnvironment().getMessageProvider().translate("SelectorAddons", "Conversion was completed successfully");
+                    getEnvironment().messageInformation(title, message);
+                    
+                    xFilter.setId(newId);
+                    filters.addCommonFilter(xFilter);
 
                     filters.remove(userFilter.getId());                
                     refreshTree();
@@ -207,7 +214,7 @@ public class FiltersManager extends GroupSettingsEditor<FilterModel> {
                 }
                 if (!filterDef.isValid()) {
                     final String title = getEnvironment().getMessageProvider().translate("SelectorAddons", "Can't Import Filter");
-                    final String message = getEnvironment().getMessageProvider().translate("SelectorAddons", "Base filter is not exists");
+                    final String message = getEnvironment().getMessageProvider().translate("SelectorAddons", "Base filter does not exist");
                     getEnvironment().messageError(title, message);
                     return;
                 }
@@ -277,14 +284,14 @@ public class FiltersManager extends GroupSettingsEditor<FilterModel> {
     }
 
     @Override
-    protected boolean confirmToRemoveSetting(String name) {
+    protected boolean confirmToRemoveSetting(final String name) {
         final String title = getEnvironment().getMessageProvider().translate("SelectorAddons", "Confirm Filter Deletion");
         final String message = getEnvironment().getMessageProvider().translate("SelectorAddons", "Do you really want to delete filter \'%s\'?");
         return getEnvironment().messageConfirmation(title, String.format(message, name));
     }
 
     @Override
-    protected boolean confirmToRemoveGroup(String name) {
+    protected boolean confirmToRemoveGroup(final String name) {
         final String title = getEnvironment().getMessageProvider().translate("SelectorAddons", "Confirm Group Deletion");
         final String message = getEnvironment().getMessageProvider().translate("SelectorAddons", "Do you really want to delete group \'%s\' and all its filters?");
         return getEnvironment().messageConfirmation(title, String.format(message, name));

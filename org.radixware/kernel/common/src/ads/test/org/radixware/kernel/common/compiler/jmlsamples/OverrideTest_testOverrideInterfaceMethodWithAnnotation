@@ -1,0 +1,18 @@
+
+interface I {
+
+    void a();
+}
+
+public class Test implements I {
+
+    @Override
+    public void a() {
+	System.out.print("a invocked");
+    }
+
+    public static void main(String[] args) {
+	Test test = new Test();
+	test.a();
+    }
+}

@@ -615,15 +615,7 @@ public class AnchorEditorPanel extends javax.swing.JPanel implements PropertyCha
             }
 
             editor.setValue(prop);
-            try {
-                ((UIPropertySupport) editor.getSource()).setValue(prop);
-            } catch (IllegalAccessException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IllegalArgumentException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            ((UIPropertySupport) editor.getSource()).setValue(prop);
         }
     }
 }

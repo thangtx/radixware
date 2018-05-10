@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdl3646HMWKSNWDRKKZAIDCWI44IC" QualifiedName="Radix::UserProps">
+  <PackageDef Id="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI" Name="RDX_Entity_Vars"/>
+  <PackageDef Id="pkgQUZKSG2MOXOBDFKUAAMPGXUWTQ" Name="RDX_Entity">
+    <Function Id="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ" Name="createPid" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpQQQFLQSESBDZDPJDI7QKY7WCM4" Name="field" DbName="field" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnNJ734SER7JGTHGBY4HZQZJ3OLI" Name="createPid" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpMOLCSGNWHRGHJK4TIKTRVD3ZV4" Name="field" DbName="field" DbType="number" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnA4ZM7VSLVNENBGSSU6JSSMJMN4" Name="createPid" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpFAKKSXYTRJCSVID3Z7Q6DQWAE4" Name="field" DbName="field" DbType="timestamp" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnPWGMHTGIQVCJ5EPEKARATWVXE4" Name="addField2Pid" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpHV2M4UYJVREYBPPUWVICF4AVPE" Name="currentPid" DbName="currentPid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpLMJPGI36GVAONOAIXV6KCSSSNE" Name="field" DbName="field" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnG3ULF2EUTRCKTFRLOZRPJIORLI" Name="addField2Pid" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfp65ZWHFGC4RBUVDW7UQ43CAA4ZI" Name="currentPid" DbName="currentPid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpW3XRLGASJNHA7O5QTUX3SL2BU4" Name="field" DbName="field" DbType="number" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfn3OLT3HZHTFFGTNQSTU57JGZQRU" Name="addField2Pid" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpH7QAAWHOSVAEDFLABOH3GNBIE4" Name="currentPid" DbName="currentPid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpD7FFUPS2WJEVTHBAW2RQ5MXRUM" Name="field" DbName="field" DbType="timestamp" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnIKXEUBQW3JCQFEKCN6X2KA6FDA" Name="createQualifiedPid" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpUINYG4HIMVEWPAQKEHKJHIPVLU" Name="tableGuid" DbName="tableGuid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpRTF2YHW7JNB4XK6DXCNX4QHC2M" Name="objPid" DbName="objPid" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnOMVVRQZPNPNRDJJNACQMTAIZT4" Name="packPidStr" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpODE256SC5RGFJDRQFPQFK3QERM" Name="s" DbName="s" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnJBWTT7YFOJFKTOW4W6L6IUHSAE" Name="unpackPidStr" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpI3WNF753DRFHFPX4IINHWQ6ML4" Name="s" DbName="s" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnPHS6NGSMOXOBDFKUAAMPGXUWTQ" Name="isUserPropValDefined" ResultDbType="integer">
+      <Parameter Id="dfpLKCNGP2LBBC4RE4FXLLWYF625E" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpLPQ5HHKRXVFUNF2BS5J25CVZIE" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7HCZNTIVJZH3VFKRRNWQEVDQNA" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZ2YYBE4O5FEEJLGYWJPILDNAIQ" Name="pPropValType" DbName="pPropValType" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnQ4ZKSG2MOXOBDFKUAAMPGXUWTQ" Name="userPropOnDelOwner" ResultDbType="">
+      <Parameter Id="dfpRAZKSG2MOXOBDFKUAAMPGXUWTQ" Name="pEntityID" DbName="pEntityID" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpREZKSG2MOXOBDFKUAAMPGXUWTQ" Name="pInstancePID" DbName="pInstancePID" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnBRFRNP4FA5HE5I2MGC5FURBSIY" Name="flushUserPropOnDelOwner" ResultDbType="">
+      <Parameter Id="dfpYPIPZWBXZZBRJP5OVETPNT5K5A" Name="pEntityID" DbName="pEntityID" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnF5YSB7NEANAPRNGZHNEDPGOI4Q" Name="scheduleUserPropOnDelOwner" ResultDbType="">
+      <Parameter Id="dfpAHQR4FEJPBBZLCIPGWSSI5YVPQ" Name="pEntityID" DbName="pEntityID" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpRVP3IAZTMFCWRAPQYECMQCFBWM" Name="pInstancePID" DbName="pInstancePID" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnYRYIGT5LZJFJZIJS774H3A2IZM" Name="delUserPropVal" ResultDbType="">
+      <Parameter Id="dfpBSTM4G7PEFFV7BBQV565ZN4GWA" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpB62A3RPWEZDLPGRVHLCRFFPROA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpR5LUGBJOLJGATL4SWIFVDT4LTY" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpLD2RXRXTHVCGTIDERD6JGKD2LU" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp3DZI4OQZ2FHNPG4S223WJQBURE" Name="pPropValType" DbName="pPropValType" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpLFUOKIZDVBEFTIZSSPT2V2DBRM" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpRODQD3URWRDATNBNI4NNVYJOTI" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnCSHZUPSMOXOBDFKUAAMPGXUWTQ" Name="getUserPropInt" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpH62LSZCMOXOBDFKUAAMPGXUWTQ" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpIC2LSZCMOXOBDFKUAAMPGXUWTQ" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpIG2LSZCMOXOBDFKUAAMPGXUWTQ" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnWEICAS4YTBHYPFUIHQKNPOQUS4" Name="setUserPropInt" ResultDbType="">
+      <Parameter Id="dfpTCLYSJAHEJFRLAFAHDPMKJH4DQ" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWDQZCYTOYFDSROSXU7FTQKOIRA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpI6EIMABO7JA6LAGJAD5UGOCIT4" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQ3FRYILZ75CSHDQ2HOI54YN4DE" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQXEQ4QZLYFFPHMLMF5KYSCBGHA" Name="pVal" DbName="pVal" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpXEA3YVE5ZJAYZIXAKJHL3ZZN7U" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpD7KORQUEPNEN3ADCYYQE5FBW4Y" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnRBSNA6DR2NGS5B3LKKEQTJ3P2Y" Name="getUserPropBool" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpWK2IO52UOVBE3OXCUGTOD2MKSI" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpB3UCACB7BFHWZAYVJPS47T2SYQ" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpNE3E7OKAXNGOZNWI2MY5FGJ5XQ" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnXDPCYUOJYBESVEXXFFRFAJCNLU" Name="setUserPropBool" ResultDbType="">
+      <Parameter Id="dfpDJJDKUNH7ZH3NGXQJUQIQL3H5I" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7JMO2HY4FRCZRMKSFJPSUJPFRY" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2RMSXEXEFFBYPPFLUX6I3OHKYI" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp66MRDFR3RVAPDCLNQWWG34RCOU" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpNNFCQYQUNVBZJCCFDM4KTXIPGE" Name="pVal" DbName="pVal" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpMUY6PC45FRFHJPNJMMVZ6RX7QQ" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfp6AQBVTYLSVC45KMFSMISM2OK7M" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnNFPOXGRWINHMFICWLHDKQQSB4U" Name="getUserPropNum" ResultDbType="number" IsWNDS="true">
+      <Parameter Id="dfpV3JOTRQ53FGPDNPPP7O57HAG24" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPXCNYFLWJBAPPF2BMQANMULUVM" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSMYM4E5KMRHHHJXPITI7MP5XEI" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnVYL5PWMBBNAYNCHSCU4H5GLHSY" Name="setUserPropNum" ResultDbType="">
+      <Parameter Id="dfpGJNAX2QMVZH35AK5FKH2ZDYSM4" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQZZ46TW2AVFSDMSEAEJJ3NDOAY" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSJBM24OJGJDRZDG5LGJ2SAQVTM" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpHR6XOAMWEVFHNGRVFAJM7SMO3U" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSHBW4AI7MNCIVPDL66357CQCPQ" Name="pVal" DbName="pVal" DbType="number" ValType="2" Direction="0"/>
+      <Parameter Id="dfp67ILA5QCMFDGVIQM76WIIRB2YI" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfp6OOJRQHYBBARPDNWFAUEEXOLFI" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnKO2BHAXG7BEGPARMJG6RTJRXXU" Name="getUserPropStr" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpVIYA6UWB65EWRDEY7NVFZLLLGU" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQDUW5PF3AJHAVB33FMQEFYORXI" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSXOLF67MPNCZ3OC7NU6BSMIKQE" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnWNKWD22QTNHLPPLWNQC7O5SPFY" Name="setUserPropStr" ResultDbType="">
+      <Parameter Id="dfpO2KTRGYHVNFBFFLKB6TY5R7TSQ" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQWZ3STRFBFH73NG3A2EU7NXZGI" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpA2E7VG7ETZEDLMQ2XR4GMHQI5I" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpGJWGMZDX55DTDB5CK5DCM4MY5E" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpE3QTYGRI3FH5ZJE5KXFQ5LMOXY" Name="pVal" DbName="pVal" DbType="varchar2" ValType="2" Direction="0"/>
+      <Parameter Id="dfpZQ3BXV2OGBB7HJMXOPGMBMQ34Y" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpMF5JM3M5PVAJ5HUDRJE4BQJJC4" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnXORC4GJ4MJCTBIT4NRA7E722A4" Name="getUserPropChar" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpZD7IHQ6NMZGRZLWOKBJVGHADTM" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpH56GZCH5LFG3XNWEUF5S6I7MZE" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpHNT64Z6ZURBARDA6ADPATYQOXE" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnPA7UVG6UNBGNTLEXQ2HUYGBTL4" Name="setUserPropChar" ResultDbType="">
+      <Parameter Id="dfpHIIPXWI7EREORD5ALRXUVAI5CY" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7ITPXVHHI5FU3B22LSZCB5N5JM" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpM7VCPPB77RB2LFSDDDDRNKXIZI" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp5CM3WWTAVNAJ3F64CQRAAIF6IM" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpLVNSGMDEFJCKDGMUAFQF27YDUM" Name="pVal" DbName="pVal" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpULL75KOHFBAKPJXZEAUWQCSMRE" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpGAMO7LXAHFGILBKR5U5E6JP7PQ" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfn72V3B2KRLJEYJGGPHDQCN7AC64" Name="getUserPropClob" ResultDbType="CLOB" IsWNDS="true">
+      <Parameter Id="dfp74S5CKFARZHGFEBBA3QOO3L6BY" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpJ3HSW4GIERDJFLOMJTI2NWZEIY" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQB3ZJGMIHRAWDAATGJSXL3CUUM" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnOVL7L7ZKBBHKBI7DXH2NECIAKM" Name="setUserPropClob" ResultDbType="">
+      <Parameter Id="dfp4P3YMFLXKVF7REBUSB5KS52KFM" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpT2X5ULR5K5D5VGWU2UQJRGL3CA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpE747GXYVKVHWDPKCXMDUBLW7AA" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpRHX37PDSLRC5XOEEOC55GL2S3I" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQDFE6YPMZVBGRNR3TI7XZLOXQU" Name="pVal" DbName="pVal" DbType="CLOB" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2GWT2DKUUJHWNCQKPMNMT53SHE" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfp3DVEEIEMHVBCHC5FIAKGE6PJFE" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnB7KGFTQX4JCVJA3X4EB4RNTMEE" Name="getUserPropBlob" ResultDbType="BLOB" IsWNDS="true">
+      <Parameter Id="dfpE25ZTZLVRBDFNAZ2WESN3FUMVQ" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp6QXO7OOFFRCM5PIDI3UJBYABXI" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7CLHV2NXT5CFHMJNXVIQFUD7LI" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnP3O5X6I67FDUDNA3JKGP5I4WFU" Name="setUserPropBlob" ResultDbType="">
+      <Parameter Id="dfpO7LGDZLJ6RCH7AWNYZZBSI2XN4" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpI4RLFECXCNFT5CWQ62CTTDDNWU" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpAZRGUQ7RRFALLI7RX67IVVUTRQ" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMVR6BP4KBZDD5KYPV3EAME6JTI" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpM3MYKSEPXFFSXEIIRXRLIT32FQ" Name="pVal" DbName="pVal" DbType="BLOB" ValType="50" Direction="0"/>
+      <Parameter Id="dfp32AU6HLGN5E4FDTQ3BVNWUF5BI" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfp7YB7ZSWNMZHE3EQMI6G7RLEA64" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnR7UZR26Q45ECDFXTXGQNEBTRCI" Name="getUserPropBin" ResultDbType="RAW" IsWNDS="true">
+      <Parameter Id="dfp5DYCAA5ALJFEPMTTCBUS3657TE" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp3OYF7AZ6SZFH7BCRIBFOTN5CZ4" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp24EQBDOZXFDWZIDP56SN3BW46I" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn7ZHDA5SW5BGWPC3OLB75FAWDSY" Name="setUserPropBin" ResultDbType="">
+      <Parameter Id="dfpFB2N3KW7DVBR5FBJU7U7MXMENM" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPK3X3OSIWNEQRL6YCMFII7TJIU" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpRAYTQHF3EJB37NAYHWBANL7UGU" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWAUFBLPRE5F6RFDQSUYS5UDYDE" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpIXPYGXYJSBEABPAQBGGBXAYNU4" Name="pVal" DbName="pVal" DbType="RAW" ValType="50" Direction="0"/>
+      <Parameter Id="dfpZIF53LAAWBBAFE7IOISSKOKWFI" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpCPHPJI7GYZAPBF6KCOHQF4VFAY" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnOY75SUGY5FEBFIESZYEV4CVXYE" Name="getUserPropDateTime" ResultDbType="Timestamp" IsWNDS="true">
+      <Parameter Id="dfp4IBJFVJRDZDULNXXP6CXXUKOO4" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWYJXRIBJZFFBBFXST3WSNXLGMA" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWFWKCT4TFBCQ7IIKUPRP6WXF5I" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn65XPBNU2EBDELHNIOBCBFLDLVM" Name="setUserPropDateTime" ResultDbType="">
+      <Parameter Id="dfpDT3VYO7X3VADVPHW6HZLYSHJKU" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMMKKNFMBWRE3PMTQOKNK3VQY7A" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpHAHUPMLBYJGLTGQYQEXEOFQZY4" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWDYC4DAZKBG3FDBT47HK2NUFHM" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpKTNQOL3ECRHALGM7WKFNXBIIZI" Name="pVal" DbName="pVal" DbType="timestamp" ValType="12" Direction="0"/>
+      <Parameter Id="dfpSJDP56TTTVH35EDJEWTAVNNXBQ" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpWB5KMT2FBNEAZMWVAC2GSUWUFM" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnFNYRXTBQCZHCTNEA53XUVL3AEM" Name="setUserPropRef" ResultDbType="">
+      <Parameter Id="dfpBNCBW3BYSJDLXGTKQSE4PSKKCQ" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp4K47TKKCWBFH3K6KPGUMCTC3QA" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpNHLHLLREYJDYRNSHQBYASVPTXU" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSEOBTRESUBE7JI5KZ2MHYJU5LM" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpS27V6QUY7RF67FHZZBAFHPEDAU" Name="pVal" DbName="pVal" DbType="varchar2" ValType="2" Direction="0"/>
+      <Parameter Id="dfpMHTUITYZZJCXBHYJYDQDO3XTMM" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpPG6PUUSC6RBXRGXGZWVKR2YC2A" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnPFKAWMBP2VFV7D5MC6R6KPA3CU" Name="getUserPropRef" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpSIOTOA35ZRG6HAQHD47KMR7AOE" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7YG66OP7PFD6FOC3L2SS5BEEHI" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZOLXLIUNXRGOFKUM2ZSUJAJBQQ" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnV2QDZINA45DFNFETORLQWR2RAI" Name="getUserPropArrAsStr" ResultDbType="CLOB" IsWNDS="true">
+      <Parameter Id="dfpBQDVRUOQ5BBBVF5WZ6GMKCLCSE" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp66PGYOSTYNEZHFOREOOOQCBC7E" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp55IZVWEDWRCV3NID4H65AJYTCI" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnIDVGCZDNXZFQFPXIJ5R7EAC4R4" Name="setUserPropArrAsStr" ResultDbType="">
+      <Parameter Id="dfpBBG52TKRFJFXNH3BRUDXFRZXH4" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpX423H3EI2NGXVPQMMAMCAOPCSE" Name="pClassId" DbName="pClassId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSDQNWR6TR5DZ7IZSA2KGIE4C5Y" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7GEEL3ERX5GUNLL7VXMJNW7UY4" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp5ABOT6G5KBHK7BDVXVDQNVNZHI" Name="pVal" DbName="pVal" DbType="CLOB" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSMQ23G2SLNGU5DAH3QY47Y26JY" Name="pIsUpdateAuditOn" DbName="pIsUpdateAuditOn" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>0</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpZGSFBH72SBABFG4MJ4A2OUOYTY" Name="pAuditSchemeId" DbName="pAuditSchemeId" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>NULL</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnEW2DHYT4FNC5BNFF2C7IOQOPB4" Name="isUserPropNumValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpRKSEAYMHVJBWDFHIMFKMKNG4GA" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZCWZRE3ZXJFBHPITOCQNDB53NI" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQVCNC6QRKVEQ3FPM65B5GSQEFE" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnK2JD3FHHC5B63CC4X5TZEHZY3I" Name="isUserPropIntValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpCG3UQFDGXNHAJMDSQ3PKS4I4NE" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp5UYL2D7IZVEQXAKSYMVJ57TP6Y" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpS6HTIA5PT5BQFDOVAKZHVJCUBM" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnDSGF72WYAFGQBFROT7N5HW4XHA" Name="isUserPropBoolValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpS6SSQPP7PFG2TMIAXH3AA5VKBM" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpDXFV54GUBVF2FEVRM2BQPD2MWQ" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpFO4KPXSIPFAXTBGUWSQN74CL5U" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnIVDYKZPPM5A3HDCYYSGQIXKSNM" Name="isUserPropDateTimeValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpA4C2PHAJRJCEXJWGGOBCQQHOKI" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpULQNT7XCCJBFTBECESKNI4NBCM" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpGOCRFK2U6NCVZKKS2GVFV72CZE" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn6BKKT2W25NCBJHONY5H4JZWWDQ" Name="isUserPropStrValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfp6MDFP4LPUNBPLF2RMFN4LIQ4TI" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpXHF6BY2VVFEMROOYEXSFGAKKNI" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpHMMLXGZOXZEPTG3LSHHFSGFZA4" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnVYTDCZSEYNDOXDWLNDFE3XES7M" Name="isUserPropCharValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpUDBALGTGSVEI3EJVBVH434HMWI" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp57OUOWY77ZDTRBBOXD4KHBAXP4" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpTYZ6BMQ7TRAFPEJDDISQYRVKLU" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnEPJK4HGVCNFYBHNJGTWKZTATRA" Name="isUserPropRefValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpHHSPOGVINBF3ZMKT6FBN7I6RVY" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpDV3UYCGSCFBCTM6GC6FW4G3THM" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpLQJK7WQBORD5FFZS7PUFT4J7VU" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnGDH62QATZNH3RL7N3O2SJICZCU" Name="isUserPropBlobValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpSTTQUGX4A5FDNIW6CWC4Q3UTXE" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpJQ3Q24LO6ZAJVKHHHH3O5IINY4" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpYXD2ZN24UREBXL22A34B4QPOIQ" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnGKKHGSRBW5AHFOMP7SSO5O2V6Y" Name="isUserPropClobValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpS3H5VGJZ2NCFDL45ZAWNNT2NUU" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2GFAQH2K2BCEHHZ6UX6K4RPPIA" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpK3JZXBMXYBGN7K223QQWUZSFSQ" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnZ3MVAHXICRDINE54WWVK5JUQGI" Name="isUserPropArrValDefined" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpCYCWYPJSGZCDBFHORJSMBSWAHM" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp5COMUFZMXNBWXDWY5WAZRZ5HMU" Name="pInstancePid" DbName="pInstancePid" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp474DO3ENNJDYXBJMYG2EXWITRA" Name="pPropId" DbName="pPropId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn2DILFDWE4NE6VHRGNLRBKWUWGI" Name="userPropOnDelValue" ResultDbType="">
+      <Parameter Id="dfpM36IVJNYGZCXRJAZUSQS6QLALA" Name="pEntityId" DbName="pEntityId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpUOPGIWLZGJDBPJXY33UJHA6KT4" Name="pValuePid" DbName="pValuePid" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <TableDef Id="tbl7GVZZKKQJTNRDCG7ABIFNQAABA" Name="UpValRaw">
+    <Indexes>
+      <Index Id="idx7GVZZKKQJTNRDCG7ABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col7WVZZKKQJTNRDCG7ABIFNQAABA col72VZZKKQJTNRDCG7ABIFNQAABA col76VZZKKQJTNRDCG7ABIFNQAABA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col7WVZZKKQJTNRDCG7ABIFNQAABA" Name="defId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col72VZZKKQJTNRDCG7ABIFNQAABA" Name="ownerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col76VZZKKQJTNRDCG7ABIFNQAABA" Name="ownerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colAGWJZKKQJTNRDCG7ABIFNQAABA" Name="val" ValType="22" Length="2000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblBDFLPZ3NOKWDBXSHAAUMFADAIA" Name="UpValNum">
+    <Indexes>
+      <Index Id="idxBDFLPZ3NOKWDBXSHAAUMFADAIA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colF4EFWVEFVFWDRJ65AAUMFADAIA colXPDQN3FFVFWDRJ65AAUMFADAIA col2L35FXIQRDNBDCBEABIFNQAABA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colF4EFWVEFVFWDRJ65AAUMFADAIA" Name="defId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colXPDQN3FFVFWDRJ65AAUMFADAIA" Name="ownerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col2L35FXIQRDNBDCBEABIFNQAABA" Name="ownerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colZJAXIV5NOKWDBXSHAAUMFADAIA" Name="val" ValType="11" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblBL3VR7IRRDNBDCBEABIFNQAABA" Name="UpValStr">
+    <Indexes>
+      <Index Id="idxBL3VR7IRRDNBDCBEABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colBX3VR7IRRDNBDCBEABIFNQAABA colB33VR7IRRDNBDCBEABIFNQAABA colB73VR7IRRDNBDCBEABIFNQAABA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colBX3VR7IRRDNBDCBEABIFNQAABA" Name="defId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colB33VR7IRRDNBDCBEABIFNQAABA" Name="ownerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colB73VR7IRRDNBDCBEABIFNQAABA" Name="ownerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colCH3VR7IRRDNBDCBEABIFNQAABA" Name="val" ValType="21" Length="4000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblEMZVAQQSRDNBDCBEABIFNQAABA" Name="UpValCLOB">
+    <Indexes>
+      <Index Id="idxEMZVAQQSRDNBDCBEABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colEYZVAQQSRDNBDCBEABIFNQAABA colE4ZVAQQSRDNBDCBEABIFNQAABA colFAZVAQQSRDNBDCBEABIFNQAABA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colEYZVAQQSRDNBDCBEABIFNQAABA" Name="defId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colE4ZVAQQSRDNBDCBEABIFNQAABA" Name="ownerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colFAZVAQQSRDNBDCBEABIFNQAABA" Name="ownerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colFIZVAQQSRDNBDCBEABIFNQAABA" Name="val" ValType="27" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblGFX2VVPPKJGU5J6R5OLPAFLPHQ" Name="UpValDateTime">
+    <Indexes>
+      <Index Id="idxEWHNOD4CFNENDLTXLKHO36QCNQ" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colTE5UVYTPBBCQNPVF44BSCG55TQ col4UH7HJFYBVCCPOVH4XY6KF73ZA colLUGCGTV7WNAATD7YQLLS3LCQFY"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colTE5UVYTPBBCQNPVF44BSCG55TQ" Name="defId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col4UH7HJFYBVCCPOVH4XY6KF73ZA" Name="ownerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colLUGCGTV7WNAATD7YQLLS3LCQFY" Name="ownerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colD72D5TI2EFHYFNNXG2S77IBAPE" Name="val" ValType="12" Length="0" Precision="6"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblGNGKWXYSRDNBDCBEABIFNQAABA" Name="UpValBLOB">
+    <Indexes>
+      <Index Id="idxGNGKWXYSRDNBDCBEABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colGZGKWXYSRDNBDCBEABIFNQAABA colG5GKWXYSRDNBDCBEABIFNQAABA colHBGKWXYSRDNBDCBEABIFNQAABA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colGZGKWXYSRDNBDCBEABIFNQAABA" Name="defId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colG5GKWXYSRDNBDCBEABIFNQAABA" Name="ownerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colHBGKWXYSRDNBDCBEABIFNQAABA" Name="ownerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colHJGKWXYSRDNBDCBEABIFNQAABA" Name="val" ValType="28" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblZVJUSFASRDNBDCBEABIFNQAABA" Name="UpValRef">
+    <Indexes>
+      <Index Id="idxZVJUSFASRDNBDCBEABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col2BJUSFASRDNBDCBEABIFNQAABA col2FJUSFASRDNBDCBEABIFNQAABA col2JJUSFASRDNBDCBEABIFNQAABA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col2BJUSFASRDNBDCBEABIFNQAABA" Name="defId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col2FJUSFASRDNBDCBEABIFNQAABA" Name="ownerEntityId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col2JJUSFASRDNBDCBEABIFNQAABA" Name="ownerPid" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="col2RJUSFASRDNBDCBEABIFNQAABA" Name="val" ValType="21" Length="4000" Precision="0"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

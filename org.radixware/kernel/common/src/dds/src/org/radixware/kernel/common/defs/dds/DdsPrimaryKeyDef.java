@@ -19,7 +19,7 @@ import org.radixware.kernel.common.resources.icons.RadixIcon;
  * Primary key of {@link DdsTableDef}.
  *
  */
-public class DdsPrimaryKeyDef extends DdsIndexDef{
+public class DdsPrimaryKeyDef extends DdsIndexDef {
 
     protected DdsPrimaryKeyDef(DdsTableDef ownerTable) {
         super("");

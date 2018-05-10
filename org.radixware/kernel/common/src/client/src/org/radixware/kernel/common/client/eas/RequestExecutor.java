@@ -22,6 +22,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,29 +34,39 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
+import org.radixware.kernel.common.client.dialogs.IMessageBox;
+import org.radixware.kernel.common.client.dialogs.IWaitForAadcMemberSwitchDialog;
 import org.radixware.kernel.common.client.env.IEventLoop;
 import org.radixware.kernel.common.client.eas.resources.IFileResource;
 import org.radixware.kernel.common.client.eas.resources.IMessageDialogResource;
 import org.radixware.kernel.common.client.eas.resources.TerminalResources;
 import org.radixware.kernel.common.client.env.AdsVersion;
+import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.errors.AccessViolationError;
 import org.radixware.kernel.common.client.errors.CantDeleteSubobjectsFault;
+import org.radixware.kernel.common.client.errors.CredentialsWasNotDefinedError;
 import org.radixware.kernel.common.client.errors.DefinitionAccessViolationError;
 import org.radixware.kernel.common.client.errors.LogonTimeRestrictionViolationError;
 import org.radixware.kernel.common.client.errors.MaxNumberOfSessionsExceededError;
 import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
 import org.radixware.kernel.common.client.errors.PasswordExpiredError;
 import org.radixware.kernel.common.client.errors.SessionDoesNotExistError;
+import org.radixware.kernel.common.client.errors.TemporaryPasswordExpiredError;
 import org.radixware.kernel.common.client.exceptions.AllSapsBusyException;
+import org.radixware.kernel.common.client.exceptions.AsyncRequestsLimitExceededException;
 import org.radixware.kernel.common.client.exceptions.CantUpdateVersionException;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.exceptions.KernelClassModifiedException;
+import org.radixware.kernel.common.client.exceptions.NoSapsForCurrentVersion;
 import org.radixware.kernel.common.client.exceptions.ServiceAuthenticationException;
 import org.radixware.kernel.common.client.exceptions.TerminalResourceException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.trace.AbstractTraceBuffer;
 import org.radixware.kernel.common.client.trace.ClientTracer;
+import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.views.IProgressHandle;
+import org.radixware.kernel.common.enums.EDialogButtonType;
+import org.radixware.kernel.common.enums.EDialogIconType;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.EFileSeekOriginType;
@@ -66,8 +77,10 @@ import org.radixware.kernel.common.exceptions.ServiceCallException;
 import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.exceptions.ServiceCallTimeout;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
+import org.radixware.kernel.common.sc.FailedSapsInfo;
 import org.radixware.kernel.common.trace.TraceItem;
 import org.radixware.kernel.common.utils.XmlUtils;
+import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.schemas.eas.*;//NOPMD
 import org.radixware.schemas.easWsdl.*;//NOPMD
 
@@ -75,14 +88,17 @@ import org.radixware.schemas.easWsdl.*;//NOPMD
 abstract class RequestExecutor {
 
     private static final int INFINITE_RESPONSE_TIMEOUT = 0;//infinite timeout
+    private static final long UNSUPPORTED_VERSION_TIMEOUT_MSEC = 10000;
+    private static final int ASYNC_TASKS_QUEUE_SIZE_LIMIT = 10;
 
     private abstract static class RequestTask implements Callable<XmlObject> {
 
         private final int timeoutSec;        
         private final boolean isCallbackResponse;
         private final RequestHandle requestHandle;
-        private boolean isResend;
-        private boolean isCancelled;
+        private volatile ServiceClientException parseException;
+        private volatile boolean isResend;
+        private volatile boolean isCancelled;
         private Future<XmlObject> requestFuture;
 
         public RequestTask(final RequestHandle handle, final boolean isCallback, final int timeoutSec) {
@@ -122,7 +138,14 @@ abstract class RequestExecutor {
         }
 
         public XmlObject getResult() throws InterruptedException, CancellationException, ExecutionException {
+            if (parseException!=null){
+                throw new ExecutionException(parseException);
+            }
             return requestFuture.get();
+        }
+        
+        public void setParseException(final ServiceClientException exception){
+            parseException = exception;
         }
 
         public void setResend(final boolean resend) {
@@ -146,9 +169,17 @@ abstract class RequestExecutor {
     };
 
     private final class PrimaryRequestTask extends RequestTask {
+        
+        private final boolean isInteractive;
+        private final boolean isAsync;
                
-        public PrimaryRequestTask(final RequestHandle handle, final int timeoutSec) {
+        public PrimaryRequestTask(final RequestHandle handle, 
+                                                 final int timeoutSec, 
+                                                 final boolean isInteractive,
+                                                 final boolean isAsync) {
             super(handle, false, timeoutSec);
+            this.isInteractive = isInteractive;
+            this.isAsync = isAsync;
         }
 
         @Override
@@ -157,11 +188,15 @@ abstract class RequestExecutor {
                 throw new InterruptedException("Request was cancelled");
             }
             final XmlObject request = getRequestHandle().getRequest();
+            if (isAsync){
+                easTrace.clear();
+            }
             final XmlObject response =
                 connection.sendRequest(prepareRequest(request), 
                                         getCurrentScpName(), 
                                         getCurrentDefinitionVersion(request),
-                                        getResponseTimeoutSec());
+                                        getResponseTimeoutSec(),
+                                        isInteractive ? RequestExecutor.this.aadcMemberSwitchController : null);
             if (response instanceof GetSecurityTokenMess) {
                 return processGetTokenCallback(((GetSecurityTokenMess) response).getGetSecurityTokenRq());
             }
@@ -213,7 +248,7 @@ abstract class RequestExecutor {
 
     private final static class RequestTaskDeque {
 
-        private Deque<RequestTask> asyncTasks = new ArrayDeque<>();
+        private final Deque<RequestTask> asyncTasks = new ArrayDeque<>();
         private RequestTask testTask;
         private RequestTask syncTask;
         private RequestTask callBackTask;
@@ -238,7 +273,10 @@ abstract class RequestExecutor {
             addTask(task, true);
         }
 
-        public void addAsyncTask(final RequestTask task) {
+        public void addAsyncTask(final RequestTask task) throws AsyncRequestsLimitExceededException{
+            if (asyncTasks.size()>=ASYNC_TASKS_QUEUE_SIZE_LIMIT){
+                throw new AsyncRequestsLimitExceededException();
+            }
             addTask(task, false);
         }
 
@@ -290,18 +328,49 @@ abstract class RequestExecutor {
                 syncTask.cancel();
             }
         }
+        
+        public void dropSyncTask(){
+            syncTask = null;
+        }
+        
+        public int getAsyncTasksCount(){
+            return asyncTasks.size();
+        }
     }
 
     private final static class CallbackRequestHandle extends RequestHandle {
+        
+        private final RequestHandle generalRequestHandle;
 
-        public CallbackRequestHandle(final IClientEnvironment environment) {
-            super(environment, null, null);
+        public CallbackRequestHandle(final RequestHandle generalRequestHandle) {
+            super(generalRequestHandle.environment, null, null);
+            this.generalRequestHandle = generalRequestHandle;
         }
 
         @Override
         public boolean hasListeners() {
-            return false;
+            return true;//in any way we must to send response to server
         }
+
+        @Override
+        void processAnswer() {
+            generalRequestHandle.processAnswer(); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        void setException(final ServiceClientException exception) {
+            generalRequestHandle.setException(exception); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        void setResponse(final XmlObject response) {
+            generalRequestHandle.setResponse(response);
+        }
+
+        @Override
+        void onInterrupted() {
+            generalRequestHandle.onInterrupted();
+        }        
     }
 
     private static final class InternalThreadFactory implements ThreadFactory {
@@ -391,7 +460,150 @@ abstract class RequestExecutor {
             return closed;
         }
     }
+    
+    private final static class ProcessAadcMemberSwitchTask implements Runnable{//this task will be executed in GUI thread        
         
+        private final java.lang.Object sem = new java.lang.Object();
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private final IClientEnvironment environment;
+        private boolean cancelled;
+        private volatile IWaitForAadcMemberSwitchDialog waitDialog;
+        
+        public ProcessAadcMemberSwitchTask(final IClientEnvironment environment){
+            this.environment = environment;
+        }
+
+        @Override
+        public void run() {
+            try{
+                synchronized(sem){
+                    if (!cancelled){
+                        waitDialog = 
+                            environment.getApplication().getDialogFactory().newWaitForAadcMemberSwitchDialog(environment);                    
+                        waitDialog.display();
+                    }
+                }                
+            }finally{
+                latch.countDown();
+            }
+        }
+        
+        public IWaitForAadcMemberSwitchDialog getWaitDialog(){
+            synchronized(sem){
+                return waitDialog;
+            }
+        }
+        
+        public void waitForFinish() throws InterruptedException{
+            if (!latch.await(EasClient.KEEP_AADC_MEMBER_INTERVAL_MILLIS*2, TimeUnit.MILLISECONDS)){
+                synchronized(sem){
+                    cancelled = true;
+                }
+            }
+        }
+    }
+    
+    private final static class ObserveAadcMemberSwitchWaitDialogTask implements Runnable{//this task will be executed in GUI thread        
+        
+        private final java.lang.Object sem = new java.lang.Object();
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private final IWaitForAadcMemberSwitchDialog dialog;
+        private volatile IWaitForAadcMemberSwitchDialog.Button pressedButton;        
+        
+        public ObserveAadcMemberSwitchWaitDialogTask(final IWaitForAadcMemberSwitchDialog dialog){
+            this.dialog = dialog;
+        }
+
+        @Override
+        public void run() {
+            try{
+                synchronized(sem){
+                    pressedButton = dialog.getPressedButton();
+                }
+            }finally{
+                latch.countDown();
+            }
+        }
+        
+        public IWaitForAadcMemberSwitchDialog.Button getPressedButton(){
+            synchronized(sem){
+                return pressedButton;
+            }
+        }
+        
+        public boolean waitForFinish() throws InterruptedException{
+            return latch.await(EasClient.KEEP_AADC_MEMBER_INTERVAL_MILLIS*2, TimeUnit.MILLISECONDS);
+        }
+    }
+    
+    private final static class CloseAadcMemberSwitchWaitDialogTask implements Runnable{//this task will be executed in GUI thread        
+        
+        private final IWaitForAadcMemberSwitchDialog dialog;
+        
+        public CloseAadcMemberSwitchWaitDialogTask(final IWaitForAadcMemberSwitchDialog dialog){
+            this.dialog = dialog;
+        }
+
+        @Override
+        public void run() {
+            dialog.finish();
+        }
+    }    
+    
+    private final static class InteractiveAadcMemberSwitchController implements IAadcMemberSwitchController{
+        
+        private final IClientEnvironment environment;
+        private final IEventLoop localEventLoop;
+        private IWaitForAadcMemberSwitchDialog waitDialog;
+        
+        public InteractiveAadcMemberSwitchController(final IClientEnvironment environment, final IEventLoop localEventLoop){
+            this.environment = environment;
+            this.localEventLoop = localEventLoop;
+        }
+
+        @Override
+        public boolean canSwitch() throws InterruptedException {
+            if (localEventLoop!=null && localEventLoop.isInProgress()){
+                if (waitDialog == null){
+                    final ProcessAadcMemberSwitchTask task = 
+                        new ProcessAadcMemberSwitchTask(environment);
+                    localEventLoop.scheduleTask(task);
+                    task.waitForFinish();
+                    waitDialog = task.getWaitDialog();
+                    return false;
+                }else{
+                    final ObserveAadcMemberSwitchWaitDialogTask task = 
+                            new ObserveAadcMemberSwitchWaitDialogTask(waitDialog);
+                    localEventLoop.scheduleTask(task);
+                    task.waitForFinish();
+                    final IWaitForAadcMemberSwitchDialog.Button button = task.getPressedButton();
+                    if (button==null){
+                        return false;
+                    }else{
+                        localEventLoop.scheduleTask(new CloseAadcMemberSwitchWaitDialogTask(waitDialog));
+                        waitDialog = null;
+                        if (button==IWaitForAadcMemberSwitchDialog.Button.IMMEDIATE_SWITCH){
+                            return true;
+                        }else{
+                            throw new InterruptedException();
+                        }                    
+                    }                    
+                }
+            }else{
+                return false;
+            }
+        }
+
+        @Override
+        public void stopSwitching() {
+            if (waitDialog!=null && localEventLoop!=null && localEventLoop.isInProgress()){
+                localEventLoop.scheduleTask(new CloseAadcMemberSwitchWaitDialogTask(waitDialog));
+            }
+            waitDialog = null;
+        }
+        
+    }
+    
     private RequestTask currentTask;//synchronized by executorSemaphore
     private final java.lang.Object executorSemaphore = new java.lang.Object();//to synchronize with ResponseWatcherTask
     private InternalThreadPoolExecutor executor = new InternalThreadPoolExecutor();
@@ -399,20 +611,25 @@ abstract class RequestExecutor {
     private String currentScpName;    
     private final IClientEnvironment environment;
     private final MessageProvider mp;
-    private final ClientTracer tracer;
-    private EasTrace easTrace;
-    private final IProgressHandle progressHandle;
-    private final CallbackRequestHandle callbackRqHandle;
+    private final ClientTracer tracer;    
+    private final IProgressHandle progressHandle;    
     private final IEventLoop localEventLoop;    
     private final boolean isInDevelopmentMode;
+    private final boolean isWeb;
     private final boolean isInteractive;
+    private EasTrace easTrace;
+    private volatile FailedSapsInfo failedSaps;
+    private volatile long unsupportedVersion = -1;
+    private volatile long unsupportedVersionTime = 0;
     private final RequestTaskDeque tasks = new RequestTaskDeque();//synchronized by executorSemaphore
     //Набор задач на выполнение асинхронных запросов, на которые ответ уже получен,
     //но отдавать его обработчику нельзя, поскольку в очереди есть задача на выполнение
     //синхронного запроса
     private final Collection<RequestTask> completedTasks = new ArrayList<>();//synchronized by executorSemaphore
     private final List<String> debug_msg = new ArrayList<>();
-
+    private final IAadcMemberSwitchController aadcMemberSwitchController;
+    private volatile boolean interactiveCallBackRequestProcessing;    
+    
     public RequestExecutor(final IClientEnvironment environment, 
                            final EasTrace easTrace, 
                            final IEasClient soapConnection,
@@ -421,6 +638,7 @@ abstract class RequestExecutor {
         this.environment = environment;
         this.isInteractive = isInteractive;        
         isInDevelopmentMode = RunParams.isDevelopmentMode();
+        isWeb = environment.getApplication().getRuntimeEnvironmentType()==ERuntimeEnvironmentType.WEB;
         if (isInteractive){
             progressHandle = environment.getProgressHandleManager().newProgressHandle(new IProgressHandle.Cancellable() {
                 @Override
@@ -435,7 +653,7 @@ abstract class RequestExecutor {
         tracer = environment.getTracer();        
         localEventLoop = isInteractive ? environment.newEventLoop() : new DummyEventLoop();
         this.easTrace = easTrace;
-        callbackRqHandle = new CallbackRequestHandle(environment);
+        aadcMemberSwitchController = new InteractiveAadcMemberSwitchController(environment, localEventLoop);
     }
     
     private IEventLoop getEventLoop(){
@@ -459,6 +677,13 @@ abstract class RequestExecutor {
                 }
                 executor = new InternalThreadPoolExecutor();
                 executor.afterExecute();
+            }else if ((currentTask == null || (currentTask.isDone() && !currentTask.isCancelled()))
+                         && getEventLoop().isInProgress()){
+                debug_message("Cancel current task and stopping event loop");
+                if (currentTask!=null){
+                    currentTask.cancel();
+                }
+                getEventLoop().stop();
             }
         }
     }
@@ -478,22 +703,38 @@ abstract class RequestExecutor {
     private static boolean isCloseRequest(RequestHandle handler){
         return handler.getExpectedResponseMessageClass()==CloseSessionMess.class;
     }     
+    
+    private static boolean isCreateSessionRequest(final RequestHandle handler){
+        return handler.getExpectedResponseMessageClass() == CreateSessionMess.class;
+    }
 
     public void setCurrentScpName(final String scpName) {
-        synchronized (executorSemaphore) {
+        synchronized(executorSemaphore){
             currentScpName = scpName;
         }
     }
     
     public void schedule(final RequestHandle requestHandle, final int timeoutSec) {
         synchronized (executorSemaphore) {
-            queueRequestTask(new PrimaryRequestTask(requestHandle, timeoutSec), true);
+            if (isVersionSupported() || isCloseRequest(requestHandle)){
+                try{
+                    queueRequestTask(new PrimaryRequestTask(requestHandle, timeoutSec, false, true), true);
+                }catch(AsyncRequestsLimitExceededException exception){
+                    requestHandle.setException(exception);
+                    requestHandle.processAnswer();
+                }
+            }else{
+                requestHandle.setException(new NoSapsForCurrentVersion(failedSaps, mp));
+                requestHandle.processAnswer();                
+            }
         }
     }
     
     public void scheduleTestRequest() {
         synchronized (executorSemaphore) {
-            scheduleTestRequestImpl();
+            if (isVersionSupported()){
+                scheduleTestRequestImpl();
+            }
         }
     }
     
@@ -532,11 +773,18 @@ abstract class RequestExecutor {
     }
 
     //synchronized by executorSemaphore
+    @SuppressWarnings("unchecked")
     private void onAsyncRequestAnswer(final XmlObject answer) throws ServiceAuthenticationException {
         final RequestTask asyncTask = currentTask;
         debug_message("Ready for next task");
         currentTask = null;
-        asyncTask.getRequestHandle().setResponse(onResponseReceived(answer));
+        tracer.getBuffer().startMerge(easTrace.getBuffer());
+        try{
+            asyncTask.getRequestHandle().setResponse(onResponseReceived(answer));
+        }finally{
+            tracer.getBuffer().finishMerge();
+            easTrace.clear();            
+        }
         if (!getEventLoop().isInProgress()) {
             asyncTask.getRequestHandle().processAnswer();
         } else {
@@ -575,6 +823,9 @@ abstract class RequestExecutor {
                 System.out.println("!!!!!!!! Another request is already invoked !!!!!!!!!!!!!!!!!!!!!!!");
                 throw exception;
             }
+            if (!isVersionSupported() && !isCloseRequest(handler)){
+                throw new NoSapsForCurrentVersion(failedSaps, mp);
+            }
         }
         XmlObject response = null;
         boolean tryAgain, isCallbackResponse;
@@ -597,7 +848,43 @@ abstract class RequestExecutor {
                             requestTask = createNextRequestTask(handler, response, INFINITE_RESPONSE_TIMEOUT);
                         }
                         break;
-                    } catch (ServiceCallTimeout | AllSapsBusyException ex) {
+                    } catch(NoSapsForCurrentVersion ex){                        
+                        if (!isInDevelopmentMode && !isWeb && canUseGui() && !isCloseRequest(handler) && ex.canWaitForBusySaps()){
+                            isCallbackResponse = false;
+                            final String title = mp.translate("ClientSessionException", "Confirm to Update Version");
+                            final String message;
+                            message = mp.translate("ClientSessionException", "New version found.\nThere are no free servers to process request from application with current version at this moment.\nHowever there are servers that can process request from application with new version.\nYou may restart application to update version (all your unsaved data will be lost) or wait some time and repeat request.");
+                            final IMessageBox messageBox = environment.newMessageBoxDialog(message, title, EDialogIconType.QUESTION, null);
+                            messageBox.removeButton(EDialogButtonType.OK);
+                            {
+                                final Icon btnIcon = environment.getApplication().getImageManager().getIcon(ClientIcon.CommonOperations.REFRESH);
+                                final String buttonText;
+                                buttonText = mp.translate("ClientSessionException", "Restart application");
+                                messageBox.addButton(EDialogButtonType.YES, buttonText, btnIcon);
+                            }
+                            {
+                                final Icon btnIcon = environment.getApplication().getImageManager().getIcon(ClientIcon.CommonOperations.REDO);
+                                final String buttonText = mp.translate("ClientSessionException", "Repeat request");
+                                messageBox.addButton(EDialogButtonType.RETRY, buttonText, btnIcon);
+                            }
+                            {
+                                final Icon btnIcon = environment.getApplication().getImageManager().getIcon(ClientIcon.Dialog.BUTTON_CANCEL);
+                                final String buttonText = mp.translate("ClientSessionException", "Cancel operation");
+                                messageBox.addButton(EDialogButtonType.CANCEL, buttonText, btnIcon);
+                            }
+                            switch (messageBox.execMessageBox()){
+                                case YES:
+                                    throw ex;
+                                case RETRY:
+                                    tryAgain = true;
+                                    break;
+                                default:
+                                    throw new InterruptedException();
+                            }
+                        }else{
+                            throw ex;
+                        }
+                    }catch (AllSapsBusyException | ServiceCallTimeout ex){
                         if (canUseGui() && !isCloseRequest(handler)){
                             isCallbackResponse = false;
                             final String title = mp.translate("ClientSessionException", "Connection Problem");
@@ -608,7 +895,7 @@ abstract class RequestExecutor {
                             tryAgain = true;
                         }else{
                             throw ex;
-                        }
+                        }                    
                     } finally {
                         synchronized (executorSemaphore) {
                             debug_message("Ready for next task");
@@ -629,11 +916,14 @@ abstract class RequestExecutor {
         return response;
     }
 
-    private RequestTask createNextRequestTask(final RequestHandle handler, final XmlObject response, final int timoutSec) throws InterruptedException {
+    private RequestTask createNextRequestTask(final RequestHandle handler, 
+                                                                       final XmlObject response, 
+                                                                       final int timoutSec) throws InterruptedException {
         RequestTask requestTask;
         if (response == null) {//make first request
-            requestTask = new PrimaryRequestTask(handler, timoutSec);
+            requestTask = new PrimaryRequestTask(handler, timoutSec, isInteractive, false);
         } else {//process callback request from server
+            interactiveCallBackRequestProcessing = isInteractiveCallBackRequest(response);
             try {
                 final XmlObject callbackResponse = processCallBackRequest(environment, response, isInteractive);
                 requestTask = new CallbackResponseTask(handler, callbackResponse, timoutSec);
@@ -658,9 +948,15 @@ abstract class RequestExecutor {
                 }
                 final String message = ex.getMessage();
                 requestTask = new SendFaultMessageTask(handler, message, ex, timoutSec);
+            } finally{
+                interactiveCallBackRequestProcessing  = false;
             }
         }
         return requestTask;
+    }
+    
+    public final boolean inInteractiveCallBackRequestProcessing(){
+        return interactiveCallBackRequestProcessing;
     }
 
     public final boolean isBusy() {
@@ -669,11 +965,18 @@ abstract class RequestExecutor {
             return currentTask != null || getEventLoop().isInProgress();
         }
     }
+    
+    public final boolean isSupportedVersion(){
+        synchronized (executorSemaphore){
+            return failedSaps==null
+                       || (System.currentTimeMillis() - unsupportedVersionTime)>UNSUPPORTED_VERSION_TIMEOUT_MSEC;
+        }
+    }
 
-    private XmlObject executeSyncRequestTask(final RequestTask requestTask) throws ServiceClientException, InterruptedException {
+    private XmlObject executeSyncRequestTask(final RequestTask requestTask) throws ServiceClientException, InterruptedException, CredentialsWasNotDefinedError {
         if (canUseGui() && !isCloseRequestTask(requestTask) && !environment.getDefManager().getAdsVersion().isActualized()) {//RADIX-6501            
             try {
-                environment.getDefManager().getAdsVersion().checkForUpdates(environment);
+                environment.getDefManager().getAdsVersion().prepareSwitchVersion(environment, -1, true);
             } catch (CantUpdateVersionException exception) {
                 if (requestTask.getRequestHandle() != null && requestTask.getRequestHandle().getRequest() instanceof CreateSessionRq) {
                     throw exception;
@@ -697,38 +1000,45 @@ abstract class RequestExecutor {
                 @Override
                 public void run() {
                     synchronized (executorSemaphore) {
-                        if (currentTask == null) {
-                            trySubmitNextTask();
-                        }else{
+                        if (!trySubmitNextTask()){
                             debug_message("Submiting task was rejected!!!");
+                            getEventLoop().stop();
                         }
                     }
                 }
             });
             debug_message("Start event loop");
-            getEventLoop().start();
-            synchronized (executorSemaphore) {
-                try {
-                    return currentTask.getResult();
-                } catch (ExecutionException e) {
+            getEventLoop().start();            
+            synchronized (executorSemaphore) {                
+                if (currentTask==null || currentTask.isCancelled()){
+                    onRequestCancelled();
+                }else{
                     try {
-                        processExecutionException(e, requestTask.getRequestHandle(), false, resend);
-                        resend = true;
-                    } finally {
-                        debug_message("Ready for next task");
-                        currentTask = null;
+                        return currentTask.getResult();
+                    } catch (ExecutionException e) {
+                        try {
+                            processExecutionException(e, requestTask.getRequestHandle(), false, resend);
+                            resend = true;
+                        } finally {
+                            debug_message("Ready for next task");
+                            currentTask = null;
+                        }
+                    } catch (CancellationException e) {
+                        onRequestCancelled();
                     }
-                } catch (CancellationException e) {
-                    scheduleTestRequestImpl();
-                    tracer.put(EEventSeverity.DEBUG, "request was cancelled", EEventSource.CLIENT_SESSION);
-                    throw new InterruptedException("Eas request was cancelled");//NOPMD
                 }
             }
         } while (resend);
         return null;
     }
+    
+    private void onRequestCancelled() throws InterruptedException{
+        scheduleTestRequestImpl();
+        tracer.put(EEventSeverity.DEBUG, "request was cancelled", EEventSource.CLIENT_SESSION);
+        throw new InterruptedException("Eas request was cancelled");//NOPMD        
+    }
 
-    public void afterResponseWasReceived() {
+    void afterResponseWasReceived() {
         synchronized (executorSemaphore) {
             if (currentTask == null) {
                 if (!tasks.isEmpty()) {
@@ -747,7 +1057,7 @@ abstract class RequestExecutor {
     }
 
     //synchronized by executorSemaphore
-    private void queueRequestTask(final RequestTask requestTask, final boolean isAsync) {
+    private void queueRequestTask(final RequestTask requestTask, final boolean isAsync) throws AsyncRequestsLimitExceededException {        
         if (isTestRequest(requestTask.getRequestHandle()) && tasks.isTestRequestSheduled()) {
             tasks.removeScheduledTestTask();//remove automatically scheduled test task
         }
@@ -766,73 +1076,119 @@ abstract class RequestExecutor {
     }
 
     //synchronized by executorSemaphore
-    private void trySubmitNextTask() {
-        if (currentTask == null && !tasks.isEmpty()) {
-            RequestTask requestTask;
-            do {
-                requestTask = tasks.takeHead();
-            } while (requestTask != null
-                    && (!requestTask.getRequestHandle().hasListeners()
-                    || !requestTask.getRequestHandle().isActive()));
-
-            if (requestTask != null) {
-                debug_message("Start task executing");
-                currentTask = requestTask;
-                currentTask.execute(executor);
-                currentTask.getRequestHandle().onExecuting(this);
-            }
+    private boolean trySubmitNextTask() {
+        if (currentTask!=null){
+            return true;//some task already submitted
+        }
+        if (tasks.isEmpty()){
+            return false;
+        }
+        RequestTask requestTask;
+        do {
+            requestTask = tasks.takeHead();
+        } while (requestTask != null && !requestTask.getRequestHandle().beforeExecute(this));
+        if (requestTask==null){
+            return false;//failed to submit any task
+        }else{
+            debug_message("Start task executing");
+            currentTask = requestTask;
+            currentTask.execute(executor);
+            return true;
         }
     }
 
     //synchronized by executorSemaphore
     private void processResponse() throws ServiceClientException, InterruptedException {
-        if (getEventLoop().isInProgress() && !tasks.containsSyncTask() //!isTestRequest(currentTask.getRequestHandle())
-                ) {//response to sync request
-            debug_message("Stop event loop");
-            getEventLoop().stop();//processed after exit from event loop
-        } else {
-            debug_message("Process response to async request");
-            XmlObject response;
-            final boolean isCallback;
-            try {
-                response = currentTask.getResult();
-                isCallback = EasMessageProcessor.isCallBackRequest(response);
-                if (!isCallback) {
-                    final Class<? extends XmlObject> resultClass = currentTask.getRequestHandle().getExpectedResponseMessageClass();
-                    if (resultClass != null
-                            && !resultClass.isInstance(response)) {
-                        try {
-                            response = castToResultClass(response, resultClass);
-                        } catch (ServiceClientException exception) {
-                            onAsyncRequestException(exception);
-                            return;
-                        }
+        if (getEventLoop().isInProgress()){
+            if (tasks.containsSyncTask()){
+                if (isTestRequest(currentTask.getRequestHandle())){
+                    if (processTestResponse()){
+                        debug_message("Ready for next task");
+                        currentTask = null;
+                    }else{
+                        tasks.dropSyncTask();//cancel main request
+                        scheduleTestRequestImpl();//repeat test request
+                        debug_message("Drop sync task and stop event loop");
+                        getEventLoop().stop();//process postponed exception after exit from event loop
                     }
-                }
-            } catch (ExecutionException ex) {
-                processExecutionException(ex, currentTask.getRequestHandle(), true, currentTask.isResend());
+                    return;
+                }// else process response to async request
+            }else{
+                debug_message("Stop event loop");
+                getEventLoop().stop();//processed after exit from event loop
                 return;
-            } catch (InterruptedException | CancellationException ex) {
-                //request was interrupted just log.
-                tracer.put(EEventSeverity.DEBUG, "async request was cancelled", EEventSource.CLIENT_SESSION);
-                onAsyncRequestCancelled();
-                return;
-            }
-
-            if (isCallback) {
-                try {
-                    queueRequestTask(createNextRequestTask(callbackRqHandle, response, currentTask.getResponseTimeoutSec()), false/*callback tasks is not async*/);
-                } catch (InterruptedException ex) {
-                    //request was interrupted just log.
-                    tracer.put(EEventSeverity.DEBUG, "request was cancelled", EEventSource.CLIENT_SESSION);
-                } finally {
-                    debug_message("Ready for next task");
-                    currentTask = null;//ready to next request;
-                }
-            } else {
-                onAsyncRequestAnswer(response);
             }
         }
+        debug_message("Process response to async request");
+        XmlObject response;
+        final boolean isCallback;
+        try {
+            response = currentTask.getResult();
+            isCallback = EasMessageProcessor.isCallBackRequest(response);
+            if (!isCallback) {
+                final Class<? extends XmlObject> resultClass = currentTask.getRequestHandle().getExpectedResponseMessageClass();
+                if (resultClass != null && !resultClass.isInstance(response)) {
+                    try {
+                        response = castToResultClass(response, resultClass);
+                    } catch (ServiceClientException exception) {
+                        onAsyncRequestException(exception);
+                        return;
+                    }
+                }
+            }
+        } catch (ExecutionException ex) {
+            processExecutionException(ex, currentTask.getRequestHandle(), true, currentTask.isResend());
+            return;
+        } catch (InterruptedException | CancellationException ex) {
+            //request was interrupted just log.
+            tracer.put(EEventSeverity.DEBUG, "async request was cancelled", EEventSource.CLIENT_SESSION);
+            onAsyncRequestCancelled();
+            return;
+        }
+
+        if (isCallback) {
+            final RequestTask nextTask;
+            try {
+                final CallbackRequestHandle callbackRqHandle = new CallbackRequestHandle(currentTask.getRequestHandle());
+                nextTask = createNextRequestTask(callbackRqHandle, response, currentTask.getResponseTimeoutSec());
+            } catch (InterruptedException ex) {
+                //request was interrupted just log.
+                tracer.put(EEventSeverity.DEBUG, "request was cancelled", EEventSource.CLIENT_SESSION);
+                return;
+            } finally {
+                debug_message("Ready for next task");
+                currentTask = null;//ready to next request;
+            }                
+            queueRequestTask(nextTask, false/*callback tasks is not async*/);
+        } else {
+            onAsyncRequestAnswer(response);
+        }        
+    }
+    
+    //synchronized by executorSemaphore
+    private boolean processTestResponse(){
+        debug_message("Process response to test request");
+        XmlObject response;
+        try {
+            response = currentTask.getResult();
+            if (!TestMess.class.isInstance(response)) {
+                try {
+                    response = castToResultClass(response, TestMess.class);
+                } catch (ServiceClientException exception) {
+                    currentTask.setParseException(exception);
+                    return false;
+                }
+            }
+        } catch (ExecutionException | InterruptedException | CancellationException ex) {
+            return false;
+        }
+        try{
+            onResponseReceived(response);
+        }catch(ServiceAuthenticationException exception){
+            currentTask.setParseException(exception);
+            return false;
+        }
+        return true;
     }
 
     //synchronized by executorSemaphore
@@ -844,7 +1200,7 @@ abstract class RequestExecutor {
             final boolean brokenChallenge = fault.getFaultString().equals(ExceptionEnum.INVALID_PASSWORD.toString())
                     || fault.getFaultString().equals(ExceptionEnum.INVALID_CHALLENGE.toString());
             if (brokenChallenge && !isTestRequest && !isCloseRequest(handler)) {
-                final XmlObject request = handler == null ? null : handler.getRequest();
+                final XmlObject request = handler.getRequest();
                 final boolean isPwdRequest = (request instanceof ChangePasswordRq);
                 final boolean isLoginRequest = (request instanceof LoginRq);
                 if (!resend && !isPwdRequest && !isLoginRequest) {
@@ -862,7 +1218,9 @@ abstract class RequestExecutor {
                 }
             } else if (fault.getFaultString().equals(ExceptionEnum.INVALID_DEFINITION_VERSION.toString())) {
                 if (canUseGui() && !isCloseRequest(handler)){
-                    processInvalidDefinitionVersionFault(fault.getMessage(), handler.getRequest());
+                    if (!processInvalidDefinitionVersionFault(fault.getMessage(), handler.getRequest())){
+                        throw fault;
+                    }
                     if (asyncRequest) {
                         final RequestTask repeatTask = createNextRequestTask(handler, null, currentTask.getResponseTimeoutSec());
                         queueRequestTask(repeatTask, true);
@@ -903,14 +1261,22 @@ abstract class RequestExecutor {
                     throw error;
                 }
             } else if (fault.getFaultString().equals(ExceptionEnum.LOGON_TIME_RESTRICTION_VIOLATION.toString())){
-                final boolean onCreate = handler.getExpectedResponseMessageClass()==CreateSessionMess.class;
+                final boolean onCreate = isCreateSessionRequest(handler);
                 if (asyncRequest){
                     onAsyncRequestException(fault);
                     return;
                 }else{
                     throw new LogonTimeRestrictionViolationError(onCreate, fault);
                 }
-            } else if (fault.getFaultString().equals(ExceptionEnum.SESSION_DOES_NOT_EXIST.toString())) {
+            } else if (fault.getFaultString().equals(ExceptionEnum.TEMPORARY_PASSWORD_EXPIRED.toString())){
+                final boolean onCreate = isCreateSessionRequest(handler);
+                if (asyncRequest){
+                    onAsyncRequestException(fault);
+                    return;
+                }else{
+                    throw new TemporaryPasswordExpiredError(onCreate, fault);
+                }
+            }else if (fault.getFaultString().equals(ExceptionEnum.SESSION_DOES_NOT_EXIST.toString())) {
                 if (asyncRequest){
                     onAsyncRequestException(fault);
                     return;
@@ -942,9 +1308,18 @@ abstract class RequestExecutor {
                 }else{
                     throw new CantDeleteSubobjectsFault(fault);
                 }                
+            } else if (fault.getFaultString().equals(ExceptionEnum.NO_CREDENTIALS.toString())){
+                if (asyncRequest){
+                    onAsyncRequestException(fault);
+                }else{
+                    throw new CredentialsWasNotDefinedError();
+                }
             }
         }
-        if (exception instanceof ServiceCallException) {
+        if (exception instanceof AllSapsBusyException){
+            processAllSapsBusyException((AllSapsBusyException)exception, handler, asyncRequest);
+            return;
+        }else if (exception instanceof ServiceCallException) {
             final Throwable cause = exception.getCause();
             if (cause instanceof InterruptedException) {
                 tracer.put(EEventSeverity.EVENT, mp.translate("TraceMessage", "Request was interrupted"), EEventSource.CLIENT_SESSION);
@@ -956,12 +1331,8 @@ abstract class RequestExecutor {
                     throw (InterruptedException) cause;
                 }
             } else if (cause instanceof AllSapsBusyException) {
-                if (asyncRequest) {
-                    onAsyncRequestException((AllSapsBusyException) cause);
-                    return;
-                } else {
-                    throw (AllSapsBusyException) cause;
-                }
+                processAllSapsBusyException((AllSapsBusyException)cause, handler, asyncRequest);
+                return;                
             } else if (cause instanceof ServiceCallTimeout) {
                 processServiceCallTimeout((ServiceCallTimeout) cause, asyncRequest, isTestRequest);
                 return;
@@ -1002,6 +1373,33 @@ abstract class RequestExecutor {
             throw new ServiceClientException(String.format(msg, info), exception);
         }
     }
+    
+    //synchronized by executorSemaphore
+    private void processAllSapsBusyException(final AllSapsBusyException exception, 
+                                                                   final RequestHandle handler,
+                                                                   final boolean asyncRequest) throws AllSapsBusyException{
+        easTrace.put(EEventSeverity.EVENT, exception.getDetailedMessage(mp), null, null, false);
+        if (exception instanceof NoSapsForCurrentVersion){
+            final NoSapsForCurrentVersion noSaps = (NoSapsForCurrentVersion)exception;
+            if (isInDevelopmentMode || isCreateSessionRequest(handler)){
+                if (tryToUpdateDefinitionVersion(handler.getRequest(), noSaps.getRequiredVersion()) && !asyncRequest){
+                    return;//try again with new version
+                }
+            }else{
+                if (!noSaps.canWaitForBusySaps()){
+                    debug_message("No SAPS for current version");
+                    failedSaps = noSaps.getFailedSapsInfo();
+                    unsupportedVersion = environment.getDefManager().getAdsVersion().getNumber();
+                    unsupportedVersionTime = System.currentTimeMillis();
+                }
+            }
+        }
+        if (asyncRequest) {
+            onAsyncRequestException(exception);
+        } else {
+            throw exception;
+        }        
+    }
 
     @SuppressWarnings("unchecked")
     private void processFault(final ServiceCallFault e) {
@@ -1029,9 +1427,12 @@ abstract class RequestExecutor {
         //Write client error
         final String faultMessageTitle = mp.translate("ExplorerError", "Service call fault.");
         final String traceMessage = faultMessageTitle + "\ncode: \'" + e.getFaultCode() + "\'\nmessage: \'" + e.getFaultString() + "\'" + "\ndetail:\n" + e.getDetail().toString();
-        if (tracer.getProfile().itemMatch(EEventSeverity.ERROR,EEventSource.CLIENT.getValue())) {
-            nativeBuffer.put(EEventSeverity.ERROR,traceMessage,EEventSource.CLIENT.getValue());
+        final EEventSeverity severity = ClientException.getFaultSeverity(e);
+        if (tracer.getProfile().itemMatch(severity,EEventSource.CLIENT.getValue())) {
+            nativeBuffer.put(severity,traceMessage,EEventSource.CLIENT.getValue());
         }
+        //now all messages in explorer trace and we can clear EAS-CLIENT trace
+        easTrace.clear();
     }
 
     //synchronized by executorSemaphore
@@ -1048,21 +1449,72 @@ abstract class RequestExecutor {
             throw exception;
         }
     }
-
-    private void processInvalidDefinitionVersionFault(final String serverVersionAsStr, final XmlObject request) throws ServiceClientException, CantUpdateVersionException {
+    
+    private boolean tryToUpdateDefinitionVersion(final XmlObject request, final long targetVersion) {
         final AdsVersion adsVersion = environment.getDefManager().getAdsVersion();
-        long serverVersion = 0;
+        if (adsVersion.getTargetVersionNumber()!=targetVersion){
+            final long currentVersion = adsVersion.getNumber();
+            try{
+                adsVersion.prepareSwitchVersion(environment, targetVersion, isWeb || isInDevelopmentMode);
+            }catch(CantUpdateVersionException exception){
+                tracer.debug(mp.translate("ExplorerError", "Can't load runtime components"), exception);
+                return false;
+            }
+            if (adsVersion.getTargetVersionNumber()<0){
+                return targetVersion==-1 || adsVersion.getNumber()==targetVersion;
+            }
+        }
+        
+        if (request instanceof CreateSessionRq
+            && canUseGui()
+            && !isWeb
+            && (environment.getTreeManager() == null || environment.getTreeManager().getCurrentTree() == null)) {
+            final long currentVersion = adsVersion.getNumber();
+            try {
+                adsVersion.switchToTargetVersion();
+            }catch(KernelClassModifiedException exception){
+                return false;
+            }catch (CantUpdateVersionException exception) {                
+                tracer.debug(mp.translate("ExplorerError", "Can't load runtime components"), exception);
+                return false;
+            }
+            if (currentVersion!=adsVersion.getNumber()){
+                final CreateSessionRq createSession = (CreateSessionRq) request;
+                final CreateSessionRq.Platform platform = createSession.getPlatform();
+                platform.setDefinitionsVer(adsVersion.getNumber());
+                platform.setAppVersion(RadixLoader.getInstance().getCurrentRevisionMeta().getAppLayerVersionsString());
+                platform.setKernelVersion(RadixLoader.getInstance().getCurrentRevisionMeta().getKernelLayerVersionsString());
+                return true;
+            }
+        }
+        return false;
+    }
 
-        try {
-            adsVersion.checkForUpdates(environment);
+    private boolean processInvalidDefinitionVersionFault(final String serverVersionAsStr, final XmlObject request) throws ServiceClientException, CantUpdateVersionException {
+        final AdsVersion adsVersion = environment.getDefManager().getAdsVersion();
+        long serverVersion = -1;
+        try{
             serverVersion = Long.parseLong(serverVersionAsStr);
-            final long clientVersion = adsVersion.getNumber();
-            if (!adsVersion.isNewVersionAvailable() && serverVersion > clientVersion) {
+        }catch (NumberFormatException ex) {
+            final String errorMessage = mp.translate("ExplorerError", "Can't parse server definitions version: %s");
+            tracer.put(EEventSeverity.WARNING, String.format(errorMessage, serverVersionAsStr), EEventSource.CLIENT_SESSION); 
+        }
+        try {
+            adsVersion.prepareSwitchVersion(environment, isInDevelopmentMode ? -1 : serverVersion, isWeb || isInDevelopmentMode);
+            final long clientVersion = adsVersion.getTargetVersionNumber()>-1 ? adsVersion.getTargetVersionNumber() : adsVersion.getNumber();
+            if (isInDevelopmentMode && serverVersion>-1 && serverVersion > clientVersion){
                 final String clientVersionAsStr = String.valueOf(clientVersion);
                 final String errorMessage = mp.translate("ExplorerError", "Can't load version %s");
                 final String detailMessage = mp.translate("TraceMessage", "Server ask to load version with number %s, but only version with number %s available for client");
                 tracer.put(EEventSeverity.ERROR, String.format(detailMessage, serverVersionAsStr, clientVersionAsStr), EEventSource.CLIENT_SESSION);
                 throw new ServiceClientException(String.format(errorMessage, serverVersionAsStr));
+            }
+            if (!isInDevelopmentMode && serverVersion>-1 && serverVersion != clientVersion){
+                final String clientVersionAsStr = String.valueOf(clientVersion);
+                final String errorMessage = mp.translate("ExplorerError", "Can't load version %s");
+                final String detailMessage = mp.translate("TraceMessage", "Server ask to load version with number %s, but this version is not available for client");
+                tracer.put(EEventSeverity.ERROR, String.format(detailMessage, serverVersionAsStr, clientVersionAsStr), EEventSource.CLIENT_SESSION);
+                throw new ServiceClientException(String.format(errorMessage, serverVersionAsStr));                
             }
         } catch (CantUpdateVersionException error) {
             tracer.error(mp.translate("ExplorerError", "Can't load runtime components"), error);
@@ -1071,25 +1523,29 @@ abstract class RequestExecutor {
             }
         } catch (NumberFormatException ex) {
             final String errorMessage = mp.translate("ExplorerError", "Can't parse server definitions version: %s");
-            tracer.put(EEventSeverity.WARNING, String.format(errorMessage, serverVersionAsStr), EEventSource.CLIENT_SESSION);
-            serverVersion = adsVersion.getLastVersionNumber();
+            tracer.put(EEventSeverity.WARNING, String.format(errorMessage, serverVersionAsStr), EEventSource.CLIENT_SESSION); 
         }
 
         if (request instanceof CreateSessionRq && canUseGui()) {
-            if (environment.getApplication().getRuntimeEnvironmentType() != ERuntimeEnvironmentType.WEB
-                    && (environment.getTreeManager() == null || environment.getTreeManager().getCurrentTree() == null)) {
+            if ((environment.getTreeManager() == null || environment.getTreeManager().getCurrentTree() == null)) {
                 //opening connection
                 try {
-                    adsVersion.updateToNewVersion();
+                    adsVersion.switchToTargetVersion();
                 }catch(KernelClassModifiedException exception){
                     throw exception;//to make PMD happy
-                }catch (CantUpdateVersionException exception) {                
+                }catch (CantUpdateVersionException exception) {
                     tracer.error(mp.translate("ExplorerError", "Can't load runtime components"), exception);
                 }
+            }else{
+                return false;
             }
             final CreateSessionRq createSession = (CreateSessionRq) request;
-            createSession.getPlatform().setDefinitionsVer(serverVersion);
+            final CreateSessionRq.Platform platform = createSession.getPlatform();
+            platform.setDefinitionsVer(adsVersion.getNumber());
+            platform.setAppVersion(RadixLoader.getInstance().getCurrentRevisionMeta().getAppLayerVersionsString());
+            platform.setKernelVersion(RadixLoader.getInstance().getCurrentRevisionMeta().getKernelLayerVersionsString());
         }
+        return true;
     }
 
     private XmlObject castToResultClass(final XmlObject response, final Class resultClass) throws ServiceClientException {
@@ -1109,13 +1565,20 @@ abstract class RequestExecutor {
         }
         return result;
     }
+    
+    private static boolean isInteractiveCallBackRequest(final XmlObject request){
+        return request instanceof MessageDialogOpenMess
+                   || request instanceof MessageDialogWaitButtonMess
+                   || request instanceof FileSelectMess
+                   || request instanceof ClientMethodInvocationRq;
+    }
 
     public static XmlObject processCallBackRequest(final IClientEnvironment environment,
                                                    final XmlObject request,
                                                    final boolean isInteractive) throws TerminalResourceException, IOException, InterruptedException {
         final TerminalResources resources = TerminalResources.getInstance(environment);
         if (request instanceof MessageDialogOpenMess) {
-            assertIsInteractive(isInteractive);
+            assertIsInteractive(isInteractive);            
             MessageDialogOpenRq callbackRq = ((MessageDialogOpenMess) request).getMessageDialogOpenRq();
             final String id = resources.openMessageDialogResource(environment, callbackRq);
             final MessageDialogOpenDocument document = MessageDialogOpenDocument.Factory.newInstance();
@@ -1130,7 +1593,7 @@ abstract class RequestExecutor {
             final MessageDialogWaitButtonRs callbackRs = document.addNewMessageDialogWaitButton().addNewMessageDialogWaitButtonRs();
             if (buttonName != null) {
                 callbackRs.setPressedButtonId(buttonName);
-                resources.freeResource(callbackRq.getId());
+                resources.freeResource(environment, callbackRq.getId());
             }
             return document;
         } else if (request instanceof ProgressDialogStartProcessMess) {
@@ -1188,11 +1651,17 @@ abstract class RequestExecutor {
             final FileOpenRs callbackRs = document.addNewFileOpen().addNewFileOpenRs();
             callbackRs.setId(resources.openFileResource(environment, callbackRq));
             return document;
+        } else if (request instanceof FileTransitMess) {
+            final FileTransitRq callbackRq = ((FileTransitMess) request).getFileTransitRq();
+            final FileTransitDocument document = FileTransitDocument.Factory.newInstance();
+            final FileTransitRs callbackRs = document.addNewFileTransit().addNewFileTransitRs();
+            callbackRs.setId(resources.startFileTransit(environment, callbackRq));
+            return document;
         } else if (request instanceof FileCloseMess) {
             final FileCloseRq callbackRq = ((FileCloseMess) request).getFileCloseRq();
             final FileCloseDocument document = FileCloseDocument.Factory.newInstance();
             document.addNewFileClose().addNewFileCloseRs();
-            resources.freeResource(callbackRq.getId());
+            resources.freeResource(environment, callbackRq.getId());
             return document;
         } else if (request instanceof FileReadMess) {
             final FileReadRq callbackRq = ((FileReadMess) request).getFileReadRq();
@@ -1288,6 +1757,28 @@ abstract class RequestExecutor {
             final FileDirMoveDocument document = FileDirMoveDocument.Factory.newInstance();
             document.addNewFileDirMove().addNewFileDirMoveRs();
             return document;
+        } else if (request instanceof FileDirGetUserHomeMess){
+            final FileDirGetUserHomeDocument document = FileDirGetUserHomeDocument.Factory.newInstance();
+            final String userHomeDirPath = resources.getFileDirResource(environment).getUserHomeDirPath();
+            document.addNewFileDirGetUserHome().addNewFileDirGetUserHomeRs().setDirName(userHomeDirPath);
+            return document;
+        } else if (request instanceof GetUserDownloadsDirMess){
+            final GetUserDownloadsDirDocument document = GetUserDownloadsDirDocument.Factory.newInstance();
+            final String downloadsDirPath = resources.getFileDirResource(environment).getUserDownloadsDirPath();
+            document.addNewGetUserDownloadsDir().addNewGetUserDownloadsDirRs().setDirName(downloadsDirPath);
+            return document;
+        } else if (request instanceof TestIfFileExistsMess){
+           final String filePath = ((TestIfFileExistsMess)request).getTestIfFileExistsRq().getFilePath();
+           final TestIfFileExistsDocument document =  TestIfFileExistsDocument.Factory.newInstance();
+           final boolean isExists = environment.getResourceManager().isFileExists(filePath);
+           document.addNewTestIfFileExists().addNewTestIfFileExistsRs().setIsExists(isExists);
+           return document;
+        } else if (request instanceof TestIfDirExistsMess){
+            final String dirPath = ((TestIfDirExistsMess)request).getTestIfDirExistsRq().getDirPath();
+            final TestIfDirExistsDocument document = TestIfDirExistsDocument.Factory.newInstance();
+            final boolean isExists = resources.getFileDirResource(environment).isExists(dirPath);
+            document.addNewTestIfDirExists().addNewTestIfDirExistsRs().setIsExists(isExists);
+            return document;
         } else if (request instanceof ClientMethodInvocationMess) {
             final ClientMethodInvocationRq callbackRq = ((ClientMethodInvocationMess) request).getClientMethodInvocationRq();
             try {
@@ -1330,12 +1821,19 @@ abstract class RequestExecutor {
                 debug_msg.add(ClientException.exceptionStackToString(new AppError(message)));
             }
         }
-    }
-        
+    }        
     
     private String getCurrentScpName(){
         synchronized(executorSemaphore){
             return currentScpName;
         }
+    }
+
+    //synchronized by executorSemaphore
+    private boolean isVersionSupported(){
+        return failedSaps==null 
+                  || unsupportedVersion<0 
+                  || unsupportedVersion!=environment.getDefManager().getAdsVersion().getNumber()
+                  || (System.currentTimeMillis() - unsupportedVersionTime)>UNSUPPORTED_VERSION_TIMEOUT_MSEC;
     }
 }

@@ -14,6 +14,7 @@ package org.radixware.kernel.designer.common.editors.treeTable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.radixware.kernel.common.utils.Utils;
 
 public class TreeGridModel extends AbstractTreeTableModel {
 
@@ -88,8 +89,10 @@ public class TreeGridModel extends AbstractTreeTableModel {
             return;
         }
         TreeGridNode tgn = (TreeGridNode) node;
-        tgn.values[column] = aValue;
-        tgn.gridItem.CellWasModified(column, aValue);
+        if (!Utils.equals(tgn.values[column], aValue)) {
+            tgn.values[column] = aValue;
+            tgn.gridItem.CellWasModified(column, aValue);
+        }
     }
 
     public void reloadChildren(Object node) {

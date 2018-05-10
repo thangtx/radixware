@@ -11,8 +11,15 @@
 package org.radixware.kernel.explorer.editors.monitoring.tree;
 
 import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QMenu;
+import com.trolltech.qt.gui.QMouseEvent;
+import com.trolltech.qt.gui.QPalette;
+import com.trolltech.qt.gui.QPalette.ColorRole;
 import com.trolltech.qt.gui.QTreeWidget;
 import com.trolltech.qt.gui.QTreeWidgetItem;
 import java.util.*;
@@ -54,6 +61,8 @@ public final class UnitsTree {
     private final Map<Long, ExpandedTreeItem> expandedItemIds;
     private SysMonitoringRq rqItem;
     private SysMonitoringRs prevRs;
+    private boolean showOnlyActiveInstanse = false;
+    private HideUnactiveInstanceDecorator hideUnactiveInstance = new HideUnactiveInstanceDecorator();
 
     public Map<Long, ExpandedTreeItem> getExpandedItemIds() {
         refreshExpandedItems();
@@ -108,6 +117,11 @@ public final class UnitsTree {
         tree.setAlternatingRowColors(true);
         tree.setSortingEnabled(true);
         tree.setItemDelegate(new ItemDelegate());
+        tree.header().setMovable(false);
+
+        QPalette p = tree.palette();
+        p.setColor(QPalette.ColorGroup.Inactive, ColorRole.Highlight, new QColor(204, 232, 255));
+        tree.setPalette(p);
 
         List<String> columnNames = getColumnName();
         tree.setHeaderLabels(columnNames);
@@ -252,7 +266,7 @@ public final class UnitsTree {
         return list;
     }
 
-    private void fillTree(List<TreeItem> treeItems) {
+    private void fillTree(List<TreeItem> treeItems, boolean changeFocus) {
         for (int i = 0; i < treeItems.size(); i++) {
             TreeItem item = treeItems.get(i);
             tree.addTopLevelItem(item);
@@ -261,7 +275,7 @@ public final class UnitsTree {
                 item.setExpanded(isExpanded);
             }
         }
-        if (!treeItems.isEmpty()) {
+        if (!treeItems.isEmpty() && changeFocus) {
             tree.setCurrentItem(tree.topLevelItem(0));
         }
     }
@@ -275,9 +289,9 @@ public final class UnitsTree {
         }
     }
 
-    private List<TreeItem> createItems(MetricInfoGetter metricInfo) {
+    private List<TreeItem> createItems(MetricInfoGetter metricInfo, Map<Long, MetricInfoGetter.InstanceInfo> instanceInfoMap) {
         List<TreeItem> items = new ArrayList<>();
-        for (Long instId : metricInfo.getInstanceInfoMap().keySet()) {
+        for (Long instId : instanceInfoMap.keySet()) {
             InstanceTreeItem topItem = new InstanceTreeItem(idsGetter, metricInfo.getInstanceInfoMap().get(instId), instanceModel);
             topItem.addChild(new InstanceTreeItem(idsGetter, null, null));
             topItem.updateMetricDate(metricInfo);
@@ -289,80 +303,77 @@ public final class UnitsTree {
     @SuppressWarnings("unused")
     void onExpandTreeItem(QTreeWidgetItem index) {
         QApplication.postEvent(tree, new ExpandEvent(index));
-        /*if(index instanceof InstanceTreeItem && !((InstanceTreeItem)index).isCalculated()){
-         InstanceTreeItem instanceTreeItem=(InstanceTreeItem)index;
-         try {
-         //if (!parent.getEnvironment().getEasSession().isBusy()){
-         expandTreeItemCommand(instanceTreeItem);
-         //}
-         } catch (ServiceClientException | InterruptedException ex) {
-         Logger.getLogger(UnitsTree.class.getName()).log(Level.SEVERE, null, ex);
-         }
-         }*/
     }
 
-    private void expandTreeItem(QTreeWidgetItem index) {
-        if (index instanceof InstanceTreeItem && !((InstanceTreeItem) index).isCalculated()) {
-            InstanceTreeItem instanceTreeItem = (InstanceTreeItem) index;
+    private void expandTreeItem(TreeItem index) {
+        if (!index.isCalculated()) {
             try {
-                expandTreeItemCommand(instanceTreeItem);
+                expandTreeItemCommand(index);
             } catch (ServiceClientException | InterruptedException ex) {
                 Logger.getLogger(UnitsTree.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    private void expandTreeItemCommand(InstanceTreeItem treeItem) throws ServiceClientException, InterruptedException {
-        if ((treeItem != null) && (treeItem.parent() == null)) {
-            treeItem.takeChildren();
-
-            SysMonitoringRqDocument rqDoc = SysMonitoringRqDocument.Factory.newInstance();
-            SysMonitoringRq rq = rqDoc.addNewSysMonitoringRq();
-            SysMonitoringRq.ExpandedInstances xInst = rq.addNewExpandedInstances();
-            Instance inst = Instance.Factory.newInstance();
-            inst.setId(treeItem.getId());
-            xInst.getInstanceList().add(inst);
-
+    private void expandTreeItemCommand(TreeItem item) throws ServiceClientException, InterruptedException {
+        if (item != null) {
+            ExpandCommandEvent ev = item.getExpandEvent(SysMonitoringRqDocument.Factory.newInstance().addNewSysMonitoringRq());
+            if (ev == null) {
+                return;
+            }
+            item.takeChildren();
             if (parent.getEnvironment().getEasSession().isBusy()) {
                 parent.getEnvironment().getEasSession().breakRequest();
             }
-            Application.processEventWhenEasSessionReady(tree, new ExpandCommandEvent(treeItem, rq));
+            Application.processEventWhenEasSessionReady(tree, ev);
+        }
+    }
+
+    private void netPortHandlerAddChild(QTreeWidgetItem index, SysMonitoringRs res) {
+        if (index instanceof UnitNetPortHandlerTreeItem) {
+            ((UnitNetPortHandlerTreeItem) index).addNetChannels(res, metricInfo, channelsModel, decorators);
         }
     }
 
     private void expandTreeItem(SysMonitoringRs res, InstanceTreeItem index) {
+        boolean allItemsCalculated = true;
         try {
             tree.blockSignals(true);
             tree.setUpdatesEnabled(false);
-            calcChildItems(res, index);
-            for (int i = 0; i < index.childCount(); i++) {
-                if (index.child(i) instanceof UnitNetPortHandlerTreeItem) {
-                    UnitNetPortHandlerTreeItem netPortHandlerItem = (UnitNetPortHandlerTreeItem) index.child(i);
-                    netPortHandlerItem.addNetChannels(res, metricInfo, channelsModel, decorators);
+            if (index.isCalculated()) {
+                for (int i = 0; i < index.childCount(); i++) {
+                    TreeItem item = (TreeItem) index.child(i);
+                    if (item.isExpanded() && !item.isCalculated()) {
+                        allItemsCalculated = false;
+                        netPortHandlerAddChild(index.child(i), res);
+                        item.setIsCalculated(true);
+                    }
                 }
+            } else {
+                allItemsCalculated = false;
+                calcChildItems(res, index);
             }
-            index.setIsCalculated(true);
-            decorateItems(getVisibleItems(index));
-            tree.resizeColumnToContents(0);
-        } catch (InterruptedException ex) {
+            if (!allItemsCalculated) {
+                decorateItems(getVisibleItems(index));
+                tree.resizeColumnToContents(0);
+            }
         } finally {
+            index.setIsCalculated(true);
             tree.blockSignals(false);
             tree.setUpdatesEnabled(true);
         }
     }
 
-    private void calcChildItems(SysMonitoringRs res, InstanceTreeItem instanceItem) throws InterruptedException {
-        boolean isInstanceStarted = instanceItem.isStarted();
+    private void calcChildItems(SysMonitoringRs res, InstanceTreeItem instanceItem) {
         for (Unit unit : res.getUnitList()) {
-            UnitTreeItem item = createUnitItem(unit, isInstanceStarted);
+            UnitTreeItem item = UnitTreeItem.Factory.newInstance(idsGetter, metricInfo.createUnitInfo(unit), instanceItem.isStarted(), unitsModel, instanceItem);
+            if (item instanceof UnitNetPortHandlerTreeItem) {
+                QTreeWidgetItem fictiveElement = new InstanceTreeItem(idsGetter, null, null);
+                item.addChild(fictiveElement);
+            }
             item.updateMetricDate(metricInfo);
             instanceItem.addChild(item);
         }
-    }
-
-    private UnitTreeItem createUnitItem(Unit xUnit, final boolean isInstanceStarted) {
-        MetricInfoGetter.UnitInfo unit = metricInfo.createUnitInfo(xUnit);
-        return UnitTreeItem.Factory.newInstance(idsGetter, unit, isInstanceStarted, unitsModel);
     }
 
     public QTreeWidget getTree() {
@@ -380,6 +391,20 @@ public final class UnitsTree {
         updateByCommand();
     }
 
+    public void setOnlyActiveInstances(boolean showOnlyActiveInstanse) {
+        if (this.showOnlyActiveInstanse == showOnlyActiveInstanse) {
+            return;
+        }
+        this.showOnlyActiveInstanse = showOnlyActiveInstanse;
+        if (showOnlyActiveInstanse && !decorators.contains(hideUnactiveInstance)) {
+            decorators.add(hideUnactiveInstance);
+        }
+        if (!showOnlyActiveInstanse && decorators.contains(hideUnactiveInstance)) {
+            decorators.remove(hideUnactiveInstance);
+        }
+        decorateTree();
+    }
+
     public final void updateByCommand() {
         SysMonitoringRqDocument rqDoc = createRequestDoc();
         CommandRequestHandle handle = RequestHandle.Factory.createForSendContextlessCommand(parent.getEnvironment(), idsGetter.getCommandId(), rqDoc, SysMonitoringRs.class);
@@ -395,55 +420,67 @@ public final class UnitsTree {
         for (int i = 0; i < getTree().topLevelItemCount(); i++) {
             QTreeWidgetItem item = getTree().topLevelItem(i);
             if (item instanceof InstanceTreeItem && item.isExpanded()) {
-                Instance xInst = xInsts.addNewInstance();
-                InstanceTreeItem instanceItem = (InstanceTreeItem) item;
-                Long id = instanceItem.getId();
-                xInst.setId(id);
-                /*for(MonitoringTreeItemDecorator decorator:instanceItem.getDecorators()){
-                 List<Id> propIds=decorator.getPropIds(instanceItem);
-                 if(propIds!=null)   
-                 xInst.getPropIdList().addAll(propIds);
-                 if(decorator.getMetricKinds()!=null)
-                 xInst.getMetricKindList().addAll(decorator.getMetricKinds());
-                 } 
-                 for(int j=0;j<item.childCount();j++){
-                 QTreeWidgetItem unitItem=item.child(j);
-                 if(unitItem instanceof UnitTreeItem){
-                 MetricReq.Units.Unit xUnit=xUnits.addNewUnit();
-                 Long unitId=((UnitTreeItem)unitItem).getId();            
-                 xUnit.setId(unitId);
-                 for(MonitoringTreeItemDecorator decorator: ((UnitTreeItem)unitItem).getDecorators()){
-                 List<Id> propIds=decorator.getPropIds((UnitTreeItem)unitItem);
-                 if(propIds!=null)   
-                 xUnit.getPropIdList().addAll(propIds);
-                 if(decorator.getMetricKinds()!=null)
-                 xUnit.getMetricKindList().addAll(decorator.getMetricKinds());
-                 }
-                 if(unitItem instanceof UnitNetPortHandlerTreeItem){
-                 for(int k=0;k<unitItem.childCount();k++){
-                 QTreeWidgetItem channelItem=unitItem.child(k);
-                 if(channelItem instanceof NetChanelTreeItem){
-                 MetricReq.Channels.Channel xChannel=xChannels.addNewChannel();
-                 Long channelId=((NetChanelTreeItem)channelItem).getId();            
-                 xChannel.setId(channelId);
-                 for(MonitoringTreeItemDecorator decorator : ((NetChanelTreeItem)channelItem).getDecorators()){
-                 List<Id> propIds=decorator.getPropIds((NetChanelTreeItem)channelItem);
-                 if(propIds!=null)  
-                 xChannel.getPropIdList().addAll(propIds);
-                 if(decorator.getMetricKinds()!=null)
-                 xChannel.getMetricKindList().addAll(decorator.getMetricKinds());
-                 }
-                 }
-                 }
-                 }
-                 }
-                 }*/
+                if (showOnlyActiveInstanse ? ((InstanceTreeItem) item).isStarted() : true) {
+                    Instance xInst = xInsts.addNewInstance();
+                    xInst.setId(((InstanceTreeItem) item).getId());
+                    SysMonitoringRq.ExpandedInstances.Instance.ExpandedUnits xUnits = xInst.addNewExpandedUnits();
+                    for (int j = 0; j < item.childCount(); j++) {
+                        QTreeWidgetItem itemChild = item.child(j);
+                        if (itemChild instanceof UnitTreeItem && itemChild.isExpanded()) {
+                            SysMonitoringRq.ExpandedInstances.Instance.ExpandedUnits.Unit xUnit = xUnits.addNewUnit();
+                            xUnit.setId(((UnitTreeItem) itemChild).getId());
+                        }
+                    }
+                }
             }
         }
         rqItem = rq.getSysMonitoringRq();
         return rq;
     }
 
+    //****
+    //InstanceTreeItem instanceItem = (InstanceTreeItem) item;
+    //Long id = instanceItem.getId();
+    //xInst.setId(id);
+                /*for(MonitoringTreeItemDecorator decorator:instanceItem.getDecorators()){
+     List<Id> propIds=decorator.getPropIds(instanceItem);
+     if(propIds!=null)   
+     xInst.getPropIdList().addAll(propIds);
+     if(decorator.getMetricKinds()!=null)
+     xInst.getMetricKindList().addAll(decorator.getMetricKinds());
+     } 
+     for(int j=0;j<item.childCount();j++){
+     QTreeWidgetItem unitItem=item.child(j);
+     if(unitItem instanceof UnitTreeItem){
+     MetricReq.Units.Unit xUnit=xUnits.addNewUnit();
+     Long unitId=((UnitTreeItem)unitItem).getId();            
+     xUnit.setId(unitId);
+     for(MonitoringTreeItemDecorator decorator: ((UnitTreeItem)unitItem).getDecorators()){
+     List<Id> propIds=decorator.getPropIds((UnitTreeItem)unitItem);
+     if(propIds!=null)   
+     xUnit.getPropIdList().addAll(propIds);
+     if(decorator.getMetricKinds()!=null)
+     xUnit.getMetricKindList().addAll(decorator.getMetricKinds());
+     }
+     if(unitItem instanceof UnitNetPortHandlerTreeItem){
+     for(int k=0;k<unitItem.childCount();k++){
+     QTreeWidgetItem channelItem=unitItem.child(k);
+     if(channelItem instanceof NetChanelTreeItem){
+     MetricReq.Channels.Channel xChannel=xChannels.addNewChannel();
+     Long channelId=((NetChanelTreeItem)channelItem).getId();            
+     xChannel.setId(channelId);
+     for(MonitoringTreeItemDecorator decorator : ((NetChanelTreeItem)channelItem).getDecorators()){
+     List<Id> propIds=decorator.getPropIds((NetChanelTreeItem)channelItem);
+     if(propIds!=null)  
+     xChannel.getPropIdList().addAll(propIds);
+     if(decorator.getMetricKinds()!=null)
+     xChannel.getMetricKindList().addAll(decorator.getMetricKinds());
+     }
+     }
+     }
+     }
+     }
+     }*/
     public void onResponseRecived(SysMonitoringRs rsItem) {
         try {
             metricInfo.update(rsItem);
@@ -456,6 +493,22 @@ public final class UnitsTree {
                 parent.getMetricTimer().start();
             }
         }
+    }
+
+    private static class HideUnactiveInstanceDecorator implements MonitoringTreeItemDecorator {
+
+        @Override
+        public void prepare(SysMonitoringRq rq, SysMonitoringRs rs) {
+        }
+
+        @Override
+        public List<MonitoringTreeItemDecoration> decorate(TreeItem item) {
+            if (item instanceof InstanceTreeItem && !((InstanceTreeItem) item).isStarted()) {
+                return HIDE_ITEM_DECORATIONS;
+            }
+            return null;
+        }
+
     }
 
     public class MonitoringResponseListener implements IResponseListener {
@@ -510,21 +563,36 @@ public final class UnitsTree {
      }*/
     public void updateMetric(MetricInfoGetter metricInfo) {
         if (tree.topLevelItemCount() == 0) {
-            List<TreeItem> items = createItems(metricInfo);
+            List<TreeItem> items = createItems(metricInfo, metricInfo.getInstanceInfoMap());
             if (items != null) {
-                fillTree(items);
+                fillTree(items, true);
                 if (getTree().topLevelItemCount() > 0) {
                     TreeItem item = (TreeItem) getTree().topLevelItem(0);
                     getTree().setCurrentItem(item);
                 }
             }
-            //}else if(expandedItem!=null){
-            //     updateChildItemMetric(expandedItem,metricInfo);
         } else {
+            Map<Long, MetricInfoGetter.InstanceInfo> mapInstanceInfo
+                    = new HashMap<Long, MetricInfoGetter.InstanceInfo>();
+            mapInstanceInfo.putAll(metricInfo.getInstanceInfoMap());
             for (int i = 0; i < tree.topLevelItemCount(); i++) {
                 TreeItem item = (TreeItem) tree.topLevelItem(i);
-                item.updateMetricDate(metricInfo);
-                updateChildItemMetric(item, metricInfo);
+                if (showOnlyActiveInstanse) {
+                    if (((InstanceTreeItem) item).isStarted()) {
+                        item.updateMetricDate(metricInfo);
+                        updateChildItemMetric(item, metricInfo);
+                    }
+                } else {
+                    item.updateMetricDate(metricInfo);
+                    updateChildItemMetric(item, metricInfo);
+                }
+                if (mapInstanceInfo.containsKey(item.getId())) {
+                    mapInstanceInfo.remove(item.getId());
+                }
+            }
+            if (!mapInstanceInfo.isEmpty()) {
+                List<TreeItem> items = createItems(metricInfo, mapInstanceInfo);
+                fillTree(items, false);
             }
         }
         decorateTree();
@@ -605,8 +673,50 @@ public final class UnitsTree {
 
     class ScrolledTreeWidget extends QTreeWidget {
 
+        private UnitNetPortHandlerTreeItem eventItem;
+        
         ScrolledTreeWidget(final UnitsWidget parent) {
             super(parent);
+            setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
+            this.customContextMenuRequested.connect(this, "contextMenu(QPoint)");
+            header().viewport().installEventFilter(new HeaderClicked(this));
+            eventItem = null;
+        }
+
+        class HeaderClicked extends QObject {
+
+            HeaderClicked(QObject parent) {
+                super(parent);
+            }
+
+            @Override
+            public boolean eventFilter(QObject qo, QEvent qevent) {
+                return (qevent instanceof QMouseEvent && qevent.type() == QEvent.Type.MouseButtonRelease && header().logicalIndex(header().visualIndexAt(((QMouseEvent) qevent).pos().x())) != 0) || super.eventFilter(qo, qevent);
+            }
+        }
+
+        private void contextMenu(QPoint p) {
+            QMenu menu = new QMenu(this);
+            QTreeWidgetItem item = itemAt(p);
+
+            if (item instanceof UnitNetPortHandlerTreeItem) {
+                eventItem = (UnitNetPortHandlerTreeItem) item;   
+                if(eventItem.isSortByName()) {
+                    menu.addAction(Application.translate("SystemMonitoring", "Sort by id"), this, "onClickContextMenuUnitNetPortHandler()"); 
+                } else {
+                    menu.addAction(Application.translate("SystemMonitoring", "Sort by name"), this, "onClickContextMenuUnitNetPortHandler()"); 
+                }
+                //Сортировать по идентификатору
+                //Сортировать по имени
+                menu.exec(mapToGlobal(p));
+            }
+        }
+        
+        void onClickContextMenuUnitNetPortHandler() {
+            if(eventItem != null) {
+                eventItem.setSortByName(!eventItem.isSortByName());
+                header().setSortIndicator(0, header().sortIndicatorOrder());
+            }
         }
 
         @Override
@@ -633,7 +743,7 @@ public final class UnitsTree {
                 if (parent.getEnvironment().getEasSession().isBusy()) {
                     QApplication.postEvent(this, new ExpandEvent(expandEvent.getExpandedItem()));
                 } else {
-                    expandTreeItem(expandEvent.getExpandedItem());
+                    expandTreeItem((TreeItem) expandEvent.getExpandedItem());
                 }
             } else if (qevent instanceof UpdateContextEventPanelEvent) {
                 UpdateContextEventPanelEvent curItemChangedEvent = (UpdateContextEventPanelEvent) qevent;

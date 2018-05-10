@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlRDXHIPHG5FCYHE2A3TM2I6EYDA" QualifiedName="Radix::Meta">
+  <PackageDef Id="pkg7BLOFIGYQNH3LII3GTF33RVGYQ" Name="RDX_DDS_META">
+    <Function Id="dfnKK6CO5C3VBHARAXWPKYCM7AU4Y" Name="isDbOptionEnabled" ResultDbType="integer">
+      <Parameter Id="dfpGOCUE23KUJCBZKM5NHQB6R5UCQ" Name="optionQualifiedName" DbName="optionQualifiedName" DbType="varchar2" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnEIYBYNJE4VE7VEZPGUFFLHMPEM" Name="isDbOptionEnabled" ResultDbType="integer">
+      <Parameter Id="dfpU6KOS23XOZHSXA36RAIR4AVMJA" Name="optionLayerUri" DbName="optionLayerUri" DbType="varchar2" ValType="2" Direction="0"/>
+      <Parameter Id="dfpESJFK3DIFFHVNOE74YOCGUG5KA" Name="optionSimpleName" DbName="optionSimpleName" DbType="varchar2" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnT42FLYYLMRFVXHD3AJI4Q776XU" Name="compareVersions" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpXK6UUFRKVNEWNKDTXIFXJE3EDY" Name="versionAsStr1" DbName="versionAsStr1" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpC7SUKMKR4RBQDIMQDQ5BFLEN2A" Name="versionAsStr2" DbName="versionAsStr2" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <PackageDef Id="pkgVFUJ6DDFLLNBDI3LABQAQDAAKI" Name="RDX_ADS_META">
+    <Function Id="dfnJVCAA234LNAXZDUBIUXDUHPGV4" Name="isDefInDomain" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfp6RDNZBRTKZAYNMQOPHH6YKSUH4" Name="pDefId" DbName="pDefId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2E2Q3VOT3FAFTEC2WGLCJZBYG4" Name="pDomainId" DbName="pDomainId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnW2OBNDN4IFGLFC5S4KDH6FPMBM" Name="isEnumValueInDomain" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpKHAJJ7KT3VDUNEDPQA3WRPXFSI" Name="pEnumId" DbName="pEnumId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7Z4BAIBMPBFSVMSPSVVSCHGE2Y" Name="pEnumItemValAsStr" DbName="pEnumItemValAsStr" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpC3BIAZ5LQREJ5AH7CGU5T66GZQ" Name="pDomainId" DbName="pDomainId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn3OXAHT4FYLORDBBJABIFNQAABA" Name="isClassExtends" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpM6GOKK7ETVC5LH3UK5GVX37Y5I" Name="pClsId" DbName="pClsId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpFP57WE3JB5F6JMNAHXCOS4NMMU" Name="pBaseClsId" DbName="pBaseClsId" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnOVRYUVG77JDHTO5S7PAOZYTFXQ" Name="areVersionIndicesDeployed" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpNEEKUFWE45DNFKS6EZLKDOYVYQ" Name="pVersionNum" DbName="pVersionNum" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnWCWMOCLIEFBXJCMXV73SFZWTHU" Name="truncDeployedIndices" ResultDbType=""/>
+  </PackageDef>
+  <TableDef Id="tbl5KB4QGXUAJA6LJEZPWXSFQPZDU" Name="EnumItem2Domain">
+    <Indexes>
+      <Index Id="idxFDVPRE3QEJEY3BEIIANXNKPSLA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colXUVRQJVIXRGZ5CISUVGN4TRPZ4 col6QKPE325G5H4RFZXQR5A3T64J4 colIA3Z4YIMT5CGDNLZLSGJ62NV74 colR2DQ6IJXMRCFRCLWNFHFQHF4KE"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colXUVRQJVIXRGZ5CISUVGN4TRPZ4" Name="VersionNum" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="col6QKPE325G5H4RFZXQR5A3T64J4" Name="EnumId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colR2DQ6IJXMRCFRCLWNFHFQHF4KE" Name="EnumItemValAsStr" ValType="21" Length="2000" Precision="0" NotNull="true"/>
+      <Column Id="colIA3Z4YIMT5CGDNLZLSGJ62NV74" Name="DomainId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblHW4OSVMS27NRDISQAAAAAAAAAA" Name="TestCase">
+    <Indexes>
+      <Index Id="idxHW4OSVMS27NRDISQAAAAAAAAAA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colN3UZ2Z4S27NRDISQAAAAAAAAAA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref2VO3FCZ4RRBTZO2UKNRBRWALQY" Name="TestCase=>TestCase (groupId=>id)" ReferencedTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ChildColumnNames="groupId"/>
+      <Reference Id="ref4INHMXMGB5HXDK4REZJPSRPH4I" Name="TestCase=>User (authorName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="authorName"/>
+      <Reference Id="refZ3L7OMMT27NRDISQAAAAAAAAAA" Name="TestCase=>TestCase (parentId=>id)" ReferencedTableId="tblHW4OSVMS27NRDISQAAAAAAAAAA" ChildColumnNames="parentId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colN3UZ2Z4S27NRDISQAAAAAAAAAA" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col3ZQVM54K5FEL7D7RH4HIYI62Y4" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colJGTICYXJ35G5TJ26LFHQAX2QRY" Name="extGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col3AN3AUHYHNHNFBQ3J4PRDXRRXE" Name="groupId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colQQJY664T27NRDISQAAAAAAAAAA" Name="classGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colUSPDDDJLZ5AINICL3FIA4KD7GU" Name="notificationEmail" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colEZ4SH34S27NRDISQAAAAAAAAAA" Name="parentId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colHWP3QCET27NRDISQAAAAAAAAAA" Name="notes" ValType="21" Length="2000" Precision="0"/>
+      <Column Id="colPMEM3RSM3PNRDISQAAAAAAAAAA" Name="traceProfile" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colMWOGO4MS27NRDISQAAAAAAAAAA" Name="actor" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colCFZB5S5MFFAPJM2ENTFD66CEZI" Name="authorName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colGBJZDIUS27NRDISQAAAAAAAAAA" Name="startTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colQKCERAMS27NRDISQAAAAAAAAAA" Name="finishTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colI5ELDBK7XVDQDA626NCPOMNAXM" Name="lastIsExecDate" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colPI3FLY6XA5DV3LZKE3RO4PQFFQ" Name="lastIsSuccessDate" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colKTWEBHYK2JGENOQY3SHZ27BQ6I" Name="seqIsFailCount" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colYWL4NXUS27NRDISQAAAAAAAAAA" Name="result" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colC46NAASN3PNRDISQAAAAAAAAAA" Name="resultComment" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colQP4LKSN3IFHITPAQXU7J72H6FA" Name="runOnIs" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colLLFER2QMUFH5BME327Q4IPNJNM" Name="cpuNanos" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colYH7NIOG57JEHPD7QO4GMHI7K54" Name="dbNanos" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colG4EPHGTTE5BM3DLJN55VNIVOBE" Name="extNanos" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colMDKXQBA6KZFHZH6FTKW7KHF4Z4" Name="queueNanos" ValType="2" Length="18" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblINNX25XRZ5EIPLHILBZDENFNY4" Name="DdsVersion">
+    <Indexes>
+      <Index Id="idxKJS5LOQ6ZBCXNEWJC6DYO6ZEEI" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col4E4PIQ5EYJHM7FMLLOAXG2YHRM"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col4E4PIQ5EYJHM7FMLLOAXG2YHRM" Name="layerUri" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col45XNOJAT3ZFY7J4KLY7LAWTHM4" Name="version" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colMNSHWNH43RFGLCFDDUUEUO6TDE" Name="upgradeDate" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col6UDTDKELQ5BYZCZIGZHZ53DDZA" Name="upgradeStartTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colSNI763A7IVFETBC5CPQ2CKH2HM" Name="upgradeToVersion" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colWMQ2ZBLU7ZD5RHQ4LMDRUG3UIA" Name="prevCompatibleVer" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colHKQ2NAZMBFCPHIJ24XOZCLFRKQ" Name="lastFileName" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colLNU3YA3HB5DDRDRBMB543X3AP4" Name="revision" ValType="2" Length="12" Precision="0"/>
+      <Column Id="colW6VA6CINVBFJXEBRAMM7OIAMJE" Name="upgradeToRevision" ValType="2" Length="12" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblMU5IS7WBRVC5JEYO2EQF6YXMBM" Name="Def2Domain">
+    <Indexes>
+      <Index Id="idxSREPWPYVBFEXXLPEF5WKPLVZYY" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colZF7523H5UFBPFJAUOBXBSDIVEE colQZEFZP35EVCNPKFSNGY6QGKPRQ col3GDJNBZZENCCTFLJG3JNVJQBGU"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colZF7523H5UFBPFJAUOBXBSDIVEE" Name="VersionNum" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colQZEFZP35EVCNPKFSNGY6QGKPRQ" Name="DefId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col3GDJNBZZENCCTFLJG3JNVJQBGU" Name="DomainId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblORVQD2YE4NHNFIWAJEJ7HU7WQU" Name="DdsOption">
+    <Indexes>
+      <Index Id="idxSKLWMJD4KVCKJE7GCFWELJK4T4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colB6RMBQSV4ZFZ3M5JH57THZEC3Y col25NDZIS5PRBIHLD6CA5CZJ2YY4"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colB6RMBQSV4ZFZ3M5JH57THZEC3Y" Name="layerUri" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col25NDZIS5PRBIHLD6CA5CZJ2YY4" Name="name" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colXXD62SQYHJCFFFOZFDUG4FPFOY" Name="value" ValType="21" Length="500" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblORZLY3X3XJBFBNKFFDZHBWMTBM" Name="EntityUserRef">
+    <Indexes>
+      <Index Id="idxUU46UTKXBRAZFDHZR23USV3YOM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colZPLT5MC3FBGENBOOFXEOB62TQI col5HQQAPOMQJDNFMU2JWXTEQI3RM col2PMALH66ZJGGFG7PGGEB2K4MHA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colZPLT5MC3FBGENBOOFXEOB62TQI" Name="VersionNum" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="col5HQQAPOMQJDNFMU2JWXTEQI3RM" Name="tableId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col2PMALH66ZJGGFG7PGGEB2K4MHA" Name="userPropId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colUXFWVYYIFFHGLA2WIQHHOAP3ZM" Name="deleteMode" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblQEGQZYZRSJD57JKZRV5NJY6U3I" Name="EventCode2EventParams">
+    <Indexes>
+      <Index Id="idxTSVHXU7BSVCYBJA5TGWYNUUYFU" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colWIFTDY55GZHMVFNTUWMJFMFHSM colUBGNGH4MCVEIXOLP5YLSJM32LM"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colUBGNGH4MCVEIXOLP5YLSJM32LM" Name="VersionNum" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colWIFTDY55GZHMVFNTUWMJFMFHSM" Name="eventCode" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colXMA7PRAFMNEM7LT4GY4Z4MAXFQ" Name="eventSeverity" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colTBQMLGFG5NFX3J4GNHTGJ4Z35U" Name="eventSource" ValType="21" Length="4000" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblR6JNUXPKLZBMHPVTUWNRPXXJCU" Name="EntityArrUserRef">
+    <Indexes>
+      <Index Id="idxCQUAS5KPRREMRMB6LJPZ3WSG24" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colTMW37PCXZBGCFOJSXLAIITJ4KA colR3MSTOASTNA5TDJKULWAFLBUDY colLLXXW52LUJAC3AXQPAWUMODP5Q"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colTMW37PCXZBGCFOJSXLAIITJ4KA" Name="VersionNum" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colR3MSTOASTNA5TDJKULWAFLBUDY" Name="tableId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colLLXXW52LUJAC3AXQPAWUMODP5Q" Name="userPropId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colWMFPXPCZHJFYDDB4X2ETG56JCM" Name="deleteMode" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblS7BCGIOOOJCLFPXNR3QFQPQY5Q" Name="DdsUpgradeLog">
+    <Indexes>
+      <Index Id="idxACIL3T35WNG7XOV6S2LGL3532A" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colXOLLPN2W25G43ISPIBYNSGSHPU colCMGDLKSESBAZPKLQ276FVFLO3M colPOXCLCNO7JEUBADF7SXO4TTRAU colLGH65AZHEZFXBKIADF2P5WXGIU"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colXOLLPN2W25G43ISPIBYNSGSHPU" Name="layerUri" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colCMGDLKSESBAZPKLQ276FVFLO3M" Name="fromRelease" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colPOXCLCNO7JEUBADF7SXO4TTRAU" Name="toRelease" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colLGH65AZHEZFXBKIADF2P5WXGIU" Name="fileName" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colU64IWWRL7RBV7GC2IDKZAQ7ZSU" Name="problemGuid" ValType="21" Length="50" Precision="0"/>
+      <Column Id="colB7LTBF5HZZEFLNBE4TYFSEKKLM" Name="upgradeDate" ValType="12" Length="0" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblUNUUL4SXNVGDBEM6JTHKYT3JFU" Name="ClassAncestor">
+    <Indexes>
+      <Index Id="idxGSYFXMFWTRGQ7IYHETFGOUFDGA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colGRPUK63CSZCUJG7IVUUBDOY53Y colABWYOLU76VBCNOSUJIBIOLAUT4 colK6W5N6LXFZFVXPNHCZZSOA5KOA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colGRPUK63CSZCUJG7IVUUBDOY53Y" Name="VersionNum" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colABWYOLU76VBCNOSUJIBIOLAUT4" Name="ClassId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colK6W5N6LXFZFVXPNHCZZSOA5KOA" Name="AncestorId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblZCKJR6I3T5DGTCTQHRX7IU5J54" Name="EventCodeMls">
+    <Indexes>
+      <Index Id="idxGCMP5JHUEVG3LP4RMDN7GFDU6M" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colEM66PGZ2DBFVRCL7GJPJRGU6UI colQIRRT2XJVVAXVIKN3JXLACLT6Q colTWL5RJ6H7FFUXKDOAN6OSKVBUQ colYYIO3CHWVZEZREURQ26UXUCUZM"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colEM66PGZ2DBFVRCL7GJPJRGU6UI" Name="VersionNum" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colQIRRT2XJVVAXVIKN3JXLACLT6Q" Name="BundleId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colTWL5RJ6H7FFUXKDOAN6OSKVBUQ" Name="StringId" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colYYIO3CHWVZEZREURQ26UXUCUZM" Name="Language" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colYZGQGNZIQZC5NMSH52TQ2Q3EVE" Name="StringValue" ValType="21" Length="4000" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

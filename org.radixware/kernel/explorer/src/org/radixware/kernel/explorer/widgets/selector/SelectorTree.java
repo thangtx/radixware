@@ -17,6 +17,8 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QEventFilter;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.core.Qt;
@@ -27,6 +29,7 @@ import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QWidget;
 import com.trolltech.qt.gui.QAbstractItemDelegate.EndEditHint;
+import com.trolltech.qt.gui.QAbstractItemView;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QCloseEvent;
@@ -34,11 +37,14 @@ import com.trolltech.qt.gui.QHeaderView;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QPainter;
+import com.trolltech.qt.gui.QStyle;
+import com.trolltech.qt.gui.QStyleOption;
 import com.trolltech.qt.gui.QStyleOptionViewItem;
 import com.trolltech.qt.gui.QToolBar;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QTreeView;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,19 +52,29 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import org.radixware.kernel.common.client.Clipboard;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EHierarchicalSelectionMode;
+import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
+import org.radixware.kernel.common.client.env.AdsVersion;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
+import org.radixware.kernel.common.client.errors.ActivatingPropertyError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.models.BrokenEntityModel;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
+import org.radixware.kernel.common.client.models.HierarchicalSelection;
 import org.radixware.kernel.common.client.models.IContext;
 import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.SelectorColumnModelItem;
@@ -74,29 +90,37 @@ import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.client.widgets.actions.IToolBar;
+import org.radixware.kernel.common.client.widgets.selector.IMultiSelectionWidget;
 import org.radixware.kernel.common.client.widgets.selector.SelectorModelDataLoader;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
-import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.enums.ESelectorColumnSizePolicy;
+import org.radixware.kernel.common.enums.ESelectorRowStyle;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.SystemPropUtils;
+import org.radixware.kernel.explorer.dialogs.ExplorerMessageBox;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.kernel.explorer.text.ExplorerTextOptions;
+import org.radixware.kernel.explorer.utils.ItemDelegatePainter;
 
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.views.selector.Selector;
 import org.radixware.kernel.explorer.widgets.FilteredMouseEvent;
 import org.radixware.kernel.explorer.widgets.propeditors.PropEditor;
 
-public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
+public class SelectorTree extends QTreeView implements IExplorerSelectorWidget, IMultiSelectionWidget {
 
     private final static String ROWS_LIMIT_FOR_NAVIGATION_CONFIG_PATH =
             SettingNames.SYSTEM + "/" + SettingNames.SELECTOR_GROUP + "/" + SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.ROWS_LIMIT_FOR_NAVIGATION;
     private final static String ROWS_LIMIT_FOR_RESTORING_POSITION_CONFIG_PATH =
-            SettingNames.SYSTEM + "/" + SettingNames.SELECTOR_GROUP + "/" + SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.ROWS_LIMIT_FOR_RESTORING_POSITION;
+            SettingNames.SYSTEM + "/" + SettingNames.SELECTOR_GROUP + "/" + SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.ROWS_LIMIT_FOR_RESTORING_POSITION;    
+    private final static boolean IS_MULTIPLE_SELECTION_ALLOWED =
+        SystemPropUtils.getBooleanSystemProp("org.radixware.kernel.explorer.unlock-unfinished-features", false);
 
     private final static class Icons extends ExplorerIcon.CommonOperations {
 
@@ -113,8 +137,46 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         public static final Icons PASTE_WITH_POPUP = new Icons("classpath:images/paste_with_popup.svg");
         public static final Icons PASTE_SMALL = new Icons("classpath:images/paste_small.svg");
     }
+    
+    private static enum EventType{READ_MORE(true, false), 
+                                                   GET_CHILD_GROUP(false,false), 
+                                                   LAYOUT_ITEMS(true, true), 
+                                                   RESIZE_SELECTION_COLUMN(true, true), 
+                                                   COLUMN_RESIZED(true, true), 
+                                                   SELECTION_CHANGED(true, true), 
+                                                   REREAD(false, true);
+        private final boolean ignoreWhenDisabled;
+        private final boolean resendIfBlocked;
+        
+        private EventType(final boolean ignoreWhenDisabled, final boolean resendIfBlocked){
+            this.ignoreWhenDisabled = ignoreWhenDisabled;
+            this.resendIfBlocked = resendIfBlocked;
+        }
+        
+        public boolean ignoreWhenDisabled(){
+            return ignoreWhenDisabled;
+        }
+        
+        public boolean resendIfBlocked(){
+            return resendIfBlocked;
+        }        
+    };
+    
+    private static class SelectorTreeEvent extends QEvent{
+        
+        private final EventType eventType;
+        
+        public SelectorTreeEvent(final EventType eventType){
+            super(QEvent.Type.User);
+            this.eventType = eventType;
+        }
+        
+        public EventType getSelectorTreeEventType(){
+            return eventType;
+        }
+    }
 
-    private final static class ReadMoreEvent extends QEvent {
+    private final static class ReadMoreEvent extends SelectorTreeEvent {
 
         private QModelIndex parent;
         private boolean restored;
@@ -123,7 +185,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         public final String parentIndexPath;
 
         public ReadMoreEvent(final String parentPath, final boolean collapseOnFail, final boolean checkForRowsLimit) {
-            super(QEvent.Type.User);
+            super(EventType.READ_MORE);
             this.parentIndexPath = parentPath;
             this.collapseOnFail = collapseOnFail;
             this.checkForRowsLimit = checkForRowsLimit;
@@ -166,24 +228,238 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         }
     };
 
-    private final static class GetChildGroupEvent extends QEvent {
+    private final static class GetChildGroupEvent extends SelectorTreeEvent {
 
         public final QModelIndex index;
-        public final int start, end;
+        public final List<Integer> rows;
 
-        public GetChildGroupEvent(final QModelIndex index, final int start, final int end) {
-            super(QEvent.Type.User);
+        public GetChildGroupEvent(final QModelIndex index, final List<Integer> rows) {
+            super(EventType.GET_CHILD_GROUP);
             this.index = index;
-            this.start = start;
-            this.end = end;
+            this.rows = rows;
         }
     };
 
-    private final static class LayoutItemsEvent extends QEvent {
-
-        public LayoutItemsEvent() {
-            super(QEvent.Type.User);
+    private final static class IndexInfo implements PostponedMousePressEvent.IndexInfo<SelectorTree>{
+        
+        private final ArrStr path;
+        private final int column;
+        
+        public IndexInfo(final ArrStr path, final int column){
+            this.path = path;
+            this.column = column;
         }
+
+        @Override
+        public QModelIndex getIndex(final SelectorTree view) {
+            try{
+                final QModelIndex index = view.pathToIndex(path, false);
+                return index==null ? null : view.controller.model.index(index.row(), column, index.parent());
+            }catch(InterruptedException | ServiceClientException exception){
+                return null;
+            }
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }            
+            final IndexInfo other = (IndexInfo) obj;
+            if (this.column != other.column) {
+                return false;
+            }            
+            if (!Objects.equals(this.path, other.path)) {
+                return false;
+            }
+            return true;
+        }
+    }
+    
+    private final static class PointInfo{
+        
+        public static final PointInfo UNKNOWN_POINT = new PointInfo(null, null, null, false);
+        
+        private final ArrStr indexPath;
+        private final Id propertyId;
+        private final Object propertyValue;
+        private final boolean insideCheckBox;
+        
+        public PointInfo(final ArrStr indexPath, final Id propertyId, final Object propertyValue, final boolean insideCheckBox){
+            this.indexPath = indexPath;
+            this.propertyId = propertyId;
+            this.propertyValue = propertyValue;
+            this.insideCheckBox = insideCheckBox;
+        }
+        
+        public boolean insideCheckBox(){
+            return insideCheckBox;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 61 * hash + Objects.hashCode(this.indexPath);
+            hash = 61 * hash + Objects.hashCode(this.propertyId);
+            hash = 61 * hash + Objects.hashCode(this.propertyValue);
+            hash = 61 * hash + (this.insideCheckBox ? 1 : 0);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final PointInfo other = (PointInfo) obj;
+            if (!Objects.equals(this.indexPath, other.indexPath)) {
+                return false;
+            }
+            if (!Objects.equals(this.propertyId, other.propertyId)) {
+                return false;
+            }
+            if (!Objects.equals(this.propertyValue, other.propertyValue)) {
+                return false;
+            }
+            if (this.insideCheckBox != other.insideCheckBox) {
+                return false;
+            }
+            return true;
+        }                
+
+    }
+    
+    private final static class PostponedRereadCall{
+                
+        private Collection<Pid> pids;
+        private ArrStr parentPath;
+        
+        public PostponedRereadCall(final QModelIndex index,
+                                                  final SelectorModel model,
+                                                  final Collection<Pid> pids){
+            if (index == null) {
+                parentPath = null;
+            }else{
+                parentPath = new ArrStr();
+                EntityModel entityModel;
+                for (QModelIndex idx = index; idx != null; idx = idx.parent()) {
+                    entityModel = model.getEntity(idx);
+                    if (entityModel == null) {
+                        parentPath.clear();
+                    } else {
+                        parentPath.add(0, entityModel.getPid().toStr());                        
+                    }
+                }
+                if (parentPath.isEmpty()){
+                    parentPath = null;
+                }
+            }
+            this.pids = pids;
+        }
+        
+        public boolean merge(final PostponedRereadCall other){
+            if (parentPath==null || other.parentPath==null){
+                parentPath = null;
+                pids = other.pids;
+                return true;
+            }
+            if (other.parentPath.equals(parentPath)){
+                pids = other.pids;
+                return true;
+            }
+            if (isChildPath(parentPath, other.parentPath)){
+                pids = other.pids;
+                return true;                
+            }
+            if (isChildPath(other.parentPath, parentPath)){
+                parentPath = other.parentPath;
+                pids = other.pids;
+                return true;
+            }
+            return false;
+        }    
+        
+        private static boolean isChildPath(final ArrStr parent, final ArrStr child){
+            if (child.size()>parent.size()){
+                for (int i=0,count=parent.size(); i<count; i++){
+                    if (!parent.get(i).equals(child.get(i))){
+                        return false;
+                    }
+                }
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        public QModelIndex getParentIndex(final SelectorModel model) {            
+            int row;
+            QModelIndex index = null;
+            GroupModel group;
+            for (String pidAsStr: parentPath){
+                if (model.rowCount(index) == 0) {//cant restore index                        
+                    return null;
+                }
+                group = model.getChildGroup(index);
+                row = group.findEntityByPid(Pid.fromStr(pidAsStr));
+                if (row<0){
+                    return null;
+                }else{
+                    index = model.index(row, 0, index);
+                }
+            }
+            return index;
+        }
+
+        public Collection<Pid> getPids() {
+            return pids;
+        }    
+        
+        public boolean rereadAll(){
+            return parentPath==null && pids==null;
+        }
+    }
+    
+    private final class IndexIterator implements Iterator<QModelIndex>{
+        
+        private final QModelIndex endIndex;
+        private QModelIndex currentIndex;
+        
+        public IndexIterator(final QModelIndex startIndex, final QModelIndex endIndex){
+            this.endIndex = endIndex;
+            currentIndex = startIndex;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex!=null;
+        }
+
+        @Override
+        public QModelIndex next() {
+            if (currentIndex==null){
+                throw new NoSuchElementException();
+            }else{
+                final QModelIndex nextIndex = currentIndex;
+                if (endIndex!=null && endIndex.internalId()==currentIndex.internalId()){
+                    currentIndex = null;
+                }else{
+                    currentIndex = SelectorTree.this.indexBelow(currentIndex);
+                }
+                return nextIndex;
+            }
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }        
     }
 
     public final class Actions {
@@ -203,36 +479,37 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         public Actions() {
             final MessageProvider mp = getEnvironment().getMessageProvider();
 
-            findAction = createAction(Icons.FIND, mp.translate("Selector", "Find..."), null);
+            findAction = createAction(Icons.FIND, mp.translate("Selector", "Find..."), null,"find");
             findAction.triggered.connect(SelectorTree.this.controller, "showFindDialog()");
 
-            findNextAction = createAction(Icons.FIND_NEXT, mp.translate("Selector", "Find Next"), null);
+            findNextAction = createAction(Icons.FIND_NEXT, mp.translate("Selector", "Find Next"), null,"find_next");
             findNextAction.triggered.connect(SelectorTree.this.controller, "findNext()");
 
-            nextAction = createAction(Icons.NEXT, mp.translate("Selector", "Next"), "selectNextRow()");
+            nextAction = createAction(Icons.NEXT, mp.translate("Selector", "Next"), "selectNextRow()","next");
 
-            prevAction = createAction(Icons.PREVIOUS, mp.translate("Selector", "Previous"), "selectPrevRow()");
+            prevAction = createAction(Icons.PREVIOUS, mp.translate("Selector", "Previous"), "selectPrevRow()","previous");
 
-            beginAction = createAction(Icons.BEGIN, mp.translate("Selector", "First"), "selectFirstRow()");
+            beginAction = createAction(Icons.BEGIN, mp.translate("Selector", "First"), "selectFirstRow()","first");
 
-            endAction = createAction(Icons.END, mp.translate("Selector", "Last"), "selectLastRow()");
+            endAction = createAction(Icons.END, mp.translate("Selector", "Last"), "selectLastRow()","last");
 
-            createChildAction = createAction(Icons.CREATE_CHILD, mp.translate("Selector", "Create Child Object..."), "createChildEntity()");
+            createChildAction = createAction(Icons.CREATE_CHILD, mp.translate("Selector", "Create Child Object..."), "createChildEntities()","create_child");
 
-            createSiblingAction = createAction(Icons.CREATE, mp.translate("Selector", "Create Object..."), null);
+            createSiblingAction = createAction(Icons.CREATE, mp.translate("Selector", "Create Object..."), null,"create_sibling");
 
-            pasteChildAction = createAction(Icons.PASTE_CHILD, mp.translate("Selector", "Paste Child Object..."), "pasteChildEntity()");
+            pasteChildAction = createAction(Icons.PASTE_CHILD, mp.translate("Selector", "Paste Child Object..."), "pasteChildEntity()","paste_child");
 
-            pasteSiblingAction = createAction(Icons.PASTE, mp.translate("Selector", "Paste Object..."), null);
+            pasteSiblingAction = createAction(Icons.PASTE, mp.translate("Selector", "Paste Object..."), null,"paste_sibling");
         }
 
-        private ExplorerAction createAction(final ClientIcon icon, final String title, final String slot) {
+        private ExplorerAction createAction(final ClientIcon icon, final String title, final String slot, final String objectName) {
             final ExplorerAction action =
                     new ExplorerAction(ExplorerIcon.getQIcon(icon), title, SelectorTree.this);
             WidgetUtils.updateActionToolTip(getEnvironment(), action);
             if (slot != null) {
                 action.triggered.connect(SelectorTree.this, slot);
             }
+            action.setObjectName(objectName);
             return action;
         }
         
@@ -362,7 +639,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         }
     }
     
-    private class FilteredMouseEventListener extends QEventFilter{
+    private final class FilteredMouseEventListener extends QEventFilter{
         
         public FilteredMouseEventListener(final QObject parent){
             super(parent);
@@ -372,37 +649,154 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         @Override
         public boolean eventFilter(final QObject target, final QEvent event) {
             if (event instanceof FilteredMouseEvent) {
-                final QEvent.Type type = ((FilteredMouseEvent) event).getFilteredEventType();
-                if (type == QEvent.Type.MouseButtonPress) {
-                    scheduledClick = true;
-                } else if (type == QEvent.Type.MouseButtonDblClick && !scheduledClick) {
-                    scheduledDoubleClick = true;
-                }
+                SelectorTree.this.processFilteredMouseEvent((FilteredMouseEvent)event);
             }
             return false;
         }
     }
+    
+    private final class ExpandedItems implements Iterable<QModelIndex>{
+        
+        private final List<QModelIndex> items = new ArrayList<>();
+        private final Map<Integer, List<QModelIndex>> expandedItemsByNestingLevel = new HashMap<>();
+        private final Map<QModelIndex, List<QModelIndex>> parentsByItem = new HashMap<>();
+        private int maxVisibleNestingLevel = 0;
 
-    private ModelRestrictions getRestrictions(final GroupModel group) {
-        final GroupRestrictions restrictions = new GroupRestrictions(group);
-        if (!group.settingsWasRead()){//group was never read
-            //read to receive actual restrictions
-            selector.blockRedraw();
-            try {
-                group.readCommonSettings();
-            } catch (InterruptedException exception) {
-                restrictions.add(Restrictions.CONTEXTLESS_SELECT);
-            } catch (ServiceClientException exception) {
-                final String title = selector.getModel().getEnvironment().getMessageProvider().translate("ExplorerException", "Error on receiving data");
-                selector.getModel().getEnvironment().getTracer().error(title, exception);
-                restrictions.add(Restrictions.CONTEXTLESS_SELECT);
-            }finally{
-                selector.unblockRedraw();
+        public void clear() {
+            items.clear();
+            expandedItemsByNestingLevel.clear();
+            parentsByItem.clear();
+            maxVisibleNestingLevel = 0;
+        }
+
+        public void remove(final QModelIndex index, final boolean cascade) {
+            for (int i=items.size()-1; i>=0; i--){
+                if ((cascade && WidgetUtils.isParentIndex(index, items.get(i)))
+                    || SelectorTree.indexesEqual(index, items.get(i))){
+                    remove(i);
+                }
             }
         }
-        restrictions.add(group.getRestrictions());
-        return restrictions;
-    }
+        
+        public void remove(final int index) {
+            final QModelIndex removingIndex = items.get(index);
+            final List<QModelIndex> parents = parentsByItem.remove(removingIndex);
+            final int nestingLevel = parents==null ? 0 : parents.size();
+            final boolean removingAtLastNestingLevel = nestingLevel==expandedItemsByNestingLevel.size()-1;
+            final List<QModelIndex> expandedItems = getExpandedItemsForNestingLevel(nestingLevel);
+            expandedItems.remove(removingIndex);
+            if (expandedItems.isEmpty() && removingAtLastNestingLevel){
+                expandedItemsByNestingLevel.remove(nestingLevel);
+            }
+            items.remove(index);
+            if ((nestingLevel+1)==maxVisibleNestingLevel || expandedItems.isEmpty()){
+                final int previousMaxVisibleNestingLevel = maxVisibleNestingLevel;
+                if (removingAtLastNestingLevel){
+                    if (expandedItems.isEmpty()){
+                        maxVisibleNestingLevel--;
+                    }
+                }else{
+                    maxVisibleNestingLevel = calculateMaxVisibleNestingLevel(nestingLevel>0 ? nestingLevel-1 : 0);
+                }
+                if (previousMaxVisibleNestingLevel!=maxVisibleNestingLevel){
+                    afterChangeMaxVisibleNestingLevel();
+                }
+            }
+        }
+        
+        public void add(final QModelIndex index) {
+            if (!contains(index)){
+                final List<QModelIndex> parents = new LinkedList<>();                
+                for (QModelIndex parent=index.parent(); parent!=null; parent=parent.parent()){                    
+                    parents.add(parent);
+                }
+                final int nestingLevel = parents.size();
+                if (nestingLevel>0){
+                    parentsByItem.put(index, parents);
+                }
+                getExpandedItemsForNestingLevel(nestingLevel).add(index);
+                items.add(index);
+                final int previousMaxVisibleNestingLevel = maxVisibleNestingLevel;
+                if (nestingLevel<expandedItemsByNestingLevel.size()){
+                    maxVisibleNestingLevel = calculateMaxVisibleNestingLevel(nestingLevel > 0 ? nestingLevel-1 : 0);
+                }else{
+                    maxVisibleNestingLevel = Math.max(maxVisibleNestingLevel, nestingLevel);
+                }
+                if (previousMaxVisibleNestingLevel!=maxVisibleNestingLevel){
+                    afterChangeMaxVisibleNestingLevel();
+                }
+            }
+        }
+        
+        private int calculateMaxVisibleNestingLevel(final int toLevel){
+            List<QModelIndex> expandedItems;
+            List<QModelIndex> parents;
+            for (int nestingLevel=expandedItemsByNestingLevel.size()-1; nestingLevel>=toLevel; nestingLevel--){
+                expandedItems = getExpandedItemsForNestingLevel(nestingLevel);
+                for (QModelIndex expandedItem: expandedItems){
+                    parents = parentsByItem.get(expandedItem);
+                    if (parents==null || items.containsAll(parents)){
+                        return nestingLevel+1;
+                    }
+                }
+            }
+            return 0;
+        }
+        
+        private List<QModelIndex> getExpandedItemsForNestingLevel(final int nestingLevel){
+            List<QModelIndex> expandedItemsForNestingLevel = expandedItemsByNestingLevel.get(nestingLevel);
+            if (expandedItemsForNestingLevel==null){
+                expandedItemsForNestingLevel = new LinkedList<>();
+                expandedItemsByNestingLevel.put(nestingLevel, expandedItemsForNestingLevel);
+            }
+            return expandedItemsForNestingLevel;
+        }
+        
+        public boolean contains(final QModelIndex index){
+            for (QModelIndex expandedItemIndex: items){
+                if (SelectorTree.indexesEqual(index, expandedItemIndex)){
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        public void set(final int index, final QModelIndex itemIndex){
+            final QModelIndex replacedIndex = items.get(index);
+            final List<QModelIndex> parents = parentsByItem.remove(replacedIndex);
+            final int nestingLevel = parents==null ? 0 : parents.size();
+            final List<QModelIndex> expandedItems = getExpandedItemsForNestingLevel(nestingLevel);
+            final int indexInExpandedItems = expandedItems.indexOf(replacedIndex);
+            if (indexInExpandedItems>-1){
+                expandedItems.set(indexInExpandedItems, itemIndex);
+            }
+            if (parents!=null){
+                parentsByItem.put(itemIndex, parents);
+            }
+            items.set(index, itemIndex);
+        }
+        
+        public int size(){
+            return items.size();
+        }
+        
+        public QModelIndex get(final int index){
+            return items.get(index);
+        }
+
+        @Override
+        public Iterator<QModelIndex> iterator() {
+            return items.iterator();
+        }
+        
+        public int getMaxVisibleNestingLevel(){
+            return maxVisibleNestingLevel;
+        }
+        
+        private void afterChangeMaxVisibleNestingLevel(){
+            SelectorTree.this.scheduleResizeSelectionColumn();
+        }
+    }     
     
     public final Actions actions;
     protected final Selector selector;
@@ -420,184 +814,57 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     private String pasteChildObjectCustomTitle;
     private String pasteObjectCustomTitle;
     private QModelIndex currentForFetch = null;
-    private boolean scheduledDoubleClick;
-    private boolean scheduledClick;
+    private FilteredMouseEvent postponedMouseEvent;
+    private final EnumSet<EventType> postedEvents = EnumSet.noneOf(EventType.class);
+    private boolean blockResizeSelectionColumnEvent;
     private boolean blockCustomEvents;
-    private SelectorHorizontalHeader header;
+    private boolean blockEditEvent;
+    private boolean mousePressAtDecoration;
+    private boolean updateGeometriesRecursionBlock;
+    private boolean processColumnResizedRecursionBlock;    
+    private final Set<Integer> columnsToUpdate = new HashSet<>();
+    private final SelectorTreeVerticalHeader verticalHeader;
+    private SelectorHorizontalHeader horizontalHeader;
+    private final TableCornerButton cornerButton = new TableCornerButton(this);
     private final FilteredMouseEventListener filteredMouseEventListener = new FilteredMouseEventListener(this);
     private final List<String> scheduledRead = new ArrayList<>();
+    private final QSize temporarySize = new QSize();
+    private final ExpandedItems expandedItems = new ExpandedItems();
+    private PostponedMousePressEvent<SelectorTree> postponedMousePressEvent;
+    private long postedMousePressEventId;
+    private List<PostponedRereadCall> postponedRereads;    
+    private ExplorerTextOptions normalStyleTextOptions;
+    private final QStyleOptionViewItem branchesBackgroundStyleOptions = new QStyleOptionViewItem();    
+    private boolean multiSelectionRestricted;
+    private final HierarchicalSelection.ISelectionListener<SelectorNode> selectionHandler = 
+            new HierarchicalSelection.ISelectionListener<SelectorNode>(){
+                @Override
+                public void afterSelectionChanged(final HierarchicalSelection<SelectorNode> selection) {
+                    SelectorTree.this.postSelectorTreeEvent(EventType.SELECTION_CHANGED);
+                }
+            };
+    private final StandardSelectorWidgetController.IndexIteratorFactory indexIteratorFactory = 
+            new StandardSelectorWidgetController.IndexIteratorFactory(){
+                @Override
+                public Iterator<QModelIndex> create(final QModelIndex startIndex, final QModelIndex endIndex) {
+                    return new IndexIterator(startIndex, endIndex);
+                }        
+            };
+    private final QRect temporaryRect = new QRect();
+    private final QStyleOption temporaryStyleOption = new QStyleOption();
     private final static int DEFAULT_HEIGHT = 260;
-
-    @Override
-    public void lockInput() {
-        controller.lockInput();
-        blockCustomEvents = true;
-    }
-
-    @Override
-    public void unlockInput() {
-        controller.unlockInput();
-        blockCustomEvents = false;
-    }
-
-    @Override
-    protected void paintEvent(final QPaintEvent event) {
-        if (!controller.isLocked()) {
-            if (itemDelegate() instanceof SelectorWidgetItemDelegate) {
-                final ClientSettings settings = selector.getEnvironment().getConfigStore();
-                settings.beginGroup(SettingNames.SYSTEM);
-                settings.beginGroup(SettingNames.SELECTOR_GROUP);
-                settings.beginGroup(SettingNames.Selector.COMMON_GROUP);
-                final int sliderValue = settings.readInteger(SettingNames.Selector.Common.SLIDER_VALUE);
-                settings.endGroup();
-                settings.endGroup();
-                settings.endGroup();
-                ((SelectorWidgetItemDelegate) itemDelegate()).setEvenRowBgColorFactor(sliderValue);
-            }
-            super.paintEvent(event);
-        }
-    }
-
-    @Override
-    protected void timerEvent(final QTimerEvent event) {
-        if (controller.isLocked()) {
-            final int timerId = event.timerId();
-            killTimer(timerId);
-            controller.postEventAfterUnlock(new QTimerEvent(timerId));
-        } else {
-            super.timerEvent(event);
-        }
-    }
-
-    private IClientEnvironment getEnvironment() {
-        return selector.getEnvironment();
-    }
-
-    @Override
-    public boolean eventFilter(final QObject target, final QEvent event) {
-        if (event instanceof FilteredMouseEvent) {
-            final QEvent.Type type = ((FilteredMouseEvent) event).getFilteredEventType();
-            if (type == QEvent.Type.MouseButtonPress) {
-                scheduledClick = true;
-            } else if (type == QEvent.Type.MouseButtonDblClick && !scheduledClick) {
-                scheduledDoubleClick = true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    protected void customEvent(final QEvent event) {
-        if (event instanceof FilteredMouseEvent) {
-            event.accept();
-            final QEvent.Type type = ((FilteredMouseEvent) event).getFilteredEventType();
-            if (type == QEvent.Type.MouseButtonPress) {
-                scheduledClick = true;
-            } else if (type == QEvent.Type.MouseButtonDblClick && !scheduledClick) {
-                scheduledDoubleClick = true;
-            }
-        }
-        if (blockCustomEvents || !isEnabled() || model() == null) {
-            event.ignore();
-            if (event instanceof ReadMoreEvent) {
-                final ReadMoreEvent readEvent = (ReadMoreEvent) event;
-                scheduledRead.remove(readEvent.parentIndexPath);
-            } else if (event instanceof LayoutItemsEvent) {
-                Application.processEventWhenEasSessionReady(this, new LayoutItemsEvent());
-            }
-            return;
-        }
-        if (controller.isLocked()) {
-            event.ignore();
-            if (event instanceof ReadMoreEvent) {
-                final ReadMoreEvent readEvent = (ReadMoreEvent) event;
-                Application.processEventWhenEasSessionReady(this, new ReadMoreEvent(readEvent));
-            } else if (event instanceof LayoutItemsEvent) {
-                Application.processEventWhenEasSessionReady(this, new LayoutItemsEvent());
-            }
-            return;
-        }
-        if (event.type() == QEvent.Type.User && event instanceof ReadMoreEvent) {
-            final ReadMoreEvent readEvent = (ReadMoreEvent) event;
-            //lockInput();
-            try {
-                blockCustomEvents = true;
-                event.accept();
-                if (readEvent.isParentIndexValid(controller.model)) {
-                    final QModelIndex parentIndex = readEvent.getParentIndex(controller.model);
-                    final int prevRowCount = controller.model.rowCount(parentIndex);
-                    if (parentIndex == null && readEvent.checkForRowsLimit
-                            && controller.model.getRowsLimit() <= prevRowCount) {
-                        final String message =
-                                getEnvironment().getMessageProvider().translate("Selector", "Number of loaded objects is %1s.\nYou may want to use filter to find specific object");
-                        getEnvironment().messageInformation(null, String.format(message, controller.model.getTotalRowsCount()));
-                        controller.model.increaseRowsLimit();
-                    }
-                    final boolean failOnRead = !controller.model.readMore(parentIndex);
-                    if (readEvent.collapseOnFail) {
-                        if (failOnRead && controller.model.rowCount(parentIndex) == 0) {
-                            setExpanded(parentIndex, false);
-                            dataChanged(parentIndex, parentIndex);
-                        } else {
-                            final int newRowCount = controller.model.rowCount(parentIndex);
-                            for (int i = prevRowCount; i < newRowCount; i++) {
-                                controller.model.hasChildren(controller.model.index(i, 0, parentIndex));
-                            }
-                        }
-                    }
-                    actions.refresh();//moveNext
-                }
-            } catch (InterruptedException exception) {
-            } catch (ServiceClientException exception) {
-                controller.processErrorOnReceivingData(exception);
-            } catch (Exception exception) {
-                controller.processErrorOnReceivingData(exception);
-            } finally {
-                //unlockInput();
-                scheduledRead.remove(readEvent.parentIndexPath);
-                blockCustomEvents = false;
-            }
-        } else if (event.type() == QEvent.Type.User && event instanceof GetChildGroupEvent) {
-            final GetChildGroupEvent getChildEvent = (GetChildGroupEvent) event;
-            try {
-                blockCustomEvents = true;
-                event.accept();
-                for (int i = getChildEvent.start; i <= getChildEvent.end; i++) {
-                    controller.model.getChildGroup(controller.model.index(i, 0, getChildEvent.index));
-                }
-            } catch (Throwable exception) {
-                if (ClientException.isSystemFault(exception)) {
-                    getEnvironment().processException(exception);
-                } else {
-                    final String error = ClientException.getExceptionReason(getEnvironment().getMessageProvider(), exception) + "\n" + ClientException.exceptionStackToString(exception);
-                    getEnvironment().getTracer().debug(error);
-                }
-            } finally {
-                blockCustomEvents = false;
-            }
-        } else if (event.type() == QEvent.Type.User && event instanceof LayoutItemsEvent) {
-            event.accept();
-            if (controller.model.isLocked()) {
-                Application.processEventWhenEasSessionReady(this, new LayoutItemsEvent());
-            } else {
-                super.doItemsLayout();
-            }
-        }
-    }
-
+    
     public SelectorTree(final Selector parentView, final SelectorModel model) {
         super(parentView);
-
         this.selector = parentView;
         final IClientEnvironment environment = selector.getEnvironment();
         controller = new StandardSelectorWidgetController(model, this, selector);
-        header = new SelectorHorizontalHeader(this, model);
-        setHeader(header);
+        createHorizontalHeader(model);
 
         final MessageProvider messageProvider = environment.getMessageProvider();
         final String confirmMovingToLastObjectMessage =
                 messageProvider.translate("Selector", "Number of loaded objects is %1s.\nDo you want to load next %2s objects?");
-        allDataLoader = new SelectorModelDataLoader(environment, selector);
+        allDataLoader = new SelectorModelDataLoader(environment);
         
         allDataLoader.setConfirmationMessageText(confirmMovingToLastObjectMessage);
         allDataLoader.setProgressHeader(messageProvider.translate("Selector", "Moving to Last Object"));
@@ -607,7 +874,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         rereadProgressHandle = environment.getProgressHandleManager().newStandardProgressHandle();
         final String confirmRestoringPositionMessage =
                 messageProvider.translate("Selector", "Number of loaded objects is %1s.\nDo you want to continue restoring position?");
-        currentObjectFinder = new SelectorModelDataLoader(environment,  selector);
+        currentObjectFinder = new SelectorModelDataLoader(environment);
         
         currentObjectFinder.setConfirmationMessageText(confirmRestoringPositionMessage);
         restoringPositionMessageTemplate = messageProvider.translate("Selector", "Restoring Position...\nNumber of Loaded Objects: %1s");
@@ -616,18 +883,34 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         currentObjectFinder.setProgressHandle(rereadProgressHandle);
         currentObjectFinder.setStartProgress(false);
 
-        expandedObjectFinder = new SelectorModelDataLoader(environment,  selector);
+        expandedObjectFinder = new SelectorModelDataLoader(environment);
         expandedObjectFinder.setConfirmationMessageText(confirmRestoringPositionMessage);
         expandedObjectFinder.setProgressTitleTemplate(restoringExpandedItemsMessageTemplate);
         expandedObjectFinder.setLoadingLimit(-1);
         expandedObjectFinder.setProgressHandle(rereadProgressHandle);
         expandedObjectFinder.setStartProgress(false);
 
-        actions = new Actions();
+        actions = new Actions();          
+        verticalHeader = new SelectorTreeVerticalHeader(this, model, cornerButton.getSymbolFontMetrics());
+    }
+    
+    private SelectorHorizontalHeader createHorizontalHeader(final SelectorModel model){
+        if (AdsVersion.belowRadixWareVersion("2.1.17.10.8")){
+            horizontalHeader = new SelectorHorizontalHeader(this, model, true, false);
+        }else{
+            horizontalHeader = new SelectorHorizontalHeader(this, model, true);
+        }
+        setHeader(horizontalHeader);   
+        horizontalHeader.sectionResized.disconnect();
+        horizontalHeader.sectionResized.connect(this,"afterColumnResized(int, int, int)");
+        return horizontalHeader;
     }
 
     @Override
     public void bind() {
+        normalStyleTextOptions = 
+            (ExplorerTextOptions)getEnvironment().getTextOptionsProvider().getOptions(EnumSet.of(ETextOptionsMarker.SELECTOR_ROW), ESelectorRowStyle.NORMAL);        
+        
         int rowCount = controller.model.rowCount(null);
 
         if (rowCount == 0 && controller.model.canReadMore(null)) {
@@ -653,99 +936,501 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                         EEventSource.EXPLORER);
             }
         }
+        getSelection().addListener(selectionHandler);
+        controller.setSelectionModeListener(new StandardSelectorWidgetController.ISelectionModeListener() {
+            @Override
+            public void afterSwitchSelectionMode(boolean isSelectionEnabled) {
+                SelectorTree.this.afterSwitchSelectionMode(isSelectionEnabled);
+            }
+        });
+        setModel(controller.model);       
 
-        setModel(controller.model);
-
+        final List<SelectorColumnModelItem> columns = controller.model.getSelectorColumns();
+        horizontalHeader.restoreSettings();
+        if (horizontalHeader.count() != columns.size()) {            
+            createHorizontalHeader(controller.model);                        
+        }
+                
+        horizontalHeader.checkBoxClicked.connect(this,"onHHeaderCheckBoxClick()");
+        controller.refreshCornerWidget(cornerButton, isSelectionEnabled(), isSelectionAllowed());
+        controller.updateHeaderCheckState(horizontalHeader, !isMultiSelectionRestriced());
+        
+        controller.setupSelectionColumnDelegate();
+        horizontalHeader.bind();
+        if (controller.model.isSelectionEnabled()){
+            setTreePosition(1);
+        }
+        //set current row after horizontal header was binded
         if (selector.isDisabled()) {
             clear();
         } else {
             selectFirstRow();
-        }
-
-        final List<SelectorColumnModelItem> columns = controller.model.getSelectorColumns();
-        controller.restoreHorizontalHeaderSettings(header);
-        if (header.count() != columns.size()) {
-            final SelectorHorizontalHeader previous = header;
-            header = new SelectorHorizontalHeader(this, controller.model);
-            setHeader(header);
-            previous.close();
-        }
-        controller.setupHorizontalHeader(header,false);
-        header.sectionClicked.connect(this, "onHeaderClicked(int)");
-
-        {
-            for (int i = 0; i < columns.size(); ++i) {
-                if (i > 0) {
-                    setColumnHidden(i, !columns.get(i).isVisible());
-                } else {
-                    final SelectorColumnModelItem firstColumn = columns.get(0);
-                    if (firstColumn.isForbidden()) {
-                        firstColumn.setForbidden(false);
-                    }
-                    if (!firstColumn.isVisible()) {
-                        firstColumn.setVisible(true);
-                    }
-                    setColumnHidden(0, false);
-                }
-            }
-
-            for (int i = 0; i < columns.size(); ++i) {
-                columns.get(i).subscribe(this);
-            }
-        }
-
-        controller.updateColumnsSizePolicy(header);
-        controller.updateFirstVisibleColumnIndex(header);
-        updateSpan(null, 0, controller.model.getRootGroupModel().getEntitiesCount() - 1);
+        }        
+        updateColumnSpan(null, 0, getRootGroupModel().getEntitiesCount() - 1);
         doubleClicked.connect(controller, "processDoubleClick(QModelIndex)");
         collapsed.connect(this, "onCollapsed(QModelIndex)");
         expanded.connect(this, "onExpanded(QModelIndex)");
         Application.getInstance().getActions().settingsChanged.connect(this, "applySettings()");
-        header.sectionResized.connect(this, "finishEdit()");
-        header.sectionMoved.connect(this, "onSectionMoved(int, int, int)");
-
-        final QWidget viewport = (QWidget) findChild(QWidget.class, "qt_scrollarea_viewport");
+        horizontalHeader.sectionResized.connect(this, "finishEdit()");
+        horizontalHeader.sectionMoved.connect(this, "onSectionMoved(int, int, int)");
+        horizontalHeader.sectionClicked.connect(this, "onHHeaderClicked(int)");
+        horizontalHeader.sectionVisibilityChanged.connect(this, "onSectionVisibilityChanged(int , boolean)");
+        horizontalHeader.resizeColumnByContent.connect(this,"onResizeColumnByContent(int)");        
+        final QWidget viewport = viewport();
         if (viewport != null) {//RADIX-7253
             viewport.installEventFilter(filteredMouseEventListener);
         }
+        
+        verticalHeader.doubleClicked.connect(this,"onVHeaderDoubleClicked(QModelIndex)");        
+        cornerButton.clicked.connect(this,"onCornerButtonClick()");
+        
+        horizontalScrollBar().setValue(0);
+        if (!selector.isDisabled()){
+            updateSelectionMode();            
+        }
     }
+    
+    @SuppressWarnings("unused")
+    private void onCornerButtonClick(){
+        controller.switchSelectionMode(horizontalHeader);
+    }
+    
+    @SuppressWarnings("unused")
+    private void onHHeaderCheckBoxClick(){
+        controller.invertSelection(horizontalHeader, getSelectAllMode());
+    }    
 
     @SuppressWarnings("unused")
-    private void onHeaderClicked(final int section) {
-        if (QApplication.keyboardModifiers().isSet(Qt.KeyboardModifier.ControlModifier) && section >= 0) {
-            resizeColumnToContents(section);
-        } else {
-            controller.processColumnHeaderClicked(section);
+    private void onHHeaderClicked(final int section) {
+        controller.processColumnHeaderClicked(section);
+    }
+    
+    @SuppressWarnings("unused")
+    private void onVHeaderDoubleClicked(final QModelIndex index){
+        controller.processRowHeaderDoubleClicked(index);
+    }    
+        
+    private boolean isSelectionEnabled(){
+        return controller.isSelectionEnabled(horizontalHeader);
+    }
+    
+    private void updateSelectionMode(){
+        controller.updateSelectionMode(horizontalHeader, isSelectionAllowed());
+    }    
+    
+    private void updateCurrentColumn() {//set current index to first visible column
+        final QModelIndex currentIndex = currentIndex();
+        if (currentIndex != null) {//update current column index
+            final int column = horizontalHeader.getFirstVisibleColumnIndex();
+            final QModelIndex newIndex = controller.model.index(currentIndex.row(), column, null);
+            setCurrentIndex(newIndex);
+            controller.setItemDelegateCurrentIndex(newIndex);
+        }
+    }    
+    
+    private void afterSwitchSelectionMode(final boolean isSelectionEnabled){
+        setTreePosition(isSelectionEnabled ? 0 : 1);
+        update();
+        if (isSelectionEnabled){
+            resizeColumnToContents(0);
+        }
+        controller.refreshCornerWidget(cornerButton, isSelectionEnabled, isSelectionAllowed());
+    }
+        
+    private boolean isSelectionAllowed(){
+        return  IS_MULTIPLE_SELECTION_ALLOWED
+                   && controller.model.isSelectionEnabled()
+                   && !isMultiSelectionRestriced() 
+                   && isEnabled()                
+                   && !getRootGroupModel().isEmpty();
+    }
+    
+    private EHierarchicalSelectionMode getSelectAllMode(){
+        if (isMultiSelectionRestriced()){
+            return null;
+        }else{
+            final SelectorNode rootNode = controller.model.getSelectorNode(null);
+            final EnumSet<EHierarchicalSelectionMode> selectionModes = 
+                controller.model.calcAllSelectionModes(rootNode);
+            if (selectionModes.contains(EHierarchicalSelectionMode.ALL_NESTED_OBJECTS_CASCADE)){
+                return EHierarchicalSelectionMode.ALL_NESTED_OBJECTS_CASCADE;
+            }
+            if (selectionModes.contains(EHierarchicalSelectionMode.EXPLICIT_NESTED_OBJECTS)){
+                return EHierarchicalSelectionMode.EXPLICIT_NESTED_OBJECTS;
+            }
+            return null;
         }
     }
 
     @Override
-    public void refresh(final ModelItem item) {
-        final SelectorModel model = (SelectorModel) model();
-        if (model != null) {
-            if (item instanceof SelectorColumnModelItem) {
-                final int idx = model.getSelectorColumns().indexOf(item);
-                if (idx > 0) {
-                    boolean columnVisibleChanged = false;
-                    final SelectorColumnModelItem column = model.getSelectorColumns().get(idx);
-                    if (column.isVisible() == header.isSectionHidden(idx)) {
-                        setColumnHidden(idx, !column.isVisible());
-                        columnVisibleChanged = true;
-                        controller.updateFirstVisibleColumnIndex(header);
-                    }
-                    if (columnVisibleChanged
-                            || header.resizeMode(idx) != StandardSelectorWidgetController.getResizeMode(column)) {
-                        controller.updateColumnsSizePolicy(header);
-                    }
-                    update();
+    public final boolean setMultiSelectionEnabled(final boolean enabled) {
+        if (enabled){
+            if (!isSelectionAllowed()){
+                return false;
+            }else{
+                return controller.enableSelection(horizontalHeader);
+            }
+        }else{
+            return controller.disableSelection(horizontalHeader);
+        }
+    }
+
+    public final void setMultiSelectionRestricted(final boolean isRestricted){
+        if (multiSelectionRestricted!=isRestricted){
+            multiSelectionRestricted = isRestricted;  
+            controller.refreshCornerWidget(cornerButton, isSelectionEnabled(), isSelectionAllowed());
+        }
+    }
+    
+    public final boolean isMultiSelectionRestriced(){
+        return multiSelectionRestricted;
+    }
+    
+    @Override
+    public void lockInput() {
+        controller.lockInput();
+        blockCustomEvents = true;
+    }
+
+    @Override
+    public void unlockInput() {
+        controller.unlockInput();
+        blockCustomEvents = false;
+    }
+
+    @Override
+    protected void paintEvent(final QPaintEvent event) {
+        if (!controller.isLocked() || ExplorerMessageBox.isSomeMessageBoxActive()) {
+            if (itemDelegate() instanceof SelectorWidgetItemDelegate) {
+                final ClientSettings settings = selector.getEnvironment().getConfigStore();
+                settings.beginGroup(SettingNames.SYSTEM);
+                settings.beginGroup(SettingNames.SELECTOR_GROUP);
+                settings.beginGroup(SettingNames.Selector.COMMON_GROUP);
+                final int sliderValue = settings.readInteger(SettingNames.Selector.Common.SLIDER_VALUE);
+                settings.endGroup();
+                settings.endGroup();
+                settings.endGroup();
+                ((SelectorWidgetItemDelegate) itemDelegate()).setEvenRowBgColorFactor(sliderValue);
+            }
+            super.paintEvent(event);
+        }
+    }
+
+    @Override
+    protected void timerEvent(final QTimerEvent event) {
+        if (controller.isLocked()) {
+            final int timerId = event.timerId();
+            killTimer(timerId);
+            controller.postEventAfterUnlock(new QTimerEvent(timerId));
+        } else if  (postponedMousePressEvent!=null && event.timerId()==postponedMousePressEvent.getClickTimerId()){
+            killTimer(event.timerId());
+            postedMousePressEventId = postponedMousePressEvent.post(this);
+            postponedMousePressEvent = null;
+        } else {
+            super.timerEvent(event);
+        }
+    }
+
+    protected final IClientEnvironment getEnvironment() {
+        return selector.getEnvironment();
+    }
+
+    @Override
+    protected void customEvent(final QEvent event) {
+        if (event instanceof FilteredMouseEvent) {
+            event.accept();
+            processFilteredMouseEvent(new FilteredMouseEvent((FilteredMouseEvent)event, viewport()));
+        }else if (event instanceof PostponedMousePressEvent){
+            event.accept();
+            processPostponedMouseClickEvent((PostponedMousePressEvent)event);
+        }else if (!isEnabled() || model()==null){//ignore event
+            event.accept();
+            if (event instanceof ReadMoreEvent) {
+                final ReadMoreEvent readEvent = (ReadMoreEvent) event;
+                scheduledRead.remove(readEvent.parentIndexPath);
+            } else if (event instanceof SelectorTreeEvent) {
+                final EventType eventType = ((SelectorTreeEvent)event).getSelectorTreeEventType();
+                if (eventType.ignoreWhenDisabled()){
+                    postedEvents.remove(eventType);
                 }
-            } else if (item instanceof Property) {
+            }
+        } else if (blockCustomEvents || controller.isLocked()) {//resend event
+            event.accept();
+            if (event instanceof ReadMoreEvent) {
+                final ReadMoreEvent readEvent = (ReadMoreEvent) event;
+                if (blockCustomEvents){
+                    scheduledRead.remove(readEvent.parentIndexPath);
+                }else{
+                    Application.processEventWhenEasSessionReady(this, new ReadMoreEvent(readEvent));
+                }
+            } else if (event instanceof SelectorTreeEvent) {
+                final EventType eventType = ((SelectorTreeEvent)event).getSelectorTreeEventType();
+                if (eventType.resendIfBlocked()){
+                    Application.processEventWhenEasSessionReady(this, new SelectorTreeEvent(eventType));
+                }
+            }
+        }else if (event instanceof ReadMoreEvent) {
+            event.accept();
+            processReadMoreEvent((ReadMoreEvent) event);
+        } else if (event instanceof GetChildGroupEvent) {
+            event.accept();
+            processGetChildGroupEvent((GetChildGroupEvent) event);
+        } else if (event instanceof SelectorTreeEvent) {
+            event.accept();
+            final EventType eventType = ((SelectorTreeEvent)event).getSelectorTreeEventType();
+            switch (eventType){
+                case LAYOUT_ITEMS:
+                    processItemsLayoutEvent();
+                    break;
+                case RESIZE_SELECTION_COLUMN:
+                    processResizeSelectionColumnEvent();
+                    break;
+                case COLUMN_RESIZED:{
+                    if (postedEvents.contains(EventType.COLUMN_RESIZED)){
+                        try{
+                            processColumnResizedEvent();
+                        }finally{
+                            postedEvents.remove(EventType.COLUMN_RESIZED);
+                        }
+                    }
+                    break;
+                }
+                case SELECTION_CHANGED:{                    
+                    processSelectionChangedEvent();
+                    break;
+                }
+                case REREAD:{
+                    executePostponedRereads(true);
+                    break;
+                }
+            }
+        }
+    }
+        
+    private void processReadMoreEvent(final ReadMoreEvent  readEvent){
+        try {
+            blockCustomEvents = true;
+            if (readEvent.isParentIndexValid(controller.model)) {
+                final QModelIndex parentIndex = readEvent.getParentIndex(controller.model);
+                final int prevRowCount = controller.model.rowCount(parentIndex);
+                if (parentIndex == null && readEvent.checkForRowsLimit
+                        && controller.model.getRowsLimit() <= prevRowCount) {
+                    final String message =
+                            getEnvironment().getMessageProvider().translate("Selector", "Number of loaded objects is %1s.\nYou may want to use filter to find specific object");
+                    getEnvironment().messageInformation(null, String.format(message, controller.model.getTotalRowsCount()));
+                    controller.model.increaseRowsLimit();
+                }
+                final boolean failOnRead = !controller.model.readMore(parentIndex);
+                if (readEvent.collapseOnFail) {
+                    if (failOnRead && controller.model.rowCount(parentIndex) == 0) {
+                        setExpanded(parentIndex, false);
+                        dataChanged(parentIndex, parentIndex);
+                    } else {
+                        final int newRowCount = controller.model.rowCount(parentIndex);
+                        for (int i = prevRowCount; i < newRowCount; i++) {
+                            controller.model.hasChildren(controller.model.index(i, 0, parentIndex));
+                        }
+                    }
+                }
+                if (isExpanded(parentIndex) && !expandedItems.contains(parentIndex)){
+                    verticalHeader.expand(parentIndex);
+                    expandedItems.add(parentIndex);
+                }
+                actions.refresh();//moveNext
+            }
+        } catch (InterruptedException exception) {
+        } catch (ServiceClientException exception) {
+            controller.processErrorOnReceivingData(exception);
+        } catch (Exception exception) {
+            controller.processErrorOnReceivingData(exception);
+        } finally {
+            scheduledRead.remove(readEvent.parentIndexPath);
+            blockCustomEvents = false;
+        }        
+    }
+    
+    private void processGetChildGroupEvent(final GetChildGroupEvent getChildEvent){
+        final SelectorModel model = controller.model;
+        final List<QModelIndex> indexes = new ArrayList<>();        
+        {
+            QModelIndex index;
+            for (int row: getChildEvent.rows) {
+                index = model.index(row, 0, getChildEvent.index);
+                if (model.getCachedChildGroup(index)==null
+                    && (model.hasChildren(index) || model.canCreateChild(index))){
+                    indexes.add(index);
+                }
+            }
+        }
+        if (!indexes.isEmpty()){
+            lockInput();
+            try {
+                for (QModelIndex index: indexes) {
+                    model.getChildGroup(index);
+                }
+            } catch (Throwable exception) {
+                if (ClientException.isSystemFault(exception)) {
+                    getEnvironment().processException(exception);
+                } else {
+                    final String error = ClientException.getExceptionReason(getEnvironment().getMessageProvider(), exception) + "\n" + ClientException.exceptionStackToString(exception);
+                    getEnvironment().getTracer().debug(error);
+                }
+            } finally {
+                unlockInput();
+            }
+        }
+    }
+    
+    private void processItemsLayoutEvent(){
+        if (postedEvents.contains(EventType.LAYOUT_ITEMS)){
+            postedEvents.remove(EventType.LAYOUT_ITEMS);
+            if (controller.model.isLocked()) {
+                postSelectorTreeEvent(EventType.LAYOUT_ITEMS);
+            } else {
+                super.doItemsLayout();
+            }
+        }
+    }
+    
+    private void processResizeSelectionColumnEvent(){
+        if (postedEvents.contains(EventType.RESIZE_SELECTION_COLUMN)){
+            postedEvents.remove(EventType.RESIZE_SELECTION_COLUMN);
+            if (controller.model.isLocked() || blockResizeSelectionColumnEvent) {
+                postSelectorTreeEvent(EventType.RESIZE_SELECTION_COLUMN);
+            } else {
+                resizeColumnToContents(0);
+            }            
+        }
+    }
+    
+    private void processSelectionChangedEvent(){
+        if (postedEvents.contains(EventType.SELECTION_CHANGED)){
+            postedEvents.remove(EventType.SELECTION_CHANGED);
+            controller.updateHeaderCheckState(horizontalHeader, !isMultiSelectionRestriced());
+            if (isSelectionAllowed()){
+                updateSelectionMode();
+                final int rowCount = model().rowCount();
+                final int columnCount = model().columnCount();
+                if (rowCount>0){
+                    dataChanged(model().index(0, 0), model().index(rowCount-1, columnCount-1));
+                }
+            }
+            actions.refresh();
+        }
+    }    
+    
+    private void executePostponedRereads(final boolean restoreCurrentIndex){
+        if (controller.changingCurrentEntity()){
+            Application.processEventWhenEasSessionReady(this, new SelectorTreeEvent(EventType.REREAD));
+        }
+        if (postponedRereads!=null && !postponedRereads.isEmpty()){
+            final List<PostponedRereadCall> copyPostponedRereds = new LinkedList<>(postponedRereads);
+            
+            final ArrStr currentPath;
+            final int currentColumn;
+            if (restoreCurrentIndex){
+                final QModelIndex currentIndex = currentIndex();
+                currentPath = indexToPath(currentIndex);
+                currentColumn = currentIndex==null ? horizontalHeader.getFirstVisibleColumnIndex() : currentIndex.column();
+            }else{
+                currentPath = null;
+                currentColumn = -1;
+            }
+            postponedRereads = null;
+            try{
+                QModelIndex parentIndex;
+                PostponedRereadCall rereadCall;
+                for (int i=0,count=copyPostponedRereds.size(); i<count; i++){
+                    rereadCall = copyPostponedRereds.get(i);
+                    parentIndex = rereadCall.getParentIndex(controller.model);
+                    if (parentIndex==null){
+                        if (rereadCall.rereadAll()){
+                            reread();
+                        }
+                    }else{
+                        if (i==count-1){
+                            rereadImpl(parentIndex, restoreCurrentIndex ? null : copyPostponedRereds.get(i).getPids());
+                        }else{
+                            rereadImpl(parentIndex, null);
+                        }                        
+                    }
+                }
+            }catch(InterruptedException exception){
+                return;
+            }catch(ServiceClientException exception){
+                if (ClientException.isSystemFault(exception)) {
+                    getEnvironment().processException(exception);
+                } else {
+                    final String title = getEnvironment().getMessageProvider().translate("ExplorerException", "Error on receiving data");
+                    getEnvironment().getTracer().error(title, exception);
+                }
+            }finally{
+                if (currentPath!=null && !currentPath.isEmpty()){
+                    try{
+                        final QModelIndex index = pathToIndex(currentPath, true);
+                        final QModelIndex actualIndex = index==null ? null : model().index(index.row(), currentColumn, index.parent());
+                        if (actualIndex!=null){
+                            controller.enterEntity(actualIndex);
+                            scrollTo(actualIndex);
+                        }
+                    }catch(InterruptedException exception){
+                        return;
+                    }catch(ServiceClientException exception){
+                        if (ClientException.isSystemFault(exception)) {
+                            getEnvironment().processException(exception);
+                        } else {
+                            final String title = getEnvironment().getMessageProvider().translate("ExplorerException", "Error on receiving data");
+                            getEnvironment().getTracer().error(title, exception);
+                        }
+                    }
+                    finally{
+                        controller.model.increaseRowsLimit();
+                    }
+                }
+            }
+        }
+    }
+        
+    private void processFilteredMouseEvent(final FilteredMouseEvent event){        
+        if (model()==null){
+            return;
+        }
+        final QEvent.Type type = event.getFilteredEventType();
+        final QEvent.Type postponedType = 
+            postponedMouseEvent==null ? null : postponedMouseEvent.getFilteredEventType();
+        if ((type == QEvent.Type.MouseButtonPress && postponedType!=QEvent.Type.MouseButtonRelease)
+            || (type == QEvent.Type.MouseButtonDblClick && postponedType!=QEvent.Type.MouseButtonPress)
+            || (type == QEvent.Type.MouseButtonRelease && event.getButton()==Qt.MouseButton.LeftButton)) {            
+            postponedMouseEvent = event;
+        }
+    }
+    
+    private void scheduleResizeSelectionColumn(){
+        if (isSelectionEnabled()){
+            postSelectorTreeEvent(EventType.RESIZE_SELECTION_COLUMN);
+        }
+    }    
+    
+    private boolean postSelectorTreeEvent(final EventType eventType){
+        if (postedEvents.contains(eventType)){
+            return false;
+        }else{
+            postedEvents.add(eventType);
+            Application.processEventWhenEasSessionReady(this, new SelectorTreeEvent(eventType));
+            return true;
+        }
+    }    
+
+    @Override
+    public void refresh(final ModelItem item) {        
+        if (model() != null) {
+            if (item instanceof Property) {
                 final Property property = (Property) item;
                 controller.refresh(property);
                 final QModelIndex index = controller.findIndexForProperty(property);
                 if (index != null) {
-                    if (!header.isSectionHidden(index.column())
-                            && header.resizeMode(index.column()) == QHeaderView.ResizeMode.ResizeToContents) {
+                    if (!horizontalHeader.isSectionHidden(index.column())
+                            && horizontalHeader.resizeMode(index.column()) == QHeaderView.ResizeMode.ResizeToContents) {
                         resizeColumnToContents(index.column());
                     }
                 }
@@ -753,8 +1438,29 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             actions.refresh();
         }
     }
+    
+    @SuppressWarnings("unused")
+    private void onSectionVisibilityChanged(int section, boolean isVisible){
+        horizontalHeader.updateFirstVisibleColumnIndex();
+    }
+    
+    @SuppressWarnings("unused")
+    private void onResizeColumnByContent(int sectionIndex){        
+        final int width = Math.max(sizeHintForColumn(sectionIndex), horizontalHeader.sectionSizeFromContents(sectionIndex).width());
+        if (width>0){
+            horizontalHeader.resizeSection(sectionIndex, width);
+            final SelectorColumnModelItem column = controller.model.getSelectorColumn(sectionIndex);
+            if (column!=null && column.getColumnDef().getSizePolicy()==ESelectorColumnSizePolicy.RESIZE_BY_CONTENT){
+                column.setSizePolicy(ESelectorColumnSizePolicy.RESIZE_BY_CONTENT);
+            }                  
+        }        
+    }    
+    
+    private void updateSpan() {
+        updateColumnSpan(null, 0, getRootGroupModel().getEntitiesCount() - 1);
+    }
 
-    private void updateSpan(final QModelIndex parentIndex, final int startRow, final int endRow) {
+    protected final void updateColumnSpan(final QModelIndex parentIndex, final int startRow, final int endRow) {
         for (int row = startRow; row <= endRow; row++) {
             if (controller.model.isBrokenEntity(controller.model.index(row, 0, parentIndex))) {
                 if (!isFirstColumnSpanned(row, parentIndex)) {
@@ -839,8 +1545,8 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     public void selectNextRow() {
         if (currentIndex() != null) {
             final QModelIndex target = indexBelow(currentIndex());
-            if (target != null && selector.leaveCurrentEntity(false)) {
-                controller.enterEntity(target);
+            if (target!=null){
+                controller.changeCurrentEntity(target, false, false);
             }
         }
     }
@@ -848,18 +1554,16 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     public void selectPrevRow() {
         if (currentIndex() != null) {
             final QModelIndex target = indexAbove(currentIndex());
-            if (target != null && selector.leaveCurrentEntity(false)) {
-                controller.enterEntity(target);
+            if (target!=null){
+                controller.changeCurrentEntity(target, false, false);
             }
         }
     }
 
     public void selectFirstRow() {
         if (model().rowCount() > 0) {
-            final int column = currentIndex() != null ? currentIndex().column() : 0;
-            if (selector.leaveCurrentEntity(false)) {
-                controller.enterEntity(model().index(0, column));
-            }
+            final int column = currentIndex() != null ? currentIndex().column() : horizontalHeader.getFirstVisibleColumnIndex();
+            controller.changeCurrentEntity(model().index(0, column), false, false);
         }
     }
 
@@ -871,7 +1575,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             allDataLoader.setLoadingLimit(rowsLoadingLimit);
             allDataLoader.resetCounters();
             int loadedRows = 0;
-            final int column = currentIndex() != null ? currentIndex().column() : 0;
+            final int column = currentIndex() != null ? currentIndex().column() : horizontalHeader.getFirstVisibleColumnIndex();
             QModelIndex target = null;
             int row;
             controller.lockInput();
@@ -893,7 +1597,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                     target = model().index(row, 0, target);
                     //Вычитывание раскрытых элементов выше последнего
                     for (QModelIndex expandedItem : expandedItems) {
-                        if (compareIndexes(expandedItem, target) < 0) {
+                        if (StandardSelectorWidgetController.compareIndexes(expandedItem, target) < 0) {
                             try {
                                 loadedRows += allDataLoader.loadAll(new SelectorWidgetDelegate(model, expandedItem));
                             } catch (InterruptedException exception) {
@@ -912,11 +1616,11 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                 controller.unlockInput();
             }
             try {
-                if (target != null && selector.leaveCurrentEntity(false)) {
+                if (target != null ) {
                     if (column == 0) {
-                        controller.enterEntity(target);
+                        controller.changeCurrentEntity(target, false, false);
                     } else {
-                        controller.enterEntity(model().index(target.row(), column, target.parent()));
+                        controller.changeCurrentEntity(model().index(target.row(), column, target.parent()), false, false);
                     }
                 }
             } finally {
@@ -926,6 +1630,27 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             }
         }
     }
+    
+    private ModelRestrictions getRestrictions(final GroupModel group) {
+        final GroupRestrictions restrictions = new GroupRestrictions(group);
+        if (!group.settingsWasRead()){//group was never read
+            //read to receive actual restrictions
+            selector.blockRedraw();
+            try {
+                group.readCommonSettings();
+            } catch (InterruptedException exception) {
+                restrictions.add(Restrictions.CONTEXTLESS_SELECT);
+            } catch (ServiceClientException exception) {
+                final String title = selector.getModel().getEnvironment().getMessageProvider().translate("ExplorerException", "Error on receiving data");
+                selector.getModel().getEnvironment().getTracer().error(title, exception);
+                restrictions.add(Restrictions.CONTEXTLESS_SELECT);
+            }finally{
+                selector.unblockRedraw();
+            }
+        }
+        restrictions.add(group.getRestrictions());
+        return restrictions;
+    }    
 
     public EntityModel createChildEntity() {
         final SelectorModel model = controller.model;
@@ -934,16 +1659,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             try {
                 final GroupModel group = model.getChildGroup(current);
                 if (group != null && selector.canChangeCurrentEntity(false)) {
-                    final EntityModel result = SelectorController.createEntity(group, null, this);
-                    if (result != null) {
-                        if (group.getSelectorPresentationDef().isRestoringPositionEnabled()) {
-                            reread(currentIndex(), result.getPid());
-                        } else {
-                            reread(currentIndex(), null);
-                        }
-                        selector.notifyEntityObjectsCreated(Collections.singletonList(result));
-                    }
-                    return result;
+                    return doCreateChildEntity(group);
                 }
             } catch (InterruptedException e) {
             } catch (Exception ex) {
@@ -952,6 +1668,56 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         }
         return null;
     }
+    
+    private EntityModel doCreateChildEntity(final GroupModel group) throws ServiceClientException, InterruptedException{
+        final EntityModel result = SelectorController.createEntity(group, null, this);
+        if (result != null) {
+            if (group.getSelectorPresentationDef().isRestoringPositionEnabled()) {
+                reread(currentIndex(), result.getPid());
+            } else {
+                reread(currentIndex(), (Pid)null);
+            }
+            selector.notifyEntityObjectsCreated(Collections.singletonList(result));
+        }
+        return result;        
+    }
+    
+    public List<EntityModel> createChildEntities() {
+        final SelectorModel model = controller.model;
+        final QModelIndex current = currentIndex();
+        if (current != null) {
+            try {
+                final GroupModel group = model.getChildGroup(current);
+                if (group != null && selector.canChangeCurrentEntity(false)) {                    
+                    if (group.getRestrictions().getIsMultipleCreateRestricted()){
+                        final EntityModel newEntity = doCreateChildEntity(group);
+                        return newEntity==null ? Collections.<EntityModel>emptyList() : Collections.singletonList(newEntity);
+                    }else{
+                        final List<EntityModel> newEntities = SelectorController.createEntities(group, this);
+                        if (newEntities!=null && !newEntities.isEmpty()){
+                            if (group.getSelectorPresentationDef().isRestoringPositionEnabled()) {
+                                final List<Pid> pids = new LinkedList<>();
+                                for (EntityModel newEntity: newEntities){
+                                    if (newEntity.getPid()!=null){
+                                        pids.add(newEntity.getPid());
+                                    }
+                                }
+                                reread(currentIndex(), pids);
+                            } else {
+                                reread(currentIndex(), (Pid)null);
+                            }
+                            selector.notifyEntityObjectsCreated(newEntities);
+                            return newEntities;
+                        }
+                    }                    
+                }
+            } catch (InterruptedException e) {
+            } catch (Exception ex) {
+                selector.getModel().showException(getEnvironment().getMessageProvider().translate("Selector", "Failed to create object"), ex);
+            }
+        }
+        return Collections.emptyList();
+    }    
 
     public void pasteChildEntity() {
         final SelectorModel model = controller.model;
@@ -966,7 +1732,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                         final Pid pid = result.get(0).getPid();
                         reread(currentIndex(), pid);
                     } else if (!result.isEmpty()) {
-                        reread(currentIndex(), null);
+                        reread(currentIndex(), (Pid)null);
                     }
                     if (!result.isEmpty()) {
                         selector.notifyEntityObjectsCreated(result);
@@ -994,19 +1760,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                     && currentForFetch.row() > removedRow) {
                 currentForFetch =
                         model().index(currentForFetch.row() - 1, currentForFetch.column(), parentIndex);
-            }
-            //Обновление индексов раскрытых элементов
-            final List<QModelIndex> newExpanded = new ArrayList<>(expandedItems.size());
-            QModelIndex expandedItem;
-            for (int i = expandedItems.size() - 1; i >= 0; i--) {
-                expandedItem = expandedItems.get(i);
-                if (indexesEqual(expandedItem, index)) {
-                    expandedItems.remove(i);
-                } else if (indexesEqual(expandedItem.parent(), parentIndex) && expandedItem.row() > removedRow) {
-                    expandedItems.remove(i);
-                    newExpanded.add(model().index(expandedItem.row() - 1, 0, parentIndex));
-                }
-            }            
+            }         
             actions.blockRefresh();
             try{//Удаление строки
                 controller.processEntityRemoved(pid);
@@ -1014,19 +1768,26 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                 actions.unblockRefresh();
             }
             actions.refresh();
-            expandedItems.addAll(newExpanded);
             controller.lockInput();
-            try {
-                updateSpan(parentIndex, removedRow, controller.model.rowCount(parentIndex) - 1);
+            try {                
+                updateColumnSpan(parentIndex, removedRow, controller.model.rowCount(parentIndex) - 1);
             } finally {
                 controller.unlockInput();
             }
+            updateSelectionMode();
         }
     }
 
     public void setCurrentRow(final int row) {
+        final int column;
+        final QModelIndex currentIndex = currentIndex();
+        if (currentIndex== null){
+            column = horizontalHeader.getFirstVisibleColumnIndex();
+        }else{
+            column = currentIndex.column();
+        }        
         try {
-            controller.setCurrentRow(row);
+            controller.setCurrentRow(row, column);
         } catch (InterruptedException exception) {
         } catch (ServiceClientException exception) {
             controller.processErrorOnReceivingData(exception);
@@ -1034,47 +1795,236 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     }
 
     @Override
-    protected void mousePressEvent(final QMouseEvent event) {
-        scheduledDoubleClick = false;
-        scheduledClick = false;
-        if (!controller.processMousePressEvent(event)) {
-            final QModelIndex index = indexAt(event.pos());
-            final boolean insideCell = visualRect(index).contains(event.x(), event.y());//Курсор внутри ячейки а не на "плюсике"
-            final boolean changingIndex =
-                    index != null
-                    && !index.equals(currentIndex());
-            final boolean editorOpened = controller.getCurrentPropEditor() != null;
-            if (event.isAccepted()) {
-                super.mousePressEvent(event);
+    protected void mousePressEvent(final QMouseEvent event) {                
+        if (style().styleHint(QStyle.StyleHint.SH_Q3ListViewExpand_SelectMouseType, null, this) == QEvent.Type.MouseButtonPress.value()){
+            final QPoint pos = event.pos();
+            final QModelIndex index = decorationIndexAt(pos);
+            if (index!=null ){
+                mousePressAtDecoration = true;
+                expandOrCollapse(index, pos);
+                event.ignore();
+                return;
             }
-            if (insideCell && (changingIndex || !editorOpened)) {
-                openEditor(index);
-            } else if (changingIndex) {
-                repaint(visualRect(index));
-            }
-        } else if (event.isAccepted()) {
-            super.mousePressEvent(event);
         }
-        if (scheduledDoubleClick && model() != null) {
-            scheduledDoubleClick = false;
-            final QModelIndex index = currentIndex();
-            if (index != null) {
-                if (model().flags(index).isSet(Qt.ItemFlag.ItemIsEditable)) {
-                    if (controller.getCurrentPropEditor() == null) {
-                        openEditor(index);
-                    }
-                } else {
-                    setExpanded(index, !isExpanded(index));
-                }
-            }
+        if (!processMousePressEvent(event)){
+            processMouseClickEvent(event);
         }
     }
 
     @Override
-    protected void mouseDoubleClickEvent(QMouseEvent qme) {
-        scheduledDoubleClick = false;
-        scheduledClick = false;
-        super.mouseDoubleClickEvent(qme);
+    protected void mouseReleaseEvent(final QMouseEvent event) {        
+        if (mousePressAtDecoration){
+            mousePressAtDecoration = false;
+            return;
+        }
+        if (style().styleHint(QStyle.StyleHint.SH_Q3ListViewExpand_SelectMouseType, null, this) == QEvent.Type.MouseButtonRelease.value()){
+            final QPoint pos = event.pos();
+            final QModelIndex index = decorationIndexAt(pos);
+            if (index!=null){
+                expandOrCollapse(index, pos);
+                event.ignore();
+                return;
+            }
+        }
+        super.mouseReleaseEvent(event);
+    }
+            
+    private boolean processMousePressEvent(final QMouseEvent event){
+        if (postedMousePressEventId!=0){
+            Application.removeScheduledEvent(postedMousePressEventId);
+            postedMousePressEventId = 0;            
+        }
+        final QModelIndex clickIndex = indexAt(event.pos());
+        if (!visualRect(clickIndex).contains(event.x(), event.y())){
+            return false;
+        }
+        final GroupModel groupModel = clickIndex==null ? null : controller.model.getChildGroup(clickIndex.parent());
+        final GroupRestrictions restrictions = groupModel==null ? null : groupModel.getRestrictions();
+        final boolean canOpenModalEditor = 
+            restrictions!=null && !restrictions.getIsRunEditorRestricted() && restrictions.getIsEditorRestricted();
+        if (canOpenModalEditor && isMouseClickWithCtrl(event)){            
+            final EntityModel clickModel = controller.model.getEntity(clickIndex);
+            final boolean isBrokenModel = clickModel instanceof BrokenEntityModel;
+            final boolean canOpenEntityView = 
+                clickModel!=null && (controller.model.isBrokenEntity(clickIndex) || clickModel.canOpenEntityView());
+            if (canOpenEntityView
+                && (selector.getCurrentEntity()!=clickModel || selector.getActions().getRunEditorDialogAction().isEnabled())){
+                final Pid clickPid = clickModel.getPid();
+                final IndexInfo clickIndexInfo = new IndexInfo(indexToPath(clickIndex), clickIndex.column());
+                if (postponedMousePressEvent==null){
+                    postponeMouseClick(event, clickIndexInfo, clickPid);
+                }else{
+                    killTimer(postponedMousePressEvent.getClickTimerId());                    
+                    if (postponedMousePressEvent.sameIndex(clickIndexInfo)
+                        && Objects.equals(postponedMousePressEvent.getPid(), clickPid)){
+                        postponedMousePressEvent = null;
+                        if (selector.getCurrentEntity()!=clickModel) {
+                            processMouseClickEvent(event);
+                        }
+                        if (isBrokenModel){
+                            final BrokenEntityMessageDialog dialog = 
+                                new BrokenEntityMessageDialog(selector.getEnvironment(), (BrokenEntityModel)clickModel, this);
+                            dialog.exec();
+                        }else if (selector.getActions().getRunEditorDialogAction().isEnabled()){
+                            selector.getActions().getRunEditorDialogAction().trigger();
+                        }                        
+                    }else{                        
+                        postponeMouseClick(event, clickIndexInfo, clickPid);
+                    }
+                }
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }        
+    }    
+    
+    private static boolean isMouseClickWithCtrl(final QEvent event){
+        if (event instanceof QMouseEvent){
+            final QMouseEvent mouseEvent = (QMouseEvent)event;
+            return mouseEvent.button()==Qt.MouseButton.LeftButton
+                       && mouseEvent.modifiers().isSet(Qt.KeyboardModifier.ControlModifier);
+        }else{
+            return false;
+        }
+    }
+    
+    private void postponeMouseClick(final QMouseEvent clickEvent, final IndexInfo clickIndexInfo, final Pid clickModelPid){
+        clickEvent.accept();
+        final int mouseClickTimerId = startTimer(QApplication.doubleClickInterval());
+        postponedMousePressEvent = new PostponedMousePressEvent<>(clickEvent, clickIndexInfo, clickModelPid, mouseClickTimerId);
+    }    
+    
+    @SuppressWarnings("unchecked")
+    private void processPostponedMouseClickEvent(PostponedMousePressEvent event){
+        if (postedMousePressEventId!=0){
+            postedMousePressEventId = 0;
+            processMouseClickEvent(event.getOriginalEvent());
+            if (event.isEdit()){
+                final QModelIndex clickIndex = event.getIndex(this);
+                if (clickIndex!=null){
+                    editImpl(clickIndex, QAbstractItemView.EditTrigger.NoEditTriggers, event.getEditEvent());
+                }
+            }
+        }
+    }    
+    
+    private void processMouseClickEvent(final QMouseEvent event){
+        postponedMouseEvent = null;
+        final int verticalScroll = verticalScrollBar().value();
+        final int horizontalScroll = horizontalScrollBar().value();   
+        final QModelIndex index = indexAt(event.pos());
+        final PointInfo mousePressPoint = getPointInfo(event.pos(),index);
+        if (index!=null){
+            final EntityModel parentObject = controller.model.getEntity(index);
+            if (parentObject!=null){
+                controller.processMousePressEvent(event, isSelectionAllowed(), isSelectionEnabled(), indexIteratorFactory);
+            }
+        }
+        if (event.isAccepted()) {
+            //process click at tree indicator to collapse/expand branch but ignore edit event
+            blockEditEvent = true;
+            try{
+                super.mousePressEvent(event);
+            }finally{
+                blockEditEvent = false;
+            }
+        }
+        actions.refresh();
+        final QModelIndex currentIndex = currentIndex();
+        if (currentIndex!=null){
+            verticalHeader.setCurrentRow(currentIndex);
+            update(currentIndex);
+        }
+        if (postponedRereads!=null){
+            executePostponedRereads(true);
+        }        
+        if (postponedMouseEvent!=null && model()!=null){
+            final QEvent.Type postponedMouseEventType = postponedMouseEvent.getFilteredEventType();
+            if (postponedMouseEventType==QEvent.Type.MouseButtonDblClick){
+                postponedMouseEvent = null;
+                processPostponedMouseButtonDblClick();
+            }else if (postponedMouseEventType==QEvent.Type.MouseButtonRelease){                
+                final QMouseEvent mouseEvent = postponedMouseEvent.createFilteredEvent();
+                postponedMouseEvent = null;
+                if (verticalScroll<=verticalScrollBar().maximum()){
+                    verticalScrollBar().setValue(verticalScroll);
+                }else{
+                    return;
+                }
+                if (horizontalScroll<=horizontalScrollBar().maximum()){
+                    horizontalScrollBar().setValue(horizontalScroll);
+                }else{
+                    return;
+                }
+                processPostponedMouseButtonRelease(mousePressPoint, mouseEvent);
+            }else{
+                postponedMouseEvent = null;
+            }
+        }
+    }
+    
+    private PointInfo getPointInfo(final QPoint point, final QModelIndex index){        
+        if (index==null){
+            return PointInfo.UNKNOWN_POINT;
+        }
+        final ArrStr indexPath = indexToPath(index);
+        final Property property = indexPath==null ? null : controller.model.getProperty(index);
+        if (property==null){
+            return new PointInfo(indexPath, null, null, false);
+        }
+        Object cellValue;
+        try{
+            cellValue = property.getValueObject();
+        }catch(ActivatingPropertyError ex){
+            cellValue = ex;
+        }
+        final boolean pointInsideCheckBox;
+        if (itemDelegate() instanceof SelectorWidgetItemDelegate){
+            final SelectorWidgetItemDelegate itemDelegate = (SelectorWidgetItemDelegate)itemDelegate();
+            final QStyleOptionViewItem options = viewOptions();
+            options.setRect(visualRect(index));
+            pointInsideCheckBox = itemDelegate.posInsideCheckbox(point, model(), options, index);                
+        }else{
+            pointInsideCheckBox = StandardSelectorWidgetController.getCheckState(model(), index)!=null;
+        }
+        return new PointInfo(indexPath, property.getId(), cellValue, pointInsideCheckBox);
+    }
+    
+    private void processPostponedMouseButtonDblClick(){        
+        final QModelIndex index = currentIndex();
+        if (index != null) {
+            if (model().flags(index).isSet(Qt.ItemFlag.ItemIsEditable)) {
+                if (!controller.inEditingMode()) {
+                    controller.openEditor(index);
+                }
+            }else{
+                setExpanded(index, !isExpanded(index));
+            }
+        }  
+    }
+    
+    private void processPostponedMouseButtonRelease(final PointInfo mousePressPoint,
+                                                                                 final QMouseEvent releaseEvent){        
+        if (mousePressPoint.insideCheckBox()){
+            final QModelIndex index = indexAt(releaseEvent.pos());
+            final PointInfo mouseReleasePoint = getPointInfo(releaseEvent.pos(),index);
+            if (mouseReleasePoint.equals(mousePressPoint)){
+                Application.processEventWhenEasSessionReady(viewport(), releaseEvent);
+            }            
+        }
+    }
+                                                                                 
+    @Override
+    protected void mouseDoubleClickEvent(final QMouseEvent event) {
+        if (processMousePressEvent(event)){
+            event.accept();
+        }else{
+            postponedMouseEvent = null;
+            super.mouseDoubleClickEvent(event);
+        }
     }
 
     @Override
@@ -1088,10 +2038,10 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     }
 
     @Override
-    protected QModelIndex moveCursor(final CursorAction action, final KeyboardModifiers mod) {
+    protected QModelIndex moveCursor(final CursorAction action, final KeyboardModifiers modifiers) {
         if (controller.canMoveCursor(action, state())) {
-            final QModelIndex index = super.moveCursor(action, mod);
-            return controller.afterMoveCursor(index);
+            final QModelIndex index = super.moveCursor(action, modifiers);
+            return controller.afterMoveCursor(index, isSelectionAllowed(), isSelectionEnabled(), indexIteratorFactory, modifiers);
         }
         return null;
     }
@@ -1101,10 +2051,9 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         finishEdit();
         controller.processCurrentChanged(current, previous, header());
         actions.refresh();
+        verticalHeader.setCurrentRow(current);
         update(current);//Чтобы отрисовалась рамка текущей ячейки
-    }
-    
-    private final List<QModelIndex> expandedItems = new ArrayList<>();
+    }        
 
     @SuppressWarnings("unused")
     private void onExpanded(final QModelIndex index) {
@@ -1121,6 +2070,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             try {
                 controller.model.getChildGroup(index);
                 childGroupExists = true;
+                verticalHeader.expand(index);
             } catch (RuntimeException ex) {
                 final EntityModel parentEntity = controller.model.getEntity(index);
                 final String title = getEnvironment().getMessageProvider().translate("ExplorerException", "Error on creating child group model for parent object \'%s\'");
@@ -1158,22 +2108,39 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         if (index.equals(currentForFetch)) {
             currentForFetch = currentForFetch.parent();
         }
-        expandedItems.remove(index);
+        expandedItems.remove(index, false);
         actions.refresh();//moveNext
+        verticalHeader.collapse(index);
     }
 
     @Override
     public void rereadAndSetCurrent(final Pid pid) throws InterruptedException, ServiceClientException {
         final QModelIndex current = currentIndex();
         if (pid == null || current == null) {
-            reread(null, null);
+            reread(null, (Pid)null);
         } else {
             reread(current.parent(), pid);
         }
     }
+    
+    @Override
+    public void rereadAndSetCurrent(final Collection<Pid> pids) throws InterruptedException, ServiceClientException {
+        final QModelIndex current = currentIndex();
+        if (pids == null || current == null) {
+            reread(null, (Pid)null);
+        } else {
+            reread(current.parent(), pids);
+        }
+    }    
 
     @Override
-    public void reread() throws InterruptedException, ServiceClientException {
+    public void reread() throws InterruptedException, ServiceClientException {        
+        
+        if (controller.changingCurrentEntity()){
+            postponeReread(null, null);
+            return;
+        }
+        
         beforeReread();
         final SelectorModel model = controller.model;
 
@@ -1185,7 +2152,8 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         }
         if (model.rowCount(null) > 0) {
             controller.enterEntity(model.index(0, 0));
-        }
+        }        
+        updateSelectionMode();
         selector.refresh();
     }
 
@@ -1202,39 +2170,57 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     public void rereadChildrenForCurrentEntity() throws InterruptedException, ServiceClientException {
         final QModelIndex current = currentIndex();
         if (current != null) {
-            reread(current, null);
+            rereadImpl(current, null);
         }
     }
-    
-    private int getFirstVisibleColumn(){
-        final int columnsCount = header().count();
-        int idx;
-        for (int col = 0; col <= columnsCount; col++) {
-            idx = header().logicalIndex(col);//logical index of column
-            if (idx >= 0 && !header().isSectionHidden(idx)) {
-                return idx;
-            }
-        }
-        return 0;
-    }    
-
+        
     public void reread(final QModelIndex parent, final Pid pid) throws InterruptedException, ServiceClientException {
+        rereadImpl(parent, pid==null ? Collections.<Pid>emptyList() : Collections.singleton(pid));
+    }
+    
+    public void reread(final QModelIndex parent, final Collection<Pid> pids) throws InterruptedException, ServiceClientException {
+        rereadImpl(parent, pids==null ? Collections.<Pid>emptyList(): pids);
+    }
+
+    private void rereadImpl(final QModelIndex parent, final Collection<Pid> pids) throws InterruptedException, ServiceClientException {
+        //Restore item that was current before reread if pids is empty collection 
+        //Do not set current item after reread if pids is null
+        
+        final QModelIndex normalizedParent;
+        if (parent==null || parent.column()==0){
+            normalizedParent = parent;
+        }else{
+            normalizedParent = controller.model.index(parent.row(), 0,  parent.parent());
+        }
+        
+        if (controller.changingCurrentEntity()){
+            postponeReread(normalizedParent, pids==null ? Collections.<Pid>emptyList() : null);
+            return;
+        }
+        
+        final QModelIndex current = currentIndex();
+        final boolean readingChildrenOfCurrent = current!=null && indexesEqual(current, normalizedParent);
+        
         final SelectorModel model = (SelectorModel) model();
         model.unsubscribeProperties(this);
 
-        //сохранили путь до текущего элемента
-        final QModelIndex current = currentIndex();
-        final int column = current==null ? getFirstVisibleColumn() : current.column();
-        final Stack<Pid> path = new Stack<>();
-        if (pid != null) {
-            path.push(pid);
-        } else if (parent == null) {
-            indexToPath(path, current);
+        //сохранили путь до текущего элемента        
+        final int column = current==null ? horizontalHeader.getFirstVisibleColumnIndex() : current.column();        
+        final Stack<Pid> parentPath = new Stack<>();
+        final List<Pid> pidsToSearch = new LinkedList<>();
+        if (pids!=null && !pids.isEmpty()){
+            pidsToSearch.addAll(pids);
+        }else if (pids!=null /*pids is empty*/ && normalizedParent==null && current!=null){
+            final EntityModel currentEntityModel = controller.model.getEntity(current);
+            if (currentEntityModel!=null){
+                indexToPath(parentPath, current.parent());
+                pidsToSearch.add(currentEntityModel.getPid());
+            }
         }
-
-        if (parent != null) {
-            indexToPath(path, parent);
-        }
+        
+        if (normalizedParent!=null){
+            indexToPath(parentPath, normalizedParent);
+        }              
 
         final List<Stack<Pid>> itemsToExpand = new ArrayList<>();//раскрытые элементы, которые находятся ниже текущего
 
@@ -1242,45 +2228,58 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             QModelIndex index;
             for (int i = expandedItems.size() - 1; i >= 0; i--) {
                 index = expandedItems.get(i);
-                if (WidgetUtils.isParentIndex(parent, index)) {
-                    itemsToExpand.add(indexToPath(new Stack<Pid>(), index));
+                if (WidgetUtils.isParentIndex(normalizedParent, index)){
+                    if (isExplicitlyExpanded(index)){
+                        itemsToExpand.add(indexToPath(new Stack<Pid>(), index));
+                    }
+                    if (index.equals(currentForFetch)) {
+                        currentForFetch = currentForFetch.parent();
+                    }
+                    expandedItems.remove(i);                    
                 }
-                if (index.equals(currentForFetch)) {
-                    currentForFetch = currentForFetch.parent();
-                }
-                expandedItems.remove(i);
             }
         }
         final int rowsLoadingLimit =
                 selector.getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_FOR_RESTORING_POSITION_CONFIG_PATH, 300);
         selector.blockRedraw();
-        rereadProgressHandle.startProgress(null, true);
+        blockResizeSelectionColumnEvent = true;
+        rereadProgressHandle.startProgress(null, true);        
         try {
             lockInput();
             try {
-                if (isExpanded(parent)) {
-                    collapse(parent);
+                if (isExpanded(normalizedParent)) {
+                    collapse(normalizedParent);
+                } 
+                final GroupModel groupToReread = model.getChildGroup(normalizedParent);
+                if (groupToReread.getEntitiesCount()==0 && groupToReread.hasMoreRows()){
+                    //child group was not read at this moment so we do not need to reread it.
+                    //Just reread group restrictions
+                    groupToReread.readCommonSettings();
                 }
-                if (path.isEmpty()) {
+                if (pidsToSearch.isEmpty()) {
                     //перечитывание
-                    model.reread(parent);
+                    model.reread(normalizedParent);
                 } else {
                     //очистка загруженных данных
-                    model.reset(parent);
+                    model.reset(normalizedParent);
                     //загрузка первой порции новых данных
                     currentObjectFinder.setLoadingLimit(rowsLoadingLimit);
                     currentObjectFinder.setProgressTitleTemplate(restoringPositionMessageTemplate);
                     currentObjectFinder.resetCounters();
-                    currentObjectFinder.loadMore(new SelectorWidgetDelegate(model, parent));
+                    currentObjectFinder.loadMore(new SelectorWidgetDelegate(model, normalizedParent));
                 }
             } finally {
                 unlockInput();
+                if (normalizedParent!=null){
+                    this.update(normalizedParent);
+                    this.dataChanged(normalizedParent, normalizedParent);
+                }
             }
 
             QApplication.processEvents();//Обработка событий GetChildGroupEvent
             boolean needToRestartProgress = false;
             if (!itemsToExpand.isEmpty()) {
-                //восстанление раскрытых элементов                    
+                //восстанление раскрытых элементов
                 if (itemsToExpand.size() > 1) {
                     rereadProgressHandle.setMaximumValue(itemsToExpand.size());
                     rereadProgressHandle.setValue(0);
@@ -1328,6 +2327,12 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                     rereadProgressHandle.setText(String.format(restoringExpandedItemsMessageTemplate, String.valueOf(expandedObjectFinder.getLoadedObjectsCount())));
                 }
             }
+            
+            if (pids==null
+                || (readingChildrenOfCurrent && pids.isEmpty())){
+                actions.refresh();                
+                return;
+            }
 
             if (needToRestartProgress) {
                 rereadProgressHandle.startProgress(null, true);
@@ -1335,17 +2340,34 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             if (rereadProgressHandle.getMaximumValue() > 0) {
                 rereadProgressHandle.setMaximumValue(0);
                 rereadProgressHandle.setValue(-1);
-            }
+            }           
             final QModelIndex currentItem;
-            {//восстанавление текущего элемента
-                //objectFinder.setProgressHeader(selector.getEnvironment().getMessageProvider().translate("Selector", "Restoring Position"));
-                final QModelIndex index = path.isEmpty() ? null : pathToIndex(path, null, true, currentObjectFinder);
+            {//восстанавление текущего элемента                
+                final boolean parentPathIsEmpty = parentPath.isEmpty() ;
+                final QModelIndex parentIndex = parentPathIsEmpty ? null : pathToIndex(parentPath, null, true, currentObjectFinder);
+                final boolean parentNodeFound = parentPath.isEmpty();
+                final QModelIndex index;
+                if (parentIndex!=null && (!parentNodeFound || pidsToSearch.isEmpty())){
+                    index = parentIndex;
+                }else{
+                    if (parentIndex==null && (!parentNodeFound || pidsToSearch.isEmpty())){
+                        index = null;
+                    }else{
+                        final QModelIndex childIndex = 
+                                findByPid(controller.model, pidsToSearch, parentIndex, currentObjectFinder);                        
+                        if (!parentPathIsEmpty && childIndex==null && model.rowCount(parentIndex) > 0){
+                            index = model.index(model.rowCount(parentIndex) - 1, 0, parentIndex);
+                        }else{
+                            index = childIndex;
+                        }
+                    }                    
+                }
                 if (index != null) {
                     currentItem = index;
-                } else if (model.rowCount(parent) > 0) {
-                    currentItem = model.index(0, 0, parent);
-                } else if (parent != null) {
-                    currentItem = parent;
+                } else if (model.rowCount(normalizedParent) > 0) {
+                    currentItem = model.index(0, 0, normalizedParent);
+                } else if (normalizedParent != null) {
+                    currentItem = normalizedParent;
                 } else if (model.rowCount(null) > 0) {
                     scrollTo(model.index(0, 0));
                     return;
@@ -1358,7 +2380,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                 boolean wasLocked = false;
                 try {
                     for (QModelIndex expandedItem : expandedItems) {
-                        if (compareIndexes(expandedItem, currentItem) < 0) {
+                        if (StandardSelectorWidgetController.compareIndexes(expandedItem, currentItem) < 0) {
                             if (!wasLocked) {
                                 wasLocked = true;
                                 lockInput();
@@ -1380,8 +2402,38 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                 }
             }
         } finally {
+            blockResizeSelectionColumnEvent = false;
+            final EntityModel currentEntityModel = model.getEntity(currentIndex());
+            if (currentEntityModel!=null){
+                model.subscribeProperties(currentEntityModel, this);
+            }            
             rereadProgressHandle.finishProgress();
             selector.unblockRedraw();
+            updateSelectionMode();
+        }
+    }
+    
+    private void postponeReread(final QModelIndex parent, final Collection<Pid> pids){
+        final PostponedRereadCall rereadCall = new PostponedRereadCall(parent, controller.model, pids);
+        if (parent==null){
+            postponedRereads = new LinkedList<>();
+            Application.processEventWhenEasSessionReady(this, new SelectorTreeEvent(EventType.REREAD));
+        }else{
+            boolean merged = false;
+            if (postponedRereads==null){
+                postponedRereads = new LinkedList<>();               
+                Application.processEventWhenEasSessionReady(this, new SelectorTreeEvent(EventType.REREAD));
+            }else{
+                for (PostponedRereadCall postponedReread: postponedRereads){
+                    if (postponedReread.merge(rereadCall)){
+                        merged = true;
+                        break;
+                    }
+                }
+            }
+            if (!merged){
+                postponedRereads.add(rereadCall);
+            }
         }
     }
 
@@ -1403,6 +2455,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
                 unlockInput();
             }
         }
+        updateSelectionMode();
     }
     
     protected boolean canCreateInGroup(final GroupModel group, final EntityModel parentEntityModel, final QModelIndex parentIndex){
@@ -1456,10 +2509,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     @Override
     public void clear() {
         expandedItems.clear();
-        ((SelectorModel) model()).clear();
-        actions.refresh();
-        update();
-        setEnabled(false);
+        controller.clearData(this, cornerButton, horizontalHeader);
     }
 
     @Override
@@ -1467,8 +2517,8 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         final QModelIndex index = controller.findIndexForProperty(property);
         if (index != null) {
             setCurrentIndex(index);
-            openEditor(index);
-            final PropEditor editor = ((WrapModelDelegate) itemDelegate(index)).getActivePropEditor();
+            controller.openEditor(index);
+            final PropEditor editor = controller.getCurrentPropEditor();
             if (editor != null) {
                 editor.setFocus();
             }
@@ -1478,11 +2528,37 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     }
 
     @Override
+    protected void rowsAboutToBeRemoved(final QModelIndex parentIndex, final int startRow, final int endRow) {
+        for (int row=startRow; row<=endRow; row++){
+            expandedItems.remove(controller.model.index(row,0,parentIndex), true);
+        }
+        final int count = endRow - startRow + 1;
+        QModelIndex expandedItem;
+        for (int i = expandedItems.size() - 1; i >= 0; i--) {
+            expandedItem = expandedItems.get(i);
+            if (indexesEqual(expandedItem.parent(), parentIndex) && expandedItem.row() > endRow) {
+                expandedItems.set(i,model().index(expandedItem.row() - count, 0, parentIndex));
+            }
+        }
+        super.rowsAboutToBeRemoved(parentIndex, startRow, endRow);
+    }        
+       
+    @Override
     protected void rowsInserted(final QModelIndex parent, final int start, final int end) {
-        QCoreApplication.postEvent(this, new GetChildGroupEvent(parent, start, end));
+        final List<Integer> rows = new ArrayList<>();
+        QModelIndex index;
+        for (int row=start; row<=end; row++){
+            index = controller.model.index(row, 0, parent);
+            if (controller.model.hasChildren(index) || controller.model.canCreateChild(index)){
+                rows.add(row);
+            }
+        }
+        if (!rows.isEmpty()){
+            QCoreApplication.postEvent(this, new GetChildGroupEvent(parent, rows));
+        }
         finishEdit();
         super.rowsInserted(parent, start, end);
-        updateSpan(parent, start, end);
+        updateColumnSpan(parent, start, end);
     }
 
     //Блокировка контекстного поиска
@@ -1492,10 +2568,16 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     }
 
     public final void applySettings() {
+        normalStyleTextOptions = 
+            (ExplorerTextOptions)getEnvironment().getTextOptionsProvider().getOptions(EnumSet.of(ETextOptionsMarker.SELECTOR_ROW), ESelectorRowStyle.NORMAL);        
         controller.applySettings();
+        horizontalHeader.applySettings();        
         update();
+        if (isSelectionEnabled()){
+            resizeColumnToContents(0);
+        }
     }
-
+    
     @Override
     public void closeEvent(final QCloseEvent event) {
         final QWidget viewport = (QWidget) findChild(QWidget.class, "qt_scrollarea_viewport");
@@ -1507,24 +2589,23 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             column.unsubscribe(this);
         }
         scheduledRead.clear();
+        postponedRereads = null;
         controller.model.unsubscribeProperties(this);
 
         {//disconnecxting signals for GC
             actions.close();
             header().disconnect();
         }
-
+        horizontalHeader.saveSettings();
+        horizontalHeader.close();
         if (model() != null) {
-            if (selector.getModel() != null) {
-                controller.saveHorizontalHeaderSettings(header());
-            }
-            setModel(null);
+            getSelection().removeListener(selectionHandler);
+            setModel(null);            
             controller.model.clear();
             controller.model.dispose();
         }
-        header.close();
+        postedEvents.clear();
         expandedItems.clear();
-        controller.close();
         super.closeEvent(event);
     }
 
@@ -1538,42 +2619,57 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     }
 
     @Override
-    protected boolean edit(QModelIndex index, EditTrigger trigger, QEvent event) {
-        if (index != null && controller.getCurrentPropEditor() != null) {
-            if (!index.equals(currentIndex())) {
-                finishEdit();
-            } else {
-                return true;
+    protected boolean edit(final QModelIndex index, final EditTrigger trigger, final QEvent event/*can be null*/) {
+        if (blockEditEvent){
+            return false;
+        }else{
+            if (isMouseClickWithCtrl(event)){
+                if (postponedMousePressEvent!=null){
+                    postponedMousePressEvent.setEdit((QMouseEvent)event);
+                    return false;
+                }          
             }
+            return editImpl(index, trigger, event);
         }
-        return super.edit(index, trigger, event);
+    }
+    
+    private boolean editImpl(final QModelIndex index, final EditTrigger trigger, final QEvent event){
+        final boolean processed = 
+            controller.processEditEvent(event, index, isSelectionEnabled(), indexIteratorFactory);
+        if ((event==null || event.isAccepted())
+            && super.edit(index, trigger, event)){
+            if (!processed){
+                update();
+            }
+            return true;
+        }
+        return processed;        
     }
 
     @Override
-    protected void keyPressEvent(QKeyEvent event) {
-        if (!controller.processKeyPressEvent(event)) {
-
+    protected void keyPressEvent(final QKeyEvent event) {
+        final EHierarchicalSelectionMode selectAllMode;
+        if (isSelectionAllowed()){
+            selectAllMode = null;
+        }else{
+            selectAllMode = getSelectAllMode();
+        }
+        if (!controller.processKeyPressEvent(event, selectAllMode, horizontalHeader)){
             if (event.matches(QKeySequence.StandardKey.Find)) {
                 actions.findAction.trigger();
             } else if (event.matches(QKeySequence.StandardKey.FindNext)) {
                 actions.findNextAction.trigger();
+            } else if (event.key()==Qt.Key.Key_Insert.value()
+                       && event.modifiers().value()==0
+                       && isSelectionAllowed()
+                       && currentIndex()!=null
+                       && !controller.inEditingMode()
+                       && controller.invertSelection(currentIndex())
+                      ){
+                moveCursor(CursorAction.MoveDown, new Qt.KeyboardModifiers(0));
             } else {
                 super.keyPressEvent(event);
             }
-
-            if (controller.isEditEvent(event)) {
-                openEditor(currentIndex());
-            }
-        }
-    }
-
-    private void openEditor(final QModelIndex index) {
-        if (index == null || model() == null || !model().flags(index).isSet(Qt.ItemFlag.ItemIsEditable)) {
-            return;
-        }
-        final Property property = (Property) model().data(index, Qt.ItemDataRole.UserRole);
-        if (property != null && property.getDefinition().getType() != EValType.BOOL) {
-            edit(index);
         }
     }
 
@@ -1588,30 +2684,52 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     }
 
     @Override
-    protected void drawRow(QPainter painter, QStyleOptionViewItem options, QModelIndex index) {
-        super.drawRow(painter, options, index);
+    protected void drawBranches(final QPainter painter, final QRect rect, final QModelIndex modelIndex) {        
+        branchesBackgroundStyleOptions.setRect(rect);
+        ItemDelegatePainter.getInstance().drawBackground(painter, branchesBackgroundStyleOptions, normalStyleTextOptions.getBackground());
+        super.drawBranches(painter, rect, modelIndex);
+    }        
+
+    @Override
+    protected void drawRow(final QPainter painter, final QStyleOptionViewItem options, final QModelIndex index) {
+        if (!isSelectionEnabled() && controller.model.isBrokenEntity(index)){
+            final QModelIndex delegateInex = controller.model.index(index.row(), 1, index.parent());
+            final QRect rect = options.rect();
+            final int branchesWidth = visualRect(delegateInex).x();
+            temporaryRect.setRect(0, rect.y(), branchesWidth, rect.height());
+            drawBranches(painter, temporaryRect, delegateInex);
+            rect.adjust(branchesWidth, 0, 0, 0);
+            options.setRect(rect);
+            itemDelegate().paint(painter, options, delegateInex);
+        }else{
+            super.drawRow(painter, options, index);
+        }
         if (!selector.isInternalPaintingActive()) {
             final SelectorModel model = controller.model;
-            final String indexPath = indexToPath(index).toString();
-            if (isExpanded(index) && model.rowCount(index) == 0 && !scheduledRead.contains(indexPath)) {
-                Application.processEventWhenEasSessionReady(this, new ReadMoreEvent(indexPath, true, true));
-                scheduledRead.add(indexPath);
+            {
+                final ArrStr path = indexToPath(index);
+                final String indexPath = path==null ? null : path.toString();
+                if (isExpanded(index) && model.rowCount(index) == 0 && path!=null && !scheduledRead.contains(indexPath)) {
+                    Application.processEventWhenEasSessionReady(this, new ReadMoreEvent(indexPath, true, true));
+                    scheduledRead.add(indexPath);
 
-                if (safelyCheckIfCanReadMore(index)) {
-                    currentForFetch = index;
+                    if (safelyCheckIfCanReadMore(index)) {
+                        currentForFetch = index;
+                    }
                 }
             }
 
             for (QModelIndex idx = index; idx != null; idx = idx.parent()) {
-                if (isLastChild(idx) && model.canReadMore(idx.parent()) && !scheduledRead.contains(indexPath)) {
-                    final String idxPath = indexToPath(idx.parent()).toString();
+                final ArrStr path = indexToPath(idx.parent());
+                final String idxPath = path==null ? null : path.toString();
+                if (isLastChild(idx) && model.canReadMore(idx.parent()) && path!=null && !scheduledRead.contains(idxPath)) {
                     Application.processEventWhenEasSessionReady(this, new ReadMoreEvent(idxPath, false, true));
                     scheduledRead.add(idxPath);
                     break;
                 }
             }
         }
-    }
+    }        
     
     private boolean safelyCheckIfCanReadMore(final QModelIndex index){//no request to server
         final SelectorModel model = controller.model;
@@ -1629,23 +2747,45 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     @Override
     protected void scrollContentsBy(final int deltaX, final int deltaY) {
         if (controller.isLocked()) {
-            return;
-        }
-        final QModelIndex after = indexAt(viewport().rect().bottomRight());
-        final SelectorModel model = controller.model;
-        while (currentForFetch != null
-                && (after == null
-                || levelForIndex(after) < levelForIndex(currentForFetch)
-                || (levelForIndex(after) == levelForIndex(currentForFetch) && after.row() > currentForFetch.row()))) {
-            if (model.canReadMore(currentForFetch)) {
-                final String idxPath = indexToPath(currentForFetch).toString();
-                QCoreApplication.sendEvent(this, new ReadMoreEvent(idxPath, false, true));
-                return;
-            } else {
-                currentForFetch = currentForFetch.parent();
+            if (verticalHeader!=null){
+                verticalHeader.verticalScrollBar().setValue(verticalScrollBar().value());
+            }            
+        }else{
+            final QModelIndex after = indexAt(viewport().rect().bottomRight());
+            final SelectorModel model = controller.model;
+            while (currentForFetch != null
+                    && (after == null
+                    || levelForIndex(after) < levelForIndex(currentForFetch)
+                    || (levelForIndex(after) == levelForIndex(currentForFetch) && after.row() > currentForFetch.row()))) {
+                if (model.canReadMore(currentForFetch)) {
+                    final String idxPath = indexToPath(currentForFetch).toString();
+                    QCoreApplication.sendEvent(this, new ReadMoreEvent(idxPath, false, true));
+                    return;
+                } else {
+                    currentForFetch = currentForFetch.parent();
+                }
             }
+            if (verticalHeader!=null){
+                verticalHeader.verticalScrollBar().setValue(verticalScrollBar().value());
+            }
+            super.scrollContentsBy(deltaX, deltaY);        
         }
-        super.scrollContentsBy(deltaX, deltaY);
+    }
+    
+    public final int getRowSizeHint(final QModelIndex index){
+        return indexRowSizeHint(index);
+    }
+
+    @Override
+    public int sizeHintForColumn(final int column) {
+        if (column==0 && isSelectionEnabled()){
+            executeDelayedItemsLayout();
+            ensurePolished();
+            final int selectionCellWidth = horizontalHeader.getSelectionColumnWidth();
+            final int nestingLevel = expandedItems.getMaxVisibleNestingLevel();
+            return selectionCellWidth + (nestingLevel + 1) * this.indentation();
+        }
+        return super.sizeHintForColumn(column);
     }
 
     @Override
@@ -1653,14 +2793,168 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         this.indexRowSizeHint(currentForFetch);
         final QSize size = super.sizeHint();
         size.setHeight(DEFAULT_HEIGHT);
-        final int width = header.sizeHint().width()+frameWidth()*2;
+        final int width = horizontalHeader.sizeHint().width()+frameWidth()*2;
         if (size.width()<width){
             final Dimension sizeLimit = WidgetUtils.getWndowMaxSize();
             size.setWidth(Math.min(width, (int)sizeLimit.getWidth()));
         }
-        return size;        
+        return size;
     }
 
+    @Override
+    protected void updateGeometries() {
+        if (!updateGeometriesRecursionBlock){
+            updateGeometriesRecursionBlock = true;
+            try{
+                super.updateGeometries();
+                if (verticalHeader!=null && horizontalHeader!=null){
+                    updateContentGeometries();
+                }                
+            }finally{
+                updateGeometriesRecursionBlock = false;
+            }
+        }
+    }
+    
+    private void updateContentGeometries(){
+        final boolean isEmpty  = controller.model.rowCount(null)==0;
+        if (isEmpty){
+            verticalHeader.setVisible(false);
+            cornerButton.setVisible(false);
+        }else{
+            verticalHeader.setVisible(true);
+            cornerButton.setVisible(true);
+        }
+        final int width =  isEmpty ? 0 : verticalHeader.width();
+        final int height = horizontalHeader.isHidden() ? 0 : horizontalHeader.sizeHint().height();
+
+        final boolean reverse = isRightToLeft();
+        if (reverse) {
+            setViewportMargins(0, height, width, 0);
+        } else {
+            setViewportMargins(width, height, 0, 0);
+        }
+
+        final QRect vg = viewport().geometry();
+        final int verticalLeft = reverse ? vg.right() + 1 : (vg.left() - width);        
+        verticalHeader.setGeometry(verticalLeft, vg.top(), width, vg.height());
+
+        final int horizontalTop = vg.top() - height;
+        horizontalHeader.setGeometry(vg.left(), horizontalTop, vg.width(), height);              
+
+        if (!isEmpty){
+            cornerButton.setFixedSize(width, height);
+            cornerButton.setFixedPos( verticalHeader.pos().x(), horizontalHeader.pos().y() );
+            cornerButton.move(verticalHeader.pos().x(), horizontalHeader.pos().y());
+        }
+    }
+    
+    private void processColumnResizedEvent(){
+        if (!processColumnResizedRecursionBlock){
+            processColumnResizedRecursionBlock = true;            
+            try{
+                if (!columnsToUpdate.isEmpty()){
+                    updateGeometries();
+                    final Rectangle rect = new Rectangle();
+                    final QWidget viewport = viewport();
+                    final int viewportHeight = viewport.height();
+                    final int viewportWidth = viewport.width();
+                    for (Integer column: columnsToUpdate) {
+                        int x = columnViewportPosition(column);
+                        if (isRightToLeft())
+                            rect.add(new Rectangle(0, 0, x + columnWidth(column), viewportHeight));
+                        else
+                            rect.add(new Rectangle(x, 0, viewportWidth - x, viewportHeight));
+                    }                    
+                    if (!rect.isEmpty()){
+                        viewport.update(WidgetUtils.awtRect2QRect(rect,temporaryRect));
+                    }
+                }
+            }finally{
+                columnsToUpdate.clear();
+                processColumnResizedRecursionBlock = false;                
+            }
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    private void afterColumnResized(int column, int oldSize, int newSize){
+        columnsToUpdate.add(column);
+        if (updateGeometriesRecursionBlock){
+            processColumnResizedEvent();            
+        }else {
+            postSelectorTreeEvent(EventType.COLUMN_RESIZED);
+        }
+    }
+    
+    private boolean expandOrCollapse(final QModelIndex index, final QPoint point){
+        final QAbstractItemView.State state = state();
+        if ((state != QAbstractItemView.State.NoState && state != QAbstractItemView.State.EditingState)
+            || !viewport().rect().contains(point)){
+            return true;
+        }
+        if (controller.model.hasChildren(index)){
+            final QModelIndex treeIndex;
+            if (index.column()==0){
+                treeIndex = index;
+            }else{
+                treeIndex = controller.model.index(index.row(),0,index.parent());
+            }
+            if (controller.model.rowCount(treeIndex)==0){
+                try{
+                    if (!controller.model.readMore(treeIndex)){
+                        //remove tree indicator
+                        dataChanged(treeIndex, treeIndex);
+                        doItemsLayout();
+                        return false;
+                    }
+                }catch(ServiceClientException ex){
+                    controller.processErrorOnReceivingData(ex);
+                    return false;
+                }catch(InterruptedException ex){
+                    return false;
+                }
+            }
+            if (isExpanded(treeIndex)){
+                collapse(treeIndex);
+            }else{
+                expand(treeIndex);
+            }
+            updateGeometries();
+            viewport().update();
+            return true;
+        }
+        return false;        
+    }
+    
+    private QModelIndex decorationIndexAt(final QPoint point){
+        executeDelayedItemsLayout();
+        final QModelIndex index = indexAt(point);
+        if (index==null || index.column()!=treePosition()){
+            return null;
+        }
+        final QRect returning = indexDecorationRect(index);
+        return returning.contains(point) ? index : null;
+    }    
+
+    private QRect indexDecorationRect(final QModelIndex index){
+        final int indent = indentation();
+        final int itemIndentation = (levelForIndex(index)+1)*indent;
+        final int treeColumn = treePosition();
+        final int position = horizontalHeader.sectionViewportPosition(treeColumn);
+        final int size = horizontalHeader.sectionSize(treeColumn);        
+        final QRect visualRect = visualRect(index);        
+
+        if (isRightToLeft()){
+            temporaryRect.setRect(position+size-itemIndentation, visualRect.y(), indent, visualRect.height());
+        }else{
+            temporaryRect.setRect(position+itemIndentation-indent, visualRect.y(), indent, visualRect.height());
+        }        
+        temporaryStyleOption.initFrom(this);
+        temporaryStyleOption.setRect(temporaryRect);
+        return style().subElementRect(QStyle.SubElement.SE_TreeViewDisclosureItem, temporaryStyleOption, this);
+    }
+            
     private Stack<Pid> indexToPath(Stack<Pid> path, final QModelIndex index) {
         if (path == null) {
             path = new Stack<>();
@@ -1703,7 +2997,7 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
         for (String pathItem : path) {
             parsedPath.push(Pid.fromStr(pathItem));
         }
-        final SelectorModelDataLoader dataLoader = new SelectorModelDataLoader(getEnvironment(), this.selector);
+        final SelectorModelDataLoader dataLoader = new SelectorModelDataLoader(getEnvironment());
         dataLoader.setConfirmationMessageText(getEnvironment().getMessageProvider().translate("Selector", "Confirm?"));
         dataLoader.setLoadingLimit(-1);
         try {
@@ -1716,49 +3010,57 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     private QModelIndex pathToIndex(final Stack<Pid> path, final boolean nearest, final SelectorModelDataLoader dataLoader) throws InterruptedException, ServiceClientException {
         return pathToIndex(path, null, nearest, dataLoader);
     }
+    
+    private QModelIndex findByPid(final SelectorModel model, final Collection<Pid> pids, final QModelIndex parent, final SelectorModelDataLoader dataLoader) throws InterruptedException {
+        if (parent!=null){
+            expand(parent);
+        }
+        
+        try {
+            if (model.hasChildren(parent) && model.rowCount(parent) == 0 && !dataLoader.loadMore(new SelectorWidgetDelegate(model, parent))) {
+                return null;
+            }
+        } catch (ServiceClientException exception) {
+            controller.processErrorOnReceivingData(exception);
+            return null;
+        }
+        
+        int row;
+        try {
+            row = dataLoader.findObjectByPid(new SelectorWidgetDelegate(model, parent), pids);
+        } catch (ServiceClientException exception) {
+            controller.processErrorOnReceivingData(exception);
+            row = -1;
+        }        
+        return row >= 0 ? model.index(row, 0, parent) : null;        
+    }
 
     private QModelIndex pathToIndex(final Stack<Pid> path, final QModelIndex startWith, final boolean nearest, final SelectorModelDataLoader dataLoader) throws InterruptedException {
         final SelectorModel model = (SelectorModel) model();
-        QModelIndex index = startWith;
+        QModelIndex index = startWith, next;        
         int row;
         lockInput();
         try {
             while (!path.isEmpty()) {
-                if (index != null) {
-                    expand(index);
-                }
-
-                try {
-                    if (model.hasChildren(index) && model.rowCount(index) == 0 && !dataLoader.loadMore(new SelectorWidgetDelegate(model, index))) {
-                        return nearest ? index : null;
+                next = findByPid(model, Collections.singleton(path.peek()), index, dataLoader);
+                if (next==null){
+                    if (nearest) {
+                        if (model.rowCount(index) > 0) {
+                            return model.index(model.rowCount(index) - 1, 0, index);
+                        } else {
+                            return index;
+                        }
+                    }else{
+                        return null;
                     }
-                } catch (ServiceClientException exception) {
-                    controller.processErrorOnReceivingData(exception);
-                    return nearest ? index : null;
-                }
-
-                try {
-                    row = dataLoader.findObjectByPid(new SelectorWidgetDelegate(model, index), path.pop());
-                } catch (ServiceClientException exception) {
-                    controller.processErrorOnReceivingData(exception);
-                    row = -1;
-                }
-                if (row >= 0) {
-                    index = model.index(row, 0, index);
-                } else if (nearest) {
-                    if (model.rowCount(index) > 0) {
-                        return model.index(model.rowCount(index) - 1, 0, index);
-                    } else {
-                        return index;
-                    }
-                } else {
-                    return null;
+                }else{
+                    path.pop();
+                    index = next;
                 }
             }
         } finally {
             unlockInput();
         }
-
         return index;
     }
 
@@ -1771,6 +3073,9 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     }
 
     private static boolean indexesEqual(final QModelIndex index1, final QModelIndex index2) {
+        if (index1==index2){//NOPMD
+            return true;
+        }
         return index1 == null ? index2 == null : index2 != null && index1.internalId() == index2.internalId();
     }
 
@@ -1989,6 +3294,14 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             actions.refresh();
         }
     }
+    
+    public final int getNestingLevelOfEntityModel(final EntityModel entityModel){
+        return controller.model.getNestingLevelOfEntityModel(entityModel);
+    }
+    
+    public final int getNestingLevelOfGroupModel(final GroupModel groupModel){
+        return controller.model.getNestingLevelOfGroupModel(groupModel);
+    }
 
     @Override
     public void scrollTo(final QModelIndex index, final ScrollHint scrollHint) {
@@ -2010,13 +3323,13 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
     @Override
     public void doItemsLayout() {
         if (getEnvironment().getEasSession().isBusy()) {
-            Application.processEventWhenEasSessionReady(this, new LayoutItemsEvent());
+            postSelectorTreeEvent(EventType.LAYOUT_ITEMS);
         } else {
             super.doItemsLayout();
             if (controller != null && model() != null && controller.model.isLocked()) {
                 //Когда модель селектора заблокирована метод hasChildren может вернуть неправильный результат, который кэшируется.
                 //Чтобы обновить кэш планируем повторный вызов метода doItemsLayout
-                Application.processEventWhenEasSessionReady(this, new LayoutItemsEvent());
+                postSelectorTreeEvent(EventType.LAYOUT_ITEMS);
             }
         }
     }
@@ -2106,4 +3419,43 @@ public class SelectorTree extends QTreeView implements IExplorerSelectorWidget {
             }
         }
     }
+    
+    private boolean isExplicitlyExpanded(final QModelIndex index){
+        for (QModelIndex idx = index; idx!=null; idx=idx.parent()){
+            if (!isExpanded(idx)){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    protected final HierarchicalSelection<SelectorNode> getSelection(){
+        return controller.model.getSelection();
+    }
+    
+    private GroupModel getRootGroupModel(){
+        return controller.model.getRootGroupModel();
+    }
+    
+    public final void setAdditionalSelectionModes(final List<EHierarchicalSelectionMode> mode){
+        controller.model.setDefaultAdditionalSelectionModes(mode);
+    }
+    
+    public final List<EHierarchicalSelectionMode> getAdditionalSelectionModes(){
+        return controller.model.getDefaultAdditionalSelectionModes();
+    }       
+
+    public final void setPrimarySelectionMode(final EnumSet<EHierarchicalSelectionMode> mode){
+        controller.model.setDefaultPrimarySelectionMode(mode);
+    }
+    
+    public final EnumSet<EHierarchicalSelectionMode> getPrimarySelectionMode(){
+        return controller.model.getDefaultPrimarySelectionMode();
+    }
+    
+    @Override
+    protected void disposed() {
+        controller.disposed();
+        super.disposed();
+    }               
 }

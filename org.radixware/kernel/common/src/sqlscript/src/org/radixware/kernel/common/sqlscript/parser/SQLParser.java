@@ -20,10 +20,11 @@ import org.radixware.kernel.common.utils.Reference;
 import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 import org.radixware.kernel.common.sqlscript.parser.SQLConstants.TokenType;
 import org.radixware.kernel.common.sqlscript.parser.spi.VariablesProvider;
+import org.radixware.kernel.common.utils.Utils;
+
 
 
 public class SQLParser {
-
     private VariablesProvider variablesProvider;
     private boolean preprocessor;
     private Lang currentLang;
@@ -34,9 +35,8 @@ public class SQLParser {
     ISQLReader in;
     boolean ignoreSQLErrors;
     Map<String, Integer> newObjectsLines;
-
+    
     private enum Lang {
-
         NO, SQL, PP, SCRIPT
     };
 
@@ -68,7 +68,7 @@ public class SQLParser {
     }
      
     private SQLAdditionParserOptions additionOptions=null;
-    public  void setAdditionOptions(SQLAdditionParserOptions additionOptions){
+    public  void setAdditionOptions(final SQLAdditionParserOptions additionOptions){
         this.additionOptions = additionOptions;
     }
     public SQLAdditionParserOptions getAdditionOptions() {
@@ -76,8 +76,6 @@ public class SQLParser {
     }
     
     
-    
-
     SQLParseStatement getPPStatement(boolean expandVariables) throws SQLScriptException {
         try {
             SQLPosition pos = new SQLPosition();
@@ -314,6 +312,16 @@ public class SQLParser {
                         Reference<String> password = new Reference();
                         Reference<String> base_alias = new Reference();
                         oraParseConnectString(cp, user, password, base_alias);
+                        
+                        
+                        if (this.additionOptions!=null && BehaviorWhenVariablesIsNotDefined.CollectUndefinedVariables.equals(this.additionOptions.getBehaviorWhenVariablesIsNotDefined())) {
+                            if (Utils.emptyOrNull(user.get())) {//use only in Radix Manager
+                                user.set("tempUsr");
+                            }
+                            if (Utils.emptyOrNull(password.get())) {//use only in Radix Manager
+                                password.set("tempPwd");
+                            }
+                        }
                         return new SQLParseConnectStatement(token.getPosition(), user.get(), password.get(), base_alias.get());
                     }
                     case TK_CMD_DISCONNECT: {
@@ -343,6 +351,38 @@ public class SQLParser {
                     case TK_CMD_EXIT:
                     case TK_EOF:
                         return null;
+                    case TK_SCRIPT_PP_PRAGMA:
+                    {
+                        
+                        final SQLPosition before = getPosition().fork();
+                        final String line = forEOL();
+                        final SQLPosition afterEndL = before.fork();
+                        final int lineLen = line.length();
+                        afterEndL.setColumn(afterEndL.getColumn() + lineLen);
+                        afterEndL.setIndex(afterEndL.getIndex() + lineLen);
+                        setPosition(before);
+                        final Lang oldLang = currentLang;
+                        currentLang = Lang.SCRIPT;
+                        final SQLParsePragmaStatement preprocessorPragma = new SQLParsePragmaStatement(ppStatementPos);
+                        
+                        for (;;) {
+                            final SQLToken tk = getScriptToken();
+                            if (tk.getType() == TokenType.TK_SCRIPT_END) {
+                                break;
+                            }                            
+                            preprocessorPragma.appendToken(tk);
+                        }
+                        final SQLPosition afterProcess = getPosition().fork();
+                        if (afterEndL.getIndex() > afterProcess.getIndex()) {
+                            setPosition(afterEndL);
+                        }
+                        
+                        currentLang = oldLang;
+                        preprocessorPragma.checkTokensCorrectness();                        
+                        return preprocessorPragma;
+                    }
+                    case TK_SCRIPT_PP_STMT:
+                        throw new SQLScriptException("Unsupported preprocessor token " + token.getType().toString(), token.getPosition());
                     default:
                         return new SQLParseCommandStatement(token.getPosition(), getStatementString(expandVariables), "", "", ignoreSQLErrors);
                 }
@@ -486,33 +526,18 @@ public class SQLParser {
                         return new SQLToken(begin_pos, TokenType.TK_UNKNOWN);
                     }
                 case '#': {
-//                    if (endBlock) {
-//                        continue;
-//                    }
-                    final int MAX = 6;
-                    SQLPosition cur_pos = in.getPosition().fork();
-                    
-                    StringBuilder sb = new StringBuilder(MAX);
-                    for (int i=0; i<MAX; i++){
-                        char ch1 = (char)in.read();
-                        if (ch1<1)
-                            break;
-                        sb.append(ch1);
-                    }
-                    
-                    in.setPosition(cur_pos);
-                    
-                    String s = sb.toString();
-                    
-                    if (
-                        !s.startsWith("IF") && 
-                        !s.startsWith("ELSE") && 
-                        !s.startsWith("ENDIF")
-                       )
-                        continue;
+                    final Reference<SQLPreprocessor.EPreprocessorType> preprocessorType = new Reference<>();
+                    final int preprocessorLen = SQLParserUtils.getPreprocessorLen(in, preprocessorType);
 
+                    if (preprocessorLen<0) {
+                        continue;
+                    }
                     statement.setLength(statement.length() - 1);
-                    return new SQLToken(begin_pos, TokenType.TK_SCRIPT_PP_STMT);
+                    TokenType tokenType = TokenType.TK_SCRIPT_PP_STMT;
+                    if (SQLPreprocessor.EPreprocessorType.PRAGMA.equals(preprocessorType.get())) {
+                        tokenType = TokenType.TK_SCRIPT_PP_PRAGMA;
+                    }
+                    return new SQLToken(begin_pos, tokenType);
                     
                     //return new SQLToken(begin_pos, TokenType.TK_UNKNOWN);
                 }
@@ -544,7 +569,13 @@ public class SQLParser {
                                 if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_' || (ch >= '0' && ch <= '9')) {
                                     name.append((char) ch);
                                 } else if ((preprocessor && ch == '$') || (!preprocessor && ch == '&')) {
-                                    SQLScriptValue value = variablesProvider.getVariable(name.toString().toUpperCase());
+                                    final String variableName = name.toString().toUpperCase();
+                                    if (additionOptions!=null && additionOptions.getVariablesPositionCollector()!=null){                                        
+                                        additionOptions.getVariablesPositionCollector().collect((char)ch, in.getPosition().getIndex(), variableName);
+                                    }
+                                    SQLScriptValue value = variablesProvider.getVariable(variableName);
+                                    
+                                    
                                     if (value == null) {
                                         final BehaviorWhenVariablesIsNotDefined policyTypeWhenVariablesIsNotDefined = 
                                                 additionOptions==null ? 
@@ -712,7 +743,7 @@ public class SQLParser {
                 case '\t':
                     continue;
                 case '"': {
-                    StringBuffer str = new StringBuffer();
+                    final StringBuilder str = new StringBuilder();
                     for (;;) {
                         ch = readByte();
                         if (ch == '"') {
@@ -848,6 +879,9 @@ public class SQLParser {
                         }
                         if (ustr.equals("ENDIF")) {
                             return new SQLToken(begin_pos, TokenType.TK_SCRIPT_ENDIF);
+                        }
+                        if (ustr.equals("PRAGMA")) {
+                            return new SQLToken(begin_pos, TokenType.TK_SCRIPT_PP_PRAGMA);
                         }
                         if (ustr.equals("THEN")) {
                             return new SQLToken(begin_pos, TokenType.TK_SCRIPT_THEN);
@@ -989,14 +1023,22 @@ public class SQLParser {
     }
     
     
-    public void oraParseConnectString(SQLCommandParser parser, Reference<String> userName, Reference<String> password, Reference<String> baseAlias) throws SQLScriptException {
+    private void oraParseConnectString(final SQLCommandParser parser, final Reference<String> userName, final Reference<String> password, final Reference<String> baseAlias) throws SQLScriptException {
         try {            
             String arg = parser.getArgument();
             int index = arg.indexOf('/');
             if (index == -1) {
                 userName.set(arg);
             } else {
-                userName.set(arg.substring(0, index));
+                String user =arg.substring(0, index);
+                if ("sys".equals(user.trim().toLowerCase())){
+                    if (additionOptions!=null && additionOptions.getSupersedingSysUser()!=null){
+                        user = additionOptions.getSupersedingSysUser();
+                    }
+                    
+                }
+                
+                userName.set(user);
                 int index2 = findFirstNotSpaceSymbol(arg, index + 1);                
                 if (index2!=-1 && arg.charAt(index2) == '\"'){  //RADIXMANAGER-194
                     final int index3 = arg.indexOf('\"', index2+1);
@@ -1009,31 +1051,35 @@ public class SQLParser {
                     final String pwd = arg.substring(index2 + 1, index3);
                     password.set(pwd);
                     
-                    if (index3 < arg.length()-1){
-                        final String tail = arg.substring(index3 + 1);//tail must be empty
-                        if (!tail.trim().isEmpty()){
-                            final SQLToken tk = parser.getToken();
-                            throw new SQLScriptException("Invalid token(s) " + tail, tk.getPosition());
-                        }
-                    }                    
+//                    if (index3 < arg.length()-1){//RADIXMANAGER-507
+//                        final String tail = arg.substring(index3 + 1);//tail must be empty
+//                        if (!tail.trim().isEmpty()){
+//                            final SQLToken tk = parser.getToken();
+//                            throw new SQLScriptException("Invalid token(s) " + tail, tk.getPosition());
+//                        }
+//                    }                    
                 }
                 else{
-                    int index1 = arg.indexOf('@', index);
-                    if (index1 == -1) {
-                        final String pwd = arg.substring(index + 1);
-                        if (pwd.length() != 0) {
-                            password.set(pwd);
-                        }
-                    } else {
-                        final String pwd = arg.substring(index + 1, index1);
-                        if (pwd.length() != 0) {
-                            password.set(pwd);
-                        }
-                        final String base_alias = arg.substring(index1 + 1);
-                        if (base_alias.length() != 0) {
-                            baseAlias.set(base_alias);
-                        }
+                    final String pwd = arg.substring(index + 1);
+                    if (pwd.length() != 0) { //RADIXMANAGER-487
+                        password.set(pwd);   //RADIXMANAGER-503
                     }
+//                    int index1 = arg.indexOf('@', index);
+//                    if (index1 == -1) {
+//                        final String pwd = arg.substring(index + 1);
+//                        if (pwd.length() != 0) {
+//                            password.set(pwd);
+//                        }
+//                    } else {
+//                        final String pwd = arg.substring(index + 1, index1);
+//                        if (pwd.length() != 0) {
+//                            password.set(pwd);
+//                        }
+//                        final String base_alias = arg.substring(index1 + 1);
+//                        if (base_alias.length() != 0) {
+//                            baseAlias.set(base_alias);
+//                        }
+//                    }
                 }
             }
             if (parser.hasMoreTokens()) {

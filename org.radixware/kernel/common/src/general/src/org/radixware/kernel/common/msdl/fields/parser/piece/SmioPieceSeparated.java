@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.msdl.fields.parser.piece;
 
 import java.util.logging.Level;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.RadixObject;
@@ -65,7 +65,7 @@ public class SmioPieceSeparated extends SmioPiece {
             shieldedList = new ArrayList<Byte>();
             if (getShield() != null) {
                 shieldedList.add(shield);
-                if (getStartSeparator()!= null) {
+                if (getStartSeparator() != null) {
                     shieldedList.add(startSep);
                 }
                 if (getEndSeparator() != null) {
@@ -141,38 +141,45 @@ public class SmioPieceSeparated extends SmioPiece {
     public IDataSource parse(IDataSource ids) throws IOException, SmioException {
         ExtByteBuffer exbf = new ExtByteBuffer();
         if (getStartSeparator() != null) {
-            while (ids.available() > 0) {
+            while (ids.hasAvailable()) {
                 byte b = ids.get();
                 if (b == getStartSeparator()) {
                     break;
                 }
             }
         }
-        while (ids.available() > 0) {
-            byte b = ids.get();
-            if (getShield() != null && b == getShield() && ids.available() > 0) {
-                if (getShieldedIsHex()) {
-                    byte b1 = ids.get();
-                    if (Hex.isHexDigit(b1) && ids.available() > 0) {
-                        byte b2 = ids.get();
-                        if (Hex.isHexDigit(b2)) {
-                            exbf.extPut(Hex.decode(CharBuffer.wrap(new char[]{(char) b1, (char) b2}).toString())[0]);
+        while (ids.hasAvailable()) {
+            final byte b = ids.get();
+            if (getEndSeparator() != null && b == getEndSeparator()) {
+                break;
+            } else if (getShield() != null && b == getShield() && ids.hasAvailable()) {
+                final byte b1 = ids.get();
+                if (getShieldedIsHex() && Hex.isHexDigit(b1) && ids.hasAvailable()) {
+                    final byte b2 = ids.get();
+                    if (Hex.isHexDigit(b2)) {
+                        final byte byteFromHex = Hex.decode(CharBuffer.wrap(new char[]{(char) b1, (char) b2}).toString())[0];
+                        if (findShielded(byteFromHex)) {
+                            exbf.extPut(byteFromHex);
                         } else {
+                            exbf.extPut(b);
                             exbf.extPut(b1);
                             exbf.extPut(b2);
                         }
                     } else {
+                        exbf.extPut(b);
                         exbf.extPut(b1);
+                        exbf.extPut(b2);
                     }
                 } else {
-                    exbf.extPut(ids.get());
+                    if (findShielded(b1)) {
+                        exbf.extPut(b1);
+                    } else {
+                        exbf.extPut(b);
+                        exbf.extPut(b1);
+                    }
                 }
             } else {
-                if (getEndSeparator() != null && b == getEndSeparator()) {
-                    break;
-                } else {
-                    exbf.extPut(b);
-                }
+                exbf.extPut(b);
             }
         }
         return new DataSourceByteBuffer(exbf.flip());
@@ -190,11 +197,7 @@ public class SmioPieceSeparated extends SmioPiece {
             if (getShield() != null && findShielded(b)) {
                 exbf.extPut(getShield());
                 if (getShieldedIsHex()) {
-                    try {
-                        exbf.extPut(ByteBuffer.wrap(Hex.encode(new byte[]{b}).getBytes("US-ASCII")));
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(SmioPieceSeparated.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    exbf.extPut(ByteBuffer.wrap(Hex.encode(new byte[]{b}).getBytes(StandardCharsets.US_ASCII)));
                 } else {
                     exbf.extPut(b);
                 }

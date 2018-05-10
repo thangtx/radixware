@@ -14,12 +14,20 @@ package org.radixware.kernel.common.client.env;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
+import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
 import org.radixware.kernel.common.enums.EIsoCountry;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
+import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.xscml.Sqml;
 
 
 public abstract class LocaleManager {//NOPMD
+    
+    private final static Id COUNTRY_ENUM_ID = Id.Factory.loadFrom("acsQK3EKSSOTZDKVFKO3FY5PTAV7A");
+    
     private EIsoLanguage language = EIsoLanguage.ENGLISH;
     private EIsoCountry country;
     private Locale locale;
@@ -88,7 +96,24 @@ public abstract class LocaleManager {//NOPMD
             }
         }
         return countries;
-    }    
+    }
+    
+    public static String getLocalizedCountryName(final EIsoCountry country, final IClientEnvironment environment){
+        if (country==null){
+            return null;
+        }
+        if (!environment.getApplication().isReleaseRepositoryAccessible()){
+            return country.getName();
+        }
+        final RadEnumPresentationDef enumDef;
+        try{
+            enumDef = environment.getDefManager().getEnumPresentationDef(COUNTRY_ENUM_ID);
+        }catch(DefinitionNotFoundError error){
+            return country.getName();
+        }
+        final RadEnumPresentationDef.Item enumItem = enumDef.getItems().findItemForConstant(country);
+        return enumItem==null ? country.getName() : enumItem.getTitle(environment.getLanguage());        
+    }
     
     public abstract List<EIsoLanguage> getSupportedLanguages();
 }

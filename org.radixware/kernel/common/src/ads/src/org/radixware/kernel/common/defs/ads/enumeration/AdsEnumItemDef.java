@@ -24,7 +24,10 @@ import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.IEnumDef.IItem;
 import org.radixware.kernel.common.defs.ads.AdsClipboardSupport;
 import org.radixware.kernel.common.defs.ads.AdsDefinition.Hierarchy;
+import org.radixware.kernel.common.defs.ads.AdsDomainDef;
 import org.radixware.kernel.common.defs.ads.AdsTitledDefinition;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.module.AdsPath;
 import org.radixware.kernel.common.defs.ads.module.AdsSearcher;
 import org.radixware.kernel.common.defs.ads.src.IJavaSource;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
@@ -33,6 +36,7 @@ import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.environment.IRadixEnvironment;
 import org.radixware.kernel.common.exceptions.DefinitionError;
@@ -403,6 +407,38 @@ public abstract class AdsEnumItemDef extends AdsTitledDefinition implements IEnu
         sb.append("<br>Base Type:<br>&nbsp;");
         sb.append(getOwnerEnum().getItemType());
     }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.ENUM_ITEM;
+    }
     
-    
+    public String getDomainsString(){
+        Collection<Id> domainIds = getDomainIds();
+        if (domainIds == null || domainIds.isEmpty()) {
+            return "";
+        }
+        String sNames = "";
+        List<AdsPath> pathes = getDomains().getUsedDomainPathes();
+        for (AdsPath path : pathes) {
+            Id idLst[] = path.asArray();
+            if (idLst.length > 0) {
+                AdsDomainDef def = (AdsDomainDef) AdsUtils.findTopLevelDefById(getModule().getSegment().getLayer(), idLst[0]);
+                String sName;
+                if (def != null) {
+                    def = (AdsDomainDef) def.findComponentDefinition(idLst[idLst.length - 1]).get();
+                    sName = def == null ? path.toString() : def.getQualifiedName();
+                } else {
+                    sName = path.toString();
+                }
+
+                if (sNames.isEmpty()) {
+                    sNames = sName;
+                } else {
+                    sNames += ", " + sName;
+                }
+            }
+        }
+        return sNames;
+    }
 }

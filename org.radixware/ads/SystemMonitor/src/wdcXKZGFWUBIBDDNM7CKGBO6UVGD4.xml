@@ -181,6 +181,16 @@
           <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
           <ui:slot>mthZCIEOL4O5BANBKY55J5AMPRVKQ</ui:slot>
         </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgFRTK2XIPKNHGDOJ7MVRWNTW4RY</ui:sender>
+          <ui:signal>edited(java.lang.Object value)</ui:signal>
+          <ui:slot>mthQSZNHXECHBDYZJXRZJBAWS7OH4</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgT4N3NIL355GHXJJMUM4LDGKWYA</ui:sender>
+          <ui:signal>edited(java.lang.Object value)</ui:signal>
+          <ui:slot>mthQSZNHXECHBDYZJXRZJBAWS7OH4</ui:slot>
+        </ui:connection>
       </ui:connections>
       <ui:signals/>
       <ui:properties/>
@@ -219,6 +229,23 @@
               <Editing NotNull="true" IsDuplicatesEnabled="true"/>
             </Presentation>
           </EmbeddedProperty>
+          <SetterSources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdARTWQABQN5EGHBPGUUQX3IZWUQ" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = val;
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 wdgFRTK2XIPKNHGDOJ7MVRWNTW4RY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.edited.emit(val);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </SetterSources>
         </Property>
         <Property Id="prdLTKFFZLREZALLPGJYJ62MF2T7M" Name="isUpdateEnabled" Nature="8" IsConst="false" IsOverride="false">
           <AccessRules IsPublished="false"/>
@@ -261,6 +288,17 @@
               <Editing NotNull="true" IsDuplicatesEnabled="true"/>
             </Presentation>
           </EmbeddedProperty>
+        </Property>
+        <Property Id="prdIAXQNIS27VHORFXEGJH5J5RZWQ" Name="isComplete" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="401" extStr="boolean"/>
+          <InitialValue>
+            <Jml>
+              <xsc:Item>
+                <xsc:Java>false</xsc:Java>
+              </xsc:Item>
+            </Jml>
+          </InitialValue>
         </Property>
       </Properties>
       <Methods>
@@ -329,6 +367,123 @@ if(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setHidden(true);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthMT65P7RUYFDTLFW4U5HB6PRCGA" Name="isComplete" Nature="0" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdIAXQNIS27VHORFXEGJH5J5RZWQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthQSZNHXECHBDYZJXRZJBAWS7OH4" Name="settings_edited" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="value" Id="mprDSZ4W6TVLJCLHCOA5VGPT2P7UI">
+              <Type TypeId="400" extStr="java.lang.Object"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.signalSender() == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 wdgFRTK2XIPKNHGDOJ7MVRWNTW4RY" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    if (value != null &amp;&amp; (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdDASZIC4D65FXJE2VZIYI4EVZ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == null || </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdDASZIC4D65FXJE2VZIYI4EVZ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.isEmpty())) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdDASZIC4D65FXJE2VZIYI4EVZ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value = ((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) value).Title;
+    }
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdIAXQNIS27VHORFXEGJH5J5RZWQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = value != null &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdDASZIC4D65FXJE2VZIYI4EVZ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value != null &amp;&amp; !</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdDASZIC4D65FXJE2VZIYI4EVZ7Q" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.isEmpty();
+} else if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.signalSender() == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 wdgT4N3NIL355GHXJJMUM4LDGKWYA" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdIAXQNIS27VHORFXEGJH5J5RZWQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = value != null &amp;&amp; !((String)value).isEmpty() &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcXKZGFWUBIBDDNM7CKGBO6UVGD4 admXKZGFWUBIBDDNM7CKGBO6UVGD4 prdARTWQABQN5EGHBPGUUQX3IZWUQ" Invoke="true"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value != null;
 }</xsc:Java>
               </xsc:Item>
             </Src>

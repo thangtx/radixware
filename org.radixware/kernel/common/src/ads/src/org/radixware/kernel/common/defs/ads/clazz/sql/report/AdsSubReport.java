@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginMm;
 import java.util.List;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.DefinitionSearcher;
@@ -23,6 +24,7 @@ import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginTxt;
 import org.radixware.kernel.common.defs.ads.module.AdsSearcher;
 import org.radixware.kernel.common.enums.ENamingPolicy;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
@@ -30,10 +32,17 @@ import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 
-public class AdsSubReport extends RadixObject {
+public class AdsSubReport extends RadixObject implements IReportNavigatorObject{
 
     private Id reportId;
     private RadixObjects<Association> associations = new Associations(this);
+    private AdsReportMarginMm  marginMm = new AdsReportMarginMm(this);
+    private AdsReportMarginTxt  marginTxt = new AdsReportMarginTxt(this);
+    
+    private boolean marginMmLeftLoaded = false;
+    private boolean marginMmRightLoaded = false;
+    private boolean marginTxtLeftLoaded = false;
+    private boolean marginTxtRightLoaded = false;
 
     public static class Association extends RadixObject {
 
@@ -191,13 +200,57 @@ public class AdsSubReport extends RadixObject {
 
     protected AdsSubReport(final org.radixware.schemas.adsdef.SubReport xSubReport) {
         this.reportId = xSubReport.getReportId();
-
+        
         final List<org.radixware.schemas.adsdef.SubReport.Association> xAssociations = xSubReport.getAssociationList();
         if (xAssociations != null) {
             for (org.radixware.schemas.adsdef.SubReport.Association xAssociation : xAssociations) {
                 final Association association = Association.Factory.loadFrom(xAssociation);
                 associations.add(association);
             }
+        }
+        
+        if (xSubReport.isSetTopMargin()){
+            marginMm.setTopMm(xSubReport.getTopMargin());
+        } else {
+            marginMm.setTopMm(0);
+        }
+        
+        if (xSubReport.isSetLeftMargin()){
+            marginMm.setLeftMm(xSubReport.getLeftMargin()); 
+            marginMmLeftLoaded = true;
+        }
+        
+        if (xSubReport.isSetBottomMargin()){
+            marginMm.setBottomMm(xSubReport.getBottomMargin());
+        } else {
+            marginMm.setBottomMm(0);
+        }
+        
+        if (xSubReport.isSetRightMargin()){
+            marginMm.setRightMm(xSubReport.getRightMargin());
+            marginMmRightLoaded = true;
+        }
+        
+        if (xSubReport.isSetTopMarginRows()){
+            marginTxt.setTopRows(xSubReport.getTopMarginRows());
+        } else {
+            marginTxt.setTopRows(0);
+        }
+        
+        if (xSubReport.isSetLeftMarginCols()){
+            marginTxt.setLeftCols(xSubReport.getLeftMarginCols());
+            marginTxtLeftLoaded = true;
+        }
+        
+        if (xSubReport.isSetBottomMarginRows()){
+            marginTxt.setBottomRows(xSubReport.getBottomMarginRows());
+        } else {
+            marginTxt.setTopRows(0);
+        }
+        
+        if (xSubReport.isSetRightMarginCols()){
+            marginTxt.setRightCols(xSubReport.getRightMarginCols());
+            marginTxtRightLoaded = true;
         }
     }
 
@@ -207,6 +260,41 @@ public class AdsSubReport extends RadixObject {
             for (Association association : associations) {
                 association.appendTo(xSubReport.addNewAssociation(), saveMode);
             }
+        }
+        AdsReportMarginMm ownerMargin = getOwnerMarginMm();
+        AdsReportMarginMm margin = getMarginMm();
+        if (margin.getTopMm() != 0){
+             xSubReport.setTopMargin(margin.getTopMm());
+        }
+        
+        if (ownerMargin == null || margin.getLeftMm() != ownerMargin.getLeftMm()){
+            xSubReport.setLeftMargin(margin.getLeftMm());
+        }
+        
+        if (margin.getBottomMm() != 0){
+            xSubReport.setBottomMargin(margin.getBottomMm());
+        }
+        
+        if(ownerMargin == null || margin.getLeftMm() != ownerMargin.getLeftMm()){
+            xSubReport.setRightMargin(marginMm.getRightMm());
+        }
+        
+        AdsReportMarginTxt ownerMarginTxt = getOwnerMarginTxt();
+        AdsReportMarginTxt currentMarginTxt = getMarginTxt();
+        if (currentMarginTxt.getTopRows() != 0){
+            xSubReport.setTopMarginRows(currentMarginTxt.getTopRows());
+        }
+        
+        if (ownerMarginTxt == null || currentMarginTxt.getLeftCols() != ownerMarginTxt.getLeftCols()){
+            xSubReport.setLeftMarginCols(currentMarginTxt.getLeftCols());
+        }
+        
+        if (currentMarginTxt.getBottomRows() != 0){
+            xSubReport.setBottomMarginRows(currentMarginTxt.getBottomRows());
+        }
+        
+        if (ownerMarginTxt == null || currentMarginTxt.getRightCols()!= ownerMarginTxt.getRightCols()){
+           xSubReport.setRightMarginCols(currentMarginTxt.getRightCols());
         }
     }
 
@@ -313,5 +401,113 @@ public class AdsSubReport extends RadixObject {
         if (report != null) {
             list.add(report);
         }
+    }
+
+    public AdsReportMarginMm getMarginMm() {
+        loadMargins();
+        return marginMm;
+    }
+    
+    public void setMarginMm(double top, double left, double bottom, double right){
+        marginMm.setMargin(top, left, bottom, right);
+        marginMmLeftLoaded = true;
+        marginMmRightLoaded = true;
+    }
+    
+    public AdsReportMarginTxt getMarginTxt() {
+        loadMargins();
+        return marginTxt;
+    }
+    
+    public void setMarginTxt(int top, int left, int bottom, int right){
+        marginTxt.setMargin(top, left, bottom, right);
+        marginTxtLeftLoaded = true;
+        marginTxtRightLoaded = true;
+    }
+    
+    private AdsReportMarginMm getOwnerMarginMm(){
+        AdsReportClassDef report = getOwnerReport();
+        if (report != null) {
+            return report.getForm().getMargin();
+        }
+        return null;
+    }
+    
+    private AdsReportMarginTxt getOwnerMarginTxt(){
+        AdsReportClassDef report = getOwnerReport();
+        if (report != null) {
+            return report.getForm().getMarginTxt();
+        }
+        return null;
+    }
+
+    @Override
+    protected void onModified() {
+        final AdsReportBand band = this.getOwnerBand();
+        if (band != null) {
+            band.onModified();
+        }
+    }
+    
+    protected void loadMargins(){
+        if (!marginMmLeftLoaded || !marginMmRightLoaded){
+            AdsReportMarginMm ownerMargin = getOwnerMarginMm();
+            if (ownerMargin != null) {
+                if (!marginMmLeftLoaded){
+                    this.marginMm.setLeftMm(ownerMargin.getLeftMm(), false);
+                    marginMmLeftLoaded = true;
+                }
+                if (!marginMmRightLoaded){
+                    this.marginMm.setRightMm(ownerMargin.getRightMm(), false);
+                    marginMmRightLoaded = true;
+                }
+            } else {
+                if (!marginMmLeftLoaded){
+                    this.marginMm.setLeftMm(AdsReportDefaultStyle.DEFAULT_FORM_MARGIN);
+                    marginMmLeftLoaded = true;
+                }
+                if (!marginMmRightLoaded){
+                    this.marginMm.setRightMm(AdsReportDefaultStyle.DEFAULT_FORM_MARGIN);
+                    marginMmRightLoaded = true;
+                }
+            }
+        }
+        if (!marginTxtLeftLoaded || !marginTxtRightLoaded){
+            AdsReportMarginTxt ownerMargin = getOwnerMarginTxt();
+            if (ownerMargin != null) {
+                if (!marginTxtLeftLoaded){
+                    this.marginTxt.setLeftCols(ownerMargin.getLeftCols(), false);
+                    marginTxtLeftLoaded = true;
+                }
+                if (!marginTxtRightLoaded){
+                    this.marginTxt.setLeftCols(ownerMargin.getRightCols(), false);
+                    marginTxtRightLoaded = true;
+                }
+            } else {
+                if (!marginTxtLeftLoaded){
+                    this.marginTxt.setLeftCols(AdsReportForm.MarginTxt.DEFAULT_MARGIN);
+                    marginTxtLeftLoaded = true;
+                }
+                if (!marginTxtRightLoaded){
+                    this.marginTxt.setRightCols(AdsReportForm.MarginTxt.DEFAULT_MARGIN);
+                    marginTxtRightLoaded = true;
+                }
+            }
+        }
+    }
+  
+    @Override
+    public RadixObject getParent() {
+        return getOwnerBand();
+    }
+
+    @Override
+    public List<RadixObject> getChildren() {
+        return null;
+    }
+
+    @Override
+    public boolean isDiagramModeSupported(AdsReportForm.Mode mode) {
+        return true;
     }
 }

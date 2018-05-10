@@ -69,6 +69,11 @@ public class RadDetailParentRefPropDef extends RadDetailPropDef implements IRadR
     }
 
     @Override
+    public String getDbType() {
+        return null;
+    }
+    
+    @Override
     public Id getDestinationClassId() {
         if (destClassId == null) {
             destClassId = RadClassDef.getEntityClassIdByTableId(getDestinationEntityId());

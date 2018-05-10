@@ -49,10 +49,10 @@ public final class LinkGenerator {
         }
         final List<LinkedString.Item> items = new ArrayList<>();
         final boolean isDepracate = ref instanceof Definition && ((Definition) ref).isDeprecated();
-        items.add(new LinkedString.Item(new LinkedString.TextDecoration(false, false, isDepracate), ref, (space ? " " : "") + typeDeclaration.getRowName(context)));
+        items.add(new LinkedString.Item(new LinkedString.TextDecoration(false, false, isDepracate), ref, (space ? " " : "") + (typeDeclaration == null ? "?" : typeDeclaration.getRowName(context))));
 
         boolean first = true;
-        if (typeDeclaration.isGeneric()) {
+        if (typeDeclaration != null && typeDeclaration.isGeneric()) {
             items.add(new LinkedString.Item(LinkedString.TextDecoration.GENERAL, null, "<", true));
 
             for (final AdsTypeDeclaration.TypeArgument argument : typeDeclaration.getGenericArguments().getArgumentList()) {

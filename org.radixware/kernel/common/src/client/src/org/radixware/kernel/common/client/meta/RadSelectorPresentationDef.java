@@ -105,7 +105,7 @@ public class RadSelectorPresentationDef extends RadPresentationDef {
 
         public String getTitle() {
             if (titleId == null) {
-                return getClassPresentation().getPropertyDefById(propertyId).getTitle();
+                return getClassPresentation().getPropertyDefById(propertyId).getTitle(null);
             } else {
                 final Id defId = RadSelectorPresentationDef.this.getOwnerClassId();
                 return RadSelectorPresentationDef.this.getTitle(defId, titleId);
@@ -434,7 +434,11 @@ public class RadSelectorPresentationDef extends RadPresentationDef {
     private final boolean isAutoSortInstantiatableClasses;
     
     public boolean autoSortInstantiatableClasses(){
-        return isAutoSortInstantiatableClasses;
+        if (this.inheritanceMask.isClassCatalogInherited() && getBasePresentation() != null) {        
+            return getBasePresentation().autoSortInstantiatableClasses();
+        }else{
+            return isAutoSortInstantiatableClasses;
+        }
     }
     
     @SuppressWarnings("PMD.ArrayIsStoredDirectly")

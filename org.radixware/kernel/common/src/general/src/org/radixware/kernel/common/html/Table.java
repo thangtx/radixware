@@ -54,6 +54,12 @@ public class Table extends Html {
         public DataCell addCell() {
             return addCell(-1);
         }
+        
+        public DataCell addCell(final String content){
+            final DataCell cell = addCell();
+            cell.setInnerText(content);
+            return cell;
+        }
 
         public DataCell addCell(int index) {
             DataCell cell = new DataCell();
@@ -69,6 +75,37 @@ public class Table extends Html {
             return (DataCell) children().get(index);
         }
     }
+    
+    public static class Header extends Html {
+
+        public Header() {
+            super("tr");
+        }
+
+        public HeaderCell addCell() {
+            return addCell(-1);
+        }
+        
+        public HeaderCell addCell(final String content){
+            final HeaderCell cell = addCell();
+            cell.setInnerText(content);
+            return cell;
+        }
+
+        public HeaderCell addCell(int index) {
+            HeaderCell cell = new HeaderCell();
+            add(index, cell);
+            return cell;
+        }
+
+        public int cellCount() {
+            return children().size();
+        }
+
+        public HeaderCell getCell(int index) {
+            return (HeaderCell) children().get(index);
+        }
+    }    
 
     public static class DataCell extends Html {
 
@@ -76,15 +113,35 @@ public class Table extends Html {
             super("td");
         }
     }
+    
+    public static class HeaderCell extends Html {
+        public HeaderCell(){
+            super("th");
+        }
+    }
+    
     private Body body = null;
+    private Header header = null;
 
     public Table() {
         super("table");
     }
+    
+    public Header getHeader(){
+        if (header==null){
+            header = new Header();
+            add(header);
+        }
+        return header;
+    }
 
+    protected Body createBody() {
+        return new Body();
+    }
+    
     public Row addRow() {
         if (body == null) {
-            body = new Body();
+            body = createBody();
             add(body);
         }
         return body.addRow();
@@ -92,7 +149,7 @@ public class Table extends Html {
 
     public Row insertRow(int index) {//?
         if (body == null) {
-            body = new Body();
+            body = createBody();
             add(body);
         }
         return body.insertRow(index);

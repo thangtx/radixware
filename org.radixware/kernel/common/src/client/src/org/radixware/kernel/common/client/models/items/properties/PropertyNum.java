@@ -14,10 +14,14 @@ package org.radixware.kernel.common.client.models.items.properties;
 import java.math.BigDecimal;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNum;
+import org.radixware.kernel.common.client.meta.mask.validators.EValidatorState;
+import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.views.IPropEditor;
+import org.radixware.kernel.common.enums.EDatabaseType;
 import org.radixware.kernel.common.enums.EEditMaskType;
+import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.kernel.common.enums.EValType;
 
 public class PropertyNum extends SimpleProperty<BigDecimal> {
@@ -58,13 +62,26 @@ public class PropertyNum extends SimpleProperty<BigDecimal> {
     @Override
     public ValidationResult validateValue() {
         if (getEditMask() != null && getEditMask().getType() == EEditMaskType.NUM){
-            return ((EditMaskNum)getEditMask()).validate(getEnvironment(), getValueObject(), isValEdited());
+            final Object value = getValueObject();
+            final EditMaskNum mask = (EditMaskNum)getEditMask();
+            final boolean strongCheck = isValEdited();
+            final ValidationResult validationResult = mask.validate(getEnvironment(), value, strongCheck);
+            if (validationResult.getState()==EValidatorState.ACCEPTABLE                
+                && strongCheck
+                && value instanceof BigDecimal                
+                && getDefinition().getNature()==EPropNature.USER
+                && getEnvironment().getProductInstallationOptions().getDatabaseType()==EDatabaseType.ORACLE
+                ){
+                final BigDecimal normalizedValue = mask.getNormalized((BigDecimal)value);
+                if (normalizedValue.precision()>38){
+                    return ValidationResult.Factory.newInvalidResult(InvalidValueReason.STORING_CAPACITY_EXCEEDED);
+                }
+            }
+            return validationResult;            
         }else{
             return super.validateValue();
         }
-    }
-    
-    
+    }        
 
     @Override
     public final EValType getType() {

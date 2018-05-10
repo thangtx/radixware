@@ -16,7 +16,6 @@ import org.radixware.kernel.common.msdl.MsdlVariantField;
 import org.radixware.kernel.designer.common.annotations.registrators.EditorFactoryRegistration;
 import org.radixware.kernel.designer.common.general.editors.IEditorFactory;
 import org.radixware.kernel.designer.common.general.editors.IRadixObjectEditor;
-import org.radixware.kernel.designer.common.general.editors.OpenInfo;
 
 
 public class MsdlVariantFieldEditor extends MsdlFieldEditor<MsdlVariantField> {
@@ -64,17 +63,11 @@ public class MsdlVariantFieldEditor extends MsdlFieldEditor<MsdlVariantField> {
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
-    public boolean open(OpenInfo info) {
-        getVariantFieldPanel().open(getField(),this, this);
-        update();
-        return true;
+    protected void reread() {
+        SelectParseMergeFunctionPanel selectPanel = createFunctionsPanel();
+        getVariantFieldPanel().open(getField(),this, selectPanel, this);
     }
-
-    @Override
-    public void update() {
-        variantFieldPanel.update();
-    }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 } 

@@ -20,10 +20,14 @@ import org.radixware.wps.rwt.TristateCheckBox;
 public class ValBoolEditorController extends InputBoxController<Boolean, EditMaskNone> {
 
     private TristateCheckBox checkBox;
+    
+    public ValBoolEditorController(final IClientEnvironment env, final LabelFactory factory) {
+        super(env, factory);
+        setEditMask(new EditMaskNone());
+    }
 
     public ValBoolEditorController(final IClientEnvironment env) {
-        super(env);
-        setEditMask(new EditMaskNone());
+        this(env,null);        
     }
 
     @Override

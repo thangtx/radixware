@@ -21,43 +21,53 @@ class NullCodePrinter extends CodePrinter {
     }
 
     @Override
-    public void print(char c) {
+    public CodePrinter print(char c) {
+        return this;
     }
 
     @Override
-    public void print(CharSequence text) {
+    public CodePrinter print(CharSequence text) {
+        return this;
     }
 
     @Override
-    public void print(char[] text) {
+    public CodePrinter print(char[] text) {
+        return this;
     }
 
     @Override
-    public void print(long l) {
+    public CodePrinter print(long l) {
+        return this;
     }
 
     @Override
-    public void print(int l) {
+    public CodePrinter print(int l) {
+        return this;
     }
 
     @Override
-    public void printCommandSeparator() {
+    public CodePrinter printCommandSeparator() {
+        return this;
     }
 
     @Override
-    public void printStringLiteral(String text) {
+    public CodePrinter printStringLiteral(String text) {
+        return this;
     }
 
     @Override
-    public void println(char[] text) {
+    public CodePrinter println(char[] text) {
+        return this;
     }
 
     @Override
-    public void print(Id id) {
+    public CodePrinter print(Id id) {
+        return this;
     }
 
     @Override
-    public void print(boolean b) {
+    public CodePrinter print(boolean b) {
+        return this;
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.radixware.kernel.common.radixdoc.IRadixdocProvider;
 import org.radixware.kernel.common.radixdoc.IResource;
 import org.radixware.kernel.common.radixdoc.ModuleRadixdoc;
 import org.radixware.kernel.common.radixdoc.RadixIconResource;
+import org.radixware.kernel.common.radixdoc.RadixdocSupport;
 import org.radixware.schemas.radixdoc.Block;
 import org.radixware.schemas.radixdoc.ContentContainer;
 import org.radixware.schemas.radixdoc.Page;
@@ -52,9 +53,22 @@ public class AdsModuleRadixdoc extends ModuleRadixdoc {
         final SummaryChapterFactory<Module, AdsDefinition> dependencies = new SummaryChapterFactory<Module, AdsDefinition>(source) {
             @Override
             protected void documentElementSummary(AdsDefinition elem, Table table) {
+
+                // check
+                if (elem instanceof IRadixdocProvider) {
+                    RadixdocSupport support = ((IRadixdocProvider) elem).getRadixdocSupport();
+                    if (support != null && !support.document(page, getOptions()).isGenerateHtmlDoc()) {
+                        return;
+                    }
+                }
+
+                // add row
                 final Table.Row row = table.addNewRow();
                 final Table.Row.Cell nameCell = row.addNewCell();
                 final Ref ref = nameCell.addNewRef();
+                if (elem.isDeprecated()) {
+                    nameCell.setStyle(DefaultStyle.DEPRECATED);
+                }
                 final Resource resource = ref.addNewResource();
                 final IResource res = new RadixIconResource(elem.getIcon());
                 resource.setSource(res.getKey());

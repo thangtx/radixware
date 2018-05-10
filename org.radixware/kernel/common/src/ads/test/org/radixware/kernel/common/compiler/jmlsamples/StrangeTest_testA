@@ -1,0 +1,33 @@
+
+class A {
+
+    public A(Test t, Int s, Num a) {
+    }
+}
+
+class B extends A {
+
+    public B(Test t, Int s, Num a) {
+	super(t, s, a);
+    }
+}
+
+class Test {
+
+    void f(Int s, A a) {
+    }
+
+    Int getP() {
+	return null;
+    }
+
+    void test() {
+	while (true) {
+	    A a = new A(this, 1, P);
+	    B b = new B(this, -1, P);
+	    if (a == null || b == null) {
+		f(P, a == null ? b : a);
+	    }
+	}
+    }
+}

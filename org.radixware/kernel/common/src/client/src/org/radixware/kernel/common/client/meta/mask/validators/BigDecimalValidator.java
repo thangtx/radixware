@@ -119,7 +119,7 @@ public final class BigDecimalValidator implements org.radixware.kernel.common.cl
             return ValidationResult.INTERMEDIATE;
         
         if (input.length()>1 && (input.charAt(1)==plusChar || input.charAt(1)==minusChar)){
-            return ValidationResult.Factory.newInvalidResult(InvalidValueReason.WRONG_FORMAT);
+            return ValidationResult.Factory.newInvalidResult(InvalidValueReason.Factory.createForWrongFormatValue(environment));
         }
         
         if (inputPrecision==0){//no fraction part
@@ -140,7 +140,7 @@ public final class BigDecimalValidator implements org.radixware.kernel.common.cl
             value = ValueConverter.parseBigDecimal(input, numberFormat);
         }
         catch(NumberFormatException ex){
-            return ValidationResult.Factory.newInvalidResult(InvalidValueReason.WRONG_FORMAT);
+            return ValidationResult.Factory.newInvalidResult(InvalidValueReason.Factory.createForWrongFormatValue(environment));
         }
         if (value==null){
             return ValidationResult.INTERMEDIATE;

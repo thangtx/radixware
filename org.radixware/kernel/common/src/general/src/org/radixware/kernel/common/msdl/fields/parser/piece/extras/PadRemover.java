@@ -19,6 +19,7 @@ import org.radixware.kernel.common.msdl.fields.parser.datasource.DataSourceByteB
 import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
 import org.radixware.kernel.common.exceptions.SmioException;
 import java.nio.ByteBuffer;
+import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPieceFixedLen;
 
 /**
  * Small utility class, able to remove padding from FixedLen and bounded 
@@ -30,10 +31,10 @@ public abstract class PadRemover {
         if (pp.getUnit() == LenUnitDef.CHAR) {
             return new CharPadRemover(pp).removePadding(ids, len);
         }
-        if (pp.getUnit() == LenUnitDef.BYTE || (pp.getUnit() == LenUnitDef.ELEMENT && !pp.getField().getIsBCH() && !pp.getField().getIsBSD())) {
+        if (pp.getUnit() == LenUnitDef.BYTE || (pp.getUnit() == LenUnitDef.ELEMENT && !pp.getField().getIsBCH() && !pp.getField().getIsBCD())) {
             return new BytePadRemover(pp).removePadding(ids, len);
         }
-        if (pp.getUnit() == LenUnitDef.ELEMENT && (pp.getField().getIsBCH() || pp.getField().getIsBSD())) {
+        if (pp.getUnit() == LenUnitDef.ELEMENT && (pp.getField().getIsBCH() || pp.getField().getIsBCD())) {
             return new ElementPadRemover(pp).removePadding(ids, len);
         }
         throw new SmioException("Units not defined for piece");
@@ -44,6 +45,46 @@ public abstract class PadRemover {
 
     protected PadRemover(SmioPiecePadded pp) {
         piece = pp;
+    }
+    
+    protected static enum ECheckLenResult {
+        ENOUGH_DATA,
+        NOT_ENOUGH_DATA_BUT_CAN_PROCEED,
+        NOT_ENOUGH_DATA
+    }
+    
+    protected int calcLength(final IDataSource ids, final int initialLen) throws IOException, SmioException {
+        return calcLength(ids, initialLen, initialLen);
+    }
+    
+    protected int calcLength(final IDataSource ids, final int lenInElements, final int initialLen) throws IOException, SmioException {
+        switch (checkMinLength(ids, lenInElements)) {
+            case ENOUGH_DATA: 
+                return initialLen;
+            case NOT_ENOUGH_DATA_BUT_CAN_PROCEED:
+                int availableLen = initialLen;
+                while (!ids.hasAvailable(availableLen)) {
+                    availableLen--;
+                }
+                return availableLen;
+            case NOT_ENOUGH_DATA:
+                throw new SmioException("Not enough data for field");
+            default:
+                throw new IllegalArgumentException("Undefined check result type");
+        }
+    }
+    
+    protected ECheckLenResult checkMinLength(final IDataSource ids, final int len) throws IOException {
+        if (!ids.hasAvailable(len)) {
+            if (ids.hasAvailable() && piece instanceof SmioPieceFixedLen) {
+                SmioPieceFixedLen fixedLen = (SmioPieceFixedLen) piece;
+                if (fixedLen.isAllowSmallerLength()) {
+                    return ECheckLenResult.NOT_ENOUGH_DATA_BUT_CAN_PROCEED;
+                }
+            }
+            return ECheckLenResult.NOT_ENOUGH_DATA;
+        }
+        return ECheckLenResult.ENOUGH_DATA;
     }
 }
 
@@ -61,9 +102,7 @@ class CharPadRemover extends PadRemover {
         if (cs == null) {
             throw new SmioException("Encoding not defined");
         }
-        if (ids.available() < len) {
-            throw new SmioException("Not enough data for field");
-        }
+        len = calcLength(ids, len);
         String data = cs.decode(ids, len);
         if (piece.getAlign() == AlignDef.NONE) {
             if (data.length() < len) {
@@ -71,28 +110,28 @@ class CharPadRemover extends PadRemover {
             }
         } else {
             int minLen = piece.getField().getChildrenLen();
-            if (piece.getAlign() == AlignDef.LEFT) {
-                if (minLen < len) {
-                    final Character ch = piece.getPadChar();
-                    int last;
-                    for (last = len - 1; last > minLen - 1; last--) {
-                        if (data.charAt(last) != ch) {
-                            break;
+            final Character ch = piece.getPadChar();
+            if (ch != null) {
+                if (piece.getAlign() == AlignDef.LEFT) {
+                    if (minLen < len) {
+                        int last;
+                        for (last = len - 1; last > minLen - 1; last--) {
+                            if (data.charAt(last) != ch) {
+                                break;
+                            }
                         }
+                        data = data.substring(0, last + 1);
                     }
-                    data = data.substring(0, last + 1);
-                }
-            }
-            if (piece.getAlign() == AlignDef.RIGHT) {
-                if (minLen < len) {
-                    final Character ch = piece.getPadChar();
-                    int first;
-                    for (first = 0; first < len - minLen; first++) {
-                        if (data.charAt(first) != ch) {
-                            break;
+                } else if (piece.getAlign() == AlignDef.RIGHT) {
+                    if (minLen < len) {
+                        int first;
+                        for (first = 0; first < len - minLen; first++) {
+                            if (data.charAt(first) != ch) {
+                                break;
+                            }
                         }
+                        data = data.substring(first, len);
                     }
-                    data = data.substring(first, len);
                 }
             }
         }
@@ -110,9 +149,7 @@ class BytePadRemover extends PadRemover {
     @Override
     protected DataSourceByteBuffer removePadding(IDataSource ids, int len) throws SmioException, IOException {
         DataSourceByteBuffer ret = null;
-        if (ids.available() < len) {
-            throw new SmioException("Not enough data for field");
-        }
+        len = calcLength(ids, len);
         if (piece.getAlign() == null) {
             throw new SmioException("Alignment not set");
         }
@@ -170,9 +207,11 @@ class ElementPadRemover extends PadRemover {
         if (len % 2 == 1) {
             len += 1;
         }
-        if (ids.available() < len / 2) {
-            throw new SmioException("Not enough data for field");
+        len = calcLength(ids, len / 2, len);
+        if (len % 2 == 1) {
+            len += 1;
         }
+        
         byte[] data = ids.get(len / 2);
         ByteBuffer res = ByteBuffer.allocate(len / 2);
         if (piece.getAlign() == AlignDef.NONE) {

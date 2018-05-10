@@ -26,8 +26,10 @@ import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.Maps;
 import org.radixware.schemas.netporthandler.ConnectMess;
+import org.radixware.schemas.netporthandler.ConnectRq;
 import org.radixware.schemas.netporthandler.ConnectRs;
 import org.radixware.schemas.netporthandler.ProcessMess;
+import org.radixware.schemas.netporthandler.ProcessRq;
 import org.radixware.schemas.netporthandler.ProcessRs;
 import org.radixware.schemas.netporthandlerWsdl.ConnectDocument;
 import org.radixware.schemas.netporthandlerWsdl.ProcessDocument;
@@ -82,8 +84,7 @@ final class Pos2Seance extends Seance {
     protected void onConnectResp(final OnConnectRs rs) throws IOException {
         if (state == State.CLOSED)
             return;
-        callbackPid = rs.getCallbackPid();
-        callbackWid = rs.getCallbackWid();
+        callbackTarget = new NetPortCallbackTarget(rs.getCallbackPid(), rs.getCallbackWid());
         lastRecvTimeoutSec = rs.getRecvTimeout();
         resendCount = 2;
         debug("Writing <ENQ> (0x05)", false);
@@ -161,10 +162,10 @@ final class Pos2Seance extends Seance {
                     resendLastPacket();
                 } else {
                     if (state == state.RECEIVING_SYNC) {
-                        final SapSeance seance = sapSeances.pollFirst();
-                        seance.responseReceiveTimeout();
+                        final ISeanceTask task = tasks.pollFirst();
+                        task.getSapSeance().responseReceiveTimeout();
                         state = State.RECEIVING;
-                        processSapSeances(false);                    
+                        processTasks(false);                    
                     } else {
                         //close(ECloseMode.GENERATE_ON_DISCONNECT_EVENT); // TWRBS-2128
                         onRecvTimeout();
@@ -273,25 +274,25 @@ PROCESS_NEW_DATA:
             if (packetReceived) {
                 if (closeRequested) { // AK said to ignore messages after ads handler requested close
                     close(ECloseMode.GENERATE_ON_DISCONNECT_EVENT);
-                } else if (state == state.RECEIVING_SYNC) {
-                    final SapSeance seance = sapSeances.pollFirst();
+                } else if (state == State.RECEIVING_SYNC) {
+                    final ISeanceTask task = tasks.pollFirst();
                     final FramePacket receivedPacket = receivedPackets.pollFirst();
-                    if (seance.rqDoc instanceof ProcessMess) {
+                    if (task.getRq() instanceof ProcessRq) {
                         final ProcessDocument rsDoc = ProcessDocument.Factory.newInstance();
                         final ProcessRs rs = rsDoc.addNewProcess().addNewProcessRs();
                         rs.setReceivedPacket(receivedPacket.packet);
                         rs.setReceivedPackedHeaders(Maps.toXml(receivedPacket.headers));
-                        seance.response(rsDoc);
-                    } else if (seance.rqDoc instanceof ConnectMess) {
+                        task.getSapSeance().response(rsDoc);
+                    } else if (task.getRq() instanceof ConnectRq) {
                         final ConnectDocument rsDoc = ConnectDocument.Factory.newInstance();
                         final ConnectRs rs = rsDoc.addNewConnect().addNewConnectRs();
                         rs.setSID(sid);
                         rs.setReceivedPacket(receivedPacket.packet);
                         rs.setReceivedPackedHeaders(Maps.toXml(receivedPacket.headers));
-                        seance.response(rsDoc);
+                        task.getSapSeance().response(rsDoc);
                     }
                     state = State.RECEIVING;
-                    processSapSeances(false);
+                    processTasks(false);
                 } else {
                     onRecv();
                 }
@@ -312,7 +313,7 @@ PROCESS_NEW_DATA:
     }
 
     @Override
-    protected void onAasInvokeException(final ServiceClientException exception) {
+    public void onAasInvokeException(final ServiceClientException exception) {
         if (state == State.CLOSED) {
             return;
         }

@@ -21,6 +21,7 @@ import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.errors.CantOpenSelectorError;
 import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
+import org.radixware.kernel.common.client.errors.PasswordExpiredError;
 import org.radixware.kernel.common.client.errors.UnsupportedDefinitionVersionError;
 import org.radixware.kernel.common.client.errors.UserAccountLockedError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
@@ -209,6 +210,9 @@ public class ViewHolder extends QDockWidget{
                     final String source = currentNode==null ? null : currentNode.getPath();
                     checkConfigStoreCurrentGroup(source,false);
                     checkIfProgressUnblocked(source, false);
+                    if (currentNode!=null){
+                        environment.getClipboard().removeAllChangeListeners(currentNode);
+                    }
                     LeakedWidgetsDetector.getInstance().findLeakedWidgets(environment,source);
                 }
 
@@ -239,6 +243,7 @@ public class ViewHolder extends QDockWidget{
                             }
                             view.asQWidget().setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, true);
                             innerWidget.addWidget(view.asQWidget());
+                            model.getEnvironment().getClipboard().setListenersContext(node);
                             boolean viewOpened = false;                            
                             try{
                                 view.open(model);
@@ -249,6 +254,7 @@ public class ViewHolder extends QDockWidget{
                                     if (view.asQWidget().nativeId()!=0){
                                         view.asQWidget().close();
                                     }
+                                    model.getEnvironment().getClipboard().removeAllChangeListeners(node);                                    
                                 }
                             }
                             if (OPENING_VIEW_PROGRESS.wasCanceled()) {
@@ -292,6 +298,13 @@ public class ViewHolder extends QDockWidget{
                         errorView.setMessage(String.format(errMessage, node.getTitle())+"\n"+reason);
                         errorView.setCanReopen(true);
                         return null;
+                    }catch (PasswordExpiredError error){
+                        final String errMessage = environment.getMessageProvider().translate("ExplorerTree", "Can't open explorer item \'%s\'");
+                        final String exceptionMessage = error.getLocalizedMessage();
+                        final String reason =  exceptionMessage.substring(0, 1).toUpperCase() + exceptionMessage.substring(1);
+                        errorView.setMessage(String.format(errMessage, node.getTitle())+"\n"+reason);
+                        errorView.setCanReopen(true);
+                        return null;                        
                     }finally {
                         OPENING_VIEW_PROGRESS.finishProgress();
                         if (!closed){
@@ -304,7 +317,7 @@ public class ViewHolder extends QDockWidget{
                             viewIndex = innerWidget.count() - 1;
                         }
                         checkConfigStoreCurrentGroup(node.getPath(), true);
-                        checkIfProgressUnblocked(node.getPath(), true);
+                        checkIfProgressUnblocked(node.getPath(), true);                        
                     }
                 }//opening view                
             } finally {
@@ -381,16 +394,18 @@ public class ViewHolder extends QDockWidget{
     }
 
     private void closeModalDialogs() {
+        int tryCount = 0;
         QWidget activeWidget = QApplication.activeModalWidget();
-        while (activeWidget != null && activeWidget != window()) {
+        while (activeWidget != null && activeWidget != window() && tryCount<100) {
             if (activeWidget instanceof ExplorerDialog) {
                 ((ExplorerDialog) activeWidget).forceClose();
             } else {
                 if (!activeWidget.close()) {
                     break;
                 }
-            }
+            }            
             activeWidget = QApplication.activeModalWidget();
+            tryCount++;
         }
     }
 
@@ -437,6 +452,9 @@ public class ViewHolder extends QDockWidget{
             final String source = currentNode==null ? null : currentNode.getPath();
             checkConfigStoreCurrentGroup(source,false);
             checkIfProgressUnblocked(source, false);
+            if (currentNode!=null){
+                environment.getClipboard().removeAllChangeListeners(currentNode);
+            }            
             LeakedWidgetsDetector.getInstance().findLeakedWidgets(environment,source);            
             close();
         }

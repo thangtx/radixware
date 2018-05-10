@@ -41,7 +41,7 @@ final class JmsHandlerInterfaceSap extends Sap {
     private final JmsHandlerUnit unit;
 
     public JmsHandlerInterfaceSap(final JmsHandlerUnit unit) {
-        super(unit.getDispatcher(), unit.getTrace().newTracer(unit.getEventSource(), COMP_NAME), 100, 30);
+        super(unit.getDispatcher(), unit.getTrace().newTracer(unit.getEventSource(), COMP_NAME), 100, 30, unit.getResourceKeyPrefix() + "/jhusap");
         this.unit = unit;
     }
     private final Map<String, Message> messById = new HashMap<String, Message>();

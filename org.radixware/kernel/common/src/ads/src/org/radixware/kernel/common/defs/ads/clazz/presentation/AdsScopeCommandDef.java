@@ -81,11 +81,18 @@ public abstract class AdsScopeCommandDef extends AdsCommandDef implements IAdsCl
     public class CommandPresentation extends AdsCommandDef.CommandPresentation {
 
         private ECommandAccessibility accessebility;
+        private boolean rereadAfterExecute;
 
         protected CommandPresentation(Command xCommand) {
             super(xCommand);
             if (xCommand != null) {
                 this.accessebility = xCommand.getAccessibility();
+        
+                if (this.accessebility == ECommandAccessibility.ONLY_FOR_FIXED){
+                    this.rereadAfterExecute = xCommand.isSetRereadedAfterExecute()? xCommand.getRereadedAfterExecute() : true;
+                } else {
+                    this.rereadAfterExecute = false;
+                }
             }
             if (this.accessebility == null) {
                 this.accessebility = ECommandAccessibility.ALWAYS;
@@ -101,16 +108,42 @@ public abstract class AdsScopeCommandDef extends AdsCommandDef implements IAdsCl
             setEditState(EEditState.MODIFIED);
         }
 
-        public void appendTo(Command xDef) {
-            super.appendTo(xDef);
-            xDef.setAccessibility(accessebility);
+//        public void appendTo(Command xDef) {
+//            super.appendTo(xDef);
+//            xDef.setAccessibility(accessebility);
+//        }
+
+        public boolean isRereadAfterExecute() {
+            return rereadAfterExecute;
         }
+
+        public void setRereadAfterExecute(boolean rereadAfterExecute) {
+            if (accessebility == ECommandAccessibility.ONLY_FOR_FIXED){
+                if (this.rereadAfterExecute ^ rereadAfterExecute){
+                    this.rereadAfterExecute = rereadAfterExecute;
+                    setEditState(EEditState.MODIFIED);
+                }
+            } else {
+                if (this.rereadAfterExecute){
+                    this.rereadAfterExecute = false;
+                    setEditState(EEditState.MODIFIED);
+                }
+            }
+        }
+        
+        public boolean canReread() {
+            return AdsScopeCommandDef.this instanceof AdsPropertyCommandDef || AdsScopeCommandDef.this instanceof AdsObjectCommandDef;
+        }
+        
 
         @Override
         public void appendTo(CommandDefinition xDef) {
             assert xDef instanceof Command;
             super.appendTo(xDef);
             ((Command) xDef).setAccessibility(accessebility);
+            if (canReread() && accessebility == ECommandAccessibility.ONLY_FOR_FIXED && !rereadAfterExecute){
+                ((Command) xDef).setRereadedAfterExecute(rereadAfterExecute);
+            }
         }
     }
 

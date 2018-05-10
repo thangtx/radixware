@@ -15,20 +15,25 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 
 
 public class SQLParseCommandStatement extends SQLParseStatement {
-    private String  command;
-    private String  newObjectType;
-    private String  newObjectName;
-    private boolean ignoreSQLErrors;
+    private final String command;
+    private final String newObjectType;
+    private final String newObjectName;
+    private final boolean ignoreSQLErrors;
 
-    public SQLParseCommandStatement(SQLPosition position, String command, String newObjectType, String newObjectName, boolean ignoreSQLErrors) {
+    public SQLParseCommandStatement(final SQLPosition position, final String command, final String newObjectType, final String newObjectName, final boolean ignoreSQLErrors) {
         super(position, StatementType.ST_COMMAND);
-        this.command = command;
-        this.newObjectType = newObjectType;
-        this.newObjectName = newObjectName;
-        this.ignoreSQLErrors = ignoreSQLErrors;
+        if (command == null || command.isEmpty()) {
+            throw new IllegalArgumentException("Command can't be null or empty");
+        }
+        else{
+            this.command = command;
+            this.newObjectType = newObjectType;
+            this.newObjectName = newObjectName;
+            this.ignoreSQLErrors = ignoreSQLErrors;
+        }
     }
 
-    public SQLParseCommandStatement(SQLPosition position, String command, String newObjectType, String newObjectName) {
+    public SQLParseCommandStatement(final SQLPosition position, final String command, final String newObjectType, final String newObjectName) {
         this(position, command, newObjectType, newObjectName, false);
     }
 
@@ -46,5 +51,10 @@ public class SQLParseCommandStatement extends SQLParseStatement {
 
     public boolean isIgnoreSQLErrors() {
         return ignoreSQLErrors;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLParseCommandStatement{" + "command=" + command + ", newObjectType=" + newObjectType + ", newObjectName=" + newObjectName + ", ignoreSQLErrors=" + ignoreSQLErrors + '}';
     }
 }

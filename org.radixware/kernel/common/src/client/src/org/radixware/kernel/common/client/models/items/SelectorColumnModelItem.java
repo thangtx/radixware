@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.models.items;
 
+import java.util.Objects;
 import org.radixware.kernel.common.client.enums.ESelectorColumnHeaderMode;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
@@ -54,6 +55,10 @@ public final class SelectorColumnModelItem extends ModelItem {
     public RadPropertyDef getPropertyDef() {
         return getOwner().getSelectorPresentationDef().getPropertyDefById(def.getPropertyId());
     }
+    
+    public RadSelectorPresentationDef.SelectorColumn getColumnDef(){
+        return def;
+    }
 
     @Override
     public GroupModel getOwner() {
@@ -67,7 +72,14 @@ public final class SelectorColumnModelItem extends ModelItem {
         if (alignment == null) {
             final ClientSettings settings = getEnvironment().getConfigStore();
             try {
-                final EValType valType = getPropertyDef().getType();
+                final EValType valType;
+                if (getPropertyDef().getEditMask().getType()==EEditMaskType.ENUM || 
+                    getPropertyDef().getEditMask().getType()==EEditMaskType.LIST
+                    ){
+                    valType = EValType.STR;
+                }else{
+                    valType = getPropertyDef().getType();
+                }
                 settings.beginGroup(SettingNames.SYSTEM);
                 settings.beginGroup(SettingNames.SELECTOR_GROUP);
                 settings.beginGroup(SettingNames.Selector.COMMON_GROUP);
@@ -86,8 +98,10 @@ public final class SelectorColumnModelItem extends ModelItem {
     }
 
     public void setAlignment(final ESelectorColumnAlign alignment) {
-        this.alignment = alignment;
-        afterModify();
+        if (this.alignment!=alignment){
+            this.alignment = alignment;
+            afterModify();
+        }
     }
 
     public ESelectorColumnSizePolicy getSizePolicy() {
@@ -95,8 +109,10 @@ public final class SelectorColumnModelItem extends ModelItem {
     }
 
     public void setSizePolicy(final ESelectorColumnSizePolicy policy) {
-        sizePolicy = policy;
-        afterModify();
+        if (sizePolicy!=policy){
+            sizePolicy = policy;
+            afterModify();
+        }
     }
 
     public ESelectorColumnSizePolicy getAutoSizePolicy() {
@@ -154,8 +170,10 @@ public final class SelectorColumnModelItem extends ModelItem {
     }
 
     public void setTitle(final String title) {
-        this.title = title;
-        afterModify();
+        if (!Objects.equals(title, this.title)){
+            this.title = title;
+            afterModify();
+        }
     }
     
     public String getHint(){
@@ -163,8 +181,10 @@ public final class SelectorColumnModelItem extends ModelItem {
     }
     
     public void setHint(final String hint){
-        this.hint = hint;
-        afterModify();
+        if (!Objects.equals(hint, this.hint)){
+            this.hint = hint;
+            afterModify();
+        }
     }
 
     public boolean isVisible() {
@@ -172,8 +192,10 @@ public final class SelectorColumnModelItem extends ModelItem {
     }
 
     public void setVisible(final boolean visible) {
-        this.visible = visible;
-        afterModify();
+        if (this.visible!=visible){
+            this.visible = visible;
+            afterModify();
+        }
     }
     
     public boolean isForbidden(){
@@ -181,8 +203,10 @@ public final class SelectorColumnModelItem extends ModelItem {
     }
     
     public void setForbidden(final boolean forbidden){
-        this.isForbidden = forbidden;
-        afterModify();        
+        if (this.isForbidden!=forbidden){
+            this.isForbidden = forbidden;
+            afterModify();        
+        }
     }
 
     public ESelectorColumnHeaderMode getHeaderMode() {
@@ -190,8 +214,10 @@ public final class SelectorColumnModelItem extends ModelItem {
     }
 
     public void setHeaderMode(final ESelectorColumnHeaderMode headerMode) {
-        this.headerMode = headerMode;
-        afterModify();
+        if (this.headerMode!=headerMode){
+            this.headerMode = headerMode;
+            afterModify();
+        }
     }
 
     public Icon getHeaderIcon() {
@@ -199,7 +225,9 @@ public final class SelectorColumnModelItem extends ModelItem {
     }
 
     public void setHeaderIcon(final Icon headerIcon) {
-        this.headerIcon = headerIcon;
-        afterModify();
+        if (!Objects.equals(this.headerIcon, headerIcon)){
+            this.headerIcon = headerIcon;
+            afterModify();
+        }
     }
 }

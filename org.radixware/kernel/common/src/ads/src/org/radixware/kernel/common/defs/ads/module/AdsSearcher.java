@@ -65,6 +65,7 @@ public class AdsSearcher {
                     case USER_DEFINED_REPORT:
                     case REPORT:
                     case USER_FUNC_CLASS:
+                    case LIB_USERFUNC_PREFIX:
                     case APPLICATION_ROLE:
                     case MSDL_SCHEME:
                         break;
@@ -263,7 +264,7 @@ public class AdsSearcher {
                         if (cache[0] != null) {
                             return (T) cache[0];
                         } else {
-                            return (T) module.getDefinitions().findById(id);
+                            return (T) module.getTopContainer().findById(id);
                         }
                     } else {
                         return null;
@@ -303,7 +304,7 @@ public class AdsSearcher {
                     if (!shouldSearchForDefInside(module, id)) {
                         return null;
                     }
-                    final AdsDefinition def = module.getDefinitions().findById(id);
+                    final AdsDefinition def = module.getTopContainer().findById(id);
                     if (def instanceof AdsClassDef) {
                         return (AdsClassDef) def;
                     } else {
@@ -367,7 +368,7 @@ public class AdsSearcher {
                     return null;
                 }
 
-                final AdsDefinition def = ((AdsModule) getContext().getModule()).getDefinitions().findById(id);
+                final AdsDefinition def = ((AdsModule) getContext().getModule()).getTopContainer().findById(id);
                 if (def instanceof AdsEntityClassDef) {
                     return (AdsEntityClassDef) def;
                 } else {

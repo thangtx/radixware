@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" Name="ImpExpXsd" TargetNamespace="http://schemas.tranzaxis.com/scheduling-impExp.xsd" Environment="common"><ads:AccessRules IsPublished="false"/><xs:schema targetNamespace="http://schemas.tranzaxis.com/scheduling-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.tranzaxis.com/scheduling-impExp.xsd">
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdRZ3FCEGYPNBLNK7FFBK5K4WRWU" Name="ImpExpXsd" TargetNamespace="http://schemas.tranzaxis.com/scheduling-impExp.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsFinal="true" IsPublished="false"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.tranzaxis.com/scheduling-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.tranzaxis.com/scheduling-impExp.xsd">
 	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
 	<xs:simpleType name="COper">
 		<xs:annotation>
@@ -31,7 +33,8 @@
 	<xs:element name="CalendarItem" type="this:CalendarItem"/>
 	<xs:complexType name="Calendar">
 		<xs:sequence>
-			<xs:element name="Item" type="this:CalendarItem" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="Rid" type="t:Str" minOccurs="0"/>
+                    <xs:element name="Item" type="this:CalendarItem" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="Guid" type="t:Str" use="required"/>
 		<xs:attribute name="ClassId" type="t:Id" use="required"/>
@@ -53,6 +56,7 @@
 	<xs:element name="IntervalItem" type="this:IntervalItem"/>
 	<xs:complexType name="IntervalSchedule">
 		<xs:sequence>
+                        <xs:element name="Rid" type="t:Str" minOccurs="0"/>
 			<xs:element name="Item" type="this:IntervalItem" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="Id" type="t:Int" use="required"/>
@@ -79,6 +83,7 @@
 	<xs:element name="EventItem" type="this:EventItem"/>
 	<xs:complexType name="EventSchedule">
 		<xs:sequence>
+                        <xs:element name="Rid" type="t:Str" minOccurs="0"/>
 			<xs:element name="Item" type="this:EventItem" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="Id" type="t:Int" use="required"/>

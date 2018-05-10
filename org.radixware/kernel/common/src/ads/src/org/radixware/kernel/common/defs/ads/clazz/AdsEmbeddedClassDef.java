@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.type.IAdsTypeSource;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.IdPrefixes;
@@ -165,6 +166,11 @@ public abstract class AdsEmbeddedClassDef extends AdsClassDef {
     @SuppressWarnings("unchecked")
     public Hierarchy<AdsClassDef> getHierarchy() {
         return new EmbeddedClassHierarchy();
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
     }
 
     @Override

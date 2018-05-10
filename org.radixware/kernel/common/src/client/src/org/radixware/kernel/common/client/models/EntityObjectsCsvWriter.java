@@ -45,7 +45,7 @@ final class EntityObjectsCsvWriter extends EntityObjectsWriter{
     }
 
     @Override
-    public void writeEntityObject(final EntityModel entityObject) throws IOException {
+    public boolean writeEntityObject(final EntityModel entityObject) throws IOException {
         if (!headerWrited){
             if (fieldHeaders!=null){
                 for (String header: fieldHeaders){
@@ -68,9 +68,11 @@ final class EntityObjectsCsvWriter extends EntityObjectsWriter{
                     final long time = ((Timestamp)propertyValue).getTime();
                     final int clientTimeZoneOffset = TimeZone.getDefault().getOffset(time);
                     final int serverTimeZoneOffset = getServerTimeZoneOffset(srvTimeZone, time);
-                    if (clientTimeZoneOffset!=serverTimeZoneOffset){
+                    if (clientTimeZoneOffset==serverTimeZoneOffset){
+                        timeToExport.setTime(time);
+                    }else{
                         final int delta = clientTimeZoneOffset - serverTimeZoneOffset;
-                        timeToExport.setTime(time + delta);
+                        timeToExport.setTime(time + delta);                        
                     }
                     propertyValue = timeToExport;
                 }
@@ -140,6 +142,7 @@ final class EntityObjectsCsvWriter extends EntityObjectsWriter{
                 }
             }
         }
+        return true;
     }
     
     private int getServerTimeZoneOffset(final TimeZoneInfo tzInfo, final long time){
@@ -152,55 +155,6 @@ final class EntityObjectsCsvWriter extends EntityObjectsWriter{
         }
         return serverTimeZone==null ? tzInfo.getOffsetMills() : serverTimeZone.getOffset(time);
     }
-    
-    @SuppressWarnings("unchecked")
-    private static Object getUntypifiedValue(final Object typifiedValue, final EValType valType){
-        if (typifiedValue instanceof IKernelEnum){
-            return ((IKernelEnum)typifiedValue).getValue();
-        }else if (typifiedValue instanceof Arr && !((Arr)typifiedValue).isEmpty()){
-            final Arr untypifiedArr = newArrayInstance(valType, ((Arr)typifiedValue).size());
-            for (Object arrItem: ((Arr)typifiedValue)){
-                if (arrItem instanceof IKernelEnum){
-                    untypifiedArr.add(((IKernelEnum)arrItem).getValue());
-                }else{
-                    untypifiedArr.add(arrItem);
-                }
-            }
-            return untypifiedArr;
-        }else{
-            return typifiedValue;
-        }
-        
-    }
-    
-    @SuppressWarnings("PMD.MissingBreakInSwitch")
-    private static Arr newArrayInstance(final EValType valType, final int initialSize){
-        switch(valType){
-            case ARR_BIN:
-            case BIN:                
-                return new ArrBin(initialSize);
-            case ARR_BOOL:
-            case BOOL:
-                return new ArrBool(initialSize);
-            case ARR_CHAR:
-            case CHAR:
-                return new ArrChar(initialSize);
-            case ARR_DATE_TIME:
-            case DATE_TIME:
-                return new ArrDateTime(initialSize);
-            case ARR_INT:
-            case INT:
-                return new ArrInt(initialSize);
-            case ARR_NUM:
-            case NUM:
-                return new ArrNum(initialSize);
-            case ARR_STR:
-            case STR:
-                return new ArrStr(initialSize);
-            default:
-                return null;
-        }
-    }    
     
     public void flush() throws IOException{
         if (!csvWriter.flush()){
@@ -215,5 +169,4 @@ final class EntityObjectsCsvWriter extends EntityObjectsWriter{
         }
         csvWriter.close();
     }
-    
 }

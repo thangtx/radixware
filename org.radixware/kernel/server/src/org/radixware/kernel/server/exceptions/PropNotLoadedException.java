@@ -8,18 +8,31 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.exceptions;
 
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.exceptions.RadixPrivateException;
 
 public class PropNotLoadedException extends RadixPrivateException {
-	private static final long serialVersionUID = -4536905888483198883L;
-	public final Id propId; 
-	
-	public PropNotLoadedException(final String mess, final Id propId) {
+
+    private static final long serialVersionUID = -4536905888483198883L;
+    public final Id propId;
+
+    public PropNotLoadedException(final Id propId) {
+        this("", propId);
+    }
+
+    public PropNotLoadedException(final String mess, final Id propId) {
         super(mess);
         this.propId = propId;
+    }
+
+    @Override
+    public String getMessage() {
+        final String superResult = super.getMessage();
+        if (superResult != null && superResult.isEmpty()) {
+            return "Property #" + propId + " is not loaded";
+        }
+        return superResult;
     }
 }

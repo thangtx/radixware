@@ -106,7 +106,7 @@ public class EditMaskEditorDialog extends ExplorerDialog implements IEditMaskEdi
 
     @Override
     public boolean checkOptions() {
-        return widget.checkOptions();
+        return widget.isDefaultEditMaskUsed() || widget.checkOptions();
     }
     
     @SuppressWarnings("unused")

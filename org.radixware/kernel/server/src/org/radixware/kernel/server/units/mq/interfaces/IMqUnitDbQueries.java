@@ -13,7 +13,7 @@
 package org.radixware.kernel.server.units.mq.interfaces;
 
 import java.sql.SQLException;
-import org.radixware.kernel.server.IDbQueries;
+import org.radixware.kernel.server.jdbc.IDbQueries;
 import org.radixware.kernel.server.units.mq.MqDbQueries;
 
 /**

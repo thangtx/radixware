@@ -16,12 +16,12 @@ import java.util.ArrayList;
 //import com.trolltech.qt.gui.QGridLayout;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 
-public class SwitcherSettingsWidget extends CheckBoxSettingsWidget {
+final class SwitcherSettingsWidget extends CheckBoxSettingsWidget {
 
-    private final ArrayList<SettingsWidget> firstGroupList = new ArrayList<SettingsWidget>();
-    private final ArrayList<SettingsWidget> secondGroupList = new ArrayList<SettingsWidget>();
+    private final ArrayList<SettingsWidget> firstGroupList = new ArrayList<>();
+    private final ArrayList<SettingsWidget> secondGroupList = new ArrayList<>();
 
     public SwitcherSettingsWidget(final IClientEnvironment environment, final QWidget parent, final String gr, final String sub, final String n, final String descr, final boolean show) {
         super(environment, parent, gr, sub, n, descr);
@@ -50,7 +50,7 @@ public class SwitcherSettingsWidget extends CheckBoxSettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
 
         super.readSettings(src);
         for (SettingsWidget w : firstGroupList) {
@@ -62,7 +62,7 @@ public class SwitcherSettingsWidget extends CheckBoxSettingsWidget {
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
 
         super.writeSettings(dst);
         for (SettingsWidget w : firstGroupList) {

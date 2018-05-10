@@ -35,6 +35,8 @@ import org.radixware.kernel.common.meta.RadDefinition;
 import org.radixware.kernel.common.sqml.ISqmlProperty;
 import org.radixware.kernel.common.types.MultilingualString;
 import org.radixware.kernel.server.meta.presentations.RadPropertyPresentationDef;
+import org.radixware.kernel.server.types.Entity;
+import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.server.utils.SrvValAsStr;
 
 public abstract class RadPropDef extends RadDefinition implements ISqmlProperty {
@@ -191,6 +193,11 @@ public abstract class RadPropDef extends RadDefinition implements ISqmlProperty 
 
         if (val == null) {
             return getValInheritMarkVal(arte) == null;
+        }
+        
+        final Object inheritMark = getValInheritMarkVal(arte);
+        if (inheritMark instanceof Pid && val instanceof Entity) {
+            return ((Pid)inheritMark).equals(((Entity) val).getPid());
         }
 
         return val.equals(getValInheritMarkVal(arte));

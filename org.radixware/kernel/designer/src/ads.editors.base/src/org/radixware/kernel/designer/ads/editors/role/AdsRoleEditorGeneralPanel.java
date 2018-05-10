@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.designer.ads.editors.role;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
@@ -44,6 +46,9 @@ import org.radixware.kernel.common.enums.EDrcResourceType;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.userreport.common.UserExtensionManagerCommon;
+import org.radixware.kernel.common.userreport.repository.role.AppRole;
+import org.radixware.kernel.designer.ads.editors.changelog.ChangeLogEditor;
 import org.radixware.kernel.designer.common.dialogs.RadixWareDesignerIcon;
 import org.radixware.kernel.designer.common.dialogs.components.description.DescriptionEditor;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
@@ -63,6 +68,8 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
     private LocalizingEditorPanel localizingPaneList = null;
     private AdsRoleDef role = null;
     private AdsRoleEditorPanel ownerPanel;
+    private AppRole roleWrapper = null;
+    private ChangeLogEditor changeLogEditor;
 
     AdsRoleEditorGeneralPanel(AdsRoleEditorPanel ownerPanel) {
         this.ownerPanel = ownerPanel;
@@ -98,28 +105,26 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
         }
     }
 
-    private boolean isMustAddComponents = true;
+    private JButton createjbtRemoveIncorrectResource() {
+        final JButton _jbtRemoveIncorrectResource = new JButton();
 
-    private void addComponents() {
-        abstructAndRemoveIncorrectResourcesPanel = new JPanel();
-        jbtRemoveIncorrectResource = new JButton();
-
-        jbtRemoveIncorrectResource.setIcon(RadixWareDesignerIcon.CHECK.CHECK.getIcon());
-        jbtRemoveIncorrectResource.setToolTipText("Remove Incorrect Resources");
-        jbtRemoveIncorrectResource.setFocusable(false);
-        jbtRemoveIncorrectResource.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jbtRemoveIncorrectResource.setMaximumSize(new java.awt.Dimension(32, 32));
-        jbtRemoveIncorrectResource.setMinimumSize(new java.awt.Dimension(32, 32));
-        jbtRemoveIncorrectResource.setName("jbtRemoveIncorrectResource"); // NOI18N
-        jbtRemoveIncorrectResource.setPreferredSize(new java.awt.Dimension(32, 32));
-        jbtRemoveIncorrectResource.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jbtRemoveIncorrectResource.addActionListener(new java.awt.event.ActionListener() {
+        _jbtRemoveIncorrectResource.setIcon(RadixWareDesignerIcon.CHECK.CHECK.getIcon());
+        _jbtRemoveIncorrectResource.setToolTipText("Remove Incorrect Resources");
+        _jbtRemoveIncorrectResource.setFocusable(false);
+        _jbtRemoveIncorrectResource.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        _jbtRemoveIncorrectResource.setMaximumSize(new java.awt.Dimension(32, 32));
+        _jbtRemoveIncorrectResource.setMinimumSize(new java.awt.Dimension(32, 32));
+        _jbtRemoveIncorrectResource.setName("jbtRemoveIncorrectResource"); // NOI18N
+        _jbtRemoveIncorrectResource.setPreferredSize(new java.awt.Dimension(32, 32));
+        _jbtRemoveIncorrectResource.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        _jbtRemoveIncorrectResource.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boolean isTestRole = role.getModule().isTest();
-                // jbtRemoveIncorrectResourceActionPerformed(evt);
-                List<String> incorrectIds = new ArrayList<String>();
+                final boolean isTestRole = role.getModule().isTest();                
+                final boolean isKernelRole = !role.isAppRole();
+                
+                List<String> incorrectIds = new ArrayList<>();
                 Map<String, AdsRoleDef.Resource> resources = role.getAllResourceRestrictions();
                 int removeCmd = 0;
                 int removeChild = 0;
@@ -136,7 +141,7 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
                         } else {
                             if (!root.isRoot()) {
                                 incorrectIds.add(AdsRoleDef.generateResHashKey(res));
-                            } else if (!isTestRole && root.getModule().isTest()) {
+                            } else if (isKernelRole && !isTestRole && root.getModule().isTest()) {
                                 incorrectIds.add(AdsRoleDef.generateResHashKey(res));
                             } else {
                                 if (res.subDefId != null) {
@@ -157,7 +162,7 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
                             incorrectIds.add(AdsRoleDef.generateResHashKey(res));
                             isMustRemove = true;
                         } else {
-                            if (!isTestRole && def.getModule().isTest()) {
+                            if (isKernelRole && !isTestRole && def.getModule().isTest()) {
                                 incorrectIds.add(AdsRoleDef.generateResHashKey(res));
                                 isMustRemove = true;
                             } else {
@@ -301,7 +306,7 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
                             incorrectIds.add(AdsRoleDef.generateResHashKey(res));
                             isMustRemove = true;
                         } else {
-                            if (!isTestRole && def.getModule().isTest()) {
+                            if (isKernelRole && !isTestRole && def.getModule().isTest()) {
                                 incorrectIds.add(AdsRoleDef.generateResHashKey(res));
                                 isMustRemove = true;
                             } else {
@@ -385,7 +390,7 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
                         if (def == null) {
                             incorrectIds.add(AdsRoleDef.generateResHashKey(res));
                         } else {
-                            if (!isTestRole && def.getModule().isTest()) {
+                            if (isKernelRole && !isTestRole && def.getModule().isTest()) {
                                 incorrectIds.add(AdsRoleDef.generateResHashKey(res));
                             }
                         }
@@ -409,7 +414,81 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
                 }
 
             }
+        });        
+        
+        return _jbtRemoveIncorrectResource;
+    }
+    
+    private JButton createjbtRemoveDuplicatedResource() {
+        final JButton _jbtRemoveDuplicatedResource = new JButton();
+
+        _jbtRemoveDuplicatedResource.setIcon(RadixWareDesignerIcon.WIDGETS.UNCHECKED_SOURCE.getIcon());
+        _jbtRemoveDuplicatedResource.setToolTipText("Remove Own Duplicate Resources");
+        _jbtRemoveDuplicatedResource.setFocusable(false);
+        _jbtRemoveDuplicatedResource.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        _jbtRemoveDuplicatedResource.setMaximumSize(new java.awt.Dimension(32, 32));
+        _jbtRemoveDuplicatedResource.setMinimumSize(new java.awt.Dimension(32, 32));
+        _jbtRemoveDuplicatedResource.setName("jbtRemoveDuplicatedResource");
+        _jbtRemoveDuplicatedResource.setPreferredSize(new java.awt.Dimension(32, 32));
+        _jbtRemoveDuplicatedResource.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        _jbtRemoveDuplicatedResource.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                int count = 0;
+                Collection<AdsRoleDef.Resource> resources = new HashSet(role.getResources());
+                for (AdsRoleDef.Resource res : resources) {
+
+                    //this.ownerPanel.findAdsDefinition(null)
+                    String hash = AdsRoleDef.generateResHashKey(res);
+                    Restrictions ownRestriction;
+                    Restrictions ancestorRestriction;
+                    if (EDrcResourceType.EDITOR_PRESENTATION == res.type) {
+
+                        AdsDefinition def = ownerPanel.findAdsDefinition(res.defId);
+
+                        AdsEditorPresentationDef editorPresentationDef = null;
+
+                        if (def != null) {
+                            AdsEntityObjectClassDef classDef = (AdsEntityObjectClassDef) def;
+                            editorPresentationDef = classDef.getPresentations().getEditorPresentations().findById(res.subDefId, EScope.ALL).get();
+
+                        }
+                        ownRestriction = role.getAncestorResourceRestrictions(hash, editorPresentationDef);
+                        ancestorRestriction = role.getResourceRestrictions(hash, editorPresentationDef);
+                    } else {
+                        ownRestriction = role.getAncestorResourceRestrictions(hash, null);
+                        ancestorRestriction = role.getResourceRestrictions(hash, null);
+                    }
+                    if (Restrictions.equalIgnoringOrder(ownRestriction, ancestorRestriction)) {
+                        role.RemoveResourceRestrictions(hash);
+                        count++;
+                    }
+
+                }
+
+                if (count == 0) {
+                    DialogUtils.messageInformation("There was no change.");
+                } else {
+                    DialogUtils.messageInformation(String.valueOf(count) + " record(s) were deleted.");
+                }
+                ownerPanel.update();
+            }
         });
+        return _jbtRemoveDuplicatedResource;
+    }
+    
+    
+    private boolean isMustAddComponents = true;
+
+    private void addComponents() {
+        abstructAndRemoveIncorrectResourcesPanel = new JPanel();
+
+        jbtRemoveIncorrectResource = createjbtRemoveIncorrectResource();
+        jbtRemoveDuplicatedResource = createjbtRemoveDuplicatedResource();
+        
 
         jbtRemoveDuplicatedResource = new JButton();
 
@@ -528,54 +607,82 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
         }
 
         GridBagLayout gbl = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
         this.setLayout(gbl);
-
+        GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
-        c.gridwidth = 1;
+        c.gridwidth = 2;
         c.weightx = 1.0;
+        
         if (isKernelRole) {
-
             localizingPaneList = new LocalizingEditorPanel();
-
             c.gridy++;
             c.insets = new Insets(4, 6, 4, 6);
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.NORTH;
             gbl.setConstraints(localizingPaneList, c);
             this.add(localizingPaneList);
+            
+            c.gridy++;
+            c.weightx = 1.0;
+            c.insets = new Insets(4, 6, 4, 6);
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.NORTH;
+            gbl.setConstraints(abstructAndRemoveIncorrectResourcesPanel, c);
+            this.add(abstructAndRemoveIncorrectResourcesPanel);
         }
 
         c.gridy++;
         c.weightx = 1.0;
-        c.insets = new Insets(4, 6, 4, 6);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTH;
-
-        gbl.setConstraints(abstructAndRemoveIncorrectResourcesPanel, c);
-        this.add(abstructAndRemoveIncorrectResourcesPanel);
-
-        //GridBagConstraints
-        //c = new GridBagConstraints();
-        c.gridy++;
-        c.weightx = 1.0;
         c.weighty = 1.0;
         c.insets = new Insets(4, 6, 4, 6);
-
-        //GridBagConstraints.
         c.fill = GridBagConstraints.BOTH;
-
-        c.anchor = GridBagConstraints.NORTHEAST;
-        c.weighty = 1.0;
-
         descriptionEditor = new DescriptionEditor();
         add(descriptionEditor, c);
+        
+        if (role.isAppRole()) {
+            if (roleWrapper == null) {
+                throw new NullPointerException("Not found wrapper for application role: " + role);
+            }
+            c.gridy++;
+            
+            changeLogEditor = new ChangeLogEditor(roleWrapper);
+            c = new java.awt.GridBagConstraints();
+            c.gridx = 0;
+            c.gridwidth = 2;
+            c.weightx = 1;
+            c.weighty = 0;
+            c.insets = new Insets(4, 6, 4, 6);
+            c.fill = java.awt.GridBagConstraints.BOTH;
+            add(ChangeLogEditor.wrapPanelWithLabel(changeLogEditor), c);
+            
+            
+            
+            c = new java.awt.GridBagConstraints();
+            c.gridx = 0;
+            c.gridwidth = 2;
+            c.weightx = 1;
+            c.weighty = 0;
+            c.insets = new Insets(4, 6, 4, 6);
+            c.fill = java.awt.GridBagConstraints.BOTH;
+            final JPanel panel1 = new JPanel(new BorderLayout());
+            final JPanel panel2 = new JPanel();
+            panel2.add(jbtRemoveIncorrectResource);
+            panel2.add(jbtRemoveDuplicatedResource);
+            panel1.add(panel2, BorderLayout.EAST);
+            
+            add(panel1, c);            
+        }
+         
+        
     }
 
     public void open(RadixObject definition, OpenInfo info) {
         if (isMustAddComponents) {
             isMustAddComponents = false;
             role = (AdsRoleDef) definition;
+            if (role.isAppRole()) {
+                roleWrapper = UserExtensionManagerCommon.getInstance().getAppRoles().findAppRole(role.getId());
+            }
             addComponents();
         }
         if (localizingPaneList != null && role.isInBranch()) {
@@ -610,5 +717,8 @@ public class AdsRoleEditorGeneralPanel extends JPanel {
         }
 
         descriptionEditor.open(role);
+        if (changeLogEditor != null) {
+            changeLogEditor.update();
+        }
     }
 }

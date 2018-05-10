@@ -43,6 +43,19 @@
                     <xs:sequence>
                         <xs:element name="Instance" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="ExpandedUnits" minOccurs="0">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="Unit" minOccurs="0" maxOccurs="unbounded">
+                                                    <xs:complexType>
+                                                        <xs:attribute name="Id" type="types:Int" use="required"/>
+                                                    </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence> 
                                 <xs:attribute name="Id" type="types:Int" use="required"/>
                             </xs:complexType>
                         </xs:element>
@@ -99,6 +112,8 @@
                             <xs:attribute name="Listener" type="xs:boolean"/>
                             <xs:attribute name="CurSessionCount" type="types:Int"/>
                             <xs:attribute name="MaxSessionCount" type="types:Int"/>
+                            <xs:attribute name="CurBusySessionCount" type="types:Int"/>
+                            <xs:attribute name="SyncMode" type="types:Bool"/>
                             <xs:attribute name="UnitId" type="types:Int"/>
                         </xs:extension>
                     </xs:complexContent>

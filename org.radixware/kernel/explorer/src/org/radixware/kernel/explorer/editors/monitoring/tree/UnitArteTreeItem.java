@@ -12,6 +12,7 @@
 package org.radixware.kernel.explorer.editors.monitoring.tree;
 
 import com.trolltech.qt.core.Qt.ItemDataRole;
+import com.trolltech.qt.gui.QTreeWidgetItem;
 import java.text.DecimalFormat;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.explorer.editors.monitoring.UnitsWidget;
@@ -20,8 +21,8 @@ import org.radixware.kernel.explorer.env.Application;
 
 public class UnitArteTreeItem extends UnitTreeItem {
 
-    public UnitArteTreeItem( UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.UnitInfo unitInfo, final boolean isInstanceStarted,final Model groupModel) {
-        super( idsGetter,unitInfo, isInstanceStarted,groupModel);
+    public UnitArteTreeItem( UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.UnitInfo unitInfo, final boolean isInstanceStarted, final Model groupModel, QTreeWidgetItem parent) {
+        super(idsGetter, unitInfo, isInstanceStarted, groupModel, parent);
     }
     
     @Override
@@ -41,8 +42,8 @@ public class UnitArteTreeItem extends UnitTreeItem {
                     md.setText(f.format(val)+"%");
                 }
                 this.setData(1, ItemDataRole.UserRole, md);
-                //String toolTip = Application.translate("SystemMonitoring", "The relation between the number of ARTE instances used by unit and the maximum number of ARTE instances that can be used by unit"); //"Количество инстанций ARTE, используемых модулем, по отношению к максимальному количеству ARTE инстанций, которые могут быть использованы модулем"
-                String toolTip = Application.translate("SystemMonitoring", "The relation between the number of ARTE instances used by unit and the maximum permitted number"); //"Отношение количества инстанций ARTE, используемых модулем, к максимально допустимому"
+                //String toolTip = Application.translate("SystemMonitoring", "The relation between the number of ARTEs used by unit and the maximum number of ARTEs that can be used by unit"); //"Количество ARTE, используемых модулем, по отношению к максимальному количеству ARTE, которые могут быть использованы модулем"
+                String toolTip = Application.translate("SystemMonitoring", "The relation between the number of ARTEs used by unit and the maximum permitted number"); //"Отношение количества ARTE, используемых модулем, к максимально допустимому"
                 this.setToolTip(1, toolTip);
             }else{               
                 if (unitArteSessionCnt != null && maxArteInstCnt != 0) {

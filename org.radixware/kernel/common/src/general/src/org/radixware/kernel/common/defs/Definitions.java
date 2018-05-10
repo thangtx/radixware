@@ -8,12 +8,12 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs;
 
 import java.awt.datatransfer.Transferable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import org.radixware.kernel.common.defs.ClipboardSupport.DuplicationResolver.Resolution;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
@@ -40,8 +40,15 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
         super();
     }
 
+    private void ensureNotFrozen() {
+        if (isFrozen()) {
+            throw new IllegalStateException("frozen");
+        }
+    }
+
     @Override
     protected void onAdd(T definition) {
+        ensureNotFrozen();
         synchronized (id2definitionLock) {
             if (id2definition != null) {
                 id2definition.put(definition.getId(), definition);
@@ -51,6 +58,7 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
 
     @Override
     protected void onRemove(T definition) {
+        ensureNotFrozen();
         synchronized (id2definitionLock) {
             if (id2definition != null) {
                 id2definition.remove(definition.getId());
@@ -60,6 +68,7 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
 
     @Override
     protected void onClear() {
+        ensureNotFrozen();
         synchronized (id2definitionLock) {
             if (id2definition != null) {
                 id2definition = null;
@@ -75,6 +84,10 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
             return null;
         }
 
+        if (isFrozen() && id2definition != null) {//server optimization RADIX-11881
+            return id2definition.get(id);
+        }
+
         synchronized (id2definitionLock) {
             if (id2definition == null) {
                 id2definition = new HashMap<>(size());// * 2 + 11);
@@ -86,9 +99,25 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
         }
     }
 
+    @Override
+    public void setFrozen(boolean frozen) {
+        if (frozen) {
+            synchronized (id2definitionLock) {
+                if (id2definition == null && !isEmpty()) {
+                    throw new IllegalStateException("Unable to freeze non-loaded definitions, container: " + getContainer());
+                }
+            }
+        }
+        super.setFrozen(frozen);
+    }
+
     public final boolean containsId(Id id) {
         if (id == null || isEmpty()) {
             return false;
+        }
+
+        if (isFrozen()) {//server optimization RADIX-11881
+            return id2definition.get(id) != null;
         }
 
         synchronized (id2definitionLock) {
@@ -116,6 +145,7 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
     }
 
     public void unregister(T definition) {
+        ensureNotFrozen();
         if (contains(definition)) {
             if (id2definition != null) {
                 id2definition.remove(definition.getId());
@@ -124,6 +154,7 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
     }
 
     public void register(T definition) {
+        ensureNotFrozen();
         if (contains(definition)) {
             if (id2definition != null) {
                 id2definition.put(definition.getId(), definition);
@@ -167,7 +198,6 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
                 throw new DefinitionError("Definition is already overwritten.", sourceDef);
             }
 
-
             Transferable t = sourceDef.getClipboardSupport().createTransferable(ETransferType.COPY);
             this.getClipboardSupport().paste(t, new ClipboardSupport.DuplicationResolver() {
 
@@ -202,5 +232,17 @@ public class Definitions<T extends Definition> extends RadixObjects<T> {
     @Override
     public ClipboardSupport<? extends RadixObject> getClipboardSupport() {
         return new DefinitionsClipboardSupport();
+    }
+
+    /**
+     * Отображать блок дифиницей в ApiBrowser
+     */
+    public boolean showApiBrowser() {
+        List<T> list = this.list();
+        if (list.size() > 0 && list.get(0) != null) {
+            return this.list().get(0).showApiBrowser();
+        } else {
+            return false;
+        }
     }
 }

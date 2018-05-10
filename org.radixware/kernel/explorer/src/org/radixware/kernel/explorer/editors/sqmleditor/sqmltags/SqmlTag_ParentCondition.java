@@ -11,7 +11,9 @@
 
 package org.radixware.kernel.explorer.editors.sqmleditor.sqmltags;
 
+import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QTextCursor;
+import java.util.List;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
@@ -21,7 +23,9 @@ import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.explorer.editors.sqmleditor.ESqlConditionOperator;
 import org.radixware.kernel.explorer.editors.sqmleditor.SqmlProcessor;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.Condition_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
@@ -37,11 +41,18 @@ public class SqmlTag_ParentCondition extends SqmlTag {
     private ISqmlTableDef presentationClassDef;
     private Reference entityReference;
     private ISqmlColumnDef prop;
+    private Id propId;
     private String objTitle;
     private String tableAlias;
     private static final String PATH = "org.radixware.explorer/S_E/SYNTAX_SQML/SQML_PARENT_CONDITION";
 
-    public SqmlTag_ParentCondition(final IClientEnvironment environment,final ISqmlColumnDef prop,final Operator.Enum operator,final Reference ref,final long pos,final EDefinitionDisplayMode mode,final String tableAlias) {
+    public SqmlTag_ParentCondition(final IClientEnvironment environment,
+                                                     final ISqmlColumnDef prop, 
+                                                     final ESqlConditionOperator operator, 
+                                                     final Reference ref,
+                                                     final long pos,
+                                                     final EDefinitionDisplayMode mode,
+                                                     final String tableAlias) {
         super(environment, pos, prop==null?false :prop.isDeprecated());
 
         this.prop = prop;
@@ -53,10 +64,13 @@ public class SqmlTag_ParentCondition extends SqmlTag {
         setParentConditionInfo(operator, entityReference == null ? null : entityReference.getPid(), mode);
     }
 
-    public SqmlTag_ParentCondition(final IClientEnvironment environment,final ParentCondition parentCondition,final long pos,final EDefinitionDisplayMode showMode) {
+    public SqmlTag_ParentCondition(final IClientEnvironment environment,
+                                                     final ParentCondition parentCondition,
+                                                     final long pos,
+                                                     final EDefinitionDisplayMode showMode) {
         super(environment, pos);
         final Id tableId = parentCondition.getTableId();
-        final Id propId = parentCondition.getPropId();
+        propId = parentCondition.getPropId();
         setPropSqlName(parentCondition);
         presentationClassDef = environment.getSqmlDefinitions().findTableById(tableId);
         if (presentationClassDef == null) {
@@ -81,11 +95,11 @@ public class SqmlTag_ParentCondition extends SqmlTag {
         }
     }
 
-    public final void setParentConditionInfo(final Operator.Enum operator,final Pid pid,final EDefinitionDisplayMode showMode) {
+    public final void setParentConditionInfo(final ESqlConditionOperator operator, final Pid pid, final EDefinitionDisplayMode showMode) {
         if ((presentationClassDef != null) && (prop != null) && (prop.getType() == EValType.PARENT_REF)) {
             final String str_pid = pid == null ? null : pid.toString();
             setPropSqlName(operator, str_pid, prop.getId(), presentationClassDef.getId());
-            objTitle = entityReference == null ? "null" : entityReference.toString();//getPid(prop);
+            objTitle = entityReference == null ? "null" : entityReference.toString();
             setDisplayedInfo(showMode);
 
         } else {
@@ -93,65 +107,48 @@ public class SqmlTag_ParentCondition extends SqmlTag {
         }
     }
 
-    private void setNotValid(final Operator.Enum operator) {
-        valid = false;
-        //boolean isMandatory= prop!=null? prop.isMandatory(): false;
-        final String str_operator = getStrOperator(operator/*,isMandatory*/);
-        final String propName = prop != null ? prop.getId().toString() : "null";
+    private void setNotValid(final ESqlConditionOperator operator) {
+        setValid(false);
+        final String str_operator = operator==null ? "" : operator.getText();
+        final String propName = prop == null ? String.valueOf(propId) : prop.getId().toString();
         final String defName = presentationClassDef != null ? presentationClassDef.getId().toString() : "null";
         final String pidStr = (entityReference == null) || (entityReference.getPid() == null) ? "" : " " + entityReference.getPid();
         final String s = "???" + defName + "-" + propName + " " + str_operator + pidStr + "???";//"???<TableId>-<PropertyId> <operator> <ParentPid>???"
         setDisplayedInfo(s, s);
     }
+    
+    private ESqlConditionOperator getOperator(){
+        return ESqlConditionOperator.findByParentConditionOperator(parentCondition.getOperator());
+    }
 
     private void setNotValid() {
-        valid = false;
-        //boolean isMandatory= prop!=null? prop.isMandatory(): false;
-        final String str_operator = getStrOperator(parentCondition.getOperator()/*,isMandatory*/);
-        final String pidStr = parentCondition.getParentPid() == null ? "" : " " + parentCondition.getParentPid();
-        final String s = "???" + parentCondition.getTableId() + "-" + parentCondition.getPropId() + " " + str_operator + pidStr + "???";//"???<TableId>-<PropertyId> <operator> <ParentPid>???"
-        setDisplayedInfo(s, s);
+        setNotValid(getOperator());
     }
 
-    /* @Override
-    public boolean showEditDialog(XscmlEditor editText,EDefinitionDisplayMode showMode){
-    Operator.Enum op=parentCondition.getOperator();
-    try{
-    ParentCondition_Dialog dialog=new ParentCondition_Dialog(editText,presentationClassDef.getColumns().getAll(),prop,op,entityReference,showMode);
-    if(dialog.exec()==1){
-    //presentationClassDef=Environment.defManager.getClassPresentationDef(dialog.getParentRef().getOwnerTableId());
-    prop=dialog.getParentRef();
-    presentationClassDef = prop.getOwnerTable();
-    entityReference=dialog.getEntityReference();//.getPid();
-    objTitle= entityReference==null ? "null" : entityReference.toString();//getPid(prop);
-    // try {
-    setParentConditionInfo(dialog.getOperator(), entityReference==null? null:entityReference.getPid(),showMode);
-    //} catch (ServiceClientException ex) {
-    //    Environment.processException(ex);
-    //Logger.getLogger(SqmlTag_ParentCondition.class.getName()).log(Level.SEVERE, null, ex);
-    // } catch (InterruptedException ex) {
-    //Logger.getLogger(SqmlTag_ParentCondition.class.getName()).log(Level.SEVERE, null, ex);
-    //}
-    return true;
-    }
-    }catch(DefinitionError ex){
-    setNotValid();
-    }
-    return false;
-    }*/
     @Override
-    public boolean showEditDialog(final XscmlEditor editText,final EDefinitionDisplayMode showMode) {
-        /*List<TagInfo>  tagList=editText.getTagConverter().getCurrentTagList();
-        if(tagList==null)
-            return false;
-                    
-        tagList.contains(this);*/
-        final Condition_Dialog dialog = new Condition_Dialog(environment, editText, prop, parentCondition.getOperator(), entityReference, editText.getTagConverter().getShowMode());
-        if ((dialog.isValid()) && (dialog.exec() == 1)) {
+    public boolean showEditDialog(final XscmlEditor editText, final EDefinitionDisplayMode showMode) {
+        final Condition_Dialog dialog = new Condition_Dialog(environment, 
+                                                                                        prop,
+                                                                                        getOperator(),
+                                                                                        entityReference,
+                                                                                        editText.getTagConverter().getShowMode(), 
+                                                                                        editText);
+        if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
+            final List<Object> values = dialog.getValues();
             if (dialog.isParentCondition()) {
                 prop = dialog.getProperty();
-                presentationClassDef = prop.getOwnerTable();
-                entityReference = ((dialog.getValue() != null) && (!dialog.getValue().isEmpty())) ? new Reference((Pid) dialog.getValue().get(0)) : null;
+                presentationClassDef = prop.getOwnerTable();                
+                if (values!=null && !values.isEmpty()){
+                    final Object value = values.get(0);
+                    if (value instanceof Pid){
+                        final Reference ref = new Reference((Pid)value);
+                        entityReference = ref;
+                    }else if (value instanceof Reference){
+                        entityReference = (Reference)value;
+                    }
+                }else{
+                    entityReference = null;
+                }                
                 objTitle = entityReference == null ? "null" : entityReference.toString();
                 setParentConditionInfo(dialog.getOperator(), entityReference == null ? null : entityReference.getPid(), showMode);
                 return true;
@@ -167,54 +164,24 @@ public class SqmlTag_ParentCondition extends SqmlTag {
                     editText.textChanged.emit();
                     //editText.endEditBlock(tc);
                 }
-                ((SqmlProcessor) editText.getTagConverter()).getSqmlTagInsertion().insertParentCondition(dialog.isParentCondition(), dialog.getValue(), prop, dialog.getStrOperator(), dialog.getOperator(), tableAlias, tc);
+                ((SqmlProcessor) editText.getTagConverter()).getSqmlTagInsertion().insertParentCondition(false, values, prop, dialog.getOperator(), tableAlias, tc);
                 return false;
             }
         }
         return false;
     }
 
-    /*private String getStrOperator(Operator.Enum operator,boolean isMandatory){
-    if(!isMandatory){
-    if(operator==Operator.IS_NOT_NULL)
-    return "is not null";
-    if(operator==Operator.IS_NULL)
-    return "is null";
-    }
-    if(operator==Operator.EQUAL)
-    return "=";
-    if(operator==Operator.NOT_EQUAL)
-    return "<>";
-    return "";
-    } */
-    private static String getStrOperator(final Operator.Enum operator) {
-        if (operator == Operator.IS_NOT_NULL) {
-            return "is not null";
-        } else if (operator == Operator.IS_NULL) {
-            return "is null";
-        } else if (operator == Operator.EQUAL) {
-            return "=";
-        } else if (operator == Operator.NOT_EQUAL) {
-            return "<>";
-        } else {
-            return "";
-        }
-    }
-
     private String getPid(final ISqmlColumnDef prop) {
         String s = null;
         if (parentCondition.isSetParentPid()) {
-            //ISqmlOutgoingReference p=(ISqmlOutgoingReference)prop;
             final Pid pid = new Pid(prop.getReferencedTableId(), parentCondition.getParentPid());
             try {
                 s = pid.getDefaultEntityTitle(environment.getEasSession());
             } catch (ServiceClientException ex) {
                 s = "???" + pid + "???";
-                environment.processException(ex);
-                //Logger.getLogger(SqmlTag_TypifiedValue.class.getName()).log(Level.SEVERE, null, ex);
+                environment.getTracer().error(ex);
             } catch (InterruptedException ex) {
-                s = "???" + pid + "???";
-                //Logger.getLogger(SqmlTag_TypifiedValue.class.getName()).log(Level.SEVERE, null, ex);
+                s = "???" + pid + "???";                
             }
         }
         return s;
@@ -233,9 +200,9 @@ public class SqmlTag_ParentCondition extends SqmlTag {
         this.parentCondition.setTableId(parentCondition.getTableId());
     }
 
-    private void setPropSqlName(final Operator.Enum operator,final String parentPid,final Id propId,final Id tableId) {
+    private void setPropSqlName(final ESqlConditionOperator operator, final String parentPid, final Id propId, final Id tableId) {
         parentCondition = ParentCondition.Factory.newInstance();
-        this.parentCondition.setOperator(operator);
+        this.parentCondition.setOperator(operator.getParentConditionOperator());
         if (parentPid != null) {
             this.parentCondition.setParentPid(parentPid);
         }
@@ -247,7 +214,8 @@ public class SqmlTag_ParentCondition extends SqmlTag {
     public final boolean setDisplayedInfo(final EDefinitionDisplayMode showMode) {
         if (isValid()){
             String name, s;
-            final String str_operator = getStrOperator(parentCondition.getOperator());
+            final ESqlConditionOperator operator = getOperator();
+            final String str_operator = operator==null ? "" : operator.getText();
             final String propName = prop.getShortName();
             String defName = tableAlias == null ? presentationClassDef.getFullName() : tableAlias;
             final String defTitle = tableAlias == null ? presentationClassDef.getTitle() : tableAlias;
@@ -261,16 +229,13 @@ public class SqmlTag_ParentCondition extends SqmlTag {
                 defName = getNameWithoutModule(defName);
                 str_objTitle = getNameWithoutModule(str_objTitle);
                 fullName = defName + "." + propName + " " + str_operator + str_objTitle;
-                name = fullName;//this.getNameWithoutModule();
+                name = fullName;
             } else {
                 s = presentationClassDef.getTitle() + "." + prop.getTitle() + " " + str_operator + str_objTitle;
                 fullName = defName + "." + propName + " " + str_operator + str_objTitle;
                 name = fullName;
             }
-            if (s.indexOf('<') != -1) {
-                s = s.replaceAll("<", "&#60;");
-            }
-            setDisplayedInfo(s, name);
+            setDisplayedInfo(Html.string2HtmlString(s), name);
             return true;
         }
         return false;

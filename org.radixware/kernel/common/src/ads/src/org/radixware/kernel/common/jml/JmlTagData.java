@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
 import java.text.MessageFormat;
@@ -28,33 +27,39 @@ import org.radixware.schemas.xscml.JmlType;
 import org.radixware.schemas.xscml.JmlType.Item;
 import org.radixware.kernel.common.defs.ads.clazz.algo.*;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.*;
-
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 
 public class JmlTagData extends Jml.Tag {
 
     final private Id id;
 
     JmlTagData(JmlType.Item.Data xData) {
+        super(xData);
         id = xData.getId();
     }
 
     public JmlTagData(AdsVarObject var) {
+        super(null);
         id = var.getId();
     }
 
     public JmlTagData(AdsAlgoClassDef.Param param) {
+        super(null);
         id = param.getId();
     }
 
     public JmlTagData(AdsAlgoClassDef.Var var) {
+        super(null);
         id = var.getId();
     }
 
     public JmlTagData(AdsIncludeObject.Param param) {
+        super(null);
         id = param.getId();
     }
 
     public JmlTagData(AdsAppObject.Prop prop) {
+        super(null);
         id = prop.getId();
     }
 
@@ -74,20 +79,22 @@ public class JmlTagData extends Jml.Tag {
         context.visit(visitor, VisitorProviderFactory.createDefaultVisitorProvider());
         return visitor.getObject();
     }
-    
+
     @Override
     public void collectDependences(List<Definition> list) {
         super.collectDependences(list);
         if (getOwnerJml() != null) {
             Definition def = resolve(getOwnerJml().getOwnerDef());
-            if (def != null)
+            if (def != null) {
                 list.add(def);
+            }
         }
     }
 
     @Override
     public void appendTo(Item item) {
         Item.Data xData = item.addNewData();
+        appendTo(xData);
         xData.setId(id);
     }
 
@@ -97,7 +104,7 @@ public class JmlTagData extends Jml.Tag {
     }
 
     @Override
-    public void check(IProblemHandler problemHandler,Jml.IHistory h) {
+    public void check(IProblemHandler problemHandler, Jml.IHistory h) {
         if (getOwnerJml() != null) {
             RadixObject object = resolve(getOwnerJml().getOwnerDef());
             if (object == null) {
@@ -129,8 +136,9 @@ public class JmlTagData extends Jml.Tag {
 
     @Override
     public String getDisplayName() {
-        if (getOwnerJml() == null)
+        if (getOwnerJml() == null) {
             return "unknown data[" + id + "]";
+        }
         AdsDefinition object = resolve(getOwnerJml().getOwnerDef());
         if (object != null) {
             if (object instanceof AdsAppObject.Prop || object instanceof AdsIncludeObject.Param) {
@@ -139,7 +147,7 @@ public class JmlTagData extends Jml.Tag {
             if (object instanceof AdsAlgoClassDef.Param) {
                 return object.getOwnerDef().getName() + "::" + object.getName();
             }
-            return object.getName();
+            return rememberDisplayName(object.getName());
         } else {
             return "unknown data[" + id + "]";
         }
@@ -151,41 +159,47 @@ public class JmlTagData extends Jml.Tag {
 
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagData.this) {
 
                     @Override
                     public boolean writeCode(CodePrinter printer) {
-                        RadixObject object = resolve(getOwnerJml().getOwnerDef());
-                        if (object == null) {
-                            printer.printError();
-                            return false;
-                        }
-                        if (object instanceof AdsAlgoClassDef.Param) {
-                            AdsAlgoClassDef.Param param = (AdsAlgoClassDef.Param) object;
-                            printer.print(param.getId());
-                        }
-                        if (object instanceof AdsAlgoClassDef.Var) {
-                            AdsAlgoClassDef.Var var = (AdsAlgoClassDef.Var) object;
-//                            if (var.getId().equals(AdsAlgoClassDef.EXCEPTION_VAR_ID)) {
-//                                printer.print(AdsAlgoClassDef.EXCEPTION_VAR_ID);
-//                            } else {
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
+                        try {
+                            RadixObject object = resolve(getOwnerJml().getOwnerDef());
+                            if (object == null) {
+                                printer.printError();
+                                return false;
+                            }
+                            if (object instanceof AdsAlgoClassDef.Param) {
+                                AdsAlgoClassDef.Param param = (AdsAlgoClassDef.Param) object;
+                                printer.print(param.getId());
+                            }
+                            if (object instanceof AdsAlgoClassDef.Var) {
+                                AdsAlgoClassDef.Var var = (AdsAlgoClassDef.Var) object;
+    //                            if (var.getId().equals(AdsAlgoClassDef.EXCEPTION_VAR_ID)) {
+    //                                printer.print(AdsAlgoClassDef.EXCEPTION_VAR_ID);
+    //                            } else {
                                 printer.print(var.getName());
-//                            }
+    //                            }
+                            }
+                            if (object instanceof AdsVarObject) {
+                                AdsVarObject var = (AdsVarObject) object;
+                                printer.print(var.getId());
+                            }
+                            if (object instanceof AdsAppObject.Prop) {
+                                AdsAppObject.Prop prop = (AdsAppObject.Prop) object;
+                                AdsAppObject app = (AdsAppObject) prop.getOwnerDefinition();
+                                printer.print(prop.getId());
+                            }
+                            if (object instanceof AdsIncludeObject.Param) {
+                                AdsIncludeObject.Param param = (AdsIncludeObject.Param) object;
+                                printer.print(param.getId());
+                            }
+                            return true;
+                        } finally {
+                            WriterUtils.leaveHumanUnreadableBlock(printer);
                         }
-                        if (object instanceof AdsVarObject) {
-                            AdsVarObject var = (AdsVarObject) object;
-                            printer.print(var.getId());
-                        }
-                        if (object instanceof AdsAppObject.Prop) {
-                            AdsAppObject.Prop prop = (AdsAppObject.Prop) object;
-                            AdsAppObject app = (AdsAppObject) prop.getOwnerDefinition();
-                            printer.print(prop.getId());
-                        }
-                        if (object instanceof AdsIncludeObject.Param) {
-                            AdsIncludeObject.Param param = (AdsIncludeObject.Param) object;
-                            printer.print(param.getId());
-                        }
-                        return true;
                     }
 
                     @Override

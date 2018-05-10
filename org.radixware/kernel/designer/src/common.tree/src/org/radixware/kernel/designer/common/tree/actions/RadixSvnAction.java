@@ -76,6 +76,7 @@ public abstract class RadixSvnAction extends NodeAction {
                     exclusions.add(new File(dir, AdsModule.STRIP_SOURCES_DIR_NAME));
                     exclusions.add(new File(dir, FileUtils.DIRECTORY_XML_FILE_NAME));
                     exclusions.add(new File(dir, FileUtils.DEFINITIONS_XML_FILE_NAME));
+                    exclusions.add(new File(dir, FileUtils.SQML_DEFINITIONS_XML_FILE_NAME));
                 } else if (radixObject instanceof Layer) {
                     exclusions.add(new File(dir, ERepositorySegmentType.KERNEL.getValue()));
                     //exclusions.add(new File(dir, FileUtils.DIRECTORY_XML_FILE_NAME));

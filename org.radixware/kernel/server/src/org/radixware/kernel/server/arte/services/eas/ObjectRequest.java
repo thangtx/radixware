@@ -13,25 +13,30 @@ package org.radixware.kernel.server.arte.services.eas;
 
 import org.radixware.schemas.eas.Actions;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.ESelectorRowStyle;
+import org.radixware.kernel.common.enums.EValType;
 
 import org.radixware.kernel.common.exceptions.ServiceProcessClientFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
-import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.types.MultilingualString;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.clazzes.RadPropDef;
+import org.radixware.kernel.server.meta.presentations.RadClassPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadEditorPresentationDef;
+import org.radixware.kernel.server.meta.presentations.RadParentTitlePropertyPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadPresentationDef;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.server.types.PresentationEntityAdapter;
+import org.radixware.kernel.server.types.Restrictions;
+import org.radixware.kernel.server.types.presctx.EntityPropertyPresentationContext;
+import org.radixware.kernel.server.types.presctx.PresentationContext;
 import org.radixware.schemas.eas.Presentation;
 import org.radixware.schemas.eas.PropertyList;
-import org.radixware.schemas.eas.ReadRs;
 
 abstract class ObjectRequest extends SessionRequest {
 
@@ -53,23 +58,63 @@ abstract class ObjectRequest extends SessionRequest {
             final PropertyList propsXml, final PresentationEntityAdapter<? extends Entity> presEntAdapter,
             final boolean bWithLob, final RadPresentationDef pres,
             final Context context,
-            final Collection<RadPropDef> propDefs) {
+            final Collection<RadPropDef> propDefs,
+            final boolean writeFullObjectValues) throws ServiceProcessFault, InterruptedException {
         for (RadPropDef prop : propDefs) {
-            if (presEntAdapter.getRawEntity().isInDatabase(false) || prop.getValType() != EValType.OBJECT) // Object properties are not supported before object created
-            {
-                addPropXml(propsXml, presEntAdapter, pres, context, prop, bWithLob);
+            if (prop.getValType()==EValType.OBJECT && writeFullObjectValues){
+                final Entity value = (Entity)presEntAdapter.getProp(prop.getId());
+                if (value!=null && value.isNewObject() /*RADIX-12963*/ && presEntAdapter.getEntity().getPropHasOwnVal(prop.getId())){
+                    final org.radixware.schemas.eas.PresentableObject xmlValue = 
+                        writePropertyObjectValue(prop, value, presEntAdapter.getEntity(), pres, context, bWithLob);
+                    if (xmlValue!=null){
+                        final org.radixware.schemas.eas.PropertyList.Item propertyItem = propsXml.addNewItem();
+                        propertyItem.setId(prop.getId());
+                        propertyItem.setObj(xmlValue);
+                        continue;
+                    }
+                }
             }
+            addPropXml(propsXml, presEntAdapter, pres, context, prop, bWithLob);
+        }
+    }
+    
+    private org.radixware.schemas.eas.PresentableObject writePropertyObjectValue(final RadPropDef objectProp, 
+                                                                                                                            final Entity value, 
+                                                                                                                            final Entity ownerObject,
+                                                                                                                            final RadPresentationDef ownerPres,
+                                                                                                                            final Context ownerObjectContext,
+                                                                                                                            final boolean bWithLob) throws ServiceProcessFault, InterruptedException{
+        final PresentationEntityAdapter presEntAdapter = getArte().getPresentationAdapter(value);
+        final PresentationContext presCtx = new EntityPropertyPresentationContext(ownerObject, objectProp.getId(), null, null);
+        presEntAdapter.setPresentationContext(presCtx);        
+        final RadClassDef ownerClassDef = ownerObject.getRadMeta();
+        final RadClassPresentationDef ownerClassPres = ownerClassDef.getPresentation();        
+        final RadParentTitlePropertyPresentationDef propPres = 
+            (RadParentTitlePropertyPresentationDef) ownerPres.getPropPresById(ownerClassPres, objectProp.getId());
+        final List<RadEditorPresentationDef> presentations = 
+            new LinkedList<>(propPres.getParentEditorPresentations(ownerClassPres));
+        final RadEditorPresentationDef pres = getActualEditorPresentation(presEntAdapter, presentations, false);
+        if (pres==null){
+            return null;
+        }else{
+            final org.radixware.schemas.eas.PresentableObject xml = org.radixware.schemas.eas.PresentableObject .Factory.newInstance();
+            final ObjPropContext propCtx = 
+                new ObjPropContext(this, objectProp.getId(), pres.getId(), ownerObject, ownerObjectContext);
+            final PresentationOptions options = new PresentationOptions(this, propCtx, null, pres);
+            final Collection<RadPropDef> usedPropDefs = pres.getUsedPropDefs(value.getPresentationMeta());
+            writePresentableObject(xml, presEntAdapter, options, bWithLob, pres, usedPropDefs, true);
+            return xml;
         }
     }
 
-    protected final void writeReadResponse(
-            final ReadRs to,
+    protected final void writePresentableObject(
+            final org.radixware.schemas.eas.PresentableObject dataXml,
             final PresentationEntityAdapter<? extends Entity> presEntAdapter,
             final PresentationOptions context,
             final boolean bWithLob,
             final RadEditorPresentationDef pres,
-            final Collection<RadPropDef> propDefs) throws ServiceProcessFault, InterruptedException {
-        final org.radixware.schemas.eas.Object dataXml = to.addNewData();
+            final Collection<RadPropDef> propDefs,
+            final boolean writeFullObjectValues) throws ServiceProcessFault, InterruptedException {        
         final Entity entity = presEntAdapter.getRawEntity();
         if (entity.isInDatabase(false)) {
             dataXml.setPID(entity.getPid().toString());
@@ -79,36 +124,55 @@ abstract class ObjectRequest extends SessionRequest {
                 throw EasFaults.exception2Fault(getArte(), e, "Can't generate the title");
             }
         }
+        final Entity srcEntity = entity.getInitSrc();
+        if (srcEntity!=null){
+            dataXml.setSrcPID(srcEntity.getPid().toString());
+        }
         dataXml.setClassId(entity.getRadMeta() != null ? entity.getRadMeta().getId() : RadClassDef.getEntityClassIdByTableId(entity.getDdsMeta().getId()));
 
-        writeProps(dataXml.addNewProperties(), presEntAdapter, bWithLob, pres, context.context, propDefs);
-        if (pres != null) {
-            final Presentation presXml = to.addNewPresentation();
-            presXml.setId(pres.getId());
-            presXml.setClassId(pres.getClassPresentation().getClassId());
-        }
+        writeProps(dataXml.addNewProperties(), presEntAdapter, bWithLob, pres, context.context, propDefs, writeFullObjectValues);
+        final Presentation presXml = dataXml.addNewPresentation();
+        presXml.setId(pres.getId());
+        presXml.setClassId(pres.getClassPresentation().getClassId());
 
         try {
-            final Actions disActXml = to.addNewDisabledActions();
+            final Actions disActXml = dataXml.addNewDisabledActions();
             if (writeDisbaledObjActions(disActXml, presEntAdapter, pres, context, null) == 0) {
-                to.unsetDisabledActions();
+                dataXml.unsetDisabledActions();
             }
         } catch (Throwable e) {
             throw EasFaults.exception2Fault(getArte(), e, "Can't check object command is disabled");
         }
         
-        if (context.selectorPresentation!=null){
-            
-            final ESelectorRowStyle rowStyle;
-            final  ColorScheme colorScheme = presenter.getColorScheme(getArte(), entity.getRadMeta(), context.selectorPresentation.getId());
-            if (colorScheme==null){
-                rowStyle = presEntAdapter.calcSelectorRowStyle();
-            }else{
-                rowStyle = colorScheme.apply(entity);
+        final Restrictions restr = pres.getTotalRestrictions(entity);
+        final Restrictions additionalRestrictions = presEntAdapter.getAdditionalRestrictions(pres);
+        final Restrictions totalRestrictions;
+        if (additionalRestrictions==Restrictions.ZERO){
+            totalRestrictions = restr;
+        }else{
+            totalRestrictions = Restrictions.Factory.sum(restr, additionalRestrictions);
+        }
+        final org.radixware.schemas.eas.EditorPages enadledEditorPages = dataXml.addNewEnabledEditorPages();
+        if (totalRestrictions.getIsAccessRestricted() || totalRestrictions.getIsViewRestricted()) {
+            enadledEditorPages.setAll(false);
+        } else if (!totalRestrictions.getIsAllEditPagesRestricted()) {
+            enadledEditorPages.setAll(true);
+        } else {
+            enadledEditorPages.setAll(false);
+            final Collection<Id> allowedEditPages = totalRestrictions.getAllowedEditPages();
+            for (Id id : allowedEditPages) {
+                final org.radixware.schemas.eas.EditorPages.Item item = enadledEditorPages.addNewItem();
+                item.setId(id);
             }
-            if (rowStyle!=null){
-                dataXml.setRowStyle(rowStyle);
-            }            
+        }
+        
+        if (context.selectorPresentation!=null){                        
+            final  ColorScheme colorScheme = presenter.getColorScheme(getArte(), entity.getRadMeta(), context.selectorPresentation.getId());
+            ESelectorRowStyle rowStyle = colorScheme==null ? null : colorScheme.apply(entity);
+            if (rowStyle==null){
+                rowStyle = presEntAdapter.calcSelectorRowStyle();
+            }
+            dataXml.setRowStyle(rowStyle==null ? ESelectorRowStyle.NORMAL : rowStyle);
         }
     }
 

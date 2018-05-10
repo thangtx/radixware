@@ -8,12 +8,11 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.msdl.fields.parser;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlException;
@@ -49,8 +48,12 @@ public final class SmioFieldBin extends SmioFieldSimple {
     }
 
     @Override
-    public boolean getIsHex() throws SmioException {
-        return getCoder().encoding == EncodingDef.HEX;
+    public boolean getIsHex() {
+        try {
+            return getCoder().encoding == EncodingDef.HEX;
+        } catch (SmioException ex) {
+            return false;
+        }
     }
 
     @Override
@@ -62,7 +65,12 @@ public final class SmioFieldBin extends SmioFieldSimple {
     public void parseField(XmlObject obj, IDataSource ids, boolean containsOddEl) throws SmioException, IOException {
         BinHex value = BinHex.Factory.newInstance();
         if (getCoder().encoding == EncodingDef.BIN) {
-            value.setByteArrayValue(ids.getAll());
+            final byte[] fieldBytes = ids.getAll();
+            if (checkForNull(ByteBuffer.wrap(fieldBytes))) {
+                value.setNil();
+            } else {
+                value.setByteArrayValue(fieldBytes);
+            }
         } else {
             if (getCoder().encoding == EncodingDef.DECIMAL) {
                 String strValue = parseToString(ids);
@@ -129,11 +137,7 @@ public final class SmioFieldBin extends SmioFieldSimple {
                     }
                     sb1.append(cur);
                 }
-                try {
-                    exbf.extPut(ByteBuffer.wrap(sb1.toString().getBytes("US-ASCII")));
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(SmioFieldBin.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                exbf.extPut(ByteBuffer.wrap(sb1.toString().getBytes(StandardCharsets.US_ASCII)));
             } else {
                 StringBuilder sb = new StringBuilder();
                 byte[] valueArr = value.getByteArrayValue();
@@ -147,10 +151,10 @@ public final class SmioFieldBin extends SmioFieldSimple {
                     }
                     sb.append(cur);
                 }
-                try {
-                    exbf.extPut(ByteBuffer.wrap(sb.toString().getBytes("US-ASCII")));
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(SmioFieldBin.class.getName()).log(Level.SEVERE, null, ex);
+                if (getCoder().encoding == EncodingDef.HEX_EBCDIC) {
+                    exbf.extPut(ByteBuffer.wrap(getCoder().encode(sb.toString())));
+                } else {
+                    exbf.extPut(ByteBuffer.wrap(sb.toString().getBytes(StandardCharsets.US_ASCII)));
                 }
             }
         }
@@ -162,7 +166,8 @@ public final class SmioFieldBin extends SmioFieldSimple {
         super.check(source, handler);
         try {
             if (getCoder() != null && getCoder().encoding != EncodingDef.BIN && getCoder().encoding != EncodingDef.HEX && getCoder().encoding != EncodingDef.HEX_EBCDIC && getCoder().encoding != EncodingDef.DECIMAL) {
-                handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "' error: 'Wrong encoding'"));
+                handler.accept(RadixProblem.Factory.newError(source,
+                        String.format("MSDL Field '%s' error: 'Wrong encoding. Expected one of: (BIN, HEX, HEX_EBCDIC, DECIMAL) but found: %s'", source.getQualifiedName(), getCoder().encoding)));
             }
         } catch (Throwable ex) {
             handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "error: '" + ex.getMessage() + "'"));

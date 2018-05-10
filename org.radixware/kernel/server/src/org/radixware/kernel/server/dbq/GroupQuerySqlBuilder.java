@@ -8,12 +8,13 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.dbq;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.xmlbeans.XmlException;
@@ -25,8 +26,10 @@ import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.defs.dds.DdsViewDef;
+import org.radixware.kernel.common.enums.EAggregateFunction;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EOrder;
+import org.radixware.kernel.common.enums.EPaginationMethod;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.server.sqml.Sqml;
@@ -36,6 +39,10 @@ import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.dbq.sqml.QuerySqmlTranslator;
 import org.radixware.kernel.server.exceptions.DbQueryBuilderError;
 import org.radixware.kernel.common.repository.DbConfiguration;
+import org.radixware.kernel.common.sqml.translate.ISqmlPreprocessorConfig;
+import org.radixware.kernel.common.types.AggregateFunctionCall;
+import org.radixware.kernel.common.types.Arr;
+import org.radixware.kernel.server.dbq.sqml.ServerPreprocessorConfig;
 import org.radixware.kernel.server.meta.clazzes.IRadRefPropertyDef;
 import org.radixware.kernel.server.meta.clazzes.RadClassApJoins;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
@@ -56,9 +63,27 @@ import org.radixware.kernel.server.meta.presentations.RadSortingDef;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.EntityGroup;
 
-final class GroupQuerySqlBuilder extends QuerySqlBuilder {
+public class GroupQuerySqlBuilder extends QuerySqlBuilder {
+
+    public static enum ESelectType {
+
+        SELECTION_PAGE,
+        PRIMARY_KEY,
+        PRIMARY_KEY_IN_SELECTION_ORDER,
+        STATISTIC
+    };
+
+    public static enum ESortingColumnPurpose {
+
+        RELATIVE_CONDITION_COMPARISON,
+        RELATIVE_CONDITION_EQUALITY,
+        ORDER_CLAUSE
+    }
 
     private static final String _AND_ = " and ";
+    private static final String _OR_ = " or ";
+    private final EntityGroup<? extends Entity> group;
+    private final ISqmlPreprocessorConfig preprocessorConfig;
 
 //Constructor
     public GroupQuerySqlBuilder(final EntityGroup<? extends Entity> group) {
@@ -68,22 +93,28 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
                 group.getContext() instanceof EntityGroup.PropContext ? EQueryContextType.PARENT_SELECTOR : EQueryContextType.OTHER,
                 EQueryBuilderAliasPolicy.USE_ALIASES);
         this.group = group;
+        preprocessorConfig = new ServerPreprocessorConfig(getDbConfiguration(), group.getFltParamValsById());
+    }
+
+    @Override
+    protected ISqmlPreprocessorConfig getPreprocessorConfig() {
+        return preprocessorConfig;
     }
 
     @Override
     public RadClassDef getEntityClass() {
         return group.getSelectionClassDef();
     }
-    private final EntityGroup<? extends Entity> group;
-
-    public static enum ESelectType {
-
-        SELECTION_PAGE,
-        PRIMARY_KEY,
-        PRIMARY_KEY_IN_SELECTION_ORDER
-    };
 
     public final boolean buildSelect(final ESelectType type) {
+        return buildSelectImpl(type, null);
+    }
+
+    public final void buildCalcStatistic(final List<AggregateFunctionCall> functions) {
+        buildSelectImpl(ESelectType.STATISTIC, functions);
+    }
+
+    private boolean buildSelectImpl(final ESelectType type, final List<AggregateFunctionCall> functions) {
         RadClassApJoins apJoins = null;
         if (getEntityClass().hasPartitionRights()) {
             apJoins = getEntityClass().getApJoins();
@@ -97,12 +128,16 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
             throw new DbQueryBuilderError("Error on SQML processing: " + ExceptionTextFormatter.getExceptionMess(ex), ex);
         }
 
-        buildSelectQueryTree(group.getPresentation(), grpSelCond != null ? grpSelCond.getCondition() : null, group.getOrderBy());
-
-        // subquery is used for rights check or(and) count check	
-        if (type == ESelectType.SELECTION_PAGE) {
-            querySql = new StringBuilder("select * from (select qry.*, ROWNUM R_N from (select ");
+        if (functions == null) {
+            buildSelectQueryTree(group.getPresentation(), grpSelCond != null ? grpSelCond.getCondition() : null, group.getOrderBy());
+            // subquery is used for rights check or(and) count check	
+            if (type == ESelectType.SELECTION_PAGE) {
+                querySql = new StringBuilder("select * from (select qry.*, ROWNUM R_N from (select ");
+            } else {
+                querySql = new StringBuilder("select ");
+            }
         } else {
+            addAggregationFunctions(functions, grpSelCond != null ? grpSelCond.getCondition() : null, group.getOrderBy());
             querySql = new StringBuilder("select ");
         }
 
@@ -117,35 +152,47 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
             querySql.append("distinct ");
         }
 
-        if (type == ESelectType.SELECTION_PAGE) {
-            if (fieldsByPropId.isEmpty()) {
-                return false;
-            }
-            appendFieldsStr(group.getContext() instanceof EntityGroup.PropContext);
+        if (functions == null) {
+            switch (type) {
+                case SELECTION_PAGE: {
+                    if (fieldsByPropId.isEmpty()) {
+                        return false;
+                    }
+                    appendFieldsStr();
 
-            querySql.append(", RDX_ACS.getCurUserAllRolesForObject(");
-            if (apJoins != null) {
-                querySql.append(apJoins.getAreaListSql());
-            } else {
-                querySql.append("null");
-            }
-            querySql.append(") ");
-            querySql.append(ALL_ROLES_FIELD_ALIAS);
-        } else {
-            boolean isFirstPkProp = true;
-            for (DdsIndexDef.ColumnInfo pkProp : getTable().getPrimaryKey().getColumnsInfo()) {
-                if (isFirstPkProp) {
-                    isFirstPkProp = false;
-                } else {
-                    querySql.append(',');
+                    querySql.append(", RDX_ACS.getCurUserAllRolesForObject(");
+                    if (apJoins != null) {
+                        querySql.append(apJoins.getAreaListSql());
+                    } else {
+                        querySql.append("null");
+                    }
+                    querySql.append(") ");
+                    querySql.append(ALL_ROLES_FIELD_ALIAS);
+                    break;
                 }
-                querySql.append(getAlias());
-                querySql.append('.');
-                querySql.append(pkProp.getColumn().getDbName());
+                default: {
+                    boolean isFirstPkProp = true;
+                    for (DdsIndexDef.ColumnInfo pkProp : getTable().getPrimaryKey().getColumnsInfo()) {
+                        if (isFirstPkProp) {
+                            isFirstPkProp = false;
+                        } else {
+                            querySql.append(',');
+                        }
+                        querySql.append(getAlias());
+                        querySql.append('.');
+                        querySql.append(pkProp.getColumn().getDbName());
+                    }
+                }
             }
+        } else {
+            appendAggregationFieldsStr();
         }
 
+        buildSelectFromAndWhere(apJoins, grpSelCond, type);
+        return true;
+    }
 
+    private void buildSelectFromAndWhere(final RadClassApJoins apJoins, final RadConditionDef grpSelCond, final ESelectType type) {
         querySql.append(" from ");
 
         //final StringBuffer joinHint = new StringBuffer();
@@ -177,11 +224,63 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
         //	if(joinHint.length() != 0)
         //		querySql.replace(hintPos, hintPos+ 1, " " + joinHint + " ");
         //}
-
         querySql.append(" where ");
         if (grpSelCond != null && grpSelCond.getCondition() != null) {
             querySql.append(translateSqml(grpSelCond.getCondition()));
             querySql.append(_AND_);
+        }
+
+        boolean sortingByUniqueValues = false;
+
+        if (!group.getOrderBy().isEmpty() && type != ESelectType.PRIMARY_KEY) {
+            final Collection<Id> sortingColumns = new ArrayList<>();
+            for (RadSortingDef.Item srtItem : group.getOrderBy()) {
+                sortingColumns.add(srtItem.getColumnId());
+            }
+            if (group.getDdsMeta() instanceof DdsViewDef == false) {
+                sortingByUniqueValues = isTableIndexContainsColumns(group.getDdsMeta().getPrimaryKey(), sortingColumns);
+                if (!sortingByUniqueValues) {
+                    for (DdsIndexDef idx : group.getDdsMeta().getIndices().get(EScope.ALL)) {
+                        if (idx.isGeneratedInDb() && idx.isUnique() && isTableIndexContainsColumns(idx, sortingColumns)) {
+                            sortingByUniqueValues = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        boolean isRelativeSorting = false;
+
+        if (group.getPaginationMethod() == EPaginationMethod.RELATIVE && !group.getOrderBy().isEmpty() && type != ESelectType.PRIMARY_KEY) {
+            if (!sortingByUniqueValues) {
+                throw new RadixError("Relative pagination can not be used with non-unique sorting");
+            }
+            isRelativeSorting = true;
+            if (group.getPreviousEntityPid() != null) {
+                boolean firstItem = true;
+                for (RadSortingDef.Item srtItem : group.getOrderBy()) {
+                    if (!firstItem) {
+                        querySql.append(_AND_);
+                    } else {
+                        firstItem = false;
+                    }
+                    appendSortingColumn(this, srtItem.getColumnId(), (group.getContext() instanceof EntityGroup.PropContext), srtItem.getOrder(), ESortingColumnPurpose.RELATIVE_CONDITION_COMPARISON);
+                }
+                querySql.append(_AND_);
+                querySql.append(" NOT (");
+                firstItem = true;
+                for (RadSortingDef.Item srtItem : group.getOrderBy()) {
+                    if (!firstItem) {
+                        querySql.append(_AND_);
+                    } else {
+                        firstItem = false;
+                    }
+                    appendSortingColumn(this, srtItem.getColumnId(), (group.getContext() instanceof EntityGroup.PropContext), srtItem.getOrder(), ESortingColumnPurpose.RELATIVE_CONDITION_EQUALITY);
+                }
+                querySql.append(")");
+                querySql.append(_AND_);
+            }
         }
         querySql.append("RDX_ACS.curUserHasRoleForObject(?, ");
         addParameter(new GroupQuery.InputRequestedRoleIdsParam());
@@ -192,10 +291,8 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
         }
         querySql.append(") != 0");
 
-
         if (!group.getOrderBy().isEmpty() && type != ESelectType.PRIMARY_KEY) {
             querySql.append(" order by ");
-            final Collection<Id> sortingColumns = new LinkedList<>();
             boolean firstItem = true;
             for (RadSortingDef.Item srtItem : group.getOrderBy()) {
                 if (!firstItem) {
@@ -203,41 +300,34 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
                 } else {
                     firstItem = false;
                 }
-                sortingColumns.add(srtItem.getColumnId());
-                appendOrdColDirective(this, srtItem.getColumnId(), (group.getContext() instanceof EntityGroup.PropContext), srtItem.getOrder());
+                appendSortingColumn(this, srtItem.getColumnId(), (group.getContext() instanceof EntityGroup.PropContext), srtItem.getOrder(), ESortingColumnPurpose.ORDER_CLAUSE);
             }
             if (group.getDdsMeta() instanceof DdsViewDef == false) {
-                boolean sortingByUniqueValues =
-                        isTableIndexContainsColumns(group.getDdsMeta().getPrimaryKey(), sortingColumns);
                 if (!sortingByUniqueValues) {
-                    for (DdsIndexDef idx : group.getDdsMeta().getIndices().get(EScope.ALL)) {
-                        if (idx.isGeneratedInDb() && idx.isUnique() && isTableIndexContainsColumns(idx, sortingColumns)) {
-                            sortingByUniqueValues = true;
-                            break;
-                        }
+                    querySql.append(',');
+                    if (getAlias() == null) {
+                        querySql.append(getTable().getDbName());
+                    } else {
+                        querySql.append(getAlias());
                     }
-                    if (!sortingByUniqueValues) {
-                        querySql.append(',');
-                        if (getAlias() == null) {
-                            querySql.append(getTable().getDbName());
-                        } else {
-                            querySql.append(getAlias());
-                        }
-                        querySql.append(".ROWID");
-                    }
+                    querySql.append(".ROWID");
                 }
             }
         }
         if (type == ESelectType.SELECTION_PAGE) {
             querySql.append(") qry where");
             querySql.append(" ROWNUM <= ?");
-            addParameter(new SelectQuery.InputToRecParam());
+            if (isRelativeSorting) {
+                addParameter(new SelectQuery.InputRecCountParam());
+            } else {
+                addParameter(new SelectQuery.InputToRecParam());
+            }
             querySql.append(')');
-            querySql.append(" where R_N >= ?");
-            addParameter(new SelectQuery.InputFromRecParam());
+            if (!isRelativeSorting) {
+                querySql.append(" where R_N >= ?");
+                addParameter(new SelectQuery.InputFromRecParam());
+            }
         }
-
-        return true;
     }
 
     private static boolean isTableIndexContainsColumns(final DdsIndexDef index, final Collection<Id> columnsId) {
@@ -305,6 +395,27 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
     }
 //Private methods
 
+    private final void addAggregationFunctions(final List<AggregateFunctionCall> functions, final Sqml grpCondSqml, final List<RadSortingDef.Item> orderBy) {
+        for (AggregateFunctionCall functionCall : functions) {
+            if (functionCall.getFunction() == EAggregateFunction.COUNT) {
+                fieldsByPropId.put(ROWS_COUNT_FIELD_COL_ID.toString(), new CountField(this));
+            } else {
+                addAggregationFunctionCall(functionCall.getColumnId(), functionCall.getFunction());
+            }
+        }
+
+        if (grpCondSqml != null) {
+            addPropsFromSqml(grpCondSqml);
+        }
+
+        //sortings columns
+        if (!orderBy.isEmpty()) {
+            for (RadSortingDef.Item srtItem : orderBy) {
+                addQueryProp(srtItem.getColumnId(), EPropUsageType.OTHER);
+            }
+        }
+    }
+
     private final void buildSelectQueryTree(final RadSelectorPresentationDef pres, final Sqml grpCondSqml, final List<RadSortingDef.Item> orderBy) {
         for (DdsIndexDef.ColumnInfo pkProp : getTable().getPrimaryKey().getColumnsInfo()) {
             addQueryProp(pkProp.getColumnId(), EPropUsageType.FIELD);
@@ -352,6 +463,7 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
             }
         }
         condSqml = addCondSqml(condSqml, group.getAdditionalCond());
+        condFromSqml = addFromSqml(condFromSqml, group.getAdditionalFrom());
 
         final EntityGroup.PropContext propContext = (group.getContext() instanceof EntityGroup.PropContext) ? (EntityGroup.PropContext) group.getContext() : null;
         if (propContext != null) {
@@ -392,7 +504,7 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
                     //addParameter(new DbQuery.InputChildPropParam(fixedParentRefProp.getChildColumnId()));
                 }
                 // PK
-                
+
                 final DdsTableDef ptRefChildTable = getArte().getDefManager().getTableDef(ptRef.getChildTableId());
                 Sqml uniqueCond = generateUniqueCondSqml(ptRef, propContext.getFixedParentRefProps(), ptRefChildTable.getPrimaryKey());
                 final List<DdsIndexDef> childTabIndeces = ptRefChildTable.getIndices().get(ExtendableDefinitions.EScope.ALL);
@@ -518,9 +630,9 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
         return null;
     }
 
-    private void appendOrdColDirective(final SqlBuilder builder, final Id propId, final boolean bForSelectParent, final EOrder order) {
+    private void appendSortingColumn(final SqlBuilder builder, final Id propId, final boolean bForSelectParent, final EOrder order, final ESortingColumnPurpose purpose) {
         if (group.getQueryBuilderDelegate() != null) {
-            if (group.getQueryBuilderDelegate().appendOrdColDirective(querySql, builder, propId, bForSelectParent, order)) {
+            if (group.getQueryBuilderDelegate().appendOrdColDirective(querySql, builder, propId, bForSelectParent, order, purpose)) {
                 return;
             }
         }
@@ -542,22 +654,20 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
                 querySql.append('.');
                 querySql.append(dbpProp.getDbName());
             }
-            if (order == EOrder.DESC) {
-                querySql.append(" desc");
-            }
+            appendSortingColumnRightPart(prop, order, purpose);
         } else if (prop instanceof RadSqmlPropDef) {
             querySql.append('(');
             querySql.append(translateSqml(((RadSqmlPropDef) prop).getExpression()));
             querySql.append(')');
-            if (order == EOrder.DESC) {
-                querySql.append(" desc");
-            }
+            appendSortingColumnRightPart(prop, order, purpose);
+        } else if (purpose != ESortingColumnPurpose.ORDER_CLAUSE) {
+            throw new RadixError("Unsupported property type \"" + prop.getClass().getName() + "\"" + " for sorting with relative pagination", null);
         } else if (prop instanceof RadParentPropDef) {
             SqlBuilder joinBuilder = builder;
             for (IRadRefPropertyDef refProp : ((RadParentPropDef) prop).getRefProps()) {
                 joinBuilder = joinBuilder.getParentJoinBuilder(refProp);
             }
-            appendOrdColDirective(joinBuilder, ((RadParentPropDef) prop).getJoinedPropId(), bForSelectParent, order);
+            appendSortingColumn(joinBuilder, ((RadParentPropDef) prop).getJoinedPropId(), bForSelectParent, order, purpose);
         } else if (prop instanceof RadInnateRefPropDef) {
             final DdsReferenceDef ref = ((RadInnateRefPropDef) prop).getReference();
             boolean isFirst = true;
@@ -567,7 +677,7 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
                 } else {
                     querySql.append(',');
                 }
-                appendOrdColDirective(this, refProp.getChildColumnId(), bForSelectParent, order);
+                appendSortingColumn(this, refProp.getChildColumnId(), bForSelectParent, order, purpose);
             }
         } else if (prop instanceof RadDetailParentRefPropDef) {
             final JoinSqlBuilder joinBuilder = builder.getJoinBuilder(((RadDetailPropDef) prop).getDetailReference(), true);
@@ -579,13 +689,30 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
                 } else {
                     querySql.append(',');
                 }
-                appendOrdColDirective(joinBuilder, refProp.getChildColumnId(), bForSelectParent, order);
+                appendSortingColumn(joinBuilder, refProp.getChildColumnId(), bForSelectParent, order, purpose);
             }
         } else if (prop instanceof RadDetailPropDef) {
             final JoinSqlBuilder joinBuilder = builder.getJoinBuilder(((RadDetailPropDef) prop).getDetailReference(), true);
-            appendOrdColDirective(joinBuilder, ((RadDetailPropDef) prop).getJoinedPropId(), bForSelectParent, order);
+            appendSortingColumn(joinBuilder, ((RadDetailPropDef) prop).getJoinedPropId(), bForSelectParent, order, purpose);
         } else {
             throw new RadixError("Unsupported sorting property type \"" + prop.getClass().getName() + "\"", null);
+        }
+    }
+
+    private void appendSortingColumnRightPart(final RadPropDef propDef, final EOrder order, final ESortingColumnPurpose purpose) {
+        if (purpose == ESortingColumnPurpose.ORDER_CLAUSE) {
+            if (order == EOrder.DESC) {
+                querySql.append(" desc");
+            }
+        } else if (purpose == ESortingColumnPurpose.RELATIVE_CONDITION_COMPARISON) {
+            querySql.append(order == EOrder.ASC ? " >= " : " <= ");
+            querySql.append("?");
+            addParameter(new SelectQuery.InputPrevObjectPropParam(propDef.getId()));
+        } else if (purpose == ESortingColumnPurpose.RELATIVE_CONDITION_EQUALITY) {
+            querySql.append(" = ?");
+            addParameter(new SelectQuery.InputPrevObjectPropParam(propDef.getId()));
+        } else {
+            throw new RadixError("Unknown ESortingColumnPurpose: " + purpose);
         }
     }
 
@@ -650,7 +777,8 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
     }
 
     private boolean appendCondSqmlTo(final Sqml to, final Sqml sqml) throws XmlException {
-        final org.radixware.kernel.common.sqml.Sqml preprocessedSqml = QuerySqmlTranslator.preprocess(sqml, getDbConfiguration());
+
+        final org.radixware.kernel.common.sqml.Sqml preprocessedSqml = QuerySqmlTranslator.preprocess(sqml, getDbConfiguration(), group.getFltParamValsById());
 
         final RadixObjects<Sqml.Item> itemList = preprocessedSqml.getItems();
         if (itemList.isEmpty()) {
@@ -694,7 +822,7 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
         if (sqml.getItems().isEmpty()) {
             return false;
         }
-        to.appendFrom(QuerySqmlTranslator.preprocess(sqml, getDbConfiguration()));
+        to.appendFrom(sqml);
         return true;
     }
 
@@ -759,4 +887,27 @@ final class GroupQuerySqlBuilder extends QuerySqlBuilder {
         }
         return null;
     }
+
+    @Override
+    public int getNumberOfItemsInParameterValue(final Id parameterId) {
+        final Map<Id, Object> paramValues = group.getFltParamValsById();
+        final Object value = paramValues.get(parameterId);
+        if (value instanceof Arr) {
+            return ((Arr) value).size();
+        } else if (value == null) {
+            if (paramValues.containsKey(parameterId)) {
+                return 0;
+            } else {
+                return super.getNumberOfItemsInParameterValue(parameterId);
+            }
+        } else {
+            return 1;
+        }
+    }
+
+    @Override
+    public boolean isParameterDefined(final Id parameterId) {
+        return group.getFltParamValsById().containsKey(parameterId);
+    }
+
 }

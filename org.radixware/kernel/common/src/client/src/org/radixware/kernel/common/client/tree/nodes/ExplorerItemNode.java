@@ -78,4 +78,22 @@ public class ExplorerItemNode extends ExplorerTreeNode{
     public ExplorerTreeNode clone(final IExplorerTree tree){
         return new ExplorerItemNode(tree, this);
     }
+
+    @Override
+    public String getName() {
+        return "rx_explorer_tree_node_#"+explorerItemId.toString();
+    }
+
+    @Override
+    public org.radixware.schemas.clientstate.ExplorerTreeNode writeToXml(org.radixware.schemas.clientstate.ExplorerTreeNode node) {
+        final org.radixware.schemas.clientstate.ExplorerTreeNode xml;
+        if (node==null){
+            xml = org.radixware.schemas.clientstate.ExplorerTreeNode.Factory.newInstance();
+        }else{
+            xml = node;
+        }
+        xml.addNewExplorerItem().setId(explorerItemId);
+        return xml;
+    }
+    
 }

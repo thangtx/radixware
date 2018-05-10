@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlI7XFGVCDUZFUVILOXLE2QSSKJI" QualifiedName="Radix::SelectorAddons">
+  <TableDef Id="tblHQSOHRWZH5ESLD2Y6IVF6XFBE4" Name="EasSelectorAddons">
+    <Indexes>
+      <Index Id="idxK5NUBR4JHVFRBDNCPP4JRZML44" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colTOTOEP36JFH35MA7BJYRU67GKU"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref6Q7RNEMDGBE3HFWGEDOZ4GPZWQ" Name="EasSelectorAddons=>User (lastUpdateUser=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUser"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colTOTOEP36JFH35MA7BJYRU67GKU" Name="guid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="col36K2MUPKPRGPPAGLVPAUJ52PQE" Name="classGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colYNFESMLQLBCGDCKG7FGDPYNPR4" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colZ23Q7UUURBEAHGCRRSQEKZH76I" Name="isActive" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="col6QH5TILJHRDDTC4CHYLQ6HLECA" Name="title" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colDCQEQLHEC5F6VO633LHAE6BDMQ" Name="tableGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colLR66PCM6LJGRNJMVM3ROBROYOY" Name="selPresentations" ValType="221" Length="4000" Precision="0"/>
+      <Column Id="colVTTB5PHSCFG5TAUCLOI27MO5XM" Name="lastUpdateUser" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colTZ42HZBXFFBPVL6P4MTIMOAHQE" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colXT2U3TRV6VGAPEULXGUEZMPOAU" Name="baseFilterGuid" ValType="21" Length="50" Precision="0"/>
+      <Column Id="col6LHR4RTUVNEYXKKGYXZZSB74PY" Name="condition" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colUZMKYBFP4VAWBHFP5NM7MIEZRU" Name="parameters" ValType="27" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblYXWA57SVWJDPNDY4FWY6VBBTKA" Name="EasSelectorAddonsTables">
+    <Indexes>
+      <Index Id="idxCSFQXEKA3BHZDP2EWFQSBIHMPI" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colGPOVD3BBHNEH7P6WYVSAOLXPGE colCK67UCPXRFEJXGR4VIQ7NQYMWI"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colGPOVD3BBHNEH7P6WYVSAOLXPGE" Name="tableGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colCK67UCPXRFEJXGR4VIQ7NQYMWI" Name="addonClassGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

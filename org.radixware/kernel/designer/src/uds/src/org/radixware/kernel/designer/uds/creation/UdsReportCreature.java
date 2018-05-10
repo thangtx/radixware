@@ -11,15 +11,15 @@
 
 package org.radixware.kernel.designer.uds.creation;
 
-import org.radixware.kernel.common.defs.ads.module.AdsModule;
+import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.designer.ads.editors.creation.AdsClassCreature;
 
 
 public class UdsReportCreature extends AdsClassCreature {
 
-    public UdsReportCreature(AdsModule module) {
-        super(module, EClassType.REPORT, true);
+    public UdsReportCreature(RadixObjects container) {
+        super(container, EClassType.REPORT, true);
     }
 
     @Override

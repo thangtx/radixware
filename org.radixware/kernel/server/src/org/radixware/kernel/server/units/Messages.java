@@ -15,7 +15,6 @@ import java.util.ResourceBundle;
 import org.radixware.kernel.common.exceptions.RadixError;
 
 /**
- * ��������� ������������ ������� 
  *
  */
 public final class Messages {
@@ -58,9 +57,11 @@ public final class Messages {
         UNIT_START_POSPONED = bundle.getString("UNIT_START_POSPONED");
         UNABLE_TO_START_UNIT = bundle.getString("UNABLE_TO_START_UNIT");
         UNIT_ID_IS_ALREADY_RUNNING = bundle.getString("UNIT_ID_IS_ALREADY_RUNNING");
-        CONFIRM_UNIT_INTERRUPT = bundle.getString("CONFIRM_UNIT_INTERRUPT");
+        CONFIRM_UNIT_ABORT = bundle.getString("CONFIRM_UNIT_ABORT");
         COMMAND_FROM_GUI = bundle.getString("COMMAND_FROM_GUI");
         UNIT_THREAD_UNEXPECTED_STOP = bundle.getString("UNIT_THREAD_UNEXPECTED_STOP");
+        UNABLE_TO_UPDATE_SELFCHECK_TIME = bundle.getString("UNABLE_TO_UPDATE_SELFCHECK_TIME");
+        PRIMARY_UNIT = bundle.getString("PRIMARY_UNIT");
     }
     
     public static final String COMMAND_FROM_GUI;
@@ -72,6 +73,7 @@ public final class Messages {
     public static final String ERR_CANT_READ_SERVICE_OPTIONS;
     public static final String ERR_CANT_READ_OPTIONS;
     public static final String ERR_CANT_CREATE_SSLCONTEXT;
+    public static final String PRIMARY_UNIT;
     static final String ERR_ON_TRACE_OPTION_READING;
     static final String TITLE_UNIT;
     static final String UNIT_THREAD_INTERRUPTED;
@@ -84,11 +86,12 @@ public final class Messages {
     static final String TITLE_ERROR;
     static final String CONFIRM_UNIT_STOP;
     static final String CONFIRM_UNIT_RESTART;
-    static final String CONFIRM_UNIT_INTERRUPT;
+    static final String CONFIRM_UNIT_ABORT;
     static final String TITLE_CONFIRM;
     static final String UNIT_IS_NOT_STOPPED;
     public static final String START_OPTIONS;
     public static final String OPTIONS_CHANGED;
+    public static final String UNABLE_TO_UPDATE_SELFCHECK_TIME;
 
     static String getStateMessage(final UnitState state) {
         switch (state){
@@ -158,4 +161,5 @@ public final class Messages {
     static final String MLS_ID_SCP_CHANGED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsHSQZTLP2SBGI7C7OG2FX4YK75U";// MLS "\"%1\" unit SCP changed. New SCP is \"%2\"", Event, Unit
     static final String MLS_ID_FILE_TRACE_OPTIONS_CHANGED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls3X5WYA3VRRFWVKD77KBZ4OM23Y";// MLS "%1" unit file trace options where changed. New options are "%2"
     static final String MLS_ID_UNIT_START_POSPONED_WITH_REASON = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsKVQ4YU4QWFGYJJXGK4AIYTMUHE";// MLS Unit "%1" start postponed. Reason: %2, Event, Unit
+    static final String MLS_ID_UNABLE_TO_UPDATE_SELFCHECK_TIME = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsXVIPFMZ5FJDOBD74TLFN4M5KWI";// eventCode["Unable to update unit '%1' self-check time, unit is locked"], Warning, Unit
 }

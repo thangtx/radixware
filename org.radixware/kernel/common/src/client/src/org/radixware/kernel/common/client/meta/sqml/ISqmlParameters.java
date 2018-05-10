@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.meta.sqml;
 
 import java.util.List;
+import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.client.widgets.IWidget;
@@ -36,7 +37,11 @@ public interface ISqmlParameters{
     
     boolean swapParameters(int index1, int index2);
 
-    DialogResult openParameterEditor(IClientEnvironment environment, ISqmlParameter parameter, boolean readonly, IWidget parent);
+    DialogResult openParameterEditor(IClientEnvironment environment, ISqmlParameter parameter, boolean readonly, IWidget parent);        
     
-    boolean isReadonly();
+    boolean isReadonly();   
+    
+    XmlObject exportToXml();
+    
+    boolean importFromXml(XmlObject xml, IClientEnvironment environment);
 }

@@ -110,6 +110,42 @@ public class RAMessage {
         }
 
     }
+    
+    public static void checkItemType(final RAMessage.MessageItem param, final MessageItemType ... types) throws RadixSvnException{
+        boolean find = false;
+        for (MessageItemType type : types){
+            if (param.type == type){
+                find = true;
+                break;
+            }
+        }
+        if (!find){
+            boolean isFirst = true;
+            final StringBuilder sb = new StringBuilder();
+            for (MessageItemType type : types){
+                
+                if (isFirst) {
+                    isFirst = false;
+                }
+                else {
+                    sb.append(", ");
+                }                
+                sb.append(type.name());
+            }
+            throw new RadixSvnException("Unexpected message item type: " + param.type.name() + ", expected " + sb.toString());
+        }
+    }
+    
+    public static void checkListLen(final RAMessage.MessageItem param, final int len) throws RadixSvnException{
+        if (param.type != MessageItemType.LIST){
+            throw new RadixSvnException("Unexpected message item type: " + param.type.name() + ", expected " + MessageItemType.LIST.name());
+        }
+        if (param.getList().size() != len){
+            throw new RadixSvnException("Incorrect LIST len. Found " + param.getList().size() + ", expected " +len + ". List: " + param.toString());
+        }
+    }
+    
+    
 
     public static class MessageItem {
 
@@ -496,7 +532,6 @@ public class RAMessage {
         int r = 0;
         try {
             r = is.read();
-
             if (r < 0) {
                 throw new java.io.EOFException();
             }

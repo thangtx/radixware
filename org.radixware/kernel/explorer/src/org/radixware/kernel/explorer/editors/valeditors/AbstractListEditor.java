@@ -11,14 +11,17 @@
 
 package org.radixware.kernel.explorer.editors.valeditors;
 
+import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAbstractItemView;
+import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QComboBox;
@@ -29,15 +32,18 @@ import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QPainter;
 import com.trolltech.qt.gui.QSizePolicy;
+import com.trolltech.qt.gui.QStringListModel;
 import com.trolltech.qt.gui.QStyle;
 import com.trolltech.qt.gui.QStyleOption;
 import com.trolltech.qt.gui.QStyleOptionComboBox;
 import com.trolltech.qt.gui.QStyleOptionComplex;
 import com.trolltech.qt.gui.QStyleOptionViewItem;
+import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWheelEvent;
 import com.trolltech.qt.gui.QWidget;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,20 +52,21 @@ import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
-import org.radixware.kernel.common.client.types.IEditingHistory;
+import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.client.widgets.ListWidgetItem;
 import org.radixware.kernel.common.utils.SystemTools;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.text.ExplorerFont;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
+import org.radixware.kernel.explorer.types.RdxIcon;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;
 
 /**
  * The class provides an abstraction over kinds of combo-boxed value editors
  */
-abstract class AbstractListEditor extends ValEditor<Object> {    
-    
-    
+abstract class AbstractListEditor<T> extends ValEditor<T> {    
+        
     private class ComboBox extends QComboBox{
         
         private class ItemDelegate extends QItemDelegate{
@@ -77,21 +84,23 @@ abstract class AbstractListEditor extends ValEditor<Object> {
             @Override
             public QSize sizeHint(final QStyleOptionViewItem option, final QModelIndex index) {                
                 final QSize defaultSize = super.sizeHint(option, index);
-                final QWidget window = ComboBox.this.window();
-                final QSize windowSize = window.size();
                 final String text = (String)index.data(Qt.ItemDataRole.DisplayRole);
-                if (defaultSize.width()>windowSize.width()){                    
-                    if (text.length()>100){
-                        final QFontMetrics fontMetrics = option.fontMetrics();                        
-                        final int omittedLength = text.length()-100;                        
-                        final String newText = 
-                            text.substring(0, 100)+String.format(omitedMessageTemplate, String.valueOf(omittedLength));                                                
-                        final int newTextWidth = fontMetrics.boundingRect(newText).width();
-                        final int textWidth = fontMetrics.boundingRect(text).width();
-                        sizeHint.setHeight(defaultSize.height());
-                        sizeHint.setWidth(defaultSize.width()-textWidth+newTextWidth);
-                        replacements.put(text,newText);
-                        return sizeHint;
+                final QWidget window = ComboBox.this.window();
+                if (window!=null){
+                    final QSize windowSize = window.size();                    
+                    if (defaultSize.width()>windowSize.width()){                    
+                        if (text.length()>100){
+                            final QFontMetrics fontMetrics = option.fontMetrics();                        
+                            final int omittedLength = text.length()-100;                        
+                            final String newText = 
+                                text.substring(0, 100)+String.format(omitedMessageTemplate, String.valueOf(omittedLength));                                                
+                            final int newTextWidth = fontMetrics.boundingRect(newText).width();
+                            final int textWidth = fontMetrics.boundingRect(text).width();
+                            sizeHint.setHeight(defaultSize.height());
+                            sizeHint.setWidth(defaultSize.width()-textWidth+newTextWidth);
+                            replacements.put(text,newText);
+                            return sizeHint;
+                        }
                     }
                 }
                 replacements.remove(text);
@@ -154,33 +163,60 @@ abstract class AbstractListEditor extends ValEditor<Object> {
         private boolean popupIsVisible;        
         private final ItemDelegate itemDelegate = new ItemDelegate(this);
         private final AbstractListEditor.ComboBox.ComboBoxStyle style = new AbstractListEditor.ComboBox.ComboBoxStyle();
+        private final QObject viewEventFilter = new QObject(this){
+            @Override
+            public boolean eventFilter(final QObject target, final QEvent event) {
+                if (event!=null && event.type()==QEvent.Type.Show && target instanceof QWidget){
+                    final QWidget popup = ((QWidget)target).parentWidget();
+                    if  (popup!=null) {                        
+                        final QRect visibleRect = visibleRegion().boundingRect();
+                        final QPoint point = visibleRect.topLeft();
+                        int delta = visibleRect.x() - x();                      
+                        if (delta>0){
+                            popup.move(mapToGlobal(point).x(), popup.y());
+                        }
+                    }
+                }
+                return false;
+            }            
+        };
 
         public ComboBox(final QWidget parent){
             super(parent);
             setStyle(style);
-            view().setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerItem);
-            view().setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded);   
-            view().setItemDelegate(itemDelegate);
+            setInsertPolicy(InsertPolicy.NoInsert);
+            final QAbstractItemView view = view();
+            view.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerItem);
+            view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded);   
+            view.setItemDelegate(itemDelegate);
+            view.installEventFilter(viewEventFilter);
         }
 
         @Override
-        public void showPopup() {            
-            view().doItemsLayout();
-            popupIsVisible = true;
-            super.showPopup();
+        public void showPopup() {
+            if (canChangeValue() && !editBtn.isVisible() && AbstractListEditor.this.beforeShowPopup()){
+                view().doItemsLayout();
+                WidgetUtils.pauseAsyncGroupModelReadersBeforeShowDropDownList(this);
+                popupIsVisible = true;
+                super.showPopup();
+                AbstractListEditor.this.afterShowPopup();
+            }            
         }
         
-
         @Override
         public void hidePopup() {            
             super.hidePopup();
+            WidgetUtils.resumeAsyncGroupModelReadersAfterHideDropDownList(this);
             if (popupIsVisible && AbstractListEditor.this.focusPolicy() == Qt.FocusPolicy.StrongFocus) {
             //Метод hidePopup вызывается в том числе и при закрытии редактора.
             //Восстановить фокус нужно только если действительно был показан выпадающий список.
             //Если редактор расположен внутри таблицы, то фокус восстанавливать не нужно.
                 AbstractListEditor.this.setFocus();
             }
-            popupIsVisible = false;
+            if (popupIsVisible){
+                popupIsVisible = false;
+                AbstractListEditor.this.afterHidePopup();
+            }
         }
 
         @Override
@@ -189,18 +225,16 @@ abstract class AbstractListEditor extends ValEditor<Object> {
         }
 
         private int calcListBoxPopupWidth(){
-            int width = width();
+            int width = visibleRegion().boundingRect().width();
             final QAbstractItemView view = view();
             final com.trolltech.qt.core.QAbstractItemModel model = view.model();
             for (int row = count()-1; row >=0  ; --row) {
                 width = Math.max(width, view.sizeHintForIndex(model.index(row,0)).width());
             }
-            System.out.println("popup content width: "+width);
             final QStyleOptionComboBox opt = new QStyleOptionComboBox();
             initStyleOption(opt);
             QSize tmp = new QSize(width, 0);
             tmp = style().sizeFromContents(QStyle.ContentsType.CT_ComboBox, opt, tmp, this);
-            System.out.println("final popup width: "+tmp.width());
             return tmp.width();
         }
         
@@ -209,13 +243,27 @@ abstract class AbstractListEditor extends ValEditor<Object> {
         }
 
         @Override
+        public QSize sizeHint() {
+            final QSize size = super.sizeHint();
+            final QLineEdit lineEdit = getLineEdit();
+            if (lineEdit!=null){
+                size.setWidth(lineEdit.sizeHint().width());
+            }
+            return size;
+        }                
+
+        @Override
         protected void closeEvent(final QCloseEvent event) {
+            view().removeEventFilter(viewEventFilter);
             setStyle(null);
-            WidgetUtils.CustomStyle.release(style);
             super.closeEvent(event);
         }
-        
-        
+
+        @Override
+        protected void disposed() {
+            WidgetUtils.CustomStyle.release(style);
+            super.disposed();
+        }
     }
     
     private final static class ApplyStyleSheetEvent extends QEvent{
@@ -229,8 +277,11 @@ abstract class AbstractListEditor extends ValEditor<Object> {
         
     }    
     
-    private final ComboBox combo = new ComboBox(this);   
+    private final ComboBox combo = new ComboBox(this);
+    private final QToolButton editBtn;
+    
     private int activatedIndex = -1;
+    private int nullItemIndex = -1;
     private int activatedIndexTimer = 0;
     private String selfStyleSheet;
     private boolean changeFontInternal, changingStylesheet;
@@ -242,7 +293,7 @@ abstract class AbstractListEditor extends ValEditor<Object> {
             final boolean readOnly) {
         super(env, parent, editMask, mandatory, readOnly);
         combo.setObjectName("comboBox");
-        combo.setLineEdit(getLineEdit());        
+        combo.setLineEdit(getLineEdit());//it will remove lineEdit from this.layout
         combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon);
         combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);                
         getLineEdit().setReadOnly(true);
@@ -254,7 +305,17 @@ abstract class AbstractListEditor extends ValEditor<Object> {
         
         combo.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu);
         setFocusProxy(combo);
-        addWidget(combo);
+        setPrimaryWidget(combo);
+
+        final QAction action = new QAction(this);
+        action.triggered.connect(this, "showDialogList()");
+        action.setObjectName("select");
+        editBtn = addButton("...", action);
+        editBtn.setToolTip(getEnvironment().getMessageProvider().translate("Value", "Edit Value"));
+    }
+    
+    protected final void setListModel(final QAbstractItemModel model){
+        combo.setModel(model==null ? new QStringListModel(combo) : model);
     }
     
     /**
@@ -267,6 +328,17 @@ abstract class AbstractListEditor extends ValEditor<Object> {
      * @param index activated element index
      */
     abstract protected void onActivatedIndex(int index);
+    
+    protected boolean beforeShowPopup(){
+        return true;
+    }
+    
+    protected void afterShowPopup(){
+        
+    }
+    
+    protected void afterHidePopup(){        
+    }
     
     /**
      * Returns a combo box
@@ -294,18 +366,49 @@ abstract class AbstractListEditor extends ValEditor<Object> {
     
     protected final void addItems(final List<QIcon> icons, final List<String> titles){
         for (int i = 0; i < titles.size(); ++i) {
-            combo.addItem(icons.get(i), titles.get(i));
+            combo.addItem(icons.get(i), titles.get(i));            
         }
         afterChangeItems();
     }
     
     protected final void setItems(final List<QIcon> icons, final List<String> titles){
         combo.clear();
-        for (int i = 0; i < titles.size(); ++i) {
-            combo.addItem(icons.get(i), titles.get(i));
+        addItems(icons, titles);    
+    }
+    
+    protected final void addListWidgetItems(final List<ListWidgetItem> items){
+        for (int i = 0; i < items.size(); ++i) {
+            final ListWidgetItem item = items.get(i);
+            final Icon icon = item.getIcon();
+            if (icon==null){
+                combo.addItem(item.getText(), item);
+            }else{
+                combo.addItem(ExplorerIcon.getQIcon(icon), item.getText(), item);
+            }
+            final String toolTip = item.getToolTip();
+            if (toolTip!=null && !toolTip.isEmpty()){
+                combo.setItemData(i, toolTip, Qt.ItemDataRole.ToolTipRole);
+            }
+            final String itemName = item.getName();
+            if (itemName!=null && !itemName.isEmpty()){
+                combo.setItemData(i, itemName, WidgetUtils.MODEL_ITEM_ROW_NAME_DATA_ROLE);
+                combo.setItemData(i, itemName, WidgetUtils.MODEL_ITEM_CELL_NAME_DATA_ROLE);                                
+            }
+            final Object itemValue = item.getValue();
+            if (itemValue instanceof String){
+                combo.setItemData(i, itemValue, WidgetUtils.MODEL_ITEM_CELL_VALUE_DATA_ROLE);
+                combo.setItemData(i, Boolean.FALSE, WidgetUtils.MODEL_ITEM_CELL_VALUE_IS_NULL_DATA_ROLE);
+            }else if (itemValue==null){
+                combo.setItemData(i, Boolean.TRUE, WidgetUtils.MODEL_ITEM_CELL_VALUE_IS_NULL_DATA_ROLE);
+            }
         }
-        afterChangeItems();
-    }    
+        afterChangeItems();        
+    }
+    
+    protected final void setListWidgetItems(final List<ListWidgetItem> items){
+        combo.clear();
+        addListWidgetItems(items);
+    }
     
     private void afterChangeItems(){
         combo.afterChangeItems();
@@ -317,8 +420,11 @@ abstract class AbstractListEditor extends ValEditor<Object> {
     
     protected final void updateComboBoxLook(final int newIndex, final boolean nullItemIsPresent, final boolean updateStyleSheet) {
         if (!isMandatory() && !isReadOnly() && !nullItemIsPresent && getValue() != null) {//RADIX-3454
+            nullItemIndex = combo.count();
             combo.addItem(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.CLEAR), getStringToShow(null));
-        }        
+        }else{
+            nullItemIndex = -1;
+        }
         combo.setCurrentIndex(newIndex);
         if (getValue() == null) {
             getLineEdit().setText(getStringToShow(null));
@@ -363,13 +469,16 @@ abstract class AbstractListEditor extends ValEditor<Object> {
                 styleSheet.append(";\n");
             }
         }
-        if (!isPopupEnabled()) {
+        final boolean canChangeValue = canChangeValue();
+        final boolean isShowDialogListBtnVisible = isShowListDialogButtonVisible();        
+        if (!canChangeValue || isShowDialogListBtnVisible) {
             styleSheet.append("}\n");
             styleSheet.append("QComboBox::drop-down {\n");
             styleSheet.append("width: 0px\n");
         }
         styleSheet.append("}\n");
         changeSelfStyleSheet(styleSheet.toString(),forced);
+        editBtn.setVisible(isShowDialogListBtnVisible);
     }
     
     private void changeSelfStyleSheet(final String newStyleSheet, final boolean forced){
@@ -397,10 +506,74 @@ abstract class AbstractListEditor extends ValEditor<Object> {
         }
     }
             
-    private boolean isPopupEnabled() {
+    private boolean canChangeValue() {
+        final int itemsCount = getItemsCount();
         return !isReadOnly()
-                && combo.count() > 0
-                && (combo.count() > 1 || getValue() == null || getEditMask().validate(getEnvironment(),getValue())!=ValidationResult.ACCEPTABLE || !isMandatory());
+                && itemsCount > 0
+                && (itemsCount > 1 || getValue() == null || getEditMask().validate(getEnvironment(),getValue())!=ValidationResult.ACCEPTABLE || !isMandatory());
+    }
+    
+    private boolean isShowListDialogButtonVisible(){
+        final int limit = getMaxItemsInPopup();
+        if (limit>=0){
+            int itemsCount = getItemsCount();
+            if (nullItemIndex>=0){
+                itemsCount--;
+            }
+            return !isReadOnly()
+                && isEnabled()
+                && isEmbeddedWidgetsVisible()
+                && itemsCount > 0
+                && (itemsCount > 1 || getValue() == null || getEditMask().validate(getEnvironment(),getValue())!=ValidationResult.ACCEPTABLE || !isMandatory())
+                && itemsCount>limit;
+            
+        }else{
+            return false;
+        }
+    }
+    
+    protected int getMaxItemsInPopup(){
+        return getEnvironment().getConfigStore().readInteger(MAX_ITEMS_IN_DD_LIST_SETTING_KEY);
+    }    
+    
+    public final void refreshShowListDialogButton(){
+        updateStyleSheet(false);
+    }
+        
+    @SuppressWarnings("unused")
+    private void showDialogList(){
+        final List<ListWidgetItem> items = new LinkedList<>();
+        final int indexInComboBox = combo.currentIndex();
+        int currentIndex = -1;
+        for (int i=0,count=combo.count(); i<count; i++){
+            if (i!=nullItemIndex){
+                final ListWidgetItem item;            
+                if (combo.itemData(i, Qt.ItemDataRole.UserRole) instanceof ListWidgetItem){
+                    item = (ListWidgetItem)combo.itemData(i, Qt.ItemDataRole.UserRole);
+                }else{
+                    if (combo.itemIcon(i)==null){
+                        item = new ListWidgetItem(combo.itemText(i));
+                    }else{
+                        item = new ListWidgetItem(combo.itemText(i), null, new RdxIcon(combo.itemIcon(i)));
+                    }
+                    if (combo.itemData(i,Qt.ItemDataRole.ToolTipRole) instanceof String){
+                        item.setToolTip((String)combo.itemData(i,Qt.ItemDataRole.ToolTipRole));
+                    }
+                }
+                items.add(item);
+                if (i==indexInComboBox){
+                    currentIndex = items.size()-1;
+                }
+            }
+        }
+        final int selectedItemIndex = selectItem(items, currentIndex);
+        if (selectedItemIndex>=0){
+            if (nullItemIndex>-1 && nullItemIndex<=selectedItemIndex){
+                onActivatedIndex(selectedItemIndex+1);
+            }else{
+                onActivatedIndex(selectedItemIndex);
+            }
+        }
     }
     
     @Override
@@ -439,9 +612,7 @@ abstract class AbstractListEditor extends ValEditor<Object> {
         }
         super.timerEvent(event); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
-    
+            
     @Override
     public boolean eventFilter(final QObject obj, final QEvent event) {
         if (isMandatory()) {
@@ -530,25 +701,10 @@ abstract class AbstractListEditor extends ValEditor<Object> {
     
     @Override
     protected void onMouseClick() {
-        if (isPopupEnabled()) {
+        if (isEnabled() && isEmbeddedWidgetsVisible()){
             combo.showPopup();
         }
-    }
-    
-    @Override
-    public void setPredefinedValues(final List<Object> predefValues) {
-        throw new UnsupportedOperationException("Unsupported operation.");
-    }
-
-    @Override
-    public List<Object> getPredefinedValues() {
-        throw new UnsupportedOperationException("Unsupported operation.");
-    }
-
-    @Override
-    public void setEditingHistory(final IEditingHistory history) {
-    }
-    
+    }    
 
     @Override
     public void setDisplayStringProvider(final IDisplayStringProvider displayStringProvider) {
@@ -560,7 +716,5 @@ abstract class AbstractListEditor extends ValEditor<Object> {
     protected void closeEvent(final QCloseEvent event) {        
         super.closeEvent(event);
         combo.close();
-    }
-    
-    
+    }       
 }

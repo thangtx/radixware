@@ -12,50 +12,49 @@
 package org.radixware.kernel.explorer.env;
 
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.CountDownLatch;
-import org.radixware.kernel.common.client.meta.sqml.impl.SqmlDefinitions;
-import org.radixware.kernel.common.defs.RadixObjectInitializationPolicy;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitions;
+import org.radixware.kernel.common.client.meta.sqml.SqmlDefinitionsLoader;
+import org.radixware.kernel.common.exceptions.DefinitionError;
 
 
 final class SqmlLoadingTask implements Runnable{
     
     private final Environment environment;
-    private volatile SqmlDefinitions defs;
-    private volatile Exception exception;
+    private final boolean preloadBranch;
+    private volatile  ISqmlDefinitions defs;
+    private volatile DefinitionError exception;
     private volatile boolean wasCancelled;
     
-    public SqmlLoadingTask(final Environment environment){
+    public SqmlLoadingTask(final Environment environment, final boolean preloadBranch){
         this.environment = environment;
+        this.preloadBranch = preloadBranch;
     }
 
     @Override
     public void run() {
+        defs = null;
+        wasCancelled = false;
         try{
-            RadixObjectInitializationPolicy.set(new RadixObjectInitializationPolicy(true));
-            defs =
-                new SqmlDefinitions(environment, environment.getDefManager().getRepository().getBranch());
-            if (wasCancelled){
-                exception = new CancellationException("Tables loading was cancelled");
-                defs = null;
-            }
-            defs.getTables();
-        }catch(Exception exception){
-            defs = null;
-            this.exception = exception;
+            defs  = SqmlDefinitionsLoader.getInstance().load(environment);
+        }catch(DefinitionError error){
+            exception = error;
+        }catch(CancellationException ex){
+            wasCancelled = true;
+        }
+        if (preloadBranch){
+            environment.getDefManager().getRepository().preloadBranch();
         }
     }
     
-    public SqmlDefinitions getSqmlDefinitions() throws Exception{
+    public ISqmlDefinitions getSqmlDefinitions() throws DefinitionError{        
         if (exception!=null){
             throw exception;
         }
-        return defs;
+        return wasCancelled ? null : defs;
     }    
     
     public void cancel(){
         wasCancelled = true;
-        if (defs!=null){
-            defs.cancelLoading();
-        }        
+        SqmlDefinitionsLoader.getInstance().cancelLoading();
     }
 }

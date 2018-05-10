@@ -192,8 +192,12 @@ public abstract class ClientTracer<T extends IClientTraceItem> extends LocalTrac
             return environment.getDefManager().getEventTitleByCode(code);
         }
     };
-
+    
     public ClientTracer(final IClientEnvironment environment) {
+        this(environment, false);
+    }
+
+    public ClientTracer(final IClientEnvironment environment, final boolean resumeTraceFile) {
         super();
         this.environment = environment;
         TraceProfile initialProfile;
@@ -223,7 +227,7 @@ public abstract class ClientTracer<T extends IClientTraceItem> extends LocalTrac
         if (environment.getTraceFile() != null) {
             TraceFile tf;
             try {
-                tf = new TraceFile(environment, ENCODING);
+                tf = new TraceFile(environment, ENCODING, resumeTraceFile);
             } catch (FileException e) {
                 tf = null;
                 System.err.println("Can`t use trace file: " + e.getMessage());
@@ -232,8 +236,6 @@ public abstract class ClientTracer<T extends IClientTraceItem> extends LocalTrac
         } else {
             traceFile = null;
         }
-
-
     }
 
     public void registerStarterLogger() {
@@ -241,6 +243,7 @@ public abstract class ClientTracer<T extends IClientTraceItem> extends LocalTrac
         //clear cached loggers to ensure that all log events will be handled by
         //our log implementation
         LogFactory.releaseAll();
+        LogFactory.getLog(ClientTracer.class).trace("Starter delegate logger was initialized");//need to preload StarterLogger class
     }
 
     public void readProfileFromString(final String profileAsStr) {
@@ -283,6 +286,18 @@ public abstract class ClientTracer<T extends IClientTraceItem> extends LocalTrac
     public void debug(final String localizedMess) {
         put(EEventSeverity.DEBUG, localizedMess, getCurrentSource());
     }
+    
+    public void debug(final Throwable error) {
+        put(EEventSeverity.DEBUG, null, error, EEventSource.EXPLORER);
+    }
+
+    public void debug(final String localizedMess, final Throwable error) {
+        put(EEventSeverity.DEBUG, localizedMess, error, EEventSource.EXPLORER);        
+    }
+    
+    public void debug(final String localizedMess, final Throwable error, final EEventSource source) {
+        put(EEventSeverity.DEBUG, localizedMess, error, source);
+    }    
 
     @Override
     public void put(final EEventSeverity sev, final String mess, final EEventSource source) {
@@ -416,8 +431,8 @@ public abstract class ClientTracer<T extends IClientTraceItem> extends LocalTrac
         //put(error,EEventSource.DBP_EXPLORER);
         error("Unhandled exception", error);
     }
-
-    public void error(final String localizedMess, final Throwable error, final EEventSource source) {
+    
+    public void put(final EEventSeverity severity, final String localizedMess, final Throwable error, final EEventSource source) {
         String finalMessage = localizedMess;
         if (error != null) {
             final StringBuilder messageBuilder = new StringBuilder();
@@ -439,17 +454,21 @@ public abstract class ClientTracer<T extends IClientTraceItem> extends LocalTrac
             finalMessage = environment.getMessageProvider().translate("ExplorerError", "Unknown error");
         }
         final EEventSource finalSource = source != null ? source : EEventSource.EXPLORER;
-        put(EEventSeverity.ERROR, finalMessage, finalSource);
-    }
+        put(severity, finalMessage, finalSource);
+    }    
 
     public void error(final Throwable error) {
-        error(null, error, EEventSource.EXPLORER);
+        put(EEventSeverity.ERROR, null, error, EEventSource.EXPLORER);
     }
 
     public void error(final String localizedMess, final Throwable error) {
-        error(localizedMess, error, EEventSource.EXPLORER);
+        put(EEventSeverity.ERROR, localizedMess, error, EEventSource.EXPLORER);        
     }
-
+    
+    public void error(final String localizedMess, final Throwable error, final EEventSource source) {
+        put(EEventSeverity.ERROR, localizedMess, error, source);
+    }
+    
     public void close() {
         StarterLog.setFactory(null);
         if (traceFile != null) {

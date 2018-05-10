@@ -15,12 +15,17 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -38,7 +43,14 @@ import javax.swing.text.Utilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
+import org.openide.actions.CopyAction;
+import org.openide.actions.CutAction;
+import org.openide.actions.PasteAction;
+import org.openide.util.actions.SystemAction;
 import org.radixware.kernel.common.resources.RadixWareIcons;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils;
+import org.radixware.kernel.designer.ads.localization.RowString;
+import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 
 
 public class TranslateTextPaneUi {
@@ -83,26 +95,38 @@ public class TranslateTextPaneUi {
                 }
             }
         });
+        
+        final AbstractAction actCheckAndGo = new AbstractAction(MultilingualEditorUtils.CHECK_STRING_AND_GO) {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                langPanel.checkString(true);
+            }
+        };
+        
+        edTranslation.getActionMap().put(MultilingualEditorUtils.CHECK_STRING_AND_GO, actCheckAndGo);
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK, true);
+        edTranslation.getInputMap().put(keyStroke, MultilingualEditorUtils.CHECK_STRING_AND_GO);
+        
+        final AbstractAction actCheck = new AbstractAction(MultilingualEditorUtils.CHECK_STRING) {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                langPanel.checkString(false);
+            }
+        };
+        
+        edTranslation.getActionMap().put(MultilingualEditorUtils.CHECK_STRING, actCheck);
+        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_DOWN_MASK, true);
+        edTranslation.getInputMap().put(keyStroke, MultilingualEditorUtils.CHECK_STRING);
 
         edTranslation.addKeyListener(new KeyAdapter() {
-            private boolean isHotKeyPressed = false;
 
             @Override
             public void keyPressed(final KeyEvent event) {
-                isHotKeyPressed = false;
-                if (event.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (event.isControlDown()) {
-                        langPanel.ctrlEnterWasPressed();
-                        isHotKeyPressed = true;
-                    } else {
-                        event.consume();
-                        insertImageInCurPos();
-                    }
-                } else if ((event.getKeyCode() == KeyEvent.VK_L) || (event.getKeyCode() == KeyEvent.VK_K)
-                        || (event.getKeyCode() == KeyEvent.VK_COMMA) || (event.getKeyCode() == KeyEvent.VK_PERIOD)) {
-                    if (event.isControlDown()) {
-                        isHotKeyPressed = true;
-                    }
+                if (event.getKeyCode() == KeyEvent.VK_ENTER && !event.isControlDown() && !event.isAltDown() && !event.isShiftDown()){
+                    event.consume();
+                    insertImageInCurPos();
                 } else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_S) {
                     langPanel.save();
                 }
@@ -114,13 +138,13 @@ public class TranslateTextPaneUi {
                 if ((lp == null) || (!lp.equals(langPanel)) || !((javax.swing.JTextPane) event.getSource()).isEditable()) {
                     return;
                 }
-                //boolean b=(e.isControlDown() != KeyEvent.VK_CONTROL)&&(e.getKeyCode() != KeyEvent.VK_ALT)&&(e.getKeyCode() != KeyEvent.VK_SHIFT);
-                //boolean b=!((e.isControlDown() || e.isAltDown() || (e.getKeyCode() == KeyEvent.VK_CONTROL) || (e.getKeyCode() == KeyEvent.VK_ALT)) &&  ( e.getKeyCode() != KeyEvent.VK_PASTE) && ( e.getKeyCode() != KeyEvent.VK_CUT));
-                String val = langPanel.getRowString().getValue(langPanel.getLanguage());
+                RowString rowString = langPanel.getRowString();
+                if (rowString == null) {
+                    return;
+                }
+                String val = rowString.getValue(langPanel.getLanguage());
                 val = val == null ? "" : val;
-                if ((!isHotKeyPressed) && (event.getKeyCode() != KeyEvent.VK_LEFT) && (event.getKeyCode() != KeyEvent.VK_RIGHT)
-                        && (event.getKeyCode() != KeyEvent.VK_UP) && (event.getKeyCode() != KeyEvent.VK_DOWN) && (!(event.isControlDown()
-                        && (event.getKeyCode() == KeyEvent.VK_S))) && !edTranslation.getText().equals(val)) {
+                if (!edTranslation.getText().equals(val)) {
                     langPanel.translationWasEdited();
                 }
 
@@ -137,6 +161,7 @@ public class TranslateTextPaneUi {
                 
             }
         });
+        
 
         fontSize = edTranslation.getFontMetrics(edTranslation.getFont()).getHeight();
         final Style defaultStyle = edTranslation.getStyle(StyleContext.DEFAULT_STYLE);

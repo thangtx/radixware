@@ -43,12 +43,14 @@ public class DdsPrimaryKeyChecker<T extends DdsPrimaryKeyDef> extends DdsIndexCh
         }
 
         for (DdsIndexDef.ColumnInfo columnInfo : pk.getColumnsInfo()) {
-            DdsColumnDef column = columnInfo.findColumn();
-            if (column != null && !column.isNotNull()) {
-                error(pk, problemHandler, "Primary key column '" + column.getName() + "' must be not null");
-            }
-            if (column.getAuditInfo().isSaveValues()) {
-                error(pk, problemHandler, "Audit enabled for primary key column '" + column.getName() + "'");
+            DdsColumnDef column = columnInfo.findColumn(); 
+            if (column != null) {
+                if (!column.isNotNull()){
+                    error(pk, problemHandler, "Primary key column '" + column.getName() + "' must be not null");
+                }
+                if (column.getAuditInfo().isSaveValues()) {
+                    error(pk, problemHandler, "Audit enabled for primary key column '" + column.getName() + "'");
+                }
             }
         }
 

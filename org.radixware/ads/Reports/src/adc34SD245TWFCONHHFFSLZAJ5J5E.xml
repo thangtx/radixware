@@ -1,0 +1,1765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc34SD245TWFCONHHFFSLZAJ5J5E" Name="GenerateReportActionsProvider" Type="3" Environment="common-client" IsDual="true">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc34SD245TWFCONHHFFSLZAJ5J5E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc34SD245TWFCONHHFFSLZAJ5J5E">
+        <xsc:Item>
+          <xsc:Java>private final String BASE_WINDOW_TITLE = </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:LocalizedString StringId="mlsYGWK27XHFFEI7GOD3F6OP5H4I4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmgRZ5NDWRFUFBDHJF7DVJ64PXXYY" Name="Root">
+      <Group Id="cmgWC4JXV76FBFKFDDB4HUH54NDOY" Name="Methods" Members="mthGHA2Y7C2CNFOXN7S2ATRP43RBU mthNAGIBW2PCZFJVK6FDLE766COPA mthZO5OWNIKUBA55NWFBMT3QBBLI4 mthKXZA7656K5DWRPPDZKYDMMZTRA mth2UDLZG25ZNAEPDT3ODTQLI3C4A mthQNCG65ZV5ZCNVHDHTHSWRBBZ3Y mthH7KJTY5GGBA2LER23HDQNOM3TE mth53OP2QAQYFDEHIZRIWE7RURJBM mthLDGXHWGDVVF6JFM7MAB4VV5XPA mth7HDBID6RUJGEVJT24GSLCICWRA mthZPDIT7OCPJEBTIRSXA44A7O4FY"/>
+      <Group Id="cmgCDS44ZXSSBBAHPCUA3EZ6QZWKI" Name="Export Methods" Members="mthMKONKZMO6FHZTFTFQDLTCEURCE mth2O65OUA7YJF7HI6W7ZVR4EYAPU mthCX2NAFSCKBG6VL3HCCVBW2BYVQ"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgIY7NKWUDLRAT5EQJN6L7ANGMLE" Name="Root">
+      <Group Id="cpgQWS7COFIRVFOFBFDATXQHSZDAY" Name="Properties" Members="prdLTUO6AFXTVFVLFBLXSSY2BUCZM prdAH4HHIOXR5GTROKY6UFUWRTWE4 prdZ4QPASJR65FZ3LW2A7HM6KT5DY prdOU24ZYEJVVG73IBYI4J4TVZP5M prdQOVCVQTQ3REDHEIB2JYT6WQDEQ prd7L3DG2ORHZHYXHD5RINY5N6S2I prdZ44XFL5T7ZE3BEM6I5KPRNYH6Y prd4TBUWTA44JFLFOZ5534AKZT5LY prdGFICIJSURZHQZFJTG22AYRSWXY"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Name="enabledFormats" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="221" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+      </Property>
+      <Property Id="prdAH4HHIOXR5GTROKY6UFUWRTWE4" Name="generateReportCmd" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ4QPASJR65FZ3LW2A7HM6KT5DY" Invoke="true">
+                <xsc:Presentation>isGenerateOpenMode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ4QPASJR65FZ3LW2A7HM6KT5DY" Invoke="true">
+                <xsc:Presentation>isGenerateOpenMode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue()) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> reportPub2 = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA">
+                <xsc:Presentation>Explorer.Models::EntityModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthZ2ZROAGPG5FDRBWDS5INBAJ7HE" Invoke="true">
+                <xsc:Presentation>openContextlessModel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374">
+                <xsc:Presentation>ReportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        return reportPub2.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true">
+                <xsc:Presentation>getCommand</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd4TBUWTA44JFLFOZ5534AKZT5LY" Invoke="true">
+                <xsc:Presentation>generateReportCmdId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2P77ROPWFRD2PAYS4F6HKRJDAA cmd6V5675GOJFC3RCYKK3XRE34PN4">
+                <xsc:Presentation>ReportPub.Contextless:GenerateReport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd4TBUWTA44JFLFOZ5534AKZT5LY" Invoke="true">
+                <xsc:Presentation>generateReportCmdId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+// NOTHING - cancelled
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE">
+                <xsc:Presentation>Exceptions::ServiceClientException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthKZ34JWV7QFDPBJW4JKVSP3AE3E" Invoke="true">
+                <xsc:Presentation>processException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex);
+}
+
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdAH4HHIOXR5GTROKY6UFUWRTWE4" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>generateReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="prdZ4QPASJR65FZ3LW2A7HM6KT5DY" Name="isGenerateOpenMode" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prdOU24ZYEJVVG73IBYI4J4TVZP5M" Name="reportPub" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM"/>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> reportPub = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA">
+                <xsc:Presentation>Explorer.Models::EntityModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthZ2ZROAGPG5FDRBWDS5INBAJ7HE" Invoke="true">
+                <xsc:Presentation>openContextlessModel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374">
+                <xsc:Presentation>ReportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+    return reportPub;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+// NOTHING - cancelled
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE">
+                <xsc:Presentation>Exceptions::ServiceClientException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {    
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthKZ34JWV7QFDPBJW4JKVSP3AE3E" Invoke="true">
+                <xsc:Presentation>processException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex);
+}
+
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Name="reportPubPid" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+      </Property>
+      <Property Id="prd7L3DG2ORHZHYXHD5RINY5N6S2I" Name="environment" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+      </Property>
+      <Property Id="prdZ44XFL5T7ZE3BEM6I5KPRNYH6Y" Name="exportReportCmdId" Nature="2" IsConst="false" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </Property>
+      <Property Id="prd4TBUWTA44JFLFOZ5534AKZT5LY" Name="generateReportCmdId" Nature="2" IsConst="false" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </Property>
+      <Property Id="prdGFICIJSURZHQZFJTG22AYRSWXY" Name="exportReportCmd" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ4QPASJR65FZ3LW2A7HM6KT5DY" Invoke="true">
+                <xsc:Presentation>isGenerateOpenMode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ4QPASJR65FZ3LW2A7HM6KT5DY" Invoke="true">
+                <xsc:Presentation>isGenerateOpenMode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue()) {
+        final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> reportPub2 = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA">
+                <xsc:Presentation>Explorer.Models::EntityModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthZ2ZROAGPG5FDRBWDS5INBAJ7HE" Invoke="true">
+                <xsc:Presentation>openContextlessModel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374">
+                <xsc:Presentation>ReportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM">
+                <xsc:Presentation>ReportPub:General</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        return reportPub2.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true">
+                <xsc:Presentation>getCommand</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ44XFL5T7ZE3BEM6I5KPRNYH6Y" Invoke="true">
+                <xsc:Presentation>exportReportCmdId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2P77ROPWFRD2PAYS4F6HKRJDAA cmd6V5675GOJFC3RCYKK3XRE34PN4">
+                <xsc:Presentation>ReportPub.Contextless:GenerateReport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ44XFL5T7ZE3BEM6I5KPRNYH6Y" Invoke="true">
+                <xsc:Presentation>exportReportCmdId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+// NOTHING - cancelled
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE">
+                <xsc:Presentation>Exceptions::ServiceClientException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthKZ34JWV7QFDPBJW4JKVSP3AE3E" Invoke="true">
+                <xsc:Presentation>processException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex);
+}
+
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdGFICIJSURZHQZFJTG22AYRSWXY" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>exportReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthGHA2Y7C2CNFOXN7S2ATRP43RBU" Name="setEnabledFormats" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="enabledFormats" Id="mpr66I2D7BTGZHSLBXZG4GY4OEZSA">
+            <Type TypeId="221" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Invoke="true">
+                <xsc:Presentation>enabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = enabledFormats;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNAGIBW2PCZFJVK6FDLE766COPA" Name="setGenerateReportCmd" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="generateReportCmd" Id="mprKK5ZTLOKGZHT5C2WZCP6U22RU4">
+            <Type TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdAH4HHIOXR5GTROKY6UFUWRTWE4" Invoke="true">
+                <xsc:Presentation>generateReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = generateReportCmd;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZO5OWNIKUBA55NWFBMT3QBBLI4" Name="setIsGenerateOpenMode" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="isGenerateOpenMode" Id="mprNJ77BBLJG5GLRHQM4WUUP2OXFQ">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ4QPASJR65FZ3LW2A7HM6KT5DY" Invoke="true">
+                <xsc:Presentation>isGenerateOpenMode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = isGenerateOpenMode;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKXZA7656K5DWRPPDZKYDMMZTRA" Name="setReportPubPid" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="reportPubPid" Id="mprSHC7OHCKUVEH3GDM665L7B2K5I">
+            <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = reportPubPid;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMKONKZMO6FHZTFTFQDLTCEURCE" Name="export" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src Environment="explorer">
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU">
+                <xsc:Presentation>Explorer.Models::CommandModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cmd = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdAH4HHIOXR5GTROKY6UFUWRTWE4" Invoke="true">
+                <xsc:Presentation>generateReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+if (!cmd.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthRWHLEQZQWVAGRHQVCHPTMKMUA4" Invoke="true">
+                <xsc:Presentation>isEnabled</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsW2722ZOA5NFRZCQK7SJ64AQO44"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return;
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE">
+                <xsc:Presentation>ChooseReportExportFormatsDialog</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialog = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE">
+                <xsc:Presentation>ChooseReportExportFormatsDialog</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE">
+                <xsc:Presentation>ChooseReportExportFormatsDialog:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialogModel = dialog.getModel();
+
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthVAYKYC5AB5BVPPLEYLD24SLFPU" Invoke="true">
+                <xsc:Presentation>setWindowTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsT7S7PPWM3FHYHJK7JETTMFWIJM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + BASE_WINDOW_TITLE);
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthCEBCUPKI2ZAFLE2WLEWD7AED44" Invoke="true">
+                <xsc:Presentation>setEnabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Invoke="true">
+                <xsc:Presentation>enabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthZ2BYTGBOBJGZRM7LFVCSQ64YQQ" Invoke="true">
+                <xsc:Presentation>setDefaultFileName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getTitle());
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mth4BXCLRYD4ZHWDEBB46DYQYNHJQ" Invoke="true">
+                <xsc:Presentation>setReportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+if (dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mth64RWGAYVHRDGJMLHSN66TOXNQQ" Invoke="true">
+                <xsc:Presentation>execDialog</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I">
+                <xsc:Presentation>Client.Views::DialogResult</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I prdF2Y7KMCNG5BJNNVWGIMXUHANS4" Invoke="true">
+                <xsc:Presentation>ACCEPTED</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    if (!dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthSHNYZI7N4ZBX5OS23DAQ5I3BVE" Invoke="true">
+                <xsc:Presentation>getSelectedFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().isEmpty()) {
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+            boolean genResult = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM mthB2J7Z6UYVRFQHBVO7BEYEHCY4E" Invoke="true">
+                <xsc:Presentation>generateReport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cmd, dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthCPOCI76JGJHWJFR7DTA2Z6NK6M" Invoke="true">
+                <xsc:Presentation>getDirectroryPath</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthV62JQSVCPRGTHBOJSO6KDWSIVE" Invoke="true">
+                <xsc:Presentation>getFileName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthSHNYZI7N4ZBX5OS23DAQ5I3BVE" Invoke="true">
+                <xsc:Presentation>getSelectedFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), false);
+            if (genResult) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthZ7S4BY675BD6BHV4PD4UZFF6HA" Invoke="true">
+                <xsc:Presentation>messageInformation</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsBFR36GGPTNEMBCILFKOD63PJ4E"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsFMWG5TPP7ZDX3IQ6OWVVSYAPWQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            }
+        }
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+          <Src Environment="web">
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU">
+                <xsc:Presentation>Explorer.Models::CommandModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cmd = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdAH4HHIOXR5GTROKY6UFUWRTWE4" Invoke="true">
+                <xsc:Presentation>generateReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+if (!cmd.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthRWHLEQZQWVAGRHQVCHPTMKMUA4" Invoke="true">
+                <xsc:Presentation>isEnabled</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsHIGS6CQXWZGYJI5LA364UB37XE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return;
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdl37U57ENC55AR3LZQ5GKSG25YZE">
+                <xsc:Presentation>ChooseReportExportFormatsDialogWeb</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialog = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdl37U57ENC55AR3LZQ5GKSG25YZE">
+                <xsc:Presentation>ChooseReportExportFormatsDialogWeb</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE">
+                <xsc:Presentation>ChooseReportExportFormatsDialogWeb:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialogModel = dialog.getModel();
+
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mthYFA2UES4ENAMPOQHETOXMUHTLU" Invoke="true">
+                <xsc:Presentation>setWindowTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls575EJL2HXFEXDJ3AUDIAENBVMM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + BASE_WINDOW_TITLE);
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mth6EJT3U6KSJGIJDNWIA3GDGOSYY" Invoke="true">
+                <xsc:Presentation>setEnabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Invoke="true">
+                <xsc:Presentation>enabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mthRENH2SHF5ZFT3CX4U7RUKJ7PIU" Invoke="true">
+                <xsc:Presentation>setDefaultFileName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getTitle());
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mthCXN5IW5H4JHSVADMTTQXSE5UQY" Invoke="true">
+                <xsc:Presentation>setReportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+if (dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mth64RWGAYVHRDGJMLHSN66TOXNQQ" Invoke="true">
+                <xsc:Presentation>execDialog</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I">
+                <xsc:Presentation>Client.Views::DialogResult</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I prdF2Y7KMCNG5BJNNVWGIMXUHANS4" Invoke="true">
+                <xsc:Presentation>ACCEPTED</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    if (!dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mthY5I2TABY3VE4LOTJ4ENRGZD7YI" Invoke="true">
+                <xsc:Presentation>getSelectedFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().isEmpty()) {
+        try {
+            java.io.File file = java.io.File.createTempFile("Report-", "Dir");
+            file.delete();
+            file.mkdirs();
+            Str fileName = file.AbsolutePath;
+
+            boolean genResult = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM mthB2J7Z6UYVRFQHBVO7BEYEHCY4E" Invoke="true">
+                <xsc:Presentation>generateReport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cmd, fileName, dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mthT2WLCPH635HTRPSTVXLHQK4PDQ" Invoke="true">
+                <xsc:Presentation>getFileName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mthY5I2TABY3VE4LOTJ4ENRGZD7YI" Invoke="true">
+                <xsc:Presentation>getSelectedFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), false);
+            if (genResult) {
+                </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthZ7S4BY675BD6BHV4PD4UZFF6HA" Invoke="true">
+                <xsc:Presentation>messageInformation</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsWKEJ4IPI7JHHDIQZU4OB53T45A"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUUP7T5K2L5AVVKH3ZSCXDRV76Q"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            }
+        } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthA5MYDLGBIZFR7HVUDLFWB2FGJA" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUEIG5DUEWVDS5KQX6GHG3572BU"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsJHGNY7VPGNES3HAHPIRCYMPWXE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2O65OUA7YJF7HI6W7ZVR4EYAPU" Name="viewAndExport" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src Environment="explorer">
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU">
+                <xsc:Presentation>Explorer.Models::CommandModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cmd = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdAH4HHIOXR5GTROKY6UFUWRTWE4" Invoke="true">
+                <xsc:Presentation>generateReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+if (!cmd.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthRWHLEQZQWVAGRHQVCHPTMKMUA4" Invoke="true">
+                <xsc:Presentation>isEnabled</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsR65UJR6UTNEAPLDXRRIQLDCPBI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return;
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE">
+                <xsc:Presentation>ChooseReportExportFormatsDialog</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialog = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE">
+                <xsc:Presentation>ChooseReportExportFormatsDialog</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE">
+                <xsc:Presentation>ChooseReportExportFormatsDialog:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> dialogModel = dialog.getModel();
+
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthVAYKYC5AB5BVPPLEYLD24SLFPU" Invoke="true">
+                <xsc:Presentation>setWindowTitle</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsEZLL4KELGBAVXJPOUI5HA354YI"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + BASE_WINDOW_TITLE);
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthCEBCUPKI2ZAFLE2WLEWD7AED44" Invoke="true">
+                <xsc:Presentation>setEnabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Invoke="true">
+                <xsc:Presentation>enabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthZ2BYTGBOBJGZRM7LFVCSQ64YQQ" Invoke="true">
+                <xsc:Presentation>setDefaultFileName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getTitle());
+dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mth4BXCLRYD4ZHWDEBB46DYQYNHJQ" Invoke="true">
+                <xsc:Presentation>setReportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+if (dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mth64RWGAYVHRDGJMLHSN66TOXNQQ" Invoke="true">
+                <xsc:Presentation>execDialog</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I">
+                <xsc:Presentation>Client.Views::DialogResult</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDAOFOPE66ZA5ZP7ALHOOPQIQ6I prdF2Y7KMCNG5BJNNVWGIMXUHANS4" Invoke="true">
+                <xsc:Presentation>ACCEPTED</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    if (!dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthSHNYZI7N4ZBX5OS23DAQ5I3BVE" Invoke="true">
+                <xsc:Presentation>getSelectedFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().isEmpty()) {
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM mthB2J7Z6UYVRFQHBVO7BEYEHCY4E" Invoke="true">
+                <xsc:Presentation>generateReport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdAH4HHIOXR5GTROKY6UFUWRTWE4" Invoke="true">
+                <xsc:Presentation>generateReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthCPOCI76JGJHWJFR7DTA2Z6NK6M" Invoke="true">
+                <xsc:Presentation>getDirectroryPath</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthV62JQSVCPRGTHBOJSO6KDWSIVE" Invoke="true">
+                <xsc:Presentation>getFileName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), dialogModel.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="cdlKKLOCIVMHFHA7LW6K5YCCRDAXE admKKLOCIVMHFHA7LW6K5YCCRDAXE mthSHNYZI7N4ZBX5OS23DAQ5I3BVE" Invoke="true">
+                <xsc:Presentation>getSelectedFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), true);
+        }        
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+          <Src Environment="web">
+            <xsc:Item>
+              <xsc:Java>// this action is not available for WEB</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCX2NAFSCKBG6VL3HCCVBW2BYVQ" Name="viewReport" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU">
+                <xsc:Presentation>Explorer.Models::CommandModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> cmd = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdAH4HHIOXR5GTROKY6UFUWRTWE4" Invoke="true">
+                <xsc:Presentation>generateReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+if (cmd.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthRWHLEQZQWVAGRHQVCHPTMKMUA4" Invoke="true">
+                <xsc:Presentation>isEnabled</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdOU24ZYEJVVG73IBYI4J4TVZP5M" Invoke="true">
+                <xsc:Presentation>reportPub</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 eprFP5NARHOA5E7LNMKWHBCS5Y3FM aemFP5NARHOA5E7LNMKWHBCS5Y3FM mthNTRVW6B64ZANVNTQC3SQSORKPE" Invoke="true">
+                <xsc:Presentation>generateReport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(cmd, null, null);
+    }
+} else {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsFNLUJXWQNNCM3GVSSEKJMTTJAQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2UDLZG25ZNAEPDT3ODTQLI3C4A" Name="GenerateReportActionsProvider" Nature="0" IsConstructor="true" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="environment" Id="mprZQJVYLWDWRGSDE4RUASRLJHJBA">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd7L3DG2ORHZHYXHD5RINY5N6S2I" Invoke="true">
+                <xsc:Presentation>environment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = environment;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthQNCG65ZV5ZCNVHDHTHSWRBBZ3Y" Name="isViewReportEnabled" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null
+        &amp;&amp; (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdAH4HHIOXR5GTROKY6UFUWRTWE4" Invoke="true">
+                <xsc:Presentation>generateReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd4TBUWTA44JFLFOZ5534AKZT5LY" Invoke="true">
+                <xsc:Presentation>generateReportCmdId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null)
+        &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Invoke="true">
+                <xsc:Presentation>enabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Invoke="true">
+                <xsc:Presentation>enabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.contains(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciL63KG5SUZRCGBAIMS6WUX5IHAY" Invoke="true">
+                <xsc:Presentation>ReportExportFormat:PDF</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthH7KJTY5GGBA2LER23HDQNOM3TE" Name="isViewAndExportEnabled" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E mth53OP2QAQYFDEHIZRIWE7RURJBM" Invoke="true">
+                <xsc:Presentation>isExportEnabled</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Invoke="true">
+                <xsc:Presentation>enabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdLTUO6AFXTVFVLFBLXSSY2BUCZM" Invoke="true">
+                <xsc:Presentation>enabledFormats</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.contains(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciL63KG5SUZRCGBAIMS6WUX5IHAY" Invoke="true">
+                <xsc:Presentation>ReportExportFormat:PDF</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth53OP2QAQYFDEHIZRIWE7RURJBM" Name="isExportEnabled" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdQOVCVQTQ3REDHEIB2JYT6WQDEQ" Invoke="true">
+                <xsc:Presentation>reportPubPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdGFICIJSURZHQZFJTG22AYRSWXY" Invoke="true">
+                <xsc:Presentation>exportReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ44XFL5T7ZE3BEM6I5KPRNYH6Y" Invoke="true">
+                <xsc:Presentation>exportReportCmdId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLDGXHWGDVVF6JFM7MAB4VV5XPA" Name="setExportReportCmd" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="exportReportCmd" Id="mprKK5ZTLOKGZHT5C2WZCP6U22RU4">
+            <Type TypeId="411" Path="adcETZW74XVUBEX5N3MV3IZMMDTUU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdGFICIJSURZHQZFJTG22AYRSWXY" Invoke="true">
+                <xsc:Presentation>exportReportCmd</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = exportReportCmd;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7HDBID6RUJGEVJT24GSLCICWRA" Name="setGenerateReportCmdId" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="id" Id="mprKRHIIQJ3CVAAZMA7D4QF4MPGA4">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prd4TBUWTA44JFLFOZ5534AKZT5LY" Invoke="true">
+                <xsc:Presentation>generateReportCmdId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = id;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZPDIT7OCPJEBTIRSXA44A7O4FY" Name="setExportReportCmdId" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="id" Id="mprKRHIIQJ3CVAAZMA7D4QF4MPGA4">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc34SD245TWFCONHHFFSLZAJ5J5E prdZ44XFL5T7ZE3BEM6I5KPRNYH6Y" Invoke="true">
+                <xsc:Presentation>exportReportCmdId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = id;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

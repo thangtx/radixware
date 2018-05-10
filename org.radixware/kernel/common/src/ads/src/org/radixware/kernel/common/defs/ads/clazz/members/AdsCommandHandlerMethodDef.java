@@ -74,7 +74,7 @@ public class AdsCommandHandlerMethodDef extends AdsUserMethodDef implements IDep
         super(xMethod);
     }
 
-    private static String getCommandHandlerName(AdsCommandDef command) {
+    public static String getCommandHandlerName(AdsCommandDef command) {
         return "onCommand_" + command.getName();
     }
 

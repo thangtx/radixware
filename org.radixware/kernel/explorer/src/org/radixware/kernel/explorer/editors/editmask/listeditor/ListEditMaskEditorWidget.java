@@ -68,7 +68,7 @@ public class ListEditMaskEditorWidget extends ExplorerWidget implements IEditMas
         btnMoveDown.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.DOWN));
         btnMoveDown.clicked.connect(table, "moveRowDown()");
         buttonBox.addWidget(btnMoveDown);
-        
+                
         outterLayout.addLayout(buttonBox);
         this.setLayout(outterLayout);
         outterLayout.update();

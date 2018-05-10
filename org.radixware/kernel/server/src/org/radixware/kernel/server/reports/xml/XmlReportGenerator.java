@@ -30,8 +30,9 @@ import org.radixware.kernel.server.reports.DefaultReportFileController;
 import org.radixware.kernel.server.reports.IReportFileController;
 import org.radixware.kernel.server.reports.ReportGenerationException;
 import org.radixware.kernel.server.reports.ReportStateInfo;
-import org.radixware.kernel.server.reports.fo.AdjustedCell;
-import org.radixware.kernel.server.reports.fo.HtmlParser;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.AdjustedCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellsUtils;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.HtmlParser;
 import org.radixware.kernel.server.types.Report;
 
 public class XmlReportGenerator extends AbstractReportGenerator {
@@ -95,7 +96,7 @@ public class XmlReportGenerator extends AbstractReportGenerator {
             return;
         }
 
-        HtmlParser.getCellContant(cell);
+        CellsUtils.getCellContant(cell);
         final ReportXmlCell xCell = xBand.addNewCell();
         xCell.begin();
 
@@ -132,7 +133,7 @@ public class XmlReportGenerator extends AbstractReportGenerator {
     }
 
     @Override
-    protected void viewBand(final List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents) throws ReportGenerationException {
+    protected void viewBand(final List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents, ReportGenData currentGenData) throws ReportGenerationException {
         if (!isExportable(band)) {
             return;
         }

@@ -125,8 +125,22 @@ public class DesignerConfigStore implements ClientSettings {
     }
 
     @Override
+    public void pushGroup() {
+    }
+
+    @Override
+    public String popGroup() {
+        return "";
+    }        
+
+    @Override
     public void setConfigProfile(String string) {
     }
+    
+    @Override
+    public String getConfigProfile(){                        
+        return "";
+    }    
 
     @Override
     public int beginReadArray(String string) {

@@ -1,0 +1,17 @@
+
+class Sample<T> {
+
+    public final Integer field = new Integer(1);
+}
+
+class SampleDescendant extends Sample<Object> {
+}
+
+class Test {
+
+    static public void main(String[] args) {
+	SampleDescendant s = new SampleDescendant();
+	Integer i = s.field;
+	System.out.print(i);
+    }
+}

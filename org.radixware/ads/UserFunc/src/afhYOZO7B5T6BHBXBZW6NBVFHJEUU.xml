@@ -14,17 +14,17 @@
       <Property Id="prdVQ4J6JKZ5FGD7B7BBCIWICYICE" Name="library" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
         <AccessRules IsPublished="false"/>
         <Type TypeId="31" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA"/>
-        <Presentation InheritanceMask="5">
+        <Presentation TitleId="mlsEGXSWHXTIBB4PKQHIFGJDOG23U" InheritanceMask="4">
           <Editing NotNull="true" IsDuplicatesEnabled="true"/>
           <ParentSelect ParentSelectorPresentationId="sprG4TZ2OGYHVE27NMAKGEQIIXFVA"/>
         </Presentation>
       </Property>
-      <Property Id="prdHBH67G7RDNFFVLNBULTLJCM5W4" Name="libFunc" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+      <Property Id="prdEORKGEY3BFFRHAS7NV6WRBBUVY" Name="libFuncs" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
         <AccessRules IsPublished="false"/>
-        <Type TypeId="31" Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM"/>
+        <Type TypeId="231" Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM"/>
         <Presentation InheritanceMask="21">
           <Editing IsDuplicatesEnabled="true"/>
-          <ParentSelect ParentSelectorRestrictions="3670010"/>
+          <ParentSelect ParentSelectorRestrictions="33030138"/>
         </Presentation>
       </Property>
     </Properties>
@@ -43,35 +43,57 @@
               <xsc:Java>if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdHBH67G7RDNFFVLNBULTLJCM5W4" Invoke="true"/>
+              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdEORKGEY3BFFRHAS7NV6WRBBUVY" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null &amp;&amp; !</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdVQ4J6JKZ5FGD7B7BBCIWICYICE" Invoke="true"/>
+              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdEORKGEY3BFFRHAS7NV6WRBBUVY" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.equals(</xsc:Java>
+              <xsc:Java>.isEmpty()) {
+    </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdHBH67G7RDNFFVLNBULTLJCM5W4" Invoke="true"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.</xsc:Java>
+              <xsc:Java> prevOwner = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdEORKGEY3BFFRHAS7NV6WRBBUVY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(0).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM col5CYBJAQYWFHSXIHCIP7AIYR7UE" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
+              <xsc:Java>;
+    if (!prevOwner.equals(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdVQ4J6JKZ5FGD7B7BBCIWICYICE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
               <xsc:Java>)) {
-    </xsc:Java>
+        final java.lang.StringBuilder msgMovedFucns = new java.lang.StringBuilder();
+        for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdHBH67G7RDNFFVLNBULTLJCM5W4" Invoke="true"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.</xsc:Java>
+              <xsc:Java> libFunc : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdEORKGEY3BFFRHAS7NV6WRBBUVY" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+            libFunc.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM colPWEV3UOPXJD5NLVOWUIJNNQ4XA" Invoke="true"/>
@@ -90,32 +112,7 @@
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
-    </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> prevOwner = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdHBH67G7RDNFFVLNBULTLJCM5W4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM col5CYBJAQYWFHSXIHCIP7AIYR7UE" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>;
-    </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdHBH67G7RDNFFVLNBULTLJCM5W4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
+            libFunc.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM col5CYBJAQYWFHSXIHCIP7AIYR7UE" Invoke="true"/>
@@ -128,20 +125,24 @@
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
-    </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdHBH67G7RDNFFVLNBULTLJCM5W4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
+            libFunc.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="pdcEntity____________________ mth5A5TVHUCNVHFXIT7FDJ75MILHE" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
-    </xsc:Java>
+            msgMovedFucns.append('\n').append(libFunc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM colLE6DB2PKDNF3ZEYP6CEJ32LQ5A" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        }
+        msgMovedFucns.append('\n');
+
+        </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdVQ4J6JKZ5FGD7B7BBCIWICYICE" Invoke="true"/>
@@ -154,67 +155,51 @@
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
-    prevOwner.</xsc:Java>
+        prevOwner.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="aecAM6HEX43SFCQTMG23G7JHOBCMA mthNCCU6E5J5NHNXARL6IXTB4ED5U" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
-    return new </xsc:Java>
+
+        return new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
-            new </xsc:Java>
+                new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="adcZD7HTRF3JJCKXH65HUPW2OMVU4 mthA27O2EJ6YFC2FCE6NL2Y56HE3I" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
-                    </xsc:Java>
+                        </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>,
-                    </xsc:Java>
+                        </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>,
-                    null,
-                    null, </xsc:Java>
+                        null,
+                        null,
+                        String.format(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsPTHEUC7CORD53K77CN2WZQSA7A"/>
+              <xsc:LocalizedString StringId="mlsVAVSFCD3GNBKTBIMTWPLKR22WI"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> + " '" + </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdHBH67G7RDNFFVLNBULTLJCM5W4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM col3ACZLKUIERHQXKMX5Z7X5URPAY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> + "' " + </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsUVEKGU5KSFAYNIAI3CZHNE233I"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> + " '" + </xsc:Java>
+              <xsc:Java>, msgMovedFucns.toString(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdVQ4J6JKZ5FGD7B7BBCIWICYICE" Invoke="true"/>
@@ -226,8 +211,10 @@
               <xsc:IdReference Path="aecAM6HEX43SFCQTMG23G7JHOBCMA colLSUHVNJK2FEMPFDMOHXBTSONXA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> + "'."
-            ), null);
+              <xsc:Java>)),
+                        null);
+    }
+
 }
 return new </xsc:Java>
             </xsc:Item>
@@ -236,36 +223,36 @@ return new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
-            new </xsc:Java>
+        new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="adcZD7HTRF3JJCKXH65HUPW2OMVU4 mthA27O2EJ6YFC2FCE6NL2Y56HE3I" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
-                    </xsc:Java>
+                </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4OAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>,
-                    </xsc:Java>
+                </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>,
-                    null,
-                    null, </xsc:Java>
+                null,
+                null, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:LocalizedString StringId="mls5FZE4NPNWNFW7MI4EMCJRJW22U"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>
-            ), null);</xsc:Java>
+        ), null);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -385,33 +372,141 @@ if (</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>();
-    if (groupView != null &amp;&amp; groupView.</xsc:Java>
+    if (groupView != null) {
+        java.util.List&lt;</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcMAFGMZHRDZDVHHM3M45BT2NNSY"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>> funcRefs = new java.util.ArrayList&lt;>();
+        </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> model = groupView.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="aic4XUXMXRWTREMHAT5S7SM55XC6A mthO2NFV47B4NFJ7A4XU6K2XY3VCY" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+        if (!model.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthSBNBACDVNZBFVBPBG4YQNPES5M" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcC3WCFZVCBJBMDANHSQ324CP3P4 mth5VIYUXFGVNDOXDEB5PRQLSPLQU" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().isEmpty()) {
+            for (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> pid : model.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthSBNBACDVNZBFVBPBG4YQNPES5M" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcC3WCFZVCBJBMDANHSQ324CP3P4 mth5VIYUXFGVNDOXDEB5PRQLSPLQU" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>()) {
+               funcRefs.add(new </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMAFGMZHRDZDVHHM3M45BT2NNSY mth7J2HRRJK6NDRPPJX4T5TF6G6K4" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(pid));
+            }
+        } else if (groupView.</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:IdReference Path="aic4XUXMXRWTREMHAT5S7SM55XC6A mthPMEUED2MFZGLHHYMQ54UMEZ4HA" Invoke="true"/>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>() != null) {
-        </xsc:Java>
+            funcRefs.add(new </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:TypeDeclaration TypeId="411" Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM"/>
+                    <xsc:IdReference Path="adcMAFGMZHRDZDVHHM3M45BT2NNSY mth7J2HRRJK6NDRPPJX4T5TF6G6K4" Invoke="true"/>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:Java> funcToMove = (</xsc:Java>
-                  </xsc:Item>
-                  <xsc:Item>
-                    <xsc:TypeDeclaration TypeId="411" Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM"/>
-                  </xsc:Item>
-                  <xsc:Item>
-                    <xsc:Java>) groupView.</xsc:Java>
+                    <xsc:Java>(groupView.</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:IdReference Path="aic4XUXMXRWTREMHAT5S7SM55XC6A mthPMEUED2MFZGLHHYMQ54UMEZ4HA" Invoke="true"/>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:Java>();
+                    <xsc:Java>().</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth2KIAJ6FEFRGK7OPUZOZC4ZHECU" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>()));
+        }
         </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdEORKGEY3BFFRHAS7NV6WRBBUVY" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setValue(new </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcQMUG2EFWYZF7HBAIR754WNQJOM mth6TAJXEZZE5A6NLLKLVWJBCTZE4" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(funcRefs.toArray(new </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcMAFGMZHRDZDVHHM3M45BT2NNSY"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>[funcRefs.size()])));
+        
+        </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> lib = (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthONG6LTLG6NCB7PCYVV4QCGCQHQ" Invoke="true"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.class);
+        if (lib != null) {
+            </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
@@ -430,7 +525,7 @@ if (</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>(
-                </xsc:Java>
+                    </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
@@ -455,7 +550,7 @@ if (</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>),
-                </xsc:Java>
+                    </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
@@ -467,14 +562,14 @@ if (</xsc:Java>
                     <xsc:IdReference Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ mthRLB5JIZRLNA75HDECLQSKVXZLI" Invoke="true"/>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:Java>(funcToMove.</xsc:Java>
+                    <xsc:Java>(lib.</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM colPWEV3UOPXJD5NLVOWUIJNNQ4XA" Invoke="true"/>
+                    <xsc:IdReference Path="aecAM6HEX43SFCQTMG23G7JHOBCMA colLSUHVNJK2FEMPFDMOHXBTSONXA" Invoke="true"/>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>.Value));
-        </xsc:Java>
+            </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdVQ4J6JKZ5FGD7B7BBCIWICYICE" Invoke="true"/>
@@ -487,25 +582,7 @@ if (</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>(condition);
-        </xsc:Java>
-                  </xsc:Item>
-                  <xsc:Item>
-                    <xsc:IdReference Path="afhYOZO7B5T6BHBXBZW6NBVFHJEUU prdHBH67G7RDNFFVLNBULTLJCM5W4" Invoke="true"/>
-                  </xsc:Item>
-                  <xsc:Item>
-                    <xsc:Java>.setValue(new </xsc:Java>
-                  </xsc:Item>
-                  <xsc:Item>
-                    <xsc:IdReference Path="adcMAFGMZHRDZDVHHM3M45BT2NNSY mthFQJNHP27QFEGPNZIZFLOC4RVOY" Invoke="true"/>
-                  </xsc:Item>
-                  <xsc:Item>
-                    <xsc:Java>(groupView.</xsc:Java>
-                  </xsc:Item>
-                  <xsc:Item>
-                    <xsc:IdReference Path="aic4XUXMXRWTREMHAT5S7SM55XC6A mthPMEUED2MFZGLHHYMQ54UMEZ4HA" Invoke="true"/>
-                  </xsc:Item>
-                  <xsc:Item>
-                    <xsc:Java>()));
+        }
     }
 }</xsc:Java>
                   </xsc:Item>

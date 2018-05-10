@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.meta.editorpages;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,7 +21,6 @@ import java.util.Map;
 import org.radixware.kernel.common.client.errors.NoDefinitionWithSuchIdError;
 import org.radixware.kernel.common.client.meta.TitledDefinition;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
-import org.radixware.kernel.common.exceptions.WrongFormatError;
 import org.radixware.kernel.common.types.Id;
 
 /**
@@ -77,6 +77,8 @@ public class RadStandardEditorPageDef extends RadEditorPageDef {
     public static class PropertiesGroup extends TitledDefinition {
 
         private final List<PageItem> items;
+        private final boolean checkable;
+        private final boolean frameIsVisible;
 
         public PropertiesGroup(final Id id,
                 final Id titleId,
@@ -85,9 +87,24 @@ public class RadStandardEditorPageDef extends RadEditorPageDef {
                 //или вложенных PropertiesGroup
                 //в порядке следования на странице (в группе)
                 ) {
-            super(id, null/*name*/, titleId, titleOwnerId);
+            this(id,null/*name*/,titleId,titleOwnerId,false,true,pageItems);
+        }
+        
+        public PropertiesGroup(final Id id,
+                final String name,
+                final Id titleId,
+                final Id titleOwnerId,//совпадает с titleOwnerId EditorPage
+                final boolean checkable,//позволяет добавить checkbox в заголовке, который устанавливает доступность содержимого
+                final boolean frameIsVisible,
+                final PageItem[] pageItems//в массиве содержатся идентификаторы свойств
+                //или вложенных PropertiesGroup
+                //в порядке следования на странице (в группе)
+                ) {
+            super(id, name, titleOwnerId, titleId);
+            this.checkable = checkable;
+            this.frameIsVisible = frameIsVisible;
             if (pageItems != null && pageItems.length > 0) {
-                this.items = new ArrayList<PageItem>();
+                this.items = new ArrayList<>();
                 Collections.addAll(items, pageItems);
                 Collections.sort(items, new Comparator<PageItem>() {
 
@@ -124,10 +141,23 @@ public class RadStandardEditorPageDef extends RadEditorPageDef {
             }
             return false;
         }
+        
+        public boolean isFrameVisible(){
+            return frameIsVisible;
+        }
+        
+        public boolean hasProperties(){
+            for (PageItem item : items) {
+                if (item.getItemId().getPrefix() != EDefinitionIdPrefix.EDITOR_PAGE_PROP_GROUP) {
+                    return true;
+                }
+            } 
+            return false;
+        }
     }
     
     private final Map<Id, PropertiesGroup> groups;
-    private final Id rootGroupId;
+    private final PropertiesGroup rootPropertiesGroup;
 
     public RadStandardEditorPageDef(final Id id,
             final String name,
@@ -136,22 +166,19 @@ public class RadStandardEditorPageDef extends RadEditorPageDef {
             final Id iconId,
             final PageItem[] pageItems//Вытащенные на страницу свойства с указанием строки и колонки
             ) {
-        this(id, name, titleOwnerId, titleId, iconId, arrToMap(titleOwnerId, pageItems), null, 1, null);
+        this(id, name, titleOwnerId, titleId, iconId, createRootPropertiesGroup(titleOwnerId, pageItems), null, null);
     }
 
     public RadStandardEditorPageDef(final Id id,
             final String name,
             final Id titleOwnerId,
             final Id titleId,
-            final Id iconId,
-            final PropertiesGroup[] groups,//Все группы свойств, объявленные на странице.
-            //Вложенность и порядок следования значения не имеют.
-            //Если на странице есть хотябы одно свойство, то в массиве должна
-            //присутствовать корневая группа
-            final Id rootPropertiesGroupId,//Идентификатор корневой группы
-            final int columnsCount//Количество колонок на странице. (По умолчанию = 1)
+            final Id iconId,            
+            final PageItem[] pageItems,//Вытащенные на страницу свойства с указанием строки и колонки
+            final PropertiesGroup[] groups//Все группы свойств, объявленные на странице.
+            //Вложенность и порядок следования значения не имеют.            
             ) {
-        this(id, name, titleOwnerId, titleId, iconId, arrToMap(groups), rootPropertiesGroupId, columnsCount, null);
+        this(id, name, titleOwnerId, titleId, iconId, createRootPropertiesGroup(titleOwnerId, pageItems), arrToMap(groups), null);
     }
     
     private RadStandardEditorPageDef(final Id id,
@@ -159,18 +186,16 @@ public class RadStandardEditorPageDef extends RadEditorPageDef {
             final Id titleOwnerId,
             final Id titleId,
             final Id iconId,
-            final Map<Id, PropertiesGroup> propertyGroups,
-            final Id rootPropertyGroupId,
-            final int columnsCount,
+            final PropertiesGroup rootPropertyGroup,            
+            final Map<Id, PropertiesGroup> childPropertiesGroups,
             final List<RadEditorPageDef> childPages){
         super(id, name, titleOwnerId, titleId, iconId, childPages);
-        groups = propertyGroups;
-        if (groups.size()==1){
-            rootGroupId = groups.keySet().iterator().next();
+        this.rootPropertiesGroup = rootPropertyGroup;
+        if (childPropertiesGroups==null){
+            groups = new HashMap<>();
         }else{
-            rootGroupId = rootPropertyGroupId;
+            groups = childPropertiesGroups;
         }
-        checkRootGroup();
     }
     
     private static Map<Id,PropertiesGroup> arrToMap(final PropertiesGroup[] arr){
@@ -183,57 +208,53 @@ public class RadStandardEditorPageDef extends RadEditorPageDef {
         return result;
     }
     
-    private static Map<Id,PropertiesGroup> arrToMap(final Id titleOwnerId, final PageItem[] arr){
-        final Map<Id,PropertiesGroup> result = new HashMap<>(1);
-        final Id groupId = Id.Factory.newInstance(EDefinitionIdPrefix.ADS_PROPERTY_GROUP);
-        final PropertiesGroup main = new PropertiesGroup(groupId, null, titleOwnerId, arr);
-        result.put(groupId, main);
-        return result;
-    }    
-
-    private void checkRootGroup() {
-        if (rootGroupId == null) {
-            if (!groups.isEmpty()) {
-                throw new WrongFormatError("root properties group identifier was not defined in editor page " + toString());
-            }
-        } else if (!groups.containsKey(rootGroupId)) {
-            throw new WrongFormatError("root properties group #" + rootGroupId + " was not found in editor page " + toString());
-        }
+    private static PropertiesGroup createRootPropertiesGroup(final Id titleOwnerId, final PageItem[] items){        
+        final Id groupId = Id.Factory.newInstance(EDefinitionIdPrefix.EDITOR_PAGE_PROP_GROUP);
+        return new PropertiesGroup(groupId, null, titleOwnerId, items);
     }
 
-    public PropertiesGroup getPropertiesGroup(Id id) {
+    public PropertiesGroup getPropertiesGroup(final Id id) {
         if (groups.containsKey(id)) {
             return groups.get(id);
         }
+        if (rootPropertiesGroup!=null && rootPropertiesGroup.getId().equals(id)){
+            return rootPropertiesGroup;
+        }
         throw new NoDefinitionWithSuchIdError(this, NoDefinitionWithSuchIdError.SubDefinitionType.EDITOR_PAGE_PROPERTIES_GROUP, id);
+    }
+    
+    public boolean isPropertyGroupExists(final Id id){
+        return groups.containsKey(id) || (rootPropertiesGroup!=null && rootPropertiesGroup.getId().equals(id));
+    }
+    
+    public Collection<PropertiesGroup> getPropertiesGroups(){
+        return groups.values();
     }
 
     public PropertiesGroup getRootPropertiesGroup() {
-        return rootGroupId != null ? getPropertiesGroup(rootGroupId) : null;
+        return rootPropertiesGroup;
     }
     
     public boolean hasProperties(){
         for (PropertiesGroup group : groups.values()) {
-            for (PageItem item : group.getPageItems()) {
-                if (item.getItemId().getPrefix() != EDefinitionIdPrefix.ADS_PROPERTY_GROUP) {
-                    return true;
-                }
+            if (group.hasProperties()){
+                return true;
             }
         }
-        return false;
+        return rootPropertiesGroup==null ? false : rootPropertiesGroup.hasProperties();
     }
 
     public boolean isEmpty() {
         return !hasProperties() && !hasSubPages();
     }
 
-    public boolean isPropertyDefined(Id propertyId) {
+    public boolean isPropertyDefined(final Id propertyId) {
         for (PropertiesGroup group : groups.values()) {
             if (group.isPropertyDefined(propertyId)) {
                 return true;
             }
         }
-        return false;
+        return rootPropertiesGroup==null ? false : rootPropertiesGroup.isPropertyDefined(propertyId);
     }
     
     @Override
@@ -243,9 +264,8 @@ public class RadStandardEditorPageDef extends RadEditorPageDef {
                                             classId,
                                             titleId,
                                             iconId,
+                                            rootPropertiesGroup,
                                             groups,
-                                            rootGroupId,
-                                            1,
                                             childPages);
     }    
 }

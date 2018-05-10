@@ -8,18 +8,22 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.api.editors.components;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import net.miginfocom.swing.MigLayout;
 import org.radixware.kernel.common.defs.IDescribable;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.ITransparency;
+import org.radixware.kernel.common.defs.ads.type.AdsTransparence;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
 import org.radixware.kernel.designer.api.ApiFilter;
 import org.radixware.kernel.designer.api.editors.Brick;
@@ -31,7 +35,6 @@ import org.radixware.kernel.designer.common.dialogs.components.description.Descr
 import org.radixware.kernel.designer.common.dialogs.components.description.MixedDescriptionWrapper;
 import org.radixware.kernel.designer.common.dialogs.names.NamingService;
 
-
 public class OverviewBrick<T extends RadixObject> extends Brick<T> {
 
     private static final float FONT_SIZE_FACTOR_H1 = 1.2f;
@@ -40,6 +43,8 @@ public class OverviewBrick<T extends RadixObject> extends Brick<T> {
     protected static final String NAME = "name";
     protected static final String LOCATION = "location";
     protected static final String DESCRIPTION = "description";
+    protected static final String TOOLBAR = "toolbar";
+
     //
     private final BrickFactory factory;
 
@@ -56,11 +61,15 @@ public class OverviewBrick<T extends RadixObject> extends Brick<T> {
             buildLocation();
         }
         buildAccess(mode);
+        buildToolbar();
         buildHierarchy();
         buildDescription();
     }
 
     private void buildName() {
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
         final JLabel lblName = new JLabel();
         final Font font = lblName.getFont();
         final ScalableRuler ruler = new ScalableRuler(12, font.getSize());
@@ -68,29 +77,50 @@ public class OverviewBrick<T extends RadixObject> extends Brick<T> {
         lblName.setIcon(getSource().getIcon().getIcon(ruler.scale(16), ruler.scale(20)));
         lblName.setText(NamingService.getDefault().getHtmlName(getSource(), getSource().getTypeTitle() + " '", "'"));
         lblName.setFont(font.deriveFont(Font.BOLD, font.getSize() * FONT_SIZE_FACTOR_H1));
+        panel.add(lblName);
+
+        if (getSource() instanceof ITransparency) {
+            ITransparency transparency = (ITransparency) getSource();
+            if (AdsTransparence.isTransparent(transparency)) {
+                final JLabel lblWrapped = new JLabel();
+                lblWrapped.setText("is wrapper of " + transparency.getTransparence().getPublishedName() + " ");
+                lblWrapped.setFont(font.deriveFont(Font.ITALIC, font.getSize() * FONT_SIZE_FACTOR_H1));
+
+                panel.add(lblWrapped);
+            }
+        }
 
         final GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.anchor = GridBagConstraints.FIRST_LINE_START;
         constraints.insets.left = 16;
-        getBricks().add(new SimpleBrick(source, lblName, constraints, NAME, null));
+        getBricks().add(new SimpleBrick(source, panel, constraints, NAME, null));
+
     }
 
     private void buildLocation() {
+        buildLocation(getLocation());
+    }
 
-        RadixObject ownerDefinition = getSource().getOwnerDefinition();
-        if (ownerDefinition == null) {
-            ownerDefinition = getSource().getLayer();
+    protected RadixObject getLocation() {
+        RadixObject location = getSource().getOwnerDefinition();
+        
+        if (location == null) {
+            location = getSource().getLayer();
         }
+        
+        return location;
+    }
 
-        if (ownerDefinition != null) {
+    private void buildLocation(RadixObject location) {
+        if (location != null) {
 
             final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
             final Font font = panel.getFont();
 
-            final JLabel lblOwner = new RefLabel(ownerDefinition);
-            lblOwner.setText(ownerDefinition.getTypeTitle() + " " + ownerDefinition.getName());
+            final JLabel lblOwner = new RefLabel(location);
+            lblOwner.setText(location.getTypeTitle() + " " + location.getName());
             lblOwner.setFont(font.deriveFont(font.getSize() * FONT_SIZE_FACTOR_H2));
 
             final JLabel lblLocation = new JLabel("Location:");
@@ -128,6 +158,9 @@ public class OverviewBrick<T extends RadixObject> extends Brick<T> {
 
             getBricks().add(new SimpleBrick(source, descriptionEditor, constraints, DESCRIPTION, null));
         }
+    }
+
+    protected void buildToolbar() {
     }
 
     private void buildAccess(OpenMode mode) {

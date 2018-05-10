@@ -41,5 +41,8 @@ public class FSRepositoryKernelModule extends FSRepositoryModule<KernelModule> {
         return getName().toLowerCase();
     }
 
-   
+    @Override
+    public void setModule(KernelModule module) {
+    }
+
 }

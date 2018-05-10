@@ -15,6 +15,7 @@ import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
 import com.linuxense.javadbf.DBFWriter;
 import java.io.IOException;
+import java.util.EnumSet;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import org.apache.xmlbeans.XmlObject;
@@ -24,7 +25,10 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.environment.IRadixClassLoader;
 import org.radixware.kernel.common.exceptions.SmioException;
 import org.radixware.kernel.common.msdl.fields.StructureFieldModel;
+import org.radixware.kernel.common.msdl.fields.parser.ISmioParserFactory;
+import org.radixware.kernel.common.msdl.fields.parser.SmioParserFactory;
 import org.radixware.kernel.common.msdl.fields.parser.structure.SmioFieldStructure;
+import org.radixware.kernel.common.trace.IRadixTrace;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.msdl.Message;
 import org.radixware.schemas.msdl.Structure;
@@ -35,22 +39,29 @@ public class RootMsdlScheme extends MsdlField {
     private Structure fictiveParentStructure = null;
     private String classTargetNameSpace = null;
     private String converterClassGuid = null;
-    private final Class preprocessorClass;
-
+    private boolean forcedUseFictiveParentStructure;
+    private IMsdlPreprocessorAccess preprocessorAccess;
+    private final ISmioParserFactory parserFactory;
+    private final IRadixTrace trace;
+    
+    public static enum EFictiveStructParams {
+        FORCED_USE, MERGE_WITH_ROOT_STRUCTURE
+    }
+    
     public RootMsdlScheme(Message from) {
         super(from);
         classTargetNameSpace = from.getClassTargetNamespace();
         converterClassGuid = from.getConvertorClassGUID();
-        preprocessorClass = null;
-//        if (converterClassGuid != null) {
-//            throw new IllegalStateException("Preprocessor class will be unavailable: missing ADS classloader reference");
-//        }
+        parserFactory = initParserFactory();
+        preprocessorAccess = null;
+        this.trace = IRadixTrace.Lookup.findInstance(null);
     }
 
     public RootMsdlScheme(ClassLoader adsClassLoader, Message from) throws SmioException {
         super(from);
         classTargetNameSpace = from.getClassTargetNamespace();
         converterClassGuid = from.getConvertorClassGUID();
+        parserFactory = initParserFactory();
         Class clazz = null;
         if (converterClassGuid != null) {
             Id id = Id.Factory.loadFrom(converterClassGuid);
@@ -60,9 +71,20 @@ public class RootMsdlScheme extends MsdlField {
                 throw new SmioException("Preprocessor class not found", ex);
             }
         }
-        preprocessorClass = clazz;
+        if (clazz != null) {
+            preprocessorAccess = new MsdlPreprocessorAccessDefault(clazz);
+        }
+        this.trace = IRadixTrace.Lookup.findInstance(null);
     }
-
+    
+    public IRadixTrace getTrace() {
+        return trace;
+    }
+    
+    private ISmioParserFactory initParserFactory() {
+        return new SmioParserFactory();
+    }
+    
     public Structure getFictiveParentStructure() {
         return fictiveParentStructure;
     }
@@ -79,8 +101,12 @@ public class RootMsdlScheme extends MsdlField {
         return converterClassGuid;
     }
 
-    public Class getPreprocessorClass() throws SmioException {
-        return preprocessorClass;
+    public void setPreprocessorAccess(IMsdlPreprocessorAccess preprocessorAccess) {
+        this.preprocessorAccess = preprocessorAccess;
+    }
+    
+    public IMsdlPreprocessorAccess getPreprocessorAccess() {
+        return preprocessorAccess;
     }
 
     public String getNamespace() {
@@ -99,9 +125,23 @@ public class RootMsdlScheme extends MsdlField {
         message.setConvertorClassGUID(converterClassGuid);
         return message;
     }
+    
+    public void setFictiveParentStructure(Structure fictiveParentStructure, EnumSet<EFictiveStructParams> params) {
+        if (params != null) {
+            forcedUseFictiveParentStructure = params.contains(EFictiveStructParams.FORCED_USE);
+            if (params.contains(EFictiveStructParams.MERGE_WITH_ROOT_STRUCTURE)) {
+                this.fictiveParentStructure = new FictiveStructureDelegate(fictiveParentStructure, ((StructureFieldModel) getFieldModel()).getStructure(), forcedUseFictiveParentStructure);
+            } else {
+                this.fictiveParentStructure = fictiveParentStructure;    
+            }
+        } else {
+            this.fictiveParentStructure = fictiveParentStructure;
+        }
+        getFieldModel().clearParser();
+    }
 
     public void setFictiveParentStructure(Structure fictiveParentStructure) {
-        this.fictiveParentStructure = fictiveParentStructure;
+        setFictiveParentStructure(fictiveParentStructure, null);
     }
 
     public boolean isDbf() {
@@ -154,7 +194,7 @@ public class RootMsdlScheme extends MsdlField {
 
     @Override
     protected boolean isQualifiedNamePart() {
-        return false;
+        return true;
     }
 
     @Override
@@ -164,5 +204,29 @@ public class RootMsdlScheme extends MsdlField {
             return container.getQualifiedName();
         }
         return super.getQualifiedName();
+    }
+    
+    public void setForcedUseFictiveParentStructure(boolean forcedUseFictiveParentStructure) {
+        if (this.forcedUseFictiveParentStructure == forcedUseFictiveParentStructure) {
+            return;
+        }
+        this.forcedUseFictiveParentStructure = forcedUseFictiveParentStructure;
+        if (fictiveParentStructure instanceof FictiveStructureDelegate) {
+            final FictiveStructureDelegate xDelegate = (FictiveStructureDelegate) fictiveParentStructure;
+            xDelegate.setIsForcedUseMode(forcedUseFictiveParentStructure);
+        }
+        getFieldModel().clearParser();
+    }
+
+    public boolean isFictiveStructureMergedWithRoot() {
+        return fictiveParentStructure instanceof FictiveStructureDelegate;
+    }
+    
+    public boolean isForcedUseFictiveParentStructure() {
+        return forcedUseFictiveParentStructure;
+    }
+    
+    public ISmioParserFactory getParserFactory() {
+        return parserFactory;
     }
 }

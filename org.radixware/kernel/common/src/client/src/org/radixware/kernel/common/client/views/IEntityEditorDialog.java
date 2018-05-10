@@ -19,8 +19,12 @@ public interface IEntityEditorDialog extends IDialogWithStandardButtons {
     public EntityModel getEntityModel();
     
     public void setToolBarHidden(boolean isHidden);
+    
+    public boolean reopen(final EntityModel entityModel, final boolean forced);
 
     public boolean entityWasChanged();
 
     public boolean dialogClosing();
+    
+    public void forceClose();
 }

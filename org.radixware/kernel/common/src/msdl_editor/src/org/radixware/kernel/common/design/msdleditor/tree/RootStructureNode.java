@@ -42,7 +42,7 @@ public class RootStructureNode extends ItemNode implements MsdlFieldStructureCha
 
     @Override
     public void onEvent(MsdlFieldStructureChangedEvent e) {
-        if (e.nameOnly) {
+        if (e.getType() == MsdlFieldStructureChangedEvent.EType.NAME_ONLY) {
             tree.nameChanged();
         }
         else {

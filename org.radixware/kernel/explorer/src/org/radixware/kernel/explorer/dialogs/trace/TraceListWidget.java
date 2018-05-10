@@ -52,6 +52,7 @@ public final class TraceListWidget extends QListView implements ITokenProvider {
         @Override
         public void select() {
             TraceListWidget.this.setCurrentRow(row);
+            TraceListWidget.this.scrollTo(TraceListWidget.this.model().index(row, 0), ScrollHint.PositionAtCenter);
         }
     }
 
@@ -149,7 +150,7 @@ public final class TraceListWidget extends QListView implements ITokenProvider {
         proxyModel = new FilteredModel(traceModel, filter, this);
         setItemDelegate(new TraceItemDelegate(traceModel, proxyModel, parent));
         setModel(proxyModel);
-        finder = new Finder(this);        
+        finder = new Finder(environment, this);
         filter.filterChanged.connect(this, "updateTraceList()");        
         this.installEventFilter(new TraceListKeyListener(this));        
     }        
@@ -186,11 +187,11 @@ public final class TraceListWidget extends QListView implements ITokenProvider {
     }
 
     public void showFindDialog() {
-        finder.showDialog();
+        finder.find();
     }
 
     public void findNext() {
-        finder.find();
+        finder.findNext();
     }
 
     public void addTraceItems(final List<ExplorerTraceItem> traceItems) {

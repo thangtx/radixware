@@ -17,10 +17,16 @@ public class DPCRecoverableSendException extends DPCSendException {
 
     public DPCRecoverableSendException(String mess) {
         super(mess);
+        setRecoverable(true);
     }
 
     public DPCRecoverableSendException(String mess, Throwable cause) {
         super(mess, cause);
+        setRecoverable(true);
     }
 
+    DPCRecoverableSendException setIoExceptionAdapter(boolean ioException) {
+        this.ioException = ioException;
+        return this;
+    }
 }

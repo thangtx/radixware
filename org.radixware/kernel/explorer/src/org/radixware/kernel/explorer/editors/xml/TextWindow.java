@@ -26,6 +26,7 @@ import com.trolltech.qt.gui.QTextCharFormat;
 import com.trolltech.qt.gui.QTextCursor;
 import com.trolltech.qt.gui.QTextDocument;
 import com.trolltech.qt.gui.QTextEdit;
+import com.trolltech.qt.gui.QTextOption;
 import com.trolltech.qt.gui.QWidget;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -46,6 +47,7 @@ public class TextWindow extends QWidget {
     private XmlObject xml = null;
     private XHighlighter highlighter;
     private int errorLine = -1;
+    private boolean changingLineFormat;
 
     public TextWindow(XmlEditor tree) {
         super((QWidget) null);
@@ -240,7 +242,7 @@ public class TextWindow extends QWidget {
         if (xml != null) {
             this.setModified(true);
             if (errorLine != -1) {
-                highlightError(QTextCharFormat.UnderlineStyle.NoUnderline, QColor.transparent, errorLine);
+                changeLineFormat(QTextCharFormat.UnderlineStyle.NoUnderline, QColor.transparent, errorLine);
                 errorLine = -1;
             }
         }
@@ -248,24 +250,34 @@ public class TextWindow extends QWidget {
 
     public void selectErrorLine(XmlError error) {
         if (error != null) {
-            highlightError(QTextCharFormat.UnderlineStyle.WaveUnderline, QColor.red, error.getLine());
+            changeLineFormat(QTextCharFormat.UnderlineStyle.WaveUnderline, QColor.red, error.getLine());
             errorLine = error.getLine();
         }
     }
 
-    private void highlightError(QTextCharFormat.UnderlineStyle under, QColor color, int line) {
-        QTextCharFormat errFormat = new QTextCharFormat();
-        errFormat.setUnderlineColor(color);
-        errFormat.setUnderlineStyle(under);
-        QTextCursor cursor = new QTextCursor(txt.textEdit.textCursor());
+    private void changeLineFormat(QTextCharFormat.UnderlineStyle under, QColor color, int line) {
+        if (!changingLineFormat){
+            final QTextOption.WrapMode keepWrapMode = txt.textEdit.wordWrapMode();
+            changingLineFormat = true;
+            try{
+                txt.textEdit.setWordWrapMode(QTextOption.WrapMode.NoWrap);
+                QTextCharFormat errFormat = new QTextCharFormat();
+                errFormat.setUnderlineColor(color);
+                errFormat.setUnderlineStyle(under);
+                QTextCursor cursor = new QTextCursor(txt.textEdit.textCursor());
 
-        cursor.movePosition(QTextCursor.MoveOperation.Start);
-        for (int i = 1; i <= line - 1; i++) {
-            cursor.movePosition(QTextCursor.MoveOperation.EndOfLine);
-            cursor.movePosition(QTextCursor.MoveOperation.NextCharacter);
+                cursor.movePosition(QTextCursor.MoveOperation.Start);
+                for (int i = 1; i <= line - 1; i++) {
+                    cursor.movePosition(QTextCursor.MoveOperation.EndOfLine);
+                    cursor.movePosition(QTextCursor.MoveOperation.NextCharacter);
+                }
+                cursor.select(QTextCursor.SelectionType.BlockUnderCursor);
+                cursor.setCharFormat(errFormat);
+            }finally{
+                txt.textEdit.setWordWrapMode(keepWrapMode);
+                changingLineFormat = false;
+            }
         }
-        cursor.select(QTextCursor.SelectionType.BlockUnderCursor);
-        cursor.setCharFormat(errFormat);
     }
 
     private static class XHRule {
@@ -336,6 +348,9 @@ public class TextWindow extends QWidget {
 
         @Override
         public void highlightBlock(String text) {
+            if (text.length() > 50 * 1024) {
+                return;//to large
+            }
             for (XHRule rule : rules) {
                 QRegExp expression = rule.pattern;
                 int index = expression.indexIn(text);

@@ -233,7 +233,7 @@ public abstract class AbstractViewController {
                 return false;
             }
             else if (objects.isEmpty()){
-                modificationsList.cancelChanges();
+                modificationsList.cancelChangesCascade();
                 return true;
             }
             else if (!modificationsList.applyChangesOnClosingView(environment, view, objects)){

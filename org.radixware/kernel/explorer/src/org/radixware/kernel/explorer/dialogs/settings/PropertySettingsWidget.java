@@ -20,16 +20,16 @@ import java.util.ArrayList;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.explorer.env.Application;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 import org.radixware.kernel.explorer.text.ExplorerFont;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 
-public class PropertySettingsWidget extends SettingsWidget {
+final class PropertySettingsWidget extends SettingsWidget {
 
-    private final ArrayList<SettingsWidget> settingsArrayList = new ArrayList<SettingsWidget>();
-    public final Signal2<QColor, String> updateBgrnColorSignal = new Signal2<QColor, String>();
-    public final Signal2<QColor, String> updateFgrnColorSignal = new Signal2<QColor, String>();
-    public final Signal2<QFont, String> updateFontSignal = new Signal2<QFont, String>();
+    private final ArrayList<SettingsWidget> settingsArrayList = new ArrayList<>();
+    public final Signal2<QColor, String> updateBgrnColorSignal = new Signal2<>();
+    public final Signal2<QColor, String> updateFgrnColorSignal = new Signal2<>();
+    public final Signal2<QFont, String> updateFontSignal = new Signal2<>();
     private final ColorSettingsWidget bgrnd, fgrn;
     private final FontSettingsWidget fsw;
 
@@ -107,14 +107,14 @@ public class PropertySettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
         for (SettingsWidget w : settingsArrayList) {
             w.readSettings(src);
         }
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         for (SettingsWidget w : settingsArrayList) {
             w.writeSettings(dst);
         }

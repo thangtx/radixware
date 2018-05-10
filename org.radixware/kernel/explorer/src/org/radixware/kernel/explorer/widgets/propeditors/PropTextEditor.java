@@ -34,6 +34,7 @@ import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QTextOption.WrapMode;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QVBoxLayout;
+import com.trolltech.qt.gui.QWidget;
 import java.util.EnumSet;
 import java.util.Objects;
 import org.radixware.kernel.common.client.editors.property.PropEditorController;
@@ -52,6 +53,7 @@ import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 
 
 import org.radixware.kernel.explorer.utils.WidgetUtils;
+import org.radixware.kernel.explorer.widgets.ExplorerTextEdit;
 
 
 public class PropTextEditor extends AbstractPropEditor {
@@ -74,8 +76,9 @@ public class PropTextEditor extends AbstractPropEditor {
     private EnumSet<ETextOptionsMarker> textOptionsMarkers = EnumSet.of(ETextOptionsMarker.EDITOR);
     private String textEditStyleSheet = "";
     private final static int MINIMAL_EDITOR_HEIGHT = 80;
+    private final QWidget buttonsContainer = new QWidget(this);
     private QVBoxLayout buttonsLayout;
-    private QTextEdit textEdit;
+    private ExplorerTextEdit textEdit;
     private String value;
     private boolean isInModificationState = false;
     private boolean wasClosed;
@@ -101,7 +104,7 @@ public class PropTextEditor extends AbstractPropEditor {
         textOptions = ExplorerTextOptions.EMPTY;
         textOptionsMarkers.add(ETextOptionsMarker.UNDEFINED_VALUE);
 
-        textEdit = new QTextEdit(this) {
+        textEdit = new ExplorerTextEdit(this) {
             @Override
             public QSize sizeHint() {
                 final QSize size = super.sizeHint();
@@ -141,10 +144,11 @@ public class PropTextEditor extends AbstractPropEditor {
         textEdit.installEventFilter(focusListener);
         textEdit.setObjectName("textEdit");        
         final QHBoxLayout layout = WidgetUtils.createHBoxLayout(this);
-        buttonsLayout = WidgetUtils.createVBoxLayout(null);
+        buttonsContainer.setObjectName("rx_buttonsContainer");
+        buttonsLayout = WidgetUtils.createVBoxLayout(buttonsContainer);
         layout.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignLeft, Qt.AlignmentFlag.AlignVCenter));
         layout.addWidget(textEdit);
-        layout.addLayout(buttonsLayout);
+        layout.addWidget(buttonsContainer);
         layout.setSpacing(4);
         setLayout(layout);
 
@@ -466,9 +470,16 @@ public class PropTextEditor extends AbstractPropEditor {
     protected void updateEditor(final Object currentValue, final PropEditorOptions options) {
         if (!setValue((String) currentValue)){            
             updateTextEdit();
-        }        
+        }
         textEdit.setToolTip(options.getTooltip());
         textEdit.setReadOnly(options.isReadOnly());
+        buttonsContainer.setVisible(options.isEnabled());
+        if (options.getEditMask() instanceof EditMaskStr){
+            final EditMaskStr mask = (EditMaskStr)options.getEditMask();
+            textEdit.setMaxLength(mask.isMaxLengthDefined() ? mask.getMaxLength() : -1);
+        }else{
+            textEdit.setMaxLength(-1);
+        }
         textEdit.clearFocus();
     }
        

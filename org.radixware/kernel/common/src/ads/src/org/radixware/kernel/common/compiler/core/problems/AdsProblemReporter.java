@@ -122,8 +122,14 @@ public class AdsProblemReporter extends ProblemReporter {
     }
 
     public void readOnlyProperty(JMLMessageSend messageSend, MethodBinding getter) {
-        final char[] selector = messageSend.getPropertyName();
-
+        char[] selector = messageSend.getPropertyName();
+        AdsCompilationUnitDeclaration decl = this.getCompilationUnitDeclaration(referenceContext);
+        if (decl != null) {
+            RadixObject obj = messageSend.findRadixObject(decl);
+            if (obj != null) {
+                selector = ("`" + obj.getName() + "`").toCharArray();
+            }
+        }
         this.handle(
                 IAdsProblem.ReadOnlyProperty,
                 new String[]{
@@ -441,6 +447,11 @@ public class AdsProblemReporter extends ProblemReporter {
                 ((AdsProblemFactory) problemFactory).addRenameRule(String.valueOf(abstractMethod.selector), "`" + method.getName() + "`");//     
             }
         }
+        if (type.isEnum() && type.isLocalType()) {
+            FieldBinding field = type.scope.enclosingMethodScope().initializedField;
+            String name = getEnumField(field);
+            ((AdsProblemFactory) problemFactory).addRenameRule(String.valueOf(field.name), "`" + name + "`");
+        }
         super.abstractMethodMustBeImplemented(type, abstractMethod);
 
     }
@@ -733,22 +744,7 @@ public class AdsProblemReporter extends ProblemReporter {
     @Override
     public void missingEnumConstantCase(SwitchStatement switchStatement, FieldBinding enumConstant) {
         //check needs for name replacement
-        String constantName = String.valueOf(enumConstant.name);
-        if (enumConstant.name.length >= 29) {
-            Definition definition = getDefinition(enumConstant.declaringClass);
-
-            if (definition instanceof AdsEnumDef) {
-                AdsEnumItemDef item = ((AdsEnumDef) definition).getItems().findById(Id.Factory.loadFrom(String.valueOf(constantName)), ExtendableDefinitions.EScope.ALL).get();
-                if (item != null) {
-                    constantName = item.getName();
-                }
-            } else if (definition instanceof AdsEnumClassDef) {
-                AdsEnumClassFieldDef field = ((AdsEnumClassDef) definition).getFields().findById(Id.Factory.loadFrom(String.valueOf(constantName)), ExtendableDefinitions.EScope.ALL).get();
-                if (field != null) {
-                    constantName = field.getName();
-                }
-            }
-        }
+        String constantName = getEnumField(enumConstant);
 
         if (switchStatement instanceof JMLSwitchStatement) {
             currentSwitch = (JMLSwitchStatement) switchStatement;
@@ -818,5 +814,42 @@ public class AdsProblemReporter extends ProblemReporter {
             }
         }
         return definition;
+    }
+    
+    private String getEnumField(FieldBinding enumConstant) {
+        String constantName = String.valueOf(enumConstant.name);
+        if (enumConstant.name.length >= 29) {
+            Definition definition = getDefinition(enumConstant.declaringClass);
+
+            if (definition instanceof AdsEnumDef) {
+                AdsEnumItemDef item = ((AdsEnumDef) definition).getItems().findById(Id.Factory.loadFrom(String.valueOf(constantName)), ExtendableDefinitions.EScope.ALL).get();
+                if (item != null) {
+                    constantName = item.getName();
+                }
+            } else if (definition instanceof AdsEnumClassDef) {
+                AdsEnumClassFieldDef field = ((AdsEnumClassDef) definition).getFields().findById(Id.Factory.loadFrom(String.valueOf(constantName)), ExtendableDefinitions.EScope.ALL).get();
+                if (field != null) {
+                    constantName = field.getName();
+                }
+            }
+        }
+        return constantName;
+    }
+
+    @Override
+    public void nonStaticAccessToStaticMethod(ASTNode location, MethodBinding method) {
+       renameMethod(method);
+       super.nonStaticAccessToStaticMethod(location, method);
+    }
+    
+    private void renameMethod(MethodBinding abstractMethod) {
+        Definition def = getDefinition(abstractMethod.declaringClass);
+        if (def instanceof AdsClassDef) {
+            Id idcandidate = Id.Factory.loadFrom(String.valueOf(abstractMethod.selector));
+            AdsMethodDef method = ((AdsClassDef) def).getMethods().findById(idcandidate, ExtendableDefinitions.EScope.ALL).get();
+            if (method != null) {
+                ((AdsProblemFactory) problemFactory).addRenameRule(String.valueOf(abstractMethod.selector), "`" + method.getName() + "`");//     
+            }
+        }
     }
 }

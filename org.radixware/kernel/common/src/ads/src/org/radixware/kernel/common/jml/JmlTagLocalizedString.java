@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
 import java.text.MessageFormat;
@@ -39,7 +38,6 @@ import org.radixware.kernel.common.scml.ScmlProcessor;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.xscml.JmlType;
 import org.radixware.schemas.xscml.JmlType.Item;
-
 
 public class JmlTagLocalizedString extends Jml.Tag implements ILocalizedDef {
 
@@ -72,14 +70,17 @@ public class JmlTagLocalizedString extends Jml.Tag implements ILocalizedDef {
         return new JavaSourceSupport(this) {
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagLocalizedString.this) {
                     @Override
                     public boolean writeCode(CodePrinter printer) {
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         AdsDefinition def = getOwnerJml().getOwnerDef();
                         if (def instanceof AdsClassMember) {
                             def = ((AdsClassMember) def).getOwnerClass();
                         }
                         WriterUtils.writeNLSInvocation(printer, getBundleId(), stringId, def, usagePurpose, getType() == EType.OBJECT);
+                        WriterUtils.leaveHumanUnreadableBlock(printer);
                         return true;
                     }
 
@@ -186,6 +187,7 @@ public class JmlTagLocalizedString extends Jml.Tag implements ILocalizedDef {
 //        this.stringId = Id.Factory.loadFrom(stringId);
 //    }
     protected JmlTagLocalizedString(Id stringId, EType type) {
+        super(null);
         this.stringId = stringId;
         this.type = type;
     }
@@ -204,6 +206,8 @@ public class JmlTagLocalizedString extends Jml.Tag implements ILocalizedDef {
     @Override
     public void appendTo(Item item) {
         Item.LocalizedString str = item.addNewLocalizedString();
+        rememberDisplayName(null);
+        appendTo(str);
         if (stringId != null) {
             str.setStringId(stringId.toString());
         }
@@ -273,9 +277,9 @@ public class JmlTagLocalizedString extends Jml.Tag implements ILocalizedDef {
             if (index >= 0) {
                 value = value.substring(0, index) + "...";
             }
-            return MessageFormat.format("\"{0}\"", value.replace("\"", "\\\""));
+            return "\"" + rememberDisplayName(value.replace("\"", "\\\"")) + "\"";
         } else {
-            return MessageFormat.format("!!!String not found: {0}", stringId.toString());
+            return "!!!String not found: " + restoreDisplayName(MessageFormat.format("{0}", stringId.toString()));
         }
     }
 
@@ -311,7 +315,7 @@ public class JmlTagLocalizedString extends Jml.Tag implements ILocalizedDef {
 
             @Override
             public boolean isInComment() {
-                if (isInComment  == 0) {
+                if (isInComment == 0) {
                     boolean check = JmlTagLocalizedString.this.isInComment();
                     if (check) {
                         isInComment = 3;

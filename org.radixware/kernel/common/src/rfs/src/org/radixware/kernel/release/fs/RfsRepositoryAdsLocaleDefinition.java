@@ -25,11 +25,15 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
+import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.ads.fs.FSRepositoryAdsDefinition;
@@ -47,11 +51,19 @@ import org.radixware.kernel.starter.radixloader.RadixLoader;
 
 
 public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition implements IRepositoryAdsLocaleDefinition {
-
+    
+    final Definition owner;
     private Map<EIsoLanguage, IRepositoryAdsDefinition> repositories = new HashMap<>();
 
+    public RfsRepositoryAdsLocaleDefinition(Module module, ReleaseRepository release, String moduleDir) {
+        super(null, release, moduleDir);
+        owner = module;
+        loadRepositories();
+    }
+    
     public RfsRepositoryAdsLocaleDefinition(AdsDefinition ownerDef, ReleaseRepository release, String moduleDir) {
         super(ownerDef, release, moduleDir);
+        owner = ownerDef;
         loadRepositories();
     }
 
@@ -67,7 +79,7 @@ public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition
         }
         File mlsFile = new File(parent, AdsModule.LOCALE_DIR_NAME);
         File srcFile = new File(parent, AdsModule.SOURCES_DIR_NAME);
-        Id mlbId = Id.Factory.loadFrom(EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + pointer.getId().toString());
+        Id mlbId = Id.Factory.loadFrom(EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + owner.getId().toString());
         if (mlsFile.exists()) {
             FSRepositoryAdsLocaleDefinition localeRepository = new FSRepositoryAdsLocaleDefinition(mlsFile, mlbId);
             if (!localeRepository.getRepositories().isEmpty()) {
@@ -77,14 +89,14 @@ public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition
                     }
                 }
             } else if (!isLocalizingLayer) {
-                mlsFile = new File(srcFile, EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + pointer.getId().toString() + ".xml");
+                mlsFile = new File(srcFile, EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + owner.getId().toString() + ".xml");
                 if (mlsFile.exists()) {
                     repositories.put(null, new FSRepositoryAdsDefinition(mlsFile));
                 }
             }
         } else if (!isLocalizingLayer && srcFile.exists()) {
             if (repositories.isEmpty()) {
-                mlsFile = new File(srcFile, EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + pointer.getId().toString() + ".xml");
+                mlsFile = new File(srcFile, EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + owner.getId().toString() + ".xml");
                 if (mlsFile.exists()) {
                     repositories.put(null, new FSRepositoryAdsDefinition(mlsFile));
                 }
@@ -110,7 +122,7 @@ public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition
     }
 
     public void loadFilesFromBin(String mDir, Id id, Map<EIsoLanguage, IRepositoryAdsDefinition> repositories) throws IOException {
-        RevisionMeta revMeta = ((RadixClassLoader) pointer.getClass().getClassLoader()).getRevisionMeta();
+        RevisionMeta revMeta = ((RadixClassLoader) owner.getClass().getClassLoader()).getRevisionMeta();
 
         File binFile = new File(mDir, AdsModule.BINARIES_DIR_NAME);
         if (binFile.exists()) {
@@ -119,7 +131,7 @@ public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition
                 for (String lang : revMeta.getLanguages()) {
                     final StringBuilder sbFileName = new StringBuilder(AdsModule.LOCALE_DIR_NAME);
                     sbFileName.append("-").append(lang).append(".jar");
-                    FileMeta fileMeta = ((RadixClassLoader) pointer.getClass().getClassLoader()).getRevisionMeta().findFile((moduleDir + AdsModule.BINARIES_DIR_NAME + "/" + sbFileName).replace("\\", "/"));
+                    FileMeta fileMeta = ((RadixClassLoader) owner.getClass().getClassLoader()).getRevisionMeta().findFile((moduleDir + AdsModule.BINARIES_DIR_NAME + "/" + sbFileName).replace("\\", "/"));
                     if (fileMeta != null) {
                         byte[] fileData = RadixLoader.getInstance().readFileData(fileMeta, revMeta);
                         JarInputStream in = new JarInputStream(new ByteArrayInputStream(fileData));
@@ -209,7 +221,7 @@ public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition
     }
 
     private void checkLocalizingLayers() {
-        final String s = pointer.getLayer().getURI();
+        final String s = owner.getLayer().getURI();
         String dirName = RadixLoader.getInstance().getRoot().getAbsolutePath();
         File branchDir = new File(dirName);
         FilenameFilter filter = new FilenameFilter() {
@@ -231,7 +243,7 @@ public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition
 
     @Override
     public Id getId() {
-        return Id.Factory.loadFrom(EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + pointer.getId().toString());
+        return Id.Factory.loadFrom(EDefinitionIdPrefix.ADS_LOCALIZING_BUNDLE.getValue() + owner.getId().toString());
     }
 
     @Override
@@ -241,7 +253,7 @@ public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition
 
     @Override
     public String getName() {
-        return pointer.getName() + " Multilingual Bundle";
+        return owner.getName() + " Multilingual Bundle";
     }
 
     @Override
@@ -257,4 +269,21 @@ public class RfsRepositoryAdsLocaleDefinition extends RfsRepositoryAdsDefinition
     public Map<EIsoLanguage, IRepositoryAdsDefinition> getRepositories() {
         return repositories;
     }
+
+    @Override
+    public ERuntimeEnvironmentType getEnvironment() {
+        if (pointer == null){
+            return ERuntimeEnvironmentType.COMMON;
+        }
+        return super.getEnvironment();
+    }
+
+    @Override
+    public EAccess getAccessMode() {
+        if (pointer == null){
+            return EAccess.PUBLIC;
+        }
+        return super.getAccessMode();
+    }
+    
 }

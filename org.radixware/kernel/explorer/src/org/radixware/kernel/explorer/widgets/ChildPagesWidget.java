@@ -12,6 +12,7 @@
 
 package org.radixware.kernel.explorer.widgets;
 
+import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QFont;
@@ -19,6 +20,8 @@ import com.trolltech.qt.gui.QGroupBox;
 import com.trolltech.qt.gui.QLayout;
 import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QSizePolicy;
+import com.trolltech.qt.gui.QStyle;
+import com.trolltech.qt.gui.QStyleOptionGroupBox;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import java.util.LinkedList;
@@ -96,6 +99,7 @@ public class ChildPagesWidget extends QGroupBox implements IExplorerModelWidget{
             }
             ownerWidget.updateGeometry();            
         }
+        updateContentMargins();
     }
     
     @Override
@@ -185,13 +189,30 @@ public class ChildPagesWidget extends QGroupBox implements IExplorerModelWidget{
         }
         setFont(tabFont);
     }   
+    
+    private boolean isFrameVisible(){
+        return (title()!=null && !title().isEmpty()) || !isFlat() || isCheckable();
+    }
 
     @Override
     protected void paintEvent(final QPaintEvent event) {
-        if ((title()!=null && !title().isEmpty()) || !isFlat() || isCheckable()){
+        if (isFrameVisible()){
             super.paintEvent(event);
         }
-    }        
+    }    
+    
+    private void updateContentMargins(){
+        if (isFrameVisible()){
+            final QStyleOptionGroupBox styleOption = new QStyleOptionGroupBox();
+            initStyleOption(styleOption);
+            final QRect contentsRect = style().subControlRect(QStyle.ComplexControl.CC_GroupBox, styleOption, QStyle.SubControl.SC_GroupBoxContents, this);
+            final QRect boxRect = styleOption.rect();
+            setContentsMargins(contentsRect.left() - boxRect.left(), contentsRect.top() - boxRect.top(),
+                          boxRect.right() - contentsRect.right(), boxRect.bottom() - contentsRect.bottom());
+        }else{
+            setContentsMargins(0,0,0,0);
+        }
+    }
 
     @Override
     protected void closeEvent(final QCloseEvent event) {

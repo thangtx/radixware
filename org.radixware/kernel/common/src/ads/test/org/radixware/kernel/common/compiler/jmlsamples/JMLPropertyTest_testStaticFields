@@ -1,0 +1,20 @@
+
+interface Branch {
+
+    java.lang.String getOper();
+
+    void setOper(java.lang.String oper);
+
+    public interface Oper {
+
+	static final String AND = "And";
+	static final String OR = "Or";
+    }
+}
+
+class Test {
+
+    public void f() {
+	String s = Branch.Oper.AND;
+    }
+}

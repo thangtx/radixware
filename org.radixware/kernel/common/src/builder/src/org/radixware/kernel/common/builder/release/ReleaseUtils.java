@@ -585,7 +585,10 @@ public class ReleaseUtils {
                     info.replaced(status.getFile());
                 }
                 if (!status.getRepositoryPropStatus().isNone()) {
-                    info.outOfDate(status.getFile());
+                    String userDir = System.getProperty("user.dir");
+                    if (!userDir.equals(status.getFile().getAbsolutePath())) {
+                        info.outOfDate(status.getFile());
+                    }
                 }
             }
         });

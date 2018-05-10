@@ -21,7 +21,7 @@ public class FreeLayoutProcessor extends ReportLayoutProcessor {
     }
 
     @Override
-    void justifyLayout() {
+    public void justifyLayout() {
         //
     }
 
@@ -88,7 +88,7 @@ public class FreeLayoutProcessor extends ReportLayoutProcessor {
     }
 
     @Override
-    void updateIndex(final AdsReportSelectableWidget widget, final InsertionInfo info) {
+    public void updateIndex(final AdsReportSelectableWidget widget, final InsertionInfo info) {
 
         if (info != null && widget != null && info.isAdding() && reportWidgetContainer != null && reportWidgetContainer.getCell() != null) {
             if (widget.getDiagramMode() == AdsReportForm.Mode.GRAPHICS) {

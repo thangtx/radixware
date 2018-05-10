@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -8,11 +8,11 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.ssl;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.security.*;
 import java.security.cert.Certificate;
@@ -29,10 +29,13 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.FailedLoginException;
+import org.apache.commons.lang.StringUtils;
 import org.radixware.kernel.common.enums.EKeyStoreType;
 import org.radixware.kernel.common.enums.ERadixApplication;
 import org.radixware.kernel.common.exceptions.InvalidServerKeystoreSettingsException;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
+import org.radixware.kernel.common.trace.LocalTracer;
+import org.radixware.kernel.common.utils.DebugLog;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.SystemTools;
 
@@ -41,7 +44,7 @@ import org.radixware.kernel.common.utils.SystemTools;
  *
  */
 public class KeystoreController {
-
+    
     public final static String KEYSTORE_FILE_TYPE = "JCEKS"; //"JKS"
     private final static int TRIES = 15;
     private KeyStore keystore = null;
@@ -54,6 +57,10 @@ public class KeystoreController {
     private static long serverKeystoreModificationTime = 0;
     private String pkcs11ProviderName;
     private String bcProviderName;
+    
+    private static KeyStore lastKeyStore = null;
+    private static String lastKeystoreCopyPath = null;
+    private static long lastKeystoreCopyModificationTime = 0;
 
     public String getKeyStoreName() {
         return keystoreName;
@@ -76,15 +83,13 @@ public class KeystoreController {
         try {
             keystore = KeyStore.getInstance(KEYSTORE_FILE_TYPE);
             keystore.load(null, null);
-        } catch (GeneralSecurityException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         }
 
         type = EKeyStoreType.FILE;
     }
-
+    
     /**
      * Constructor for working with a file-based keystore
      *
@@ -92,26 +97,67 @@ public class KeystoreController {
      * @param keyStorePassword
      * @throws KeystoreControllerException
      */
-    public KeystoreController(final String keystoreFilePath, final char[] keyStorePassword)
+    public KeystoreController(final String keystoreFilePath, final char[] keyStorePassword) throws KeystoreControllerException {
+        this(keystoreFilePath, keyStorePassword, false);
+    }
+
+    /**
+     * Constructor for working with a file-based keystore
+     *
+     * @param keystoreFilePath
+     * @param keyStorePassword
+     * @param cloneKeystoreFile
+     * @throws KeystoreControllerException
+     */
+    private KeystoreController(final String keystoreFilePath, final char[] keyStorePassword, boolean cloneKeystoreFile)
             throws KeystoreControllerException {
+        final boolean useLastCopy = serverKeystoreModificationTime != 0
+                && lastKeyStore != null
+                && lastKeystoreCopyPath != null
+                && lastKeystoreCopyModificationTime == serverKeystoreModificationTime;
+        if (useLastCopy) {
+            keystore = lastKeyStore;
+            keystoreName = lastKeystoreCopyPath;
+            type = EKeyStoreType.FILE;
+            LocalTracer.debugNonSensitive("KeystoreController.<init>: using last keystore copy: " + lastKeystoreCopyPath);
+            return;
+        }
+        
         try {
             keystore = KeyStore.getInstance(KEYSTORE_FILE_TYPE);
-
+            lastKeyStore = keystore;
         } catch (KeyStoreException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         }
 
+        // Creating copy of keystore file
+        File keystoreFileCopy = null;
+        String keystoreCopyFilePath = null;
+        try {
+            final File keystoreFile = new File(keystoreFilePath);
+            if (keystoreFile.exists() && cloneKeystoreFile) {
+                final String prefix = FileUtils.getFileBaseName(keystoreFile);
+                keystoreFileCopy = FileUtils.createTempFileViaRadixLoader(prefix);
+                keystoreCopyFilePath = keystoreFileCopy.getCanonicalPath();
+                FileUtils.copyFile(keystoreFile, keystoreFileCopy);
+                LocalTracer.debugNonSensitive("KeystoreController.<init>: keystoreCopyFilePath = " + keystoreCopyFilePath);
+            } else {
+                keystoreFileCopy = keystoreFile;
+                keystoreCopyFilePath = keystoreFilePath;
+            }
+        } catch (IOException ex) {
+            throw new KeystoreControllerException(ex.getMessage(), ex);
+        }
+
         FileInputStream fileInputStream;
         try {
-            fileInputStream = new FileInputStream(keystoreFilePath);
+            fileInputStream = new FileInputStream(keystoreFileCopy);
         } catch (FileNotFoundException e) {
             fileInputStream = null;
         }
         try {
             keystore.load(fileInputStream, keyStorePassword);
-        } catch (GeneralSecurityException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         } finally {
             if (fileInputStream != null) {
@@ -122,7 +168,10 @@ public class KeystoreController {
                 }
             }
         }
-        keystoreName = keystoreFilePath;
+        keystoreName = fileInputStream != null ? keystoreCopyFilePath : "";
+        lastKeystoreCopyPath = keystoreCopyFilePath;
+        lastKeystoreCopyModificationTime = serverKeystoreModificationTime;
+
         type = EKeyStoreType.FILE;
     }
 
@@ -135,31 +184,33 @@ public class KeystoreController {
      */
     public KeystoreController(final String configurationFilePath, final CallbackHandler callbackHandler)
             throws KeystoreControllerException {
-        //Provider provider = new sun.security.pkcs11.SunPKCS11(configurationFilePath); //RADIX-4067
-        final Provider provider;
+        final String absFileName;
         try {
-            final Class c = Class.forName("sun.security.pkcs11.SunPKCS11");
-            final Constructor<Provider> constructor = c.getDeclaredConstructor(String.class);
-            provider = constructor.newInstance(configurationFilePath);
-            pkcs11ProviderName = provider.getName();
-
-        } catch (ClassNotFoundException e) {
-            throw new KeystoreControllerException("Can't use PKCS#11 keystores: provider not found (Windows x64?)", e);
-        } catch (IllegalAccessException e) {
-            throw new KeystoreControllerException("Can't use PKCS#11 keystores: " + e.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new KeystoreControllerException("Can't use PKCS#11 keystores: " + e.getMessage(), e);
-        } catch (InstantiationException e) {
-            throw new KeystoreControllerException("Can't use PKCS#11 keystores: " + e.getMessage(), e);
-        } catch (InvocationTargetException e) {
-            throw new KeystoreControllerException("Can't use PKCS#11 keystores: " + e.getTargetException().getMessage(), e);
-        } catch (NoSuchMethodException e) {
-            throw new KeystoreControllerException("Can't use PKCS#11 keystores: " + e.getMessage(), e);
-        } catch (SecurityException e) {
-            throw new KeystoreControllerException("Can't use PKCS#11 keystores: " + e.getMessage(), e);
+            absFileName = new File(configurationFilePath).getAbsolutePath();
+        } catch (Exception ex) {
+            throw new KeystoreControllerException("Unable to get full path to PKCS11 configuration file '" + configurationFilePath + "'");
         }
-
-        Security.addProvider(provider);
+        Provider provider = null;
+        for (Provider p : Security.getProviders()) {
+            if (absFileName.equals(tryExtractPkcs11ConfigFileAbsPath(p))) {
+                provider = p;
+            }
+        }
+        if (provider == null) {
+            try {
+                final Class c = Class.forName("sun.security.pkcs11.SunPKCS11");
+                final Constructor<Provider> constructor = c.getDeclaredConstructor(String.class);
+                provider = constructor.newInstance(configurationFilePath);
+                Security.addProvider(provider);
+                pkcs11ProviderName = provider.getName();
+            } catch (ClassNotFoundException e) {
+                throw new KeystoreControllerException("Can't use PKCS#11 keystores: SunPKCS11 provider not found (Windows x64?)", e);
+            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException e) {
+                throw new KeystoreControllerException("Can't use PKCS#11 keystores: " + e.getMessage(), e);
+            } catch (InvocationTargetException e) {
+                throw new KeystoreControllerException("Can't use PKCS#11 keystores: " + e.getTargetException().getMessage(), e);
+            }
+        }
         final KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11", provider, new KeyStore.CallbackHandlerProtection(callbackHandler));
 
         try {
@@ -188,10 +239,7 @@ public class KeystoreController {
             }
 
             keystore.load(null, null);
-        } catch (GeneralSecurityException e) {
-            close();
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             close();
             throw new KeystoreControllerException(e.getMessage(), e);
         }
@@ -200,13 +248,29 @@ public class KeystoreController {
         type = EKeyStoreType.PKCS11;
     }
 
+    private static String tryExtractPkcs11ConfigFileAbsPath(final Provider provider) {
+        try {
+            final Field configNameField = provider.getClass().getDeclaredField("configName");
+            configNameField.setAccessible(true);
+            final Object configNameObj = configNameField.get(provider);
+            if (configNameObj != null) {
+                final File f = new File(configNameObj.toString());
+                if (f.exists()) {
+                    return f.getAbsolutePath();
+                }
+            }
+        } catch (Throwable t) {
+            //ingore;
+        }
+        return null;
+    }
+
     /**
      * Returns a KeystoreController for an Explorer connection
      *
      * @param connectionId GUID of the connection
      * @param type required keystore type
      * @param keystorePassword keystore password
-     * @param slotIndex HSM slot index (used only when keystore type is PKCS#11)
      * @return an instance of KeystoreController
      * @throws KeystoreControllerException
      */
@@ -231,7 +295,6 @@ public class KeystoreController {
      * configuration, etc.
      *
      * @param tempConfig temp configuration file
-     * @param type
      * @param keystorePassword
      * @return temp keystore controller
      * @throws KeystoreControllerException
@@ -268,7 +331,7 @@ public class KeystoreController {
             switch (type) {
                 case FILE:
                     final String keyStoreFilePath = workPath + "/" + keystoreFileName;
-                    keystoreController = new KeystoreController(keyStoreFilePath, keystorePassword);
+                    keystoreController = new KeystoreController(keyStoreFilePath, keystorePassword, true);
                     break;
                 case PKCS11:
                     final String configFilePath = workPath + "/" + configFileName;
@@ -278,9 +341,7 @@ public class KeystoreController {
                 default:
                     throw new KeystoreControllerException("Invalid keystore type: " + (type == null ? "null" : type.getValue()));
             }
-        } catch (IOException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (IllegalStateException e) {
+        } catch (IOException | IllegalStateException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         }
         return keystoreController;
@@ -288,7 +349,7 @@ public class KeystoreController {
 
     private static KeystoreController newInstance(final File keystoreFile, final char[] keystorePassword)
             throws KeystoreControllerException {
-        return new KeystoreController(keystoreFile.getAbsolutePath(), keystorePassword);
+        return new KeystoreController(keystoreFile.getAbsolutePath(), keystorePassword, true);
     }
 
     /**
@@ -313,9 +374,7 @@ public class KeystoreController {
         try {
             fileOutputStream = new FileOutputStream(keystoreFilePath);
             keystore.store(fileOutputStream, keyStorePassword);
-        } catch (GeneralSecurityException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         } finally {
             if (fileOutputStream != null) {
@@ -342,9 +401,7 @@ public class KeystoreController {
         }
         try {
             keystore.store(null, password);
-        } catch (GeneralSecurityException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         }
     }
@@ -361,12 +418,12 @@ public class KeystoreController {
      * Returns a list of keystore's entries
      */
     public Iterable<KeystoreEntry> getKeyStoreEntries() throws KeystoreControllerException {
-        final ArrayList<KeystoreEntry> list = new ArrayList<KeystoreEntry>();
+        final ArrayList<KeystoreEntry> list = new ArrayList<>();
         final Enumeration<String> aliases;
         try {
             aliases = keystore.aliases();
         } catch (KeyStoreException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
+            return list;
         }
         for (; aliases.hasMoreElements();) {
             final String alias = aliases.nextElement();
@@ -461,12 +518,14 @@ public class KeystoreController {
 
     private String[] getAliases(final boolean includeRsaKeys, final boolean includeTrustedCertificates, final boolean includeDesKeys)
             throws KeystoreControllerException {
-        final ArrayList<String> aliasList = new ArrayList<String>();
+        DebugLog.funcIn("KeyStoreController.getAliases: includeRsaKeys = " + includeRsaKeys + ", includeTrustedCertificates = " + includeTrustedCertificates + ", includeDesKeys = " + includeDesKeys);
+        final ArrayList<String> aliasList = new ArrayList<>();
         final Enumeration<String> aliasEnumeration;
         try {
             aliasEnumeration = keystore.aliases();
         } catch (KeyStoreException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
+            DebugLog.funcOut("return empty aliasList on KeyStoreException");
+            return new String[0];
         }
 
         while (aliasEnumeration.hasMoreElements()) {
@@ -491,7 +550,8 @@ public class KeystoreController {
             }
             aliasList.add(alias);
         }
-
+        DebugLog.funcOut("return aliasList: " + StringUtils.join(aliasList, ";"));
+        LocalTracer.debugNonSensitive("KeyStoreController.getAliases(): includeRsaKeys = " + includeRsaKeys + ", includeTrustedCertificates = " + includeTrustedCertificates + ", includeDesKeys = " + includeDesKeys + ", aliasList: " + StringUtils.join(aliasList, ";"));
         return aliasList.toArray(new String[0]); //stub parameter specifies the type of array elements
     }
 
@@ -542,9 +602,7 @@ public class KeystoreController {
             outerKeyStore.setKeyEntry(outerAlias, (PrivateKey) entry.getKey(), outerKeyPassword, entry.getCertificateChain());
             outputStream = new FileOutputStream(outerKeyStoreFilePath);
             outerKeyStore.store(outputStream, outerKeyStorePassword);
-        } catch (GeneralSecurityException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         } finally {
             if (inputStream != null) {
@@ -596,9 +654,7 @@ public class KeystoreController {
             if (!keyFound) {
                 throw new KeystoreControllerException("PKCS#12 keystore doesn't contain key entries");
             }
-        } catch (GeneralSecurityException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         } finally {
             if (inputStream != null) {
@@ -632,11 +688,7 @@ public class KeystoreController {
             throws KeystoreControllerException {
         try {
             return keystore.getKey(alias, keyPassword);
-        } catch (KeyStoreException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new KeystoreControllerException(e.getMessage(), e);
-        } catch (UnrecoverableKeyException e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
             throw new KeystoreControllerException(e.getMessage(), e);
         }
     }
@@ -647,7 +699,7 @@ public class KeystoreController {
     public void storeCertificateChain(final X509Certificate[] chain, final String alias, final char[] keyPassword)
             throws KeystoreControllerException {
         if (chain == null || chain.length == 0) {
-            throw new KeystoreControllerException("Received cerificate chain is empty");
+            throw new KeystoreControllerException("Received cerificate chain is empty for alias '" + alias + "'");
         }
 
         final PrivateKey privateKey;
@@ -661,9 +713,6 @@ public class KeystoreController {
 
         if (privateKey == null) {
             throw new KeystoreControllerException("Key is not present for alias '" + alias + "'");
-        }
-        if (chain == null || chain.length == 0) {
-            throw new KeystoreControllerException("Cerificate chain is empty for alias '" + alias + "'");
         }
 
         if (!chain[0].getPublicKey().equals(currentCertificate.getPublicKey())) {
@@ -813,6 +862,10 @@ public class KeystoreController {
         rereadServerKeystoreController();
         refreshServerKeystoreModificationTime();
     }
+    
+    public static String getServerKeystorePath() {
+        return KeystoreController.serverKeystorePath;
+    }
 
     private static boolean refreshServerKeystoreModificationTime() {
         File keystoreFile = getServerKeystoreFile(serverKeystorePath);
@@ -843,6 +896,10 @@ public class KeystoreController {
         if (serverKeystorePassword == null) {
             throw new InvalidServerKeystoreSettingsException("Can't open server's keystore: keystore password was not specified");
         }
+    }
+    
+    public static boolean isServerKeystorePassword() {
+        return serverKeystorePassword != null;
     }
 
     /**
@@ -943,7 +1000,13 @@ public class KeystoreController {
      * @throws KeystoreControllerException
      */
     public static String[] getServerKeystoreKeyAliases() throws KeystoreControllerException {
-        return getServerKeystoreController().getRsaKeyAliases();
+        KeystoreController ksc;
+        try {
+            ksc = getServerKeystoreController();
+        } catch (KeystoreControllerException ex) {
+            return new String[0];
+        }
+        return ksc.getRsaKeyAliases();
     }
 
     /**
@@ -954,7 +1017,13 @@ public class KeystoreController {
      */
     public static String[] getServerKeystoreTrustedCertAliases()
             throws KeystoreControllerException {
-        return getServerKeystoreController().getTrustedCertificateAliases();
+        KeystoreController ksc;
+        try {
+            ksc = getServerKeystoreController();
+        } catch (KeystoreControllerException ex) {
+            return new String[0];
+        }
+        return ksc.getTrustedCertificateAliases();
     }
 
     /**
@@ -1019,7 +1088,7 @@ public class KeystoreController {
      */
     private static void inspectConfiguration(final String configFilePath) throws IllegalStateException, IOException {
         final File configFile = new File(configFilePath);
-        if (!configFile.exists()) {
+        if (!configFile.exists() && serverKeystoreType == null) {
             configFile.createNewFile();
             final String libraryPath;
             if (SystemTools.isWindows) {

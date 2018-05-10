@@ -14,15 +14,11 @@ package org.radixware.kernel.designer.ads.editors.domain;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.jdesktop.swingx.VerticalLayout;
+import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDomainDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
@@ -31,8 +27,8 @@ import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.ads.common.dialogs.AccessPanel;
 import org.radixware.kernel.designer.common.annotations.registrators.EditorFactoryRegistration;
-import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.LocalizingEditorPanel;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.ProxyHandleInfo;
 import org.radixware.kernel.designer.common.editors.RadixObjectModalEditor;
 import org.radixware.kernel.designer.common.general.editors.IEditorFactory;
 import org.radixware.kernel.designer.common.general.editors.IRadixObjectEditor;
@@ -50,11 +46,10 @@ public class AdsDomainEditor extends RadixObjectModalEditor<AdsDomainDef> {
         }
     }
     private AdsDomainDef adsDomainDef;
-    private HandleInfo handleInfo;
+    private ProxyHandleInfo handleInfo;
     private boolean isEdited;
-    private JCheckBox chIsDeprecated = new JCheckBox();
+    private JCheckBox chIsDeprecated;
     private AccessPanel accessPanel;
-    private final Map<EIsoLanguage, String> changedTitles = new HashMap<>();
 
     /**
      * Creates new form AdsDomainEditor
@@ -85,13 +80,8 @@ public class AdsDomainEditor extends RadixObjectModalEditor<AdsDomainDef> {
             }
         });
 
-        final JPanel ap = new JPanel();
-        ap.setLayout(new VerticalLayout());
 
-        ap.add(accessPanel);
-        accessPanel.open(adsDomainDef);
-
-        chIsDeprecated.setText("Deprecated");
+        chIsDeprecated = accessPanel.addCheckBox("Deprecated");
         chIsDeprecated.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,9 +89,9 @@ public class AdsDomainEditor extends RadixObjectModalEditor<AdsDomainDef> {
                 AdsDomainEditor.this.setComplete(true);
             }
         });
-        ap.add(chIsDeprecated);
+        accessPanel.open(adsDomainDef);
 
-        add(ap, BorderLayout.PAGE_START);
+        add(accessPanel, BorderLayout.PAGE_START);
         localizingPaneList = new LocalizingEditorPanel();
         add(localizingPaneList, BorderLayout.CENTER);
     }
@@ -114,7 +104,7 @@ public class AdsDomainEditor extends RadixObjectModalEditor<AdsDomainDef> {
     @Override
     public boolean open(OpenInfo openInfo) {
 
-        handleInfo = new HandleInfo() {
+        handleInfo = new ProxyHandleInfo() {
             @Override
             public AdsDefinition getAdsDefinition() {
                 return adsDomainDef;
@@ -134,8 +124,37 @@ public class AdsDomainEditor extends RadixObjectModalEditor<AdsDomainDef> {
             @Override
             protected void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
                 isEdited = true;
-                changedTitles.put(language, newStringValue);
+                super.onLanguagesPatternChange(language, newStringValue);
                 AdsDomainEditor.this.setComplete(true);
+            }
+
+            @Override
+            public boolean isProxyState() {
+                return true;
+            }
+
+            @Override
+            public boolean commit() {
+                adsDomainDef.setDescriptionId(adsMultilingualStringDef != null ? adsMultilingualStringDef.getId() : null);
+                if (adsMultilingualStringDef != null) {
+                    for (IMultilingualStringDef.StringStorage storage : adsMultilingualStringDef.getValues(ExtendableDefinitions.EScope.LOCAL)) {
+                        adsDomainDef.setTitle(storage.getLanguage(), storage.getValue());
+                    }
+                }
+                return true;
+            }
+            
+            @Override
+            protected void updateProxyString() {
+                for (EIsoLanguage language : EIsoLanguage.values()) {
+                    String value = adsDomainDef.getTitle(language);
+                    if (value != null) {
+                        if (adsMultilingualStringDef == null) {
+                            adsMultilingualStringDef = AdsMultilingualStringDef.Factory.newDescriptionInstance();
+                        }
+                        onLanguagesPatternChange(language, value);
+                    }
+                }
             }
         };
         update();
@@ -148,33 +167,16 @@ public class AdsDomainEditor extends RadixObjectModalEditor<AdsDomainDef> {
         chIsDeprecated.setSelected(adsDomainDef.isDeprecated());
         chIsDeprecated.setEnabled(!(adsDomainDef.isReadOnly() || adsDomainDef.isOwnerDeprecated()));
 
-        AdsDomainEditor.this.setComplete(false);
         localizingPaneList.update(handleInfo);
+        AdsDomainEditor.this.setComplete(false);
+        revalidate();
     }
 
     @Override
     protected void apply() {
         if (isEdited) {
             adsDomainDef.setDeprecated(chIsDeprecated.isSelected());
-            final IMultilingualStringDef resultAdsMultilingualStringDef = handleInfo.getAdsMultilingualStringDef();
-
-
-
-            if (resultAdsMultilingualStringDef != null) {
-                for (Map.Entry<EIsoLanguage, String> e : changedTitles.entrySet()) {
-                    resultAdsMultilingualStringDef.setValue(e.getKey(), e.getValue());
-                }
-                adsDomainDef.setTitleId(resultAdsMultilingualStringDef.getId());
-            } else {
-                adsDomainDef.setTitleId(null);
-            }
-            final Map<EIsoLanguage, String> resultLanguages2PatternsMap = localizingPaneList.getLanguages2PatternsMap();
-            assert (resultLanguages2PatternsMap != null);
-            Iterator<Map.Entry<EIsoLanguage, String>> iter = resultLanguages2PatternsMap.entrySet().iterator();
-            while (iter.hasNext()) {
-                final Map.Entry<EIsoLanguage, String> entry = iter.next();
-                adsDomainDef.setTitle(entry.getKey(), entry.getValue());
-            }
+            handleInfo.commit();
             accessPanel.apply();
         }
     }

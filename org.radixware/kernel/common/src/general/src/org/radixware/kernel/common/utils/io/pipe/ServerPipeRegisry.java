@@ -15,39 +15,86 @@ import java.net.BindException;
 import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+public final class ServerPipeRegisry {
 
-final class ServerPipeRegisry {
+    private final static ServerPipeRegisry INSTANCE = new ServerPipeRegisry();
 
-    private static final Object SEM = new Object();
-    private static final Map<PipeAddress, ServerPipe> SERVER_PIPES_BY_ADDRESS = new HashMap<PipeAddress, ServerPipe>();
+    private final Object SEM = new Object();
+    private final Map<PipeAddress, ServerPipe> SERVER_PIPES_BY_ADDRESS = new HashMap<PipeAddress, ServerPipe>();
+    private final Map<Integer, IRemotePipeManager> remotePipeManagers = new ConcurrentHashMap<>();
 
     private ServerPipeRegisry() {
         //singletone
     }
+    
+    public static void registerRemotePipeManager(IRemotePipeManager remotePipeManager) {
+        INSTANCE.internalSetRemotePipeManager(remotePipeManager);
+    }
+    
+    private void internalSetRemotePipeManager(IRemotePipeManager remotePipeManager) {
+        this.remotePipeManagers.put(remotePipeManager.getInstanceId(), remotePipeManager);
+    }
 
     static void bind(final PipeAddress addr, final ServerPipe server) throws BindException {
-        synchronized (SEM) {
-            if (SERVER_PIPES_BY_ADDRESS.containsKey(addr)) {
-                throw new BindException("Address is already used by other ServerPipe: " + addr);
+    	INSTANCE.internalBind(addr, server);
+    }
+    private void internalBind(final PipeAddress addr, final ServerPipe server) throws BindException {
+        if (addr.getRemotePort()>0) {
+            // For remote pipes bind is illegal
+            throw new BindException("ServerPipe cannot be binded to remote pipe address: " + addr);
+        } else {
+            // Local pipe
+            synchronized (SEM) {
+                if (SERVER_PIPES_BY_ADDRESS.containsKey(addr)) {
+                    throw new BindException("Address is already used by other ServerPipe: " + addr);
+                }
+                SERVER_PIPES_BY_ADDRESS.put(addr, server);
             }
-            SERVER_PIPES_BY_ADDRESS.put(addr, server);
+            
         }
     }
 
     static void free(final PipeAddress addr) {
-        synchronized (SEM) {
-            SERVER_PIPES_BY_ADDRESS.remove(addr);
+    	INSTANCE.internalFree(addr);
+    }
+    
+    private void internalFree(final PipeAddress addr) {
+        if (addr.getRemotePort()>0) {
+            // Remote pipe
+            IRemotePipeManager remotePipeManager = remotePipeManagers.get(addr.getLocalInstanceId());
+            if (remotePipeManager!=null) {
+                remotePipeManager.free(addr);
+            }
+        } else {
+            // Local pipe
+            synchronized (SEM) {
+                SERVER_PIPES_BY_ADDRESS.remove(addr);
+            }
         }
     }
 
-    static void connect(final PipeAddress addr, final BidirectionalPipe client) throws ConnectException {
-        synchronized (SEM) {
-            final ServerPipe srv = SERVER_PIPES_BY_ADDRESS.get(addr);
-            if (srv == null) {
-                throw new ConnectException("There is no ServerPipe listening: " + addr);
+    public static void connect(final PipeAddress addr, final BidirectionalPipe client) throws ConnectException {
+    	INSTANCE.internalConnect(addr, client);
+    }
+    
+    private void internalConnect(final PipeAddress addr, final BidirectionalPipe client) throws ConnectException {
+        if (addr.getRemotePort()>0) {
+            // Remote pipe
+            IRemotePipeManager remotePipeManager = remotePipeManagers.get(addr.getLocalInstanceId());
+            if (remotePipeManager!=null) {
+                remotePipeManager.connect(addr, client);
             }
-            srv.connect(client);
+        } else {
+            // Local pipe
+            synchronized (SEM) {
+                final ServerPipe srv = SERVER_PIPES_BY_ADDRESS.get(addr);
+                if (srv == null) {
+                    throw new ConnectException("There is no ServerPipe listening: " + addr);
+                }
+                srv.connect(client);
+            }
         }
     }
 }

@@ -11,9 +11,13 @@
 
 package org.radixware.wps;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 final class HttpHeaderParser {
@@ -23,58 +27,33 @@ final class HttpHeaderParser {
         if (s == null) {
             return params;
         }
-        final int paramsDeviderPos = s.indexOf('?');
+        String decodedUrlStr = null;
+        try {
+            decodedUrlStr = URLDecoder.decode(s, "UTF-8");
+        } catch (UnsupportedEncodingException | IllegalArgumentException ex) {
+            Logger.getLogger(HttpHeaderParser.class.getName()).log(Level.SEVERE, "Can't decode query", ex);
+            return params;
+        }
+        final int paramsDeviderPos = decodedUrlStr.indexOf('?');
         final StringTokenizer st;
         if (paramsDeviderPos<0){
-            st = new StringTokenizer(s, "&");
+            st = new StringTokenizer(decodedUrlStr, "&");
         }else{
-            st = new StringTokenizer(s.substring(paramsDeviderPos+1), "&");
+            st = new StringTokenizer(decodedUrlStr.substring(paramsDeviderPos+1), "&");
         }
-        final StringBuffer sb = new StringBuffer(); 
         while (st.hasMoreTokens()) {
             String pair = st.nextToken();
             int pos = pair.indexOf('=');
             if (pos == -1) {
+                if (!pair.isEmpty()){
+                    params.put(pair,"");
+                }
                 continue;
-            }
-            try{            
-                String key = parseName(pair.substring(0, pos), sb);
-                String val = parseName(pair.substring(pos + 1, pair.length()), sb);
+            }          
+                String key = pair.substring(0, pos);
+                String val = pair.substring(pos + 1, pair.length());
                 params.put(key, val);
-            }catch(NumberFormatException exception){
-                //ignore
-            }
         }
         return params;
-    }
-
-    static private String parseName(String s, StringBuffer sb) {
-        sb.setLength(0);
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            switch (c) {
-                case '+':
-                    sb.append(' ');
-                    break;
-                case '%':
-                    try {
-                        sb.append((char) Integer.parseInt(s.substring(i + 1, i + 3),
-                                16));
-                        i += 2;
-                    } catch (StringIndexOutOfBoundsException e) {
-                        String rest = s.substring(i);
-                        sb.append(rest);
-                        if (rest.length() == 2) {
-                            i++;
-                        }
-                    }
-
-                    break;
-                default:
-                    sb.append(c);
-                    break;
-            }
-        }
-        return sb.toString();
-    }
+    } 
 }

@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.common.defs.ads.src.clazz.sql;
 
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginMm;
 import java.awt.Color;
 import java.util.List;
 import org.radixware.kernel.common.defs.Definition;
@@ -17,9 +18,9 @@ import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsSystemMethodDef;
-import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsCsvReportInfo.CsvExportColumns;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance.Font;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.*;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginTxt;
 import org.radixware.kernel.common.defs.ads.src.IJavaSource;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
@@ -95,12 +96,22 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         writeGroupConditionMethod(form.getGroups(), cp);
         writeFormMethod(form, cp);
 
+        writeGetDeclaredColumnsMethod(cp);
+
         if (report.getCsvInfo()
                 != null && report.getCsvInfo().isExportToCsvEnabled()) {
             final AdsCsvReportInfo csvInfo = report.getCsvInfo();
             writeCsvExportColumnsMethod(cp, csvInfo);
             if (csvInfo.isExportToCsvEnabled() && csvInfo.getRowCondition() != null) {
                 writeCsvRowCondition(csvInfo, cp);
+            }
+        }
+
+        if (report.getXlsxReportInfo() != null && report.getXlsxReportInfo().isExportToXlsxEnabled()) {
+            final AdsXlsxReportInfo xlsxInfo = report.getXlsxReportInfo();
+            writeGetExportXlsxInfoMethod(cp, xlsxInfo);
+            if (xlsxInfo.isExportToXlsxEnabled() && xlsxInfo.getRowCondition() != null) {
+                writeXlsxRowCondition(xlsxInfo, cp);
             }
         }
 
@@ -221,45 +232,33 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         writeString(varName, methodName, s, cp);
     }
 
+    private static void writeEnumCanonical(String varName, String methodName, Enum e, CodePrinter cp) {
+        final String s = e.getClass().getCanonicalName() + "." + e.name();
+        writeString(varName, methodName, s, cp);
+    }
+
     private boolean writeCsvExportColumnsMethod(CodePrinter cp, final AdsCsvReportInfo csvReportInfo) {
+        cp.println("private AdsCsvReportInfo csvExportInfo = null;");
         cp.println("@Override");
         cp.println("public AdsCsvReportInfo getExportCsvInfo() {");
         cp.enterBlock();
-        cp.println("AdsCsvReportInfo getExportCsvInfo=new AdsCsvReportInfo();");
-        final CsvExportColumns exportCsvColumns = csvReportInfo.getExportCsvColumns();
-        if (exportCsvColumns != null && !exportCsvColumns.isEmpty()) {
-            cp.println("AdsExportCsvColumn exportCsvColumn;");
-            cp.println("AdsReportFormat format;");
-            for (AdsExportCsvColumn exportCsvColumn : exportCsvColumns) {
-                cp.print("format=new AdsReportFormat();");
-
-                final AdsReportFormat format = exportCsvColumn.getFormat();
-                if (format != null) {
-                    writeFormat("format", cp, format);
-                }
-
-                cp.println("exportCsvColumn=new AdsExportCsvColumn(");
-                cp.print(Id.class.getName());
-                cp.print(".Factory.loadFrom(");
-                cp.printStringLiteral(exportCsvColumn.getPropId().toString());
-                cp.print("), ");
-                cp.println("\"" + exportCsvColumn.getExtName() + "\"" + ", format" + ");");
-                cp.println("getExportCsvInfo.getExportCsvColumns().add(exportCsvColumn);");
-            }
-        }
-        cp.print("getExportCsvInfo.setDelimiter(");
+        cp.println("if (csvExportInfo == null) {");
+        cp.enterBlock();
+        cp.println("csvExportInfo = new AdsCsvReportInfo();");
+        cp.println("buildCsvExportColumns(csvExportInfo.getExportCsvColumns());");
+        cp.print("csvExportInfo.setDelimiter(");
         cp.printStringLiteral(csvReportInfo.getDelimiter());
         cp.println(");");
-        //cp.print("getExportCsvInfo.setIsExportName(");
-        // cp.print(csvReportInfo.isExportColumnName());
-        //cp.println(");");
-        writeBoolean("getExportCsvInfo", "setIsExportColumnName", csvReportInfo.isExportColumnName(), cp);
-        cp.println("return getExportCsvInfo;");
+        writeBoolean("csvExportInfo", "setIsExportColumnName", csvReportInfo.isExportColumnName(), cp);
+        writeBoolean("csvExportInfo", "setIsExportToCsvEnabled", csvReportInfo.isExportToCsvEnabled(), cp);
+        cp.leaveBlock();
+        cp.println("}");
+
+        cp.println("return csvExportInfo;");
         cp.leaveBlock();
         cp.println("}");
         cp.println();
         return true;
-
     }
 
     private boolean writeFormMethod(AdsReportForm form, CodePrinter cp) {
@@ -272,19 +271,26 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
 
         writeBoolean(varName, "setColumnsHeaderForEachGroupDisplayed", form.isColumnsHeaderForEachGroupDisplayed(), cp);
         writeBoolean(varName, "setRepeatGroupHeadersOnNewPage", form.isRepeatGroupHeadersOnNewPage(), cp);
-        
+
         writeColor(varName, "setBgColor", form.getBgColor(), cp);
         writeColor(varName, "setFgColor", form.getFgColor(), cp);
         writeDouble(varName, "getMargin().setTopMm", form.getMargin().getTopMm(), cp);
         writeDouble(varName, "getMargin().setRightMm", form.getMargin().getRightMm(), cp);
         writeDouble(varName, "getMargin().setBottomMm", form.getMargin().getBottomMm(), cp);
         writeDouble(varName, "getMargin().setLeftMm", form.getMargin().getLeftMm(), cp);
+//        
+//        writeLong(varName, "getMarginTxt().setTopRows", form.getMarginTxt().getTopRows(), cp);
+//        writeLong(varName, "getMarginTxt().setRightCols", form.getMarginTxt().getRightCols(), cp);
+//        writeLong(varName, "getMarginTxt().setBottomRows", form.getMarginTxt().getBottomRows(), cp);
+//        writeLong(varName, "getMarginTxt().setLeftCols", form.getMarginTxt().getLeftCols(), cp);
+
         writeLong(varName, "setPageWidthMm", form.getPageWidthMm(), cp);
         writeLong(varName, "setPageHeightMm", form.getPageHeightMm(), cp);
         writeLong(varName, "setPageWidthCols", form.getPageWidthCols(), cp);
         writeLong(varName, "setPageHeightRows", form.getPageHeightRows(), cp);
 
         cp.println();
+        final CodePrinter after = CodePrinter.Factory.newJavaPrinter(cp);
 
         for (AdsReportBand band : form.getBands()) {
             if (!(band instanceof AdsReportGroupBand)) {
@@ -317,7 +323,7 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
                         default:
                             return false;
                     }
-                    if (!writeBand(band, "form", bandJavaName, cp)) {
+                    if (!writeBand(band, "form", bandJavaName, cp, after)) {
                         return false;
                     }
                 }
@@ -331,7 +337,7 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
             cp.println(groupName + ".setName(\"" + groupName + "\");");
             final AdsReportBand headerBand = group.getHeaderBand();
             if (headerBand != null) {
-                if (!writeBand(headerBand, groupName, "Header", cp)) {
+                if (!writeBand(headerBand, groupName, "Header", cp, after)) {
                     return false;
                 }
 
@@ -340,7 +346,7 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
             }
             final AdsReportBand footerBand = group.getFooterBand();
             if (footerBand != null) {
-                if (!writeBand(footerBand, groupName, "Footer", cp)) {
+                if (!writeBand(footerBand, groupName, "Footer", cp, after)) {
                     return false;
                 }
             } else {
@@ -351,6 +357,8 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         cp.println("return form;");
         cp.leaveBlock();
         cp.println("}");
+        cp.println();
+        cp.println(after.getContents());
         cp.println();
         return true;
     }
@@ -485,6 +493,27 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         cp.leaveBlock();
     }
 
+    private void writeXlsxRowCondition(AdsXlsxReportInfo xlsxInfo, CodePrinter cp) {
+        cp.enterBlock();
+        final Jml xlsxRowCondition = xlsxInfo.getRowCondition();
+        writeMarker(cp, xlsxRowCondition);
+        cp.println("@Override");
+        cp.println("public boolean isXlsxRowVisible() {");
+        cp.enterBlock();
+        try {
+            cp.enterCodeSection(xlsxRowCondition.getLocationDescriptor());//нужно для отладчика
+            WriterUtils.writeProfilerInitialization(cp, xlsxInfo);//нужно для работы профилера
+            writeJml(cp, xlsxRowCondition);
+            WriterUtils.writeProfilerFinalization(cp, xlsxInfo);//нужно для работы профилера
+        } finally {
+            cp.leaveCodeSection();//нужно для отладчика
+        }
+        cp.println();
+        cp.leaveBlock();
+        cp.println("}");
+        cp.leaveBlock();
+    }
+
     private void writeCalcExpressionMethod(String getExpressionMethodName, CodePrinter cp) {
         cp.enterBlock();
         cp.println("@Override");
@@ -552,10 +581,21 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
             }
             cp.println(subReportVarName + ".getAssociations().add(" + associationVarName + ");");
         }
+
+        AdsReportMarginMm marginMm = subReport.getMarginMm();
+        cp.print(subReportVarName + ".setMarginMm(");
+        cp.print(String.valueOf(marginMm.getMarginString()));
+        cp.println(");");
+
+        AdsReportMarginTxt marginTxt = subReport.getMarginTxt();
+        cp.print(subReportVarName + ".setMarginTxt(");
+        cp.print(String.valueOf(marginTxt.getMarginString()));
+        cp.println(");");
+
         return true;
     }
 
-    private boolean writeBand(AdsReportBand band, String ownerName, String setterName, CodePrinter cp) {
+    private boolean writeBand(AdsReportBand band, String ownerName, String setterName, CodePrinter cp, CodePrinter after) {
         final String bandJavaName = getBandJavaName(band);
         final String bandVarName = toLower(bandJavaName);
         final String bandClass = (band.getOnAdding().getItems().isEmpty() ? band.getClass().getSimpleName() : bandJavaName);
@@ -570,7 +610,7 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         writeEnum(bandVarName, "setLayout", band.getLayout(), cp);
 
         for (AdsReportWidget cell : band.getWidgets()) {
-            if (!writeCell(cell, bandVarName, cp)) {
+            if (!writeCell(cell, bandVarName, cp, after)) {
                 return false;
             }
         }
@@ -606,6 +646,9 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         if (band.getAltBgColor() != null) {
             writeColor(bandVarName, "setAltBgColor", band.getAltBgColor(), cp);
         }
+        if (!band.isInsideAltColor()) {
+            writeBoolean(bandVarName, "setInsideAltColor", band.isInsideAltColor(), cp);
+        }
         writeAppearance(band, bandVarName, cp);
     }
 
@@ -639,37 +682,45 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
              * cp);
              */
         }
-
         final AdsReportAbstractAppearance.Border border = appearance.getBorder();
         if (border.isDisplayed()) {
-            if (border.getStyle() != EReportBorderStyle.SOLID) {
-                writeEnum(varName, "getBorder().setStyle", border.getStyle(), cp);
-            }
-
             if (border.isOnTop()) {
                 writeBoolean(varName, "getBorder().setOnTop", true, cp);
+                writeBorderAppearance(varName, "getBorder().getTopBorder()", border.getTopStyle(), border.getTopColor(), border.getTopThicknessMm(), cp);
             }
-            if (border.isOnRight()) {
-                writeBoolean(varName, "getBorder().setOnRight", true, cp);
-            }
+
             if (border.isOnBottom()) {
                 writeBoolean(varName, "getBorder().setOnBottom", true, cp);
+                writeBorderAppearance(varName, "getBorder().getBottomBorder()", border.getBottomStyle(), border.getBottomColor(), border.getBottomThicknessMm(), cp);
             }
+
             if (border.isOnLeft()) {
                 writeBoolean(varName, "getBorder().setOnLeft", true, cp);
+                writeBorderAppearance(varName, "getBorder().getLeftBorder()", border.getLeftStyle(), border.getLeftColor(), border.getLeftThicknessMm(), cp);
             }
 
-            final Color borderColor = border.getColor();
-            if (!Color.BLACK.equals(borderColor)) {
-                writeColor(varName, "getBorder().setColor", border.getColor(), cp);
-            }
-
-            if (border.getThicknessMm() != AdsReportAbstractAppearance.Border.DEFAULT_THICKNESS_MM) {
-                writeDouble(varName, "getBorder().setThicknessMm", border.getThicknessMm(), cp);
+            if (border.isOnRight()) {
+                writeBoolean(varName, "getBorder().setOnRight", true, cp);
+                writeBorderAppearance(varName, "getBorder().getRightBorder()", border.getRightStyle(), border.getRightColor(), border.getRightThicknessMm(), cp);
             }
         }
 
         cp.println();
+    }
+
+    private void writeBorderAppearance(final String varName, final String borderMthName, final EReportBorderStyle style, final Color color, double thicknessMm, final CodePrinter cp) {
+        if (style != EReportBorderStyle.SOLID) {
+            writeEnum(varName, borderMthName + ".setStyle", style, cp);
+        }
+
+        final Color borderColor = color;
+        if (!Color.BLACK.equals(borderColor)) {
+            writeColor(varName, borderMthName + ".setColor", color, cp);
+        }
+
+        if (thicknessMm != AdsReportAbstractAppearance.Border.DEFAULT_THICKNESS_MM) {
+            writeDouble(varName, borderMthName + ".setThicknessMm", thicknessMm, cp);
+        }
     }
 
     private void writeFontAppearance(final String varName, final String fontMthName, final Font font, final CodePrinter cp) {
@@ -683,11 +734,17 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         return String.valueOf(Character.toLowerCase(s.charAt(0))) + s.substring(1);
     }
 
-    private boolean writeCell(AdsReportWidget widget, final String bandVarName, CodePrinter cp) {
+    private boolean writeCell(AdsReportWidget widget, final String bandVarName, CodePrinter cp, CodePrinter after) {
         final String cellJavaName = getCellJavaName(widget);
         final String cellVarName = toLower(cellJavaName);
-        final String cellClassSimpleName = widget.getClass().getSimpleName();
         cp.println("// " + cellVarName);
+
+        cp.println(bandVarName + ".getWidgets().add(get" + cellJavaName + "());");
+        return writeCellMethod(widget, after);
+    }
+
+    private boolean writeCellInit(AdsReportWidget widget, String cellVarName, String cellJavaName, CodePrinter cp) {
+        final String cellClassSimpleName = widget.getClass().getSimpleName();
         if (widget.isReportContainer()) {
             cp.println(cellClassSimpleName + " " + cellVarName + " = new AdsReportWidgetContainer();");
         } else {
@@ -698,8 +755,6 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
                 cp.println(cellClassSimpleName + " " + cellVarName + " = AdsReportCellFactory.new" + cell.getCellType().getValue() + "Cell();");
             }
         }
-        cp.println(bandVarName + ".getWidgets().add(" + cellVarName + ");");
-
         writeDouble(cellVarName, "setLeftMm", widget.getLeftMm(), cp);
         writeDouble(cellVarName, "setTopMm", widget.getTopMm(), cp);
         writeDouble(cellVarName, "setWidthMm", widget.getWidthMm(), cp);
@@ -722,14 +777,20 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         }
 
         if (widget.isReportContainer()) {
-            writeEnum(cellVarName, "setLayout", ((IReportWidgetContainer) widget).getLayout(), cp);
-            for (AdsReportWidget cell : ((IReportWidgetContainer) widget).getWidgets()) {
-                if (!writeCell(cell, cellVarName, cp)) {
-                    return false;
-                }
+            IReportWidgetContainer container = (IReportWidgetContainer) widget;
+            writeEnum(cellVarName, "setLayout", container.getLayout(), cp);
+            for (AdsReportWidget cell : container.getWidgets()) {
+                final String javaName = getCellJavaName(cell);
+                cp.println(cellVarName + ".getWidgets().add(get" + javaName + "());");
             }
         } else {
             final AdsReportCell cell = (AdsReportCell) widget;
+            
+            if (cell.getId() != null) {
+                cp.print(cellVarName + ".setId(");
+                WriterUtils.writeIdUsage(cp, cell.getId());
+                cp.println(");");
+            }
 
             switch (cell.getCellType()) {
                 case EXPRESSION:
@@ -761,11 +822,11 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
                     final AdsReportDbImageCell dbImageCell = (AdsReportDbImageCell) cell;
                     if (!writeId(cellVarName, "setDataPropertyId", dbImageCell.findDataProperty(), cp)) {
                         return false;
-                    }
-                    final AdsReportDbImageCell mimeTypeImageCell = (AdsReportDbImageCell) cell;
-                    if (!writeId(cellVarName, "setMimeTypePropertyId", mimeTypeImageCell.findMimeTypeProperty(), cp)) {
+                    }                    
+                    if (!writeId(cellVarName, "setMimeTypePropertyId", dbImageCell.findMimeTypeProperty(), cp)) {
                         return false;
                     }
+                    writeBoolean(cellVarName, "setIsResizeImage", dbImageCell.isResizeImage(), cp);
                     break;
                 case SPECIAL:
                     final AdsReportSpecialCell specialCell = (AdsReportSpecialCell) cell;
@@ -840,6 +901,11 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
                     writeDouble(cellVarName, "setForegroundAlpha", chartCell.getForegroundAlpha(), cp);
                     break;
             }
+            if (cell.getPreferredMode() != null) {
+                writeEnumCanonical(cellVarName, "setPreferredMode", cell.getPreferredMode(), cp);
+            }
+
+            writeEnum(cellVarName, "setTextFormat", cell.getTextFormat(), cp);
 
             if (cell instanceof AdsReportFormattedCell) {
                 final AdsReportFormattedCell formatterCell = (AdsReportFormattedCell) cell;
@@ -866,7 +932,74 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
             }
             writeBoolean(cellVarName, "setAdjustHeight", cell.isAdjustHeight(), cp);
             writeBoolean(cellVarName, "setAdjustWidth", cell.isAdjustWidth(), cp);
+            
+            if (cell.getAssociatedColumnId() != null) {
+                cp.print(cellVarName + ".setAssociatedColumnId(");
+                WriterUtils.writeIdUsage(cp, cell.getAssociatedColumnId());
+                cp.println(");");
+                
+                writeBoolean(cellVarName, "setVisible", false, cp);
+                
+                cp.println("for (org.radixware.kernel.server.reports.RadReportColumnDef column : getVisibleColumns()) {");
+                cp.enterBlock();
+                
+                cp.print("if (column.getId() == ");
+                WriterUtils.writeIdUsage(cp, cell.getAssociatedColumnId());
+                cp.println(") {");
+                cp.enterBlock();
+                
+                writeBoolean(cellVarName, "setVisible", true, cp);
+                cp.println("break;");
+                
+                cp.leaveBlock();
+                cp.println("}");
+                
+                cp.leaveBlock();
+                cp.println("}");
+            }
+            
+            if (cell.getLeftCellId() != null) {
+                cp.print(cellVarName + ".setLeftCellId(");
+                WriterUtils.writeIdUsage(cp, cell.getLeftCellId());
+                cp.println(");");
+            }
+            
+            if (cell.getRightCellIdList() != null && !cell.getRightCellIdList().isEmpty()) {
+                for (Id rigthCellId : cell.getRightCellIdList()) {
+                    cp.print(cellVarName + ".addRightCellId(");
+                    WriterUtils.writeIdUsage(cp, rigthCellId);
+                    cp.println(");");
+                }
+            }            
+            writeBoolean(cellVarName, "setChangeTopOnMoving", cell.isChangeTopOnMoving(), cp);
+            
+            
             writeCellAppearance(cell, cellVarName, cp);
+        }
+        return true;
+    }
+
+    private boolean writeCellMethod(AdsReportWidget widget, CodePrinter cp) {
+        final String cellJavaName = getCellJavaName(widget);
+        final String cellVarName = toLower(cellJavaName);
+        cp.println("// " + cellVarName);
+        cp.println("private  AdsReportWidget get" + cellJavaName + "() {");
+        cp.enterBlock();
+        if (!writeCellInit(widget, cellVarName, cellJavaName, cp)) {
+            return false;
+        }
+        cp.println("return " + cellVarName + ";");
+        cp.println();
+        cp.leaveBlock();
+        cp.println("}");
+        cp.println();
+        if (widget.isReportContainer()) {
+            IReportWidgetContainer container = (IReportWidgetContainer) widget;
+            for (AdsReportWidget cell : container.getWidgets()) {
+                if (!writeCellMethod(cell, cp)) {
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -1025,6 +1158,10 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
 
         if (cell.isClipContent()) {
             writeBoolean(cellVarName, "setClipContent", true, cp);
+        }
+        
+        if (!cell.isUseTxtPadding()) {
+            writeBoolean(cellVarName, "setUseTxtPadding", false, cp);
         }
 
         writeAppearance(cell, cellVarName, cp);
@@ -1238,6 +1375,118 @@ public class AdsReportClassWriter extends AdsSqlClassWriter<AdsReportClassDef> {
         } else {
             cp.println("return null;");
         }
+        cp.leaveBlock();
+        cp.println("}");
+        cp.println();
+    }
+
+    private void writeGetDeclaredColumnsMethod(CodePrinter cp) {
+        AdsReportColumns columns = report.getColumns();
+        cp.println("private final java.util.List<org.radixware.kernel.server.reports.RadReportColumnDef> declaredColumns = new java.util.ArrayList();");
+
+        if (!columns.isEmpty()) {
+            cp.println("{");
+            cp.enterBlock();
+            cp.println("org.radixware.kernel.server.reports.RadReportColumnDef column;");
+            cp.println("AdsReportFormat csvExportFormat;");
+
+            for (AdsReportColumnDef column : columns) {
+                cp.println("csvExportFormat = new AdsReportFormat();");
+
+                final AdsReportFormat format = column.getCsvExportFormat();
+                if (format != null) {
+                    writeFormat("csvExportFormat", cp, format);
+                }
+
+                cp.print("column = new org.radixware.kernel.server.reports.RadReportColumnDef(");
+                // column id
+                WriterUtils.writeIdUsage(cp, column.getId());
+                cp.print(", ");
+
+                // column name
+                cp.print("\"" + column.getName() + "\", ");
+
+                // popertyId
+                if (column.getPropertyId() != null) {
+                    WriterUtils.writeIdUsage(cp, column.getPropertyId());
+                    cp.print(", ");
+                } else {
+                    cp.print("null, ");
+                }
+
+                // legacyCsvName
+                if (column.getLegacyCsvName() != null) {
+                    cp.print("\"" + column.getLegacyCsvName() + "\", ");
+                } else {
+                    cp.print("null, ");
+                }
+
+                // csvExportFormat
+                cp.print("csvExportFormat, ");
+
+                // titleId
+                if (column.getTitleId() != null) {
+                    WriterUtils.writeIdUsage(cp, column.getTitleId());
+                    cp.print(", ");
+                } else {
+                    cp.print("null, ");
+                }               
+
+                // reportId
+                cp.println("this.getId());");
+                
+                // xlsxExportParameters
+                if (column.getXlsxExportParameters() != null) {
+                    cp.println("column.setXlsxExportParameters(new org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportColumnDef.XlsxExportParameters(");
+                    cp.enterBlock();
+                    if (column.getXlsxExportParameters().getXlsxExportFormat() != null) {
+                        cp.println("\"" + column.getXlsxExportParameters().getXlsxExportFormat().trim() + "\", ");
+                    } else {
+                        cp.println("null, ");
+                    }
+                    WriterUtils.writeEnumFieldInvocation(cp, column.getXlsxExportParameters().getResizeMode());
+                    cp.println(", ");
+                    cp.println(column.getXlsxExportParameters().getWidth() + "));");
+                    cp.leaveBlock();
+                }
+
+                cp.println("declaredColumns.add(column);");
+            }
+            cp.leaveBlock();
+            cp.println("}");
+        }
+
+        cp.println("@Override");
+        cp.println("public java.util.List<org.radixware.kernel.server.reports.RadReportColumnDef> getDeclaredColumns() {");
+        cp.enterBlock();
+        cp.println("return declaredColumns;");
+        cp.leaveBlock();
+        cp.println("}");
+        cp.println();
+    }
+
+    private void writeGetExportXlsxInfoMethod(CodePrinter cp, final AdsXlsxReportInfo xlsxReportInfo) {
+        cp.println("private AdsXlsxReportInfo xlsxExportInfo = new AdsXlsxReportInfo();");
+        cp.println("{");
+        cp.enterBlock();
+
+        writeBoolean("xlsxExportInfo", "setIsExportColumnName", xlsxReportInfo.isExportColumnName(), cp);
+        writeBoolean("xlsxExportInfo", "setIsExportToXlsxEnabled", xlsxReportInfo.isExportToXlsxEnabled(), cp);
+
+        if (xlsxReportInfo.getSheetNameId() != null) {
+            cp.print("xlsxExportInfo.setSheetNameId(");
+            WriterUtils.writeIdUsage(cp, xlsxReportInfo.getSheetNameId());
+            cp.println(");");
+        }
+
+        cp.leaveBlock();
+        cp.println("}");
+        cp.println();
+
+        cp.println("@Override");
+        cp.println("public AdsXlsxReportInfo getExportXlsxInfo() {");
+        cp.enterBlock();
+        cp.println("return xlsxExportInfo;");
         cp.leaveBlock();
         cp.println("}");
         cp.println();

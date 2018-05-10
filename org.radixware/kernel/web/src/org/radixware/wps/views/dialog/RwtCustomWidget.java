@@ -95,6 +95,7 @@ public abstract class RwtCustomWidget extends Container implements IView, IModel
     @Override
     public void open(Model model) {
         model.setView(this);
+        setObjectName("rx_widget_view_#"+model.getDefinition().getId());
     }
 
     public void open() {

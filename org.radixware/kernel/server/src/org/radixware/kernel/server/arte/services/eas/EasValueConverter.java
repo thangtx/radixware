@@ -18,11 +18,14 @@ import java.sql.Timestamp;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.enums.EDdsTableExtOption;
 import org.radixware.kernel.common.enums.EReferencedObjectActions;
 
 import org.radixware.kernel.common.enums.EValType;
@@ -41,21 +44,23 @@ import org.radixware.kernel.common.types.IKernelIntEnum;
 import org.radixware.kernel.common.types.IKernelStrEnum;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.common.utils.XmlUtils;
 import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.exceptions.EntityObjectNotExistsError;
+import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.types.ArrEntity;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.Pid;
+import org.radixware.schemas.eas.ObjectReference;
 import org.radixware.schemas.eas.Property;
-import org.radixware.schemas.eas.Property.Ref;
 import org.w3c.dom.Node;
 
-public final class EasValueConverter {
+public final class EasValueConverter {        
 
     public static final Set<EValType> SUPPORTED_VAL_TYPES;
 
     static {
-        SUPPORTED_VAL_TYPES = new HashSet<EValType>();
+        SUPPORTED_VAL_TYPES = new HashSet<>();
         SUPPORTED_VAL_TYPES.add(EValType.STR);
         SUPPORTED_VAL_TYPES.add(EValType.CHAR);
         SUPPORTED_VAL_TYPES.add(EValType.OBJECT);
@@ -116,29 +121,33 @@ public final class EasValueConverter {
                         xmlProp.unsetRef();
                         if (val == null) {
                             xmlProp.setNilRef();
-                        } else {
-                            final Ref refXml = Ref.Factory.newInstance();
+                        } else {                            
+                            final ObjectReference refXml = xmlProp.addNewRef();
                             try {
                                 Entity ent = (Entity) val;
                                 refXml.setTitle(ent.calcTitle());
-                                refXml.setPID(ent.getPid().toString());
+                                refXml.setPID(ent.getPid().toString());                                
+                                refXml.setClassId(ent.getRadMeta().getId());
                             } catch (EntityObjectNotExistsError e) {
                                 refXml.setBrokenRef(e.getBrokenRefPres());
                             }
                             xmlProp.setRef(refXml);
                         }
                     } else if (ptValInfo.isBrokenRef()) {//RADIX-3199
-                        final Ref refXml = xmlProp.addNewRef();
+                        final ObjectReference refXml = xmlProp.addNewRef();
                         refXml.setBrokenRef(ptValInfo.brokenRefErr.getBrokenRefPres());
                         refXml.setAllowedActionsBitMask(0);
                     } else if (val != null || valType == EValType.PARENT_REF) {
-                        final Property.Ref refXml = xmlProp.addNewRef();
+                        final ObjectReference refXml = xmlProp.addNewRef();
                         if (val != null) {
                             refXml.setPID(val instanceof Entity ? ((Entity) val).getPid().toString() : val.toString());
                             final EnumSet<EReferencedObjectActions> allowedActions = ptValInfo.allowedActions;
                             if (!allowedActions.containsAll(EnumSet.allOf(EReferencedObjectActions.class))) {
                                 refXml.setAllowedActionsBitMask(EReferencedObjectActions.toBitMask(allowedActions));
                             }
+                            if (val instanceof Entity) {
+                                refXml.setClassId(((Entity) val).getRadMeta().getId());
+                            } 
                         }
                         refXml.setTitle(ptValInfo.title);
                     } else {
@@ -271,7 +280,7 @@ public final class EasValueConverter {
                         xmlProp.unsetArrRef();
                         final Property.ArrRef xmlArr = xmlProp.addNewArrRef();
                         final ArrEntity<? extends Entity> arr = (ArrEntity<? extends Entity>) val;
-                        Property.ArrRef.Item item;
+                        ObjectReference item;
                         Entity ent;
                         final Iterator<? extends Entity> it = arr.iterator();
                         while (it.hasNext()) {
@@ -280,12 +289,13 @@ public final class EasValueConverter {
                                 ent = it.next();
                                 if (ent != null) {
                                     if (parentInfoProducer != null) {
-                                        ParentInfo parentInfo = parentInfoProducer.getParentInfo(ent);
+                                        final ParentInfo parentInfo = parentInfoProducer.getParentInfo(ent);
                                         item.setTitle(parentInfo.title);
                                     } else {
                                         item.setTitle(ent.calcTitle());                                        
                                     }
                                     item.setPID(ent.getPid().toString());
+                                    item.setClassId(ent.getRadMeta().getId());
                                 } else {
                                     item.setNil();
                                 }
@@ -432,8 +442,56 @@ public final class EasValueConverter {
             throw new org.radixware.kernel.common.exceptions.WrongFormatError("Unable to save string data to CLOB", e);
         }
     }
-
-    public final static Object easPropXmlVal2ObjVal(final Arte arte, final org.radixware.schemas.eas.Property xmlProp, final EValType valType, final Id valEntityId) {
+    
+    public final static Object easPropXmlVal2ObjVal(final Arte arte, final org.radixware.schemas.eas.Property xmlProp, final Id valEntityId) {
+        if (xmlProp.isSetStr()){
+            return XmlUtils.parseSafeXmlString(xmlProp.getStr());
+        }else if (xmlProp.isSetInt()){
+            return xmlProp.getInt();
+        }else if (xmlProp.isSetNum()){
+            return xmlProp.getNum();
+        }else if (xmlProp.isSetBool()){
+            return xmlProp.getBool();
+        }else if (xmlProp.isSetDateTime()){
+            return xmlProp.getDateTime();
+        }else if (xmlProp.isSetBin()){
+            return readBin(xmlProp);
+        }else if (xmlProp.isSetXml()){
+            return readXml(xmlProp);
+        }else if (xmlProp.isSetRef()){
+            return readPid(xmlProp.getRef(), arte, valEntityId);
+        }else if (xmlProp.isSetObj()){
+            return xmlProp.getObj();
+        } else if (xmlProp.isSetArrBin()){
+            return xmlProp.isNilArrBin() ? null : readArrBin(xmlProp.getArrBin());
+        }else if (xmlProp.isSetArrBool()){
+            return xmlProp.isNilArrBool() ? null : readArrBool(xmlProp.getArrBool());
+        }else if (xmlProp.isSetArrDateTime()){
+            return xmlProp.isNilArrDateTime() ? null : readArrDateTime(xmlProp.getArrDateTime());
+        }else if (xmlProp.isSetArrInt()){
+            return xmlProp.isNilArrInt() ? null : readArrInt(xmlProp.getArrInt());
+        }else if (xmlProp.isSetArrNum()){
+            return xmlProp.isNilArrNum() ? null : readArrNum(xmlProp.getArrNum());            
+        }else if (xmlProp.isSetArrRef()){
+            return xmlProp.isNilArrRef() ? null : readArrRef(xmlProp.getArrRef(), arte, valEntityId);
+        }else if (xmlProp.isSetArrStr()){
+            return xmlProp.isNilArrStr() ? null : readArrStr(xmlProp.getArrStr());
+        }else{
+            return null;
+        }
+    }
+    public final static Object easPropXmlVal2ObjVal(final Arte arte, 
+                                                                           final org.radixware.schemas.eas.Property xmlProp, 
+                                                                           final EValType valType, 
+                                                                           final Id valEntityId){
+        return easPropXmlVal2ObjVal(arte, xmlProp, valType, valEntityId, false);
+    }
+            
+    public final static Object easPropXmlVal2ObjVal(final Arte arte, 
+                                                                           final org.radixware.schemas.eas.Property xmlProp, 
+                                                                           final EValType valType, 
+                                                                           final Id valEntityId,
+                                                                           final boolean refAsObject) {
         // отчасти аналогична aasXmlVal2ObjVal - синхронизировать
         try {
             switch (valType) {
@@ -450,9 +508,23 @@ public final class EasValueConverter {
                     return null;
                 }
                 case OBJECT:
+                    if (xmlProp.isSetObj()){
+                        return xmlProp.getObj();
+                    }
                 case PARENT_REF: {
                     if (xmlProp.isSetRef() && xmlProp.getRef().isSetPID()) {
-                        return new Pid(arte, valEntityId, xmlProp.getRef().getPID());
+                        final Pid pid = readPid(xmlProp.getRef(), arte, valEntityId);                        
+                        if (pid!=null && refAsObject){
+                            final Id classId = xmlProp.getRef().getClassId();
+                            if (classId!=null){
+                                final DdsTableDef table = pid.getTable();
+                                if (table.getExtOptions().contains(EDdsTableExtOption.ENABLE_APPLICATION_CLASSES)) {
+                                    return arte.getEntityObject(pid, classId.toString());
+                                }
+                            }
+                            return arte.getEntityObject(pid);
+                        }
+                        return pid;
                     } else {
                         return null;
                     }
@@ -491,120 +563,40 @@ public final class EasValueConverter {
                     return null;
                 }
                 case BIN: {
-                    if (xmlProp.isSetBin()) {
-                        final byte[] b = xmlProp.getBin();
-                        if (b != null) {
-                            return new Bin(b);
-                        }
-                    }
-                    return null;
+                    return readBin(xmlProp);
                 }
                 case DATE_TIME:
                     return xmlProp.getDateTime();
                 case XML: {
-                    if (xmlProp.getXml() == null) {
-                        return null;
-                    }
-                    final XmlCursor c = xmlProp.getXml().newCursor();
-                    try {
-                        if (c.toFirstChild()) {
-                            return c.getObject();
-                        } else {
-                            return null;
-                        }
-                    } finally {
-                        c.dispose();
-                    }
+                    return readXml(xmlProp);
                 }
                 case ARR_STR: {
-                    if (xmlProp.isSetArrStr() && !xmlProp.isNilArrStr()) {
-                        final Property.ArrStr xmlArr = xmlProp.getArrStr();
-                        final ArrStr arr = new ArrStr(xmlArr.getItemList().size());
-                        arr.addAll(xmlArr.getItemList());
-                        return arr;
-                    } else {
-                        return null;
-                    }
+                    return xmlProp.isSetArrStr() && !xmlProp.isNilArrStr() ? readArrStr(xmlProp.getArrStr()) : null;
                 }
                 case ARR_INT: {
-                    if (xmlProp.isSetArrInt() && !xmlProp.isNilArrInt()) {
-                        final Property.ArrInt xmlArr = xmlProp.getArrInt();
-                        final ArrInt arr = new ArrInt(xmlArr.getItemList().size());
-                        arr.addAll(xmlArr.getItemList());
-                        return arr;
-                    } else {
-                        return null;
-                    }
+                    return xmlProp.isSetArrInt() && !xmlProp.isNilArrInt() ? readArrInt(xmlProp.getArrInt()) : null;
                 }
                 case ARR_NUM: {
-                    if (xmlProp.isSetArrNum() && !xmlProp.isNilArrNum()) {
-                        final Property.ArrNum xmlArr = xmlProp.getArrNum();
-                        final ArrNum arr = new ArrNum(xmlArr.getItemList().size());
-                        arr.addAll(xmlArr.getItemList());
-                        return arr;
-                    } else {
-                        return null;
-                    }
+                    return xmlProp.isSetArrNum() && !xmlProp.isNilArrNum() ? readArrNum(xmlProp.getArrNum()) : null;
                 }
                 case ARR_DATE_TIME: {
-                    if (xmlProp.isSetArrDateTime() && !xmlProp.isNilArrDateTime()) {
-                        final Property.ArrDateTime xmlArr = xmlProp.getArrDateTime();
-                        final ArrDateTime arr = new ArrDateTime(xmlArr.getItemList().size());
-                        arr.addAll(xmlArr.getItemList());
-                        return arr;
-                    } else {
-                        return null;
-                    }
+                    return xmlProp.isSetArrDateTime() && !xmlProp.isNilArrDateTime() ? readArrDateTime(xmlProp.getArrDateTime()) : null;
                 }
-                case ARR_BOOL: {
-                    if (xmlProp.isSetArrBool() && !xmlProp.isNilArrBool()) {
-                        final List<Boolean> items = xmlProp.getArrBool().getItemList();
-                        final ArrBool res = new ArrBool(items.size());
-                        res.addAll(items);
-                        return res;
-                    } else {
-                        return null;
-                    }
+                case ARR_BOOL: {                    
+                    return xmlProp.isSetArrBool() && !xmlProp.isNilArrBool() ? readArrBool(xmlProp.getArrBool()) : null;                    
                 }
                 case ARR_REF: {
                     if (xmlProp.isSetArrRef() && !xmlProp.isNilArrRef()) {
-                        final Property.ArrRef xmlArr = xmlProp.getArrRef();
-                        final Pid[] arr = new Pid[xmlArr.sizeOfItemArray()];
-                        for (int i = 0; i < xmlArr.sizeOfItemArray(); i++) {
-                            if (!xmlArr.isNilItemArray(i) && xmlArr.getItemArray(i).isSetPID()) {
-                                arr[i] = xmlArr.getItemArray(i) != null ? new Pid(arte, valEntityId, xmlArr.getItemArray(i).getPID()) : null;
-                            } else {
-                                arr[i] = null;
-                            }
-                        }
-                        return new ArrEntity(arte, arr);
+                        return readArrRef(xmlProp.getArrRef(), arte, valEntityId);
                     } else {
                         return null;
                     }
                 }
                 case ARR_CHAR: {
-                    if (xmlProp.isSetArrStr() && !xmlProp.isNilArrStr()) {
-                        final Property.ArrStr xmlArr = xmlProp.getArrStr();
-                        final ArrChar arr = new ArrChar(xmlArr.getItemList().size());
-                        for (String itemStr : xmlArr.getItemList()) {
-                            arr.add(itemStr != null && itemStr.length() != 0 ? Character.valueOf(itemStr.charAt(0)) : null);
-                        }
-                        return arr;
-                    } else {
-                        return null;
-                    }
+                    return xmlProp.isSetArrStr() && !xmlProp.isNilArrStr() ? readArrChar(xmlProp.getArrStr()) : null;
                 }
                 case ARR_BIN: {
-                    if (xmlProp.isSetArrBin() && !xmlProp.isNilArrBin()) {
-                        final Property.ArrBin xmlArr = xmlProp.getArrBin();
-                        final ArrBin arr = new ArrBin(xmlArr.getItemList().size());
-                        for (byte[] itemBytes : xmlArr.getItemList()) {
-                            arr.add(itemBytes != null ? new Bin(itemBytes) : null);
-                        }
-                        return arr;
-                    } else {
-                        return null;
-                    }
+                    return xmlProp.isSetArrBin() && !xmlProp.isNilArrBin() ? readArrBin(xmlProp.getArrBin()) : null;
                 }
                 default:
                     throw new IllegalUsageError("Can't convert XML value to Radix java value: value type \"" + valType.getName() + "\" is not supported in EasValueConverter.easPropXmlVal2ObjVal()", null);
@@ -612,6 +604,120 @@ public final class EasValueConverter {
         } catch (SQLException e) {
             throw new IllegalUsageError("Can't convert XML value to Radix java value: " + ExceptionTextFormatter.getExceptionMess(e), e);
         }
+    }    
+    
+    private static ArrBin readArrBin(final Property.ArrBin xml){
+        if (xml==null){
+            return null;
+        }else{
+            final ArrBin arr = new ArrBin(xml.getItemList().size());
+            for (byte[] itemBytes : xml.getItemList()) {
+                arr.add(itemBytes != null ? new Bin(itemBytes) : null);
+            }
+            return arr;
+        }
     }
-    private static final String XML_BEANS_DOCUMENT_CLASS_POSTFIX = "DocumentImpl";
+    
+    private static ArrBool readArrBool(final Property.ArrBool xml){
+        return xml==null ? null : new ArrBool(xml.getItemList());
+    }            
+    
+    private static ArrChar readArrChar(final Property.ArrStr xml){
+        if (xml==null){
+            return null;
+        }else{
+            final ArrChar arr = new ArrChar(xml.getItemList().size());
+            for (String itemStr : xml.getItemList()) {
+                arr.add(itemStr != null && itemStr.length() != 0 ? Character.valueOf(itemStr.charAt(0)) : null);
+            }
+            return arr;            
+        }
+    }
+    
+    private static ArrDateTime readArrDateTime(final Property.ArrDateTime xml){
+        return xml==null ? null : new ArrDateTime(xml.getItemList());
+    }    
+    
+    private static ArrInt readArrInt(final Property.ArrInt xml){
+        return xml==null ? null : new ArrInt(xml.getItemList());
+    }
+    
+    private static ArrNum readArrNum(final Property.ArrNum xml){
+        return xml==null ? null : new ArrNum(xml.getItemList());
+    }
+    
+    private static ArrEntity readArrRef(final Property.ArrRef xml, final Arte arte, final Id entityId){
+        if (xml==null){
+            return null;
+        }else{
+            final List<Entity> entityList = new LinkedList<>();
+            final Id defaultEntityId = xml.isSetTableId() ? xml.getTableId() : entityId;            
+            Pid pid;
+            Id classId;
+            for (int i = 0; i < xml.sizeOfItemArray(); i++) {     
+                pid = xml.isNilItemArray(i) ? null : readPid(xml.getItemArray(i), arte, defaultEntityId);
+                if (pid==null){
+                    entityList.add(null);
+                }else{
+                    classId = xml.getItemArray(i).getClassId();
+                    final Entity object;
+                    if (classId!=null){
+                        final DdsTableDef table = pid.getTable();
+                        if (table.getExtOptions().contains(EDdsTableExtOption.ENABLE_APPLICATION_CLASSES)) {
+                            object = arte.getEntityObject(pid, classId.toString());
+                        }else{
+                            object = arte.getEntityObject(pid);
+                        }
+                    }else{
+                        object = arte.getEntityObject(pid);
+                    }
+                    entityList.add(object);
+                }
+            }
+            return new ArrEntity(arte, entityList);
+        }
+    }
+    
+    private static ArrStr readArrStr(final Property.ArrStr xml){
+        return xml==null ? null : new ArrStr(xml.getItemList());
+    }
+    
+    private static Pid readPid(final ObjectReference xml, final Arte arte, final Id entityId){
+        if (xml==null || !xml.isSetPID() || xml.getPID()==null){
+            return null;
+        }else{
+            if (xml.isSetTableId()){
+                return new Pid(arte, xml.getTableId(), xml.getPID());
+            }else if (xml.isSetClassId()){
+                final RadClassDef classDef = arte.getDefManager().getClassDef(xml.getClassId());
+                return new Pid(arte, classDef.getEntityId(), xml.getPID());
+            }else if (entityId!=null){
+                return new Pid(arte, entityId, xml.getPID());
+            }else{
+                throw new IllegalArgumentException("Failed to read entity object identifier. Entity id was not defined.\n"+xml.xmlText());
+            }
+        }
+    }
+    
+    private static Bin readBin(final org.radixware.schemas.eas.Property xmlProp){
+        if (xmlProp.isSetBin()) {
+            final byte[] b = xmlProp.getBin();
+            if (b != null) {
+                return new Bin(b);
+            }
+        }
+        return null;        
+    }
+    
+    private static XmlObject readXml(final org.radixware.schemas.eas.Property xmlProp){
+        if (xmlProp.getXml() == null) {
+            return null;
+        }
+        final XmlCursor c = xmlProp.getXml().newCursor();
+        try {
+            return c.toFirstChild() ? c.getObject() : null;
+        } finally {
+            c.dispose();
+        }        
+    }
 }

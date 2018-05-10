@@ -21,9 +21,11 @@ import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.IPushButton;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.EDialogButtonType;
+import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.WrongFormatException;
 import org.radixware.kernel.common.html.Div;
 import org.radixware.kernel.common.html.Table;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.WpsSettings;
 import org.radixware.wps.dialogs.IDialogDisplayer;
@@ -275,6 +277,7 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
                     }
                 }
             });
+
             ((ButtonBase) button).html.setAttr("action", name == null ? null : name.replace("&", ""));
             if (custom && result == DialogResult.APPLY) {
                 ((ButtonBase) button).html.setCss("float", "left");
@@ -292,11 +295,22 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
             if (button.isDefault()) {
                 setDefaultAction(name);
             }
+            if (button.getObjectName()==null || button.getObjectName().isEmpty()){
+                button.setObjectName("rx_dlg_btn_"+name);
+            }
+            if (buttonBoxVisible) {
+                showButtonBox();
+            }
         }
 
         @Override
         public void clear() {
             super.clear();
+            for (IPushButton button: buttonsByData.values()){
+                if (button instanceof UIObject){
+                    remove((UIObject) button);
+                }
+            }
             buttonsByData.clear();
         }
 
@@ -309,6 +323,19 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
 
         public IPushButton getCloseActionByData(final Object data) {
             return buttonsByData.get(data);
+        }
+
+        public IPushButton getCloseActionByTitle(final String title) {
+            final String match = title.replace("&", "");
+            for (UIObject obj : getChildren()) {
+                if (obj instanceof IPushButton) {
+                    String action = obj.getHtml().getAttr("action");
+                    if (Utils.equals(match, action)) {
+                        return (IPushButton) obj;
+                    }
+                }
+            }
+            return null;
         }
 
         public IPushButton getCloseActionByObjectName(final String objectName) {
@@ -365,6 +392,7 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
     }
     private Body contentPanel = new Body(this);
     private Buttons buttons = new Buttons(this);
+    private RwtMenuBar menuBar = new RwtMenuBar(this);
     private DialogResult result = DialogResult.REJECTED;
     private IDialogDisplayer displayer;
     private boolean wasClosed = false;
@@ -569,12 +597,12 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
             }
         });
 
-        for (EDialogButtonType button : buttons) {
-            PushButton pb = addCloseAction(button);
-            if (button == EDialogButtonType.NO_BUTTON) {
-                pb.html.remove();
-                if (isButtonBoxVisible()) {
-                    setButtonBoxVisible(false);
+        if (buttons == null || buttons.isEmpty() || (buttons.size() == 1 && buttons.contains(EDialogButtonType.NO_BUTTON))) {
+            hideButtonBox();
+        } else {
+            for (EDialogButtonType button : buttons) {
+                if (button != EDialogButtonType.NO_BUTTON) {
+                    addCloseAction(button);
                 }
             }
         }
@@ -583,23 +611,34 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
     public void setButtonBoxVisible(final boolean isVisible) {
         if (buttonBoxVisible != isVisible) {
             buttonBoxVisible = isVisible;
-            List<UIObject> list = buttons.getChildren();
             if (!isVisible) {
-                buttons.getHtml().addClass("rwt-dialog-hide-element");
+                hideButtonBox();
+            } else {
+                showButtonBox();
+            }
+        }
+    }
+
+    private void showButtonBox() {
+        if (buttons.getHtml().containsClass("rwt-dialog-hide-element")) {
+            final List<UIObject> list = buttons.getChildren();
+            if (!list.isEmpty()) {
                 for (UIObject btn : list) {
                     if (btn instanceof PushButton) {
-                        buttons.getHtml().remove(btn.getHtml());
+                        buttons.getHtml().add(btn.getHtml());
                     }
                 }
-            } else {
-                if (!list.isEmpty()) {
-                    for (UIObject btn : list) {
-                        if (btn instanceof PushButton) {
-                            buttons.getHtml().add(btn.getHtml());
-                        }
-                    }
-                }
-                buttons.getHtml().removeClass("rwt-dialog-hide-element");
+            }
+            buttons.getHtml().removeClass("rwt-dialog-hide-element");
+        }
+    }
+
+    private void hideButtonBox() {
+        buttons.getHtml().addClass("rwt-dialog-hide-element");
+        final List<UIObject> list = buttons.getChildren();
+        for (UIObject btn : list) {
+            if (btn instanceof PushButton) {
+                buttons.getHtml().remove(btn.getHtml());
             }
         }
     }
@@ -715,6 +754,10 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
         row.add(cell);
 
         this.header.add(table);
+        menuBar.setVisible(false);
+        menuBar.html.setAttr("role", "menuBar");
+        menuBar.setParent(this);
+        this.html.add(menuBar.html);
 
         this.html.add(contentPanel.html);
         this.contentPanel.html.addClass("rwt-dialog-body");
@@ -778,6 +821,10 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
         }
     }
 
+    protected IPushButton findCloseActionByTitle(String title) {
+        return buttons.getCloseActionByTitle(title);
+    }
+
     @Override
     public void setHeight(final int h) {
         if (internalResize) {
@@ -805,7 +852,7 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
     protected final void restoreGeometryFromConfig(final String configKey) {
         final WpsSettings settings = (WpsSettings) environment.getConfigStore();
         if (settings.contains(configKey)) {
-            final String newGeometry = settings.readString(key);
+            final String newGeometry = settings.readString(configKey);
             if (newGeometry != null && !newGeometry.isEmpty()) {
                 final DialogGeometry newDialogGeometry;
                 try {
@@ -814,10 +861,14 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
                     environment.getTracer().error(e);
                     return;
                 }
-                if (isResizable()) {
-                    setDialogGeometry(newDialogGeometry);
-                } else {
-                    setDialogGeometry(newDialogGeometry.getResized(getWidth(), getHeight()));
+                if (newDialogGeometry.isValid()
+                    && newDialogGeometry.getTop()>=0 
+                    && newDialogGeometry.getLeft()>=0){
+                    if (isResizable()) {
+                        setDialogGeometry(newDialogGeometry);
+                    } else {
+                        setDialogGeometry(newDialogGeometry.getResized(getWidth(), getHeight()));
+                    }
                 }
             }
         }
@@ -947,9 +998,29 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
     }
 
     @Override
-    public DialogResult execDialog(IWidget parentWidget) {
-        if (parentWidget instanceof AbstractContainer) {
-            ((AbstractContainer) parentWidget).add(this);
+    public DialogResult execDialog(final IWidget parentWidget) {
+        RootPanel rootPanel = null;
+        if (parentWidget instanceof RootPanel){
+            rootPanel = (RootPanel)parentWidget;
+        }else if (parentWidget instanceof UIObject){
+            rootPanel =  ((UIObject)parentWidget).findRoot();
+            if (rootPanel==null){
+                rootPanel = displayer.getRootPanel();
+            }
+        }
+        if (rootPanel==null){
+            final IClientEnvironment environment = getEnvironment();
+            if (environment==null){
+                final String message = "Unable to show dialog \'%1$s\': application main window was not found";
+                throw new IllegalUsageError(String.format(message, Dialog.class.getSimpleName()));
+            }else{
+                final String message = 
+                    environment.getMessageProvider().translate("TraceMessage", "Unable to show dialog \'%1$s\': application main window was not found");
+                environment.getTracer().error(String.format(message, Dialog.class.getSimpleName()));
+                return DialogResult.REJECTED;
+            }
+        }else{
+            rootPanel.add(this);
             html.removeClass("rwt-ui-dialog-no-overlay");
             html.removeClass("rwt-ui-dialog-show");
             unsetClose();
@@ -959,14 +1030,26 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
             } finally {
                 isModalExecuting = false;
             }
-        } else {
-            return DialogResult.REJECTED;
         }
     }
 
     @Override
     public IPushButton addButton(EDialogButtonType button) {
         return addCloseAction(button);
+    }
+
+    public RwtMenuBar getMenuBar() {
+        return menuBar;
+    }
+
+    public void setMenuBarVisible(boolean visible) {
+        menuBar.setVisible(visible);
+        menuBar.setTop(22);
+        if (visible) {
+            header.setCss("margin-bottom", "22px");
+        } else {
+            header.setCss("margin-bottom", "0px");
+        }
     }
 
     @Override
@@ -1064,6 +1147,10 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
         if (obj != null) {
             return obj;
         }
+        obj = menuBar.findObjectByHtmlId(id);
+        if (obj != null) {
+            return obj;
+        }
         return headerCloseButton.findObjectByHtmlId(id);
 
     }
@@ -1139,6 +1226,10 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
         } else {
             this.contentPanel.getHtml().setAttr("isAutoHeight", null);
         }
+    }
+
+    public void setAdjustSizeEnabled(boolean isAdjustSizeEnabled) {
+        html.setAttr("isAdjustSizeEnabled", isAdjustSizeEnabled);
     }
 
     public boolean isAutoWidth() {
@@ -1409,15 +1500,15 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
         public static DialogGeometry parseFromStr(final String geometryAsStr) throws WrongFormatException {
             String[] settingsGeometry = geometryAsStr.split(";");
             if (settingsGeometry.length > 0 && settingsGeometry.length <= 4) {
-                try {
-                    int w = Integer.parseInt(settingsGeometry[0]);
-                    int h = Integer.parseInt(settingsGeometry[1]);
-                    int t = Integer.parseInt(settingsGeometry[2]);
-                    int l = Integer.parseInt(settingsGeometry[3]);
-                    return new DialogGeometry(w, h, l, t);
-                } catch (NumberFormatException e) {
-                    throw new WrongFormatException("Failed to parse dialog geometry from \'" + geometryAsStr + "\' string", e);
+                final int[] values = {-1,-1,-1,-1};
+                for (int i=0; i<settingsGeometry.length; i++){
+                    try{
+                        values[i] = Integer.parseInt(settingsGeometry[i]);
+                    }catch(NumberFormatException e){
+                        throw new WrongFormatException("Failed to parse dialog geometry from \'" + geometryAsStr + "\' string", e);
+                    }
                 }
+                return new DialogGeometry(values[0], values[1], values[3], values[2]);
             } else {
                 throw new WrongFormatException("Failed to parse dialog geometry from \'" + geometryAsStr + "\' string");
             }
@@ -1426,11 +1517,11 @@ public class Dialog extends UIObject implements IDialogWithStandardButtons {
 
     @Override
     public IClientEnvironment getEnvironment() {
-        if (environment==null){
-            if (displayer!=null){
+        if (environment == null) {
+            if (displayer != null) {
                 environment = displayer.getEnvironment();
             }
-            if (environment==null){
+            if (environment == null) {
                 environment = getEnvironmentStatic();
             }
         }

@@ -16,6 +16,5 @@ public class AdsClassTypeBinding extends AdsTypeBinding {
 
     public AdsClassTypeBinding(AdsClassDeclaration decl, PackageBinding pkg, AdsDefinitionScope scope) {
         super(decl, pkg, scope);
-
     }
 }

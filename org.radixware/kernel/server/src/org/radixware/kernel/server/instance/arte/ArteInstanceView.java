@@ -26,6 +26,11 @@ public class ArteInstanceView implements ViewModel {
     }
 
     @Override
+    public String getViewStatus() {
+        return arteInstance.getState().toString();
+    }
+    
+    @Override
     public Window getParentView() {
         return arteInstance.getInstance().getView().getFrame();
     }

@@ -107,7 +107,7 @@ class APIDefinitionEditor extends RadixObjectEditor<AdsDefinition> {
     @Override
     public void update() {
         if (definition != null) {
-            toolTip.setText(definition.getToolTip());
+            toolTip.setText(definition.getAPIDescription());
         }
     }
 

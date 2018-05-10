@@ -13,22 +13,33 @@ package org.radixware.kernel.server.arte;
 import org.radixware.kernel.server.utils.ProfileStatistic;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
-import org.apache.commons.lang.StringUtils;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.EProfileMode;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.types.ArrStr;
+import org.radixware.kernel.common.utils.SystemPropUtils;
+import org.radixware.kernel.server.instance.ArteStateWriter;
 import org.radixware.kernel.server.instance.InstanceProfiler;
-import org.radixware.kernel.server.monitoring.TransactionTimeStatistic;
+import org.radixware.kernel.server.monitoring.ArteWaitStats;
+import org.radixware.kernel.server.monitoring.MonitoringUtils;
 
 public class ArteProfiler {
 
-    private static final boolean BUILD_LOG = false;
-    private static final long TRAN_TIME_STAT_FLUSH_INTERVAL_MILLIS = 5000;
+    private static final boolean HONEST_CPU_PART = SystemPropUtils.getBooleanSystemProp("rdx.arte.honest.cpu.part", false);
+    private static final long WAIT_STATS_FLUSH_INTERVAL_MILLIS = SystemPropUtils.getLongSystemProp("rdx.arte.wait.stats.flush.interval.millis", 5000);
+    private static final int REQUEST_PROFILER_LOG_PERCENT = SystemPropUtils.getIntSystemProp("rdx.arte.request.profiler.log.percent", 0);
+    private static final int REQUEST_PROFILER_LOG_WRITE_IF_LONGER_MS = SystemPropUtils.getIntSystemProp("rdx.arte.request.profiler.log.write.if.longer.ms", 1000);
+    private static final EEventSeverity REQUEST_PROFILER_LOG_WRITE_SEVERITY = EEventSeverity.getForName(SystemPropUtils.getStringSystemProp("rdx.arte.request.profiler.log.write.severity", "EVENT"));
 
     public enum EProfileTarget {
 
@@ -40,19 +51,12 @@ public class ArteProfiler {
 
     public enum EWaitType {
 
-        CPU(false),
-        DB(true),
-        EXT(true);
+        CPU,
+        DB,
+        EXT,
+        IDLE,
+        QUEUE;
 
-        private final boolean longWait;
-
-        private EWaitType(final boolean longWait) {
-            this.longWait = longWait;
-        }
-
-        public boolean isLongWait() {
-            return longWait;
-        }
     }
 
     private enum ESwitchMode {
@@ -70,15 +74,7 @@ public class ArteProfiler {
     private Options schedulledOptions = null;
     private final Arte arte;
     private final StringBuilder logBuilder = new StringBuilder();
-    private long dbTimeNanos = 0;
-    private long extTimeNanos = 0;
-    private long cpuTimeNanos = 0;
-    private long curWaitStartNanos = 0;
-    //@GuardedBy waitTimeSem, modified only by Arte, can be read by Monitoring data collector thread
-    private int longWaits = 0;
     private final List<EWaitType> waitTypeStack = new ArrayList<>();
-    private long tranStartNanos = -1;
-    private long tranEndNanos = -1;
     private final ProfileStatistic profilerStat = new ProfileStatistic();
     private final ProfileStatistic monitoringStat = new ProfileStatistic();
     private final ArrayList<String> context = new ArrayList<>();
@@ -86,11 +82,15 @@ public class ArteProfiler {
     private String section = null;
     private String contextStr = "";
     private long sectionEnterNanos = 0;
-    private long lastPartialFlushWaitTimeMillis = -1;
+    private long lastWaitStatsFlushMillis = -1;
     private final Object longWaitSem = new Object();
+    private final WaitCounter waitCounter;
+    private RequestLog requestLog;
+    private final Random requestLogRandom = new Random();
 
     public ArteProfiler(final Arte arte) {
         this.arte = arte;
+        waitCounter = new WaitCounter(arte);
     }
 
     void setOptions(final Options options) {
@@ -108,47 +108,27 @@ public class ArteProfiler {
         }
     }
 
-    public void onBeginTransaction() {
-        if (options.countStatistics) {
-            startTranTimeStatCalculation(System.nanoTime());
-        }
+    public void onBeginIdle() {
+        waitCounter.switchWaitType(EWaitType.IDLE);
     }
 
-    private void startTranTimeStatCalculation(final long startTimeNanos) {
-        tranStartNanos = startTimeNanos;
-        tranEndNanos = -1;
-        dbTimeNanos = 0;
-        extTimeNanos = 0;
-        cpuTimeNanos = 0;
-        curWaitStartNanos = startTimeNanos;
-        lastPartialFlushWaitTimeMillis = System.currentTimeMillis();
+    public void onEndIdle() {
+        waitCounter.switchWaitType(EWaitType.CPU);
+    }
+
+    public void onBeginTransaction() {
         waitTypeStack.clear();
-        ensureNotInLongWait();
-        if (BUILD_LOG) {
-            logBuilder.setLength(0);
-            logBuilder.append("-- started -- /" + tranStartNanos + "\n");
+        if (REQUEST_PROFILER_LOG_PERCENT > 0 && requestLogRandom.nextInt(100) < REQUEST_PROFILER_LOG_PERCENT) {
+            requestLog = new RequestLog(arte);
+        } else {
+            requestLog = null;
         }
     }
 
     public void onEndTransaction() {
-        if (options.countStatistics) {
-            if (tranStartNanos == -1) {
-                return;//statistic counting was enabled after transaction start
-            }
-            tranEndNanos = System.nanoTime();
-            lastPartialFlushWaitTimeMillis = -1;
-
-            if (BUILD_LOG) {
-                logBuilder.append("-- finished -- /" + tranEndNanos + "\n");
-            }
-        }
-    }
-
-    private void ensureNotInLongWait() {
-        if (longWaits != 0) {
-            synchronized (longWaitSem) {
-                longWaits = 0;
-            }
+        waitTypeStack.clear();
+        if (requestLog != null && requestLog.finish(arte) / 1000000 > REQUEST_PROFILER_LOG_WRITE_IF_LONGER_MS) {
+            arte.getTrace().put(REQUEST_PROFILER_LOG_WRITE_SEVERITY, requestLog.getAsStr(), EEventSource.ARTE_PROFILER);
         }
     }
 
@@ -165,9 +145,7 @@ public class ArteProfiler {
         if (!isRightThread()) {
             return;
         }
-        if (!options.countStatistics && getProfileTarget(timingSectionId) == EProfileTarget.NONE) {
-            return;
-        }
+        arte.yeld();
         if (section != null) {
             context.add(section);
             contextEnterNanos.add(sectionEnterNanos);
@@ -179,46 +157,49 @@ public class ArteProfiler {
         }
         section = timingSectionId;
         sectionEnterNanos = System.nanoTime();
-        pushWaitType(getWaitType(section), sectionEnterNanos);
-        if (BUILD_LOG) {
-            logBuilder.append(StringUtils.repeat("  ", context.size()) + ">" + section + "  enter: " + sectionEnterNanos + "\n");
+        if (requestLog != null) {
+            requestLog.append(sectionEnterNanos, section, true, null);
         }
+        pushWaitType(getWaitType(section));
     }
 
-    public void leaveTimingSection(final ETimingSection timingSectionId) {
-        leaveTimingSection(timingSectionId.getValue());
+    public void leaveTimingSection(final ETimingSection timingSection) {
+        leaveTimingSection(timingSection.getValue(), null);
+    }
+
+    public void leaveTimingSection(final ETimingSection timingSection, final String comment) {
+        leaveTimingSection(timingSection.getValue(), comment);
     }
 
     public void leaveTimingSection(final String timingSectionId) {
+        leaveTimingSection(timingSectionId, null);
+    }
+
+    public void leaveTimingSection(final String timingSectionId, final String comment) {
         if (!isRightThread()) {
             return;
         }
         assert timingSectionId != null;
         final EProfileTarget target = getProfileTarget(timingSectionId);
-        if (!options.countStatistics && target == EProfileTarget.NONE) {
-            return;
-        }
-        final long leaveTime = System.nanoTime();
+        final long leaveTimeNanos = System.nanoTime();
         if (timingSectionId.equals(section)) {
             if (target == EProfileTarget.PROFILER || target == EProfileTarget.ALL) {
-                profilerStat.register(contextStr, section, leaveTime - sectionEnterNanos);
+                profilerStat.register(contextStr, section, leaveTimeNanos - sectionEnterNanos);
             }
             if (target == EProfileTarget.MONITOR || target == EProfileTarget.ALL) {
-                monitoringStat.register(contextStr, section, leaveTime - sectionEnterNanos);
+                monitoringStat.register(contextStr, section, leaveTimeNanos - sectionEnterNanos);
             }
-
-            popWaitType(leaveTime);
-
-            if (BUILD_LOG) {
-                logBuilder.append(StringUtils.repeat("  ", context.size()) + "<" + section + "  leave: " + leaveTime + "; spent: " + (leaveTime - sectionEnterNanos) + "; type: " + getWaitType(section) + "\n");
+            if (requestLog != null) {
+                requestLog.append(leaveTimeNanos, section, false, comment);
             }
+            popWaitType();
         } else {
             arte.getTrace().put(EEventSeverity.WARNING, Messages.MLS_ID_ERR_INVALID_TIMING_SECTION, new ArrStr(section, timingSectionId), EEventSource.ARTE_PROFILER.getValue());
             context.clear();
             contextEnterNanos.clear();
             contextStr = "";
             while (!waitTypeStack.isEmpty()) {
-                popWaitType(leaveTime);
+                popWaitType();
             }
         }
         if (context.isEmpty()) {
@@ -236,31 +217,41 @@ public class ArteProfiler {
                 contextStr = contextStr.substring(0, contextStr.length() - section.length() - 1);
             }
         }
-        if (lastPartialFlushWaitTimeMillis != -1 && System.currentTimeMillis() - lastPartialFlushWaitTimeMillis > TRAN_TIME_STAT_FLUSH_INTERVAL_MILLIS) {
-            lastPartialFlushWaitTimeMillis = System.currentTimeMillis();
-            final TransactionTimeStatistic stat = flushTranTimeStatFromArteThread();
-            if (stat != null) {
-                arte.getInstance().getInstanceMonitor().registerStatistic(stat, null);
-            }
+        if (lastWaitStatsFlushMillis != -1 && System.currentTimeMillis() - lastWaitStatsFlushMillis > WAIT_STATS_FLUSH_INTERVAL_MILLIS) {
+            lastWaitStatsFlushMillis = System.currentTimeMillis();
+            arte.getInstance().getInstanceMonitor().registerStatistic(arte, waitCounter.flushDiff(), null);
         }
+        ArteStateWriter.gatherCurrentThreadState();
     }
 
-    private void pushWaitType(final EWaitType waitType, final long nanos) {
-        if (longWaits > 0 || waitType.isLongWait()) {
-            synchronized (longWaitSem) {
-                doPushWaitType(waitType, nanos);
-                if (waitType.isLongWait()) {
-                    longWaits++;
-                }
-            }
+    public TimingSection startTimingSection(final ETimingSection timingSection) {
+        if (timingSection == null) {
+            throw new IllegalArgumentException("timingSection can't be null");
         } else {
-            doPushWaitType(waitType, nanos);
+            return startTimingSection(timingSection.getValue());
         }
     }
 
-    private void doPushWaitType(final EWaitType waitType, final long nanos) {
-        switchWaitType(getCurWaitType(), waitType, nanos, ESwitchMode.MERGE);
+    public TimingSection startTimingSection(final String timingSectionId) {
+        if (timingSectionId == null) {
+            throw new IllegalArgumentException("timingSectionId can't be null");
+        } else {
+            enterTimingSection(timingSectionId);
+            return new TimingSection() {
+                @Override
+                public void close() {
+                    leaveTimingSection(timingSectionId);
+                }
+            };
+        }
+    }
+
+    private void pushWaitType(EWaitType waitType) {
+        if (waitType == null) {
+            waitType = EWaitType.CPU;
+        }
         waitTypeStack.add(waitType);
+        waitCounter.switchWaitType(waitType);
     }
 
     private EWaitType getCurWaitType() {
@@ -271,53 +262,21 @@ public class ArteProfiler {
         }
     }
 
-    private void popWaitType(final long nanos) {
-        if (longWaits > 0) {
-            synchronized (longWaitSem) {
-                if (getCurWaitType().isLongWait()) {
-                    longWaits--;
-                }
-                doPopWaitType(nanos);
-            }
-        } else {
-            doPopWaitType(nanos);
-        }
-    }
-
-    private void doPopWaitType(final long nanos) {
-        final EWaitType oldWaitType = getCurWaitType();
+    private void popWaitType() {
         if (!waitTypeStack.isEmpty()) {
             waitTypeStack.remove(waitTypeStack.size() - 1);
         }
-        switchWaitType(oldWaitType, getCurWaitType(), nanos, ESwitchMode.MERGE);
+        waitCounter.switchWaitType(getCurWaitType());
     }
 
-    private void switchWaitType(final EWaitType oldWaitType, final EWaitType newWaitType, final long nanos, final ESwitchMode mode) {
-        if (newWaitType != oldWaitType || mode == ESwitchMode.FORCE) {
-            if (oldWaitType == EWaitType.CPU) {
-                cpuTimeNanos += nanos - curWaitStartNanos;
-            } else if (oldWaitType == EWaitType.DB) {
-                dbTimeNanos += nanos - curWaitStartNanos;
-            } else {
-                extTimeNanos += nanos - curWaitStartNanos;
-            }
-            curWaitStartNanos = nanos;
-        }
-    }
-
-    public void flushWaitStats() {
-        TransactionTimeStatistic stat = null;
-        synchronized (longWaitSem) {
-            if (longWaits > 0) {
-                stat = doFlushTranTimeStat();
-            }
-        }
-        if (stat != null) {
-            arte.getInstance().getInstanceMonitor().registerStatistic(stat, null);
-        }
+    public void flushWaitStatsThreadSafe() {
+        arte.getInstance().getInstanceMonitor().registerStatistic(arte, waitCounter.flushDiff(), null);
     }
 
     private EWaitType getWaitType(final String sectionName) {
+        if (ETimingSection.RDX_ARTE_WAIT_ACTIVE.getValue().equals(sectionName)) {
+            return EWaitType.QUEUE;
+        }
         return arte.getDefManager().getSectionType(sectionName);
     }
 
@@ -335,6 +294,10 @@ public class ArteProfiler {
         }
         return TARGETS[target];
     }
+    
+    public boolean isProfilingOn() {
+        return options.mode != EProfileMode.OFF || requestLog != null;
+    }
 
     private boolean matchSection(final Collection<String> prefixes, final String sectionId) {
         if (prefixes == null || prefixes.isEmpty()) {
@@ -345,21 +308,22 @@ public class ArteProfiler {
                     && sectionId.equals(prefix)) {
                 return true;
             } else if (sectionId.length() > prefix.length() + 1
-                    && (sectionId.startsWith(prefix + ".") || sectionId.startsWith(prefix + ":"))) {
+                    && ((sectionId.startsWith(prefix) && sectionId.charAt(prefix.length()) == '.') || (sectionId.startsWith(prefix) && sectionId.charAt(prefix.length()) == ':'))) {
                 return true;
             }
         }
         return false;
     }
 
-    void close() {
+    public void close() {
         flush();
     }
 
-    void flush() {
-        if (!options.countStatistics && monitoringStat.isEmpty() && profilerStat.isEmpty()) {
-            return;
-        }
+    public ArteWaitStats getWaitStatsSnapshot() {
+        return waitCounter.snapshot();
+    }
+
+    public void flush() {
         if (!profilerStat.isEmpty()) {
             final InstanceProfiler profiler = arte.getInstance().getProfiler();
             if (profiler != null) // instance is not stopped
@@ -368,46 +332,8 @@ public class ArteProfiler {
             }
             profilerStat.clear();
         }
-        final TransactionTimeStatistic tranTimeStat = flushTranTimeStatFromArteThread();
-        arte.getInstance().getInstanceMonitor().registerStatistic(tranTimeStat, monitoringStat.getResult());
+        arte.getInstance().getInstanceMonitor().registerStatistic(arte, waitCounter.flushDiff(), monitoringStat.getResult());
         monitoringStat.clear();
-    }
-
-    private TransactionTimeStatistic flushTranTimeStatFromArteThread() {
-        if (longWaits > 0) {
-            synchronized (longWaitSem) {
-                return doFlushTranTimeStat();
-            }
-        } else {
-            return doFlushTranTimeStat();
-        }
-    }
-
-    private TransactionTimeStatistic doFlushTranTimeStat() {
-        if (options.countStatistics && tranStartNanos > 0) {
-            final long flushNanos = tranEndNanos > 0 ? tranEndNanos : System.nanoTime();
-            switchWaitType(getCurWaitType(), getCurWaitType(), flushNanos, ESwitchMode.FORCE);
-            final TransactionTimeStatistic tranTimeStat = new TransactionTimeStatistic(
-                    cpuTimeNanos,
-                    dbTimeNanos,
-                    extTimeNanos);
-            cpuTimeNanos = 0;
-            dbTimeNanos = 0;
-            extTimeNanos = 0;
-            if (tranTimeStat.getDbNanos() < 0 || tranTimeStat.getExtNanos() < 0 || tranTimeStat.getCpuNanos() < 0
-                    || (tranTimeStat.getDbNanos() + tranTimeStat.getExtNanos() + tranTimeStat.getCpuNanos() <= 0)) {
-                final String details;
-                if (BUILD_LOG) {
-                    logBuilder.append(tranTimeStat.toString());
-                    details = logBuilder.toString();
-                } else {
-                    details = tranTimeStat.toString();
-                }
-                arte.getTrace().put(EEventSeverity.WARNING, "Suspicious profiler stats:\n\n" + details, EEventSource.ARTE_PROFILER.getValue());
-            }
-            return tranTimeStat;
-        }
-        return null;
     }
 
     static class Options {
@@ -476,6 +402,181 @@ public class ArteProfiler {
         @Override
         public String toString() {
             return "{" + "mode=" + mode.getName() + (mode == EProfileMode.SPECIFIED ? ", prefixes=" + profilerPrefixes : "") + '}';
+        }
+    }
+
+    public interface TimingSection extends AutoCloseable {
+
+        @Override
+        public void close();
+    }
+
+    private static final class WaitCounter {
+
+        private ArteWaitStats waitStats = new ArteWaitStats(0, 0, 0, 0, 0);
+        private EWaitType curWaitType = EWaitType.IDLE;
+        private long curWaitStartNanos = System.nanoTime();
+        private long curWaitStartCpuNanos = MonitoringUtils.getCurrentThreadCpuTime();
+        private ArteWaitStats lastFlushedSnapshot;
+        private final Arte arte;
+
+        public WaitCounter(Arte arte) {
+            this.arte = arte;
+        }
+
+        private long getArteThreadCpuTime() {
+            return MonitoringUtils.getThreadCpuTime(arte.getProcessorThread().getId());
+        }
+
+        public synchronized ArteWaitStats snapshot() {
+            if (curWaitType == null) {
+                return waitStats;
+            }
+            return appendCurrentWait(System.nanoTime(), HONEST_CPU_PART ? getArteThreadCpuTime() : 0);
+        }
+
+        public synchronized void switchWaitType(final EWaitType waitType) {
+            final long curCpuNanos = HONEST_CPU_PART ? getArteThreadCpuTime() : 0;
+            final long curNanos = System.nanoTime();
+            if (curWaitType != null) {
+                waitStats = appendCurrentWait(curNanos, curCpuNanos);
+            }
+            curWaitStartNanos = curNanos;
+            curWaitType = waitType;
+            curWaitStartCpuNanos = curCpuNanos;
+        }
+
+        public synchronized ArteWaitStats flushDiff() {
+            final ArteWaitStats curSnapshot = snapshot();
+            if (lastFlushedSnapshot == null) {
+                return curSnapshot;
+            }
+            final ArteWaitStats result = lastFlushedSnapshot.substractFrom(curSnapshot);
+            lastFlushedSnapshot = curSnapshot;
+            return result;
+        }
+
+        private ArteWaitStats appendCurrentWait(final long curNanos, final long curCpuNanos) {
+            long cpuDiffNanos = 0;
+            long diffNanos = curNanos - curWaitStartNanos;
+            if (HONEST_CPU_PART) {
+                if (curWaitStartCpuNanos >= 0 && curCpuNanos >= 0) {
+                    cpuDiffNanos = Math.min(diffNanos, curCpuNanos - curWaitStartCpuNanos);
+                }
+                if (curWaitType == EWaitType.CPU) {
+                    return waitStats.add(cpuDiffNanos, curWaitType).add(diffNanos - cpuDiffNanos, EWaitType.QUEUE);
+                } else {
+                    return waitStats.add(cpuDiffNanos, EWaitType.CPU).add(diffNanos - cpuDiffNanos, curWaitType);
+                }
+            } else {
+                return waitStats.add(diffNanos, curWaitType);
+            }
+
+        }
+    }
+
+    private static class RequestLog {
+
+        private final StringBuilder sb = new StringBuilder();
+        private final long startNanos;
+        private long lastNanos;
+        private int depth = 0;
+        private final ArteWaitStats startWaitStats;
+        private final Map<String, CommentStats> commentStats = new HashMap<>();
+
+        public RequestLog(final Arte arte) {
+            sb.append("RequestLog | Inst#" + arte.getInstance().getId() + "/Arte#" + arte.getSeqNumber() + "/db#" + arte.getDbSid() + " | " + (new Date()));
+            sb.append("\n");
+            startNanos = System.nanoTime();
+            lastNanos = startNanos;
+            startWaitStats = arte.getProfiler().getWaitStatsSnapshot();
+        }
+
+        public void append(final long nanoTime, final String secName, final boolean enter, final String comment) {
+
+            final long diffUs = (nanoTime - lastNanos) / 1000;
+            lastNanos = nanoTime;
+            if (enter) {
+                depth++;
+            }
+
+            sb.append(getMark(diffUs));
+
+            for (int i = 0; i < depth; i++) {
+                sb.append("  ");
+            }
+
+            sb.append((enter ? "> " : "< ") + "(+ " + diffUs + " us, total " + ((nanoTime - startNanos) / 1000) + " us) " + secName + (comment == null ? "" : " (" + comment + ")"));
+            sb.append("\n");
+
+            if (comment != null) {
+
+                CommentStats curStats = commentStats.get(comment);
+                if (curStats == null) {
+                    curStats = new CommentStats();
+                    curStats.count = 1;
+                    curStats.durationUs = (int) diffUs;
+                    curStats.comment = comment;
+                    commentStats.put(comment, curStats);
+                } else {
+                    curStats.count++;
+                    curStats.durationUs += diffUs;
+                }
+            }
+
+            if (!enter) {
+                depth--;
+            }
+        }
+
+        private String getMark(final long diff) {
+            if (diff < 5000) {
+                return "  ";
+            } else if (diff < 10000) {
+                return "! ";
+            } else {
+                return "!!";
+            }
+        }
+
+        private long finish(final Arte arte) {
+            final long nanoTime = System.nanoTime();
+            final ArteWaitStats stats = startWaitStats.substractFrom(arte.getProfiler().getWaitStatsSnapshot());
+            sb.insert(13, " | total: " + ((nanoTime - startNanos) / 1000000) + " ms,"
+                    + " CPU: " + (stats.getCpuNanos() / 1000000)
+                    + " DB: " + (stats.getDbNanos() / 1000000)
+                    + " EXT: " + (stats.getExtNanos() / 1000000)
+                    + " QUEUE: " + (stats.getOtherNanos() / 1000000)
+            );
+            sb.append("\n\n");
+
+            final List<CommentStats> list = new ArrayList<>(commentStats.values());
+            Collections.sort(list, new Comparator<CommentStats>() {
+
+                @Override
+                public int compare(CommentStats o1, CommentStats o2) {
+                    return o2.durationUs - o1.durationUs;
+                }
+
+            });
+
+            for (CommentStats stat : list) {
+                sb.append(stat.durationUs + "us (" + stat.count + ") : " + stat.comment);
+                sb.append("\n");
+            }
+
+            return nanoTime - startNanos;
+        }
+
+        public String getAsStr() {
+            return sb.toString();
+        }
+
+        private static class CommentStats {
+
+            private int count;
+            private int durationUs;
+            private String comment;
         }
     }
 }

@@ -331,6 +331,7 @@ public class DdsFunctionEditor extends RadixObjectEditor<DdsFunctionDef> {
     @Override
     public boolean open(OpenInfo openInfo) {
         update();
+        sqmlEditorPanel.open(sqmlEditorPanel.getSource(), openInfo);
         return super.open(openInfo);
     }
 

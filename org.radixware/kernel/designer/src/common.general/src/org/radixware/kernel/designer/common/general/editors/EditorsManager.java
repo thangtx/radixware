@@ -16,6 +16,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
+import org.radixware.kernel.common.defs.IPropertyModule;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPageDef;
@@ -68,6 +69,11 @@ public abstract class EditorsManager {
                         return radixObject;
                     }
                 }
+                
+                if (radixObject instanceof IPropertyModule) { // editors these objects should be located in the module editor
+                    return radixObject.getModule(); 
+                }
+                
                 radixObject = radixObject.getContainer();
             } while (radixObject != null && !(radixObject instanceof Module) && !(radixObject instanceof Layer)); // prevent use module and layer editors for objects without editor.
         }

@@ -16,6 +16,7 @@ import org.radixware.kernel.common.client.exceptions.TerminalResourceException;
 import org.radixware.kernel.common.enums.EFileAccessType;
 import org.radixware.kernel.common.enums.EFileOpenMode;
 import org.radixware.kernel.common.enums.EFileOpenShareMode;
+import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.schemas.eas.MessageDialogOpenRq;
 import org.radixware.schemas.eas.NextDialogRequest;
 
@@ -27,10 +28,8 @@ public interface IResourceManager {
     public IMessageDialogResource openMessageDialogResource(NextDialogRequest.MessageBox messageBox);
 
     public IFileResource openFileResource(final String fileName, final EFileOpenMode openMode, final EFileOpenShareMode share) throws IOException, TerminalResourceException;
-
-    public void freeResource(final String id) throws TerminalResourceException;
-
-    public void freeAllResources() throws TerminalResourceException;
+    
+    public IFileTransitResource startFileTransit(final String fileName, final EMimeType mimeType, final boolean openAfterTransit) throws IOException, TerminalResourceException;
 
     public IProgressDialogResource getProgressDialogResource();
     
@@ -47,4 +46,6 @@ public interface IResourceManager {
     public void moveFile(final String srcFileName, final String dstFileName, final boolean overwrite) throws TerminalResourceException;
 
     public void copyFile(final String srcFileName, final String dstFileName, final boolean overwrite) throws IOException, TerminalResourceException;
+    
+    public boolean isFileExists(final String path);
 }

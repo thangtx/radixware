@@ -102,7 +102,7 @@ public class FormatLocalizingPanel extends JPanel implements ChangeListener {
             isMultilingual = false;
             items.clear();
             if (!isUpdating) {
-                titleItem.setMultilingual(false);
+                //titleItem.setMultilingual(false);
                 handleInfo.removeAdsMultilingualStringDef();
             }
             bodyPanel.removeAll();
@@ -139,23 +139,22 @@ public class FormatLocalizingPanel extends JPanel implements ChangeListener {
             constraints.fill = GridBagConstraints.HORIZONTAL;
             constraints.anchor = GridBagConstraints.WEST;
             gridBagLayout.setConstraints(valueField, constraints);
-
+            handleInfo.onLanguagesChange();
             performExpand();
         } else {
 
             isMultilingual = true;
             items.clear();
             if (!isUpdating) {
-                titleItem.setMultilingual(true);
+                //titleItem.setMultilingual(true);
 
                 if (handleInfo.getAdsMultilingualStringDef() == null) {
                     //create new AdsMultilingualStringDef and add it to bundle
                     handleInfo.setAdsMultilingualStringDef(AdsMultilingualStringDef.Factory.newInstance());
                 }
             }
-
-            updateEditlines();
             handleInfo.onLanguagesChange();
+            updateEditlines();
             performExpand();
         }
 
@@ -213,6 +212,10 @@ public class FormatLocalizingPanel extends JPanel implements ChangeListener {
 
         return result;
     }
+    
+    protected String getDefaultValue(EIsoLanguage l){
+        return null;
+    }
 
     protected void updateEditlines() {
 
@@ -242,7 +245,10 @@ public class FormatLocalizingPanel extends JPanel implements ChangeListener {
                     value = getUsablePattern();
                 }
             } else {
-                value = getUsablePattern();
+                value = getDefaultValue(l);
+                if (value == null) {
+                    value = getUsablePattern();
+                }
             }
 
             valueField.setText(value);

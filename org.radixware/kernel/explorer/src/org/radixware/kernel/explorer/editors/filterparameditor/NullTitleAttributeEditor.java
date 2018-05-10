@@ -29,7 +29,7 @@ final class NullTitleAttributeEditor extends AbstractAttributeEditor<String> {
 
     protected NullTitleAttributeEditor(IClientEnvironment environment, final boolean isReadonly, final QWidget parent) {
         super(environment);
-        lbNullTitle = new QLabel(getAttribute().getTitle(), parent);
+        lbNullTitle = new QLabel(getAttribute().getTitle(environment), parent);
         lbNullTitle.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         lbNullTitle.setObjectName("lbNullTitle");
         valNullTitle = new ValStrEditor(environment, parent, new EditMaskStr(), true, isReadonly);

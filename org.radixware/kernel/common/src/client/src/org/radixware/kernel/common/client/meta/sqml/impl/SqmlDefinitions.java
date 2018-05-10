@@ -53,6 +53,7 @@ import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.types.Id;
 
 
+@Deprecated //use org.radixware.kernel.common.client.meta.sqml.impl.SqmlDefinitions instead
 public class SqmlDefinitions implements ISqmlDefinitions {
 
     private final Branch branch;

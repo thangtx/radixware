@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.sc;
 
 import java.util.ArrayList;
@@ -17,30 +16,42 @@ import java.util.List;
 import java.util.Map;
 import org.radixware.kernel.common.enums.EPortSecurityProtocol;
 import org.radixware.kernel.common.utils.SystemPropUtils;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.common.utils.net.SapAddress;
 import org.radixware.kernel.common.utils.net.SocketServerChannel;
 
-
 public class SapClientOptions {
+
+    private static enum BlockReason {
+
+        BUSY,
+        UNAVAILABLE
+    }
 
     private static final int INITIAL_BUSY_BLOCK_MILLIS = 50;
     private static final int MAX_BUSY_BLOCK_MILLIS = SystemPropUtils.getIntSystemProp("rdx.sapclientopts.max.busy.block.millis", 1000);
+    private static final int LOAD_PERCENT_VALIDITY_MILLIS = SystemPropUtils.getIntSystemProp("rdx.sapclientopts.load.percent.validity.millis", -1);
     private String name;
     private int priority = 1;
     private long blockingPeriodMillis;
     private int connectTimeoutMillis;
     private long id;
     private SapAddress address;
-    private EPortSecurityProtocol securityProtocol;
+    private EPortSecurityProtocol securityProtocol = EPortSecurityProtocol.NONE;
     private List<String> clientKeyAliases;
     private List<String> serverCertAliases;
     private List<String> cipherSuites;
     private SoapServiceOptions soapServiceOptions;
     private Map<String, String> additionalAttrs;
     private int busyBlockMillis = INITIAL_BUSY_BLOCK_MILLIS;
-    private boolean blockedBecauseBusy = false;
+    private BlockReason blockReason;
     private long blockTime = -1;
+    private Integer aadcMemberId;
     private SapClientOptions successor;
+    private String busyFaultCode;
+    private Long availableVersionOnBusy;
+    private int loadPercent;
+    private long loadPercentSetMillis = 0;
 
     public SapClientOptions() {
     }
@@ -58,6 +69,21 @@ public class SapClientOptions {
         blockTime = -1;
         soapServiceOptions = ops.soapServiceOptions;
         id = ops.getId();
+        aadcMemberId = ops.aadcMemberId;
+        doSetLoadPercent(loadPercent);
+    }
+    
+    private void doSetLoadPercent(int loadPercent) {
+        this.loadPercent = loadPercent;
+        loadPercentSetMillis = System.currentTimeMillis();
+    }
+
+    public void setLoadPercent(int loadPercent) {
+        doSetLoadPercent(loadPercent);
+    }
+
+    public int getLoadPercent() {
+        return loadPercent;
     }
 
     public SapClientOptions getSuccessor() {
@@ -78,6 +104,7 @@ public class SapClientOptions {
 
     public void block() {
         setBlockTime(System.currentTimeMillis() + getBlockingPeriodMillis());
+        blockReason = BlockReason.UNAVAILABLE;
     }
 
     public void block(int millis) {
@@ -89,13 +116,16 @@ public class SapClientOptions {
      * case of continuous busy responses progressive block timeouts are used.
      * Current timeout value can be reset with {@linkplain  setNotBusy()}
      */
-    public void blockOnBusy() {
+    public void blockOnBusy(final String faultCode, final Long availableVersion) {
         block(busyBlockMillis);
+        setLoadPercent(100);
         busyBlockMillis *= 2;
         if (busyBlockMillis > MAX_BUSY_BLOCK_MILLIS) {
             busyBlockMillis = MAX_BUSY_BLOCK_MILLIS;
         }
-        blockedBecauseBusy = true;
+        blockReason = BlockReason.BUSY;
+        busyFaultCode = faultCode;
+        this.availableVersionOnBusy = availableVersion;
         if (successor != null) {
             successor.copyBlockStateFrom(this);
         }
@@ -103,10 +133,23 @@ public class SapClientOptions {
 
     public void setNotBusy() {
         busyBlockMillis = INITIAL_BUSY_BLOCK_MILLIS;
+
+    }
+
+    public String getBusyFaultCode() {
+        return busyFaultCode;
     }
 
     public boolean wasBlockedBecauseBusy() {
-        return blockedBecauseBusy;
+        return blockReason == BlockReason.BUSY;
+    }
+
+    public boolean wasBlockedBecauseUnavailable() {
+        return blockReason == BlockReason.UNAVAILABLE;
+    }
+
+    public Long getAvailableVersionOnBusy() {
+        return availableVersionOnBusy;
     }
 
     public void setSoapServiceOptions(SoapServiceOptions soapServiceOptions) {
@@ -158,6 +201,15 @@ public class SapClientOptions {
      */
     public int getPriority() {
         return priority;
+    }
+
+    public int getPriorityAccountingLoad() {
+        int effectiveLoadPercent = Math.abs(System.currentTimeMillis() - loadPercentSetMillis) < LOAD_PERCENT_VALIDITY_MILLIS ? loadPercent : 0;
+        int effectivePriority = priority * (100 - effectiveLoadPercent);
+        if (effectivePriority == 0) {
+            effectivePriority = 1;
+        }
+        return effectivePriority;
     }
 
     /**
@@ -228,7 +280,7 @@ public class SapClientOptions {
      * @param securityProtocol the securityProtocol to set
      */
     public void setSecurityProtocol(final EPortSecurityProtocol securityProtocol) {
-        this.securityProtocol = securityProtocol;
+        this.securityProtocol = Utils.nvlOf(securityProtocol, EPortSecurityProtocol.NONE);
     }
 
     /**
@@ -281,16 +333,24 @@ public class SapClientOptions {
      */
     public void setBlockTime(final long blockTime) {
         this.blockTime = blockTime;
-        //if this is a block because of busy, this flag will be set by blockOnBusy() immediately after setBlockTime
-        blockedBecauseBusy = false;
+        busyFaultCode = null;
         if (successor != null) {
             successor.copyBlockStateFrom(this);
         }
     }
 
+    public Integer getAadcMemberId() {
+        return aadcMemberId;
+    }
+
+    public void setAadcMemberId(final Integer aadcMemberId) {
+        this.aadcMemberId = aadcMemberId;
+    }
+
     public void unblock() {
         blockTime = -1;
-        blockedBecauseBusy = false;
+        blockReason = null;
+        busyFaultCode = null;
     }
 
     public String getShortDescription() {
@@ -301,7 +361,10 @@ public class SapClientOptions {
         if (src != null) {
             blockTime = src.blockTime;
             busyBlockMillis = src.busyBlockMillis;
-            blockedBecauseBusy = src.blockedBecauseBusy;
+            blockReason = src.blockReason;
+            busyFaultCode = src.busyFaultCode;
+            loadPercent = src.loadPercent;
+            loadPercentSetMillis = src.loadPercentSetMillis;
         }
     }
 
@@ -318,8 +381,8 @@ public class SapClientOptions {
      */
     public String getConnectionId() {
         return address == null ? "<null>" : address.toString()
-                + "-" + (securityProtocol == null ? "null" : securityProtocol.getValue())
-                + (securityProtocol == EPortSecurityProtocol.SSL ? "-" + listAsStr("serverAliases", serverCertAliases) + "-" + listAsStr("clientAliases", clientKeyAliases) + "-" + listAsStr("cipherSuites", cipherSuites) : "");
+                + "-" + securityProtocol.getValue()
+                + (securityProtocol.isTls() ? "-" + listAsStr("serverAliases", serverCertAliases) + "-" + listAsStr("clientAliases", clientKeyAliases) + "-" + listAsStr("cipherSuites", cipherSuites) : "");
     }
 
     private String listAsStr(final String listName, final List list) {

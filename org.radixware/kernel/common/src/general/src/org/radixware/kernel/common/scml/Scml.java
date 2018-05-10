@@ -60,18 +60,18 @@ public abstract class Scml extends RadixObject {
 
     @Override
     public String toString() {
-        String text = "";
+        final StringBuilder sb = new StringBuilder();
+        
         for (Item item : getItems()) {
-            text += item.toString();
+            sb.append(item);
         }
-        return text;
+        return sb.toString();
     }
 
     /**
      * Элемент {@link Scml SCML}.
      */
     public static abstract class Item extends RadixObject {
-
         private CodePrinter.Monitor monitor;
 
         protected Item() {
@@ -93,7 +93,7 @@ public abstract class Scml extends RadixObject {
             throw new RadixObjectError("Attempt to change name of sqml item.", getOwnerScml());
         }
 
-        public void setSourceMonitor(CodePrinter.Monitor monitor) {
+        public void setSourceMonitor(final CodePrinter.Monitor monitor) {
             this.monitor = monitor;
         }
 
@@ -119,7 +119,6 @@ public abstract class Scml extends RadixObject {
      * Тэг {@link Scml SCML}.
      */
     public static abstract class Tag extends Scml.Item {
-
         protected Tag() {
             super();
         }
@@ -132,6 +131,7 @@ public abstract class Scml extends RadixObject {
         @Override
         public String getToolTip() {
             final List<Definition> dependencies = new ArrayList<Definition>();
+            
             collectDependences(dependencies);
             if (dependencies.size() == 1) {
                 // approached in most cases
@@ -155,31 +155,38 @@ public abstract class Scml extends RadixObject {
                 return sb.toString();
             }
         }
+        
+        public ArrayList<RadixObject> getGoToDependencies() {
+            List<Definition> dependenciesDef = new ArrayList<>();
+            collectDependences(dependenciesDef);
+            ArrayList<RadixObject> dependenciesObject = new ArrayList<>();
+            dependenciesObject.addAll(dependenciesDef);
+            return dependenciesObject;
+        }
+        
     }
 
     /**
      * Текст {@link Scml SCML}.
      */
     public static class Text extends Scml.Item {
-
+        private String text;
         /**
          * Use {@linkplain Scml.Text.Factory}.
          */
         protected Text() {
-            super();
+            this.text = "";
         }
 
-        protected Text(String text) {
-            this();
+        protected Text(final String text) {
             this.text = text;
         }
-        private String text = "";
 
         public String getText() {
             return text;
         }
 
-        public void setText(String text) {
+        public void setText(final String text) {
             if (!Utils.equals(this.text, text)) {
                 this.text = text;
                 setEditState(EEditState.MODIFIED);
@@ -192,7 +199,6 @@ public abstract class Scml extends RadixObject {
         }
 
         public static final class Factory {
-
             private Factory() {
             }
 
@@ -200,7 +206,7 @@ public abstract class Scml extends RadixObject {
                 return new Text();
             }
 
-            public static Text newInstance(String text) {
+            public static Text newInstance(final String text) {
                 return new Text(text);
             }
         }
@@ -219,11 +225,13 @@ public abstract class Scml extends RadixObject {
         @Override
         protected void onModified() {
             final Scml scml = getOwnerScml();
+            
             if (scml != null) {
                 scml.onModified();
             }
         }
     }
+    
     /**
      * Получить список элементов {@link Scml SCML} выражения.
      */
@@ -240,8 +248,9 @@ public abstract class Scml extends RadixObject {
 
     protected void setText(final String code) {
         final Text text;
+        
         if (getItems().size() == 1 && getItems().get(0) instanceof Text) {
-            text = (Text) getItems().get(0);
+            text = (Text) getItems().get(0);    // Side effect!!! Mutation of the stored data
         } else {
             this.getItems().clear();
             text = Text.Factory.newInstance();
@@ -251,7 +260,7 @@ public abstract class Scml extends RadixObject {
     }
 
     @Override
-    public void visitChildren(IVisitor visitor, VisitorProvider provider) {
+    public void visitChildren(final IVisitor visitor, final VisitorProvider provider) {
         super.visitChildren(visitor, provider);
         getItems().visit(visitor, provider);
     }

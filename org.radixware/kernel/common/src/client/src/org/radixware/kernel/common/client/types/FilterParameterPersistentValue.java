@@ -23,6 +23,7 @@ import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
+import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 
@@ -31,48 +32,69 @@ public class FilterParameterPersistentValue implements ISqmlParameterPersistentV
 
     private Object value;
     private final Id editorPresentationId;
+    private final boolean isReadOnly;
     private final EValType type;
 
-    public FilterParameterPersistentValue(final EntityModel entity) {
+    public FilterParameterPersistentValue(final EntityModel entity, final boolean isReadOnly) {
         value = new Reference(entity.getPid(), entity.getTitle());
         type = EValType.PARENT_REF;
         editorPresentationId = entity.getEditorPresentationDef().getId();
+        this.isReadOnly = isReadOnly;
     }
 
-    public FilterParameterPersistentValue(final Reference ref, final Id editorPresentationId) {
+    public FilterParameterPersistentValue(final Reference ref, final Id editorPresentationId, final boolean isReadOnly) {
         value = new Reference(ref);
         type = EValType.PARENT_REF;
         this.editorPresentationId = editorPresentationId;
+        this.isReadOnly = isReadOnly;
+    }
+    
+    public FilterParameterPersistentValue(final ArrRef references, final Id editorPresentationId, final boolean isReadOnly) {
+        value = new ArrRef(references);
+        type = EValType.ARR_REF;
+        this.editorPresentationId = editorPresentationId;
+        this.isReadOnly = isReadOnly;
     }
 
-    public FilterParameterPersistentValue(final Object value, final EValType valType) {
-        this.value = value;
+    public FilterParameterPersistentValue(final Object value, final EValType valType, final boolean isReadOnly) {
+        this.value = copyValue(value, valType);
         type = valType;
         this.editorPresentationId = null;
+        this.isReadOnly = isReadOnly;
     }
 
     public FilterParameterPersistentValue(final FilterParameterPersistentValue source) {
         type = source.type;
         editorPresentationId = source.editorPresentationId;
-        if (source.value instanceof Pid) {
-            value = source.value;
-        } else {
-            value = PropertyValue.copyValue(source.value, type);
-        }
+        value = copyValue(source.value, type);
+        isReadOnly = source.isReadOnly;
     }
 
-    private FilterParameterPersistentValue(final Pid pid, final Id editorPresentationId) {
+    private FilterParameterPersistentValue(final Pid pid, final Id editorPresentationId, final boolean isReadOnly) {
         value = pid;
         type = EValType.PARENT_REF;
         this.editorPresentationId = editorPresentationId;
+        this.isReadOnly = isReadOnly;
+    }
+    
+    private FilterParameterPersistentValue(final ArrPid value, final Id editorPresentationId, final boolean isReadOnly){
+        this.value = value;
+        type = EValType.ARR_REF;
+        this.editorPresentationId = editorPresentationId;
+        this.isReadOnly = isReadOnly;
     }
 
-    public static FilterParameterPersistentValue loadFromXml(IClientEnvironment environment, final ISqmlParameter parameter,
-            final org.radixware.schemas.groupsettings.CustomFilter.PersistentValues.PersistentValue paramValue) {
-        if (paramValue.getValAsStr() == null) {
-            return new FilterParameterPersistentValue(null, parameter.getType());
-        } else if (parameter.getType() == EValType.PARENT_REF) {
-            final Pid pid = new Pid(parameter.getReferencedTableId(), paramValue.getValAsStr());
+    public static FilterParameterPersistentValue loadFromXml(final IClientEnvironment environment, final ISqmlParameter parameter,
+            final org.radixware.schemas.groupsettings.FilterParameterValue paramValue, final boolean isReadOnly) {
+        final String valueAsString = paramValue.isSetValueAsStr() ? paramValue.getValueAsStr() : paramValue.getValAsStr();
+        if (valueAsString == null) {
+            return new FilterParameterPersistentValue(null, parameter.getType(), isReadOnly);
+        }
+        if (paramValue.getType()!=null && parameter.getType()!=paramValue.getType()){
+            return null;//parameter type was changed - ignoring this value
+        }
+        if (parameter.getType() == EValType.PARENT_REF) {
+            final Pid pid = new Pid(parameter.getReferencedTableId(), valueAsString);
             Id editorPresentationId = paramValue.getEditorPresentationId();
             if (editorPresentationId != null) {
                 try {
@@ -82,11 +104,28 @@ public class FilterParameterPersistentValue implements ISqmlParameterPersistentV
                     editorPresentationId = null;
                 }
             }
-            return new FilterParameterPersistentValue(pid, editorPresentationId);
+            return new FilterParameterPersistentValue(pid, editorPresentationId, isReadOnly);
+        } else if (parameter.getType() == EValType.ARR_REF) {
+            final ArrStr arrPidAsStr = ArrStr.fromValAsStr(valueAsString);
+            final Id tableId = parameter.getReferencedTableId();
+            final ArrPid value = new ArrPid();
+            for (String pidAsStr: arrPidAsStr){
+                value.add(pidAsStr==null ? null : new Pid(tableId,pidAsStr));
+            }
+            Id editorPresentationId = paramValue.getEditorPresentationId();
+            if (editorPresentationId != null) {
+                try {
+                    environment.getDefManager().getEditorPresentationDef(editorPresentationId);
+                } catch (DefinitionError error) {
+                    //Editor presentation was not found by stored id - try to use default
+                    editorPresentationId = null;
+                }
+            }
+            return new FilterParameterPersistentValue(value, editorPresentationId, isReadOnly);
         } else {
             final EValType valType = parameter.getType();
             try {
-                return new FilterParameterPersistentValue(ValAsStr.fromStr(paramValue.getValAsStr(), valType), valType);
+                return new FilterParameterPersistentValue(ValAsStr.fromStr(valueAsString, valType), valType, isReadOnly);
             } catch (WrongFormatError error) {
                 final String message = environment.getMessageProvider().translate("TraceMessage", "Can't restore persistent value of %s #%s parameter: %s");
                 final String reason = ClientException.getExceptionReason(environment.getMessageProvider(), error);
@@ -98,30 +137,30 @@ public class FilterParameterPersistentValue implements ISqmlParameterPersistentV
 
     @Override
     public Object getValObject() {
-        return value;
+        return copyValue(value, type);
     }
 
     @Override
-    public boolean isValid(IClientEnvironment environment) {
+    public boolean isReadOnly() {
+        return isReadOnly;
+    }
+
+    @Override
+    public boolean isValid(final IClientEnvironment environment) {
         if (value instanceof Pid) {
             final Pid pid = (Pid) value;
-            try {
-                final String title;
-                if (editorPresentationId != null) {
-                    title = pid.getEntityTitleInPresentation(environment.getEasSession(), editorPresentationId);
-                } else {
-                    title = pid.getDefaultEntityTitle(environment.getEasSession());
-                }
-                value = new Reference(pid, title);
+            final Reference rawValue = new Reference(pid);
+            try {                
+                value = rawValue.actualizeTitle(environment, pid.getTableId(), editorPresentationId);
             } catch (ServiceCallFault fault) {
                 value = new Reference(pid, pid.toString(), pid.toString());
                 if (org.radixware.schemas.eas.ExceptionEnum.OBJECT_NOT_FOUND.toString().equals(fault.getFaultString())) {
-                    final String message = environment.getMessageProvider().translate("TraceMessage", "Can't actualize filter parameter value: object %s was not found in table #%s");
+                    final String message = environment.getMessageProvider().translate("TraceMessage", "Failed to actualize filter parameter value: object %s was not found in table #%s");
                     environment.getTracer().warning(String.format(message, pid.toString(), pid.getTableId()));
                 } else {
                     final String reason = ClientException.getExceptionReason(environment.getMessageProvider(), fault);
                     final String stack = ClientException.exceptionStackToString(fault);
-                    final String message = environment.getMessageProvider().translate("TraceMessage", "Can't actualize filter parameter value: %s\n%s");
+                    final String message = environment.getMessageProvider().translate("TraceMessage", "Failed to actualize filter parameter value: %s\n%s");
                     environment.getTracer().warning(String.format(message, reason, stack));
                 }
                 return false;
@@ -129,17 +168,49 @@ public class FilterParameterPersistentValue implements ISqmlParameterPersistentV
                 value = new Reference(pid, pid.toString(), pid.toString());
                 final String reason = ClientException.getExceptionReason(environment.getMessageProvider(), exception);
                 final String stack = ClientException.exceptionStackToString(exception);
-                final String message = environment.getMessageProvider().translate("TraceMessage", "Can't actualize filter parameter value: %s\n%s");
+                final String message = environment.getMessageProvider().translate("TraceMessage", "Failed to actualize filter parameter value: %s\n%s");
                 environment.getTracer().warning(String.format(message, reason, stack));
                 return false;
             } catch (InterruptedException exception) {
                 return false;
             }
+        }else if (value instanceof ArrPid){
+            final ArrRef arrRef = ((ArrPid)value).toArrRef();
+            final Id tableId = findTableId((ArrPid)value);
+            if (tableId==null){
+                return true;
+            }
+            try{
+                value = arrRef.actualizeTitles(environment, tableId, editorPresentationId);
+            }catch (ServiceClientException exception) {
+                final String reason = ClientException.getExceptionReason(environment.getMessageProvider(), exception);
+                final String stack = ClientException.exceptionStackToString(exception);
+                final String message = environment.getMessageProvider().translate("TraceMessage", "Failed to actualize filter parameter value: %s\n%s");
+                environment.getTracer().warning(String.format(message, reason, stack));
+                return false;                
+            }catch (InterruptedException exception) {
+                return false;
+            }
         }
         if (value instanceof Reference) {
             return !((Reference) value).isBroken();
+        }else if (value instanceof ArrRef){
+            for (Reference reference: (ArrRef)value){
+                if (reference!=null && reference.isBroken()){
+                    return false;
+                }
+            }
         }
         return true;
+    }
+    
+    private static Id findTableId(final ArrPid arr){
+        for (Pid pid: arr){
+            if (pid!=null){
+                return pid.getTableId();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -149,6 +220,12 @@ public class FilterParameterPersistentValue implements ISqmlParameterPersistentV
         } else if (value instanceof Reference) {
             final Reference ref = (Reference) value;
             return ref.getPid() == null ? null : ref.getPid().toString();
+        } else if (value instanceof ArrRef){
+            final ArrStr arrPidAsStr = new ArrStr();
+            for (Reference ref: (ArrRef)value){
+                arrPidAsStr.add(ref==null || ref.getPid()==null ? null : ref.getPid().toString());
+            }
+            return arrPidAsStr.toString();
         } else if (value == null) {
             return null;
         }
@@ -186,5 +263,15 @@ public class FilterParameterPersistentValue implements ISqmlParameterPersistentV
     @Override
     public ISqmlParameterPersistentValue copy() {
         return new FilterParameterPersistentValue(this);
+    }
+    
+    private static Object copyValue(final Object value, final EValType type){
+        if (value==null || value instanceof Pid) {
+            return value;
+        } else if (value instanceof ArrPid){
+            return new ArrPid((ArrPid)value);
+        }else {
+            return PropertyValue.copyValue(value, type);
+        }        
     }
 }

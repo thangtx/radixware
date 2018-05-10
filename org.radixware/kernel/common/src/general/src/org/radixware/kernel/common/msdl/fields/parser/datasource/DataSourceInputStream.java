@@ -8,155 +8,165 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.msdl.fields.parser.datasource;
 
+import org.radixware.kernel.common.msdl.fields.parser.fieldlist.ExtByteBuffer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.radixware.kernel.common.msdl.fields.parser.ParseUtil;
 import org.radixware.kernel.common.utils.Hex;
-
 
 public class DataSourceInputStream implements IDataSource {
 
     public ArrayList<Byte> shieldedList;
     public Byte shield;
     public boolean isHex;
-    private ByteBuffer bf = ByteBuffer.allocate(1024);
-    private InputStream is;
-    private  int position = 0;
+    private final ExtByteBufferReadWrite bf = new ExtByteBufferReadWrite();
+    private final InputStream is;
+    final private IInputDataSource source;
 
-    public DataSourceInputStream(InputStream is) throws IOException {
+    public DataSourceInputStream(InputStream is) {
         this.is = is;
-        bf.mark();
+        bf.limit(0);
+        source = new DefaultDataSource();
     }
 
-    @Override
-    public int getPosition() {
-        return bf.position() + position;
-    }
-    
     private interface IInputDataSource {
+
         int get() throws IOException;
-        void get(byte [] outArray) throws IOException;
     }
-    
-    private class ByteBufferInputDataSource implements IInputDataSource {
+
+    private class DefaultDataSource implements IInputDataSource {
+
         @Override
         public int get() throws IOException {
-            bf.flip();
-            return bf.get();
-        }
-
-        @Override
-        public void get(byte[] outArray) throws IOException {
-            bf.flip();
-            bf.get(outArray);
-        }
-        
-    }
-    
-    private class InputStreamInputSource implements IInputDataSource {
-        @Override
-        public int get() throws IOException{
-            position++;
+            if (bf.remaining() > 0) {
+                return bf.get();
+            }
             return is.read();
         }
-
-        @Override
-        public void get(byte[] outArray) throws IOException {
-            int read = is.read(outArray);
-            position += read;
-        }
-        
     }
 
     @Override
     public byte get() throws IOException {
-        IInputDataSource source;
-        if (bf.position() == 0) {
-            source = new InputStreamInputSource();
-            
-        }
-        else {
-            source = new ByteBufferInputDataSource();
-        }
         byte b = (byte) source.get();
-        return readShieldedByte(b, source);
-    }
-
-    @Override
-    public byte[] getAll() throws IOException {
-        byte[] allInStream = new byte[is.available()];
-        is.read(allInStream);
-        byte[] all = null;
-        if (bf.position() > 0) {
-            bf.flip();
-            byte[] fromBuf = new byte[bf.limit()];
-            bf.get(fromBuf);
-
-            int allLen = fromBuf.length + allInStream.length;
-            all = new byte[allLen];
-
-            int i = 0;
-            for (; i < fromBuf.length; i++) {
-                all[i] = fromBuf[i];
+        if (shieldedList != null && shield != null && b == shield && hasAvailable()) {
+            b = (byte) source.get();
+            int d = Character.digit((char) b, 16);
+            if (isHex && d != -1 && hasAvailable()) {
+                byte[] sh = new byte[2];
+                byte b2 = (byte) source.get();
+                sh[0] = b;
+                sh[1] = b2;
+                String h = null;
+                h = new String(sh, StandardCharsets.US_ASCII);
+                return Hex.decode(h)[0];
             }
-
-            int j = 0;
-            for (; i < allLen; i++) {
-                all[i] = allInStream[j++];
-            }
-            bf.limit(bf.capacity());
-        } else {
-            all = allInStream;
         }
-        return all;
+        return b;
     }
 
     @Override
-    public int available() throws IOException {
-        return is.available() + bf.position();
+    public boolean hasAvailable() throws IOException {
+        if (bf.remaining() > 0) {
+            return true;
+        }
+        final int b = is.read();
+        if (b != -1) {
+            bf.clear();
+            bf.put((byte) b);
+            bf.flip();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void append(byte[] arr, int count) {
+        bf.compact();
+        bf.put(arr, 0, count);
+        bf.flip();
+    }
+
+    private int readFromStream(byte[] resultArr, int needToReadBytesCnt) throws IOException {
+        int allReadedBytesCnt = 0;
+        int wasReadedBytesCnt;
+        while (true) {
+            final byte[] tempArr = new byte[needToReadBytesCnt - allReadedBytesCnt];
+            wasReadedBytesCnt = is.read(tempArr);
+            if (wasReadedBytesCnt == -1) {
+                return allReadedBytesCnt != 0 ? allReadedBytesCnt : -1;
+            }
+            System.arraycopy(tempArr, 0, resultArr, allReadedBytesCnt, wasReadedBytesCnt);
+            allReadedBytesCnt += wasReadedBytesCnt;
+            if (allReadedBytesCnt == needToReadBytesCnt) {
+                return allReadedBytesCnt;
+            }
+        }
+    }
+
+    @Override
+    public boolean hasAvailable(int len) throws IOException {
+        if (len <= 0) {
+            throw new IllegalArgumentException("Illegal length parameter value");
+        }
+        if (bf.remaining() >= len) {
+            return true;
+        }
+
+        final int byteToReadCnt = len - bf.remaining();
+        final byte[] readFromStream = new byte[byteToReadCnt];
+        final int byteWasReaded = readFromStream(readFromStream, byteToReadCnt);
+        if (byteWasReaded != byteToReadCnt) {
+            if (byteWasReaded > 0) {
+                append(readFromStream, byteWasReaded);
+            }
+            return false;
+        }
+
+        append(readFromStream, byteWasReaded);
+        return true;
     }
 
     @Override
     public byte[] get(int len) throws IOException {
-        byte[] res = new byte[len];
-        int remaining = len;
-        bf.flip();
-        if (bf.limit() > 0) {
-            if (len > bf.limit()) {
-                remaining = len - bf.limit();
-                bf.get(res, 0, bf.limit());
-                bf.rewind();
-                bf.limit(bf.capacity());
-            }
+        if (len <= 0) {
+            throw new IllegalArgumentException("Illegal length parameter value");
         }
-
-        if (remaining > 0) {
-            byte[] remBuf = new byte[remaining];
-            is.read(remBuf);
-            int j = 0;
-            for (int i = len - remaining - 1; i < len; i++) {
-                res[i] = remBuf[j++];
-            }
+        ExtByteBuffer buffer = new ExtByteBuffer();
+        for (int index = 0; index < len; index++) {
+            buffer.extPut(get());
         }
-        return res;
+        return ParseUtil.extractByteBufferContent(buffer.flip());
     }
 
     @Override
-    public ByteBuffer getByteBuffer() throws IOException {
-        int avail = is.available();
-        byte[] res = new byte[avail];
-        is.read(res);
-        ByteBuffer out = ByteBuffer.allocate(avail + bf.position());
-        out.put(bf);
-        out.put(res);
-        return out;
+    public byte[] getAll() throws IOException {
+        ExtByteBuffer buffer = new ExtByteBuffer();
+        while (hasAvailable()) {
+            buffer.extPut(get());
+        }
+        return ParseUtil.extractByteBufferContent(buffer.flip());
+    }
+
+    @Override
+    public void prepend(IDataSourceArray other) throws IOException {
+        if ((other.available() + bf.remaining()) > bf.capacity()) {
+            throw new IOException("Cannot prepend this buffer");
+        }
+
+        final byte[] arrRemaining = new byte[bf.remaining()];
+        bf.get(arrRemaining);
+
+        bf.clear();
+        bf.put(other.getByteBuffer());
+        bf.put(arrRemaining);
+        bf.flip();
     }
 
     @Override
@@ -172,36 +182,5 @@ public class DataSourceInputStream implements IDataSource {
     @Override
     public void setShieldIsHex(boolean isHex) {
         this.isHex = isHex;
-    }
-
-    @Override
-    public void prepend(IDataSource other) throws IOException {
-        bf.mark();
-        bf.put(other.getByteBuffer());
-        bf.reset();
-    }
-    
-    private byte readShieldedByte(byte b, IInputDataSource source) throws IOException {
-        if (shieldedList != null && shield != null && b == shield) {
-            if (isHex) {
-                return readHexShieldedByte(source);
-            } else {
-                b = (byte) source.get();
-            }
-            b = (byte) source.get();
-        }
-        return b;
-    }
-
-    private byte readHexShieldedByte(IInputDataSource inp) throws IOException {
-        byte[] sh = new byte[2];
-        inp.get(sh);
-        String h = null;
-        try {
-            h = new String(sh, "US-ASCII");
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(DataSourceByteBuffer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return Hex.decode(h)[0];
     }
 }

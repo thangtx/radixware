@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlOB5NQX24YXNBDGMBABQAQH3XQ4" QualifiedName="Radix::Acs">
+  <PackageDef Id="pkgGKLDTS2YJLOBDH2FABQAQH3XQ4" Name="RDX_ACS_UTILS">
+    <Function Id="dfnELULCECZJLOBDH2FABQAQH3XQ4" Name="buildAssignedAccessAreaU2R" ResultDbType="TRdxAcsArea" IsWNDS="true">
+      <Parameter Id="dfpXSTBNICMKRCUNDYGKXXNLBK5EQ" Name="row_" DbName="row_" DbType="RDX_AC_User2Role%ROWTYPE" ValType="202" Direction="0"/>
+    </Function>
+    <Function Id="dfn2F5E2XRDK3OBDH2RABQAQH3XQ4" Name="buildAssignedAccessAreaG2R" ResultDbType="TRdxAcsArea" IsWNDS="true">
+      <Parameter Id="dfp7RCDNGLAJZAH3P43GMHG32RN2Q" Name="row_" DbName="row_" DbType="RDX_AC_UserGroup2Role%ROWTYPE" ValType="202" Direction="0"/>
+    </Function>
+    <Function Id="dfnUQN47SG2E5FZVIF3SM6HID4NJ4" Name="compileRights" ResultDbType=""/>
+    <Function Id="dfnXMLATC5CW5BSFKCT7AXBI7NYWI" Name="compileRightsForGroup" ResultDbType="">
+      <Parameter Id="dfp2UH7QK53JVARBJOIEV6MYM3AJE" Name="pUserGroup" DbName="pUserGroup" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn27VVWJVI75DGLPWGUBHNW6BJZ4" Name="compileRightsForUser" ResultDbType="">
+      <Parameter Id="dfp7WX3PB7PBBDWPFLTUUFGPWSMV4" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnZTUMPLQX5NAYTPJP6ML3J6ATW4" Name="moveRightsFromUserToGroup" ResultDbType="">
+      <Parameter Id="dfpGXZG5ZYLVNCSXFD2UIILJ3MW7M" Name="user_" DbName="user_" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpX2NBZVFLNRBA7BYXCIRTDCXSWA" Name="group_" DbName="group_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnMJRKHFD5QZBTRDFRZQYO4IJY74" Name="existsRightsOnUser2Role" ResultDbType="integer">
+      <Parameter Id="dfpQPUDW4DFQNBJRJTI2ROBCXWDCU" Name="user_" DbName="user_" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpQXPE3MDQ6VHTDDTC4ECVYLSAJA" Name="id_" DbName="id_" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnCDX47RTNAVDMTANWTJRWJQB2H4" Name="existsRightsOnGroup2Role" ResultDbType="integer">
+      <Parameter Id="dfpAMQNJKJ7ZZBD5ID2Q2KEHASMYQ" Name="user_" DbName="user_" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpBXZILNSIEREAXE2L26WCIPLNNY" Name="id_" DbName="id_" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfn3SVAEFFYNBAMRM25E5KG3DYCBU" Name="isSuperAdmin" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfp2VWYQEVBOJE5NBRUNEJNLHO6TI" Name="user_" DbName="user_" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <PackageDef Id="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4" Name="RDX_ACS">
+    <Function Id="dfnQ7DZURQBRVDABHS5N6PZCHDTPM" Name="constSuperAdminRoleId" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4" Name="constErrorMessage" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnCE2DLHT2YDORDIE4ABQAQH3XQ4" Name="clearInheritRights" ResultDbType="">
+      <Parameter Id="dfpCI2DLHT2YDORDIE4ABQAQH3XQ4" Name="pUserGroup" DbName="pUserGroup" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnZMZTLHT2YDORDIE4ABQAQH3XQ4" Name="curUserHasRoleInArea" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpGTODQBPXK5DNJHG3XATFIZAFY4" Name="pRole" DbName="pRole" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpBZ5COPYUA5EVTMTUG5PBM3V7U4" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfn5UZTLHT2YDORDIE4ABQAQH3XQ4" Name="userHasRoleInArea" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpH4IDOY6H5NCEFDBR3EQNQ6VMWM" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZTULVF46EJBJNPFGTXTFQMTHRM" Name="pRole" DbName="pRole" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSPYJOD74U5G5DLCLNAGO53RZ3I" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnXO7LYL2WSRH3ZAXWMHMAGLXL4I" Name="userHasExplicitRoleInArea" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpJVE5P2ATOVGVDAXIHGVTBEQRPU" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp3EJ4RTODRBFHLCT7VCKP237CUY" Name="pRole" DbName="pRole" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpNA4WKSATT5FV7OF23JAOX44QBY" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnDSEJA457WRGF3ERV5YBFPIM3IY" Name="curUserHasAnyOfRolesInArea" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpQT62XJU63VFCNGG37D3BTHN3GQ" Name="pRolesArr" DbName="pRolesArr" DbType="clob" ValType="21" Direction="0"/>
+      <Parameter Id="dfpC6ZLZ4GSUZE3ZBBWVB5KWAAU7I" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnXBNZ7OI7JZF4JMW2WN5OX2MYYI" Name="userHasAnyOfRolesInArea" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpETRORGYIIVFWPPNH2RJL7BUGOE" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpTDCXUVXRIJDFLGUPH2VTRNLVEI" Name="pRolesArr" DbName="pRolesArr" DbType="clob" ValType="21" Direction="0"/>
+      <Parameter Id="dfpDH3BR545VFEBTBZOSIGPGIWHUA" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnZYZTLHT2YDORDIE4ABQAQH3XQ4" Name="curUserHasRoleForObject" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpLZOR5CTTQRAEPGQM4JDBHWCVQE" Name="pRole" DbName="pRole" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWWYBITNOFREY3MYHDJZAUNMRM4" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfn6RYDGKCJ2LORDIF4ABQAQH3XQ4" Name="userHasRoleForObject" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpJMN4GLE6XNCPFKQIVZUV5Z2264" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpDAQQHYDQLBECXCZ4AJKFVFKZWA" Name="pRole" DbName="pRole" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpPUVYA5SWRZAITJJM2HT5YTLC6A" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnC7X6P7DOSRHMPEBVXWFHRXMWCM" Name="curUserHasAnyOfRolesForObject" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpUH6UIEJL3RBSNKSWXQYKUKMUGI" Name="pRolesArr" DbName="pRolesArr" DbType="clob" ValType="21" Direction="0"/>
+      <Parameter Id="dfpRIQVJX4MDBBCNKS6PEF5KYIPJY" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnCHROOSFCG5FGXH2CTIGXJNR4AY" Name="userHasRoleForObject" ResultDbType="integer">
+      <Parameter Id="dfpQQIJRKACLFAJBLLSREGUMRK2PE" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpVBIGCEP6JNHPJLNBG7XOE6NETM" Name="pRole" DbName="pRole" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpJSP56E6GQVB4JBQXATPPA3WYRY" Name="pPointList" DbName="pPointList" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnJRM7KS3B7BASTGK23XOZ37C5BA" Name="userHasAnyOfRolesForObject" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpMQ6A3FGCNRC3NLWLUDV2LYFZUI" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpSNCSIALSANES3LX544BLQARYSM" Name="pRolesArr" DbName="pRolesArr" DbType="clob" ValType="21" Direction="0"/>
+      <Parameter Id="dfp7SG7FHYQK5HIHALOMUCZWMN6PQ" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnBE2DLHT2YDORDIE4ABQAQH3XQ4" Name="curUserAllRolesInAllAreas" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnB42DLHT2YDORDIE4ABQAQH3XQ4" Name="userAllRolesInAllAreas" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpCA2DLHT2YDORDIE4ABQAQH3XQ4" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnBU2DLHT2YDORDIE4ABQAQH3XQ4" Name="getCurUserAllRolesForObject" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpAZZMMLGDPZFVNBXZUVPS2UURGQ" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnBI2DLHT2YDORDIE4ABQAQH3XQ4" Name="getAllRolesForObject" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpINPELHJKCFFEDDVW55FLA2JDVU" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpAIZMGKHLKNAP3NAAZO2T6GP6BA" Name="pPointList" DbName="pPointList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfn2EZTLHT2YDORDIE4ABQAQH3XQ4" Name="curUserIsInGroup" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfp2IZTLHT2YDORDIE4ABQAQH3XQ4" Name="pGroup" DbName="pGroup" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnB2R5G7DU4NBCTFON7ZRHCC2724" Name="userIsInGroup" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpKR3T3ZWRZBFTFI4AS47JOA6MSU" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpFHD2LCTC3NFYBIOLNB5XBOM7YU" Name="pGroup" DbName="pGroup" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnYVW77OTL5DORDIGYABQAQH3XQ4" Name="areaListToStr" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpYBK42Q5QZFD2PLIZWOB7T46UL4" Name="areaList_" DbName="areaList_" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnCCUJTPLI5DORDIGYABQAQH3XQ4" Name="areaToStr" ResultDbType="varchar2" IsWNDS="true">
+      <Parameter Id="dfpTU5GM52GYBDLPK2DM6F6WL74HA" Name="area_" DbName="area_" DbType="TRdxAcsArea" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnN6P2EW3EHBDA7BHSQYHK32JP6U" Name="strToArea" ResultDbType="TRdxAcsArea" IsWNDS="true">
+      <Parameter Id="dfp2ENEEWAZURFBXK3EY6LRMKS4S4" Name="str_" DbName="str_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnZOT3C5NEINHT7KIGYTH5CRRGDY" Name="strToAreaList" ResultDbType="TRdxAcsAreaList" IsWNDS="true">
+      <Parameter Id="dfp7OG6FROEENANHLSRR77MHV6MBA" Name="str" DbName="str" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnN236TVVDC5CGLLVKFF4GH27GUQ" Name="isGroupExist" ResultDbType="integer">
+      <Parameter Id="dfpYGGERAL2AZGZNFZK2QRUMTQGTM" Name="name_" DbName="name_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn3XXTXJVTQDPBDCQRAAQYKZSZXU" Name="acsUtilsBuild" ResultDbType=""/>
+    <Function Id="dfnW75BDFJYZFC3VKMCWNLPBHDB2A" Name="isUserHaveGroupRights" ResultDbType="integer">
+      <Parameter Id="dfpF22E42KIIJBIZLS5TSPWJ67IUM" Name="group_" DbName="group_" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpFUQ6UDH6ZVHZHFML6ETDGKUMAU" Name="user_" DbName="user_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnRLZN3UDOQZCQNAEACYSJCEGT4A" Name="isCurUserHaveGroupRights" ResultDbType="integer">
+      <Parameter Id="dfpPKCHG4JKCBDNLNPT6IQCUSVKSY" Name="group_" DbName="group_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn64DRLN6Q5NGABBMN5AUEOKJPFM" Name="isUserHaveUserRights" ResultDbType="integer">
+      <Parameter Id="dfpRBCYGPELTFBL5CFWOOTUPPFR7Q" Name="user2_" DbName="user2_" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpVUTLZAQYLFDY7L3RGVU5UI5B54" Name="user_" DbName="user_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnNISNZTDXEJHHHBUA23ZFXDS7EA" Name="isCurUserHaveUserRights" ResultDbType="integer">
+      <Parameter Id="dfpK45XQWXDH5HVRKTSGWOL4YNW7A" Name="user_" DbName="user_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnN33RJ2NXONEJVM63GPCDAQITFU" Name="isUserHaveOwnRights" ResultDbType="integer">
+      <Parameter Id="dfpZN3U6D7ZUZA2FOG4IXMQ2PJVVM" Name="user_" DbName="user_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn6S3SMZQ6NZCYTOJJM76TWZDRMI" Name="isGroupHaveRights" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfp7P7MUM53ZVEDBNXN2MIK3OYMB4" Name="group_" DbName="group_" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnPYKLHTXRWVA65MUJ2UTJ2NMKNE" Name="curUserGroupAdministered" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfp2LQEFGYSVVH3RJAEEX45GKSTUE" Name="pGroup" DbName="pGroup" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnQMOYAWHOVRGPTOVAKI5N54BHMQ" Name="curUserNullGroupAdministered" ResultDbType="integer" IsWNDS="true"/>
+    <Function Id="dfnSVKPAECDMFF2NNMYYQQ6KRQYOU" Name="mayReplaceOrRevokeRole" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpX5ZN67TQQVFM5FVEASJ72NVBLI" Name="userTable" DbName="userTable" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpSDR3EVPZKJHNHDMS5ZR2AUAJ3Y" Name="Id_" DbName="Id_" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnGMEREOE4H5CEFNLAF66WUCIMJI" Name="getNext2RoleId" ResultDbType="integer">
+      <Parameter Id="dfpHDZMOAJX3NEKZGBSMOESYFPY4I" Name="userTable" DbName="userTable" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnGQ5C7WUQYVC2JMOC5UNMWEU4WU" Name="usedDualControlWhenAssignRoles" ResultDbType="integer" IsWNDS="true"/>
+    <Function Id="dfnEU52STS6IRGFJCKTECQZQQGAOA" Name="getRolesAndU2GCount" ResultDbType="" IsWNDS="true">
+      <Parameter Id="dfp2WNPG3FHGBEVVPSQA4FZWGEW5M" Name="userTable" DbName="userTable" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp3FCQIZWFCJFQRDECJQTUWIY55Y" Name="userOrGroupName" DbName="userOrGroupName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpMCNU2KXPNNHBFAO4GMCIL7RLCE" Name="acceptedRCount" DbName="acceptedRCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfp2RZD52J52NHCJDZVAIVFLDUPBU" Name="unacceptedRCount" DbName="unacceptedRCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfpJFLBP3X2UJGCTP74IPE3RL46UE" Name="acceptedU2GCount" DbName="acceptedU2GCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfp6N76THE4BFCAXHX5IIDPFDXXBU" Name="unacceptedU2GCount" DbName="unacceptedU2GCount" DbType="integer" ValType="2" Direction="1"/>
+    </Function>
+    <Function Id="dfnWQN5KDP62RHDDJYQTL4AKZSCZM" Name="acceptRolesAndU2G" ResultDbType="">
+      <Parameter Id="dfpRP2XZCB3R5FTDE42F2AFJ5IJHU" Name="userTable" DbName="userTable" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpEMCDBCH76VD57M6DKJAOMOLIU4" Name="userOrGroupName" DbName="userOrGroupName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpUKD3KNEQEZBNJG7MQCGOY5JLEU" Name="ignoredRoles" DbName="ignoredRoles" DbType="varchar2" ValType="21" Direction="1"/>
+      <Parameter Id="dfpBSJXSWFMZJDPRIEV6VNCHKJVUE" Name="ignoredUsersOrGroups" DbName="ignoredUsersOrGroups" DbType="varchar2" ValType="21" Direction="1"/>
+      <Parameter Id="dfpINJHK7SF7RCCRA7SBXTKI3CDK4" Name="addedRCount" DbName="addedRCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfp2RO4GJIDWRESNFADF3GZ5MLIGU" Name="replacedRCount" DbName="replacedRCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfpEFWGUX3N7VEFLH2YEYGXBHFHIQ" Name="removedRCount" DbName="removedRCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfpMI27MZLDNVBYVPEF4N7K2WXC4I" Name="addedU2GCount" DbName="addedU2GCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfpBBCNMXUP3RGQRDFPYPWNTEXGY4" Name="removedU2GCount" DbName="removedU2GCount" DbType="integer" ValType="2" Direction="1"/>
+    </Function>
+    <Function Id="dfnMP5GLQ2XFZGDPBEOV7PQVROOOU" Name="haveNotAcceptedEntities" ResultDbType="integer"/>
+    <Function Id="dfn64S5I7UFHVFTRKAJPWBIACHGFU" Name="getNotAcceptedEntities" ResultDbType="">
+      <Parameter Id="dfpIB7OHJGD2FGVVEG5TSNJWS6ZOE" Name="user2UserGroupCount" DbName="user2UserGroupCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfpFOH46OAP7RAOJNGEGHOIK3ZEE4" Name="firstUser2UserGroup" DbName="firstUser2UserGroup" DbType="varchar2" ValType="21" Direction="1"/>
+      <Parameter Id="dfpPM2KWVFUDBA4RMZOXEGW6IAZJQ" Name="userGroup2RoleCount" DbName="userGroup2RoleCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfp2CXMS47JV5G3NOUP75DUO4URCQ" Name="firstUserGroup2Role" DbName="firstUserGroup2Role" DbType="varchar2" ValType="21" Direction="1"/>
+      <Parameter Id="dfpUWKH2AZIDRF7RCFVCJYLKJIWRQ" Name="user2RoleCount" DbName="user2RoleCount" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfpMM2ZB6EWWJBDRN2V5TKTKPERQY" Name="firstUser2Role" DbName="firstUser2Role" DbType="varchar2" ValType="21" Direction="1"/>
+    </Function>
+    <Function Id="dfnP63U5BFPCBGOPPMSIM6YMB53ZE" Name="isNewUserOrGroup2Role" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfp7NVSONKAKREBNOYBWKWIZSYMPY" Name="userTable" DbName="userTable" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpQYU7Z5PXDBCTZJWQXMQCHQ6EOA" Name="Id_" DbName="Id_" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnFEX4WNPMGVCAVARCIMLGFNLMCA" Name="fillPartitions" ResultDbType="" IsWNDS="true">
+      <Parameter Id="dfpCZ22P2EBCRESBC7UOC7ZKP6XRA" Name="modeIn_" DbName="modeIn_" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpCA7L4KHE4BDM3MYDXSZB2L2OHQ" Name="modeOut_" DbName="modeOut_" DbType="integer" ValType="2" Direction="1"/>
+      <Parameter Id="dfpRHQBEZRRHBA4BBGJGBELE2LQNY" Name="partitionIn_" DbName="partitionIn_" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpV7MEYLFPUJFNXJXALXRHSVUKVM" Name="partitionsOut_" DbName="partitionsOut_" DbType="long_str_list" ValType="50" Direction="2"/>
+      <Parameter Id="dfpH44LIJSA3ZFMVPFL57D4S7WDBE" Name="partitionGroupId_" DbName="partitionGroupId_" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnPC6IUR27B5ADJLW6G5RCDMU5TY" Name="equalPartition" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpA6PA7CMMNZEG7LQPX4JDF6TZFM" Name="part1" DbName="part1" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpF4F55RZIERHQLJGP3IQ5ZBAXEU" Name="part2" DbName="part2" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnGG5L3CMQZBFNVL5HF5BG67UZFU" Name="readPartitions" ResultDbType="clob">
+      <Parameter Id="dfpSYT76DEQKJHGPL67SF7K7JNIZQ" Name="partitionGroupId" DbName="partitionGroupId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <TableDef Id="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" Name="User2Role">
+    <Indexes>
+      <Index Id="idxXBBU6BCAZDNBDGMDABQAQH3XQ4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col3FF7Q3S6CPOBDHYRABQAQH3XQ4"/>
+      <Index Id="idxIULUK42OWVCXFJVOYVGE3SCW3U" Name="Replacement" IndexColumns="colLLSKGT66EBE4XAS7CB3DODAAM4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref2ZDQ5EV2J3NRDAQSABIFNQAAAE" Name="User2Role=>User (userName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="userName"/>
+      <Reference Id="refECCRWGWYL5D73ETLVCXEB5FUN4" Name="User2Role=>User2Role (replacedId=>id)" ReferencedTableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" ChildColumnNames="replacedId"/>
+      <Reference Id="refEP72BBGGHBEY3FH2S5BRH7OD34" Name="User2Role=>PartitionGroup (apUserGroupPartGroupId=>id)" ReferencedTableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" ChildColumnNames="apUserGroupPartGroupId"/>
+      <Reference Id="refNSX4XZZSYVAOLNVRFRA7JIEO6Q" Name="User2Role=>PartitionGroup (apDashConfigPartGroupId=>id)" ReferencedTableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" ChildColumnNames="apDashConfigPartGroupId"/>
+      <Reference Id="refUBNZPHQTTFA5NGMY77T6QJANTY" Name="User2Role=>DashConfig (apDashConfigKey=>guid)" ReferencedTableId="tblVGSKITRX4FHZJAGAQ7V7VGZUJY" ChildColumnNames="apDashConfigKey"/>
+      <Reference Id="refYVMSFRT72FGF5EOKIMU5GZGO4E" Name="User2Role=>UserGroup (apUserGroupKey=>name)" ReferencedTableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" ChildColumnNames="apUserGroupKey"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="col3FF7Q3S6CPOBDHYRABQAQH3XQ4" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colCN3XEDKAZDNBDGMDABQAQH3XQ4" Name="userName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colDC3DKGLHPDNRDHTWABQAQH3XQ4" Name="isOwn" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colFXSCOJCAZDNBDGMDABQAQH3XQ4" Name="roleId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col4T2IAH72O5E6RNZPX3MNT44CQE" Name="apUserGroupMode" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colD7VLPHOA3VC4XL3QOLTWZLUHJI" Name="apUserGroupKey" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colKME6XFPIUNEH5GKQJ3BV7URGSE" Name="apUserGroupPartGroupId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colMYZDS2RAS5BTVCUSKEF5DYCAP4" Name="isNew" ValType="1" Length="1" Precision="0"/>
+      <Column Id="colLLSKGT66EBE4XAS7CB3DODAAM4" Name="replacedId" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colNNB4N4LN4ZC4VKV4FJL6OKQ6YU" Name="editorName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colJIWHHJJGCVFU5PAD6MRU5MH44Y" Name="acceptorName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colCFPY2QWLVRD7HFRENRKJ32K6CQ" Name="apDashConfigMode" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colDLFSFTKCUZCPLFUHOOIEVJ34XY" Name="apDashConfigKey" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colLJEJTFC3YFHDZCAUPC5FTWL3CI" Name="apDashConfigPartGroupId" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblDYWJCJTTGLNRDHRZABQAQH3XQ4" Name="User2UserGroup">
+    <Indexes>
+      <Index Id="idxKV752IA3Y3NBDGMCABQAQH3XQ4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colRUQOILQ3Y3NBDGMCABQAQH3XQ4 colIX5E4TI3Y3NBDGMCABQAQH3XQ4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref2URGD352J3NRDAQSABIFNQAAAE" Name="User2UserGroup=>User (userName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="userName"/>
+      <Reference Id="refTHML75N2J3NRDAQSABIFNQAAAE" Name="User2UserGroup=>UserGroup (groupName=>name)" ReferencedTableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" ChildColumnNames="groupName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colRUQOILQ3Y3NBDGMCABQAQH3XQ4" Name="userName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colIX5E4TI3Y3NBDGMCABQAQH3XQ4" Name="groupName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="col3FA64KN45FDD3P7LNKI4SCYU6E" Name="state" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colDIBGKP74QBD7ZOVIEXN3RZDBZM" Name="editorName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colGHAN7KYMFRAUJPXZSLXNAMCLNM" Name="acceptorName" ValType="21" Length="250" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" Name="UserGroup2Role">
+    <Indexes>
+      <Index Id="idxKTQ6FDJRY3NBDGMCABQAQH3XQ4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colFF2PCUS6CPOBDHYRABQAQH3XQ4"/>
+      <Index Id="idxH4EAV3N6IJE4NJYQPKSCZC646E" Name="Replacement" IndexColumns="col4D2WF3YC4JAPNHBZJWHR4O53BA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref2IWGTUOZ25CQLJCD5UD4VWO7Q4" Name="UserGroup2Role=>PartitionGroup (apUserGroupPartGroupId=>id)" ReferencedTableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" ChildColumnNames="apUserGroupPartGroupId"/>
+      <Reference Id="ref5QIXNSF2J3NRDAQSABIFNQAAAE" Name="UserGroup2Role=>UserGroup (groupName=>name)" ReferencedTableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" ChildColumnNames="groupName"/>
+      <Reference Id="refDE3QT6DIU5COXLSAPFPXJQIWBA" Name="UserGroup2Role=>UserGroup (apUserGroupKey=>name)" ReferencedTableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" ChildColumnNames="apUserGroupKey"/>
+      <Reference Id="refL45VCCIBKJCIVBMDIIMAMHO5AU" Name="UserGroup2Role=>PartitionGroup (apDashConfigPartGroupId=>id)" ReferencedTableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" ChildColumnNames="apDashConfigPartGroupId"/>
+      <Reference Id="refN2AFYZ3S55B3ZKIAPLFMJKJDQQ" Name="UserGroup2Role=>DashConfig (apDashConfigKey=>guid)" ReferencedTableId="tblVGSKITRX4FHZJAGAQ7V7VGZUJY" ChildColumnNames="apDashConfigKey"/>
+      <Reference Id="refXOIIB5CPGJANLLW4KK7OF3BC3E" Name="UserGroup2Role=>UserGroup2Role (replacedId=>id)" ReferencedTableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" ChildColumnNames="replacedId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colFF2PCUS6CPOBDHYRABQAQH3XQ4" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colXDHHLFZRY3NBDGMCABQAQH3XQ4" Name="groupName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colQNEGZPZRY3NBDGMCABQAQH3XQ4" Name="roleId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colAULGQS3XVFDL5DE7L3MW46URPQ" Name="apUserGroupMode" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colDWXM6MYALRBC3OYCWTWRGS4DIE" Name="apUserGroupKey" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colPKXDOCYI6FER5AUL5GCC6AXNB4" Name="apUserGroupPartGroupId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colC3327E6VZNB3RBSQSYPLWSO5KI" Name="isNew" ValType="1" Length="1" Precision="0"/>
+      <Column Id="col4D2WF3YC4JAPNHBZJWHR4O53BA" Name="replacedId" ValType="2" Length="18" Precision="0"/>
+      <Column Id="col5FWFVTUD4VCDXJSLFFBZU2VLGE" Name="editorName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colEBIFNJQZ5NGNFMJ4LBNAWMOV44" Name="acceptorName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colMDAIC32BGNFNLBDBLN62LS3LUY" Name="apDashConfigMode" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colGSIQQZWQVJCPBMVNAD6ECFBO6E" Name="apDashConfigKey" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colCPNBR6TCPNGUBMULAM34ZPN3CU" Name="apDashConfigPartGroupId" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblLNMBHO73GNE2LF5TXFR7QEMICM" Name="PartitionGroup">
+    <Indexes>
+      <Index Id="idxJC5HWCZVRJBC3BLI3645S33WVA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colAAOGHMLKGBD27BI24WSAXF3OFI"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colAAOGHMLKGBD27BI24WSAXF3OFI" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colWFLWOFUZMJG4HJ6TOPSJAERLLU" Name="title" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="col4LTOC32FKFEO5MREJS6HD7I2MQ" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colIDPIK7BQQREGBLDSYFORHOMRRQ" Name="partitions" ValType="27" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblM7J46MP6F3PBDIJEABQAQH3XQ4" Name="AppRole">
+    <Indexes>
+      <Index Id="idxM7J46MP6F3PBDIJEABQAQH3XQ4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col6FMTUQ76F3PBDIJEABQAQH3XQ4"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col6FMTUQ76F3PBDIJEABQAQH3XQ4" Name="guid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colMFRUYXP6F3PBDIJEABQAQH3XQ4" Name="title" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colPJZG5RYZF7PBDIJEABQAQH3XQ4" Name="description" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colGQVSU7TJYRFCZFU7TADGWIRGHY" Name="definition" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colPJH2TGKX3JAIDCK2GK4H763RDQ" Name="runtime" ValType="28" Length="0" Precision="0"/>
+      <Column Id="colIXVB57MI2RADLC5IAUFV5QB67Y" Name="roleClassGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colWSYOEXVDBRAHRM4KKO5H3QANS4" Name="lastUpdateTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colDA2H7YX6XRGOFCEEKSO65GQN7A" Name="lastUpdateUserName" ValType="21" Length="250" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" Name="UserGroup">
+    <Indexes>
+      <Index Id="idxVKXEAGILY3NBDGMCABQAQH3XQ4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colV2XEAGILY3NBDGMCABQAQH3XQ4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref56AJZXUOR5EUXLQO2X7YE74NVQ" Name="UserGroup=>IntervalSchd (logonScheduleId=>id)" ReferencedTableId="tblZBS5MS2BI3OBDCIOAALOMT5GDM" ChildColumnNames="logonScheduleId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colV2XEAGILY3NBDGMCABQAQH3XQ4" Name="name" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colIX2QYPQMY3NBDGMCABQAQH3XQ4" Name="title" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colQZD24VYMY3NBDGMCABQAQH3XQ4" Name="description" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colDGIMFGI2VFC65ALDT35HHU32C4" Name="logonScheduleId" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" Name="User">
+    <Indexes>
+      <Index Id="idx2D3PUYIWY3NBDGMCABQAQH3XQ4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colEF6ODCYWY3NBDGMCABQAQH3XQ4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refL5DHK752J3NRDAQSABIFNQAAAE" Name="User=>UserGroup (adminGroupName=>name)" ReferencedTableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" ChildColumnNames="adminGroupName"/>
+      <Reference Id="refQM4AVQRQWBAHVLH3GDT2F7CN7A" Name="User=>IntervalSchd (logonScheduleId=>id)" ReferencedTableId="tblZBS5MS2BI3OBDCIOAALOMT5GDM" ChildColumnNames="logonScheduleId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colEF6ODCYWY3NBDGMCABQAQH3XQ4" Name="name" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colQ62TN7IYY3NBDGMCABQAQH3XQ4" Name="locked" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="col2FODGXNBXBCM5MJZ4D5FPOY2MI" Name="lockReason" ValType="2" Length="2" Precision="0"/>
+      <Column Id="col3FYUIAY5J3NRDJIRACQMTAIZT4" Name="personName" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colNMVAZDYYY3NBDGMCABQAQH3XQ4" Name="adminGroupName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colPUPBTVQYY3NBDGMCABQAQH3XQ4" Name="lastPwdChangeTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="col5XNCT3QYY3NBDGMCABQAQH3XQ4" Name="pwdExpirationPeriod" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colEPMFRZB2GRF2LLE2QNMNOSTTTM" Name="pwdHashAlgo" ValType="21" Length="16" Precision="0"/>
+      <Column Id="colO3BCFXYVBNH65NBW7YHFNUX7BA" Name="temporaryPwdStartTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colDZ5HBUOKRVBUXB5LM7WNIBBFP4" Name="authTypes" ValType="221" Length="250" Precision="0"/>
+      <Column Id="colYVFZTZ7ZJBAKBIB77ZUF2OYSGY" Name="pwdHashHistory" ValType="221" Length="0" Precision="0"/>
+      <Column Id="colRC2TN7IYY3NBDGMCABQAQH3XQ4" Name="checkStation" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colWXQAHXB5V3OBDCLVAALOMT5GDM" Name="email" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colW3QAHXB5V3OBDCLVAALOMT5GDM" Name="mobilePhone" ValType="21" Length="20" Precision="0"/>
+      <Column Id="colNF6GYZT3FVFLLKTBIOC7F7IN3A" Name="lastLogonTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colJZIYRXEXNJFLFIZGTXRUSIM4AE" Name="invalidLogonCnt" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNBBMGSDE5BF5FODR4F5TE2UAD4" Name="invalidLogonTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colANJQ6ZDT6FALRCPTTSR3UUR5VQ" Name="mustChangePwd" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="col3G4FLB6M6FBVTL3BZLIJUG2DII" Name="dbTraceProfile" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="col37HDYBNIXJAHFBGS6QUSHOFH2U" Name="traceGuiActions" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colQ5GRW4H5KNDC7PHXE7Y52C7KUM" Name="createTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colR7GBPTNS6VFMFAYXSSQLWYJRPM" Name="logonScheduleId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colWVM572KI6JELDKJ7OB6SWDMUJY" Name="sessionsLimit" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

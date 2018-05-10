@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcGA7DAXAZZNAIFFWUKJOSHQH66E" Name="ChangelogUtils" Type="3" Environment="common">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.common.defs.utils.changelog.ChangeLog.Utils"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcGA7DAXAZZNAIFFWUKJOSHQH66E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcGA7DAXAZZNAIFFWUKJOSHQH66E"/>
+    </Bodies>
+    <MethodGroup Id="cmgDLQOAIAMSBDE5F6XTEC2AWB3R4" Name="Root"/>
+    <PropertyGroup Id="cpgP7QQZZHI5ZBBTLBQWKOFT2E7X4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthTGDBTGT3FRHSPC3SQJ5BSQR2T4" Name="getNextRevisionSeq" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="lastRevisionSeq" Id="mprMLO26NG2UBA27CK74TWCZC7SVQ">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return lastRevisionSeq != null ? lastRevisionSeq.intValue() + 1 : 1;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFPIAINL2INC73CA5RPWBFG2FI4" Name="getPresentationString" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getPresentationString(Ljava.lang.Long;JLjava.lang.String;Ljava.lang.String;Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="revNum" Id="mprP7J73HXW3RHCJEFEB7DTTIMAX4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="date" Id="mpr5RGS4QUTRFGVDHXJXHAOJGSFCM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="author" Id="mprAYNYIYD54BAGVF5VETJT5CWGRM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="refDoc" Id="mprI7XONYPOBRH4LB7R7DRLRYESZA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="description" Id="mprDJV4IYEFV5HA5OPY3JOKNVZAYM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

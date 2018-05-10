@@ -11,25 +11,34 @@
 
 package org.radixware.wps.dialogs;
 
-import java.awt.Color;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
-import org.radixware.kernel.common.client.meta.RadEnumPresentationDef.Items;
-import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
+import org.radixware.kernel.common.client.meta.mask.EditMaskList;
 import org.radixware.kernel.common.client.meta.mask.EditMaskStr;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.ssl.CertificateUtils;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.wps.WebServerRunParams;
 import org.radixware.wps.WpsEnvironment;
-import org.radixware.wps.rwt.*;
-import org.radixware.wps.views.editors.valeditors.ValEnumEditorController;
+import org.radixware.wps.rwt.CheckBox;
+import org.radixware.wps.rwt.Dialog;
+import org.radixware.wps.rwt.GridLayout;
+import org.radixware.wps.rwt.InputBox;
+import org.radixware.wps.rwt.Label;
+import org.radixware.wps.rwt.UIObject;
+import org.radixware.wps.views.editors.valeditors.ValListEditorController;
 import org.radixware.wps.views.editors.valeditors.ValStrEditorController;
 
 
 public class LogonDialog extends Dialog {
+    
+    private final Id ISO_LANGUAGE_CONST_ID = Id.Factory.loadFrom("acs2G44GBNBE5D7RO2QHQSVRZNLG4");
 
     private final GridLayout layout = new GridLayout();
     private final GridLayout.Row passwordRow;
@@ -38,21 +47,26 @@ public class LogonDialog extends Dialog {
     private ValStrEditorController edUserName;
     private ValStrEditorController edPassword;
     private ValStrEditorController edStation;
-    private ValEnumEditorController<EIsoLanguage> edLanguage;
+    private ValListEditorController<String> edLanguage;
     private CheckBox cbUserCert;
     private X509Certificate[] cert;
     private Label lbUserName;
     private Label lbStationName;
 
     public LogonDialog(final WpsEnvironment env) {
-        this(env, null);
+        this(env, null, null, true);
     }
 
     public LogonDialog(final WpsEnvironment env, final String predefinedUserName) {
+        this(env, predefinedUserName, null, true);
+    }
+    
+    public LogonDialog(final WpsEnvironment env, final String predefinedUserName, final String predefinedStationName, boolean byCertificateOrKerberos) {
         super(env.getDialogDisplayer(), env.getMessageProvider().translate("LogonDialog", "User Login"), false);
         addCloseAction(EDialogButtonType.OK).setDefault(true);
         addCloseAction(EDialogButtonType.CANCEL);
         add(layout);
+        layout.getAnchors().setRight(new Anchors.Anchor(1, -3));
         this.useCertRow = new GridLayout.Row();
         this.cbUserCert = new CheckBox();
         this.cbUserCert.setText("Connect to RadixWare server using my certificate");
@@ -81,12 +95,15 @@ public class LogonDialog extends Dialog {
         this.edUserName = new ValStrEditorController(env);
         this.edUserName.setMandatory(true);
         edUserName.setMandatory(true);
+        ((UIObject)edUserName.getValEditor()).setObjectName("edUserName");
         this.edPassword = new ValStrEditorController(env);
         edPassword.setMandatory(true);
+        ((UIObject)edPassword.getValEditor()).setObjectName("edPassword");
         this.passwordRow = new GridLayout.Row();
         this.edStation = new ValStrEditorController(env);
         this.edStation.setMandatory(true);
-        this.edLanguage = new ValEnumEditorController<>(env);
+        ((UIObject)edStation.getValEditor()).setObjectName("edStation");
+        this.edLanguage = new ValListEditorController<>(env);
 
         cell = new GridLayout.Cell();
         this.passwordRow.add(cell);
@@ -105,7 +122,7 @@ public class LogonDialog extends Dialog {
         cell = new GridLayout.Cell();
         userNameRow.add(cell);
         label = lbUserName = new Label(env.getMessageProvider().translate("LogonDialog", "User name:"));
-        label.setEnabled(predefinedUserName == null);
+        label.setEnabled(predefinedUserName == null || !byCertificateOrKerberos);
         label.setTextWrapDisabled(true);
         cell.add(label);
         cell.setFitWidth(true);
@@ -121,7 +138,9 @@ public class LogonDialog extends Dialog {
         this.edUserName.setEditMask(mask);
         if (predefinedUserName != null) {
             edUserName.setValue(predefinedUserName);
-            edUserName.setReadOnly(true);
+            if (!byCertificateOrKerberos) {
+                edUserName.setReadOnly(true);
+            }
         }
         mask = new EditMaskStr();
         mask.setEmptyStringAllowed(true);
@@ -131,7 +150,7 @@ public class LogonDialog extends Dialog {
 
         ((InputBox) this.edPassword.getValEditor()).setPassword(true);
         layout.add(userNameRow);
-        if (predefinedUserName == null) {
+        if (predefinedUserName == null || !byCertificateOrKerberos) {
             layout.add(this.passwordRow);
         }
 
@@ -152,7 +171,9 @@ public class LogonDialog extends Dialog {
         stationRow.add(cell);
         label.setTextWrapDisabled(true);
         this.edStation.setEditMask(mask);
-
+        if (predefinedStationName != null) {
+            edStation.setValue(predefinedStationName);
+        }
 
         GridLayout.Row languageRow = new GridLayout.Row();
         layout.add(languageRow);
@@ -164,11 +185,9 @@ public class LogonDialog extends Dialog {
         cell.setFitWidth(true);
         cell = new GridLayout.Cell();
         cell.add((UIObject) edLanguage.getValEditor());
-
-        EditMaskConstSet constMask = new EditMaskConstSet(Id.Factory.loadFrom("acs2G44GBNBE5D7RO2QHQSVRZNLG4"));
-
-        RadEnumPresentationDef pr = constMask.getRadEnumPresentationDef(env.getApplication());
-        Items items = pr.getEmptyItems();
+        
+        final RadEnumPresentationDef enumDef = env.getDefManager().getEnumPresentationDef(ISO_LANGUAGE_CONST_ID);
+        final RadEnumPresentationDef .Items enumItems = enumDef.getEmptyItems();
         EIsoLanguage defaultLang = getEnvironment().getLanguage();
         try {
             env.getConfigStore().beginGroup("LogonDialog");
@@ -186,9 +205,11 @@ public class LogonDialog extends Dialog {
                 }
             }
             {
-                final String configString = env.getConfigStore().readString("stationName", env.getStationName());
-                if (configString != null && !configString.isEmpty()) {
-                    edStation.setValue(configString);
+                if (predefinedStationName == null) {
+                    final String configString = env.getConfigStore().readString("stationName", env.getStationName());
+                    if (configString != null && !configString.isEmpty()) {
+                        edStation.setValue(configString);
+                    }
                 }
             }
         } finally {
@@ -199,19 +220,26 @@ public class LogonDialog extends Dialog {
             defaultLang = null;
         }
         for (EIsoLanguage lang : env.getSupportedLanguages()) {
-            items.addItem(lang);
+            enumItems.addItem(lang);
             if (defaultLang == null) {
                 defaultLang = lang;
             }
         }
 
         if (defaultLang == null) {
-            edLanguage.setValue(env.getLanguage());
+            edLanguage.setValue(env.getLanguage().getValue());
         } else {
-            edLanguage.setValue(defaultLang);
+            edLanguage.setValue(defaultLang.getValue());
         }
-        constMask.setItems(items);
-        edLanguage.setEditMask(constMask);
+        final EditMaskList lngList = new EditMaskList();
+        for (RadEnumPresentationDef.Item enumItem: enumItems){
+            final String isoCode = (String)enumItem.getValue();            
+            final EIsoLanguage language = getIsoLanguageFromIsoCode(isoCode);
+            if (language!=null){
+                lngList.addItem(enumItem.getTitle(language), isoCode);
+            }
+        }    
+        edLanguage.setEditMask(lngList);
         cell.setVCoverage(100);
         languageRow.add(cell);
         label.setTextWrapDisabled(true);
@@ -221,6 +249,8 @@ public class LogonDialog extends Dialog {
         setWidth(350);
         setResizable(false);
     }
+    
+    
     private static final boolean IGNORE_SSL = true;
 
     public boolean connect(X509Certificate[] certificate) {
@@ -267,22 +297,44 @@ public class LogonDialog extends Dialog {
     }
 
     private boolean selfCheck() {
-        boolean ok = true;
+        List<String> emptyFieldsList = new LinkedList<>();
+        ValStrEditorController focused = null;
+        MessageProvider mp = getEnvironment().getMessageProvider();
         if (!useCertificate()) {
             if (edUserName.getValue() == null || edUserName.getValue().isEmpty()) {
-                lbUserName.setForeground(Color.red);
-                ok = false;
-            } else {
-                lbUserName.setForeground(null);
+                emptyFieldsList.add(mp.translate("LogonDialog", "user name"));
+                focused = edUserName;
+            } 
+        }
+        if (!WebServerRunParams.getIsDevelopmentMode()) {
+            if (edPassword.getValue() == null || edPassword.getValue().isEmpty()) {
+                emptyFieldsList.add(mp.translate("LogonDialog", "password"));
+                if (focused == null) {
+                    focused = edPassword;
+                }
             }
         }
         if (edStation.getValue() == null || edStation.getValue().isEmpty()) {
-            lbStationName.setForeground(Color.red);
-            ok = false;
-        } else {
-            lbStationName.setForeground(null);
+            emptyFieldsList.add(mp.translate("LogonDialog", "station name"));
+            if (focused == null) {
+                focused = edStation;
+            }
+        } 
+        boolean ok = emptyFieldsList.isEmpty();
+        if (!ok) {
+            String message = null;
+            switch(emptyFieldsList.size()) {
+                case 1: message = String.format(mp.translate("LogonDialog", "Please enter %1$s"), emptyFieldsList.get(0));
+                        break;
+                case 2: message = String.format(mp.translate("LogonDialog", "Please enter %1$s and %2$s"), emptyFieldsList.get(0), emptyFieldsList.get(1));
+                        break;
+                case 3: message = String.format(mp.translate("LogonDialog", "Please enter %1$s, %2$s and %3$s"), emptyFieldsList.get(0), emptyFieldsList.get(1), emptyFieldsList.get(2));
+                        break;
+            }
+            getEnvironment().messageError("Some parameters were not specified", message); 
+            ((UIObject)focused.getValEditor()).setFocused(true);
         }
-        return ok;
+        return emptyFieldsList.isEmpty();
     }
 
     public static String getUserNameFromCertificate(X509Certificate[] cert) {
@@ -315,7 +367,7 @@ public class LogonDialog extends Dialog {
     }
 
     public EIsoLanguage getLanguage() {
-        return edLanguage.getValue();
+        return getIsoLanguageFromIsoCode(edLanguage.getValue());
     }
 
     @Override
@@ -331,12 +383,12 @@ public class LogonDialog extends Dialog {
             if (edStation.getValue() != null && !edStation.getValue().isEmpty()) {
                 environment.writeToCookies("ls", edStation.getValue());
             }
-            environment.writeToCookies("ll", edLanguage.getValue().getValue());
+            environment.writeToCookies("ll", edLanguage.getValue());
             try {
                 getEnvironment().getConfigStore().beginGroup("LogonDialog");
                 getEnvironment().getConfigStore().writeString("userName", edUserName.getValue());
                 getEnvironment().getConfigStore().writeString("stationName", edStation.getValue());
-                getEnvironment().getConfigStore().writeString("language", edLanguage.getValue().getValue());
+                getEnvironment().getConfigStore().writeString("language", edLanguage.getValue());
             } finally {
                 getEnvironment().getConfigStore().endGroup();
             }
@@ -347,6 +399,14 @@ public class LogonDialog extends Dialog {
     public void clear() {
         if (edPassword != null) {
             edPassword.setValue(null);
+        }
+    }
+    
+    private static EIsoLanguage getIsoLanguageFromIsoCode(final String isoCode){
+        try{
+            return isoCode==null || isoCode.isEmpty() ? null : EIsoLanguage.getForValue(isoCode);
+        }catch(NoConstItemWithSuchValueError error){
+            return null;
         }
     }
 }

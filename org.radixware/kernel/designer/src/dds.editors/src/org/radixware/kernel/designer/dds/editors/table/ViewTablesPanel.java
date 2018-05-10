@@ -63,7 +63,7 @@ public class ViewTablesPanel extends javax.swing.JPanel {
         public void refresh() {
             items.clear();
             if (view != null) {
-                for (DdsViewDef.UsedTableRef ref : view.getUsedTables().getUsedTables()) {
+                for (DdsViewDef.UsedTableRef ref : view.getUsedTables().list()) {
                     items.add(new ListModelItem(ref));
                 }
             }
@@ -211,7 +211,7 @@ public class ViewTablesPanel extends javax.swing.JPanel {
         });
         Definition def = ChooseDefinition.chooseDefinition(cfg);
         if (def instanceof DdsTableDef) {
-            view.getUsedTables().addTableId(def.getId());
+            //view.getUsedTables().addTableId(def.getId());
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -226,7 +226,7 @@ public class ViewTablesPanel extends javax.swing.JPanel {
             return;
         }
         if (selectedId != null) {
-            view.getUsedTables().removeTableId(selectedId);
+            //view.getUsedTables().removeTableId(selectedId);
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {

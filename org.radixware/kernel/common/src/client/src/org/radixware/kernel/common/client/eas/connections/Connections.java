@@ -14,6 +14,7 @@ package org.radixware.kernel.common.client.eas.connections;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.Map.Entry;
 
 import org.apache.xmlbeans.XmlException;
 
@@ -25,19 +26,20 @@ import org.radixware.kernel.common.client.types.ExplorerRoot;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.XmlUtils;
 import org.radixware.schemas.connections.Users2ConnectionsMap;
+import org.radixware.schemas.connections.Users2ConnectionsMap.Link;
 
 public abstract class Connections implements Iterable<ConnectionOptions> {
 
     final public static String SETTING_NAME = "connections";
     final private static String CONNECTIONS_FILE_NAME = "connections.xml";
     //список общих соединений по имени:
-    private final Map<String, ConnectionOptions> commonConnectionsByName = new HashMap<>();    
+    private final Map<String, ConnectionOptions> commonConnectionsByName = new HashMap<>();
     private String connectionsXml;
     private final String localConnectionsFilePath;
     //слитый список  соединений
     private final ArrayList<ConnectionOptions> connections = new ArrayList<>();
     private final IClientEnvironment environment;
-    
+
     protected Map<String, String> user2connection;
     protected String defaultConnectionName;
 
@@ -72,10 +74,10 @@ public abstract class Connections implements Iterable<ConnectionOptions> {
     }
 
     private void loadConnections() {
-        final File connectionsFile = new File(localConnectionsFilePath);
-        if (connectionsFile.exists()
+        final File connectionsFile = localConnectionsFilePath == null ? null : new File(localConnectionsFilePath);
+        if (connectionsFile!=null && connectionsFile.exists()
                 && connectionsFile.isFile()
-                && connectionsFile.canRead()) {            
+                && connectionsFile.canRead()) {
             ConnectionsDocument connectionsDocument = null;
             try {
                 connectionsXml = FileUtils.readTextFile(connectionsFile, FileUtils.XML_ENCODING);
@@ -87,8 +89,8 @@ public abstract class Connections implements Iterable<ConnectionOptions> {
                     new FileException(getEnvironment(), FileException.EExceptionCode.CANT_READ, connectionsFile.getAbsolutePath(), ex);
                 final String msgTitle = getEnvironment().getMessageProvider().translate("ConnectionsDialog", "Failed to Load Connection Options");
                 getEnvironment().processException(msgTitle,exception);
-            }            
-            
+            }
+
             if (connectionsDocument != null && connectionsDocument.getConnections() != null) {
                 final List<ConnectionsDocument.Connections.Connection> connectionsList = 
                     connectionsDocument.getConnections().getConnectionList();
@@ -100,7 +102,7 @@ public abstract class Connections implements Iterable<ConnectionOptions> {
                     if (xMap.getDefaultConnection() != null) {
                         defaultConnectionName = xMap.getDefaultConnection();
                     }
-                    user2connection = new HashMap<>();                    
+                    user2connection = new HashMap<>();
                     for (Users2ConnectionsMap.Link xLink : xMap.getLinkList()) {
                         final String connectionName = xLink.getConnectionName();
                         if (connectionName!=null && !connectionName.isEmpty()){
@@ -132,33 +134,33 @@ public abstract class Connections implements Iterable<ConnectionOptions> {
             localConnectionsFilePath = null;
         }
         /*
-        //Прочитать общие настройки соединений
-        ConnectionsDocument commonConnectionsDoc = null;        
-        if (commonConnectionsDoc != null && commonConnectionsDoc.getConnections() != null) {
-            final List<ConnectionsDocument.Connections.Connection> connectionsList = commonConnectionsDoc.getConnections().getConnectionList();
-            ConnectionOptions commonConnection;
-            for (ConnectionsDocument.Connections.Connection connection : connectionsList) {
-                commonConnection = createConnection(environment, connection, false);
-                //Пропускаем уже прочитанные соединения
-                if (findByName(connection.getName()) == null) {
-                    connections.add(commonConnection);
-                }
-                commonConnectionsByName.put(commonConnection.getName(), commonConnection);
-            }
-            if (commonConnectionsDoc.getConnections().getUsers2Connection() != null) {
-                Users2ConnectionsMap xMap = commonConnectionsDoc.getConnections().getUsers2Connection();
-                if (xMap.getDefaultConnection() != null) {
-                    defaultConnectionName = xMap.getDefaultConnection();
-                }
-                if (user2connection == null) {
-                    user2connection = new HashMap<>();
+         //Прочитать общие настройки соединений
+         ConnectionsDocument commonConnectionsDoc = null;        
+         if (commonConnectionsDoc != null && commonConnectionsDoc.getConnections() != null) {
+         final List<ConnectionsDocument.Connections.Connection> connectionsList = commonConnectionsDoc.getConnections().getConnectionList();
+         ConnectionOptions commonConnection;
+         for (ConnectionsDocument.Connections.Connection connection : connectionsList) {
+         commonConnection = createConnection(environment, connection, false);
+         //Пропускаем уже прочитанные соединения
+         if (findByName(connection.getName()) == null) {
+         connections.add(commonConnection);
+         }
+         commonConnectionsByName.put(commonConnection.getName(), commonConnection);
+         }
+         if (commonConnectionsDoc.getConnections().getUsers2Connection() != null) {
+         Users2ConnectionsMap xMap = commonConnectionsDoc.getConnections().getUsers2Connection();
+         if (xMap.getDefaultConnection() != null) {
+         defaultConnectionName = xMap.getDefaultConnection();
+         }
+         if (user2connection == null) {
+         user2connection = new HashMap<>();
 
-                    for (Users2ConnectionsMap.Link xLink : xMap.getLinkList()) {
-                        user2connection.put(xLink.getUser(), xLink.getConnectionName());
-                    }
-                }
-            }
-        }*/
+         for (Users2ConnectionsMap.Link xLink : xMap.getLinkList()) {
+         user2connection.put(xLink.getUser(), xLink.getConnectionName());
+         }
+         }
+         }
+         }*/
     }
 
     public ConnectionOptions create() {
@@ -173,7 +175,7 @@ public abstract class Connections implements Iterable<ConnectionOptions> {
         }else{
             newConnection.deleteConfigFiles(true);
             return null;
-        }        
+        }
     }
 
     public ConnectionOptions createCopy(ConnectionOptions source) {
@@ -227,6 +229,30 @@ public abstract class Connections implements Iterable<ConnectionOptions> {
             for (ConnectionOptions connection : connections) {
                 connection.writeToXml(xmlConnections.addNewConnection());
             }
+            
+            if (user2connection != null && !user2connection.isEmpty()) {
+                Users2ConnectionsMap users2ConnectionMap = xmlConnections.addNewUsers2Connection();
+                if (defaultConnectionName != null && !defaultConnectionName.isEmpty()) {
+                    users2ConnectionMap.setDefaultConnection(defaultConnectionName);
+                }
+                for (Entry<String, String> user2ConnectionEntry : user2connection.entrySet()) {
+                    Link link = null;
+                    for (Link users2ConnectionLink : users2ConnectionMap.getLinkList()) {
+                        if (user2ConnectionEntry.getValue().equals(users2ConnectionLink.getConnectionName())) {
+                            link = users2ConnectionLink;
+                            break;
+                        } 
+                    }
+                    if (link == null) {
+                        link = users2ConnectionMap.addNewLink();
+                        link.setConnectionName(user2ConnectionEntry.getValue());
+                        link.addNewUsers();
+                    }
+                    
+                    List<String> userList = link.getUsers().getUserList();
+                    userList.add(user2ConnectionEntry.getKey());
+                }
+            }
             final String currentConntectionsXml = commonConnectionsDoc.xmlText(XmlUtils.getPrettyXmlOptions());
             if (!Objects.equals(connectionsXml, currentConntectionsXml)){                
                 final File localConnectionsFile = new File(localConnectionsFilePath);
@@ -235,7 +261,7 @@ public abstract class Connections implements Iterable<ConnectionOptions> {
                     connectionsXml = currentConntectionsXml;
                 } catch (IOException e) {
                     getEnvironment().processException(new FileException(getEnvironment(), FileException.EExceptionCode.CANT_WRITE, localConnectionsFile.getAbsolutePath()));
-                }                
+                }
             }
         }
         storeSettings();
@@ -261,7 +287,7 @@ public abstract class Connections implements Iterable<ConnectionOptions> {
         }
         return false;
     }
-    
+
     public final ConnectionOptions findByName(String name) {
         for (ConnectionOptions connection : connections) {
             if (connection.getName().equals(name)) {

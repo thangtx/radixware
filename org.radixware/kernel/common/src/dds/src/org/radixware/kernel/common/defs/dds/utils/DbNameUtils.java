@@ -146,19 +146,28 @@ public class DbNameUtils {
             "WHERE",
             "WITH"));
 
-    public static boolean isCorrectDbName(String dbName) {
-        if (dbName == null) {
-            return false;
-        }
-        if (!dbName.matches("\\\"?[a-zA-Z][a-zA-Z0-9_\\%\\$]{0,29}\\\"?")) {
-            return false;
-        }
-        if (Collections.binarySearch(sortedReservedWords, dbName.toUpperCase()) >= 0) {
-            return false;
-        }
-        return true;
+    public static boolean isCorrectDbName(final String dbName) {
+        return getDbNameErrorText(dbName) == null;
     }
 
+    public static String getDbNameErrorText(final String dbName) {
+        if (dbName == null || dbName.isEmpty()) {
+            return "Database name can't be null or empty";
+        }
+        else if (dbName.length() > 30) {
+            return "Database name is too long, need be shorter than 30 chars";
+        }
+        else if (!dbName.matches("\\\"?[a-zA-Z][a-zA-Z0-9_\\%\\$]{0,29}\\\"?")) {
+            return "Database name contains invalid symbols";
+        }
+        else if (Collections.binarySearch(sortedReservedWords, dbName.toUpperCase()) >= 0) {
+            return "Database name intersects with the reserved words";
+        }
+        else {
+            return null;
+        }
+    }
+    
     public static String calcAutoDbName(String... parts) {
         final StringBuilder sb = new StringBuilder();
         boolean wasAdded = false;

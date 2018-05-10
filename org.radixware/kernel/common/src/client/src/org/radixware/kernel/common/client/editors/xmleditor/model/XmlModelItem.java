@@ -515,7 +515,7 @@ public class XmlModelItem {
         }
         from.clear();
     }
-
+    
     private static Map<QName, XmlSchemaItem> getChildSchemaElements(final XmlSchemaItem parent) {
         final Map<QName, XmlSchemaItem> result = new HashMap<>();
         final List<XmlSchemaItem> childSchemaItems = parent.getChildItems();
@@ -810,9 +810,11 @@ public class XmlModelItem {
         while (!childItems.isEmpty()) {
             final XmlModelItem childItem = childItems.remove(0);
             if (childItem.xmlNode == null) {
-                final List<XmlModelItem> logicalChilds = childItem.getLogicalChildItems();
-                if (!logicalChilds.isEmpty()) {
-                    childItems.addAll(0, logicalChilds);
+                if (childItem.getSchemaItem() instanceof XmlSchemaContainerItem){
+                    final List<XmlModelItem> logicalChilds = childItem.getLogicalChildItems();
+                    if (!logicalChilds.isEmpty()) {
+                        childItems.addAll(0, logicalChilds);
+                    }
                 }
             } else if (childItem.xmlNode.getType() == EXmlItemType.Attribute
                     && XmlDocumentItem.XSI_NIL.equals(childItem.xmlNode.getFullName())) {

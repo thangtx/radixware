@@ -165,31 +165,40 @@ public class Compiler {
             final long definitionLastModifiedTime = definition instanceof AdsDefinition ? ((AdsDefinition) definition).getFileLastModifiedTime() : -1;
 
             if (defDecls != null) {
-                for (int i = 0; i < defDecls.length; i++) {
-                    if (cancellable != null && cancellable.wasCancelled()) {
-                        return;
+                if (defDecls.length == 0) {
+                    if (definition instanceof AdsXmlSchemeDef) {
+                        AdsXmlSchemeDef xml = (AdsXmlSchemeDef) definition;
+                        if (requestor != null) {
+                            requestor.acceptDefinition(xml);
+                        }
                     }
-
-                    if (defDecls[i] != null && defDecls[i].getEnvironmentType() == env) {
-                        if (defDecls[i].declarationProcessed()) {
-                            continue;
+                } else {
+                    for (int i = 0; i < defDecls.length; i++) {
+                        if (cancellable != null && cancellable.wasCancelled()) {
+                            return;
                         }
 
-                        if (!force && definitionLastModifiedTime > 0) {
-                            final String declFileName = defDecls[i].getDeclarationFileName();
-                            File classFileName = new File(baseDir, declFileName.replace('.', '/') + ".class");
-                            if (classFileName.exists() && classFileName.lastModified() > definitionLastModifiedTime) {
+                        if (defDecls[i] != null && defDecls[i].getEnvironmentType() == env) {
+                            if (defDecls[i].declarationProcessed()) {
                                 continue;
                             }
-                        }
-                        Make.Requestor.UnitProcessingStatus status = requestor.getUnitProcessingStatus(defDecls[i]);
-                        if (status != Make.Requestor.UnitProcessingStatus.NONE) {
-                            if (status == Make.Requestor.UnitProcessingStatus.SUCCESS) {
-                                defDecls[i].reject();
+
+                            if (!force && definitionLastModifiedTime > 0) {
+                                final String declFileName = defDecls[i].getDeclarationFileName();
+                                File classFileName = new File(baseDir, declFileName.replace('.', '/') + ".class");
+                                if (classFileName.exists() && classFileName.lastModified() > definitionLastModifiedTime) {
+                                    continue;
+                                }
                             }
-                            continue;
+                            Make.Requestor.UnitProcessingStatus status = requestor.getUnitProcessingStatus(defDecls[i]);
+                            if (status != Make.Requestor.UnitProcessingStatus.NONE) {
+                                if (status == Make.Requestor.UnitProcessingStatus.SUCCESS) {
+                                    defDecls[i].reject();
+                                }
+                                continue;
+                            }
+                            declarations.add(defDecls[i].getDeclaration());
                         }
-                        declarations.add(defDecls[i].getDeclaration());
                     }
                 }
             }

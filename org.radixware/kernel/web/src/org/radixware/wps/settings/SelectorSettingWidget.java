@@ -12,9 +12,7 @@ package org.radixware.wps.settings;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.WpsSettings;
@@ -25,20 +23,16 @@ import org.radixware.wps.rwt.TableLayout;
 import org.radixware.wps.rwt.UIObject;
 import org.radixware.wps.text.WpsTextOptions;
 
-public class SelectorSettingWidget extends SettingsWidget {
+final class SelectorSettingWidget extends SettingsWidget {
 
     private final List<SettingsWidget> settingsArrayList = new ArrayList<>();
     private final ColorSettingsWidget bgrnd, df, ndf;
 
-    public SelectorSettingWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n, final String title, Map<String, String> map) {
-
-        super(env, parent, gr, sub, title, null);
+    public SelectorSettingWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n, final String title) {
+        super(env, parent, gr, sub, title);
         TableLayout table = new TableLayout();
-        bgrnd = new ColorSettingsWidget(env, parent, gr, sub, n + "/" + SettingNames.TextOptions.BCOLOR, null);
-        if (map != null) {
-            bgrnd.setDefaultValue(map.get(SettingNames.TextOptions.BCOLOR));
-        }
-        Label l1 = new Label(e.getMessageProvider().translate("Settings Dialog", "Background color"));
+        bgrnd = new ColorSettingsWidget(env, parent, gr, sub, n + "/" + SettingNames.TextOptions.BCOLOR);
+        Label l1 = new Label(env.getMessageProvider().translate("Settings Dialog", "Background color"));
 
         TableLayout.Row row0 = table.addRow();
         TableLayout.Row.Cell cell = row0.addCell();
@@ -48,17 +42,14 @@ public class SelectorSettingWidget extends SettingsWidget {
         row0.addCell(1).add(bgrnd);
         settingsArrayList.add(bgrnd);
 
-        final Label l = new Label(e.getMessageProvider().translate("Settings Dialog", "Foreground color"));
+        final Label l = new Label(env.getMessageProvider().translate("Settings Dialog", "Foreground color"));
         TableLayout.Row row = table.addRow();
         row.addCell();
         row.addCell().add(l);
         
-        df = new ColorSettingsWidget(env, parent, gr, sub, n + "/" + SettingNames.TextOptions.FCOLOR, null);
-        if (map != null) {
-            df.setDefaultValue(map.get(SettingNames.TextOptions.FCOLOR));
-        }
+        df = new ColorSettingsWidget(env, parent, gr, sub, n + "/" + SettingNames.TextOptions.FCOLOR);
 
-        Label l2 = new Label(e.getMessageProvider().translate("Settings Dialog", "Value defined"));
+        Label l2 = new Label(env.getMessageProvider().translate("Settings Dialog", "Value defined"));
         TableLayout.Row row1 = table.addRow();
         TableLayout.Row.Cell cell1 = row1.addCell();
         cell1.getHtml().addClass("rwt-table-cell-label");
@@ -68,15 +59,12 @@ public class SelectorSettingWidget extends SettingsWidget {
 
         settingsArrayList.add(df);
 
-        Label l3 = new Label(e.getMessageProvider().translate("Settings Dialog", "Value undefined"));
+        Label l3 = new Label(env.getMessageProvider().translate("Settings Dialog", "Value undefined"));
         TableLayout.Row row2 = table.addRow();
         TableLayout.Row.Cell cell2 = row2.addCell();
         cell2.getHtml().addClass("rwt-table-cell-label");
 
-        ndf = new ColorSettingsWidget(env, parent, gr, sub, n + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED, null);
-        if (map != null) {
-            ndf.setDefaultValue(SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED);
-        }
+        ndf = new ColorSettingsWidget(env, parent, gr, sub, n + "/" + SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED);
 
         cell2.add(l3);
         row2.addCell().add(ndf);
@@ -119,15 +107,15 @@ public class SelectorSettingWidget extends SettingsWidget {
     }
 
     public String getBackgroundColor() {
-        return bgrnd != null ? (bgrnd.getColor() == null ? (String) bgrnd.defaultValue : bgrnd.getColor()) : "#FFFFFF";
+        return bgrnd != null ? (bgrnd.getColor() == null ? bgrnd.getDefaultValue() : bgrnd.getColor()) : "#FFFFFF";
     }
 
     public String getDefinedColor() {
-        return df != null ? (df.getColor() == null ? (String) df.defaultValue : df.getColor()) : "#FFFFFF";
+        return df != null ? (df.getColor() == null ? df.getDefaultValue() : df.getColor()) : "#FFFFFF";
     }
 
     public String getUndefinedColor() {
-        return ndf != null ? (ndf.getColor() == null ? (String) ndf.defaultValue : ndf.getColor()) : "#B3B2B1";
+        return ndf != null ? (ndf.getColor() == null ? ndf.getDefaultValue() : ndf.getColor()) : "#B3B2B1";
     }
 
     public void setBackgroundColor(String color) {
@@ -140,20 +128,6 @@ public class SelectorSettingWidget extends SettingsWidget {
 
     public void setUndefinedColor(String color) {
         ndf.setColor(color);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void setDefaultValue(Object val) {
-        super.setDefaultValue(val);
-        if (val != null) {
-            HashMap<String, String> map = (HashMap<String, String>) val;
-            if (!map.isEmpty()) {
-                df.setDefaultValue(map.get(SettingNames.TextOptions.FCOLOR));
-                ndf.setDefaultValue(map.get(SettingNames.TextOptions.FCOLOR + "/" + SettingNames.Properties.UNDEFINED));
-                bgrnd.setDefaultValue(map.get(SettingNames.TextOptions.BCOLOR));
-            }
-        }
     }
 
     public WpsTextOptions getTextOptions(final boolean valueDefined) {

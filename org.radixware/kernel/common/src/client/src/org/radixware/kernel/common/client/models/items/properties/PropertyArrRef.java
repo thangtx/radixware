@@ -23,6 +23,7 @@ import org.radixware.kernel.common.client.errors.ModelCreationError;
 import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
 import org.radixware.kernel.common.client.meta.RadParentRefPropertyDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
+import org.radixware.kernel.common.client.meta.filters.RadFilterParamDef;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.FormModel;
 import org.radixware.kernel.common.client.models.GroupModel;
@@ -50,10 +51,9 @@ public class PropertyArrRef extends PropertyArr<ArrRef> {
     public PropertyArrRef(final Model owner, final RadParentRefPropertyDef propDef) {
         super(owner, propDef);
     }
-
-    @Override
-    public final RadParentRefPropertyDef getDefinition() {
-        return (RadParentRefPropertyDef) super.getDefinition();
+    
+    public PropertyArrRef(final Model owner, final RadFilterParamDef paramDef){
+        super(owner, paramDef);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class PropertyArrRef extends PropertyArr<ArrRef> {
     }
 
     public final void setGroupPropertyValue(final Id propertyId, final Object value) {
-        final RadSelectorPresentationDef presentation = getDefinition().getParentSelectorPresentation();
+        final RadSelectorPresentationDef presentation = getParentSelectorPresentation();
         if (presentation != null) {
             presentation.getPropertyDefById(propertyId);//check if property exists
         }
@@ -144,7 +144,7 @@ public class PropertyArrRef extends PropertyArr<ArrRef> {
     }
 
     public GroupModel openGroupModel() {
-        final RadSelectorPresentationDef presentation = getDefinition().getParentSelectorPresentation();
+        final RadSelectorPresentationDef presentation = getParentSelectorPresentation();
 
         if (presentation == null) {
             final String info = getEnvironment().getMessageProvider().translate("ExplorerException", "selector presentation was not defined");
@@ -169,7 +169,7 @@ public class PropertyArrRef extends PropertyArr<ArrRef> {
     
     public final IContext.Group createContext(){        
         if (isContextlessSelect()) {
-            final RadSelectorPresentationDef presentation = getDefinition().getParentSelectorPresentation();
+            final RadSelectorPresentationDef presentation = getParentSelectorPresentation();
 
             if (presentation == null) {
                 final String info = getEnvironment().getMessageProvider().translate("ExplorerException", "selector presentation was not defined");
@@ -188,11 +188,11 @@ public class PropertyArrRef extends PropertyArr<ArrRef> {
     }
 
     public boolean canOpenGroupModel() {
-        return getDefinition().getParentSelectorPresentation() != null;
+        return getParentSelectorPresentation() != null;
     }
 
     public boolean canOpenParentSelector() {
-        final RadSelectorPresentationDef presentation = getDefinition().getParentSelectorPresentation();
+        final RadSelectorPresentationDef presentation = getParentSelectorPresentation();
         return presentation != null
                 && (presentation.getRuntimeEnvironmentType() == ERuntimeEnvironmentType.COMMON_CLIENT
                 || presentation.getRuntimeEnvironmentType() == getEnvironment().getApplication().getRuntimeEnvironmentType());
@@ -251,33 +251,27 @@ public class PropertyArrRef extends PropertyArr<ArrRef> {
         if (value == null || value.isEmpty()) {
             return value;
         }
-        final Id tableId = getDefinition().getReferencedTableId();
-        final EntityObjectTitlesProvider titlesProvider;
-        if (getDefinition().getParentSelectorPresentation() == null) {
-            titlesProvider =
-                new EntityObjectTitlesProvider(getEnvironment(), tableId);
+        final Id tableId = getReferencedTableId();       
+        if (getParentSelectorPresentation() == null) {
+            return value.actualizeTitles(getEnvironment(), tableId);
         } else {
-            titlesProvider =
-                new EntityObjectTitlesProvider(getEnvironment(), tableId, createContext());
+            return value.actualizeTitles(getEnvironment(), tableId, createContext());
         }
-        for (Reference ref : value) {
-            if (ref != null && ref.getPid() != null) {
-                if (!Objects.equals(ref.getPid().getTableId(), tableId)) {
-                    final String message = "Object %1$s belongs to a different entity (%2$s)";
-                    throw new IllegalArgumentException(String.format(message, ref.getPid().toString(), tableId));
-                }
-                titlesProvider.addEntityObjectReference(ref);
-            }
+    }
+    
+    public final RadSelectorPresentationDef getParentSelectorPresentation(){
+        if (getDefinition() instanceof RadParentRefPropertyDef){
+            return ((RadParentRefPropertyDef)getDefinition()).getParentSelectorPresentation();
+        }else{
+            return ((RadFilterParamDef)getDefinition()).getParentSelectorPresentation();
         }
-        final EntityObjectTitles titles = titlesProvider.getTitles();
-        final ArrRef newValues = new ArrRef();
-        for (Reference ref : value) {
-            if (ref == null || ref.getPid() == null) {
-                newValues.add(ref);
-            } else {
-                newValues.add(titles.getEntityObjectReference(ref.getPid()));
-            }
+    }
+    
+    private final Id getReferencedTableId(){
+        if (getDefinition() instanceof RadParentRefPropertyDef){
+            return ((RadParentRefPropertyDef)getDefinition()).getReferencedTableId();
+        }else{
+            return ((RadFilterParamDef)getDefinition()).getReferencedTableId();
         }
-        return newValues;
     }
 }

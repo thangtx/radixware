@@ -29,6 +29,7 @@ import org.radixware.kernel.explorer.dialogs.XmlEditorDialog;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 
 import org.radixware.kernel.common.client.utils.ClientValueFormatter;
+import org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;
 
 
 public class ValXmlEditor extends ValEditor<XmlObject> {           
@@ -139,13 +140,10 @@ public class ValXmlEditor extends ValEditor<XmlObject> {
 
     @Override
     public void refresh() {
-        super.refresh();
-        final XmlObject xml = getValue();        
-        if (xml!=null){//RADIX-7032
-            getLineEdit().setText(getEnvironment().getMessageProvider().translate("Value", "<value defined>"));
-        }
+        super.refresh();        
         if (editBtn != null) {
             editBtn.setVisible(isEditButtonVisible());
+            final XmlObject xml = getValue();
             if (isReadOnly()) {
                 if (xml != null) {
                     editBtn.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "View Value"));
@@ -159,6 +157,22 @@ public class ValXmlEditor extends ValEditor<XmlObject> {
             }
         }
     }
+    
+    @Override
+    protected String getStringToShow(final Object value) {        
+        final String defaultString;
+        if (value==null){
+            defaultString = getEditMask().toStr(getEnvironment(), null);
+        }else{
+            defaultString = getEnvironment().getMessageProvider().translate("Value", "<value defined>");
+        }
+        final IDisplayStringProvider displayStringProvider = getDisplayStringProvider();
+        if (displayStringProvider == null) {
+            return defaultString;
+        }
+        return displayStringProvider.format(getEditMask(), value, defaultString);
+    }
+    
     
     private boolean isEditButtonVisible(){
         final XmlObject xml = getValue();
@@ -184,11 +198,9 @@ public class ValXmlEditor extends ValEditor<XmlObject> {
     
     private void initEditBtn(){
         final QAction action = new QAction(this);
-        action.triggered.connect(this, "openEditor()");                
+        action.triggered.connect(this, "openEditor()");
         editBtn = addButton(null, action);
-        getLayout().setAlignment(editBtn, new Qt.Alignment(Qt.AlignmentFlag.AlignLeft, Qt.AlignmentFlag.AlignVCenter));
-        getLayout().setStretchFactor(editBtn, 0);
-        editBtn.setObjectName("btnXmlEditor");        
+        editBtn.setObjectName("btnXmlEditor");
     }
 
     @Override

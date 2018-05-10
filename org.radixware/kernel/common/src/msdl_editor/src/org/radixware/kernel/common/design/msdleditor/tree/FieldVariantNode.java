@@ -25,7 +25,7 @@ public class FieldVariantNode extends FieldNode {
     @Override
     public JPanel createView() {
         VariantFieldPanel panel = new VariantFieldPanel();
-        panel.open(fieldModel,null, null);
+        panel.open(fieldModel,null, null, null);
         return panel;
     }
 }

@@ -29,6 +29,7 @@ public abstract class DdsPlSqlPartScriptGenerator<T extends DdsPlSqlPartDef> imp
             cp.print("type");
         } else if (plSqlObject instanceof DdsPackageDef) {
             cp.print("package");
+//            JOptionPane.showMessageDialog(null,"CALL: "+Arrays.toString(new Throwable("CATCH!").getStackTrace()));
         } else {
             throw new IllegalStateException("Illegal object in " + DdsPlSqlHeaderScriptGenerator.class.getName() + ": " + String.valueOf(plSqlObject));
         }
@@ -45,9 +46,7 @@ public abstract class DdsPlSqlPartScriptGenerator<T extends DdsPlSqlPartDef> imp
     public void getDropScript(CodePrinter cp, T part) {
         cp.print("drop ");
         printSqlClassName(cp, part);
-        cp.print(" ");
-        cp.print(part.getPlSqlObjectDef().getDbName());
-        cp.printCommandSeparator();
+        cp.print(" ").print(part.getPlSqlObjectDef().getDbName()).printCommandSeparator();
     }
 
     @Override
@@ -73,9 +72,6 @@ public abstract class DdsPlSqlPartScriptGenerator<T extends DdsPlSqlPartDef> imp
 
     @Override
     public void getRunRoleScript(CodePrinter cp, T part) {
-        cp.print("grant execute on ");
-        cp.print(part.getPlSqlObjectDef().getDbName());
-        cp.print(" to &USER&_RUN_ROLE");
-        cp.printCommandSeparator();
+        cp.print("grant execute on ").print(part.getPlSqlObjectDef().getDbName()).print(" to &USER&_RUN_ROLE").printCommandSeparator();
     }
 }

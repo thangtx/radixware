@@ -27,6 +27,7 @@ import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentablePr
 import org.radixware.kernel.common.defs.ads.module.AdsPath;
 import org.radixware.kernel.common.defs.ads.src.IJavaSource;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.defs.ads.src.clazz.AdsPropertyWriter;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.ui.AdsUISignalDef;
@@ -139,6 +140,7 @@ public class JmlTagInvocation extends JmlTagId {
     @Override
     public void appendTo(Item item) {
         Item.IdReference ref = item.addNewIdReference();
+        appendTo(ref);
         ref.setPath(getPathForSave().asList());
         ref.setInvoke(true);
     }
@@ -168,16 +170,16 @@ public class JmlTagInvocation extends JmlTagId {
                         || def instanceof AdsFieldParameterDef || def instanceof AdsUISignalDef) {
 
                     if (isInternalPropertyAccessor()) {
-                        return "internal[" + def.getName() + "]";
+                        return "internal[" + rememberDisplayName(def.getName()) + "]";
                     } else {
-                        return def.getName();
+                        return rememberDisplayName(def.getName());
                     }
                 } else {
-                    return def.getQualifiedName(context);
+                    return rememberDisplayName(def.getQualifiedName(context));
                 }
             }
         } else {
-            return "unknowndef: " + AdsPath.toString(getPath()) + "]";
+            return "unknowndef: " + restoreDisplayName(AdsPath.toString(getPath())) + "]";
         }
     }
 
@@ -186,12 +188,14 @@ public class JmlTagInvocation extends JmlTagId {
         return new JavaSourceSupport(this) {
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagInvocation.this) {
                     @Override
                     public boolean writeCode(CodePrinter printer) {
                         if (getOwnerJml() == null) {
                             return false;
                         }
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         final RadixObjectLocator locator = (RadixObjectLocator) printer.getProperty(RadixObjectLocator.PRINTER_PROPERTY_NAME);
                         RadixObjectLocator.RadixObjectData marker = null;
                         if (locator != null) {
@@ -249,6 +253,7 @@ public class JmlTagInvocation extends JmlTagId {
                             if (marker != null) {
                                 marker.commit();
                             }
+                            WriterUtils.leaveHumanUnreadableBlock(printer);
                         }
                     }
 

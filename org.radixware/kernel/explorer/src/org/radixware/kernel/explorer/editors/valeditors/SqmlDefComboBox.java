@@ -66,7 +66,7 @@ public final class SqmlDefComboBox extends ValEditor<ISqmlDefinition> {//Пра�
         super(environment, parent, new EditMaskNone(), mandatory, readOnly);
 
         combo.setObjectName("comboBox");
-        combo.setLineEdit(getLineEdit());
+        combo.setLineEdit(getLineEdit());//it will removed lineEdit from this.layout
         combo.setFrame(false);
         combo.setSizePolicy(Policy.Expanding, Policy.Expanding);
         getLineEdit().setFocusProxy(null);
@@ -74,7 +74,7 @@ public final class SqmlDefComboBox extends ValEditor<ISqmlDefinition> {//Пра�
         combo.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu);
         combo.activatedIndex.connect(this, "onActivatedIndex(int)");
 
-        addWidget(combo);
+        setPrimaryWidget(combo);
 
         getLineEdit().setReadOnly(true);
 
@@ -140,9 +140,10 @@ public final class SqmlDefComboBox extends ValEditor<ISqmlDefinition> {//Пра�
         }        
     }
 
-
     private boolean isPopupEnabled() {
         return !isReadOnly()
+                && isEnabled()
+                && isEmbeddedWidgetsVisible()
                 && combo.count() > 0
                 && (combo.count() > 1 || getValue() == null || !isMandatory());
     }

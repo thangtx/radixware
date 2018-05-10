@@ -26,7 +26,6 @@ import org.radixware.kernel.common.enums.EEditPossibility;
 import org.radixware.kernel.common.enums.EEntityLockMode;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.ArrStr;
-import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.server.meta.clazzes.RadPropDef;
 import org.radixware.kernel.server.meta.presentations.RadEditorPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadPresentationDef;
@@ -39,9 +38,7 @@ import org.radixware.schemas.eas.UpdateRs;
 import org.radixware.schemas.easWsdl.UpdateDocument;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.types.PresentationEntityAdapter;
-import org.radixware.kernel.server.types.Restrictions;
 import org.radixware.kernel.server.types.presctx.PresentationContext;
-import org.radixware.schemas.eas.EditorPages;
 
 final class UpdateRequest extends ObjectRequest {
 
@@ -53,14 +50,13 @@ final class UpdateRequest extends ObjectRequest {
         //IN
         final UpdateRq rqParams = request.getUpdateRq();
         final RadClassDef classDef = getClassDef(rqParams);
-        assertNotUserFuncOrUserCanDevUserFunc(classDef);
         final PresentationOptions presOptions = getPresentationOptions(rqParams, classDef, false, false, rqParams.getEditorPresentation());
         final Entity entity = getObject(classDef, rqParams);
         if (presOptions.editorPresentation == null) {
             throw EasFaults.newParamRequiedFault("EditorPresentation", rqParams.getDomNode().getNodeName());
         }
         //presOptions.checkContextEditable(); //RADIX-2901: property can be readonly but its destination is editable
-        presOptions.assertEdPresIsAccessibile(entity);
+        presOptions.assertEdPresIsAccessible(entity);
         RadEditorPresentationDef edPres = presOptions.editorPresentation;
         if (edPres.getTotalRestrictions(entity).getIsUpdateRestricted()) {
             throw EasFaults.newAccessViolationFault(getArte(), Messages.MLS_ID_INSUF_PRIV_TO_UPDATE_OBJECT, null);
@@ -73,9 +69,13 @@ final class UpdateRequest extends ObjectRequest {
         final List<PropertyList.Item> propItemXmls = propsXml.getItemList();
         //загрузим свойства
         final ArrayList<RadPropDef> updatedProps = new ArrayList<>();        
-        final PresentationEntityAdapter presEntAdapter = getArte().getPresentationAdapter(entity);
+        final PresentationEntityAdapter presEntAdapter = getArte().getPresentationAdapter(entity);        
         final PresentationContext presCtx = getPresentationContext(getArte(), presOptions.context ,null);
         presEntAdapter.setPresentationContext(presCtx);
+        presOptions.assertEdPresIsAccessible(presEntAdapter);
+        if (presEntAdapter.getAdditionalRestrictions(edPres).getIsUpdateRestricted()){
+            throw EasFaults.newAccessViolationFault(getArte(), Messages.MLS_ID_INSUF_PRIV_TO_UPDATE_OBJECT, null);
+        }
         try {
             loadPropsFromXml(propItemXmls, presEntAdapter, edPres, updatedProps, null, NULL_PROP_LOAD_FILTER, EReadonlyPropModificationPolicy.FORBIDDEN);
             checkPropsUpdatableInPres(entity, updatedProps, edPres);
@@ -111,6 +111,9 @@ final class UpdateRequest extends ObjectRequest {
         if (edPres.getTotalRestrictions(entity).getIsUpdateRestricted()) {
             throw EasFaults.newAccessViolationFault(getArte(), Messages.MLS_ID_INSUF_PRIV_TO_UPDATE_OBJECT, null);
         }
+        if (presEntAdapter.getAdditionalRestrictions(edPres).getIsUpdateRestricted()){
+            throw EasFaults.newAccessViolationFault(getArte(), Messages.MLS_ID_INSUF_PRIV_TO_UPDATE_OBJECT, null);
+        }
         checkPropsAccessibleInPres(updatedProps, edPres);
         checkPropsUpdatableInPres(entity, updatedProps, edPres);
 
@@ -124,25 +127,6 @@ final class UpdateRequest extends ObjectRequest {
         final UpdateDocument res = UpdateDocument.Factory.newInstance();
         final UpdateRs rsStruct = res.addNewUpdate().addNewUpdateRs();
 
-        //RADIX-7112
-        Restrictions restr = edPres.getTotalRestrictions(entity);
-        EditorPages enadledEditorPages = rsStruct.addNewEnabledEditorPages();
-
-        if (restr.getIsAccessRestricted() || restr.getIsViewRestricted()) {
-            enadledEditorPages.setAll(false);
-        } else if (!restr.getIsAllEditPagesRestricted()) {
-            enadledEditorPages.setAll(true);
-        } else {
-            enadledEditorPages.setAll(false);
-            Collection<Id> allowedEditPages = restr.getAllowedEditPages();
-            for (Id id : allowedEditPages) {
-                EditorPages.Item item = enadledEditorPages.addNewItem();
-                item.setId(id);
-            }
-        }
-        //end RADIX-7112
-
-
         final Collection<RadPropDef> usedPropDefs;
         if (selPres == null) {
             usedPropDefs = edPres.getUsedPropDefs(entity.getPresentationMeta());
@@ -154,7 +138,7 @@ final class UpdateRequest extends ObjectRequest {
                 }
             }
         }
-        writeReadResponse(rsStruct, presEntAdapter, presOptions, bWithLOBValues, edPres, usedPropDefs);
+        writePresentableObject(rsStruct.addNewData(), presEntAdapter, presOptions, bWithLOBValues, edPres, usedPropDefs, false);
         //RADIX-4400 "User '%1' updated '%2' with PID = '%3'", EAS, Debug
         if (getUsrActionsIsTraced()) {
             getArte().getTrace().put(
@@ -180,13 +164,18 @@ final class UpdateRequest extends ObjectRequest {
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((UpdateMess) rqXml).getUpdateRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final UpdateDocument doc = process((UpdateMess) rq);
-        postProcess(rq, doc.getUpdate().getUpdateRs());
+        UpdateDocument doc = null;
+        try{
+            doc = process((UpdateMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getUpdate().getUpdateRs());
+        }
         return doc;
     }
 }

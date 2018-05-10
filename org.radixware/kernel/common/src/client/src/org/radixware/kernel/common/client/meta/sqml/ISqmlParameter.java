@@ -15,6 +15,7 @@ import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.xscml.Sqml;
 
 
 public interface ISqmlParameter extends ISqmlDefinition {
@@ -36,6 +37,8 @@ public interface ISqmlParameter extends ISqmlDefinition {
     Id getReferencedTableId();
 
     Id getParentSelectorPresentationId();
+    
+    Sqml getParentSelectorAdditionalCondition();
 
     ValAsStr getInitialVal();
 
@@ -44,4 +47,8 @@ public interface ISqmlParameter extends ISqmlDefinition {
     ISqmlParameterPersistentValue getPersistentValue();
 
     void setPersistentValue(final ISqmlParameterPersistentValue value);
+    
+    int getMinArrayItemsCount();
+    
+    int getMaxArrayItemsCount();
 }

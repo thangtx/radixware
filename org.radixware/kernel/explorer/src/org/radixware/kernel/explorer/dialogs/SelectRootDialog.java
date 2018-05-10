@@ -18,15 +18,19 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QEventFilter;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRect;
+import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.Key;
 import com.trolltech.qt.core.Qt.ScrollBarPolicy;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QItemDelegate;
 import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QListWidget;
 import com.trolltech.qt.gui.QListWidgetItem;
 import com.trolltech.qt.gui.QVBoxLayout;
+import com.trolltech.qt.gui.QWidget;
 import java.util.EnumSet;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
@@ -36,6 +40,7 @@ import org.radixware.kernel.common.client.types.ExplorerRoot;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 public final class SelectRootDialog extends ExplorerDialog {
 
@@ -75,16 +80,22 @@ public final class SelectRootDialog extends ExplorerDialog {
         setupUi();
         final QIcon defaultIcon = ExplorerIcon.getQIcon(ClientIcon.Definitions.TREES);
         for (ExplorerRoot explorerRoot : explorerRoots) {
-            final RadParagraphDef paragraphDef = explorerRoot.getParagraphDef();
-            final QIcon icon = paragraphDef.getIcon()==null ? defaultIcon : ExplorerIcon.getQIcon(paragraphDef.getIcon());
-            final QListWidgetItem listItem = new QListWidgetItem(icon, explorerRoot.getTitle());//NOPMD
-            listItem.setToolTip(explorerRoot.getDescription());
-            list.insertItem(list.count(), listItem);
-            
+            list.insertItem(list.count(), createListItem(explorerRoot, defaultIcon));            
         }
         if (curRow < list.count()) {
             list.setCurrentRow(curRow);
         }        
+    }
+    
+    private static QListWidgetItem createListItem(final ExplorerRoot explorerRoot, final QIcon defaultIcon){
+        final RadParagraphDef paragraphDef = explorerRoot.getParagraphDef();
+        final QIcon icon = paragraphDef.getIcon()==null ? defaultIcon : ExplorerIcon.getQIcon(paragraphDef.getIcon());
+        final QListWidgetItem listItem = new QListWidgetItem(icon, explorerRoot.getTitle());//NOPMD        
+        listItem.setToolTip(explorerRoot.getDescription());
+        final String listItemName = "rx_explorer_root_list_item_"+explorerRoot.getId().toString();
+        listItem.setData(WidgetUtils.MODEL_ITEM_ROW_NAME_DATA_ROLE, listItemName);
+        listItem.setData(WidgetUtils.MODEL_ITEM_CELL_NAME_DATA_ROLE, listItemName);
+        return listItem;
     }
 
     @Override
@@ -129,11 +140,16 @@ public final class SelectRootDialog extends ExplorerDialog {
         if (settings.contains(DIALOG_SETTINGS_KEY + "/Pos")) {
             final QRect geometry = 
                 new QRect(settings.readQPoint(DIALOG_SETTINGS_KEY + "/Pos"), settings.readQSize(DIALOG_SETTINGS_KEY + "/Size", sizeHint()));
-            if (geometry.x()<5){
-                geometry.setX(5);
-            }
-            if (geometry.y()<5){
-                geometry.setY(5);
+            geometry.setSize(WidgetUtils.shrinkWindowSize(geometry.width(), geometry.height()));
+            final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();
+            if (geometry.x()<0 
+                || geometry.y()<0 
+                || (geometry.x()+geometry.width())>screenSize.width()
+                || (geometry.y()+geometry.height())>screenSize.height()){
+                final QWidget parent = (QWidget)getEnvironment().getMainWindow();
+                if (parent!=null){
+                    geometry.moveCenter(parent.frameGeometry().center());
+                }
             }
             setGeometry(geometry);
         }

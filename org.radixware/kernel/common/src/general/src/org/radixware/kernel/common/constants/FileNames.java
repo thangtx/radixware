@@ -26,6 +26,7 @@ public class FileNames {
     public static final String DDS_MODULE_XML = "module.xml";
     
     public static final String MODULE_BIN = "bin";
+    public static final String SRC_DIR = "src";
     public static final String DIRECTORY_XML = "directory.xml";
     
     

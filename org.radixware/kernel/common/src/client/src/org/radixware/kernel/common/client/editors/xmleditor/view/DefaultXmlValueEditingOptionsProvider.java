@@ -198,11 +198,25 @@ final class DefaultXmlValueEditingOptionsProvider implements IXmlValueEditingOpt
             final int xmlType;
             if (isList) {
                 final SchemaType itemType = type.getListItemType();
-                xmlType = itemType.isSimpleType() ? itemType.getBuiltinTypeCode() : itemType.getPrimitiveType().getBuiltinTypeCode();
+                if (itemType.isSimpleType()){
+                    if (itemType.getBuiltinTypeCode()==0 && itemType.getPrimitiveType()!=null){
+                        xmlType = itemType.getPrimitiveType().getBuiltinTypeCode();
+                    }else{
+                        xmlType = itemType.getBuiltinTypeCode();
+                    }
+                }else{
+                    xmlType = itemType.getPrimitiveType().getBuiltinTypeCode();
+                }                
             } else {
                 xmlType = type.isPrimitiveType() ? type.getBuiltinTypeCode() : type.getBaseType().getBuiltinTypeCode();
             }
+            if (xmlType==SchemaType.BTC_NOT_BUILTIN){
+                return DEFAULT;
+            }
             final EditMask mask = getMaskByValType(xmlType);
+            if (mask==null){
+                return DEFAULT;
+            }
             if (xmlType == SchemaType.BTC_HEX_BINARY || xmlType == SchemaType.BTC_BASE_64_BINARY) {
                 return new XmlValueEditingOptions(isList ? EValType.ARR_BIN : EValType.BIN, mask, isReadOnly, isNotNull, schemaType);
             }

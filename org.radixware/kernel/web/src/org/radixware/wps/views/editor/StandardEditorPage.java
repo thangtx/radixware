@@ -50,9 +50,10 @@ public class StandardEditorPage extends VerticalBoxContainer implements IEditorP
     private final ViewSupport<StandardEditorPage> viewSupport;
     private final ViewRestrictions restrictions;
     private boolean isContentinited;
+    private boolean wasClosed;
     private UIObject devider;
     private WpsEnvironment env;    
-    private ModelWithPages model;
+    private ModelWithPages model;    
 
     private void initContent() {
         clearContent();
@@ -83,19 +84,14 @@ public class StandardEditorPage extends VerticalBoxContainer implements IEditorP
     
     public void updateGeometry(){
         if (isContentinited){
-            if (childPagesWidget!=null && childPagesWidget.isVisible()){
-                if (generalPageWidget!=null){
-                    setAutoSize((UIObject)generalPageWidget, false);
-                    ((UIObject)generalPageWidget).setVSizePolicy(SizePolicy.MINIMUM_EXPAND);
-                }
-                setAutoSize(childPagesWidget, true);
+            final boolean childPagesVisible = childPagesWidget!=null && childPagesWidget.isVisible();
+            final boolean generalPageWidgetVisible = generalPageWidget instanceof UIObject && ((UIObject)generalPageWidget).isVisible();            
+            setAutoSize(childPagesWidget, childPagesVisible && generalPageWidgetVisible);
+            if (childPagesVisible && generalPageWidgetVisible){
+                ((UIObject)generalPageWidget).setVSizePolicy(SizePolicy.MINIMUM_EXPAND);                
+            }else if (childPagesVisible) {
                 childPagesWidget.setVSizePolicy(SizePolicy.EXPAND);
-            }else if (generalPageWidget!=null){
-                if (childPagesWidget!=null){
-                    setAutoSize(childPagesWidget,false);
-                    childPagesWidget.setVSizePolicy(SizePolicy.MINIMUM_EXPAND);
-                }
-                setAutoSize((UIObject)generalPageWidget, true);
+            }else if (generalPageWidgetVisible){
                 ((UIObject)generalPageWidget).setVSizePolicy(SizePolicy.EXPAND);
             }
             if (devider!=null){
@@ -202,6 +198,9 @@ public class StandardEditorPage extends VerticalBoxContainer implements IEditorP
 
     @Override
     public void setFocus() {
+        if (generalPageWidget != null) {
+            ((UIObject)generalPageWidget).setFocused(true);
+        }
     }
 
     @Override
@@ -240,6 +239,7 @@ public class StandardEditorPage extends VerticalBoxContainer implements IEditorP
             childPagesWidget.close();
         }
         clearContent();
+        wasClosed = true;
         return true;
     }
 
@@ -280,7 +280,7 @@ public class StandardEditorPage extends VerticalBoxContainer implements IEditorP
 
     @Override
     public boolean hasUI() {
-        return true;
+        return !wasClosed;
     }
 
     @Override

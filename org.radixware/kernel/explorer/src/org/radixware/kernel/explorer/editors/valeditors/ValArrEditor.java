@@ -21,21 +21,25 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNone;
+import org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.explorer.dialogs.ArrayEditorDialog;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 
-
-
 public class ValArrEditor extends ValEditor<Arr> {
 
     private final EValType arrType;
     private final Class<?> valClass;
-    private final QToolButton editBtn;
-    private EditMask mask = null;
-    private String dialogTitle;
+    private final QToolButton editBtn;   
+    private AbstractArrayEditorDelegate<ValEditor, QWidget> delegate;
+    private Boolean isArrayItemMandatory;
+    private boolean isDuplicatesEnabled = true;
+    private boolean isItemsMovable = true;    
+    private int firstArrayItemIndex = 1;
+    private int minArrayItemsCount = -1;
+    private int maxArrayItemsCount = -1;
 
     private List<Object> predefItemValues = null;
     
@@ -50,6 +54,7 @@ public class ValArrEditor extends ValEditor<Arr> {
         action.setIcon(readonly
                 ? ExplorerIcon.getQIcon(ClientIcon.CommonOperations.VIEW)
                 : ExplorerIcon.getQIcon(ClientIcon.CommonOperations.EDIT));
+        action.setObjectName("edit");
         editBtn = addButton(null, action);
         getLineEdit().setReadOnly(true);
     }
@@ -58,10 +63,67 @@ public class ValArrEditor extends ValEditor<Arr> {
             final QWidget parent){
         this(environment,valType,valClass,parent,true,false);
     }
+    
+    public final void setDuplicatesEnabled(final boolean isEnabled){
+        isDuplicatesEnabled = isEnabled;
+    }
+    
+    public boolean isDuplicatesEnabled(){
+        return isDuplicatesEnabled;
+    }
+    
+    public final void setArrayItemMandatory(final boolean isMandatory){
+        isArrayItemMandatory = isMandatory;
+    }
+    
+    public boolean isArrayItemMandatory(){
+        return isArrayItemMandatory==null ? isMandatory() : isArrayItemMandatory;
+    }
+    
+    public final void setFirstArrayItemInex(final int index){
+        firstArrayItemIndex = index;
+    }
+    
+    public int getFirstArrayItemIndex(){
+        return firstArrayItemIndex;
+    }
+    
+    public final void setMinArrayItemsCount(final int count){
+        minArrayItemsCount = count;
+    }
+    
+    public int getMinArrayItemsCount(){
+        return minArrayItemsCount;
+    }
+    
+    public final void setMaxArrayItemsCount(final int count){
+        maxArrayItemsCount = count;
+    }
+    
+    public int getMaxArrayItemsCount(){
+        return maxArrayItemsCount;
+    }    
+    
+    public final void setArrayItemsMovable(final boolean isMovable){
+        isItemsMovable = isMovable;
+    }
+    
+    public boolean isArrayItemsMovable(){
+        return isItemsMovable;
+    }    
+    
+    public AbstractArrayEditorDelegate<ValEditor, QWidget> getArrayEditorDelegate(){
+        return delegate;
+    }
+    
+    public void setArrayEditorDelegate(final AbstractArrayEditorDelegate<ValEditor, QWidget> delegate){
+        this.delegate = delegate;
+    }        
 
     @Override
     public void setEditMask(final EditMask editMask) {        
-        this.mask = editMask==null ? null : EditMask.newCopy(editMask);
+        super.setEditMask(editMask==null ? new EditMaskNone() : editMask);
+        refresh();
     }
         
     public void edit() {
@@ -69,16 +131,28 @@ public class ValArrEditor extends ValEditor<Arr> {
         if (parentWidget == null) {
             parentWidget = Application.getMainWindow();
         }
-
+        
         final ArrayEditorDialog dialog = new ArrayEditorDialog(getEnvironment(), arrType, valClass, isReadOnly(), parentWidget);
         final String dlgTitle = getDialogTitle();
         if (dlgTitle!=null && !dlgTitle.isEmpty()){
             dialog.setWindowTitle(dlgTitle);
         }
         dialog.setPredefinedValues(getPredefinedItemValues());
-        if (mask != null) {
+        final EditMask mask = getEditMask();
+        if (mask.getSupportedValueTypes().contains(arrType)) {
             dialog.setEditMask(mask);
         }
+        if (delegate!=null){
+            dialog.setEditorDelegate(delegate);
+        }
+        dialog.setDuplicatesEnabled(isDuplicatesEnabled());
+        dialog.setMandatory(isMandatory());
+        dialog.setItemMandatory(isArrayItemMandatory());
+        dialog.setFirstArrayItemIndex(getFirstArrayItemIndex());
+        dialog.setMinArrayItemsCount(getMinArrayItemsCount());
+        dialog.setMaxArrayItemsCount(getMaxArrayItemsCount());
+        dialog.setItemsMovable(isArrayItemsMovable());
+        
         dialog.setCurrentValue(getValue());
 
         if (QDialog.DialogCode.resolve(dialog.exec()) == QDialog.DialogCode.Accepted) {
@@ -115,13 +189,5 @@ public class ValArrEditor extends ValEditor<Arr> {
     
     public EValType getArrayType(){
         return arrType;
-    }
-
-    public String getDialogTitle() {
-        return dialogTitle;
-    }
-
-    public void setDialogTitle(final String dialogTitle) {
-        this.dialogTitle = dialogTitle;
-    }        
+    }    
 }

@@ -80,7 +80,7 @@ public class GridLayoutProcessor extends ReportLayoutProcessor {
     }
 
     @Override
-    void updateIndex(final AdsReportSelectableWidget widget, final InsertionInfo info) {
+    public void updateIndex(final AdsReportSelectableWidget widget, final InsertionInfo info) {
         if (info != null && widget != null) {
             final int[] idx = info.getIdx();
             if (idx == null) {
@@ -287,6 +287,7 @@ public class GridLayoutProcessor extends ReportLayoutProcessor {
 
     @Override
     public void highlightInsertPlace(final InsertionInfo info) {
+        AdsReportForm form = reportWidgetContainer.getReportWidgetContainer().getOwnerForm();
         if (reportWidgetContainer.getDiagramMode() == AdsReportForm.Mode.GRAPHICS) {
             double height, width;
             if (reportWidgetContainer.getCell() == null) {
@@ -305,8 +306,8 @@ public class GridLayoutProcessor extends ReportLayoutProcessor {
             if (columnCnt > 0 || rowCnt > 0) {
                 final double rowSpace = rowCnt > 0 ? height / rowCnt : height;
                 final double columnSpace = columnCnt > 0 ? width / columnCnt : width;
-                x = MmUtils.snapToGrid(columnSpace * idx[0]);
-                y = MmUtils.snapToGrid(rowSpace * idx[1]);
+                x = MmUtils.snapToGrid(columnSpace * idx[0], form);
+                y = MmUtils.snapToGrid(rowSpace * idx[1], form);
                 width = info.getMode() == ReportLayoutProcessor.APPEND_MODE.HORIZONTAL ? 0 : columnSpace;
                 height = info.getMode() == ReportLayoutProcessor.APPEND_MODE.VERTICAL ? 0 : rowSpace;
             }

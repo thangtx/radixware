@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.monitoring;
 
 /**
@@ -50,9 +49,9 @@ public class MetricRecord {
 
     @Override
     public String toString() {
-        return "metric[type=" + metricParameters.getDescription().getKindName() + " id=" + metricParameters.getTypeId() + " kind=" + metricParameters.getDescription().getKindName() + "] "
-                + (metricParameters.getDescription().getMetricType() == EMetricType.STATISTIC ? "min=" + statValue.getMin()
-                + " max=" + statValue.getMax() + " avg=" + statValue.getAvg()
-                : "oldValue=" + eventValue.getOldValue() + " newValue=" + eventValue.getNewValue() + " time=" + eventValue.getEndTimeMillis());
+        return "metric[type=" + metricParameters.getDescription().getMetricType() + " id=" + metricParameters.getTypeId() + " kind=" + metricParameters.getDescription().getKindName() + "] "
+                + (metricParameters.getDescription().getMetricType() == EMetricType.STATISTIC
+                        ? (statValue == null ? "stat:null" : "min=" + statValue.getMin() + " max=" + statValue.getMax() + " avg=" + statValue.getAvg())
+                        : (eventValue == null ? "event:null" : "oldValue=" + eventValue.getOldValue() + " newValue=" + eventValue.getNewValue() + " time=" + eventValue.getEndTimeMillis()));
     }
 }

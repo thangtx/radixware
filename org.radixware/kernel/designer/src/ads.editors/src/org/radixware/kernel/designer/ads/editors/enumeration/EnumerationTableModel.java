@@ -368,7 +368,7 @@ public class EnumerationTableModel extends AbstractTableModel {
 
         if (index < viewCount) {
             int orderIndex = enumDef.getViewOrder().getOrderedItemIds().indexOf(item.getId());
-            while (orderIndex != index) {
+            while (orderIndex >= index) {
                 enumDef.getViewOrder().moveUp(item);
                 orderIndex = enumDef.getViewOrder().getOrderedItemIds().indexOf(item.getId());
             }

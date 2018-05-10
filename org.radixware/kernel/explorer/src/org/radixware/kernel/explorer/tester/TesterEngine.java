@@ -26,11 +26,10 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.errors.CantOpenSelectorError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.mask.EditMaskTimeInterval;
-import org.radixware.kernel.common.client.trace.ClientTraceItem;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.editmask.EditMaskTimeInterval.Scale;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
-import org.radixware.kernel.common.trace.TraceItem;
+import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.MessageFilter;
 import org.radixware.kernel.explorer.env.trace.ExplorerTraceItem;
 
@@ -46,6 +45,7 @@ public final class TesterEngine extends QObject {
     private final Collection<ITestResultsWriter> resultWriters = new ArrayList<>();
     private final TesterEnvironment testerEnvironment;
     public Signal0 finished = new Signal0();
+    private boolean interrupted;
 
     public TesterEngine(IClientEnvironment environment) {
         testerEnvironment = new TesterEnvironment(environment);
@@ -65,12 +65,26 @@ public final class TesterEngine extends QObject {
         }
     }
 
-    public static final class NoMoreTestsEvent extends QEvent {
+    private static final class NoMoreTestsEvent extends QEvent {
 
         public NoMoreTestsEvent() {
             super(QEvent.Type.User);
         }
     }
+    
+    private static final class StopTestingEvent extends QEvent {
+        
+        private final TestsProvider currentProvider;
+
+        public StopTestingEvent(final TestsProvider currentProvider) {
+            super(QEvent.Type.User);
+            this.currentProvider = currentProvider;
+        }
+        
+        public TestsProvider getInterruptedProvider(){
+            return currentProvider;
+        }
+    }    
 
     private boolean processTimeLimitCheck(TestResult result, Long time) {
         if (result.operation != null && !result.operation.isEmpty()) {
@@ -120,11 +134,11 @@ public final class TesterEngine extends QObject {
                         }
                         QApplication.postEvent(this, new GoToNextTestEvent());
                     } catch (Throwable ex) {
-                        processException(ex);
+                        testerEnvironment.registerException(ex);
                     }
                 }
             }
-            if (currentTest == null) {
+            if (currentTest == null && !interrupted) {
                 QApplication.postEvent(this, new NoMoreTestsEvent());
             }
         } else if (event instanceof GoToNextTestEvent) {
@@ -142,26 +156,40 @@ public final class TesterEngine extends QObject {
                 while (currentTest == null && currentProvider != null) {
                     currentTest = currentProvider.createNextTest(options);
                     if (currentTest == null) {
+                        currentProvider.close();
                         currentProvider = currentProvider.getParentProvider();
                         for (ITestResultsWriter writer : resultWriters) {
                             writer.exitTestGoup();
                         }
                     }
                 }
-                if (currentTest != null) {
-                    QApplication.postEvent(this, new StartCurrentTestEvent());
+                if (currentTest == null) {
+                    if (!interrupted){
+                        QApplication.postEvent(this, new NoMoreTestsEvent());
+                    }
                 } else {
-                    QApplication.postEvent(this, new NoMoreTestsEvent());
+                    QApplication.postEvent(this, new StartCurrentTestEvent());
                 }
             } catch (Throwable ex) {
-                processException(ex);
+                testerEnvironment.registerException(ex);
+                QApplication.postEvent(this, new GoToNextTestEvent());
             }
+        } else if (event instanceof StopTestingEvent){
+            final TestsProvider interruptedProvider = ((StopTestingEvent)event).getInterruptedProvider();
+            try{
+                for (TestsProvider provider = interruptedProvider; provider!=null; provider=provider.getParentProvider()){
+                    provider.close();
+                }
+            }catch(Throwable ex){
+                testerEnvironment.registerException(ex);
+            }
+            QApplication.postEvent(this, new NoMoreTestsEvent());
         } else if (event instanceof NoMoreTestsEvent) {
             try {                
                 testerEnvironment.restore();
                 finished.emit();
             } catch (Throwable ex) {
-                processException(ex);
+                testerEnvironment.registerException(ex);
             }
             finally{
                 QApplication.removePostedEvents(this, QEvent.Type.User.value());
@@ -171,11 +199,11 @@ public final class TesterEngine extends QObject {
         }
     }
 
-    private void processException(Throwable ex) {
+    private void processException(final Throwable ex) {
         testerEnvironment.getEnvironment().processException(ex);
     }
 
-    public void startTesting(TestsProvider rootProvider) {
+    public void startTesting(final TestsProvider rootProvider) {
         if (options == null) {
             throw new IllegalUsageError(TesterConstants.WARNING_NO_OPTIONS.getTitle());
         }
@@ -189,6 +217,8 @@ public final class TesterEngine extends QObject {
             currentTest.interrupt();
         }
         currentTest = null;
+        interrupted = true;
+        Application.processEventWhenEasSessionReady(this, new StopTestingEvent(currentProvider));        
         currentProvider = null;
     }
 

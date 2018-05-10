@@ -25,6 +25,7 @@ public enum EReportExportFormat implements IKernelStrEnum {
     TXT("TXT", "text/plain", "txt"),
     CSV("CSV", "text/csv", "csv"),
     OOXML("OOXML", "application/ooxml", "ooxml"),
+    XLSX("XLSX", "application/xlsx", "xlsx"),
     MSDL("Structured File", "application/msdl", null),
     CUSTOM("Custom", "custom", "out");
     private final String name;

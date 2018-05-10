@@ -122,6 +122,31 @@
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsDC7USR7EVJEQFHM7OFUOOOB7HE"/>
         </ThrownExceptions>
       </Method>
+      <Method Id="mthLNB22KF3ARAOLBH5YBORJ3JYPM" Name="set" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="set(Ljava.lang.String;Ljava.lang.Float;Ljava.lang.Boolean;Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mpr77ZVHCW5NFHGXPPGWLIUN6R3TU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="progress" Id="mprOWK3F2O5UNEH3IEYCHPTNWPCOM">
+            <Type TypeId="400" extStr="java.lang.Float"/>
+          </Parameter>
+          <Parameter Name="cancellable" Id="mprLHNBTBAZXJAW7C3VM24JDH4FII">
+            <Type TypeId="1"/>
+          </Parameter>
+          <Parameter Name="cancelButtonTitle" Id="mprBZ4KHIU7PJGJVMI4TQXEDYWFEM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout"/>
+        </ThrownExceptions>
+      </Method>
     </Methods>
   </AdsClassDefinition>
 </AdsDefinition>

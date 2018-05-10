@@ -17,8 +17,12 @@ public interface IProgressMonitor {
     public boolean wasCanceled();
 
     public void setText(String text);
+    
+    public String getText();
 
     public void setValue(int value);
 
     public void setCanCancel(boolean canCancel);
+    
+    public void setCancelButtonTitle(String title);        
 }

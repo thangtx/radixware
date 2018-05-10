@@ -16,52 +16,53 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.propertiesgrid.IPropertiesGridCells.CellsFinder;
 
 
-final class VisualCells<L extends IModelWidget, E extends IModelWidget> implements IPropertiesGridCells<L, E> {
+final class VisualCells<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> implements IPropertiesGridCells<L, E, G> {
 
-    private static class Row<L extends IModelWidget, E extends IModelWidget> {
+    private static class Row<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> {
 
-        private final List<IPropertiesGridCell<L, E>> cells = new ArrayList<>();
+        private final List<IPropertiesGridCell<L, E, G>> cells = new ArrayList<>();
         private final int rowNum;
 
         public Row(final int row) {
             this.rowNum = row;
         }
 
-        public void add(final IPropertiesGridCell<L, E> cell) {
+        public void add(final IPropertiesGridCell<L, E, G> cell) {
             final int column = cell.getColumn();
             if (column < cells.size()) {
                 cells.set(column, cell);
             } else {
                 for (int i = cells.size(); i < column; i++) {
-                    cells.add(new EmptyCell<L, E>(i, rowNum));
+                    cells.add(new EmptyCell<L, E, G>(i, rowNum));
                 }
                 cells.add(cell);
             }
         }
 
-        public IPropertiesGridCell<L, E> get(final int index) {
-            return index < cells.size() ? cells.get(index) : new EmptyCell<L, E>(index, rowNum);
+        public IPropertiesGridCell<L, E, G> get(final int index) {
+            return index < cells.size() ? cells.get(index) : new EmptyCell<L, E, G>(index, rowNum);
         }
 
         public int size() {
             return cells.size();
         }
     };
-    private final List<Row<L, E>> rows = new ArrayList<>();
+    private final List<Row<L, E, G>> rows = new ArrayList<>();
     private int columnsCount;
 
-    public void set(final IPropertiesGridCell<L, E> cell) {
+    public void set(final IPropertiesGridCell<L, E, G> cell) {
         final int r = cell.getRow();
-        final Row<L, E> row;
+        final Row<L, E, G> row;
         if (r < rows.size()) {
             row = rows.get(r);
         } else {
             for (int i = rows.size(); i < r; i++) {
-                final Row<L,E> newRow = new Row<>(i);
+                final Row<L,E,G> newRow = new Row<>(i);
                 rows.add(newRow);
             }
             row = new Row<>(r);
@@ -71,24 +72,24 @@ final class VisualCells<L extends IModelWidget, E extends IModelWidget> implemen
         columnsCount = Math.max(columnsCount, cell.getColumn() + 1);
     }
 
-    public void move(final VisualCell<L, E> cell, final int col, final int row) {
-        set(new EmptyCell<L, E>(cell.getColumn(), cell.getRow()));
+    public void move(final VisualCell<L, E,G> cell, final int col, final int row) {
+        set(new EmptyCell<L, E, G>(cell.getColumn(), cell.getRow()));
         cell.setColumn(col);
         cell.setRow(row);
         set(cell);
     }
 
     @Override
-    public IPropertiesGridCell<L, E> get(final int column, final int row) {
-        final Row<L, E> r = rows.get(row);
+    public IPropertiesGridCell<L, E, G> get(final int column, final int row) {
+        final Row<L, E, G> r = rows.get(row);
         return r.get(column);
     }
 
     @Override
-    public Collection<IPropertiesGridCell<L, E>> find(CellsFinder<L, E> finder) {
-        final Collection<IPropertiesGridCell<L, E>> result = new LinkedList<>();
-        IPropertiesGridCell<L, E> cell;
-        for (Row<L, E> row : rows) {
+    public Collection<IPropertiesGridCell<L, E, G>> find(CellsFinder<L, E, G> finder) {
+        final Collection<IPropertiesGridCell<L, E, G>> result = new LinkedList<>();
+        IPropertiesGridCell<L, E, G> cell;
+        for (Row<L, E, G> row : rows) {
             for (int i = row.size() - 1; i >= 0; i--) {
                 if (finder.isCancelled()) {
                     return Collections.unmodifiableCollection(result);
@@ -104,7 +105,7 @@ final class VisualCells<L extends IModelWidget, E extends IModelWidget> implemen
 
     @Override
     public boolean isEmptySpaceInRow(final int row, final int fromColumn, final int toColumn) {
-        final Row<L, E> r = rows.get(row);
+        final Row<L, E, G> r = rows.get(row);
         for (int column = fromColumn; column <= toColumn; column++) {
             if (!r.get(column).isEmpty()) {
                 return false;
@@ -115,7 +116,7 @@ final class VisualCells<L extends IModelWidget, E extends IModelWidget> implemen
 
     @Override
     public boolean isEmptySpaceInColumn(final int column, final int fromRow, final int toRow) {
-        Row<L, E> r;
+        Row<L, E, G> r;
         for (int row = fromRow; row <= toRow; row++) {
             r = rows.get(row);
             if (!r.get(column).isEmpty()) {
@@ -123,6 +124,16 @@ final class VisualCells<L extends IModelWidget, E extends IModelWidget> implemen
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean isVisibleColumn(final int column) {
+        for (int row=0,count=getRowsCount(); row<count; row++){
+            if (!rows.get(row).get(column).isEmpty()){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

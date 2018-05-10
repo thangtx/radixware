@@ -20,6 +20,8 @@ import java.util.Set;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.IInheritableTitledDefinition;
+import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.IAdsPresentableClass;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
@@ -363,5 +365,9 @@ public abstract class AdsEntityObjectClassDef extends AdsEntityBasedClassDef imp
         String access = getDefaultAccess().getName().toUpperCase().charAt(0) + getDefaultAccess().getName().substring(1, getDefaultAccess().getName().length()); 
         sb.append("<b>").append(access).append(' ').append(getClientEnvironment().getName()).append("</b>&nbsp;");
     }
-    
+
+    @Override
+    public boolean isTitleInherited() {
+        return getPresentations().getIsObjectTitleInherited();
+    }
 }

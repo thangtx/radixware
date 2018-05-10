@@ -23,4 +23,5 @@ public interface ViewModel {
     Connection getDbConnection();
     void setDbConnection(Connection dbConnection);
     ServerTrace getTrace();
+    String getViewStatus();
 }

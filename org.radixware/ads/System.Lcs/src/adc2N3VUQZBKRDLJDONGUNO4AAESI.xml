@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
-  <AdsClassDefinition Id="adc2N3VUQZBKRDLJDONGUNO4AAESI" Name="LicenseReportEntryProvider" DescriptionId="mlsZKQIJ7AGGFGMLI6Q4MR3MI3LZA" Type="3" Environment="server">
+  <AdsClassDefinition Id="adc2N3VUQZBKRDLJDONGUNO4AAESI" Name="LicenseReportEntryBuilderProvider" Type="3" Environment="server">
     <AccessRules IsPublished="false">
       <Transparence Extendable="false"/>
     </AccessRules>
@@ -23,7 +23,9 @@
               <xsc:Java>return new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc3M7KOMZML5GBDAC5VPE3FJ45QE"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adc3M7KOMZML5GBDAC5VPE3FJ45QE">
+                <xsc:Presentation>DefaultLicenseReportEntryBuilder</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();</xsc:Java>

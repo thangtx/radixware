@@ -18,10 +18,13 @@ import org.radixware.kernel.common.enums.EFileAccessType;
 import org.radixware.kernel.common.enums.EFileOpenMode;
 import org.radixware.kernel.common.enums.EFileOpenShareMode;
 import org.radixware.kernel.common.enums.EFileSeekOriginType;
+import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.kernel.common.exceptions.ResourceUsageException;
 import org.radixware.kernel.common.exceptions.ResourceUsageTimeout;
+import org.radixware.kernel.common.exceptions.ServiceCallException;
 import org.radixware.kernel.common.types.Bin;
 import org.radixware.kernel.server.arte.Arte;
+import org.radixware.kernel.server.exceptions.ArteSocketException;
 import org.radixware.schemas.eas.FileAccessMess;
 import org.radixware.schemas.eas.FileAccessRq;
 import org.radixware.schemas.eas.FileCloseMess;
@@ -43,8 +46,11 @@ import org.radixware.schemas.eas.FileSelectMess;
 import org.radixware.schemas.eas.FileSelectRq;
 import org.radixware.schemas.eas.FileSizeMess;
 import org.radixware.schemas.eas.FileSizeRq;
+import org.radixware.schemas.eas.FileTransitMess;
+import org.radixware.schemas.eas.FileTransitRq;
 import org.radixware.schemas.eas.FileWriteMess;
 import org.radixware.schemas.eas.FileWriteRq;
+import org.radixware.schemas.eas.TestIfFileExistsMess;
 import org.radixware.schemas.easWsdl.FileAccessDocument;
 import org.radixware.schemas.easWsdl.FileCloseDocument;
 import org.radixware.schemas.easWsdl.FileCopyDocument;
@@ -55,7 +61,9 @@ import org.radixware.schemas.easWsdl.FileReadDocument;
 import org.radixware.schemas.easWsdl.FileSeekDocument;
 import org.radixware.schemas.easWsdl.FileSelectDocument;
 import org.radixware.schemas.easWsdl.FileSizeDocument;
+import org.radixware.schemas.easWsdl.FileTransitDocument;
 import org.radixware.schemas.easWsdl.FileWriteDocument;
+import org.radixware.schemas.easWsdl.TestIfFileExistsDocument;
 
 public class FileResource extends Resource {
     
@@ -127,7 +135,24 @@ public class FileResource extends Resource {
     }    
     
     /**
-     * @param internal - если true файл открывает DAP.exe, иначе проводник
+     * Проверяет, что на клиенте существует файл, путь к которому указан в параметре <code>path<code>.
+     * Если указанный путь является путем к директории, а не к файлу, то метод вернет <code>false<code>.
+     * @param arte инстанция ARTE. Не может быть <code>null</code>.
+     * @param path путь к директории на клиенте
+     * @param timeout ограничение времени на ожидание ответа в секундах. Значение 0 интерпретируется как бесконечное ожидание.
+     * @return <code>true</code> если указанный файл существует, <code>false<code> в противном случае
+     * @throws ResourceUsageException при выполнении запроса на клиенте произошла ошибка или случилась ошибка связи
+     * @throws ResourceUsageTimeout истекло время ожидания
+     * @throws InterruptedException выполнение запроса было прервано
+     */
+    public static boolean isExists(final Arte arte, final String path, final int timeout) throws ResourceUsageException, ResourceUsageTimeout, InterruptedException{
+        final TestIfFileExistsDocument document = TestIfFileExistsDocument.Factory.newInstance();
+        document.addNewTestIfFileExists().addNewTestIfFileExistsRq().setFilePath(path);
+        TestIfFileExistsMess answer = (TestIfFileExistsMess)arte.getArteSocket().invokeResource(document, TestIfFileExistsMess.class, timeout);
+        return answer.getTestIfFileExistsRs().getIsExists();
+    }
+    
+    /**
      * @return - идентификатор открытого файла
      * @throws ResourceUsageTimeout 
      * @throws ResourceUsageException 
@@ -144,10 +169,9 @@ public class FileResource extends Resource {
         rq.setShare( shareMode );
         final FileOpenMess foMess = ( FileOpenMess )arte.getArteSocket().invokeResource( foDoc, FileOpenMess.class, timeout);
         if( !foMess.isSetFileOpenRs() )
-            throw new ResourceUsageException( "Expected response tag \"FileOpenRs\"", null );                                    
+            throw new ResourceUsageException( "Expected response tag \"FileOpenRs\"", null );
         return foMess.getFileOpenRs().getId();
-    }
-    
+    }        
     
     protected static void close(final Arte arte, final String openFileId, final int timeout) throws ResourceUsageException, ResourceUsageTimeout, InterruptedException 
     {
@@ -155,6 +179,23 @@ public class FileResource extends Resource {
         final FileCloseRq rq = foDoc.addNewFileClose().addNewFileCloseRq();
         rq.setId( openFileId );
         arte.getArteSocket().invokeResource( foDoc, FileCloseMess.class, timeout);
+    }
+    
+    protected static String startTransit(final Arte arte, final String fileName, final EMimeType mimeType, final boolean openAfterTransit, final int timeout) throws ResourceUsageException, ResourceUsageTimeout, InterruptedException{
+        final FileTransitDocument document = FileTransitDocument.Factory.newInstance();
+        final FileTransitRq rq = document.addNewFileTransit().addNewFileTransitRq();
+        rq.setFileName(fileName);
+        if (mimeType!=null){
+            rq.setMimeType(mimeType);
+        }
+        if (openAfterTransit){
+            rq.setOpenAfterTransit(true);
+        }
+        final FileTransitMess response = (FileTransitMess) arte.getArteSocket().invokeResource( document, FileTransitMess.class, timeout);
+        if (!response.isSetFileTransitRs()){
+            throw new ResourceUsageException( "Expected response tag \"FileTransitRs\"", null );
+        }
+        return response.getFileTransitRs().getId();
     }
     
     /** @return - абсолютная позиция 

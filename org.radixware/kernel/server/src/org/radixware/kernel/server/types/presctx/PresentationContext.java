@@ -11,18 +11,25 @@
 
 package org.radixware.kernel.server.types.presctx;
 
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.server.types.EntityGroup;
 
 
 public abstract class PresentationContext {
     
     private final EntityGroup entityGroup;
+    private final Id selectorPresentationId;
     
-    public PresentationContext(final EntityGroup group){
+    public PresentationContext(final EntityGroup group, final Id presentationId){
         entityGroup = group;
+        selectorPresentationId = presentationId;
     }
     
     public final EntityGroup getEntityGroup(){
         return entityGroup;
     }    
+    
+    public Id getSelectorPresentationId(){
+        return selectorPresentationId;
+    }
 }

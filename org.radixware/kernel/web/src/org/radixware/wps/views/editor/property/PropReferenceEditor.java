@@ -18,11 +18,13 @@ import org.radixware.kernel.common.client.meta.RadParentRefPropertyDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskRef;
 import org.radixware.kernel.common.client.models.EntityModel;
+import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.ModifiedEntityModelFinder;
 import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyReference;
+import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.views.IExplorerItemView;
 import org.radixware.kernel.common.client.views.IView;
@@ -40,10 +42,12 @@ import org.radixware.wps.views.editors.valeditors.ValReferenceEditorController;
 
 public abstract class PropReferenceEditor extends PropEditor {
     
-    private static interface ValRefEditorHandler{
+    private static interface IValRefEditorDelegate{
         void onInsertEntity();
         void onEditEntity();
         void onSelectEntity();
+        GroupModel getGroupModel();
+        void afterSelectReferenceFromDropDownList(final Reference ref);
     }    
         
     private static class ValRefEditorFactory extends ValEditorFactory{  
@@ -51,10 +55,11 @@ public abstract class PropReferenceEditor extends PropEditor {
         private class InternalValReferenceEditorController extends ValReferenceEditorController {
 
             private final ToolButton insertButton;
-            private ValRefEditorHandler handler;
+            private IValRefEditorDelegate delegate;
             private boolean canEdit;
             private boolean viewOnEdit = true;
             private boolean canSelect;
+            private boolean isGroupModelAccessible;
             private String selectButtonToolTip;
             private ClientIcon selectButtonIcon;
 
@@ -65,8 +70,8 @@ public abstract class PropReferenceEditor extends PropEditor {
 
                     @Override
                     public void onClick(final IButton source) {
-                        if (handler!=null){
-                            handler.onInsertEntity();
+                        if (delegate!=null){
+                            delegate.onInsertEntity();
                         }                    
                     }
                 });
@@ -77,8 +82,8 @@ public abstract class PropReferenceEditor extends PropEditor {
                 addButton(insertButton);
             }
 
-            public final void setValRefEditorHandler(final ValRefEditorHandler handler){
-                this.handler = handler;
+            public final void setValRefEditorHandler(final IValRefEditorDelegate handler){
+                this.delegate = handler;
             }
 
             public final void setIsEditButtonVisible(final boolean isVisible){
@@ -105,26 +110,49 @@ public abstract class PropReferenceEditor extends PropEditor {
 
             @Override
             protected boolean isSelectButtonVisible() {
-                return canSelect;
+                return canSelect && !getEditMask().isUseDropDownList();
+            }                        
+            
+            public final void setGroupModelAccessible(final boolean isAccessible){
+                this.isGroupModelAccessible = isAccessible;
             }
+
+            @Override
+            protected boolean isGroupModelAccessible() {
+                return isGroupModelAccessible;
+            }                        
 
             public void setInsertButtonVisible(final boolean isVisible) {
                 insertButton.setVisible(isVisible);
             }
 
             @Override
+            public GroupModel getGroupModel() {
+                return delegate==null ? super.getGroupModel() : delegate.getGroupModel();
+            }                        
+
+            @Override
             public void editEntity() {
-                if (handler!=null){
-                    handler.onEditEntity();
+                if (delegate!=null){
+                    delegate.onEditEntity();
                 }
             }
 
             @Override
             public void select() {
-                if (handler!=null){
-                    handler.onSelectEntity();
+                if (delegate!=null){
+                    delegate.onSelectEntity();
                 }
             }
+
+            @Override
+            protected void onSelectValueFromDropDownList(final Reference value) {
+                if (delegate==null){
+                    super.onSelectValueFromDropDownList(value);
+                }else{
+                    delegate.afterSelectReferenceFromDropDownList(value);
+                }
+            }                        
 
             public final void setSelectButtonToolTip(final String toolTip){
                 selectButtonToolTip = toolTip;
@@ -153,6 +181,8 @@ public abstract class PropReferenceEditor extends PropEditor {
             protected Label createLabel() {
                 return PropEditor.LabelComponentFactory.getDefault().createPropLabelComponent(property);
             }
+            
+            
         }
 
         
@@ -171,7 +201,7 @@ public abstract class PropReferenceEditor extends PropEditor {
         }    
     }
     
-    private final ValRefEditorHandler handler = new ValRefEditorHandler() {
+    private final IValRefEditorDelegate delegate = new IValRefEditorDelegate() {
 
         @Override
         public void onInsertEntity() {
@@ -187,12 +217,21 @@ public abstract class PropReferenceEditor extends PropEditor {
         public void onSelectEntity() {
             selectEntity();
         }
+
+        @Override
+        public GroupModel getGroupModel() {
+            return PropReferenceEditor.this.getGroupModel();
+        }
+
+        @Override
+        public void afterSelectReferenceFromDropDownList(final Reference ref) {
+            PropReferenceEditor.this.afterSelectReferenceFromDropDownList(ref);
+        }        
     };
 
     public PropReferenceEditor(final Property property) {
         super(property, new ValRefEditorFactory(property));
-        getEditorController().setValRefEditorHandler(handler);
-        
+        getEditorController().setValRefEditorHandler(delegate);        
     }
 
     protected void insertEntity() {
@@ -226,15 +265,23 @@ public abstract class PropReferenceEditor extends PropEditor {
     }
 
     protected abstract void selectEntity();
+    
+    protected GroupModel getGroupModel(){
+        return null;
+    }
+    
+    protected void afterSelectReferenceFromDropDownList(final Reference newValue) {        
+    }
 
     @Override
     public void refresh(ModelItem item) {
         super.refresh(item);
         final PropertyReference property = (PropertyReference) controller.getProperty();
-        boolean isReadOnly = controller.isReadonly();        
+        boolean isReadOnly = controller.isReadonly();
+        boolean isGroupModelAccessible = property.getType() != EValType.OBJECT;        
         boolean canEdit = false;
         boolean canInsert = false;
-        boolean viewOnEdit = true;
+        boolean viewOnEdit = true;        
         if (property.canOpenEntityModelView()) {
             canEdit = true;
             final RadParentRefPropertyDef def = (RadParentRefPropertyDef) property.getDefinition();            
@@ -266,14 +313,16 @@ public abstract class PropReferenceEditor extends PropEditor {
         getEditorController().setInsertButtonVisible(canInsert);
         getEditorController().setSelectButtonToolTip(getSelectButtonToolTip());
         getEditorController().setSelectButtonIcon(getSelectButtonIcon());
+        getEditorController().setGroupModelAccessible(isGroupModelAccessible);
         getValEditor().setReadOnly(isReadOnly);
         getValEditor().refresh();
     }
     
     private boolean theSameEntityModel(final IExplorerItemView itemView){
-        final PropertyReference property = (PropertyReference) getProperty();   
-        final IExplorerItemView currentItemView = itemView.getExplorerTree().getCurrent().getView();
-        if (property.getVal()!=null && currentItemView.isEntityView()){
+        final PropertyReference property = (PropertyReference) getProperty();
+        final IExplorerTreeNode currentTreeNode = itemView.getExplorerTree().getCurrent();
+        final IExplorerItemView currentItemView = currentTreeNode==null ? null : currentTreeNode.getView();
+        if (property.getVal()!=null && currentItemView!=null && currentItemView.isEntityView()){
             final EntityModel insertedEntityModel = (EntityModel)currentItemView.getModel();            
             return property.getVal().getPid().equals(insertedEntityModel.getPid());
         }        
@@ -281,7 +330,7 @@ public abstract class PropReferenceEditor extends PropEditor {
     }
 
     protected boolean isSelectButtonVisible() {
-        return !controller.isReadonly();
+        return !controller.isReadonly() && !controller.isInheritedValue();
     }
 
     protected String getSelectButtonToolTip() {

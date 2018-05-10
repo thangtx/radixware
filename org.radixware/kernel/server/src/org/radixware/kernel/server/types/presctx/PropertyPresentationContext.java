@@ -19,8 +19,8 @@ public abstract class PropertyPresentationContext extends PresentationContext{
     
     private final Id propertyId;
     
-    public PropertyPresentationContext(final Id propertyId, final EntityGroup group){
-        super(group);
+    public PropertyPresentationContext(final Id propertyId, final EntityGroup group, final Id selectorPresentationId){
+        super(group, selectorPresentationId);
         this.propertyId = propertyId;
     }
     

@@ -32,6 +32,11 @@ public abstract class DdsExtendableDefinitions<T extends DdsDefinition & IDdsTab
         super(ownerTable, localCollection);
     }
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
     /**
      * Find definition in the list by database name.
      *

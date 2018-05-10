@@ -14,7 +14,6 @@ package org.radixware.kernel.explorer.widgets;
 import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QWidget;
 
-//import org.radixware.kernel.explorer.errors.NotEnoughParamsForOpenError;
 import java.util.List;
 import java.util.LinkedList;
 import javax.swing.text.View;
@@ -23,7 +22,6 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
-import org.radixware.kernel.common.client.models.IContext;
 import org.radixware.kernel.common.client.models.IContext.ContextlessSelect;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.items.properties.PropertyRef;
@@ -70,7 +68,7 @@ import org.radixware.kernel.explorer.views.selector.Selector;
  * На открытый таким образом селектор будут наложены все {@link ModelRestrictions ограничения}.
  * @see EmbeddedView
  */
-public /*final*/ class EmbeddedSelector extends EmbeddedView implements org.radixware.kernel.common.client.eas.IResponseListener ,IEmbeddedSelector{
+public class EmbeddedSelector extends EmbeddedView implements org.radixware.kernel.common.client.eas.IResponseListener ,IEmbeddedSelector{
 
     private final PropertyRef property;
     private RadSelectorPresentationDef presentation = null;
@@ -203,6 +201,7 @@ public /*final*/ class EmbeddedSelector extends EmbeddedView implements org.radi
         if (property != null) {
             newModel = property.openGroupModel();
             property.subscribe(this);
+            setObjectName("rx_embedded_selector_by_prop_#"+property.getId().toString());
         } else if (getPresentation() != null) {
             final Model holderModel = WidgetUtils.findNearestModel(this);
             if (holderModel==null){
@@ -210,6 +209,7 @@ public /*final*/ class EmbeddedSelector extends EmbeddedView implements org.radi
             }else{
                 newModel = GroupModel.openTableContextlessSelectorModel(holderModel, presentation);
             }
+            setObjectName("rx_embedded_selector_#"+presentation.getId().toString());
         } else {
             newModel = super.createModel();
         }

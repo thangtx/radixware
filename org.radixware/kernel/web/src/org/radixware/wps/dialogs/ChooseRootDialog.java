@@ -18,7 +18,6 @@ import org.radixware.kernel.common.client.types.ExplorerRoot;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.enums.EDialogButtonType;
-import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.rwt.Dialog;
 import org.radixware.wps.rwt.ListBox;
 import org.radixware.wps.rwt.ListBox.ListBoxItem;
@@ -55,6 +54,7 @@ public class ChooseRootDialog extends Dialog {
                 icon = paragraphDef.getIcon();
             }                        
             final ListItem item = new ListItem(explorerRoot.getTitle(), icon);
+            item.setObjectName("rx_explorer_root_list_item_"+explorerRoot.getId().toString());
             list.add(item);
         }
         
@@ -81,7 +81,7 @@ public class ChooseRootDialog extends Dialog {
                 ChooseRootDialog.this.close(DialogResult.ACCEPTED);
             }
         });
-
+        list.setFocused(true);
         setWidth(300);
         setHeight(300);
         addCloseAction(EDialogButtonType.OK);

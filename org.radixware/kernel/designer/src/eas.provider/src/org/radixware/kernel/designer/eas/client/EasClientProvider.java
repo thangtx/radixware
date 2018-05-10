@@ -19,6 +19,8 @@ import org.radixware.kernel.common.client.eas.EasClient;
 import org.radixware.kernel.common.client.eas.IEasClient;
 import org.radixware.kernel.common.client.eas.connections.ConnectionOptions;
 import org.radixware.kernel.common.client.exceptions.SslTrustManagerException;
+import org.radixware.kernel.common.client.utils.ISecretStore;
+import org.radixware.kernel.common.client.utils.TokenProcessor;
 import org.radixware.kernel.common.enums.EAuthType;
 import org.radixware.kernel.common.exceptions.CertificateUtilsException;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
@@ -36,8 +38,12 @@ public class EasClientProvider {
     
     public IEasClient createEasClient(final char[] password) throws KeystoreControllerException, CertificateUtilsException{
         if (connection.getSslOptions() == null) {
-            return new EasClient(environment, connection.getInitialServerAddresses(),
-                    connection.getStationName(), connection.getAuthType());
+            return new EasClient(environment, 
+                                            connection.getInitialServerAddresses(),
+                                            connection.getStationName(), 
+                                            connection.getAuthType(), 
+                                            connection.getAddressTranslationFilePath(),
+                                            connection.isSapDiscoveryEnabled());
         } else {
             final AbstractSslContextFactory sslContextFactory;
             if (connection.getAuthType()==EAuthType.KERBEROS){
@@ -65,12 +71,16 @@ public class EasClientProvider {
                     }
                 };
             }
+            final ISecretStore secretStore = environment.getApplication().newSecretStore();
+            secretStore.setSecret(connection.getAuthType()==EAuthType.KERBEROS ? new byte[]{} : new TokenProcessor().encrypt(password));
             return new EasClient(environment, 
                                 connection.getInitialServerAddresses(),
                                 connection.getStationName(), 
                                 connection.getAuthType(),
+                                connection.getAddressTranslationFilePath(),
+                                connection.isSapDiscoveryEnabled(),
                                 sslContextFactory,
-                                connection.getAuthType()==EAuthType.KERBEROS ? new char[]{} : password);
+                                secretStore);
         }
         
     }

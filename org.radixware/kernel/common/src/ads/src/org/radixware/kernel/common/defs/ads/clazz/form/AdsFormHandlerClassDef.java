@@ -224,4 +224,9 @@ public class AdsFormHandlerClassDef extends AdsClassDef implements IAdsFormPrese
         }
     }
 
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return ERuntimeEnvironmentType.COMMON_CLIENT;
+    }
+    
 }

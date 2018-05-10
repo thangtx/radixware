@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -273,10 +273,10 @@ public class AuditTriggersUpdater {
             // impossible to select from 'RDX_SYSTEM' - mutable trigger exception, used only via prefix (audited only first system)
             sqmlb.println("      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData");
             sqmlb.println("      from RDX_AU_SCHEMEITEM");
-            sqmlb.println("      where RDX_AU_SCHEMEITEM.SCHEMEGUID=RDX_AUDIT.DEFAULTAUDITSCHEME");
+            sqmlb.println("      where RDX_AU_SCHEMEITEM.SCHEMEGUID=RDX_AUDIT_VARS.DEFAULTAUDITSCHEME");
         } else {
             if (event == ETriggeringEvent.ON_DELETE) {
-                sqmlb.println("      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;");
+                sqmlb.println("      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;");
                 sqmlb.println("      if vSchemeId IS NULL then ");
                 sqmlb.println("           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;");
                 sqmlb.println("      end if;");

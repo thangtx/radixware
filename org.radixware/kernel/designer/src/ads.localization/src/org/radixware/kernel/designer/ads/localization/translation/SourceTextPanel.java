@@ -132,9 +132,9 @@ public class SourceTextPanel extends javax.swing.JPanel {
             strLanguage = " (" + msg + ")";
             soutceTextArea.setText("");
         } else {
-            final String strCheck = rowString.needsCheck(lang) ? ", unchecked" : "";
+            final String strCheck = rowString.isNeedsCheck(lang) ? ", unchecked" : "";
             strLanguage = " (" + lang.getName() + strCheck + ")";
-            if (rowString.needsCheck(lang)) {
+            if (rowString.isNeedsCheck(lang)) {
                 soutceTextArea.setToolTipText(NbBundle.getMessage(SourceTextPanel.class, "SRC_NOT_CHECKED"));
                 soutceTextArea.setForeground(Color.gray);
             } else {

@@ -329,6 +329,7 @@ public class AdsMethodChecker<T extends AdsMethodDef> extends AdsDefinitionCheck
 
         // A varargs parameter must be the last parameter in a parameter list.
         checkVarargs(method.getProfile().getParametersList(), problemHandler);
+        
     }
 
     private void checkVarargs(AdsMethodParameters parameters, IProblemHandler problemHandler) {
@@ -347,7 +348,7 @@ public class AdsMethodChecker<T extends AdsMethodDef> extends AdsDefinitionCheck
             }
         }
     }
-
+    
     public AdsMethodChecker() {
     }
 
@@ -366,7 +367,7 @@ public class AdsMethodChecker<T extends AdsMethodDef> extends AdsDefinitionCheck
             if (type == null) {
                 error(context, problemHandler, messages.unresolvedType());
             } else {
-                type.check(context, problemHandler);
+                type.check(context, problemHandler, getHistory().getMap());
                 if (type instanceof AdsDefinitionType) {
                     Definition src = ((AdsDefinitionType) type).getSource();
                     if (src instanceof AdsDefinition) {

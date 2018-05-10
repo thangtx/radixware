@@ -66,16 +66,9 @@ public class AccessEditor extends PropertyEditorSupport implements ExPropertyEdi
             return;
         }
     //    System.out.println("AAAAAAAASSSSSSSSSSSSSS");
-        try {
-            ((UIPropertySupport) getSource()).setValue(access);
+        ((UIPropertySupport) getSource()).setValue(access);
        //     System.out.println("AAAAAAAASSSSSSSSSSSSSS2");
-        } catch (IllegalAccessException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IllegalArgumentException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        
         setValue(access);
     }
 

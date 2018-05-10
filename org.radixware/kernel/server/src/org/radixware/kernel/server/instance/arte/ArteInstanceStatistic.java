@@ -11,21 +11,30 @@
 
 package org.radixware.kernel.server.instance.arte;
 
+import org.radixware.kernel.server.monitoring.ArteWaitStats;
+
 final class ArteInstanceStatistic {
 
     private long lastWaitStartMillis = 0;
     private long lastWorkStartMillis = 0;
     private long waitMillis = 0;
     private long workMillis = 0;
+    private ArteWaitStats workStartStats = null;
 
-    synchronized void onFinishWork(final long curTimeMillis) {
-        if (lastWorkStartMillis != 0) {
-            workMillis += curTimeMillis - lastWorkStartMillis;
+    synchronized ArteWaitStats onFinishWork(final ArteWaitStats curStats) {
+        long duration = 0;
+        ArteWaitStats result = null;
+        if (workStartStats != null) {
+            duration = (curStats.totalNanos() - workStartStats.totalNanos()) / 1000000;
+            workMillis += duration;
+            result = workStartStats.substractFrom(curStats);
         }
         lastWorkStartMillis = 0;
+        return result;
     }
 
-    synchronized void onStartWork() {
+    synchronized void onStartWork(ArteWaitStats curStats) {
+        workStartStats = curStats;
         lastWorkStartMillis = System.currentTimeMillis();
         if (lastWaitStartMillis != 0) {
             waitMillis += lastWorkStartMillis - lastWaitStartMillis;

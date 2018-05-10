@@ -15,7 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.radixware.kernel.common.enums.EDrcResourceType;
+import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.arte.Release;
 import org.radixware.kernel.server.meta.roles.RadRoleDef;
@@ -89,11 +92,12 @@ public class RadExplorerRootDef extends RadParagraphExplorerItemDef {
             Restrictions restr;
             for (RadRoleDef role : roles) {
                 restr = role.getResourceRestrictions(resHashKey);
-                if (!restr.getIsAccessRestricted() && rootRoleList.indexOf(role.getId().toString()) > -1) {
+                final String roleIdAsString = role.getId().toString();
+                if (!restr.getIsAccessRestricted() && rootRoleList.contains(roleIdAsString)) {
                     if (lst.length() > 0) {
                         lst.append(',');
                     }
-                    lst.append(role.toString());
+                    lst.append(roleIdAsString);//RADIX-12101
                 }
             }
         }
@@ -118,10 +122,14 @@ public class RadExplorerRootDef extends RadParagraphExplorerItemDef {
             Restrictions restr;
             for (RadRoleDef role : roles) {
                 if (role != null) {
+                    try {
                     restr = role.getResourceRestrictions(resHashKey);
                     if (!restr.getIsAccessRestricted()) {
                         lst.append(',');
                         lst.append(role.getId());
+                    }
+                    } catch (Exception ex) {
+                        Arte.get().getTrace().put(EEventSeverity.WARNING, "Exception while checking role '#" + role.getId() + " " + role.getName() + "' access to explorer root item: " + ExceptionTextFormatter.throwableToString(ex), EEventSource.EAS);
                     }
                 }
             }

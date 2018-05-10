@@ -14,6 +14,7 @@ package org.radixware.kernel.explorer.widgets.commands;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import java.util.LinkedList;
@@ -28,6 +29,7 @@ import org.radixware.kernel.common.client.widgets.ICommandPushButton;
 import org.radixware.kernel.common.client.widgets.IPeriodicalTask;
 import org.radixware.kernel.common.client.widgets.TimerEventHandler;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -143,6 +145,7 @@ public class CommandPushButton extends QPushButton implements ICommandPushButton
         if (cmd == null) {
             throw new IllegalStateException("command was not defined");
         }
+        setObjectName("rx_cmd_pbtn_#"+cmd.getCommand().getId().toString());
         cmd.subscribe(this);
     }
 
@@ -205,4 +208,14 @@ public class CommandPushButton extends QPushButton implements ICommandPushButton
     public void killTimer(IPeriodicalTask task) {
         throw new UnsupportedOperationException("killTimer is not supported here.");
     }    
+
+    @Override
+    public void setMenu(IMenu menu) {
+        super.setMenu((QMenu)menu);
+    }
+
+    @Override
+    public IMenu getMenu() {
+        return (IMenu) super.menu();
+    }
 }

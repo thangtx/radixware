@@ -18,6 +18,7 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.TokenType;
 import org.radixware.kernel.common.sqlscript.parser.spi.VariablesProvider;
 
 
+
 public class SQLCommandParser {
 
     private final StringTokenizer st;
@@ -121,6 +122,11 @@ public class SQLCommandParser {
                 for (i++; i < str.length(); i++) {
                     if (str.charAt(i) == wrap_char) {
                         SQLScriptValue value = variablesProvider.getVariable(var.toString().toUpperCase());
+                        final String variableName = var.toString().toUpperCase();
+                        if (options!=null && options.getVariablesPositionCollector()!=null){                                        
+                            options.getVariablesPositionCollector().collect(wrap_char, position.getIndex() + i + 2, variableName);
+                        }
+                        
                         if (value == null) {
                             final BehaviorWhenVariablesIsNotDefined policyTypeWhenVariablesIsNotDefined = 
                                     options==null ? 

@@ -11,6 +11,19 @@
 
 package org.radixware.kernel.common.client.widgets.actions;
 
+import org.radixware.kernel.common.client.types.Icon;
 
-public interface IMenu extends IActionPane{    
+
+public interface IMenu extends IActionPane{  
+     IMenu addSubMenu(String title);
+     IMenu addSubMenu(Icon icon, String title);
+     void addSubSeparator();
+     void insertMenu(Action before, IMenu menu);
+     void insertMenu(IMenu before, IMenu menu);
+     void insertSeparator(IMenu before);
+     void clear();
+     void setTitle(String title);
+     String getTitle();
+     void setIcon(Icon icon);
+     Icon getIcon();
 }

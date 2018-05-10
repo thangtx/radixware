@@ -10,26 +10,25 @@
  */
 package org.radixware.kernel.server.instance.arte;
 
+import java.lang.management.ThreadInfo;
 import java.sql.*;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import oracle.jdbc.OraclePreparedStatement;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.trace.IRadixTrace;
-import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.common.enums.EInstanceThreadKind;
+import org.radixware.kernel.server.instance.InstanceThreadStateRecord;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.trace.DbLog;
 import org.radixware.kernel.server.trace.DbLog.Item;
-import org.radixware.kernel.server.trace.IServerThread;
+import org.radixware.kernel.server.trace.ServerThread;
 
-public class ArtesDbLogFlusher extends Thread implements IServerThread {
+public class ArtesDbLogFlusher extends ServerThread {
 
     private enum EFlushResult {
 
@@ -43,19 +42,15 @@ public class ArtesDbLogFlusher extends Thread implements IServerThread {
     private static final long MIN_ERROR_INTERVAL = 1000;
     private static final Queue<DbLog.Item> OFFERED_ITEMS = new ArrayDeque<>();
     private final Instance instance;
-    private final LocalTracer tracer;
-    private OraclePreparedStatement qryPut = null;
+    private PreparedStatement qryPut = null;
     private Connection dbConnection;
     private final Queue<DbLog.Item> itemsQueue = new ArrayDeque<>();
     private long lastErrorMillis = 0;
     private boolean needPause = false;
 
     public ArtesDbLogFlusher(final Instance instance) {
-        super();
+        super("Artes DbLog Flusher of instance #" + instance.getId(), null, instance.getClass().getClassLoader(), instance.getTrace().newTracer(EEventSource.ARTE.getValue()));
         this.instance = instance;
-        setName("Artes DbLog Flusher of instance #" + instance.getId());
-        setContextClassLoader(instance.getClass().getClassLoader());
-        tracer = instance.getTrace().newTracer(EEventSource.ARTE.getValue());
     }
 
     @Override
@@ -108,7 +103,7 @@ public class ArtesDbLogFlusher extends Thread implements IServerThread {
                     Connection conn = getDbConnection();
                     try {
                         if (conn != null && !conn.isValid(5)) {
-                            tracer.put(EEventSeverity.WARNING, "ArtesDbLogFlusher database connection was closed", null, null, false);
+                            localTracer.put(EEventSeverity.WARNING, "ArtesDbLogFlusher database connection was closed", null, null, false);
                             closeDbConnection();
                         } else {
                             lastKeepAliveRqMillis = System.currentTimeMillis();
@@ -188,13 +183,13 @@ public class ArtesDbLogFlusher extends Thread implements IServerThread {
             }
             if (qryPut == null) {
                 final String sql = "begin ?:=rdx_trace.put_internal(?,?,?,?,?,?,?,?,?,?); end;";
-                qryPut = (OraclePreparedStatement) db.prepareCall(sql);
+                qryPut = db.prepareCall(sql);
             }
             ((CallableStatement) qryPut).registerOutParameter(1, java.sql.Types.INTEGER);
             qryPut.setString(2, item.code);
             qryPut.setClob(3, wordsClob);
             qryPut.setString(4, item.source);
-            qryPut.setLong(5, item.severity.getValue().longValue());
+            qryPut.setLong(5, item.severity == null ? EEventSeverity.EVENT.getValue() : item.severity.getValue());
             qryPut.setString(6, item.contextTypes);
             qryPut.setString(7, item.contextIds);
             qryPut.setTimestamp(8, item.time);
@@ -229,16 +224,11 @@ public class ArtesDbLogFlusher extends Thread implements IServerThread {
     }
 
     private void cantRegEvInEventLog(final SQLException e) {
-        tracer.put(EEventSeverity.ERROR, "Can't register event in RDX_EVENTLOG table from ArtesDbLogFlusher thread: " + ExceptionTextFormatter.exceptionStackToString(e), null, null, false);
+        localTracer.put(EEventSeverity.ERROR, "Can't register event in RDX_EVENTLOG table from ArtesDbLogFlusher thread: " + ExceptionTextFormatter.exceptionStackToString(e), null, null, false);
         if (System.currentTimeMillis() - lastErrorMillis < MIN_ERROR_INTERVAL) {
             needPause = true;
         }
         lastErrorMillis = System.currentTimeMillis();
-    }
-
-    @Override
-    public LocalTracer getLocalTracer() {
-        return tracer;
     }
 
     public static int offer(final List<DbLog.Item> items) {
@@ -256,5 +246,15 @@ public class ArtesDbLogFlusher extends Thread implements IServerThread {
             }
             return count;
         }
+    }
+
+    @Override
+    public boolean isAborted() {
+        return false;
+    }
+    
+    @Override
+    public InstanceThreadStateRecord getThreadStateRecord(ThreadInfo threadInfo) {
+        return InstanceThreadStateRecord.createRecord(EInstanceThreadKind.ARTES_DB_LOG_FLUSHER, this, threadInfo, null, null, null, (RadixConnection) getDbConnection());
     }
 }

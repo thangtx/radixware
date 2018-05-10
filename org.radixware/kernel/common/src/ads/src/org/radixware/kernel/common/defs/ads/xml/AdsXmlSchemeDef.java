@@ -14,13 +14,22 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
@@ -28,6 +37,7 @@ import org.apache.xmlbeans.QNameSet;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.impl.common.NameUtil;
 import org.apache.xmlbeans.impl.xb.xsdschema.ImportDocument.Import;
 import org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument;
@@ -36,24 +46,28 @@ import org.radixware.kernel.common.defs.ClipboardSupport;
 import org.radixware.kernel.common.defs.DefaultDependenceProvider;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.DefinitionSearcher;
-
 import org.radixware.kernel.common.defs.Dependences.Dependence;
+import org.radixware.kernel.common.defs.HierarchyWalker;
 import org.radixware.kernel.common.defs.IDependenceProvider;
+import org.radixware.kernel.common.defs.IVisitor;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.ObjectLink;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
-
 import org.radixware.kernel.common.defs.ads.AdsClipboardSupport;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.defs.ads.AdsDefinitions;
+import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
+import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.module.AdsSearcher;
 import org.radixware.kernel.common.defs.ads.module.ModuleDefinitions;
 import org.radixware.kernel.common.defs.ads.platform.IPlatformClassPublisher;
+import org.radixware.kernel.common.defs.ads.radixdoc.XmlRadixdoc;
 import org.radixware.kernel.common.defs.ads.src.IJavaSource;
-
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.defs.ads.src.xml.AdsXmlJavaSourceSupport;
@@ -68,11 +82,34 @@ import org.radixware.schemas.adsdef.AdsDefinitionElementType;
 import org.radixware.schemas.adsdef.XmlDefinition;
 import org.xmlsoap.schemas.wsdl.DefinitionsDocument;
 import org.radixware.kernel.common.defs.ads.src.xml.XBeansTypeSystem;
+import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
+import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
+import org.radixware.kernel.common.enums.EAccess;
+import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.ELocalizedStringKind;
+import org.radixware.kernel.common.enums.EMultilingualStringKind;
 import static org.radixware.kernel.common.enums.ERuntimeEnvironmentType.SERVER;
+import org.radixware.kernel.common.enums.EXmlSchemaLinkMode;
+import org.radixware.kernel.common.radixdoc.DocumentOptions;
+import org.radixware.kernel.common.radixdoc.IRadixdocPage;
+import org.radixware.kernel.common.radixdoc.IRadixdocProvider;
+import org.radixware.kernel.common.radixdoc.RadixdocSupport;
+import org.radixware.kernel.common.repository.Branch;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.fs.IJarDataProvider;
 import org.radixware.kernel.common.utils.FileUtils;
+import org.radixware.kernel.common.utils.Guid;
+import org.radixware.kernel.common.utils.Utils;
+import org.radixware.schemas.adsdef.XmlDefDocumentation;
+import org.radixware.schemas.adsdef.XmlDefLinkedSchema;
+import org.radixware.schemas.adsdef.XmlDefLinkedSchemas;
+import org.radixware.schemas.commondef.ChangeLogItem;
+import org.radixware.schemas.commondef.ChangeLog;
+import org.radixware.schemas.radixdoc.Page;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implements IAdsTypeSource, IJavaSource, IPlatformClassPublisher, AdsDefinition.IDeprecatable {
+public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implements IAdsTypeSource, IJavaSource, IPlatformClassPublisher, AdsDefinition.IDeprecatable, IRadixdocProvider {
 
     @Override
     public AdsXmlJavaSourceSupport getJavaSourceSupport() {
@@ -100,57 +137,142 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
         WSDL,
         UNKNOWN
     }
+
+    public static final class XmlItemDocEntry {
+
+        private Id id;
+        private String sinceVersion;
+
+        public XmlItemDocEntry(Id id, String sinceVersion) {
+            this.id = id;
+            this.sinceVersion = sinceVersion;
+        }
+
+        public Id getId() {
+            return id;
+        }
+
+        public String getSinceVersion() {
+            return sinceVersion;
+        }
+
+        public void setId(Id id) {
+            this.id = id;
+        }
+
+        public void setSinceVersion(String sinceVersion) {
+            this.sinceVersion = sinceVersion;
+        }
+    }
+
+    public static final class ChangeLogEntry {
+
+        private Id id;
+        private String version;
+        private Calendar date;
+        private String author;
+        private String guid;
+
+        public ChangeLogEntry() {
+            this(null, null, null, null);
+        }
+
+        public ChangeLogEntry(Id id, String version, Calendar date, String author) {
+            this.id = id;
+            this.version = version;
+            this.date = date;
+            this.author = author;
+            this.guid = Guid.generateGuid();
+        }
+
+        public ChangeLogEntry(ChangeLogEntry entry) {
+            this();
+            if (entry != null) {
+                this.id = entry.getId();
+                this.version = entry.getVersion();
+                this.date = entry.getDate();
+                this.author = entry.getAuthor();
+                this.guid = entry.getGuid();
+            }
+        }
+
+        public Id getId() {
+            return id;
+        }
+
+        public void setId(Id id) {
+            this.id = id;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
+        }
+
+        public Calendar getDate() {
+            return date;
+        }
+
+        public void setDate(Calendar date) {
+            this.date = date;
+        }
+
+        public String getAuthor() {
+            return author;
+        }
+
+        public void setAuthor(String author) {
+            this.author = author;
+        }
+
+        public String getGuid() {
+            return guid;
+        }
+
+        public void setGuid(String guid) {
+            this.guid = guid;
+        }
+    }
+
     private String publishedUri;
     private String locationHint;
     private SchemaDocument xsdSchema;
     private DefinitionsDocument wsdlDefinitions;
     private XmlObject publishedContent;
     private String storedTargetNamespace;
+    private String namespacePrefix;
     private ERuntimeEnvironmentType environment = null;
     private boolean isDeprecated;
+    private Map<String, XmlItemDocEntry> nodesDescriptionMap;
+    private List<ChangeLogEntry> changeLog;
+    private Map<Id, EXmlSchemaLinkMode> linkedSchemas;
+    private boolean needsDoc = false;
+    private boolean needsActualizeImportsOnSave = true;
+    private Id documentationTitleId = null;
+    private Id schemaZIPTitleId = null;
+
+    private IChangeLogActualizationListener changeLogActualizationListener = new IChangeLogActualizationListener() {
+        @Override
+        public boolean onSubmitChanges(ChangeLogEntry entry) {
+            return false;
+        }
+    };
+    private Set<String> docElements;
 
     private AdsXmlSchemeDef(String name) {
         super(Id.Factory.newInstance(EDefinitionIdPrefix.XML_SCHEME), name);
         this.environment = ERuntimeEnvironmentType.COMMON;
         this.xsdSchema = SchemaDocument.Factory.newInstance();
-        this.xsdSchema.addNewSchema();        
+        this.xsdSchema.addNewSchema();
     }
 
     private AdsXmlSchemeDef(String name, String publishedUrl) {
         super(Id.Factory.newInstance(EDefinitionIdPrefix.XML_SCHEME), name);
         this.publishedUri = publishedUrl;
         this.environment = ERuntimeEnvironmentType.COMMON;
-    }
-
-    @Override
-    public boolean isTransparent() {
-        return publishedUri != null;
-    }
-
-    public String getPublishedUri() {
-        return publishedUri;
-    }
-
-    public String getLocationHint() {
-        return locationHint;
-    }
-
-    public List<String> getXsdSchemaImportedListSchemaLocations() {
-        if (this.getXmlContent() == null || !(this.getXmlContent() instanceof SchemaDocumentImpl)) {
-            return null;
-        }
-        List<String> result = new ArrayList<String>();
-
-        SchemaDocumentImpl schemaImpl = (SchemaDocumentImpl) this.getXmlContent();
-        Import arrImport[] = schemaImpl.getSchema().getImportArray();
-
-        for (int i = 0; i < arrImport.length; i++) {
-            String fileName = arrImport[i].getSchemaLocation();
-            if (fileName != null && !fileName.isEmpty()) {
-                result.add(fileName);
-            }
-        }
-        return result;
     }
 
     private AdsXmlSchemeDef(XmlDefinition xDef) {
@@ -169,6 +291,289 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
                 this.locationHint = xDef.getPublishedUri().getLocationHint();
             }
         }
+
+        this.needsDoc = xDef.getNeedsDoc();
+
+        XmlDefDocumentation xDoc = xDef.getDocumentation();
+        if (xDoc != null) {
+            namespacePrefix = xDoc.getNamespacePrefix();
+            documentationTitleId = xDoc.getDocumentationTitleId();
+            schemaZIPTitleId = xDoc.getSchemasZIPTitleId();
+
+            if (xDoc.getXmlItemDocEntries() != null) {
+                nodesDescriptionMap = new HashMap<>();
+                for (org.radixware.schemas.adsdef.XmlItemDocEntry entry : xDoc.getXmlItemDocEntries().getXmlItemDocEntryList()) {
+                    nodesDescriptionMap.put(entry.getNodeXPath().trim(), new XmlItemDocEntry(entry.getLocalizedStringId(), entry.getSinceVersion()));
+                }
+            }
+
+            if (xDoc.getXmlChangeLog() != null) {
+                changeLog = new ArrayList<>();
+                for (ChangeLogItem entry : xDef.getDocumentation().getXmlChangeLog().getChangeLogItemList()) {
+                    Calendar date = Calendar.getInstance();
+                    date.setTime(entry.getDate());
+                    changeLog.add(new ChangeLogEntry(entry.getDescriptionMlsId(), entry.getSinceVersion(), date, entry.getAuthor()));
+                }
+            }
+        }
+
+        boolean isLinkedSchemasEmpty = xDef.getLinkedSchemas() == null;
+        if (!isLinkedSchemasEmpty) {
+            needsActualizeImportsOnSave = xDef.getLinkedSchemas().getActualizeOnSave();
+            linkedSchemas = new HashMap<>();
+            for (org.radixware.schemas.adsdef.XmlDefLinkedSchema schema : xDef.getLinkedSchemas().getLinkedSchemaList()) {
+                linkedSchemas.put(schema.getId(), schema.getLinkMode());
+            }
+        }
+
+        this.docElements = findDocElements();
+    }
+
+    @Override
+    public boolean isTransparent() {
+        return publishedUri != null;
+    }
+
+    public String getPublishedUri() {
+        return publishedUri;
+    }
+
+    public String getLocationHint() {
+        return locationHint;
+    }
+
+    public void setNeedsDoc(boolean needsDoc) {
+        if (this.needsDoc != needsDoc) {
+            this.needsDoc = needsDoc;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public Id getDocumentationTitleId() {
+        return documentationTitleId;
+    }
+
+    public void setDocumentationTitleId(Id documentationTitleId) {
+        this.documentationTitleId = documentationTitleId;
+        this.setEditState(EEditState.MODIFIED);
+    }
+
+    public Id getSchemaZIPTitleId() {
+        return schemaZIPTitleId;
+    }
+
+    public void setSchemaZIPTitleId(Id schemaZIPTitleId) {
+        this.schemaZIPTitleId = schemaZIPTitleId;
+        this.setEditState(EEditState.MODIFIED);
+    }
+
+    public boolean isNeedActualizeImportsOnSave() {
+        return needsActualizeImportsOnSave;
+    }
+
+    public void setNeedsActualizeImportsOnSave(boolean actualizeImportsOnSave) {
+        this.needsActualizeImportsOnSave = actualizeImportsOnSave;
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public List<String> getXsdSchemaImportedListSchemaLocations() {
+        if (this.getXmlContent() == null || !(this.getXmlContent() instanceof SchemaDocumentImpl)) {
+            return null;
+        }
+        List<String> result = new ArrayList<>();
+
+        SchemaDocumentImpl schemaImpl = (SchemaDocumentImpl) this.getXmlContent();
+        Import arrImport[] = schemaImpl.getSchema().getImportArray();
+
+        for (int i = 0; i < arrImport.length; i++) {
+            String fileName = arrImport[i].getSchemaLocation();
+            if (fileName != null && !fileName.isEmpty()) {
+                result.add(fileName);
+            }
+        }
+        return result;
+    }
+
+    public XmlItemDocEntry getXmlItemDocEntry(String itemXPath) {
+        return itemXPath == null || "".equals(itemXPath) || nodesDescriptionMap == null ? null : nodesDescriptionMap.get(itemXPath);
+    }
+
+    public void addNodeDescription(String nodeXPath, XmlItemDocEntry desription) {
+        if (nodesDescriptionMap == null) {
+            nodesDescriptionMap = new HashMap<>();
+        }
+        nodesDescriptionMap.put(nodeXPath, desription);
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public void removeNodeDescription(String nodeXPath) {
+        nodesDescriptionMap.remove(nodeXPath);
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public List<String> getDocumentedNodes() {
+        if (nodesDescriptionMap != null) {
+            return new ArrayList(nodesDescriptionMap.keySet());
+        } else {
+            return new ArrayList();
+        }
+    }
+
+    public Map<String, AdsMultilingualStringDef> getNodesDocumentationStrings() {
+        Map<String, AdsMultilingualStringDef> result = new HashMap<>();
+        if (nodesDescriptionMap != null) {
+            for (String xpath : nodesDescriptionMap.keySet()) {
+                AdsMultilingualStringDef docString = findLocalizedString(nodesDescriptionMap.get(xpath).getId());
+                if (docString != null) {
+                    result.put(xpath, docString);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public void addChangeLogEnry(ChangeLogEntry entry) {
+        if (changeLog == null) {
+            changeLog = new ArrayList<>();
+        }
+
+        ChangeLogUtils.addToChangeLog(changeLog, entry);
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public void removeChangeLogEntry(String guid) {
+        if (changeLog == null) {
+            return;
+        }
+        ChangeLogUtils.removeFromChangeLog(changeLog, guid);
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public ChangeLogEntry getChangeLogEntry(String guid) {
+        if (changeLog == null) {
+            return null;
+        }
+        return ChangeLogUtils.getFromChangeLog(changeLog, guid);
+    }
+
+    public void applyChangeLogChanges(Map<AdsXmlSchemeDef.ChangeLogEntry, RadixObject.EEditState> changes) {
+        if (changeLog == null) {
+            if (changes != null) {
+                changeLog = new ArrayList<>();
+            } else {
+                return;
+            }
+        }
+
+        ChangeLogUtils.applyChangesToChangeLog(changeLog, changes);
+        if (!changes.isEmpty()) {
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public List<ChangeLogEntry> getChangeLog() {
+        if (changeLog != null) {
+            ArrayList<ChangeLogEntry> copy = new ArrayList<>();
+            for (ChangeLogEntry entry : changeLog) {
+                copy.add(new ChangeLogEntry(entry));
+            }
+            return copy;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public void addImportedSchema(AdsXmlSchemeDef schema) {
+        if (linkedSchemas == null) {
+            linkedSchemas = new HashMap<>();
+        }
+
+        if (!linkedSchemas.containsKey(schema.getId())) {
+            linkedSchemas.put(schema.getId(), EXmlSchemaLinkMode.IMPORT);
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public void addLinkedSchema(AdsXmlSchemeDef schema) {
+        if (linkedSchemas == null) {
+            linkedSchemas = new HashMap<>();
+        }
+
+        linkedSchemas.put(schema.getId(), EXmlSchemaLinkMode.MANUAL);
+
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public void removeLinkedSchema(Id schemaId) {
+        if (linkedSchemas == null || linkedSchemas.isEmpty()) {
+            return;
+        }
+
+        linkedSchemas.remove(schemaId);
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public Map<AdsXmlSchemeDef, EXmlSchemaLinkMode> getLinkedSchemas() {
+        Map<AdsXmlSchemeDef, EXmlSchemaLinkMode> result = new HashMap<>();
+
+        if (linkedSchemas == null || linkedSchemas.isEmpty() || this.getBranch() == null) {
+            return result;
+        }
+
+        for (final Entry<Id, EXmlSchemaLinkMode> entry : linkedSchemas.entrySet()) {
+            final AtomicReference<AdsXmlSchemeDef> schemeRef = new AtomicReference<>(null);
+            Layer.HierarchyWalker.walk(getLayer(), new Layer.HierarchyWalker.Acceptor<Object>() {
+                @Override
+                public void accept(HierarchyWalker.Controller<Object> controller, Layer layer) {
+                    layer.visit(new IVisitor() {
+                        @Override
+                        public void accept(RadixObject radixObject) {
+                            if (radixObject instanceof AdsXmlSchemeDef) {
+                                schemeRef.set((AdsXmlSchemeDef) radixObject);
+                            }
+
+                        }
+                    }, new AdsVisitorProvider.AdsTopLevelDefVisitorProvider() {
+                        @Override
+                        public boolean isTarget(RadixObject radixObject) {
+                            return (radixObject instanceof AdsXmlSchemeDef) && ((AdsXmlSchemeDef) radixObject).getId() == entry.getKey();
+                        }
+
+                        @Override
+                        public boolean isContainer(RadixObject radixObject) {
+                            return radixObject instanceof Branch || radixObject instanceof Layer || radixObject instanceof AdsSegment || radixObject instanceof Module || radixObject instanceof ModuleDefinitions;
+                        }
+
+                        @Override
+                        public boolean isClassContainer(Class c) {
+                            if (ILocalizingBundleDef.class.isAssignableFrom(c)) {
+                                return false;
+                            }
+                            return super.isClassContainer(c);
+                        }
+
+
+                    });
+                }
+            });
+
+            AdsXmlSchemeDef def = schemeRef.get();
+
+            if (def != null) {
+                result.put(def, entry.getValue());
+            }
+        }
+
+        return result;
+    }
+
+    public Set<Id> getLinkedSchemasIds() {
+        return linkedSchemas == null ? null : linkedSchemas.keySet();
+    }
+
+    public boolean containsLinkedSchema(Id linkedSchemaId) {
+        return linkedSchemas == null ? false : linkedSchemas.containsKey(linkedSchemaId) && linkedSchemas.get(linkedSchemaId) == EXmlSchemaLinkMode.MANUAL;
     }
 
     @Override
@@ -340,7 +745,7 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
     @Override
     public List<IXmlDefinition> getImportedDefinitions() {
         List<String> imports = XmlUtils.getImportedNamespaces(getXmlContent(), true);
-        List<IXmlDefinition> defs = new ArrayList<IXmlDefinition>();
+        List<IXmlDefinition> defs = new ArrayList<>();
         AdsSearcher.Factory.XmlDefinitionSearcher searcher = AdsSearcher.Factory.newXmlDefinitionSearcher(this);
         for (String imp : imports) {
             IXmlDefinition def = searcher.findByNs(imp).get();
@@ -555,11 +960,11 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
     }
 
     @Override
-    public String getJavaPackageName() {
+    public String getJavaPackageName(boolean isHumanReadable) {
         if (isTransparent()) {
             return NameUtil.getPackageFromNamespace(this.getTargetNamespace());
         } else {
-            return JavaSourceSupport.getPackageName(this, JavaSourceSupport.UsagePurpose.getPurpose(getTargetEnvironment(), JavaSourceSupport.CodeType.EXCUTABLE));
+            return JavaSourceSupport.getPackageName(this, JavaSourceSupport.UsagePurpose.getPurpose(getTargetEnvironment(), JavaSourceSupport.CodeType.EXCUTABLE), isHumanReadable);
         }
     }
 
@@ -568,6 +973,7 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
         return isDeprecated;
     }
 
+    @Override
     public void setDeprecated(boolean isDeprecated) {
         if (this.isDeprecated != isDeprecated) {
             this.isDeprecated = isDeprecated;
@@ -592,6 +998,94 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
         if (isDeprecated) {
             xDef.setIsDeprecated(isDeprecated);
         }
+
+        xDef.setNeedsDoc(needsDoc);
+
+        actualizeNodesDescriptionMap();
+
+        XmlDefDocumentation xDoc = xDef.addNewDocumentation();
+
+        if (documentationTitleId != null) {
+            xDoc.setDocumentationTitleId(documentationTitleId);
+        }
+
+        if (schemaZIPTitleId != null) {
+            xDoc.setSchemasZIPTitleId(schemaZIPTitleId);
+        }
+
+        if (namespacePrefix != null) {
+            xDoc.setNamespacePrefix(namespacePrefix);
+        }
+
+        if (nodesDescriptionMap != null && !nodesDescriptionMap.isEmpty()) {
+            org.radixware.schemas.adsdef.XmlItemDocEntries xDocEntries = xDoc.addNewXmlItemDocEntries();
+
+            List<String> sortedXpathList = new ArrayList<>(nodesDescriptionMap.keySet());
+            Collections.sort(sortedXpathList);
+
+            for (String key : sortedXpathList) {
+                org.radixware.schemas.adsdef.XmlItemDocEntry xDocEntry = xDocEntries.addNewXmlItemDocEntry();
+                xDocEntry.setNodeXPath(key);
+                xDocEntry.setLocalizedStringId(nodesDescriptionMap.get(key).getId());
+                xDocEntry.setSinceVersion(nodesDescriptionMap.get(key).getSinceVersion());
+            }
+        }
+
+        actualizeChangeLog();
+
+        if (changeLog != null && !changeLog.isEmpty()) {
+            ChangeLog xChangeLog = xDoc.addNewXmlChangeLog();
+            for (ChangeLogEntry entry : changeLog) {
+                ChangeLogItem xDocEntry = xChangeLog.addNewChangeLogItem();
+                xDocEntry.setDescriptionMlsId(entry.getId());
+                xDocEntry.setSinceVersion(entry.getVersion());
+                xDocEntry.setDate(new Timestamp(entry.getDate().getTimeInMillis()));
+                xDocEntry.setAuthor(entry.getAuthor());
+            }
+        }
+
+        String docPrettyText = xDoc.xmlText(new XmlOptions().setSavePrettyPrint());
+        try {
+            XmlDefDocumentation prettyDoc = XmlDefDocumentation.Factory.parse(docPrettyText);
+            xDef.setDocumentation(prettyDoc);
+        } catch (XmlException ex) {
+            Logger.getLogger(AdsXmlSchemeDef.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (needsActualizeImportsOnSave && saveMode == ESaveMode.NORMAL) {
+            actualizeLinkedSchemas();
+        }
+
+        XmlDefLinkedSchemas xLinkedSchemas = null;
+        if (linkedSchemas != null && !linkedSchemas.isEmpty()) {
+            xLinkedSchemas = xDef.addNewLinkedSchemas();
+            xLinkedSchemas.setActualizeOnSave(needsActualizeImportsOnSave);
+            List<Id> sortedIds = new ArrayList<>(linkedSchemas.keySet());
+            Collections.sort(sortedIds, new Comparator<Id>() {
+
+                @Override
+                public int compare(Id o1, Id o2) {
+                    return o1.toString().compareTo(o2.toString());
+                }
+            });
+
+            for (Id id : sortedIds) {
+                XmlDefLinkedSchema xSchema = xLinkedSchemas.addNewLinkedSchema();
+                xSchema.setId(id);
+                xSchema.setLinkMode(linkedSchemas.get(id));
+            }
+        }
+
+        if (xLinkedSchemas != null) {
+            String linkedSchemasPrettyText = xLinkedSchemas.xmlText(new XmlOptions().setSavePrettyPrint());
+            try {
+                XmlDefLinkedSchemas prettyLinkedSchemas = XmlDefLinkedSchemas.Factory.parse(linkedSchemasPrettyText);
+                xDef.setLinkedSchemas(prettyLinkedSchemas);
+            } catch (XmlException ex) {
+                Logger.getLogger(AdsXmlSchemeDef.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         xDef.setEnvironment(environment);
         if (publishedUri != null) {
             XmlDefinition.PublishedUri uri = xDef.addNewPublishedUri();
@@ -599,7 +1093,6 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
             if (locationHint != null) {
                 uri.setLocationHint(locationHint);
             }
-
         } else {
             if (saveMode != ESaveMode.API) {
                 XmlCursor schemaCursor = null;
@@ -621,17 +1114,112 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
         }
     }
 
+    private void actualizeNodesDescriptionMap() {
+        if (nodesDescriptionMap != null && !nodesDescriptionMap.isEmpty()) {
+            XmlObject innerXml = this.getXmlDocument();
+            if (innerXml == null) {
+                innerXml = this.getXmlContent();
+                if (innerXml == null) {
+                    return;
+                }
+            }
+
+            List<String> documentedNodes = this.getDocumentedNodes();
+            removeExistingNodesFromDocumentedNodesList(XmlUtils.getChildElements(innerXml.getDomNode()).get(0), documentedNodes);
+            nodesDescriptionMap.keySet().removeAll(documentedNodes);
+        }
+    }
+
+    public void actualizeLinkedSchemas() {
+        List<IXmlDefinition> importedSchemas = this.getImportedDefinitions();
+
+        for (IXmlDefinition importedSchema : importedSchemas) {
+            if (importedSchema instanceof AdsXmlSchemeDef) {
+                AdsXmlSchemeDef tmp = (AdsXmlSchemeDef) importedSchema;
+                addImportedSchema(tmp);
+            }
+        }
+
+        if (linkedSchemas == null || linkedSchemas.isEmpty()) {
+            return;
+        }
+
+        if (linkedSchemas.keySet().contains(this.getId())) {
+            linkedSchemas.remove(this.getId());
+            setEditState(EEditState.MODIFIED);
+        }
+
+        Iterator<Id> iterator = linkedSchemas.keySet().iterator();
+        while (iterator.hasNext()) {
+            Id next = iterator.next();
+
+            if (!isImportExist(next) && linkedSchemas.get(next) == EXmlSchemaLinkMode.IMPORT) {
+                iterator.remove();
+                setEditState(EEditState.MODIFIED);
+            }
+        }
+    }
+
+    public boolean isImportExist(final Id importedSchemaId) {
+        final AtomicReference<AdsXmlSchemeDef> schemeRef = new AtomicReference<>(null);
+        Layer l = getLayer();
+        if (l == null) {
+            return true;
+        }
+        Layer.HierarchyWalker.walk(l, new Layer.HierarchyWalker.Acceptor<RadixObject>() {
+            @Override
+            public void accept(HierarchyWalker.Controller<RadixObject> controller, Layer layer) {
+                layer.visit(new IVisitor() {
+                    @Override
+                    public void accept(RadixObject radixObject) {
+                        if (radixObject instanceof AdsXmlSchemeDef) {
+                            schemeRef.set((AdsXmlSchemeDef) radixObject);
+                        }
+
+                    }
+                }, new AdsVisitorProvider.AdsTopLevelDefVisitorProvider() {
+                    @Override
+                    public boolean isTarget(RadixObject radixObject) {
+                        return (radixObject instanceof AdsXmlSchemeDef) && ((AdsXmlSchemeDef) radixObject).getId() == importedSchemaId;
+                    }
+
+                    @Override
+                    public boolean isContainer(RadixObject radixObject) {
+                        return radixObject instanceof Branch || radixObject instanceof Layer || radixObject instanceof AdsSegment || radixObject instanceof Module || radixObject instanceof ModuleDefinitions;
+                    }
+                    
+                    @Override
+                    public boolean isClassContainer(Class c) {
+                        if (ILocalizingBundleDef.class.isAssignableFrom(c)) {
+                            return false;
+                        }
+                        return super.isClassContainer(c);
+                    }
+                });
+            }
+        });
+
+        AdsXmlSchemeDef importedDef = schemeRef.get();
+
+        return importedDef != null && this.getImportedDefinitions().contains(importedDef);
+    }
+
+    private void removeExistingNodesFromDocumentedNodesList(Element node, List<String> nodesList) {
+        nodesList.remove(org.radixware.kernel.common.utils.XPathUtils.getXPath(node));
+        for (Element child : XmlUtils.getChildElements(node)) {
+            removeExistingNodesFromDocumentedNodesList(child, nodesList);
+        }
+    }
+
     @Override
     public ClipboardSupport<AdsXmlSchemeDef> getClipboardSupport() {
         return new AdsClipboardSupport<AdsXmlSchemeDef>(this) {
             @Override
             protected XmlObject copyToXml() {
                 XmlDefinition xDef = XmlDefinition.Factory.newInstance();
-                appendTo(
-                        xDef, ESaveMode.NORMAL);
+                appendTo(xDef, ESaveMode.NORMAL);
 
                 return xDef;
-
             }
 
             @Override
@@ -645,7 +1233,6 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
                 }
             }
         };
-
     }
 
     @Override
@@ -754,5 +1341,267 @@ public class AdsXmlSchemeDef extends AbstractXmlDefinition<XmlDefinition> implem
     @Override
     public String getTypeTitle() {
         return "Xml Schema";
+    }
+
+    @Override
+    public void collectUsedMlStringIds(Collection<MultilingualStringInfo> ids) {
+        super.collectUsedMlStringIds(ids);
+        if (documentationTitleId != null) {
+            ids.add(new MultilingualStringInfo(this) {
+
+                @Override
+                public String getContextDescription() {
+                    return " Documentation Title";
+                }
+
+                @Override
+                public Id getId() {
+                    return documentationTitleId;
+                }
+
+                @Override
+                public EAccess getAccess() {
+                    return AdsXmlSchemeDef.this.getAccessMode();
+                }
+
+                @Override
+                public void updateId(Id newId) {
+                    setDocumentationTitleId(newId);
+                }
+
+                @Override
+                public boolean isPublished() {
+                    return AdsXmlSchemeDef.this.isPublished();
+                }
+
+                @Override
+                public EMultilingualStringKind getKind() {
+                    return EMultilingualStringKind.DESCRIPTION;
+                }
+            });
+        }
+
+        if (schemaZIPTitleId != null) {
+            ids.add(new MultilingualStringInfo(this) {
+
+                @Override
+                public String getContextDescription() {
+                    return " Schema ZIP Title";
+                }
+
+                @Override
+                public Id getId() {
+                    return schemaZIPTitleId;
+                }
+
+                @Override
+                public EAccess getAccess() {
+                    return AdsXmlSchemeDef.this.getAccessMode();
+                }
+
+                @Override
+                public void updateId(Id newId) {
+                    setSchemaZIPTitleId(newId);
+                }
+
+                @Override
+                public boolean isPublished() {
+                    return AdsXmlSchemeDef.this.isPublished();
+                }
+
+                @Override
+                public EMultilingualStringKind getKind() {
+                    return EMultilingualStringKind.DESCRIPTION;
+                }
+            });
+        }
+
+        if (nodesDescriptionMap != null) {
+            for (final Map.Entry<String, XmlItemDocEntry> docEntry : nodesDescriptionMap.entrySet()) {
+                ids.add(new MultilingualStringInfo(this) {
+
+                    @Override
+                    public String getContextDescription() {
+                        return " Item: " + org.radixware.kernel.common.utils.XPathUtils.getHumanReadableXPath(docEntry.getKey()) + "<br/> Owner";
+                    }
+
+                    @Override
+                    public Id getId() {
+                        return docEntry.getValue().getId();
+                    }
+
+                    @Override
+                    public EAccess getAccess() {
+                        return AdsXmlSchemeDef.this.getAccessMode();
+                    }
+
+                    @Override
+                    public void updateId(Id newId) {
+                        docEntry.getValue().setId(newId);
+                    }
+
+                    @Override
+                    public boolean isPublished() {
+                        return AdsXmlSchemeDef.this.isPublished();
+                    }
+
+                    @Override
+                    public EMultilingualStringKind getKind() {
+                        return EMultilingualStringKind.XSD_ITEM;
+                    }
+                });
+            }
+        }
+        if (changeLog != null) {
+            for (final ChangeLogEntry docEntry : changeLog) {
+                ids.add(new MultilingualStringInfo(this) {
+
+                    @Override
+                    public String getContextDescription() {
+                        return " Description";
+                    }
+
+                    @Override
+                    public Id getId() {
+                        return docEntry.getId();
+                    }
+
+                    @Override
+                    public EAccess getAccess() {
+                        return AdsXmlSchemeDef.this.getAccessMode();
+                    }
+
+                    @Override
+                    public void updateId(Id newId) {
+                        docEntry.setId(newId);
+                    }
+
+                    @Override
+                    public boolean isPublished() {
+                        return AdsXmlSchemeDef.this.isPublished();
+                    }
+
+                    @Override
+                    public EMultilingualStringKind getKind() {
+                        return EMultilingualStringKind.DESCRIPTION;
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public RadixdocSupport<? extends RadixObject> getRadixdocSupport() {
+        return new RadixdocSupport<AdsXmlSchemeDef>(this) {
+            @Override
+            public IRadixdocPage document(Page page, DocumentOptions options) {
+                return new XmlRadixdoc(getSource(), page, options);
+            }
+
+        };
+    }
+
+    @Override
+    public boolean isRadixdocProvider() {
+        return true;
+    }
+
+    @Override
+    public boolean needsDocumentation() {
+        return needsDoc;
+    }
+
+    public String getNamespacePrefix() {
+        return namespacePrefix;
+    }
+
+    public void setNamespacePrefix(String namespacePrefix) {
+        if (!String.valueOf(namespacePrefix).equals(String.valueOf(this.namespacePrefix))) {
+            setEditState(EEditState.MODIFIED);
+            this.namespacePrefix = namespacePrefix;
+        }
+    }
+
+    private Set<String> findDocElements() {
+        Set<String> result = new HashSet<>();
+        if (isTransparent()) {
+            return null;
+        }
+
+        XmlObject obj = getXmlDocument() != null ? getXmlDocument() : getXmlContent();
+        if (obj == null) {
+            return null;
+        }
+
+        List<Element> childElements = XmlUtils.getChildElements((Document) obj.getDomNode());
+        if (!childElements.isEmpty()) {
+            getChildrenDocElements(childElements.get(0), result);
+        }
+
+        return result;
+    }
+
+    private void getChildrenDocElements(Element parent, Set<String> docElementsSet) {
+        List<Element> childElements = XmlUtils.getChildElements(parent);
+        for (Element element : childElements) {
+            if (org.radixware.kernel.common.utils.XPathUtils.isElementNeedsDoc(element)) {
+                docElementsSet.add(org.radixware.kernel.common.utils.XPathUtils.getXPath(element));
+            }
+            getChildrenDocElements(element, docElementsSet);
+        }
+    }
+
+    public IChangeLogActualizationListener getChangeLogActualizationListener() {
+        return changeLogActualizationListener;
+    }
+
+    public void setChangeLogActualizationListener(IChangeLogActualizationListener changeLogActualizationListener) {
+        this.changeLogActualizationListener = changeLogActualizationListener;
+    }   
+    
+    private void actualizeChangeLog() {
+        Set<String> currentDocElements = findDocElements();
+        if (docElements == null || currentDocElements == null) {
+            return;
+        }
+
+        Set<String> removedElements = ChangeLogUtils.getAddedSetElements(currentDocElements, docElements);
+        Set<String> addedElements = ChangeLogUtils.getAddedSetElements(docElements, currentDocElements);
+
+        if (removedElements.isEmpty() && addedElements.isEmpty()) {
+            return;
+        }
+                
+        String version = null;
+        Iterator<String> iterator = removedElements.isEmpty() ? addedElements.iterator() : removedElements.iterator();
+        while (iterator.hasNext()) {            
+            XmlItemDocEntry docEntry = getXmlItemDocEntry(iterator.next());
+            if (docEntry != null && !Utils.emptyOrNull(docEntry.sinceVersion)) {
+                version = docEntry.sinceVersion;
+                break;
+            }
+        }                
+
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(System.currentTimeMillis());
+
+        String author = System.getProperty("user.name");
+        
+        IMultilingualStringDef description = findLocalizingBundle().createString(ELocalizedStringKind.DESCRIPTION);
+        for (EIsoLanguage lang : getLayer().getLanguages()) {
+            description.setValue(lang, ChangeLogUtils.getEditedElementsDescription(addedElements, removedElements, lang));
+        }
+
+        findLocalizingBundle().getStrings().getLocal().add((AdsMultilingualStringDef) description);
+
+        ChangeLogEntry entry = new ChangeLogEntry(description.getId(), version, date, author);
+        
+        if (changeLogActualizationListener.onSubmitChanges(entry)) {
+            addChangeLogEnry(entry);
+        } else {
+            findLocalizingBundle().getStrings().getLocal().remove((AdsMultilingualStringDef) description);
+        }
+
+        docElements = currentDocElements;
     }
 }

@@ -18,6 +18,7 @@ import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.KernelIcon;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlSelectorPresentations;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableReferences;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableColumns;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
@@ -38,8 +39,10 @@ final class SqmlTableDefImpl extends SqmlDefinitionImpl implements ISqmlTableDef
     private ISqmlTableColumns columns;
     private ISqmlTableReferences references;
     private ISqmlTableIndices indices;
+    private ISqmlSelectorPresentations presentations;
     private final DdsTableDef tableDef;
     private final AdsEntityObjectClassDef classDef;
+    private String alias;
 
     public SqmlTableDefImpl(final IClientEnvironment environment, final DdsTableDef ddsTable) {
         super(environment, ddsTable);
@@ -113,7 +116,18 @@ final class SqmlTableDefImpl extends SqmlDefinitionImpl implements ISqmlTableDef
         }
         return indices;
     }
-    private String alias;
+
+    @Override
+    public ISqmlSelectorPresentations getSelectorPresentations() {
+        if (presentations==null){
+            if (classDef==null){
+                presentations = SqmlSelectorPresentations.EMPTY;
+            }else{
+                presentations = new SqmlSelectorPresentations(environment, classDef);
+            }
+        }
+        return presentations;
+    }        
 
     @Override
     public ISqmlTableDef createCopyWithAlias(final String alias) {

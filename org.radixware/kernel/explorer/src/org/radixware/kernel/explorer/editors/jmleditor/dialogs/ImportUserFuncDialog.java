@@ -12,6 +12,7 @@
 package org.radixware.kernel.explorer.editors.jmleditor.dialogs;
 
 import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QCheckBox;
 import com.trolltech.qt.gui.QGroupBox;
 import com.trolltech.qt.gui.QHBoxLayout;
 import com.trolltech.qt.gui.QLabel;
@@ -20,6 +21,7 @@ import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QRadioButton;
 import com.trolltech.qt.gui.QSizePolicy;
 import com.trolltech.qt.gui.QVBoxLayout;
+import java.awt.Color;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.EnumSet;
@@ -29,6 +31,7 @@ import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.explorer.dialogs.ExplorerDialog;
 import org.radixware.kernel.explorer.editors.jmleditor.JmlEditor;
 import org.radixware.kernel.explorer.env.Application;
+import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 import org.radixware.schemas.xscml.JmlType;
 
 
@@ -36,12 +39,17 @@ public class ImportUserFuncDialog extends  ExplorerDialog{
     private QRadioButton rbAddToEnd;
     private QRadioButton rbAddToBegining;
     private QRadioButton rbReplace;
+    private QLabel lbUpdateProfileWarning;
     private QLineEdit edNewSrcVersionName;
     private boolean isSaveAsNewSrcVersion=true;
     private ImportAction importAction;
     private final JmlEditor editor;
     private final JmlType jmlTypeFromFile;
     private JmlType resultJmlType=null;
+    private boolean needUpdateProfile=false;
+    private boolean doImportChangeLog = false;
+    private final boolean profileCanBeUpdated;
+    private final boolean changeLogCanBeImported;
     
     public enum ImportAction{
         REPLACE,
@@ -49,11 +57,13 @@ public class ImportUserFuncDialog extends  ExplorerDialog{
         ADD_TO_END
     }
     
-    public ImportUserFuncDialog(final JmlEditor editor,final JmlType jmlTypeFromFile){
+    public ImportUserFuncDialog(final JmlEditor editor, JmlEditor.UserFuncImportInfo info){
          super(editor.getEnvironment(), editor, "ImportUserFuncDialog");
-         this.setWindowTitle(Application.translate("JmlEditor", "Import User Function"));
+         this.setWindowTitle(Application.translate("JmlEditor", "Import User-Defined Function"));
          this.editor=editor;
-         this.jmlTypeFromFile=jmlTypeFromFile;
+         this.jmlTypeFromFile=info.getSrc();
+         this.profileCanBeUpdated = editor.getUserFunc().isFreeForm() && info.getProfInfo() != null;
+         this.changeLogCanBeImported = info.getChangeLog() != null;
          createUI();
     }
     
@@ -67,9 +77,38 @@ public class ImportUserFuncDialog extends  ExplorerDialog{
         btnPreview.setText(Application.translate("JmlEditor", "Preview"));    
         btnPreview.clicked.connect(this, "preview(boolean)");
         //btnPreview.setEnabled(false);
-
+        
         dialogLayout().addWidget(actionPanel);
         dialogLayout().addWidget(newSrcVersionPanel);
+        
+        if (profileCanBeUpdated) {
+            final QGroupBox gbUpdateProfile = new QGroupBox(Application.translate("JmlEditor",
+                    "Update profile"), this);
+            gbUpdateProfile.setCheckable(true);
+            gbUpdateProfile.setChecked(false);
+            gbUpdateProfile.toggled.connect(this, "updateProfileToggle(Boolean)");
+
+            lbUpdateProfileWarning = new QLabel(this);
+            changeWarningLabelColor(needUpdateProfile);
+            lbUpdateProfileWarning.setText(Application.translate("JmlEditor",
+                    "Warning: The integrity of the existing function invocations may be violated"));
+            final QVBoxLayout ltUpdateProfile = new QVBoxLayout(gbUpdateProfile);
+            ltUpdateProfile.addWidget(lbUpdateProfileWarning);
+            gbUpdateProfile.setLayout(ltUpdateProfile);
+            
+            dialogLayout().addWidget(gbUpdateProfile);
+        }
+        
+        if (changeLogCanBeImported) {
+            final QCheckBox cbImportChangeLog = new QCheckBox(
+                    Application.translate("JmlEditor", "Import change log"), this);
+            cbImportChangeLog.setChecked(true);
+            cbImportChangeLog.toggled.connect(this, "importChangeLogToggle(Boolean)");
+            
+            dialogLayout().addWidget(cbImportChangeLog);
+            doImportChangeLog = true;
+        }
+        
         dialogLayout().addWidget(btnPreview);
         
         addButtons(EnumSet.of(EDialogButtonType.OK, EDialogButtonType.CANCEL),true);        
@@ -79,11 +118,11 @@ public class ImportUserFuncDialog extends  ExplorerDialog{
     private QGroupBox createActionPanel(){
         final QGroupBox groupBox = new QGroupBox(Application.translate("JmlEditor" ,"Action"));        
         final QVBoxLayout layout=new QVBoxLayout();
-        rbReplace=new QRadioButton(Application.translate("JmlEditor" ,"Replace"),groupBox);
+        rbReplace=new QRadioButton(Application.translate("JmlEditor" ,"Replace existing function"),groupBox);
         rbReplace.toggled.connect(this, "changeAction(boolean)");
-        rbAddToEnd=new QRadioButton(Application.translate("JmlEditor" ,"Add to end"),groupBox);
+        rbAddToEnd=new QRadioButton(Application.translate("JmlEditor" ,"Add to the end"),groupBox);
         rbAddToEnd.toggled.connect(this, "changeAction(boolean)");        
-        rbAddToBegining=new QRadioButton(Application.translate("JmlEditor" ,"Add to beginning"),groupBox);
+        rbAddToBegining=new QRadioButton(Application.translate("JmlEditor" ,"Add to the beginning"),groupBox);
         rbAddToBegining.toggled.connect(this, "changeAction(boolean)");
         rbReplace.setChecked(true);
         
@@ -97,13 +136,13 @@ public class ImportUserFuncDialog extends  ExplorerDialog{
     } 
     
     private QGroupBox createNewSrcVersionPanel(){
-        final QGroupBox groupBox = new QGroupBox(Application.translate("JmlEditor" ,"Save current source as new source version"));
+        final QGroupBox groupBox = new QGroupBox(Application.translate("JmlEditor" ,"Save current source code to new version"));
         groupBox.setCheckable(true); 
         groupBox.toggled.connect(this, "saveAsNewSrcVersion(boolean)"); 
         
         final QHBoxLayout layout=new QHBoxLayout();
         final QLabel lbNewSrcVersionName=new QLabel(this);
-        lbNewSrcVersionName.setText(Application.translate("JmlEditor" ,"Source version name")+":");
+        lbNewSrcVersionName.setText(Application.translate("JmlEditor" ,"Name of source code version")+":");
         edNewSrcVersionName=new QLineEdit(this);   
         final DateFormat dateFormat= DateFormat.getDateInstance(DateFormat.SHORT);//DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,locale);
         final DateFormat timeFormat= DateFormat.getTimeInstance();
@@ -135,6 +174,30 @@ public class ImportUserFuncDialog extends  ExplorerDialog{
     
     public boolean getIsSaveAsNewSrcVersion(){
         return isSaveAsNewSrcVersion;
+    }
+    
+    @SuppressWarnings("unused")
+    private void updateProfileToggle(final Boolean checked){
+        needUpdateProfile = checked;
+        changeWarningLabelColor(needUpdateProfile);
+    }
+    
+    private void changeWarningLabelColor(boolean isUpdateEnabled) {
+        final Color c = isUpdateEnabled ? Color.RED : Color.GRAY;
+        ExplorerTextOptions.Factory.getOptions(c).applyTo(lbUpdateProfileWarning);
+    }
+    
+    public boolean needUpdateProfile(){
+        return needUpdateProfile;
+    }
+    
+    @SuppressWarnings("unused")
+    private void importChangeLogToggle(final Boolean checked){
+        doImportChangeLog = checked;
+    }
+    
+    public boolean doImportChangeLog() {
+        return doImportChangeLog;
     }
     
     @SuppressWarnings("unused")

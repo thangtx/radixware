@@ -45,8 +45,16 @@ public abstract class ReleaseRepository {
         RfsRepositoryBranch repository = new RfsRepositoryBranch(this);
         branch = Branch.Factory.newInstanceInMemory(repository);
     }
-
+    
     public InputStream getRepositoryFileStream(final String fileName) throws RadixLoaderException {
+        return getRepositoryFileStreamImpl(fileName, null);
+    }
+    
+    public InputStream getRepositoryFileStream(final String fileName, final long cacheTimeout) throws RadixLoaderException {
+        return getRepositoryFileStreamImpl(fileName, cacheTimeout);
+    }    
+
+    private InputStream getRepositoryFileStreamImpl(final String fileName, final Long cacheTimeout) throws RadixLoaderException {
         RevisionMeta meta = getRevisionMeta();
         final FileMeta fileMeta = meta.findFile(fileName);
         if (fileMeta == null) {
@@ -54,15 +62,27 @@ public abstract class ReleaseRepository {
         }
         final byte[] data;
         try {
-            data = RadixLoader.getInstance().readFileData(fileMeta, meta);
+            if (cacheTimeout==null){
+                data = RadixLoader.getInstance().readFileData(fileMeta, meta);
+            }else{
+                data = RadixLoader.getInstance().readFileData(fileMeta, meta, cacheTimeout);
+            }
         } catch (IOException ex) {
             throw new RadixLoaderException("Error", ex);
         }
         return new ByteArrayInputStream(data);
 
     }
-
+    
     public InputStream getRepositoryImageStream(final String imagesDir, Id imageId) throws RadixLoaderException {
+        return getRepositoryImageStreamImpl(imagesDir, imageId, null);
+    }
+    
+    public InputStream getRepositoryImageStream(final String imagesDir, Id imageId, final long cacheTimeout) throws RadixLoaderException {
+        return getRepositoryImageStreamImpl(imagesDir, imageId, cacheTimeout);
+    }
+
+    private InputStream getRepositoryImageStreamImpl(final String imagesDir, Id imageId, final Long cacheTimeout) throws RadixLoaderException {
         RevisionMeta meta = getRevisionMeta();
         for (ERadixIconType type : ERadixIconType.values()) {
             final String ext = type.getValue();
@@ -73,7 +93,11 @@ public abstract class ReleaseRepository {
 
                 final byte[] data;
                 try {
-                    data = RadixLoader.getInstance().readFileData(fileMeta, meta);
+                    if (cacheTimeout==null){
+                        data = RadixLoader.getInstance().readFileData(fileMeta, meta);
+                    }else{
+                        data = RadixLoader.getInstance().readFileData(fileMeta, meta, cacheTimeout);
+                    }
                 } catch (IOException ex) {
                     throw new RadixLoaderException("Error", ex);
                 }

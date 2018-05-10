@@ -11,7 +11,9 @@
 
 package org.radixware.kernel.common.client.widgets;
 
+import java.util.Collection;
 import org.radixware.kernel.common.client.models.Model;
+import org.radixware.kernel.common.client.views.IView;
 
 /**
  * Виджет, который реализует этот интерфейс предоставляет информацию о
@@ -22,4 +24,8 @@ public interface IModifableComponent {
     boolean inModifiedStateNow();
 
     Model getModel();
+    
+    Collection<IModifableComponent> getInnerComponents();
+    
+    IView getView();
 }

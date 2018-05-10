@@ -20,6 +20,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.jar.JarFile;
 import javax.xml.stream.XMLStreamException;
 import org.radixware.kernel.starter.Starter;
+import org.radixware.kernel.starter.StarterArguments;
 import org.radixware.kernel.starter.config.ConfigEntry;
 import org.radixware.kernel.starter.config.ConfigFileAccessor;
 import org.radixware.kernel.starter.filecache.CacheEntry;
@@ -30,6 +31,7 @@ import org.radixware.kernel.starter.meta.FileMeta;
 import org.radixware.kernel.starter.meta.RevisionMeta;
 import org.radixware.kernel.starter.utils.ExceptionTextFormatter;
 import org.radixware.kernel.starter.utils.FileUtils;
+import org.radixware.kernel.starter.utils.SystemTools;
 
 /**
  * Facility to obtain data from files for application.
@@ -46,98 +48,6 @@ import org.radixware.kernel.starter.utils.FileUtils;
  */
 public abstract class RadixLoader {
 
-    public static class LocalFiles {
-
-        private static final LocalFiles EMPTY_INSTANCE = new LocalFiles(Collections.<String, String>emptyMap());
-        private static final String REMOTE_KEY = "remote";
-        private static final String LOCAL_KEY = "local";
-
-        private final Map<String, String> localFileByRemoteFile;
-
-        private LocalFiles(final Map<String, String> localFiles) {
-            localFileByRemoteFile = localFiles;
-        }
-
-        public static LocalFiles getInstance(final String localFileListPath) {
-            if (localFileListPath == null || localFileListPath.isEmpty()) {
-                return EMPTY_INSTANCE;
-            } else {
-                final File localFileListFile = new File(localFileListPath);
-                if (!localFileListFile.exists() || localFileListFile.isDirectory()) {
-                    traceError("Unable to load local file list from " + String.valueOf(localFileListFile) + ": it is not a text file");
-                    return EMPTY_INSTANCE;
-                }
-                final Map<String, String> localFiles = new LinkedHashMap<>();
-                try {
-                    final ConfigFileAccessor accessor = ConfigFileAccessor.get(localFileListFile.getAbsolutePath(), "");
-                    String remote = null;
-                    for (ConfigEntry entry : accessor.getEntries()) {
-                        if (remote == null) {
-                            if (REMOTE_KEY.equals(entry.getKey())) {
-                                remote = entry.getValue();
-                            } else {
-                                throw new IllegalStateException("Expected '" + REMOTE_KEY + "', but got '" + entry.getKey() + "'");
-                            }
-                        } else {
-                            if (LOCAL_KEY.equals(entry.getKey())) {
-                                localFiles.put(remote, entry.getValue());
-                                remote = null;
-                            } else {
-                                throw new IllegalStateException("Expected '" + LOCAL_KEY + "', but got '" + entry.getKey() + "'");
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    traceError("Unable to load local file list", ex);
-                }
-                if (localFiles.isEmpty()) {
-                    return EMPTY_INSTANCE;
-                } else {
-                    traceEvent("Local file list is loaded from '" + localFileListFile + "'");
-                    for (Map.Entry<String, String> entry : localFiles.entrySet()) {
-                        boolean exists = false;
-                        try {
-                            exists = new File(entry.getValue()).exists();
-                        } catch (Exception ex) {
-                            //ignore
-                        }
-                        if (exists) {
-                            traceEvent("File is locally overwritten: '" + entry.getKey() + "'='" + entry.getValue() + "'");
-                        } else {
-                            traceError("Replacement of '" + entry.getKey() + "' with '" + entry.getValue() + "' is invalid, local file does not exists");
-                        }
-
-                    }
-                    return new LocalFiles(localFiles);
-                }
-            }
-        }
-
-        public String getLocalFilePath(final String remoteFile) {
-            return localFileByRemoteFile.get(remoteFile);
-        }
-
-        public CacheEntry getCacheEntry(final String remoteFile) throws RadixLoaderException {
-            final String localFile = localFileByRemoteFile.get(remoteFile);
-            if (localFile == null) {
-                return null;
-            }
-            try {
-                if (localFile.endsWith(JAR_FILE_SUFFIX)) {
-                    return new JarCacheEntry(new JarFile(localFile), false);
-                } else {
-                    return new FileCacheEntry(Files.readAllBytes(new File(localFile).toPath()));
-                }
-            } catch (IOException ex) {
-                throw new RadixLoaderException("Unable to get file from local file list", ex);
-            }
-        }
-
-        public Map<String, String> getAllReplacements() {
-            return Collections.unmodifiableMap(localFileByRemoteFile);
-        }
-    }
-
     public static final String SERVER_GROUP_SUFFIX = "Server";
     public static final String COMMON_GROUP_SUFFIX = "Common";
     public static final String DDS_GROUP_SUFFIX = "Dds";
@@ -150,6 +60,8 @@ public abstract class RadixLoader {
     private static final boolean INTERNAL_DEBUG_ENABLED;
     private static final boolean INTERNAL_EVENT_ENABLED;
     protected static final String JAR_FILE_SUFFIX = ".jar";
+    protected static final String ZIP_FILE_SUFFIX = ".zip";
+    protected static final long MAX_EXPORTED_FILE_BYTES = Long.getLong("rdx.loader.max.exported.file.bytes", 100l * 1024 * 1024);
 
     static {
         final String level = System.getProperty("debug.radix.svn.loader");
@@ -165,41 +77,13 @@ public abstract class RadixLoader {
         }
     }
 
-    public static class HowGetFile {
-
-        public static enum Mode {
-
-            GET_FROM_DIR,
-            GET_FROM_SVN,
-            GET_FROM_SVN_TO_DIR
-        }
-        private static final HowGetFile FROM_SVN = new HowGetFile(Mode.GET_FROM_SVN, null);
-        public final Mode mode;
-        public final File directory;
-
-        private HowGetFile(Mode mode, File directory) {
-            this.mode = mode;
-            this.directory = directory;
-        }
-
-        public static HowGetFile fromDir(final File dir) {
-            return new HowGetFile(Mode.GET_FROM_DIR, dir);
-        }
-
-        public static HowGetFile fromSvnToDir(final File dir) {
-            return new HowGetFile(Mode.GET_FROM_SVN_TO_DIR, dir);
-        }
-
-        public static HowGetFile fromSvn() {
-            return FROM_SVN;
-        }
-    };
     private static volatile RadixLoader theInstance;
     private final TempFiles tempFiles = new TempFiles();
     private volatile boolean isClosed = false;
     private final List<String> topLayerUris;
     protected volatile IActualizeController actualizeController;
     protected volatile RevisionMeta currentRevisionMeta;
+    protected volatile long prevRevisionNum = -1;
     private final FileCache fileCache;
     private final Object tempFilesCacheSem = new Object();
     private final Map<String, File> tempFilesCache = new HashMap<>();
@@ -208,6 +92,7 @@ public abstract class RadixLoader {
     private volatile String status = "Initializing...";
     private final File tempFilesDir;
     private final LocalFiles localFiles;
+    private volatile Boolean useHardlinks;
 
     public RadixLoader(final List<String> topLayerUris, final LocalFiles localFiles) {
         this.localFiles = localFiles;
@@ -239,7 +124,7 @@ public abstract class RadixLoader {
     protected void readUnlock() {
         stateLock.readLock().unlock();
     }
-
+    
     /**
      * If you want to override this method, you should always call super.close()
      * to clean up temp files created by
@@ -267,7 +152,7 @@ public abstract class RadixLoader {
         this.status = status;
     }
 
-    protected void clearFileCache() {
+    public void clearFileCache() {
         readLock();
         try {
             fileCache.clear();
@@ -283,6 +168,14 @@ public abstract class RadixLoader {
         } finally {
             writeUnlock();
         }
+    }
+
+    public long getLatestRevision() {
+        return -1; //throw new UnsupportedOperationException();
+    }
+
+    public long getPreloadedRevision() {
+        return -1;
     }
 
     abstract public String getRepositoryUri(); // by BAO
@@ -395,6 +288,38 @@ public abstract class RadixLoader {
         }
     }
 
+    public void copyMaybeHardlink(final File dest, final File src) throws IOException {
+        if (!src.exists()) {
+            throw new FileNotFoundException(src.getPath());
+        }
+        final Boolean useHardlinkSnapshot = useHardlinks;
+        boolean tryHardlink = false;
+        if (useHardlinkSnapshot == null) {
+            if (Starter.getArguments() != null && Starter.getArguments().getStarterParameters() != null && Starter.getArguments().getStarterParameters().containsKey(StarterArguments.DISABLE_HARDLINKS)) {
+                useHardlinks = false;
+            } else if (!SystemTools.isWindows || (SystemTools.isWindows && Starter.getArguments() != null && Starter.getArguments().getStarterParameters() != null && Starter.getArguments().getStarterParameters().containsKey(StarterArguments.ENABLE_HARDLINKS_ON_WINDOWS))) {
+                tryHardlink = true;
+            }
+        } else {
+            tryHardlink = useHardlinkSnapshot;
+        }
+        if (tryHardlink) {
+            try {
+                Files.createLink(dest.toPath(), src.toPath());
+                return;
+            } catch (IOException ex) {
+                useHardlinks = false;
+                SafeLogger.getInstance().info(RadixLoader.class, "Unable to use hardlinks to copy file from '" + src.getParentFile().getAbsolutePath() + "' to '" + dest.getParentFile().getAbsolutePath() + "."
+                        + "\nThis will not affect application logic."
+                        + "\nYou can disable attempts to use hardlinks (and suppress this message) by passing '-disableHardlinks' parameter to starter. Hardlink creation error message: " + ex.getMessage());
+            }
+        }
+        try (InputStream in = new FileInputStream(src)) {
+            Files.copy(in, Paths.get(dest.toURI()), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+    }
+
     public File createTempFile(final String prefix) {
         final File tmpFile = new File(tempFilesDir, prefix + UUID.randomUUID().toString());
         return tmpFile;
@@ -425,6 +350,10 @@ public abstract class RadixLoader {
     }
 
     public RevisionMeta getRevisionMeta(final long revisionNum) throws RadixLoaderException {
+        return getRevisionMeta(revisionNum, ERevisionMetaType.FULL);
+    }
+
+    public RevisionMeta getRevisionMeta(final long revisionNum, final ERevisionMetaType metaType) throws RadixLoaderException {
         RevisionMeta meta = null;
         readLock();
         try {
@@ -433,12 +362,16 @@ public abstract class RadixLoader {
             readUnlock();
         }
         if (meta == null) {
-            writeLock();
+            if (metaType == ERevisionMetaType.FULL) {
+                writeLock();
+            } else {
+                readLock();
+            }
             try {
                 meta = findCachedRevMeta(revisionNum);
                 if (meta == null) {
                     try {
-                        meta = createRevisionMetaImpl(revisionNum);
+                        meta = createRevisionMetaImpl(revisionNum, metaType);
                     } catch (Exception ex) {
                         if (ex instanceof RadixLoaderException) {
                             throw (RadixLoaderException) ex;
@@ -446,10 +379,16 @@ public abstract class RadixLoader {
                             throw new RadixLoaderException("Unable to load revision meta", ex);
                         }
                     }
-                    revisionMetas.put(revisionNum, new WeakReference<>(meta));
+                    if (metaType == ERevisionMetaType.FULL) {
+                        revisionMetas.put(revisionNum, new WeakReference<>(meta));
+                    }
                 }
             } finally {
-                writeUnlock();
+                if (metaType == ERevisionMetaType.FULL) {
+                    writeUnlock();
+                } else {
+                    readUnlock();
+                }
             }
         }
         return meta;
@@ -463,7 +402,7 @@ public abstract class RadixLoader {
         return null;
     }
 
-    abstract protected RevisionMeta createRevisionMetaImpl(long revisionNum) throws IOException, XMLStreamException;
+    abstract protected RevisionMeta createRevisionMetaImpl(long revisionNum, ERevisionMetaType type) throws IOException, XMLStreamException;
 
     /**
      * Acquiring appropriate locks is under the caller responsibility
@@ -479,9 +418,27 @@ public abstract class RadixLoader {
         return new_revision_meta;
     }
 
+    protected RevisionMeta readRevisionMeta(
+            final long revisionNum,
+            final HowGetFile howGet,
+            final Set<String> changedGroups,
+            final Set<String> modifiedFiles,
+            final Set<String> removedFiles,
+            final String explicitKernelVersionStr,
+            final String explicitAppVersionStr,
+            final String kernelRevisions,
+            final String compatibleKernelRevisions) throws IOException, XMLStreamException {
+        final RevisionMeta new_revision_meta = new RevisionMeta(new DefaultAccessor(this), revisionNum, howGet, explicitKernelVersionStr, explicitAppVersionStr, kernelRevisions, compatibleKernelRevisions);
+        new_revision_meta.getChanges(currentRevisionMeta, changedGroups, modifiedFiles, removedFiles);
+        return new_revision_meta;
+    }
+
     protected final void setCurrentRevisionMeta(final RevisionMeta meta) throws RadixLoaderException {
         writeLock();
         try {
+            if (currentRevisionMeta != null) {
+                prevRevisionNum = currentRevisionMeta.getNum();
+            }
             this.currentRevisionMeta = meta;
             if (meta != null) {
                 revisionMetas.put(meta.getNum(), new WeakReference<>(meta));
@@ -574,6 +531,15 @@ public abstract class RadixLoader {
         }
     }
 
+    public long getPreviousRevision() {
+        readLock();
+        try {
+            return prevRevisionNum;
+        } finally {
+            readUnlock();
+        }
+    }
+
     public Set<String> actualize() throws RadixLoaderException {
         try {
             return actualize(null, null, null, null);
@@ -594,6 +560,15 @@ public abstract class RadixLoader {
         readLock();
         try {
             return fileCache.readFileData(fileMeta, revMeta);
+        } finally {
+            readUnlock();
+        }
+    }
+
+    public byte[] readFileData(final FileMeta fileMeta, final RevisionMeta revMeta, final long cacheTimeout) throws IOException {
+        readLock();
+        try {
+            return fileCache.readFileData(fileMeta, revMeta, cacheTimeout);
         } finally {
             readUnlock();
         }
@@ -626,10 +601,29 @@ public abstract class RadixLoader {
         }
     }
 
+    public byte[] readResourceData(final String file_name, final Set<String> groupTypes, String archive, final RevisionMeta revisionMeta, final long cacheTimeout) throws IOException {
+        readLock();
+        try {
+            return fileCache.readResourceData(file_name, groupTypes, archive, revisionMeta, cacheTimeout);
+        } finally {
+            readUnlock();
+        }
+    }
+    
     public Set<String> actualize(Collection<RevisionMeta> oldRevisionMeta, Set<String> modifiedFiles, Set<String> removedFiles, Set<String> preloadGroupSuffixes) throws RadixLoaderException {
+        return actualize(-1, oldRevisionMeta, modifiedFiles, removedFiles, preloadGroupSuffixes);
+    }
+
+    public Set<String> actualize(final long targetRevNum, Collection<RevisionMeta> oldRevisionMeta, Set<String> modifiedFiles, Set<String> removedFiles, Set<String> preloadGroupSuffixes) throws RadixLoaderException {
+        actualizeAuxInfo();
         setStatus("Actualizing");
         try {
-            return actualizeImpl(oldRevisionMeta, modifiedFiles, removedFiles, preloadGroupSuffixes);
+            return actualizeImpl(targetRevNum, oldRevisionMeta, modifiedFiles, removedFiles, preloadGroupSuffixes);
+        } catch (Exception ex) {
+            if (ex instanceof RadixLoaderException) {
+                throw (RadixLoaderException) ex;
+            }
+            throw new RadixLoaderException("Error on version actualizing", ex);
         } finally {
             setStatus("Actualization finished");
         }
@@ -638,7 +632,32 @@ public abstract class RadixLoader {
     /**
      * Acquiring appropriate locks is under implementation responsibility
      */
-    abstract protected Set<String> actualizeImpl(Collection<RevisionMeta> oldRevisionMeta, Set<String> modifiedFiles, Set<String> removedFiles, Set<String> preloadGroupSuffixes) throws RadixLoaderException;
+    abstract protected Set<String> actualizeImpl(final long targetRevNum, Collection<RevisionMeta> oldRevisionMeta, Set<String> modifiedFiles, Set<String> removedFiles, Set<String> preloadGroupSuffixes) throws RadixLoaderException;
+
+    /**
+     * Update auxiliary information about repository (if any), but do not update
+     * version.
+     *
+     * This procedure is always called as first part of "actualize" procedure.
+     *
+     * @throws RadixLoaderException
+     */
+    public void actualizeAuxInfo() throws RadixLoaderException {
+        setStatus("Actualizing auxiliary information");
+        try {
+            actualizeAuxInfoImpl();
+        } catch (Exception ex) {
+            if (ex instanceof RadixLoaderException) {
+                throw (RadixLoaderException) ex;
+            }
+            throw new RadixLoaderException("Error on actualizing auxiliary reposiotry infomation", ex);
+        } finally {
+            setStatus("Actualizing auxiliary information finished");
+        }
+    }
+
+    protected void actualizeAuxInfoImpl() throws RadixLoaderException {
+    }
 
     /**
      * Acquiring appropriate locks is under implementation responsibility
@@ -655,12 +674,12 @@ public abstract class RadixLoader {
 
     public String getNativeLibrary(FileMeta fileMeta, RevisionMeta revisionMeta) throws RadixLoaderException {
         try {
-            final String localFilePath = localFiles.getLocalFilePath(fileMeta.getName());
+            final String localFilePath = localFiles.getLocalFilePath(fileMeta.getName(), revisionMeta.getNum());
             if (localFilePath != null) {
                 return localFilePath;
             }
             final File tmp_file = createTempFileWithExactName(System.mapLibraryName("radix-starter-nativelib-" + UUID.randomUUID().toString()));
-            final InputStream in = new ByteArrayInputStream(readFileData(fileMeta, revisionMeta));
+            final InputStream in = new ByteArrayInputStream(readFileData(fileMeta, revisionMeta, 0));
             Files.copy(in, Paths.get(tmp_file.toURI()), StandardCopyOption.REPLACE_EXISTING);
             return tmp_file.getPath();
         } catch (IOException e) {
@@ -668,12 +687,39 @@ public abstract class RadixLoader {
         }
     }
 
+    @Deprecated
     protected final CacheEntry getLocalFile(final String localFile) throws RadixLoaderException {
-        return localFiles.getCacheEntry(localFile);
+        return localFiles.getCacheEntry(localFile, -1);
     }
     
+    protected final CacheEntry getLocalFile(final String localFile, final long revisionNum) throws RadixLoaderException {
+        return localFiles.getCacheEntry(localFile, revisionNum);
+    }
+
     public byte[] export(final String file, final long revNum) throws RadixLoaderException {
+        return exportFile(file, revNum).getData();
+    }
+
+    public IRepositoryEntry exportFile(final String file, final long revNum) throws RadixLoaderException {
         throw new UnsupportedOperationException("Export is not supported by " + getClass().getName());
+    }
+
+    public Collection<IRepositoryEntry> listDir(final String path, final long revNum, final boolean downloadFileData) throws RadixLoaderException {
+        throw new UnsupportedOperationException("List is not supported by " + getClass().getName());
+    }
+
+    public String concatPath(final String path1, final String path2) {
+        if (path1 == null || path1.isEmpty()) {
+            return path2;
+        }
+        if (path2 == null || path2.isEmpty()) {
+            return path1;
+        }
+        final String separator = "/";
+        if (path1.endsWith(separator)) {
+            return path1 + path2;
+        }
+        return path1 + separator + path2;
     }
 
     protected static class DefaultAccessor implements RadixLoaderAccessor {
@@ -710,6 +756,10 @@ public abstract class RadixLoader {
 
     public LocalFiles getLocalFiles() {
         return localFiles;
+    }
+    
+    public List<ReplacementFile> getUsedLocalReplacements(final long revNumber) {
+        return localFiles.getUsedReplacements(revNumber);
     }
 
     protected static void traceDebug(final String message) {
@@ -755,12 +805,490 @@ public abstract class RadixLoader {
     }
 
     private static void writeInternalLog(final String message, final Throwable ex) {
-        System.out.println(new Date() + " " + getDebugDesc() + ": " + message + (ex == null ? "" : ": " + ExceptionTextFormatter.throwableToString(ex)));
+        System.out.println(new Date() + " " + getDebugDesc() + ": " + message + (ex == null ? "" : ":\n" + ExceptionTextFormatter.throwableToString(ex)));
     }
 
     protected static void internalDebug(final String message, final Throwable ex) {
         if (INTERNAL_DEBUG_ENABLED) {
             writeInternalLog(message, ex);
         }
+    }
+      
+    public static class LocalFiles {
+
+        private static final LocalFiles EMPTY_INSTANCE = new LocalFiles(null, null);
+        private static final String REMOTE_KEY = "remote";
+        private static final String LOCAL_KEY = "local";
+        private static final String REPLACEMENT_CFG = "replacement.cfg";
+
+        private final String localReplacementsDir;
+        private final String localFileListPath;
+        private final List<ReplacementFile> uncompatibleReplacements;
+        private final List<ConflictInfo> replacementConflicts;
+        private final Map<Long, List<ReplacementFile>> replacementsByRevNum;
+        private final List<ReplacementFile> allReplacements;
+        
+        private boolean localFileListParsed = false;
+        private File rootTmpReplacementsDir;
+
+        private LocalFiles(final String localFileListPath, final String replacementDirPath) {
+            this.localFileListPath = localFileListPath;
+            localReplacementsDir = replacementDirPath;
+            replacementConflicts = new ArrayList<>();
+            uncompatibleReplacements = new ArrayList<>();
+            allReplacements = new ArrayList<>();
+            replacementsByRevNum = new HashMap<>();
+        }
+
+        public static LocalFiles getInstance(final String localFileListPath) {
+            return getInstance(localFileListPath, null);
+        }
+        
+        public static LocalFiles getInstance(final String localFileListPath, final String localReplacementsDir) {
+            if (localFileListPath == null && localReplacementsDir == null) {
+                return EMPTY_INSTANCE;
+            }
+            return new LocalFiles(localFileListPath, localReplacementsDir);
+        }
+        
+        private static List<ReplacementFile> scanLocalReplacementDir(File rootTmpDir, String localReplacementDirPath) {
+            if (localReplacementDirPath == null || localReplacementDirPath.isEmpty()) {
+                return Collections.<ReplacementFile>emptyList();
+            }
+            final File replacementSrcDir = new File(localReplacementDirPath);
+            if (!replacementSrcDir.exists() || !replacementSrcDir.isDirectory()) {
+                traceError("Unable to load files from replacement directory " + String.valueOf(replacementSrcDir) + ": directory does not exists");
+                return Collections.<ReplacementFile>emptyList();
+            }
+            if (!rootTmpDir.exists() || !rootTmpDir.isDirectory()) {
+                traceError("Unable to create temporary directory for replacements");
+                return Collections.<ReplacementFile>emptyList();
+            }
+            
+            final FileFilter onlyZipFiles = new FileFilter() {
+                @Override
+                public boolean accept(File fName) {
+                    return fName.getName().toLowerCase().endsWith(ZIP_FILE_SUFFIX);
+                }
+            };
+            
+            final List<ReplacementFile> replacementFiles = new ArrayList<>();
+            
+            final String revDirName = Long.toString(System.currentTimeMillis()); //use current timestamp to generate unique dir name for revision
+            final File revTmpDir = new File(rootTmpDir, revDirName);
+            revTmpDir.delete();
+            revTmpDir.mkdirs();
+            
+            for (final File zipFile : replacementSrcDir.listFiles(onlyZipFiles)) {
+                try (FileInputStream fis = new FileInputStream(zipFile)) {
+                    final File tmpReplacementDir = new File(revTmpDir, zipFile.getName().substring(0, zipFile.getName().length() - ZIP_FILE_SUFFIX.length()));
+                    tmpReplacementDir.delete();
+                    tmpReplacementDir.mkdirs();
+                    
+                    FileUtils.unpackZipStream(fis, tmpReplacementDir, new ArrayList());
+                    if (tmpReplacementDir.isDirectory()) {
+                        final List<ReplacementEntry> repEntries = new ArrayList<>();
+                        final List<File> cfgFileContainer = new ArrayList<>(1);
+                        tmpReplacementDir.listFiles(new FileFilter() {
+                            @Override
+                            public boolean accept(File file) {
+                                if (REPLACEMENT_CFG.equals(file.getName().toLowerCase())) {
+                                    cfgFileContainer.add(file);
+                                } else if (file.isDirectory()) {
+                                    file.listFiles(this);
+                                } else {
+                                    final String remote = tmpReplacementDir.toPath().normalize().relativize(file.toPath()).toString();
+                                    repEntries.add(new ReplacementEntry(remote, file.getAbsolutePath()));
+                                }
+                                return true;
+                            }
+                        });
+                        
+                        final ReplacementFile repFile = ReplacementFile.newInstance(zipFile.getAbsolutePath(), cfgFileContainer.isEmpty() ? null : cfgFileContainer.get(0).getAbsolutePath());
+                        if (repFile != null) {
+                            for (ReplacementEntry e : repEntries) {
+                                repFile.addEntry(e);
+                            }
+                            replacementFiles.add(repFile);
+                        }
+                    }
+                } catch (Exception ex) {
+                     traceError("Unable to load files from replacement archive: " + zipFile.getName(), ex);
+                }
+            }
+            return replacementFiles;
+        }
+        
+        private static List<ReplacementFile> parseLocalFileList(String localFileListPath) {
+            if (localFileListPath == null || localFileListPath.isEmpty()) {
+                return Collections.emptyList();
+            }
+            final File localFileListFile = new File(localFileListPath);
+            if (!localFileListFile.exists() || localFileListFile.isDirectory()) {
+                traceError("Unable to load local file list from " + String.valueOf(localFileListFile) + ": it is not a text file");
+                return Collections.emptyList();
+            }
+            final List<ReplacementEntry> entries = new ArrayList<>();
+            try {
+                final ConfigFileAccessor accessor = ConfigFileAccessor.get(localFileListFile.getAbsolutePath(), "");
+                String remote = null;
+                for (ConfigEntry entry : accessor.getEntries()) {
+                    if (remote == null) {
+                        if (REMOTE_KEY.equals(entry.getKey())) {
+                            remote = entry.getValue();
+                        } else {
+                            throw new IllegalStateException("Expected '" + REMOTE_KEY + "', but got '" + entry.getKey() + "'");
+                        }
+                    } else {
+                        if (LOCAL_KEY.equals(entry.getKey())) {
+                            entries.add(new ReplacementEntry(remote, entry.getValue()));
+                            remote = null;
+                        } else {
+                            throw new IllegalStateException("Expected '" + LOCAL_KEY + "', but got '" + entry.getKey() + "'");
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                traceError("Unable to load local file list", ex);
+            }
+            if (entries.isEmpty()) {
+                return Collections.emptyList();
+            } else {
+                final ReplacementFile repFile = ReplacementFile.newInstance(localFileListPath, null);
+                if (repFile == null) {
+                    return Collections.emptyList();
+                }
+                traceEvent("Local file list is loaded from '" + localFileListFile + "'");
+                for (ReplacementEntry entry : entries) {
+                    boolean exists = false;
+                    try {
+                        exists = new File(entry.getLocal()).exists();
+                    } catch (Exception ex) {
+                        //ignore
+                    }
+                    if (exists) {
+                        repFile.addEntry(entry);
+                        traceEvent("File is locally overwritten: '" + entry.getRemote() + "'='" + entry.getLocal() + "'");
+                    } else {
+                        traceError("Replacement of '" + entry.getRemote() + "' with '" + entry.getLocal() + "' is invalid, local file does not exist");
+                    }
+                }
+                return Arrays.asList(repFile);
+            }
+        }
+        
+        //For RadixDirLoader only
+        public void setRevisionNum(long revisionNum) {
+            final List<ReplacementFile> repFiles = replacementsByRevNum.remove(0l);
+            if (repFiles != null) {
+                replacementsByRevNum.put(revisionNum, repFiles);
+            }
+        }
+        
+        public void loadForVersion(long revision, String kernLayerVers, String appLayerVers) {
+            if (localFileListPath != null) {
+                if (!localFileListParsed) {
+                    allReplacements.clear();
+                    allReplacements.addAll(parseLocalFileList(localFileListPath));
+                    localFileListParsed = true;
+                }
+            } else if (replacementsByRevNum.get(revision) == null) {
+                allReplacements.clear();
+                uncompatibleReplacements.clear();
+                replacementConflicts.clear();
+                
+                if (rootTmpReplacementsDir == null) {
+                    rootTmpReplacementsDir = RadixLoader.getInstance().createTempFile("local-replacement-dir");
+                    rootTmpReplacementsDir.delete();
+                    rootTmpReplacementsDir.mkdirs();
+                }
+                allReplacements.addAll(scanLocalReplacementDir(rootTmpReplacementsDir, localReplacementsDir));
+                
+                final List<ReplacementFile> revReplacements = new ArrayList<>();
+                for (ReplacementFile repFile : allReplacements) {
+                    if (repFile.compatibleFor(kernLayerVers, appLayerVers)) {
+                        addIfNotConflicted(repFile, revReplacements);
+                    } else {
+                        uncompatibleReplacements.add(repFile);
+                    }
+                }
+                replacementsByRevNum.put(revision, revReplacements);
+            }
+        }
+        
+        private void addIfNotConflicted(ReplacementFile fileToAdd, List<ReplacementFile> revReplacements) {
+            final List<ConflictInfo> conflicts = new ArrayList<>();
+            for (ReplacementFile file : revReplacements) {
+                final Set<String> conflictEntries = file.checkEntriesConflict(fileToAdd);
+                if (!conflictEntries.isEmpty()) {
+                    conflicts.add(registerConflict(fileToAdd, file, conflictEntries));
+                }
+            }
+            if (conflicts.isEmpty()) {
+                revReplacements.add(fileToAdd);
+            } else {
+                boolean fileToAddIsNewerThanAllOther = true;
+                for (ConflictInfo conflict : conflicts) {
+                    if (!fileToAdd.isNewer(conflict.otherFile)) {
+                        fileToAddIsNewerThanAllOther = false;
+                        break;
+                    }
+                }
+                if (fileToAddIsNewerThanAllOther) {
+                    for (ConflictInfo conflict : conflicts) {
+                        revReplacements.remove(conflict.otherFile);
+                    }
+                    revReplacements.add(fileToAdd);
+                }
+            }
+        }
+        
+        private ConflictInfo registerConflict(ReplacementFile repFile, ReplacementFile otherFile, Set<String> conflictEntries) {
+            final ConflictInfo conflictInfo = new ConflictInfo(repFile, otherFile, conflictEntries);
+            replacementConflicts.add(conflictInfo);
+            return conflictInfo;
+        }
+
+        @Deprecated
+        public String getLocalFilePath(final String remoteFile) {
+            return getLocalFilePath(remoteFile, -1);
+        }
+        
+        public String getLocalFilePath(final String remoteFile, final long revision) {
+            try {
+                final ReplacementEntry repEntry = findReplacement(remoteFile, revision);
+                return repEntry != null ? repEntry.getLocal() : null;
+            } catch (RadixLoaderException ex) {
+                traceError("Unable to load replacement info", ex);
+                return null;
+            }
+        }
+
+        @Deprecated
+        public CacheEntry getCacheEntry(final String remoteFile) throws RadixLoaderException {
+            return getCacheEntry(remoteFile, -1);
+        }
+        
+        public CacheEntry getCacheEntry(final String remoteFile, final long revision) throws RadixLoaderException {
+            final ReplacementEntry repEntry = findReplacement(remoteFile, revision);
+            if (repEntry != null) {
+                final String localFile = repEntry.getLocal();
+                try {
+                    if (localFile.endsWith(JAR_FILE_SUFFIX)) {
+                        return new JarCacheEntry(new JarFile(localFile), false);
+                    } else {
+                        return new FileCacheEntry(Files.readAllBytes(new File(localFile).toPath()));
+                    }
+                } catch (IOException ex) {
+                    throw new RadixLoaderException("Unable to get file from local file list", ex);
+                }
+            }
+            return null;
+        }
+        
+        private ReplacementEntry findReplacement(final String remoteFile, final long revNumber) throws RadixLoaderException {
+            final List<ReplacementFile> repFiles = getUsedReplacements(revNumber);
+            if (repFiles != null) {
+                for (ReplacementFile repFile : repFiles) {
+                    final ReplacementEntry repEntry = repFile.getByRemotePath(remoteFile);
+                    if (repEntry != null) {
+                        return repEntry;
+                    }
+                }
+            }
+            return null;
+        }
+                
+        @Deprecated
+        public Map<String, String> getAllReplacements() {
+            final List<ReplacementFile> repFiles = getUsedReplacements(-1);
+            if (repFiles == null) {
+                return Collections.emptyMap();
+            }
+
+            final Map<String, String> remote2Local = new HashMap<>();
+            for (ReplacementFile repFile : repFiles) {
+                for (ReplacementEntry repEntry : repFile.getEntries()) {
+                    remote2Local.put(repEntry.getRemote(), repEntry.getLocal());
+                }
+            }
+            return remote2Local;
+        }
+        
+        public List<ReplacementFile> getAllReplacementsEx() {
+            return allReplacements;
+        }
+        
+        public List<ReplacementFile> getUsedReplacements(final long revNumber) {
+            return localFileListPath != null ? allReplacements : replacementsByRevNum.get(revNumber);
+        }
+        
+        public List<ReplacementFile> getUncompatibleReplacements() {
+            return uncompatibleReplacements;
+        }
+        
+        public List<ConflictInfo> getReplacementConflicts() {
+            return replacementConflicts;
+        }
+                
+        public static class ConflictInfo {
+            
+            private final ReplacementFile repFile;
+            private final ReplacementFile otherFile;
+            private final Set<String> conflictEntries;
+
+            public ConflictInfo(ReplacementFile repFile, ReplacementFile otherFile, Set<String> conflictEntries) {
+                this.repFile = repFile;
+                this.otherFile = otherFile;
+                this.conflictEntries = conflictEntries;
+            }
+
+            public ReplacementFile getRepFile() {
+                return repFile;
+            }
+
+            public ReplacementFile getOtherFile() {
+                return otherFile;
+            }
+
+            public Set<String> getConflictEntries() {
+                return conflictEntries;
+            }
+            
+        }
+    }
+
+    public static class HowGetFile {
+
+        public static enum Mode {
+
+            GET_FROM_DIR,
+            GET_FROM_SVN,
+            GET_FROM_SVN_TO_DIR
+        }
+        private static final HowGetFile FROM_SVN = new HowGetFile(Mode.GET_FROM_SVN, null, false);
+        private static final HowGetFile FROM_SVN_SKIP_LOCAL_CACHE = new HowGetFile(Mode.GET_FROM_SVN, null, true);
+        public final Mode mode;
+        public final File directory;
+        public final boolean skipLocalSvnCache;
+
+        private HowGetFile(Mode mode, File directory, final boolean skipLocalSvnCache) {
+            this.mode = mode;
+            this.directory = directory;
+            this.skipLocalSvnCache = skipLocalSvnCache;
+        }
+
+        public static HowGetFile fromDir(final File dir) {
+            return new HowGetFile(Mode.GET_FROM_DIR, dir, false);
+        }
+
+        public static HowGetFile fromSvnToDir(final File dir) {
+            return new HowGetFile(Mode.GET_FROM_SVN_TO_DIR, dir, false);
+        }
+
+        public static HowGetFile fromSvn() {
+            return FROM_SVN;
+        }
+
+        public static HowGetFile fromSvnToDirSkipLocalCache(final File dir) {
+            return new HowGetFile(Mode.GET_FROM_SVN_TO_DIR, dir, true);
+        }
+
+        public static HowGetFile fromSvnSkipLocalCache() {
+            return FROM_SVN_SKIP_LOCAL_CACHE;
+        }
+    };
+
+    protected static class FileRepositoryEntry implements IRepositoryEntry {
+
+        private final String path;
+        private final byte[] data;
+        private final long revNum;
+        private final long revCreationTimeMillis;
+        private final String name;
+
+        public FileRepositoryEntry(String path, String name, byte[] data, long revNum, long revCreationTimeMillis) {
+            this.path = path;
+            this.data = data;
+            this.revNum = revNum;
+            this.revCreationTimeMillis = revCreationTimeMillis;
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public boolean isDirectory() {
+            return false;
+        }
+
+        @Override
+        public String getPath() {
+            return path;
+        }
+
+        @Override
+        public long getRevisionNum() {
+            return revNum;
+        }
+
+        @Override
+        public long getRevisionCreationTimeMillis() {
+            return revCreationTimeMillis;
+        }
+
+        @Override
+        public byte[] getData() {
+            return data;
+        }
+    }
+
+    protected static class DirRepositoryEntry implements IRepositoryEntry {
+
+        private final String path;
+        private final long revNum;
+        private final long revCreationTimeMillis;
+        private final String name;
+
+        public DirRepositoryEntry(String path, String name, long revNum, long revCreationTimeMillis) {
+            this.path = path;
+            this.revNum = revNum;
+            this.revCreationTimeMillis = revCreationTimeMillis;
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public boolean isDirectory() {
+            return true;
+        }
+
+        @Override
+        public String getPath() {
+            return path;
+        }
+
+        @Override
+        public long getRevisionNum() {
+            return revNum;
+        }
+
+        @Override
+        public long getRevisionCreationTimeMillis() {
+            return revCreationTimeMillis;
+        }
+
+        @Override
+        public byte[] getData() {
+            return null;
+        }
+
     }
 }

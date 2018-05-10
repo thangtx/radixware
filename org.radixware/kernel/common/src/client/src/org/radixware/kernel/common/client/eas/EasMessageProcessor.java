@@ -177,9 +177,17 @@ class EasMessageProcessor {
             final GetObjectTitlesDocument doc = GetObjectTitlesDocument.Factory.newInstance();
             doc.addNewGetObjectTitles().setGetObjectTitlesRq((GetObjectTitlesRq) request);
             return doc;
+        } else if (request instanceof CalcSelectionStatisticRq){
+            final CalcSelectionStatisticDocument doc = CalcSelectionStatisticDocument.Factory.newInstance();
+            doc.addNewCalcSelectionStatistic().setCalcSelectionStatisticRq((CalcSelectionStatisticRq) request);
+            return doc;
         } else if (request instanceof GetPasswordRequirementsRq) {
             final GetPasswordRequirementsDocument doc = GetPasswordRequirementsDocument.Factory.newInstance();
             doc.addNewGetPasswordRequirements().setGetPasswordRequirementsRq((GetPasswordRequirementsRq) request);
+            return doc;
+        } else if (request instanceof GetDatabaseInfoRq){
+            final GetDatabaseInfoDocument doc = GetDatabaseInfoDocument.Factory.newInstance();
+            doc.addNewGetDatabaseInfo().setGetDatabaseInfoRq((GetDatabaseInfoRq)request);
             return doc;
         } else if (request instanceof CloseSessionRq){
             final CloseSessionDocument doc = CloseSessionDocument.Factory.newInstance();
@@ -308,6 +316,7 @@ class EasMessageProcessor {
         FileSelectMess.class,
         FileAccessMess.class,
         FileSizeMess.class,
+        FileTransitMess.class,
         FileOpenMess.class,
         FileCloseMess.class,
         FileReadMess.class,
@@ -319,8 +328,12 @@ class EasMessageProcessor {
         FileDirSelectMess.class,
         FileDirReadMess.class,
         FileDirCreateMess.class,
-        FileDirDeleteMess.class,
-        FileDirMoveMess.class,
+        FileDirDeleteMess.class,        
+        FileDirMoveMess.class,  
+        FileDirGetUserHomeMess.class,
+        GetUserDownloadsDirMess.class,
+        TestIfDirExistsMess.class,
+        TestIfFileExistsMess.class,
         ClientMethodInvocationMess.class,
         GetSecurityTokenMess.class
     };

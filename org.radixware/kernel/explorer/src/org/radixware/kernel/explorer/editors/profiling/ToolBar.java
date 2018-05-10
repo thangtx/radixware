@@ -65,7 +65,7 @@ public class ToolBar {
         toolTip = Application.translate("ProfilerDialog", "Clear");
         btnClear = createToolBtn(toolTip, "actClear()", "btnClear", ExplorerIcon.getQIcon(ProfilEditorIcons.DELETE_ALL));
 
-        toolTip = Application.translate("ProfilerDialog", "Summary");
+        toolTip = Application.translate("ProfilerDialog", "Show Total Statistics");
         btnShowSummary = createToolBtn(toolTip, "actShowSummary()", "btnShowSummary", ExplorerIcon.getQIcon(ProfilEditorIcons.SUM_MODE));
 
         toolTip = Application.translate("ProfilerDialog", "Export");

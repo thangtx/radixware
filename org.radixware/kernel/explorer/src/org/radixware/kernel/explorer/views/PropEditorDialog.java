@@ -26,6 +26,7 @@ public abstract class PropEditorDialog extends Dialog implements IPropEditorDial
 
     public PropEditorDialog(IClientEnvironment environment, final Id id, final Id titleId, final Id iconId) {
         super(environment, id, titleId, iconId);
+        setObjectName("rx_prop_dlg_view_#"+id.toString());
     }
 
     @Override

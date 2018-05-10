@@ -8,16 +8,19 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.html;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 import org.radixware.kernel.common.html.Html.Visitor.VisitResult;
 import org.radixware.kernel.common.utils.Base64;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.Utils;
-
 
 public class Html implements ICssStyledItem {
 
@@ -231,6 +234,11 @@ public class Html implements ICssStyledItem {
         this.id = nextId();
         this.elementName = elementName;
     }
+    
+    private Html(String elementName, String id) {
+        this.id = id;
+        this.elementName = elementName;
+    }
 
     public Html(final Html source) {
         this.id = nextId();
@@ -282,8 +290,8 @@ public class Html implements ICssStyledItem {
 
     protected Html createCopy() {
         if (!this.getClass().getName().equals(Html.class.getName())) {
-            final String message =
-                    String.format("Method 'createCopy' is not defined for '%s' class", this.getClass().getName());
+            final String message
+                    = String.format("Method 'createCopy' is not defined for '%s' class", this.getClass().getName());
             throw new UnsupportedOperationException(message);
         }
         return new Html(this);
@@ -313,7 +321,7 @@ public class Html implements ICssStyledItem {
         html.parent = this;
         childAdded(html);
     }
-
+        
     public void remove(Html html) {
         if (children == null) {
             return;
@@ -483,14 +491,22 @@ public class Html implements ICssStyledItem {
         });
     }
 
-    public String toString(boolean prettyPrint, boolean printId, int indent, boolean isRoot, LayotFlow layoutFlow) {
+    private String toString(boolean prettyPrint, boolean printId, int indent, boolean isRoot, LayotFlow layoutFlow) {
         return toString(prettyPrint, printId, indent, isRoot, false, layoutFlow);
     }
 
-    public String toString(boolean prettyPrint, boolean printId, int indent, boolean isRoot, boolean closeEmptyTags, LayotFlow layoutFlow) {
+    private String toString(boolean prettyPrint, boolean printId, int indent, boolean isRoot, boolean closeEmptyTags, LayotFlow layoutFlow) {
         StringBuilder sb = new StringBuilder();
-        appendTo(sb, prettyPrint, printId, indent, isRoot, closeEmptyTags, layoutFlow);
+        appendTo(sb, prettyPrint, printId, indent, isRoot, closeEmptyTags, false, layoutFlow);
         return sb.toString();
+    }
+
+    public String toString(boolean prettyPrint, boolean printId, int indent, boolean isRoot, boolean closeEmptyTags) {
+        return toString(prettyPrint, printId, indent, isRoot, closeEmptyTags, null);
+    }
+
+    public String toString(boolean prettyPrint, boolean printId, int indent, boolean isRoot) {
+        return toString(prettyPrint, printId, indent, isRoot, null);
     }
 
     private void newLine(StringBuilder sb, int indent) {
@@ -551,7 +567,7 @@ public class Html implements ICssStyledItem {
                 }
                 sb.append("type=\"init\">");
                 LayotFlow layotFlow = new LayotFlow();
-                this.appendTo(sb, true, true, 4, true, false, layotFlow);
+                this.appendTo(sb, true, true, 4, true, false, true, layotFlow);
                 layotFlow.appendTo(sb, 4);
                 sb.append("\n</update-element>");
                 return Visitor.VisitResult.SKIP_CHILDREN;
@@ -603,9 +619,9 @@ public class Html implements ICssStyledItem {
         }
     }
 
-    private void appendChangesTo(StringBuilder sb, boolean prettyPrint, int indent) {
+    private void appendChangesTo(final StringBuilder sb, final boolean prettyPrint, final int indent) {
         if (childChanges != null) {
-            for (ChildChange c : childChanges.values()) {
+            for (ChildChange c : new ArrayList<>(childChanges.values())) {
                 appendChange(c, prettyPrint, indent, sb);
             }
         }
@@ -663,7 +679,15 @@ public class Html implements ICssStyledItem {
             if (innerText == null || innerText.isEmpty()) {
                 sb.append("<text-change/>");
             } else {
-                sb.append("<text-change>").append(Html.string2HtmlString(innerText)).append("</text-change>");
+                if (isXmlCompatibleString(innerText)){
+                    sb.append("<text-change>").append(Html.string2HtmlString(innerText)).append("</text-change>");
+                }else{
+                    try{
+                        sb.append("<text-change-base64>").append(Base64.encode(innerText.getBytes(FileUtils.XML_ENCODING))).append("</text-change-base64>");
+                    }catch(UnsupportedEncodingException exception){
+                        throw new UnsupportedOperationException("Can't write inner text value", exception);
+                    }
+                }
             }
         }
     }
@@ -690,74 +714,105 @@ public class Html implements ICssStyledItem {
         }
     }
 
-    private void appendTo(StringBuilder sb, boolean prettyPrint, boolean printId, int indent, boolean isRoot, boolean closeEmptyTags, LayotFlow layoutFlow) {
-        if (prettyPrint) {
-            newLine(sb, indent);
-        }
-        sb.append('<').append(elementName);
-        if (printId) {
-            sb.append(" id=\"").append(id).append("\"");
-        }
-        if (isRoot) {
-            sb.append(" xmlns=\"").append("http://www.w3.org/1999/xhtml").append("\"");
-        }
-
-        if (attributes != null) {
-            String value;
-            for (Attribute a : attributes.values()) {
-                value = a.getValue();
-                if (value != null) {
-                    sb.append(' ');
-                    if (isXmlCompatibleString(value)) {
-                        sb.append(a.getName()).append("=\"").append(Html.string2HtmlString(value));
-                    } else {
-                        sb.append(a.getName()).append("__in_base64__").append("=\"");
-                        try {
-                            sb.append(Base64.encode(value.getBytes(FileUtils.XML_ENCODING)));
-                        } catch (UnsupportedEncodingException exception) {
-                            throw new UnsupportedOperationException("Can't write attribute value", exception);
-                        }
-                    }
-                    sb.append('"');
-                }
-            }
-        }
-        appendClassesAttr(sb);
-
-        if (this.scheduleLauout != null) {
-            layoutFlow.register(this, this.scheduleLauout);
-            //sb.append(' ').append("rwt_layout=\"").append(this.scheduleLauout).append('"');
-        }
-
-        String style = getStyle();
-        if (style != null) {
-            sb.append(" style=\"").append(style).append('"');
-        }
-
-        int childIndent = indent + 4;
-        if (children == null || children.isEmpty()) {
-            if (innerText != null && !innerText.isEmpty()) {
-                sb.append(">").append(Html.string2HtmlString(innerText)).append("</").append(elementName).append(">");
-            } else {
-                if (closeEmptyTags) {
-                    sb.append("</").append(elementName).append(">");
-                } else {
-                    if ("meta".equals(elementName.toLowerCase())) {
-                        sb.append(">");
-                    } else {
-                        sb.append("/>");
-                    }
-                }
-            }
+    private void appendTo(final StringBuilder sb, 
+                                       final boolean prettyPrint, 
+                                       final boolean printId, 
+                                       final int indent, 
+                                       final boolean isRoot, 
+                                       final boolean closeEmptyTags, 
+                                       final boolean escapeBadXmlChars,
+                                       final LayotFlow layoutFlow) {
+        if (this instanceof TextNode) {
+            sb.append(this.getInnerText());
         } else {
-            sb.append(">");
-            for (Html html : children) {
-                html.appendTo(sb, prettyPrint, printId, childIndent, false, closeEmptyTags, layoutFlow);
-            }
             if (prettyPrint) {
                 newLine(sb, indent);
             }
-            sb.append("</").append(elementName).append(">");
+            final boolean innerTextInBase64 = 
+                escapeBadXmlChars && innerText != null && !innerText.isEmpty() && !isXmlCompatibleString(innerText);
+            final String nodeName;
+            if (innerTextInBase64){
+                nodeName = elementName+"__in_base64__";
+            }else{
+                nodeName = elementName;
+            }
+
+            sb.append('<').append(nodeName);
+
+            if (printId) {
+                sb.append(" id=\"").append(id).append("\"");
+            }
+            if (isRoot) {
+                sb.append(" xmlns=\"").append("http://www.w3.org/1999/xhtml").append("\"");
+            }
+
+            if (attributes != null) {
+                String value;
+                for (Attribute a : attributes.values()) {
+                    value = a.getValue();
+                    if (value != null) {
+                        sb.append(' ');
+                        if (escapeBadXmlChars && !isXmlCompatibleString(value)) {
+                            sb.append(a.getName()).append("__in_base64__").append("=\"");
+                            try {
+                                sb.append(Base64.encode(value.getBytes(FileUtils.XML_ENCODING)));
+                            } catch (UnsupportedEncodingException exception) {
+                                throw new UnsupportedOperationException("Can't write attribute value", exception);
+                            }
+                        } else {
+                            sb.append(a.getName()).append("=\"").append(Html.string2HtmlString(value));
+                        }
+                        sb.append('"');
+                    }
+                }
+            }
+            appendClassesAttr(sb);
+
+            if (this.scheduleLauout != null && layoutFlow != null) {
+                layoutFlow.register(this, this.scheduleLauout);
+                //sb.append(' ').append("rwt_layout=\"").append(this.scheduleLauout).append('"');
+            }
+
+            String style = getStyle();
+            if (style != null) {
+                sb.append(" style=\"").append(style).append('"');
+            }
+
+            int childIndent = indent + 4;
+            if (children == null || children.isEmpty()) {
+                if (innerText != null && !innerText.isEmpty()) {
+                    sb.append(">");
+                    if (innerTextInBase64){
+                        try {
+                            sb.append(Base64.encode(innerText.getBytes(FileUtils.XML_ENCODING)));
+                        } catch (UnsupportedEncodingException exception) {
+                            throw new UnsupportedOperationException("Can't write inner text value", exception);
+                        }
+                    }else{
+                        sb.append(Html.string2HtmlString(innerText));
+                    }
+                    sb.append("</").append(nodeName).append(">");
+                } else {
+                    if (closeEmptyTags) {
+                        sb.append("></").append(nodeName).append(">");
+                    } else {
+                        if ("meta".equals(elementName.toLowerCase())) {
+                            sb.append(">");
+                        } else {
+                            sb.append("/>");
+                        }
+                    }
+                }
+            } else {
+                sb.append(">");
+                for (Html html : children) {
+                    html.appendTo(sb, prettyPrint, printId, childIndent, false, closeEmptyTags, escapeBadXmlChars, layoutFlow);
+                }
+                if (prettyPrint) {
+                    newLine(sb, indent);
+                }
+                sb.append("</").append(nodeName).append(">");
+            }
         }
     }
 
@@ -956,6 +1011,14 @@ public class Html implements ICssStyledItem {
             return Collections.unmodifiableList(classes);
         }
     }
+    
+    public final void setObjectName(final String objectName){
+        setAttr("objName", objectName);
+    }
+    
+    public final String getObjectName(){
+        return getAttr("objName");
+    }
 
     private void appendClassesAttr(StringBuilder sb) {
         if (classes != null && !classes.isEmpty()) {
@@ -972,7 +1035,81 @@ public class Html implements ICssStyledItem {
             sb.append("\"");
         }
     }
-
+      
+    public static List<Html> parseFromStr(String str) {
+        Document doc = Jsoup.parse(str);
+        List<Html> list = new LinkedList<>();
+        Elements elements = doc.getElementsByTag("body");
+        if (elements != null) {
+            Element body = elements.get(0); 
+            if (body != null) {
+                for (Node topElement : body.childNodes()) {
+                    if (topElement != null) {
+                        Html topHtmlElement = convertJsoup2Html(topElement);
+                        if (topHtmlElement != null) {
+                            list.add(topHtmlElement);
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+    
+    private static void copyChildren(Node parentElement, Html parentHtmlElement) {
+        for (int i = 0; i < parentElement.childNodeSize(); i++) {
+            Node childElement = parentElement.childNode(i);
+            Html childHtmlElement = convertJsoup2Html(childElement);
+            if (childHtmlElement != null) {
+                parentHtmlElement.add(childHtmlElement);
+            }
+        }
+    }
+    
+    private static Html convertJsoup2Html(Node node) {
+        Html childHtmlElement;
+        String id = node.attr("id");
+        if (node instanceof Element) {
+            Element element = (Element)node;
+            if (id != null && !id.isEmpty()) {
+                childHtmlElement = new Html(element.tagName(), id);
+            } else {
+                childHtmlElement = new Html(element.tagName());
+            }
+            for (org.jsoup.nodes.Attribute attr : element.attributes().asList()) {
+                if (null != attr.getKey()) switch (attr.getKey()) {
+                    case "style":
+                        String styleStr = attr.getValue();
+                        String[] css = styleStr.split(";");
+                        for (String cssLex : css) {
+                            String[] cssLexArr = cssLex.split(":");
+                            childHtmlElement.setCss(cssLexArr[0], cssLexArr[1]);
+                        }   break;
+                    case "class":
+                        String classStr = attr.getValue();
+                        String[] classArr = classStr.split(" ");
+                        for (String classLex : classArr) {
+                            childHtmlElement.addClass(classLex);
+                        }   break;
+                    default:
+                        String key = attr.getKey();
+                        if (!"id".equals(key)) {
+                            childHtmlElement.setAttr(key, attr.getValue());
+                        }   break;
+                }
+             }
+            if (element.hasText()) {
+                childHtmlElement.setInnerText(element.text());
+            }
+            copyChildren(node, childHtmlElement);
+            return childHtmlElement;
+        } else if (node instanceof org.jsoup.nodes.TextNode){
+            return new TextNode(((org.jsoup.nodes.TextNode)node).getWholeText());            
+        } else {
+            return null;
+        }        
+    }
+    
     private static boolean isXmlCompatibleString(final String s) {
         return s.matches("[\\u0009\\u000A\\u000D\\u0020-\\uD7FF\\uE000-\\uFFFD]*");
     }
@@ -987,7 +1124,7 @@ public class Html implements ICssStyledItem {
 
     public void markAsChoosable() {
         addClass("rwt-ui-choosable-pointed");
-        
+
     }
 
     public void removeChoosableMarker() {

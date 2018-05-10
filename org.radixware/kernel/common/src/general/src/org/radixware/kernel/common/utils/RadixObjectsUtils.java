@@ -144,7 +144,22 @@ public class RadixObjectsUtils {
     private static final Pattern NAME_PATTERN = Pattern.compile("[\\w\\. \\(\\)\\-]+");
     private static final Pattern URL_PATTERN = Pattern.compile("[\\w\\. $\\(\\)\\-]+");
 
+    private static boolean isCorrectAcsPackageName(final String name) {//https://jira.compassplus.ru/browse/RADIX-12593?focusedCommentId=4856044&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-4856044
+        if (name == null || name.length() != 30) {
+            return false;
+        }
+        final String lowerName = name.toLowerCase();
+        if (!lowerName.startsWith("acs$")) {
+            return false;
+        }        
+        return NAME_PATTERN.matcher(lowerName.substring(4)).matches();
+    }
+    
     public static boolean isCorrectName(final String name) {
+        if (isCorrectAcsPackageName(name)) {
+            return true;
+        }
+        
         return name != null && NAME_PATTERN.matcher(name).matches();
     }
 

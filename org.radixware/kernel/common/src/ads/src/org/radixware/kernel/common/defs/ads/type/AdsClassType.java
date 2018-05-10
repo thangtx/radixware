@@ -28,6 +28,7 @@ import org.radixware.kernel.common.defs.ads.type.interfacing.RadixClassInterfaci
 import static org.radixware.kernel.common.enums.EClassType.DYNAMIC;
 import static org.radixware.kernel.common.enums.EClassType.INTERFACE;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -40,7 +41,7 @@ public class AdsClassType extends AdsDefinitionType {
         }
 
         @Override
-        public char[] getLocalTypeName(JavaSourceSupport.UsagePurpose env) {
+        public char[] getLocalTypeName(JavaSourceSupport.UsagePurpose env, boolean isHumanReadable) {
             if (getSourceClass() == null) {
                 return "???".toCharArray();
             }
@@ -62,7 +63,7 @@ public class AdsClassType extends AdsDefinitionType {
         }
 
         @Override
-        public char[][] getPackageNameComponents(JavaSourceSupport.UsagePurpose purpose) {
+        public char[][] getPackageNameComponents(JavaSourceSupport.UsagePurpose purpose, boolean isHumanReadable) {
             if (getSourceClass() == null) {
                 return new char[][]{"???".toCharArray()};
             } else {
@@ -74,32 +75,35 @@ public class AdsClassType extends AdsDefinitionType {
                     case DYNAMIC:
                     case INTERFACE:
                         final AdsClassDef enclosingClass = getSourceClass().getTopLevelEnclosingClass();
-                        return JavaSourceSupport.getPackageNameComponents(enclosingClass, ownEnv == ERuntimeEnvironmentType.COMMON || (ownEnv == ERuntimeEnvironmentType.COMMON_CLIENT && !enclosingClass.isDual()) ? JavaSourceSupport.UsagePurpose.getPurpose(ownEnv, purpose.getCodeType()) : purpose);
+                        return JavaSourceSupport.getPackageNameComponents(enclosingClass, isHumanReadable, ownEnv == ERuntimeEnvironmentType.COMMON || (ownEnv == ERuntimeEnvironmentType.COMMON_CLIENT && !enclosingClass.isDual()) ? JavaSourceSupport.UsagePurpose.getPurpose(ownEnv, purpose.getCodeType()) : purpose);
 
                 }
-                return JavaSourceSupport.getPackageNameComponents(getSourceClass(), ownEnv == ERuntimeEnvironmentType.COMMON ? JavaSourceSupport.UsagePurpose.getPurpose(ownEnv, purpose.getCodeType()) : purpose);
+                return JavaSourceSupport.getPackageNameComponents(getSourceClass(), isHumanReadable, ownEnv == ERuntimeEnvironmentType.COMMON ? JavaSourceSupport.UsagePurpose.getPurpose(ownEnv, purpose.getCodeType()) : purpose);
             }
         }
 
         @Override
-        public char[] getLocalTypeName(JavaSourceSupport.UsagePurpose env) {
+        public char[] getLocalTypeName(JavaSourceSupport.UsagePurpose env, boolean isHumanReadable) {
             if (getSourceClass() == null) {
                 return "???".toCharArray();
             }
-            return getSourceClass().getRuntimeLocalClassName().toCharArray();
+            return getSourceClass().getRuntimeLocalClassName(isHumanReadable).toCharArray();
         }
 
         @Override
-        public char[] getQualifiedTypeName(JavaSourceSupport.UsagePurpose env) {
+        public char[] getQualifiedTypeName(JavaSourceSupport.UsagePurpose env, boolean isHumanReadable) {
             final AdsClassDef src = getSourceClass();
             if (src == null) {
-                return super.getQualifiedTypeName(env);
+                return super.getQualifiedTypeName(env, isHumanReadable);
             } else {
                 final AdsTransparence transparence = src.getTransparence();
                 if (transparence != null && transparence.isTransparent() && !transparence.isExtendable()) {
                     return src.getTransparence().getPublishedName().toCharArray();
                 } else {
-                    return super.getQualifiedTypeName(env);
+//                    if (isHumanReadable) {
+//                        return src.getQualifiedName().toCharArray();
+//                    }
+                    return super.getQualifiedTypeName(env, isHumanReadable);
                 }
             }
         }

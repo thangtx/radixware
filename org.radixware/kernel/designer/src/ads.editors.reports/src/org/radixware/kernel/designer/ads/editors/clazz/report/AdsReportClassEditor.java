@@ -13,8 +13,13 @@ package org.radixware.kernel.designer.ads.editors.clazz.report;//GEN-LINE:initCo
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.spi.palette.PaletteController;
@@ -28,8 +33,11 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.utils.events.IRadixEventListener;
 import org.radixware.kernel.common.utils.events.RadixEvent;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.palette.AdsReportPalette;
+import org.radixware.kernel.designer.ads.editors.clazz.report.preview.PreviewSettingsPanel;
+import org.radixware.kernel.designer.ads.editors.clazz.report.preview.ReportPreviewActionsProvider;
 import org.radixware.kernel.designer.ads.editors.clazz.sql.AdsSqlClassBodyPanel;
 import org.radixware.kernel.designer.common.annotations.registrators.EditorFactoryRegistration;
+import org.radixware.kernel.designer.common.dialogs.RadixWareDesignerIcon;
 import org.radixware.kernel.designer.common.editors.RadixObjectEditor;
 import org.radixware.kernel.designer.common.general.editors.IEditorFactory;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
@@ -40,6 +48,7 @@ public class AdsReportClassEditor extends RadixObjectEditor<AdsReportClassDef> {
     private final AdsSqlClassBodyPanel sqmlPanel;
     private final AdsReportClassGeneralPanel generalPanel;
     private final DesignPanel designPanel;
+    private final PreviewSettingsPanel previewPanel;
     private final IRadixEventListener<RadixEvent> selectionListener = new IRadixEventListener<RadixEvent>() {
 
         @Override
@@ -66,6 +75,7 @@ public class AdsReportClassEditor extends RadixObjectEditor<AdsReportClassDef> {
         generalPanel = new AdsReportClassGeneralPanel(report);
         designPanel = new DesignPanel(report);
         sqmlPanel = new AdsSqlClassBodyPanel();
+        previewPanel = new PreviewSettingsPanel(report);
 
         tabbedPane.addTab(NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_GENERAL"),
                 report.getIcon().getIcon(), generalPanel);
@@ -73,6 +83,8 @@ public class AdsReportClassEditor extends RadixObjectEditor<AdsReportClassDef> {
                 AdsDefinitionIcon.CLASS_CURSOR.getIcon(), sqmlPanel);
         tabbedPane.addTab(NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_DESIGN"),
                 AdsDefinitionIcon.REPORT_FORM.getIcon(), designPanel);
+        tabbedPane.addTab(NbBundle.getBundle(AdsReportClassEditor.class).getString("TAB_PREVIEW"),
+                RadixWareDesignerIcon.REPORT.PREVIEW.getIcon(), previewPanel);
 
         tabbedPane.addChangeListener(tabChangeListener);
         designPanel.addSelectionListener(selectionListener);
@@ -91,6 +103,21 @@ public class AdsReportClassEditor extends RadixObjectEditor<AdsReportClassDef> {
                 //
             }
         });
+        
+        generalPanel.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                previewPanel.update();
+            }
+        });
+        
+        InputMap inputMap = this.getInputMap(WHEN_IN_FOCUSED_WINDOW);
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK), ReportPreviewActionsProvider.PREVIEW_ACTION_NAME);
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK), ReportPreviewActionsProvider.COMPILE_AND_PREVIEW_ACTION_NAME);
+        
+        ActionMap actionMap = this.getActionMap();
+        actionMap.put(ReportPreviewActionsProvider.PREVIEW_ACTION_NAME, ReportPreviewActionsProvider.getPreviewAction(report));
+        actionMap.put(ReportPreviewActionsProvider.COMPILE_AND_PREVIEW_ACTION_NAME, ReportPreviewActionsProvider.getCompileAndPreviewAction(report));
     }
 
     @EditorFactoryRegistration
@@ -136,7 +163,7 @@ public class AdsReportClassEditor extends RadixObjectEditor<AdsReportClassDef> {
                 tabbedPane.setSelectedComponent(designPanel);
                 break;
             }
-            if (target == report.getSource() || target == report.getUsedTables()) {
+            if (target == report.getSqml() || target == report.getUsedTables()) {
                 tabbedPane.setSelectedComponent(sqmlPanel);
                 break;
             }
@@ -162,6 +189,8 @@ public class AdsReportClassEditor extends RadixObjectEditor<AdsReportClassDef> {
             sqmlPanel.update();
         } else if (tabbedPane.getSelectedComponent() == designPanel) {
             designPanel.update();
+        } else if (tabbedPane.getSelectedComponent() == previewPanel) {
+            previewPanel.update();
         }
     }
 

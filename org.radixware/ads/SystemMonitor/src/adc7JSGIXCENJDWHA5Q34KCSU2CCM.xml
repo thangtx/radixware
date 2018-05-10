@@ -14,15 +14,15 @@
     <PropertyGroup Id="cpgCZVXFILMMBE65HJQQSM3AFURQA" Name="Root"/>
     <Properties>
       <Property Id="prdEP5ZB3BALNDKPDE73NO4HN2BTM" Name="valType" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="2" Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4"/>
       </Property>
       <Property Id="prd4CUPAMVXCJF25CUX3KDUAHLUV4" Name="id" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
       </Property>
       <Property Id="prdEQKDLHBRTZDKBPAVLDLLYZCRAA" Name="parameterName" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="21"/>
       </Property>
     </Properties>
@@ -360,6 +360,39 @@
           <Src>
             <xsc:Item>
               <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGKT5A736SFC6TC3ZJBCU5NG2AY" Name="getMaxArrayItemsCount" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return -1;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLL4VDNNWPZDHDMOR2XMTGACSWU" Name="getMinArrayItemsCount" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return -1;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthX4RHB436S5BX3BE2LEFLJEYIK4" Name="getParentSelectorAdditionalCondition" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.xscml.Sqml"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

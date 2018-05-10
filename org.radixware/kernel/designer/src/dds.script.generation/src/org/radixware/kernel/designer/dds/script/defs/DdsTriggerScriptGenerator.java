@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.designer.dds.script.defs;
 
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,9 +35,7 @@ public class DdsTriggerScriptGenerator implements IDdsDefinitionScriptGenerator<
 
     @Override
     public void getDropScript(CodePrinter cp, DdsTriggerDef trigger) {
-        cp.print("drop trigger ");
-        cp.print(trigger.getDbName());
-        cp.printCommandSeparator();
+        cp.print("drop trigger ").print(trigger.getDbName()).printCommandSeparator();
     }
 
     @Override
@@ -74,11 +73,7 @@ public class DdsTriggerScriptGenerator implements IDdsDefinitionScriptGenerator<
 
         Sqml oldBody = oldTrigger.getBody();
         Sqml newBody = newTrigger.getBody();
-        if (!DdsScriptGeneratorUtils.isTranslatedSqmlEquals(oldBody, newBody)) {
-            return true;
-        }
-
-        return false;
+        return !DdsScriptGeneratorUtils.isTranslatedSqmlEquals(oldBody, newBody);
     }
 
     @Override
@@ -89,8 +84,7 @@ public class DdsTriggerScriptGenerator implements IDdsDefinitionScriptGenerator<
 
         DdsTableDef table = trigger.getOwnerTable();
 
-        cp.print("create or replace trigger ");
-        cp.println(trigger.getDbName());
+        cp.print("create or replace trigger ").println(trigger.getDbName());
 
         DdsTriggerDef.EActuationTime actuationTime = trigger.getActuationTime();
         switch (actuationTime) {
@@ -127,7 +121,7 @@ public class DdsTriggerScriptGenerator implements IDdsDefinitionScriptGenerator<
             int columnCount = trigger.getColumnsInfo().size();
             if (columnCount > 0) {
                 cp.print(" of ");
-                List<String> columnDbNames = new ArrayList<String>(columnCount);
+                List<String> columnDbNames = new ArrayList<>(columnCount);
                 for (DdsTriggerDef.ColumnInfo columnInfo : trigger.getColumnsInfo()) {
                     DdsColumnDef column = columnInfo.getColumn();
                     columnDbNames.add(column.getDbName());
@@ -145,8 +139,7 @@ public class DdsTriggerScriptGenerator implements IDdsDefinitionScriptGenerator<
             }
         }
 
-        cp.print(" on ");
-        cp.println(table.getDbName());
+        cp.print(" on ").println(table.getDbName());
 
         if (trigger.isForEachRow()) {
             cp.println("for each row");
@@ -176,22 +169,23 @@ public class DdsTriggerScriptGenerator implements IDdsDefinitionScriptGenerator<
         String oldDbName = oldTrigger.getDbName();
         String newDbName = newTrigger.getDbName();
         if (!oldDbName.equals(newDbName)) {
-            cp.print("alter trigger ");
-            cp.print(oldDbName);
-            cp.print(" rename to ");
-            cp.print(newDbName);
-            cp.printCommandSeparator();
+            cp.print("alter trigger ").print(oldDbName).print(" rename to ").print(newDbName).printCommandSeparator();
         }
 
         boolean oldDisable = oldTrigger.isDisabled();
         boolean newDisable = newTrigger.isDisabled();
         boolean disableChanged = (oldDisable != newDisable);
         if (disableChanged) {
-            cp.print("alter trigger ");
-            cp.print(newTrigger.getDbName());
-            cp.print(newDisable ? " disable" : " enable");
-            cp.printCommandSeparator();
+            cp.print("alter trigger ").print(newTrigger.getDbName()).print(newDisable ? " disable" : " enable").printCommandSeparator();
         }
+    }
+
+    @Override
+    public void getReCreateScript(CodePrinter printer, DdsTriggerDef definition, boolean storeData) {
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, DdsTriggerDef definition, boolean enable) {
     }
 
     public static final class Factory {

@@ -1,53 +1,50 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
- * This Source Code Form is subject to the terms of the Mozilla Public License,
- * v. 2.0. If a copy of the MPL was not distributed with this file, You can
- * obtain one at http://mozilla.org/MPL/2.0/. This Source Code is distributed
- * WITHOUT ANY WARRANTY; including any implied warranties but not limited to
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * Mozilla Public License, v. 2.0. for more details.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * This Source Code is distributed WITHOUT ANY WARRANTY; including any 
+ * implied warranties but not limited to warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the Mozilla Public 
+ * License, v. 2.0. for more details.
  */
 package org.radixware.kernel.server.units.persocomm;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import org.radixware.kernel.common.enums.EUnitType;
-import org.radixware.kernel.server.exceptions.DPCRecvException;
-import org.radixware.kernel.server.exceptions.DPCSendException;
+import org.radixware.kernel.common.exceptions.ServiceCallException;
+import org.radixware.kernel.common.exceptions.ServiceCallFault;
+import org.radixware.kernel.common.exceptions.ServiceCallTimeout;
 import org.radixware.kernel.server.instance.Instance;
-import org.radixware.schemas.personalcommunications.MessageDocument;
+import org.radixware.kernel.server.units.persocomm.interfaces.ICommunicationAdapter;
+import org.radixware.kernel.server.utils.OptionsGroup;
 
-public final class ServiceBusUnit extends PCUnit {
+public class ServiceBusUnit extends PersoCommUnit {
 
-    public ServiceBusUnit(final Instance instance, final Long id, final String title) {
-        super(instance, id, title);
+    public ServiceBusUnit(final Instance instModel, final Long id, final String title) {
+        super(instModel, id, title);
     }
 
     @Override
-    public String optionsToString() {
-        return "{\n\t"
-                + PCMessages.SEND_PERIOD + " " + String.valueOf(options.sendPeriod) + "; \n\t"
-                + "}";
+    public ICommunicationAdapter getCommunicationAdapter(CommunicationMode mode) throws IOException {
+        return null;
     }
 
     @Override
-    protected void recvMessages() throws DPCRecvException {
+    public OptionsGroup optionsGroup(final Options options) {
+        return new OptionsGroup().add(PCMessages.SEND_PERIOD, options.sendPeriod);
     }
 
     @Override
-    protected void sendMessages() throws DPCSendException {
-        try {
-            aasClient.invokeSend();
-        } catch (Exception ex) {
-            throw new DPCSendException("Unable to trigger messages sending", ex);
-        }
+    public boolean supportsTransmitting() {
+        return true;
     }
 
     @Override
-    protected void send(final MessageDocument m, final Long id) throws DPCSendException {
-    }
-
-    @Override
-    protected void checkOptions() throws Exception {
+    public boolean supportsReceiving() {
+        return false;
     }
 
     @Override
@@ -58,5 +55,19 @@ public final class ServiceBusUnit extends PCUnit {
     @Override
     public Long getUnitType() {
         return EUnitType.DPC_SERVICE_BUS.getValue();
+    }
+
+    @Override
+    protected void checkOptions(Options options) throws Exception {
+    }
+
+    @Override
+    protected int sendMessages() throws IOException, SQLException {
+        try {
+            getPersoCommClient().invokeSend();
+            return -1;
+        } catch (ServiceCallException | ServiceCallTimeout | ServiceCallFault | InterruptedException ex) {
+            throw new IOException("Unable to trigger sending pipeline", ex);
+        }
     }
 }

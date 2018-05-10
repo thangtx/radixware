@@ -23,31 +23,21 @@ import org.radixware.wps.rwt.ToolButton;
 
 class CommandToolButton extends ToolButton implements ICommandToolButton {
 
-    private ICommandToolButton.CommandController controller = new ICommandToolButton.CommandController();
+    private final ICommandToolButton.CommandController controller = new ICommandToolButton.CommandController();
 
     public CommandToolButton(Command command) {
-        super();
-        controller.open(command, null);
-        refresh(command);
-        addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(IButton source) {
-                controller.executeCommand();
-            }
-        });
+        this(command, null);
     }
 
     public CommandToolButton(Command command, Property property) {
-        super();
+        super();        
         controller.open(command, property);
-        refresh(command);
+        refresh(command);        
         addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(IButton source) {
-                controller.executeCommand();
-                //CommandToolButton.this.command.execute(CommandToolButton.this.property.getId());
+                controller.executeCommand();                
             }
         });
     }
@@ -74,6 +64,7 @@ class CommandToolButton extends ToolButton implements ICommandToolButton {
         }else{
             setEnabled(controller.getProperty() == null ? c.isEnabled() : c.isEnabledForProperty(controller.getProperty().getId()));
         }
+        setObjectName("rx_cmd_tbtn_#"+controller.getCommand().getId().toString());
     }
 
     @Override

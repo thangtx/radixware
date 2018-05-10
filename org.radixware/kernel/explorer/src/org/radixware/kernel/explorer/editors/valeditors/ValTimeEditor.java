@@ -31,7 +31,7 @@ public class ValTimeEditor extends AbstractDateTimeEditor<Long> {
     
     public ValTimeEditor(final IClientEnvironment environment, final QWidget parent, final EditMaskDateTime editMaskDateTime,
             final boolean mandatory, final boolean readOnly) {
-        super(environment, parent, getEditMaskTime(editMaskDateTime, environment.getLocale()), mandatory, readOnly);        
+        super(environment, parent, getEditMaskTime(editMaskDateTime, environment), mandatory, readOnly);        
     }
 
     public ValTimeEditor(final IClientEnvironment environment, final QWidget parent){
@@ -51,7 +51,7 @@ public class ValTimeEditor extends AbstractDateTimeEditor<Long> {
     protected String getInputText(final Long value){
         final Timestamp timestamp = getTimestampFromValue(value - timeZoneOffsetMillis);
         final EditMaskDateTime mask = (EditMaskDateTime)getEditMask();
-        final String inputText = mask.getInputTextForValue(timestamp, getEnvironment().getLocale());
+        final String inputText = mask.getInputTextForValue(timestamp, getEnvironment());
         return inputText.replace('_', '0');
     }
 
@@ -62,7 +62,7 @@ public class ValTimeEditor extends AbstractDateTimeEditor<Long> {
         
     @Override
     public void setEditMask(final EditMask editMask) {
-        super.setEditMask( getEditMaskTime( (EditMaskDateTime)editMask, getEnvironment().getLocale() ) );        
+        super.setEditMask( getEditMaskTime( (EditMaskDateTime)editMask, getEnvironment()) );        
     }
 
     @Override
@@ -111,7 +111,7 @@ public class ValTimeEditor extends AbstractDateTimeEditor<Long> {
         return Long.valueOf(CalendarUtils.getNormalizedTimeInMillis(timestamp.getTime()));
     }
             
-    private static EditMaskDateTime getEditMaskTime(final EditMaskDateTime editMask, final Locale locale){
+    private static EditMaskDateTime getEditMaskTime(final EditMaskDateTime editMask, final IClientEnvironment environment){
         if (editMask==null){
             return null;
         }
@@ -130,6 +130,6 @@ public class ValTimeEditor extends AbstractDateTimeEditor<Long> {
         }else{
             maxTime = new Timestamp(maxValue.getTime() - timeZomeOffset);
         }
-        return new EditMaskDateTime(editMask.getInputTimeFormat(locale), minTime, maxTime);
+        return new EditMaskDateTime(editMask.getInputTimeFormat(environment), minTime, maxTime);
     }    
 }

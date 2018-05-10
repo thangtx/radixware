@@ -31,6 +31,15 @@ input,label,textarea {
     user-select: none;
 }
 
+.rwt-enable-text-selection {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
+    -ms-user-select:text    
+}
+
 .rwt-gradient-bar{
     background: #f6f8f9;
     background: -moz-linear-gradient(top, #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%);
@@ -40,6 +49,17 @@ input,label,textarea {
     background: -ms-linear-gradient(top, #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=0 );
     background: linear-gradient(top, #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%);    
+}
+
+.rwt-wait-box-gradient{
+    background: #f6f8f9;
+    background: -moz-linear-gradient(top, #f6f8f9 0%, #e5ebee 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8f9), color-stop(100%,#e5ebee));
+    background: -webkit-linear-gradient(top, #f6f8f9 0%,#e5ebee 100%);
+    background: -o-linear-gradient(top, #f6f8f9 0%,#e5ebee 100%);
+    background: -ms-linear-gradient(top, #f6f8f9 0%,#e5ebee 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#e5ebee',GradientType=0 );
+    background: linear-gradient(top, #f6f8f9 0%,#e5ebee 100%);    
 }
 
 .rwt-table-cell-label{
@@ -79,7 +99,7 @@ input,label,textarea {
 .rwt-ui-element-text{
     color: #000;
     font-family:arial;
-    font-size: 10px;
+    font-size: 11px; /*the same as for .rwt-regular-value-title*/
 
     text-decoration:none;        
 }
@@ -122,7 +142,7 @@ input,label,textarea {
     right:0px;
     background-color:#DDD;
     height:21px;
-    width:40px;
+    width:72px;
 }
 
 .rwt-ui-tab-layout-tab-active{ 
@@ -181,13 +201,17 @@ input,label,textarea {
     text-decoration: none; 
     color: black;  
     padding-top:2px;
-    margin-right:3px;
 }
 .rwt-ui-tab-layout-tab-active a{
     text-decoration: none; 
     color: darkblue;  
     border-radius: 4px 4px 0px 0px;
     
+}
+
+.rwt-solid-border{
+    border: 1px solid #ced1d5;
+    padding: 0px;
 }
 
 .rwt-text-field{
@@ -212,6 +236,10 @@ input,label,textarea {
 
 .rwt-input-box td[buttonCell="true"]{
     background-color: white;
+}
+
+.rwt-hidden-buttons td[buttonCell="true"]{
+    display: none;
 }
 
 .rwt-input-box td.last{
@@ -296,6 +324,51 @@ input,label,textarea {
     cursor: pointer;
 }
 
+.rwt-ui-choosable-pointed-blue:hover{    
+    border-color: #fbcb09!important; 
+    background: cornflowerblue!important;     
+    color: #c77405;
+    cursor: pointer;
+}
+
+.rwt-ui-choosable-pointed-blue{    
+    border-color: #fbcb09!important; 
+    background: cornflowerblue!important;     
+    color: #c77405;
+    cursor: pointer;
+}
+
+.rwt-ui-choosable-pointed-blue-hover:hover{
+    border-color: #fbcb09!important; 
+    background: cornflowerblue!important;     
+    color: #c77405;
+    cursor: pointer;
+}
+
+.rwt-ui-choosable-pointed-selected{
+    border-color: #fbcb09!important; 
+    background: #1c66dd!important;      
+    color: #c77405;
+    cursor: pointer;
+}
+
+.rwt-menu{
+    border: 1px solid black;
+    outline: none;
+}
+
+.rwt-menu-bar{
+    border-bottom: 1px solid rgb(187, 187, 187);
+}
+.rwt-non-choosable {
+     -webkit-user-select : none;
+     -moz-user-select: none;
+     -ms-user-select: none;
+}
+.rwt-non-choosable:hover {
+    cursor: pointer;
+}
+
 tr.rwt-ui-choosable-pointed:hover td{
     border-color: #fbcb09!important; 
     background:#fdf5ce!important;
@@ -310,7 +383,21 @@ tr.rwt-ui-choosable-pointed:hover td label{
     cursor: pointer;
 }
 
+tr.rwt-ui-choosable-pointed:hover td div{
+    border-color: #fbcb09!important; 
+    background:#fdf5ce!important;
+    color: #c77405;
+    cursor: pointer;
+}
+
 td.rwt-ui-choosable-pointed:hover label{    
+    border-color: #fbcb09!important; 
+    background:#fdf5ce!important;
+    color: #c77405;
+    cursor: pointer;    
+}
+
+td.rwt-ui-choosable-pointed:hover div{    
     border-color: #fbcb09!important; 
     background:#fdf5ce!important;
     color: #c77405;
@@ -388,11 +475,18 @@ div.rwt-invalid-value-reason{
 }
 
 .rwt-array-editor-label-not-defined{    
-    display: block;
+    display: table;
+    width: 100%;
+    height: 100%;
     font-size: 18px;
     font-weight: bold;
     text-align: center;
     cursor: default;
+}
+
+.rwt-array-editor-label-not-defined span{
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .ui-datepicker{
@@ -412,6 +506,12 @@ div.rwt-invalid-value-reason{
     border-style: solid;
 }
 
+.tooltip{
+    visibility: hidden;
+    position: absolute;
+    overflow: visible;
+    background-color: #FBD850
+}
 .rwt-ui-slider{
     border-radius: 3px;
     border:1px solid #a6a6a6;
@@ -616,9 +716,17 @@ div.rwt-invalid-value-reason{
     margin-right: 3px;*/
 }
 
-.rwt-tool-button img{
+.rwt-tool-button .rwt-button-icon{
     height:12px;
     width:12px;
+}
+
+.rwt-tool-button .rwt-popup-icon{
+    float: right;
+    position: absolute;
+    bottom: 8px;
+    width: 8px;
+    height: 8px;
 }
 
 .rwt-tool-button-div{
@@ -627,6 +735,23 @@ div.rwt-invalid-value-reason{
     background: #FFF;
     margin-left: 2px;
     float: left;
+}
+
+.rwt-tool-button-menu-popup button{
+    border-width: 0px;
+    padding-right: 2px;
+    padding-left: 2px; 
+}
+
+.rwt-tool-button-menu-popup button::-moz-focus-inner{
+    	border:0;
+	padding:0;
+}
+
+.rwt-tool-button-menu-popup:hover button{
+    border-width: 2px;
+    padding-right: 0px;
+    padding-left: 0px;
 }
 
 .rwt-text-area{
@@ -658,12 +783,11 @@ div.rwt-invalid-value-reason{
     height:100%;
     width:100%;
     display: block;
-    min-width:35px;
     max-width: 100%;
     min-height:25px;
     max-height: 100%;
     position:relative;
-    overflow:visible;
+    overflow:hidden;
 }
 
 .rwt-gbc-td{    
@@ -688,7 +812,7 @@ div.rwt-invalid-value-reason{
 .rwt-regular-value-title{
     color: #000;
     font-family:arial;
-    font-size: 11px;    
+    font-size: 11px; /*the same as for.rwt-ui-element-text*/
     text-decoration:none;
 }
 
@@ -762,4 +886,17 @@ div.rwt-invalid-value-reason{
 .rwt-main-status-bar-path-item:hover{
     color: blue;
     text-decoration: underline;
+}
+
+@keyframes uncertain-behavior1 { 
+    from {
+        left: 1px;             
+    }
+    to {
+        left: 81px;
+    }
+}
+
+.rwt-uncertain-behavior-progress-bar{
+    animation: uncertain-behavior1 1s infinite alternate;
 }

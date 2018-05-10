@@ -26,6 +26,7 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
 import org.radixware.kernel.common.client.dialogs.IFileDialogSettings;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
@@ -38,6 +39,8 @@ import org.radixware.kernel.common.client.views.IArrayEditorDialog;
 import org.radixware.kernel.common.client.views.ArrayEditorEventListener;
 import org.radixware.kernel.common.client.views.IPropertyStorePossibility;
 import org.radixware.kernel.common.client.widgets.IPushButton;
+import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.kernel.common.enums.EPropertyValueStorePossibility;
@@ -45,6 +48,8 @@ import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.explorer.editors.AbstractArrayEditor;
 import org.radixware.kernel.explorer.editors.ArrayEditor;
+import org.radixware.kernel.explorer.editors.valeditors.ValEditor;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEditorDialog {
 
@@ -81,16 +86,26 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
             if (property == null) {
                 return;
             }
-            IFileDialogSettings settings = property.getFileDialogSettings(IFileDialogSettings.EFileDialogOpenMode.SAVE);
+            final IFileDialogSettings settings = 
+                property.getFileDialogSettings(EFileDialogOpenMode.SAVE);
             FileOutputStream output = null;
 
-            EMimeType type = settings.getMimeType();
-            String mimeType = "";
-            String strAllFiles=getEnvironment().getMessageProvider().translate("PropertyEditor", "All Files");
-            if (type != null) {
-                mimeType = type.getName().toUpperCase() + "  (*." + type.getExt() + ");; " + strAllFiles + "(*.*)";
+            final EnumSet<EMimeType> types = settings.getMimeTypes();
+            final String fileFilter;
+            if (types==null || types.isEmpty()){
+                fileFilter = null;
+            }else{
+                final StringBuilder mimeTypeBuilder = 
+                    new StringBuilder(WidgetUtils.getQtFileDialogFilter(types, getEnvironment().getMessageProvider()));
+                if (!types.contains(EMimeType.ALL_FILES)){
+                    mimeTypeBuilder.append(";;");
+                    mimeTypeBuilder.append(getEnvironment().getMessageProvider().translate("PropertyEditor", "All Files"));
+                    mimeTypeBuilder.append(" (*.*)");
+                }
+                fileFilter = mimeTypeBuilder.toString();                
             }
-            QFileDialog dialog = new QFileDialog(null, settings.getFileDialogTitle(), settings.getInitialPath(), mimeType);
+            final QFileDialog dialog = 
+                new QFileDialog(null, settings.getFileDialogTitle(), settings.getInitialPath(), fileFilter);
             dialog.setFileMode(QFileDialog.FileMode.AnyFile);
             getEnvironment().getProgressHandleManager().blockProgress();
             dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptSave);
@@ -138,14 +153,10 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
                 return null;
             }
             final Object  currentValue = property.getValueObject();
-            IFileDialogSettings settings = property.getFileDialogSettings(IFileDialogSettings.EFileDialogOpenMode.LOAD);
-            EMimeType type = settings.getMimeType();
-            String mimeType = "";
+            final IFileDialogSettings settings = property.getFileDialogSettings(EFileDialogOpenMode.LOAD);
+            final String mimeType = WidgetUtils.getQtFileDialogFilter(settings.getMimeTypes(), getEnvironment().getMessageProvider());
             FileInputStream input = null;
-            if (type != null) {
-                mimeType = type.getName().toLowerCase() + "  (*." + type.getExt() + ")";
-            }
-            QFileDialog dialog = new QFileDialog(null, settings.getFileDialogTitle(), settings.getInitialPath(), mimeType);
+            final QFileDialog dialog = new QFileDialog(null, settings.getFileDialogTitle(), settings.getInitialPath(), mimeType);
             dialog.setFileMode(QFileDialog.FileMode.ExistingFile);
             dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen);
             getEnvironment().getProgressHandleManager().blockProgress();
@@ -246,10 +257,7 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
     @Override
     public void setCurrentValue(Arr value) {
         editor.setCurrentValue(value);
-        final IPushButton buttonOk = getButton(EDialogButtonType.OK);
-        if (buttonOk != null) {
-            buttonOk.setEnabled(editor.validateCurrentValue() == ValidationResult.ACCEPTABLE);
-        }
+        revalidate();
     }
 
     @Override
@@ -257,9 +265,15 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
         return editor.getCurrentValue();
     }
 
+    @Override
     public int getCurrentItemIndex() {
         return editor.getCurrentIndex();
     }
+
+    @Override
+    public void setCurrentItemIndex(int index) {
+        editor.setCurrentIndex(index);
+    }        
 
     @Override
     public void setMandatory(final boolean mandatory) {
@@ -280,7 +294,7 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
         } else {
             addButton(EDialogButtonType.OK).setDefault(true);            
             addButton(EDialogButtonType.CANCEL);
-            revalidateSize();
+            revalidate();
         }
     }
 
@@ -314,22 +328,52 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
         return editor.isDuplicatesEnabled();
     }
 
-    public void setItemMoveMode(final AbstractArrayEditor.EItemMoveMode mode) {
-        editor.setItemMoveMode(mode);
+    @Override
+    public void setFirstArrayItemIndex(int index) {
+        editor.setFirstArrayItemIndex(index);        
     }
+
+    @Override
+    public int getFirstArrayItemIndex() {
+        return editor.getFirstArrayItemIndex();
+    }
+
+    @Override
+    public void setMinArrayItemsCount(int count) {
+        editor.setMinArrayItemsCount(count);
+    }
+
+    @Override
+    public int getMinArrayItemsCount() {
+        return editor.getMinArrayItemsCount();
+    }
+
+    @Override
+    public void setMaxArrayItemsCount(int count) {
+        editor.setMaxArrayItemsCount(count);
+    }
+
+    @Override
+    public int getMaxArrayItemsCount() {
+        return editor.getMaxArrayItemsCount();
+    }        
 
     @Override
     public void setItemsMovable(boolean isMovable) {
         editor.setItemMoveMode(isMovable ? AbstractArrayEditor.EItemMoveMode.DRAG_DROP : AbstractArrayEditor.EItemMoveMode.NOT_MOVABLE);
     }
-
-    public AbstractArrayEditor.EItemMoveMode getItemMoveMode() {
-        return editor.getItemMoveMode();
-    }
-
+    
     @Override
     public boolean isItemsMovable() {
         return editor.getItemMoveMode() != AbstractArrayEditor.EItemMoveMode.NOT_MOVABLE;
+    }    
+    
+    public void setItemMoveMode(final AbstractArrayEditor.EItemMoveMode mode) {
+        editor.setItemMoveMode(mode);
+    }    
+
+    public AbstractArrayEditor.EItemMoveMode getItemMoveMode() {
+        return editor.getItemMoveMode();
     }
 
     @Override
@@ -347,6 +391,16 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
         return editor.getSelectedValue();
     }
 
+    @Override
+    public void addCustomAction(final Action action) {
+        editor.addCustomAction(action);
+    }
+
+    @Override
+    public void removeCustomAction(final Action action) {
+        editor.removeCustomAction(action);
+    }   
+
     private void setupUi() {
         setWindowTitle(getEnvironment().getMessageProvider().translate("ArrayEditor", "Array Editor"));
         layout().addWidget(editor);
@@ -363,13 +417,14 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
         editor.valueUndefined.connect(this, "notifyValueIsUndefined()");
         editor.valueDefined.connect(this, "onValueIsDefined()");
         editor.rowEdited.connect(this, "onRowEdited(Integer,Object)");
-
     }
 
-    @SuppressWarnings("unused")
-    private boolean revalidateSize() {
-        final boolean isValid = editor.validateCurrentValueSize() == ValidationResult.ACCEPTABLE;
-        getButton(EDialogButtonType.OK).setEnabled(isValid);
+    private boolean revalidate() {
+        final boolean isValid = editor.validateCurrentValue() == ValidationResult.ACCEPTABLE;
+        final IPushButton buttonOK = getButton(EDialogButtonType.OK);
+        if (buttonOK!=null){
+            buttonOK.setEnabled(isValid);
+        }
         return isValid;
     }
 
@@ -403,6 +458,14 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
             listeners.remove(listener);
         }
     }
+    
+    public AbstractArrayEditorDelegate<ValEditor, QWidget> getEditorDelegate(){
+        return editor.getEditorDelegate();
+    }
+    
+    public void setEditorDelegate(final AbstractArrayEditorDelegate<ValEditor, QWidget> delegate){
+        editor.setEditorDelegate(delegate);
+    }    
 
     @SuppressWarnings("unused")
     private void notifyCellDoubleClick(final Integer row) {
@@ -415,7 +478,7 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
 
     @SuppressWarnings("unused")
     private void onRowsRemoved(final Integer startRow, final Integer count) {
-        revalidateSize();            
+        revalidate();            
         if (listeners != null) {
             for (ArrayEditorEventListener listener : listeners) {
                 listener.onRowsRemoved(startRow, count);
@@ -425,7 +488,7 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
 
     @SuppressWarnings("unused")
     private void onRowsInserted(final Integer startRow, final Integer count) {
-        revalidateSize();
+        revalidate();
         if (listeners != null) {
             for (ArrayEditorEventListener listener : listeners) {
                 listener.onRowsInserted(startRow, count);
@@ -444,7 +507,7 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
 
     @SuppressWarnings("unused")
     private void onValueIsDefined() {
-        revalidateSize();//check for minimum items count
+        revalidate();//check for minimum items count
         if (listeners != null) {
             for (ArrayEditorEventListener listener : listeners) {
                 listener.onDefineValue();
@@ -454,6 +517,7 @@ public final class ArrayEditorDialog extends ExplorerDialog implements IArrayEdi
 
     @SuppressWarnings("unused")
     private void onRowEdited(final Integer row, final Object newValue) {
+        revalidate();
         if (listeners != null) {
             for (ArrayEditorEventListener listener : listeners) {
                 listener.onCellChanged(row, newValue);

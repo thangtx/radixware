@@ -70,7 +70,7 @@ public class AdsPresentationEntityAdapterClassDef extends AdsEntityBasedClassDef
         AdsPresentationEntityAdapterClassDef adapter = classDef.findPresentationAdapter();
 
         /**
-         * multiple adapters not supprted
+         * multiple adapters not supported
          */
         if (adapter != null) {
             return false;

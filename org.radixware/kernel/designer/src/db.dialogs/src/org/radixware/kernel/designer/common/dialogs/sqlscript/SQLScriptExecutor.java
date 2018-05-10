@@ -8,10 +8,12 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.dialogs.sqlscript;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -28,7 +30,6 @@ import org.radixware.kernel.common.sqlscript.parser.SQLScriptException;
 import org.radixware.kernel.common.sqlscript.parser.spi.SQLDialogHandler;
 import org.radixware.kernel.common.sqlscript.parser.spi.SQLMonitor;
 import org.radixware.kernel.common.sqlscript.parser.spi.VariablesProvider;
-
 
 /**
  * Executes SQLScript in Designer.
@@ -78,8 +79,9 @@ public class SQLScriptExecutor implements Runnable {
             final SQLConnection sqlConn = new DesignerSQLConnectionAdapter(dbconn.getJDBCConnection(), dbconn.getDatabaseURL());
             final SQLPreprocessor sqlPreprocessor = new SQLPreprocessor(script, scriptName, variablesProvider);
             final String preprocessedScript;
+
             try {
-                preprocessedScript = sqlPreprocessor.preprocess();
+                preprocessedScript = sqlPreprocessor.preprocess(SQLPreprocessor.PreprocessBehavior.PT_REPLACE_UNUSED_BLOCKS_TO_COMMENT, null);
             } catch (SQLScriptException ex) {
                 monitor.printErrors(Arrays.asList(new String[]{createErrorMessage(ex)}));
                 monitor.printErrors(Arrays.asList(new String[]{"Unable to continue due to previous errors."}));
@@ -96,7 +98,6 @@ public class SQLScriptExecutor implements Runnable {
             final SQLScript sqlScript = new SQLScript(sqlConn, dbconn.getDatabaseURL(), preprocessedScript, scriptName, variablesProvider, dialogHandler, monitor);
             try {
                 sqlScript.execute(new ICancellable() {
-
                     @Override
                     public boolean wasCancelled() {
                         return cancelled;
@@ -126,7 +127,6 @@ public class SQLScriptExecutor implements Runnable {
                 ((DesignerSQLMonitor) monitor).clear();
             }
         }
-
     }
 
     private String createErrorMessage(SQLScriptException ex) {

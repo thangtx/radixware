@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcLO6HCBGBARGDVL5ABX6KMIUQWQ" Name="NotificationSenderEvent" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcLO6HCBGBARGDVL5ABX6KMIUQWQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcLO6HCBGBARGDVL5ABX6KMIUQWQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgUYSPEXZUVBDWJLLDCVZQKWV3H4" Name="Root"/>
+    <PropertyGroup Id="cpgHE5BU24UH5BRVKFC7RTEETTGKI" Name="Root"/>
+    <Properties>
+      <Property Id="prdBOEIVAQK2NCLXJZ5FSLJPRQ4ZQ" Name="entity" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules/>
+        <Type TypeId="411" Path="pdcEntity____________________"/>
+      </Property>
+      <Property Id="prdQJOMPXXQ25CVPPK3KF4VBL4UAM" Name="args" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+      <Property Id="prdRA5765HMEJCWPIYVICSQJMX4GE" Name="userGroup" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules/>
+        <Type TypeId="411" Path="aecQ23AYDTTGLNRDHRZABQAQH3XQ4"/>
+      </Property>
+      <Property Id="prdQGBIELHJGNFIZG4DDUI6C6GMXI" Name="user" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules/>
+        <Type TypeId="411" Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4"/>
+      </Property>
+      <Property Id="prd5FCU2UMNMBGYJGPIOGVJE3ZVFU" Name="recipients" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules/>
+        <Type TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcR6NIS6PEEZAQBPECZ2WZW2PNXI">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="21" Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM"/>
+                  </xsc:Argument>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="21"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </xsc:Type>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+      <Property Id="prd5D6NATLXWBGMBC4S66P7CVWXVI" Name="attachments" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false" WriteAccess="2">
+        <AccessRules/>
+        <Type TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="aec5O3H4DJEVLOBDCLSAALOMT5GDM"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+      </Property>
+      <Property Id="prd2Q2AQMEWSJFX5DKFDDQLGVSSBI" Name="sendCallbackClassName" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdNVVRMLEWYFAVREGBTFO5XS5ETU" Name="sendCallbackMethodName" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdCIVXTUWYNJFSBG2XJIGVUWLFBY" Name="sendCallbackData" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdI3WDYSNOXFCAHELOG7VSZWBNGY" Name="deliveryCallbackClassName" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prdI3GWQDPTENBXTOFDOCWGVHICPQ" Name="deliveryCallbackMethodName" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prd2XL2DAMVZNFTPO3GBJRXAPYPNA" Name="deliveryCallbackData" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+      </Property>
+      <Property Id="prd6G6VNH6J35DQVNCBH3LXRFCI4U" Name="deliveryTimeoutSeconds" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthJUVVZKSB2ZHPTLAUFFVIV6JXKQ" Name="NotificationSenderEvent" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprRG5NZWGCD5HPZNK5GD7AACADHY">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="user" Id="mprCD5JBFJ7NZAINPQV52WW53ACHA">
+            <Type TypeId="411" Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4"/>
+          </Parameter>
+          <Parameter Name="userGroup" Id="mprZRIR5EK2WVA7HIDBH36RMFRTRQ">
+            <Type TypeId="411" Path="aecQ23AYDTTGLNRDHRZABQAQH3XQ4"/>
+          </Parameter>
+          <Parameter Name="recipients" Id="mpr4TPXOKX3EZH5DD45O76X6NYZUY">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="adcR6NIS6PEEZAQBPECZ2WZW2PNXI">
+                    <xsc:GenericArguments>
+                      <xsc:Argument Alias="?">
+                        <xsc:Type TypeId="21" Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM"/>
+                      </xsc:Argument>
+                      <xsc:Argument Alias="?">
+                        <xsc:Type TypeId="21"/>
+                      </xsc:Argument>
+                    </xsc:GenericArguments>
+                  </xsc:Type>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="attachments" Id="mprQXUEHCCCSNDYZGHEWIL4NX45TE">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="aec5O3H4DJEVLOBDCLSAALOMT5GDM"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="args" Id="mprITC4IEU3SBAHLK2IFGXDFZ7QXM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLO6HCBGBARGDVL5ABX6KMIUQWQ prdBOEIVAQK2NCLXJZ5FSLJPRQ4ZQ" Invoke="true">
+                <xsc:Presentation>entity</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = entity;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLO6HCBGBARGDVL5ABX6KMIUQWQ prdQGBIELHJGNFIZG4DDUI6C6GMXI" Invoke="true">
+                <xsc:Presentation>user</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = user;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLO6HCBGBARGDVL5ABX6KMIUQWQ prdRA5765HMEJCWPIYVICSQJMX4GE" Invoke="true">
+                <xsc:Presentation>userGroup</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = userGroup;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLO6HCBGBARGDVL5ABX6KMIUQWQ prd5FCU2UMNMBGYJGPIOGVJE3ZVFU" Invoke="true">
+                <xsc:Presentation>recipients</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = recipients;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLO6HCBGBARGDVL5ABX6KMIUQWQ prdQJOMPXXQ25CVPPK3KF4VBL4UAM" Invoke="true">
+                <xsc:Presentation>args</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = args == null ? null : java.util.Collections.unmodifiableMap(args);
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLO6HCBGBARGDVL5ABX6KMIUQWQ prd5D6NATLXWBGMBC4S66P7CVWXVI" Invoke="true">
+                <xsc:Presentation>attachments</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = attachments;
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3MZS2CWDYJDRNKZZRCHM7Z4JRY" Name="NotificationSenderEvent" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprRG5NZWGCD5HPZNK5GD7AACADHY">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="user" Id="mprCD5JBFJ7NZAINPQV52WW53ACHA">
+            <Type TypeId="411" Path="aecSY4KIOLTGLNRDHRZABQAQH3XQ4"/>
+          </Parameter>
+          <Parameter Name="args" Id="mprITC4IEU3SBAHLK2IFGXDFZ7QXM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="attachments" Id="mprQXUEHCCCSNDYZGHEWIL4NX45TE">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="aec5O3H4DJEVLOBDCLSAALOMT5GDM"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(entity, user, null, null, attachments, args);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXUEC4LJNYJAQZAGT6GYIDBJ4IA" Name="NotificationSenderEvent" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprRG5NZWGCD5HPZNK5GD7AACADHY">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="userGroup" Id="mprZRIR5EK2WVA7HIDBH36RMFRTRQ">
+            <Type TypeId="411" Path="aecQ23AYDTTGLNRDHRZABQAQH3XQ4"/>
+          </Parameter>
+          <Parameter Name="args" Id="mprITC4IEU3SBAHLK2IFGXDFZ7QXM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="attachments" Id="mprQXUEHCCCSNDYZGHEWIL4NX45TE">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="aec5O3H4DJEVLOBDCLSAALOMT5GDM"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(entity, null, userGroup, null, attachments, args);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYS3FXLA7GVHRXOSVNQNMCQHWB4" Name="NotificationSenderEvent" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprRG5NZWGCD5HPZNK5GD7AACADHY">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="recipients" Id="mpr4TPXOKX3EZH5DD45O76X6NYZUY">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="adcR6NIS6PEEZAQBPECZ2WZW2PNXI">
+                    <xsc:GenericArguments>
+                      <xsc:Argument Alias="?">
+                        <xsc:Type TypeId="21" Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM"/>
+                      </xsc:Argument>
+                      <xsc:Argument Alias="?">
+                        <xsc:Type TypeId="21"/>
+                      </xsc:Argument>
+                    </xsc:GenericArguments>
+                  </xsc:Type>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="args" Id="mprITC4IEU3SBAHLK2IFGXDFZ7QXM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="attachments" Id="mprQXUEHCCCSNDYZGHEWIL4NX45TE">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="aec5O3H4DJEVLOBDCLSAALOMT5GDM"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(entity, null, null, recipients, attachments, args);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth64WVYOTXFZH5BONJEVML3XIP5M" Name="NotificationSenderEvent" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="entity" Id="mprRG5NZWGCD5HPZNK5GD7AACADHY">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="args" Id="mprITC4IEU3SBAHLK2IFGXDFZ7QXM">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="attachments" Id="mprQXUEHCCCSNDYZGHEWIL4NX45TE">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="aec5O3H4DJEVLOBDCLSAALOMT5GDM"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this(entity, null, null, null, attachments, args);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

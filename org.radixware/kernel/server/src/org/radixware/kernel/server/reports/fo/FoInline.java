@@ -56,6 +56,9 @@ class FoInline extends FoObject{
     public void setLineThroughText() throws XMLStreamException {
         writeAttribute("text-decoration", "line-through");
     }
+    public void setMargin(double marginMM) throws XMLStreamException {
+        writeMm("margin", marginMM);
+    }
     
     public void setText(final String value) throws XMLStreamException {
         writeText(value);

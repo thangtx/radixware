@@ -1,0 +1,4 @@
+alter table RDX_KAFKAQUEUE
+	add MAXPARTITIONFETCHBYTES NUMBER(9,0) default 1048576 not null
+/
+

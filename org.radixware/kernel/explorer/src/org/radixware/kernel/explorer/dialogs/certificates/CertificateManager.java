@@ -387,6 +387,15 @@ public class CertificateManager extends ExplorerDialog {
         return treeItem;
     }
     
+    private String getCurrentKeyAlias(){
+        if (isPkcs11){
+            final QTreeWidgetItem currentItem = tree.currentItem();
+            return currentItem==null ? keyAlias : (String)currentItem.data(0, Qt.ItemDataRole.UserRole);
+        }else{
+            return keyAlias;
+        }
+    }
+    
     private QTreeWidgetItem createEmptyRow() {
         final QTreeWidgetItem emptyItem = new QTreeWidgetItem();
         emptyItem.setFirstColumnSpanned(true);
@@ -480,7 +489,7 @@ public class CertificateManager extends ExplorerDialog {
             final char[] keyPassword = dialog.getKeyPassword();
             final String filePath = dialog.getFilePath();
             try {
-                final KeystoreRsaKeyEntry keyEntry = personalStore.getKeystoreRsaKeyEntry(keyAlias, keyPassword);
+                final KeystoreRsaKeyEntry keyEntry = personalStore.getKeystoreRsaKeyEntry(getCurrentKeyAlias(), keyPassword);
                 CertificateUtils.requestCertificate(keyEntry, filePath, personalStore.getSecurityProviderName());
             } catch (KeystoreControllerException e) {
                 if (e.getCause() instanceof UnrecoverableKeyException) {
@@ -569,13 +578,14 @@ public class CertificateManager extends ExplorerDialog {
                 if (!verifyCertificateChain(chain)) {
                     return;
                 }
+                final String currentKeyAlias = getCurrentKeyAlias();
                 final ITaskWaiter taskWaiter = getEnvironment().getApplication().newTaskWaiter();
                 try {
-                    taskWaiter.setMessage(getEnvironment().getMessageProvider().translate("CertificateManagerDialog", "Importing certificate"));
+                    taskWaiter.setMessage(getEnvironment().getMessageProvider().translate("CertificateManagerDialog", "Importing certificate"));                    
                     taskWaiter.runAndWait(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
-                            personalStore.storeCertificateChain(chain, keyAlias, keyPassword);
+                            personalStore.storeCertificateChain(chain, currentKeyAlias, keyPassword);
                             return (Void)null;
                         }
                     });

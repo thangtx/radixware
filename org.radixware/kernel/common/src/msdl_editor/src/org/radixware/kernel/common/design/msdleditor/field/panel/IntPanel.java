@@ -26,7 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
 import org.radixware.kernel.common.msdl.fields.IntFieldModel;
@@ -34,7 +34,7 @@ import org.radixware.kernel.common.msdl.enums.EEncoding;
 import org.radixware.schemas.msdl.IntField;
 
 
-public class IntPanel extends AbstractEditItem implements ActionListener {
+public class IntPanel extends AbstractMsdlPanel implements ActionListener {
     private IntField field;
     private AbstractFieldModel fieldModel;
     boolean opened = false;
@@ -53,6 +53,7 @@ public class IntPanel extends AbstractEditItem implements ActionListener {
         smodel.addElement(EEncoding.CP1251);
         smodel.addElement(EEncoding.CP1252);
         smodel.addElement(EEncoding.EBCDIC);
+        smodel.addElement(EEncoding.EBCDIC_CP1047);
         smodel.addElement(EEncoding.CP866);
         smodel.addElement(EEncoding.UTF8);
         smodel.addElement(EEncoding.BIGENDIANBIN);
@@ -77,7 +78,7 @@ public class IntPanel extends AbstractEditItem implements ActionListener {
     }
 
     public void open(IntFieldModel fieldModel, JPanel enumPanel) {
-        super.open(fieldModel.getMsdlField());
+        super.open(fieldModel, fieldModel.getMsdlField());
         this.enumPanel = enumPanel;
         if (enumPanel != null) {
             labelEnum = new javax.swing.JLabel();
@@ -226,10 +227,10 @@ public class IntPanel extends AbstractEditItem implements ActionListener {
         opened = true;
     }
 
-    private void save() {
+    @Override
+    protected void doSave() {
         field.setPlusSign(extCharPanelPlusSign.getCharacter());
         field.setMinusSign(extCharPanelMinusSign.getCharacter());
-        fieldModel.setModified();
     }
 
 

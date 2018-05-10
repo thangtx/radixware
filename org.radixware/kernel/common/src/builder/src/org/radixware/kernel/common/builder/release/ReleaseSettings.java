@@ -25,6 +25,7 @@ import org.radixware.kernel.common.svn.SVN;
 import org.radixware.kernel.common.svn.client.ISvnFSClient;
 import org.radixware.kernel.common.svn.utils.ReleaseVerifier;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 
 public class ReleaseSettings {
 
@@ -53,6 +54,7 @@ public class ReleaseSettings {
     private Map<String, List<Id>> layer2ModuleId = new HashMap<>();
     private IDialogStyler dialogStyler;
     private ISvnFSClient svnClientAdapter;
+    private IScriptDialog scriptDialog;
 
     public ReleaseSettings(Branch b, IFlowLogger logger, IBuildEnvironment buildEnv, boolean isPatch, ISvnFSClient svnClientAdapter) {
         this.sourceBranch = b;
@@ -65,7 +67,7 @@ public class ReleaseSettings {
 
         if (prevNumberStr == null) {
             if (b.getType() == ERepositoryBranchType.OFFSHOOT || b.getType() == ERepositoryBranchType.PATCH || isPatch) {
-                prevVersion = parseVersionStr(b.getBaseReleaseVersion());
+                prevVersion = ReleaseUtils.parseVersionStr(b.getBaseReleaseVersion());
                 newVersion = Arrays.copyOf(prevVersion, prevVersion.length + 1);
                 newVersion[prevVersion.length] = 1;
             } else {
@@ -74,11 +76,11 @@ public class ReleaseSettings {
             }
         } else {
             if (isPatch) {
-                prevVersion = parseVersionStr(prevNumberStr);
+                prevVersion = ReleaseUtils.parseVersionStr(prevNumberStr);
                 newVersion = Arrays.copyOf(prevVersion, prevVersion.length + 1);
                 newVersion[prevVersion.length] = 1;
             } else {
-                prevVersion = parseVersionStr(prevNumberStr);
+                prevVersion = ReleaseUtils.parseVersionStr(prevNumberStr);
                 if (prevVersion.length > 0) {
                     newVersion = Arrays.copyOf(prevVersion, prevVersion.length);
                     newVersion[newVersion.length - 1]++;
@@ -87,8 +89,8 @@ public class ReleaseSettings {
                 }
             }
         }
-        this.prevNumber = mergeVersionStr(prevVersion, isPatch);
-        this.number = mergeVersionStr(newVersion, isPatch);
+        this.prevNumber = ReleaseUtils.mergeVersionStr(prevVersion, isPatch);
+        this.number = ReleaseUtils.mergeVersionStr(newVersion, isPatch);
         this.logger = logger;
         this.buildEnvironment = buildEnv;
     }
@@ -174,7 +176,7 @@ public class ReleaseSettings {
     }
 
     public boolean setNumber(String number) {
-        if (!isValidReleaseName(number, isPatchRelease())) {
+        if (!ReleaseUtils.isValidReleaseName(number, isPatchRelease())) {
             return false;
         } else {
             this.number = number;
@@ -196,98 +198,6 @@ public class ReleaseSettings {
 
     public void setStatus(EReleaseStatus st) {
         status = st;
-    }
-
-    private static int[] parseVersionStr(String s) {
-        if (s == null || s.isEmpty()) {
-            return new int[]{0};
-        } else {
-            String[] strings = s.split("\\.|-");
-            if (strings.length == 0) {
-                return new int[]{0};
-            }
-            int result[] = new int[strings.length];
-            for (int i = 0; i < strings.length; i++) {
-                try {
-                    result[i] = Integer.parseInt(strings[i]);
-                } catch (NumberFormatException e) {
-                    return new int[]{0};
-                }
-            }
-            return result;
-        }
-    }
-
-    public static boolean isValidReleaseName(String s, boolean isPatch) {
-        if (s.isEmpty()) {
-            return false;
-        }
-        boolean wasPatchNumber = false;
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c == '0') {
-                if (i > 0 && !(Character.isDigit(s.charAt(i - 1)) || s.charAt(i - 1) != '.')) {
-                    return false;
-                }
-                if (i == 0 && s.length() > 1 && s.charAt(1) != '.') {
-                    return false;
-                }
-            } else if (c == '.') {
-                if (i == 0) {
-                    return false;
-                }
-                if (i >= s.length() - 1) {
-                    return false;
-                } else {
-                    if (!Character.isDigit(s.charAt(i + 1))) {
-                        return false;
-                    }
-                }
-            } else if (c == '-') {
-                wasPatchNumber = true;
-                if (!isPatch) {
-                    return false;
-                }
-                if (i == 0) {
-                    return false;
-                }
-                if (i == s.length() - 1) {
-                    return false;
-                }
-                for (int j = i + 1; j < s.length(); j++) {
-                    if (!Character.isDigit(s.charAt(j))) {
-                        return false;
-                    }
-                }
-            } else if (!Character.isDigit(c)) {
-                return false;
-            }
-        }
-        if (isPatch) {
-            return wasPatchNumber;
-        } else {
-            return true;
-        }
-    }
-
-    private static String mergeVersionStr(int[] version, boolean patch) {
-        if (version.length == 0) {
-            return null;
-        }
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i
-                < version.length; i++) {
-            if (i > 0) {
-                if (patch && i == version.length - 1) {
-                    result.append('-');
-                } else {
-                    result.append('.');
-                }
-            }
-            result.append(String.valueOf(version[i]));
-        }
-        return result.toString();
     }
 
     public boolean performCleanAndBuild() {
@@ -320,5 +230,13 @@ public class ReleaseSettings {
 
     public void setGenerateRadixdoc(boolean generateRadixdoc) {
         this.generateRadixdoc = generateRadixdoc;
+    }
+
+    public IScriptDialog getScriptDialog() {
+        return scriptDialog;
+    }
+
+    public void setScriptDialog(IScriptDialog scriptDialog) {
+        this.scriptDialog = scriptDialog;
     }
 }

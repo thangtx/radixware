@@ -12,6 +12,7 @@
 package org.radixware.kernel.explorer.views;
 
 import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.gui.QAbstractButton;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public final class StandardForm extends Form {
 
     private final QMainWindow content = new QMainWindow();
     private final CommandToolBar commandBar;
+    private ExplorerDialogButtonBox buttonBox;
     private TabSet tabSet;
     private boolean wasShown;
 
@@ -76,12 +78,16 @@ public final class StandardForm extends Form {
             content.setCentralWidget(tabSet);
         }
         {//Buttons setup
-            final ExplorerDialogButtonBox buttonBox = new ExplorerDialogButtonBox(getEnvironment(),this);
+            buttonBox = new ExplorerDialogButtonBox(getEnvironment(),this);
             setupButtonBox(buttonBox);
             layout().addWidget(buttonBox);
         }
         content.show();
         opened.emit(this);
+    }
+    
+    public QAbstractButton findButtonByType(final String buttonType) {
+        return findButtonByType(buttonBox, buttonType);
     }
 
     public void setCommandBarHidden(final boolean hidden) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -81,12 +81,10 @@ import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.IKernelCharEnum;
 import org.radixware.kernel.common.types.IKernelIntEnum;
 import org.radixware.kernel.common.types.IKernelStrEnum;
-import org.radixware.kernel.server.arte.AdsClassLoader;
 import org.radixware.kernel.server.exceptions.DbQueryBuilderError;
 import org.radixware.kernel.server.exceptions.DetailsNotExistsError;
 import org.radixware.kernel.server.exceptions.EntityObjectNotExistsError;
 import org.radixware.kernel.server.exceptions.PrimaryKeyModificationError;
-import org.radixware.kernel.server.exceptions.PropNotLoadedException;
 import org.radixware.kernel.server.exceptions.PropertyIsMandatoryError;
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.enums.EEntityInitializationPhase;
@@ -94,25 +92,31 @@ import org.radixware.kernel.common.enums.EPropInitializationPolicy;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.meta.RadEnumDef;
 import org.radixware.kernel.common.types.ArrChar;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.server.arte.DefManager;
 import org.radixware.kernel.server.dbq.*;
 import org.radixware.kernel.server.dbq.UpObjectOwnerQuery.OwnerProp;
 import org.radixware.kernel.server.exceptions.DatabaseError;
-import org.radixware.kernel.server.meta.clazzes.IRadRefPropertyDef;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
+import org.radixware.kernel.server.types.EntityPropVals.PropOptional;
 
 /**
  * Base class for persistent application objects
  *
  */
 public abstract class Entity extends EntityEvents implements IRadClassInstance {
+
     //Private fields
+    private static final int MAX_INHERITANCE_ACCESS_ROUNDS = SystemPropUtils.getIntSystemProp("rdx.entity.max.inheritance.access.rounds", 10);
 
     EntityState state;
+    private boolean initInProcess = false;
     protected Pid pid = null;
     //private PresentationContext presentationContext = null;
     private final EntityPropVals loadedPropVals;
     private final SortedSet<Id> modifiedPropIds; //sorted because it will be used for query hash calculation
+    private final SortedSet<Id> lastModifiedPropIds;
     private Map<DdsReferenceDef, EntityDetails> detailsByRef;
     private Map<Id, Boolean> upHasOwnVal;
 // Metainfo
@@ -121,6 +125,12 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     private Long creationSpNesting = null; //see RADIX-4942
     private int autoUpdatePriority = 0;
     private final Long instSpNesting;
+    //inheritance cycle detection
+    private final List<RadPropDef> inheritedValCalcInProgressProps = new ArrayList<>();
+    private final List<RadPropDef> inheritancePathCalcInProgressProps = new ArrayList<>();
+    private final List<RadPropDef> propDefinedCalcInProgressProps = new ArrayList<>();
+    private IEntityTouchListener entityTouchListener;
+    private final long touchTimeMillis = System.currentTimeMillis();
 
     public DdsTableDef getDdsMeta() {
         if (ddsMeta == null) {
@@ -147,6 +157,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         super();
         loadedPropVals = null;
         modifiedPropIds = null;
+        lastModifiedPropIds = null;
         instSpNesting = null;
         arte = null;
         this.pid = pid;
@@ -157,9 +168,10 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         state = new EntityState(this);
         loadedPropVals = new EntityPropVals(this);
         modifiedPropIds = new TreeSet<Id>();
+        lastModifiedPropIds = new TreeSet<>();
         upHasOwnVal = null;
         detailsByRef = null;
-        this.arte = arte != null ? arte : ((AdsClassLoader) getClass().getClassLoader()).getArte();
+        this.arte = arte != null ? arte : Arte.get();
         instSpNesting = (this.arte == null ? null : this.arte.getSavePointsNesting());
         if (this.arte != null && !bDoNotRegisterInArte) {
             this.arte.registerNewEntityObject(this);
@@ -168,7 +180,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
 
 //Public methods    
     public Pid getPid() {
-        if (state.isNewObject()) {
+        if (state.isNewOrInited()) {
             return new Pid(getArte(), getDdsMeta(), loadedPropVals.asMap(), Pid.EEmptyPkPolicy.CREATE_NULL_OBJ);
         }
         return pid;
@@ -224,9 +236,10 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
                             //transfer values of the primary key of the detail record to the corresponding properties of the master record
                             EntityPropVals masterPropVals = new EntityPropVals();
                             for (DdsReferenceDef.ColumnsInfoItem refProp : masterRef.getColumnsInfo()) {
-                                try {
-                                    masterPropVals.putPropValById(refProp.getParentColumnId(), vals.getPropValById(refProp.getChildColumnId()));
-                                } catch (PropNotLoadedException ex) {
+                                final PropOptional propOptional = vals.getPropOptionalById(refProp.getChildColumnId());
+                                if (propOptional.isPresent()) {
+                                    masterPropVals.putPropValById(refProp.getParentColumnId(), propOptional.get());
+                                } else {
                                     //shouldn't happen
                                 }
                             }
@@ -343,7 +356,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
 
     private void load(@SuppressWarnings("hiding")
             final Pid pid, final EntityPropVals loadedProps, boolean markAsRead) {
-        if (!state.isNewObject() || state.isInited()) {
+        if (!state.isNew()) {
             throw new IllegalUsageError("Can't activate object which is not new");
         }
         state.set(EntityState.Enum.IN_DATABASE);
@@ -371,6 +384,10 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     }
 
     public final Entity getParentRef(final DdsReferenceDef ref) {
+        return getParentRef(ref, null);
+    }
+
+    public final Entity getParentRef(final DdsReferenceDef ref, final RadPropDef prop) {
         state.assertReadAllowed();
         if (!ref.getChildTableId().equals(getDdsMeta().getId())) {
             throw new IllegalArgumentError("Reference \"" + ref.getName() + "\" (#" + ref.getId() + ") is not parent reference.");
@@ -426,6 +443,11 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
             }
             parentPid = new Pid(getArte(), masterTab, key);
         }
+
+        if (prop != null && prop.getIsValInheritable() && prop.getValIsInheritMark(arte, parentPid)) {
+            return createDummyInheritMarkEntity(parentPid, prop);
+        }
+
         parent = getArte().getEntityObject(parentPid);
         parentsPtrByRefCache.cache(ref, parent);
         return parent;
@@ -474,11 +496,28 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
             }
         } else {
             boolean isFkCleared = false;
+            final List<Id> propsToClear = new ArrayList<>();
             for (DdsReferenceDef.ColumnsInfoItem refProp : ref.getColumnsInfo()) {
-                if (getRadMeta().getPropById(refProp.getChildColumnId()).getAccessor() instanceof IRadPropWriteAccessor) {
+                propsToClear.add(refProp.getChildColumnId());
+            }
+            if (isNewObject()) {
+                final List<Id> pkProps = new ArrayList<>();
+                int pkPropsInRefCnt = 0;
+                for (ColumnInfo pkColInfo : getDdsMeta().getPrimaryKey().getColumnsInfo()) {
+                    pkProps.add(pkColInfo.getColumnId());
+                    if (propsToClear.contains(pkColInfo.getColumnId())) {
+                        pkPropsInRefCnt++;
+                    }
+                }
+                if (pkPropsInRefCnt < propsToClear.size()) {
+                    propsToClear.removeAll(pkProps);//RADIX-12267
+                }
+            }
+            for (Id propId : propsToClear) {
+                if (getRadMeta().getPropById(propId).getAccessor() instanceof IRadPropWriteAccessor) {
                     try {
-                        if (!isPersistenPropReadonly(refProp.getChildColumnId())) { //RADIX-386
-                            setProp(refProp.getChildColumnId(), null);
+                        if (!isPersistenPropReadonly(propId)) { //RADIX-386
+                            setProp(propId, null);
                             isFkCleared = true;
                         }
                     } catch (PrimaryKeyModificationError e) {
@@ -531,11 +570,8 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         final DdsPrimaryKeyDef pk = getDdsMeta().getPrimaryKey();
         if (pk != null) {
             for (DdsIndexDef.ColumnInfo col : pk.getColumnsInfo()) {
-                try {
-                    if (loadedPropVals.getPropValById(col.getColumnId()) == null) {
-                        throw new PropertyIsMandatoryError(getRadMeta().getId(), col.getColumnId());
-                    }
-                } catch (PropNotLoadedException ex) {
+                final PropOptional propOptional = loadedPropVals.getPropOptionalById(col.getColumnId());
+                if (!propOptional.isPresent() || propOptional.get() == null) {
                     throw new PropertyIsMandatoryError(getRadMeta().getId(), col.getColumnId());
                 }
             }
@@ -547,18 +583,30 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     }
 
     public final Object getPropInheritedVal(final RadPropDef prop) {
-        NEXT_PATH:
-        for (RadPropDef.ValInheritancePath path : prop.getValInheritPathes()) {
-            Entity parent = this;
-            for (final Id refPropId : path.getRefPropIds()) {
-                parent = (Entity) parent.getProp(refPropId);
-                if (parent == null) {
-                    continue NEXT_PATH;
+        final String stepDescr = "getInheritedValue";
+        if (count(inheritedValCalcInProgressProps, prop) == MAX_INHERITANCE_ACCESS_ROUNDS) {
+            throw new PropInheritanceCycleException("Property value inheritance cycle", this, prop, stepDescr);
+        }
+        inheritedValCalcInProgressProps.add(prop);
+        try {
+            NEXT_PATH:
+            for (RadPropDef.ValInheritancePath path : prop.getValInheritPathes()) {
+                Entity parent = this;
+                for (final Id refPropId : path.getRefPropIds()) {
+                    parent = (Entity) parent.getProp(refPropId);
+                    if (parent == null) {
+                        continue NEXT_PATH;
+                    }
+                }
+                if (parent.getIsPropValDefined(path.getDestPropId())) {
+                    return parent.getProp(path.getDestPropId());
                 }
             }
-            if (parent.getIsPropValDefined(path.getDestPropId())) {
-                return parent.getProp(path.getDestPropId());
-            }
+        } catch (PropInheritanceCycleException ex) {
+            ex.appendStep(stepDescr, this, prop);
+            throw ex;
+        } finally {
+            inheritedValCalcInProgressProps.remove(prop);
         }
         return null;
     }
@@ -617,8 +665,8 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     }
 
     protected Object adjustValue(final Object x, final RadPropDef propMeta) {
-        if (propMeta instanceof RadInnatePropDef
-                && propMeta.getValType() == EValType.DATE_TIME
+        if (propMeta.getValType() == EValType.DATE_TIME
+                && propMeta instanceof RadInnatePropDef
                 && ((RadInnatePropDef) propMeta).getDbPrecision() == 0
                 && x instanceof Timestamp) {
             final Timestamp roundedValue = new Timestamp(((Timestamp) x).getTime());
@@ -628,77 +676,110 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         return x;
     }
 
-// Native properties
-    protected final void setNativeProp(final Id id, Object x) {
-        state.assertWriteAllowed();
-        final RadPropDef dacProp = getRadMeta().getPropById(id);
-        if (dacProp.getValType() == EValType.PARENT_REF) {
+    protected final void setNativeDetailProp(RadDetailPropDef propDef, Object x) {
+        final Entity detail = getDetailRef(propDef.getDetailReference());
+        if (propDef.getValType() == EValType.PARENT_REF) {
+            detail.setParentRef(propDef.getJoinedPropId(), (Entity) normalizeVal(x));
+        } else {
+            detail.setNativeProp(propDef.getJoinedPropId(), x);
+        }
+    }
+
+    protected final void setNativeInnateRefProp(RadInnateRefPropDef propDef, Object x) {
+        setParentRef(propDef.getReferenceId(), (Entity) normalizeVal(x));
+    }
+
+    private void ensureValidObject(final RadPropDef propDef, final Object x) {
+        if (propDef.getValType() == EValType.PARENT_REF) {
             if (x != null && !(x instanceof Entity) && !(x instanceof Pid)) {
                 throw new IllegalArgumentError("Only Entity or Pid instance can be value of ParentRef property");
             }
         }
-        if (dacProp instanceof RadDetailPropDef) {
-            final RadDetailPropDef detProp = (RadDetailPropDef) dacProp;
-            final Entity detail = getDetailRef(detProp.getDetailReference());
-            if (detProp.getValType() == EValType.PARENT_REF) {
-                detail.setParentRef(detProp.getJoinedPropId(), (Entity) normalizeVal(x));
-            } else {
-                detail.setNativeProp(detProp.getJoinedPropId(), x);
-            }
-            return;
-        } else if (dacProp instanceof RadInnateRefPropDef) {
-            final RadInnateRefPropDef ptProp = (RadInnateRefPropDef) dacProp;
-            setParentRef(ptProp.getReferenceId(), (Entity) normalizeVal(x));
-            return;
-        }
-        if (!(dacProp instanceof RadInnatePropDef || dacProp instanceof RadSqmlPropDef)) {
-            throw new DefinitionError("Property #" + id + " is not native");
-        }
-        final DdsColumnDef dbpProp = dacProp instanceof RadSqmlPropDef ? null : getDdsMeta().getColumns().getById(id, ExtendableDefinitions.EScope.ALL);
-        if (dbpProp != null && dbpProp == getDdsMeta().findClassGuidColumn()) {
+    }
+
+    private void ensureNotChangingClassGuid(final DdsColumnDef columnDef, final Object x) {
+        if (columnDef != null && columnDef == getDdsMeta().findClassGuidColumn()) {
             if (x == null || !x.equals(getRadMeta().getId().toString())) {
                 throw new IllegalUsageError("Try to change \"CLASSGUID\" property");
             }
         }
+    }
 
-        x = adjustValue(x, dacProp);
-
-        final Object normalizedNewVal = normalizeVal(x);
+    private void ensureNotChangingPrimaryKey(final DdsColumnDef columnDef, final Id propId, final Object normalizedNewVal) {
         if (isInDatabase(false)) {//is not new object
-            if (dbpProp != null && dbpProp.isPrimaryKey()) {
-                final Object oldVal = normalizeVal(getNativeProp(id));
+            if (columnDef != null && columnDef.isPrimaryKey()) {
+                final Object oldVal = normalizeVal(getNativeProp(propId));
                 if (normalizedNewVal == null || !normalizedNewVal.equals(oldVal)) {
                     throw new PrimaryKeyModificationError("Try to change primary key property of existing object");
                 }
             }
         }
-        boolean modified = true;
-        try {
-            final Object normalizedCurVal = normalizeVal(loadedPropVals.getPropValById(id));
-            if (normalizedCurVal == normalizedNewVal || (normalizedCurVal != null
-                    && !dacProp.getValType().equals(EValType.BLOB)
-                    && !dacProp.getValType().equals(EValType.CLOB)
-                    && normalizedCurVal.equals(normalizedNewVal))) {
-                modified = false;
-            }
-        } catch (PropNotLoadedException e) {
-            modified = true;
-        }
-        if (modified) {
-            if (isPersistenPropReadonly(id)) {
-                throw new IllegalUsageError("Try to modify readonly property \"" + dacProp.getName() + "\" (#" + id + ")");
-            }
-            loadedPropVals.putPropValById(id, x);
-            if (dbpProp != null && dbpProp.getExpression() == null) {
-                setPropModified(id);
-            }
-            parentsPtrByRefCache.clear();
+    }
 
-            if (detailsByRef != null && !isInDatabase(false)) {
-                for (Map.Entry<DdsReferenceDef, EntityDetails> entry : detailsByRef.entrySet()) {
-                    entry.getValue().setParentRef(entry.getKey(), this);
-                }
+    private boolean checkModified(final RadPropDef propDef, final Id propId, final Object normalizedNewVal) {
+        if (!loadedPropVals.containsPropById(propId) && isInDatabase(false) && !wasRead()) {
+            read(EEntityLockMode.NONE, 0l);
+        }
+        final PropOptional propOptional = loadedPropVals.getPropOptionalById(propId);
+        if (!propOptional.isPresent()) {
+            return true;
+        }
+        final Object normalizedCurVal = normalizeVal(propOptional.get());
+        if (normalizedCurVal == normalizedNewVal || (normalizedCurVal != null
+                && !propDef.getValType().equals(EValType.BLOB)
+                && !propDef.getValType().equals(EValType.CLOB)
+                && normalizedCurVal.equals(normalizedNewVal))) {
+            return false;
+        }
+        return true;
+    }
+
+    private void modifyProp(final DdsColumnDef columnDef, final Id propId, final Object x) {
+        if (isPersistenPropReadonly(propId)) {
+            throw new IllegalUsageError("Try to modify readonly property \"" + columnDef.getName() + "\" (#" + propId + ")");
+        }
+        loadedPropVals.putPropValById(propId, x);
+        if (columnDef != null && columnDef.getExpression() == null) {
+            setPropModified(propId);
+        }
+        parentsPtrByRefCache.clear();
+
+        if (detailsByRef != null && !isInDatabase(false)) {
+            for (Map.Entry<DdsReferenceDef, EntityDetails> entry : detailsByRef.entrySet()) {
+                entry.getValue().setParentRef(entry.getKey(), this);
             }
+        }
+    }
+
+// Native properties
+    protected final void setNativeProp(final Id id, Object x) {
+        state.assertWriteAllowed();
+        touch();
+        final RadPropDef dacProp = getRadMeta().getPropById(id);
+        ensureValidObject(dacProp, x);
+
+        if (dacProp instanceof RadInnatePropDef || dacProp instanceof RadSqmlPropDef) {
+            final DdsColumnDef columnProp = dacProp instanceof RadSqmlPropDef ? null : getDdsMeta().getColumns().getById(id, ExtendableDefinitions.EScope.ALL);
+
+            ensureNotChangingClassGuid(columnProp, x);
+
+            x = adjustValue(x, dacProp);
+
+            final Object normalizedNewVal = normalizeVal(x);
+
+            final boolean modified = checkModified(dacProp, id, normalizedNewVal);
+            if (modified) {
+                ensureNotChangingPrimaryKey(columnProp, id, normalizedNewVal);
+                modifyProp(columnProp, id, x);
+            } else if (state.isNew() && !initInProcess) {
+                modifyProp(columnProp, id, x);
+            }
+        } else if (dacProp instanceof RadDetailPropDef) {
+            setNativeDetailProp((RadDetailPropDef) dacProp, x);
+        } else if (dacProp instanceof RadInnateRefPropDef) {
+            setNativeInnateRefProp((RadInnateRefPropDef) dacProp, x);
+        } else {
+            throw new DefinitionError("Property #" + id + " is not native");
         }
     }
 
@@ -707,34 +788,34 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     }
 
     protected final void refinePropVal(final Id id, final Object refinedVal, boolean check) {
-        try {
-            final RadPropDef dacProp = getRadMeta().getPropById(id);
-            if (dacProp instanceof RadDetailPropDef) {
-                final RadDetailPropDef detProp = (RadDetailPropDef) dacProp;
-                final Entity detail = getDetailRef(detProp.getDetailReference());
-                if (detProp.getValType() == EValType.PARENT_REF) {
-                    detail.refineParentRef(getArte().getDefManager().getReferenceDef(detProp.getJoinedPropId()), refinedVal);
-                } else {
-                    detail.refinePropVal(detProp.getJoinedPropId(), refinedVal, check);
-                }
-                return;
-            } else if (dacProp instanceof RadInnateRefPropDef) {
-                final RadInnateRefPropDef ptProp = (RadInnateRefPropDef) dacProp;
-                refineParentRef(ptProp.getReference(), refinedVal);
+        final RadPropDef dacProp = getRadMeta().getPropById(id);
+        if (dacProp instanceof RadDetailPropDef) {
+            final RadDetailPropDef detProp = (RadDetailPropDef) dacProp;
+            final Entity detail = getDetailRef(detProp.getDetailReference());
+            if (detProp.getValType() == EValType.PARENT_REF) {
+                detail.refineParentRef(getArte().getDefManager().getReferenceDef(detProp.getJoinedPropId()), refinedVal);
             } else {
-                if (check) {
-                    final Object normalizedCurVal = normalizeVal(loadedPropVals.getPropValById(id));
-                    if (normalizedCurVal == null ? refinedVal == null : normalizedCurVal.equals(normalizeVal(refinedVal))) {
-                        loadedPropVals.putPropValById(id, refinedVal);
-                    } else {
-                        throw new IllegalUsageError("Refined value is not equal to value");
-                    }
-                } else {
-                    loadedPropVals.putPropValById(id, refinedVal);
-                }
+                detail.refinePropVal(detProp.getJoinedPropId(), refinedVal, check);
             }
-        } catch (PropNotLoadedException e) {
-            throw new IllegalUsageError("Try to refine not loaded value", e);
+            return;
+        } else if (dacProp instanceof RadInnateRefPropDef) {
+            final RadInnateRefPropDef ptProp = (RadInnateRefPropDef) dacProp;
+            refineParentRef(ptProp.getReference(), refinedVal);
+        } else {
+            if (check) {
+                final PropOptional propOptional = loadedPropVals.getPropOptionalById(id);
+                if (!propOptional.isPresent()) {
+                    throw new IllegalUsageError("Try to refine not loaded value", propOptional.cause(id));
+                }
+                final Object normalizedCurVal = normalizeVal(propOptional.get());
+                if (normalizedCurVal == null ? refinedVal == null : normalizedCurVal.equals(normalizeVal(refinedVal))) {
+                    loadedPropVals.putPropValById(id, refinedVal);
+                } else {
+                    throw new IllegalUsageError("Refined value is not equal to value");
+                }
+            } else {
+                loadedPropVals.putPropValById(id, refinedVal);
+            }
         }
     }
 
@@ -766,94 +847,77 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         return getNativePropOwnVal(getRadMeta().getPropById(propId));
     }
 
+    private Object getInitPropVal(final RadPropDef dacProp) {
+        if (//RADIX-1640
+                dacProp.getIsValInheritable()
+                && (dacProp.getInitPolicy() == EPropInitializationPolicy.DO_NOT_DEFINE
+                || dacProp.getInitPolicy() == EPropInitializationPolicy.DEFINE_IF_NOT_INHERITED
+                && getPropValInheritancePath(dacProp.getId()) != null // value can be inherited
+                )) {
+            return dacProp.getValInheritMarkVal(getArte());
+        } else {
+            final Object val = dacProp.getInitVal(getArte());
+            if (dacProp instanceof RadInnatePropDef && ((RadInnatePropDef) dacProp).isDbInitValOverriden()) {
+                setPropModified(dacProp.getId());
+            }
+            return val;
+        }
+    }
+
+    private Object getDetailPropOwnVal(final RadDetailPropDef detProp) {
+        final Entity detail = getDetailRef(detProp.getDetailReference());
+        if (detProp.getValType() == EValType.PARENT_REF) {
+            return detail.getParentRef(detProp.getJoinedPropId());
+        } else {
+            return detail.getNativeProp(detProp.getJoinedPropId());
+        }
+    }
+
     private Object getNativePropOwnVal(final RadPropDef dacProp) {
-        if (dacProp instanceof RadDetailPropDef) {
-            final RadDetailPropDef detProp = (RadDetailPropDef) dacProp;
-            final Entity detail = getDetailRef(detProp.getDetailReference());
-            if (detProp.getValType() == EValType.PARENT_REF) {
-                return detail.getParentRef(detProp.getJoinedPropId());
-            } else {
-                return detail.getNativeProp(detProp.getJoinedPropId());
-            }
-        }
-
-        if (dacProp instanceof RadInnateRefPropDef) {
-            final RadInnateRefPropDef ptProp = (RadInnateRefPropDef) dacProp;
-            return getParentRef(ptProp.getReference());
-        }
-
-        if (!(dacProp instanceof RadInnatePropDef || dacProp instanceof RadSqmlPropDef)) {
-            throw new DefinitionError("Property #" + dacProp.getId() + " is not native");
-        }
-        try {
-            return loadedPropVals.getPropValById(dacProp.getId());
-        } catch (PropNotLoadedException e) {
-            if (isInDatabase(false)) {
-                read(EEntityLockMode.NONE, null);
-            } else {
-                final Object val;
-                if (//RADIX-1640
-                        dacProp.getIsValInheritable()
-                        && (dacProp.getInitPolicy() == EPropInitializationPolicy.DO_NOT_DEFINE
-                        || dacProp.getInitPolicy() == EPropInitializationPolicy.DEFINE_IF_NOT_INHERITED
-                        && getPropValInheritancePath(dacProp.getId()) != null // value can be inherited
-                        )) {
-                    val = dacProp.getValInheritMarkVal(getArte());
+        if (dacProp instanceof RadInnatePropDef || dacProp instanceof RadSqmlPropDef) {
+            if (!loadedPropVals.containsPropById(dacProp.getId())) {
+                if (isInDatabase(false)) {
+                    read(EEntityLockMode.NONE, null);
                 } else {
-                    val = dacProp.getInitVal(getArte());
-                    if (dacProp instanceof RadInnatePropDef && ((RadInnatePropDef) dacProp).isDbInitValOverriden()) {
-                        setPropModified(dacProp.getId());
-                    }
+                    final Object val = getInitPropVal(dacProp);
+                    loadedPropVals.putPropValById(dacProp.getId(), val); // dangerous(???) optimization caused (???) RADIX-4266
+                    return val;
                 }
-                loadedPropVals.putPropValById(dacProp.getId(), val); // dangerous(???) optimization caused (???) RADIX-4266
-                return val;
             }
-            try {
-                return loadedPropVals.getPropValById(dacProp.getId());
-            } catch (PropNotLoadedException e2) {
-                throw new DbQueryBuilderError("Native property requested but not loaded", e2);
+            PropOptional propOptional = loadedPropVals.getPropOptionalById(dacProp.getId());
+            if (propOptional.isPresent()) {
+                return propOptional.get();
+            } else {
+                throw new RadixError("Native property #'" + dacProp.getId() + "' requested but can not be loaded");
             }
+        } else if (dacProp instanceof RadDetailPropDef) {
+            return getDetailPropOwnVal((RadDetailPropDef) dacProp);
+        } else if (dacProp instanceof RadInnateRefPropDef) {
+            final RadInnateRefPropDef ptProp = (RadInnateRefPropDef) dacProp;
+            return getParentRef(ptProp.getReference(), dacProp);
+        } else {
+            throw new DefinitionError("Property #" + dacProp.getId() + " is not native");
         }
     }
 
     protected final Object getNativeProp(final Id id) {
         state.assertReadAllowed();
+        touch();
 
         final RadPropDef dacProp = getRadMeta().getPropById(id);
         final Object ownVal = getNativePropOwnVal(dacProp);
-        if (dacProp instanceof RadInnatePropDef
-                || dacProp instanceof RadDetailPropDef && !(dacProp instanceof IRadRefPropertyDef)) {
+
+        final RadClassDef.UpstandingRefInfo upstandingRefInfo = getRadMeta().getUpstandingRefInfo(id);
+        if (upstandingRefInfo != null) {
             // RADIX-892
             // if it is a FK column and a parentRef prop on this FK exists and its value is inherited
             // then return value of FK corresponded to inherited parent prop value
-            for (RadPropDef p : getRadMeta().getProps()) {
-                final boolean isDetailProp = !(dacProp instanceof RadInnatePropDef);
-                if (p.getValType() == EValType.PARENT_REF
-                        && (isDetailProp
-                                ? p instanceof RadDetailParentRefPropDef : //DetailParentRef is based on detail props
-                                p instanceof RadInnateRefPropDef) //optimization ParentRef is based on innate props
-                        ) {
-                    if (isDetailProp) {
-                        final RadDetailParentRefPropDef refProp = (RadDetailParentRefPropDef) p;
-                        final RadDetailPropDef detProp = (RadDetailPropDef) dacProp;
-                        for (DdsReferenceDef.ColumnsInfoItem rp : refProp.getReference().getColumnsInfo()) {
-                            if (rp.getChildColumnId().equals(detProp.getJoinedPropId()) && !getPropHasOwnVal(p.getId())) {
-                                final Entity referencedObj = (Entity) getProp(p.getId());
-                                return referencedObj == null ? null : referencedObj.getProp(rp.getParentColumnId());
-                            }
-                        }
-                    } else {
-                        final RadInnateRefPropDef refProp = (RadInnateRefPropDef) p;
-                        for (DdsReferenceDef.ColumnsInfoItem rp : refProp.getReference().getColumnsInfo()) {
-                            if (rp.getChildColumnId().equals(dacProp.getId()) && !getPropHasOwnVal(p.getId())) {
-                                final Entity referencedObj = (Entity) getProp(p.getId());
-                                return referencedObj == null ? null : referencedObj.getProp(rp.getParentColumnId());
-                            }
-                        }
-                    }
-                }
+            if (!getPropHasOwnVal(upstandingRefInfo.getParentRefPropId())) {
+                final Entity referencedObj = (Entity) getProp(upstandingRefInfo.getParentRefPropId());
+                return referencedObj == null ? null : referencedObj.getProp(upstandingRefInfo.getPropInParentId());
             }
         }
+
         if (dacProp.getIsValInheritable() && dacProp.getValIsInheritMark(getArte(), ownVal)) {
             return getPropInheritedVal(dacProp);
         }
@@ -900,21 +964,33 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         final RadPropDef prop = getRadMeta().getPropById(id);//throws exception if the property doesn't exist
         Object normalizedNewVal = normalizeVal(newVal);
         boolean modified = true;
-        try {
-            Object curVal = loadedPropVals.getPropValById(id);
-            try {
-                curVal = normalizeVal(curVal);
-            } catch (EntityObjectNotExistsError e) {
-                //to support restore from broken ref
+        for (int i = 0; i < 2; i++) {
+            PropOptional propOptional = loadedPropVals.getPropOptionalById(id);
+            if (propOptional.isPresent()) {
+                Object curVal = propOptional.get();
+                try {
+                    curVal = normalizeVal(curVal);
+                } catch (EntityObjectNotExistsError e) {
+                    //to support restore from broken ref
+                }
+                if (getUserPropHasOwnVal(id) && (curVal == normalizedNewVal || (curVal != null
+                        && !prop.getValType().equals(EValType.BLOB)
+                        && !prop.getValType().equals(EValType.CLOB)
+                        && curVal.equals(normalizedNewVal)))) {
+                    modified = false;
+                }
+            } else {
+                if (i == 0 && isInDatabase(false)) {
+                    try {
+                        readUserPropVal((RadUserPropDef) prop);
+                    } catch (EntityObjectNotExistsError e) {
+                        //to support restore from broken ref
+                    }
+                    continue;
+                }
+                modified = true;
             }
-            if (getUserPropHasOwnVal(id) && (curVal == normalizedNewVal || (curVal != null
-                    && !prop.getValType().equals(EValType.BLOB)
-                    && !prop.getValType().equals(EValType.CLOB)
-                    && curVal.equals(normalizedNewVal)))) {
-                modified = false;
-            }
-        } catch (PropNotLoadedException e) {
-            modified = true;
+            break;
         }
 
         if (modified) {
@@ -972,10 +1048,11 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
             }
         }
 
+        PropOptional propOptional = loadedPropVals.getPropOptionalById(id);
         Object val = null;
-        try {
-            val = loadedPropVals.getPropValById(id);
-        } catch (PropNotLoadedException e) {
+        if (propOptional.isPresent()) {
+            val = propOptional.get();
+        } else {
             if (isInDatabase(false)) {
                 readUserPropVal(prop);
             } else {
@@ -985,10 +1062,11 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
                 }
                 upHasOwnVal.put(id, Boolean.FALSE);
             }
-            try {
-                val = loadedPropVals.getPropValById(id);
-            } catch (PropNotLoadedException e2) {
-                throw new DbQueryBuilderError("User property requested but not loaded", e2);
+            propOptional = loadedPropVals.getPropOptionalById(id);
+            if (propOptional.isPresent()) {
+                val = propOptional.get();
+            } else {
+                throw new DbQueryBuilderError("User property requested but not loaded", propOptional.cause(id));
             }
         }
         if (val instanceof Entity) { // if entity is discarded  then try to find entity by its pid
@@ -1017,21 +1095,33 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         if (getPropHasOwnValImpl(id, deepValInheritanceCheck)) {
             return true;
         }
+        final String stepDescr = "isPropValDefined";
         final RadPropDef prop = getRadMeta().getPropById(id);
-        if (prop.getIsValInheritable()) {
-            NEXT_PATH:
-            for (RadPropDef.ValInheritancePath path : prop.getValInheritPathes()) {
-                Entity parent = this;
-                for (final Id refPropId : path.getRefPropIds()) {
-                    parent = (Entity) parent.getProp(refPropId);
-                    if (parent == null) {
-                        continue NEXT_PATH;
+        if (count(propDefinedCalcInProgressProps, prop) == MAX_INHERITANCE_ACCESS_ROUNDS) {
+            throw new PropInheritanceCycleException("Cycle in property value existence check", this, prop, stepDescr);
+        }
+        propDefinedCalcInProgressProps.add(prop);
+        try {
+            if (prop.getIsValInheritable()) {
+                NEXT_PATH:
+                for (RadPropDef.ValInheritancePath path : prop.getValInheritPathes()) {
+                    Entity parent = this;
+                    for (final Id refPropId : path.getRefPropIds()) {
+                        parent = (Entity) parent.getProp(refPropId);
+                        if (parent == null) {
+                            continue NEXT_PATH;
+                        }
+                    }
+                    if (parent.getIsPropValDefinedImpl(path.getDestPropId(), deepValInheritanceCheck)) {
+                        return true;
                     }
                 }
-                if (parent.getIsPropValDefinedImpl(path.getDestPropId(), deepValInheritanceCheck)) {
-                    return true;
-                }
             }
+        } catch (PropInheritanceCycleException ex) {
+            ex.appendStep(stepDescr, this, prop);
+            throw ex;
+        } finally {
+            propDefinedCalcInProgressProps.remove(prop);
         }
         return false;
     }
@@ -1093,13 +1183,50 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         } else {
             final RadPropDef prop = getRadMeta().getPropById(id);
             if (prop.getIsValInheritable() && !x) {
-                setProp(id, prop.getValInheritMarkVal(getArte()));
+                Object valInheritMark = prop.getValInheritMarkVal(getArte());
+                if (valInheritMark instanceof Pid) {
+                    setNativeProp(id, createDummyInheritMarkEntity((Pid) valInheritMark, prop));
+                } else {
+                    setProp(id, valInheritMark);
+                }
             }
         }
         if (x && !hadOwnVal) { //RADIX-1640
             final RadPropDef prop = getRadMeta().getPropById(id);
             setProp(id, prop.getInitVal(arte));
         }
+    }
+
+    private Entity createDummyInheritMarkEntity(final Pid inheritPid, final RadPropDef prop) {
+        Entity valInheritMark = new Entity(inheritPid) {
+
+            final DdsTableDef tableDef = Arte.get().getDefManager().getTableDef(((RadInnateRefPropDef) prop).getDestinationEntityId());
+
+            @Override
+            public RadClassDef getRadMeta() {
+                throw new UnsupportedOperationException("Not supported for dummy entity");
+            }
+
+            @Override
+            public DdsTableDef getDdsMeta() {
+                return tableDef;
+            }
+
+            @Override
+            public Object getProp(Id id) {
+                DdsIndexDef.ColumnsInfo info = tableDef.getPrimaryKey().getColumnsInfo();
+                for (int i = 0; i < info.size(); i++) {
+                    if (info.get(i).getColumnId().equals(id)) {
+                        return pid.getPkVals().get(i);
+                    }
+                }
+                throw new IllegalStateException("Can't find " + id + " in primary key of " + tableDef.getQualifiedName());
+            }
+
+        };
+        valInheritMark.state = new EntityState((Entity) valInheritMark);
+        valInheritMark.state.set(EntityState.Enum.DISCARDED);
+        return valInheritMark;
     }
 
     private void setUserPropHasOwnVal(final Id id, final boolean x) {
@@ -1152,27 +1279,40 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
      */
     public final ValInheritancePath getPropValInheritancePath(final Id id) {
         state.assertReadAllowed();
-        //if (getPropHasOwnVal(id)) { //it seeems useless. Without it this method can be used for resolving RADIX-461
-        //	return new ValInheritancePath(null, id);
-        //}
         final RadPropDef prop = getRadMeta().getPropById(id);
-        NEXT_PATH:
-        for (RadPropDef.ValInheritancePath path : prop.getValInheritPathes()) {
-            Entity parent = this;
-            for (final Id refPropId : path.getRefPropIds()) {
-                parent = (Entity) parent.getProp(refPropId);
-                if (parent == null) {
-                    continue NEXT_PATH;
+        final String stepDescr = "getInheritancePath";
+        if (count(inheritancePathCalcInProgressProps, prop) == MAX_INHERITANCE_ACCESS_ROUNDS) {
+            throw new PropInheritanceCycleException("Inheritance path calculation cycle", this, prop, stepDescr);
+        }
+        inheritancePathCalcInProgressProps.add(prop);
+        try {
+            NEXT_PATH:
+            for (RadPropDef.ValInheritancePath path : prop.getValInheritPathes()) {
+                Entity parent = this;
+                for (final Id refPropId : path.getRefPropIds()) {
+                    parent = (Entity) parent.getProp(refPropId);
+                    if (parent == null) {
+                        continue NEXT_PATH;
+                    }
+                }
+                if (parent.getIsPropValDefined(path.getDestPropId())) {
+                    return path;
                 }
             }
-            if (parent.getIsPropValDefined(path.getDestPropId())) {
-                return path;
-            }
+        } catch (PropInheritanceCycleException ex) {
+            ex.appendStep(stepDescr, this, prop);
+            throw ex;
+        } finally {
+            inheritancePathCalcInProgressProps.remove(prop);
         }
         return null;
     }
-////////////////////////////////////////////////////////////////////////////////////////////
 
+    public final Entity getInitSrc() {
+        return initSrc;
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////
     private boolean isVirtualColumn(final Id propId) {
         return QuerySqlBuilder.ALL_ROLES_FIELD_COL_ID.equals(propId) || QuerySqlBuilder.ACS_COORDINATES_AS_STR_COL_ID.equals(propId);
     }
@@ -1228,7 +1368,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         if (state.isInited()) {
             throw new IllegalUsageError("Try to initialize twice");
         }
-        if (!state.isNewObject()) {
+        if (!state.isNew()) {
             throw new IllegalUsageError("Try to initialize object with invalid state");
         }
         if (!beforeInit(initialPropValsById, src, phase)) {
@@ -1236,6 +1376,8 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         }
 
         initSrc = src;
+        initInProcess = true;
+
         //initing details
         for (DdsReferenceDef detail : getRadMeta().getDetailsRefs()) {
             getDetailRef(detail);
@@ -1332,6 +1474,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
             }
         }
         state.set(EntityState.Enum.INITED);
+        initInProcess = false;
         if (detailsByRef != null) {
             for (EntityDetails detail : detailsByRef.values()) {
                 detail.state.set(EntityState.Enum.INITED);
@@ -1359,7 +1502,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     private RadObjectUpValueRef upValRef = null;
 
     private void initUpValRef(final RadObjectUpValueRef ref) {
-        if (!state.isNewObject()) {
+        if (!state.isNewOrInited()) {
             throw new IllegalUsageError("Only new object can be assigned to object user property.");
         }
         if (this.upValRef != null && !this.upValRef.equals(ref)) {
@@ -1455,7 +1598,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         state.assertDbWriteAllowed();
 
         if (!state.isInited()) {
-            throw new IllegalUsageError(state.isNewObject() ? "Try to create not initialized object" : "Object has been already created or deleted");
+            throw new IllegalUsageError(state.isNew() ? "Try to create not initialized object" : "Object has been already created or deleted");
         }
         if (src != null && !getClass().isAssignableFrom(src.getClass())) {
             throw new IllegalUsageError("Can't create a copy. Can't cast source type \"" + src.getClass().getName() + "\" to this object type \"" + getClass().getName() + "\"");
@@ -1495,25 +1638,30 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
             if (!(prop instanceof RadUserPropDef)) {
                 continue;
             }
-            try {
-                final RadUserPropDef upProp = (RadUserPropDef) prop;
-                if (modifiedPropIds.contains(prop.getId())) {
-                    if (getUserPropHasOwnVal(prop.getId())) {
-                        upProp.setValue(this, loadedPropVals.getPropValById(prop.getId()));
-                    }
-                } else if (src != null && src.getUserPropHasOwnVal(prop.getId())) {
-                    copyPropVal(prop, src);
-                    getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ENTITY_DB_CREATE);
-                    try {
-                        upProp.setValue(this, loadedPropVals.getPropValById(prop.getId()));
-                    } finally {
-                        getArte().getProfiler().leaveTimingSection(ETimingSection.RDX_ENTITY_DB_CREATE);
+            final RadUserPropDef upProp = (RadUserPropDef) prop;
+            if (modifiedPropIds.contains(prop.getId())) {
+                if (getUserPropHasOwnVal(prop.getId())) {
+                    final PropOptional propOptional = loadedPropVals.getPropOptionalById(prop.getId());
+                    if (propOptional.isPresent()) {
+                        upProp.setValue(this, propOptional.get());
+                    } else {
+                        throw new RadixError("Value of modified property is lost", propOptional.cause(prop.getId()));
                     }
                 }
-            } catch (PropNotLoadedException e) {
-                throw new RadixError("Value of modified property is lost", e);
+            } else if (src != null && src.getUserPropHasOwnVal(prop.getId())) {
+                copyPropVal(prop, src);
+                getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ENTITY_DB_CREATE);
+                try {
+                    final PropOptional propOptional = loadedPropVals.getPropOptionalById(prop.getId());
+                    if (propOptional.isPresent()) {
+                        upProp.setValue(this, propOptional.get());
+                    } else {
+                        throw new RadixError("Value of modified property is lost", propOptional.cause(prop.getId()));
+                    }
+                } finally {
+                    getArte().getProfiler().leaveTimingSection(ETimingSection.RDX_ENTITY_DB_CREATE);
+                }
             }
-
         }
         //DBP-1587 oracle clones LOBs on insert and update let's clear our handlers they are not actual any more
         loadedPropVals.removeModifiedLobs(modifiedPropIds);
@@ -1565,6 +1713,37 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         if (!state.isInDatabase()) {
             throw new IllegalUsageError("Can't read object which is not in database");
         }
+        touch();
+        boolean firstRead = !wasRead();
+        String promisedClassGuid = null;
+        if (firstRead && getRadMeta().getId().getPrefix() == EDefinitionIdPrefix.ADS_APPLICATION_CLASS) {
+            final Id classGuidColId = getDdsMeta().getClassGuidColumn().getId();
+            final PropOptional propOptional = loadedPropVals.getPropOptionalById(classGuidColId);
+            if (propOptional.isPresent()) {
+                promisedClassGuid = (String) propOptional.get();
+            } else {
+                promisedClassGuid = null;
+            }
+            if (promisedClassGuid != null) {
+                final RadixObjects<ColumnInfo> pkMeta = getDdsMeta().getPrimaryKey().getColumnsInfo();
+                boolean classGuidIsInPk = false;
+                for (int i = 0; i < pkMeta.size(); i++) {
+                    if (pkMeta.get(i).getColumnId().equals(classGuidColId)) {
+                        classGuidIsInPk = true;
+                        break;
+                    }
+                }
+                if (!classGuidIsInPk) {
+                    loadedPropVals.removePropValById(getDdsMeta().getClassGuidColumn().getId());
+                }
+            }
+        }
+
+        final boolean isLocking = lockMode == EEntityLockMode.SESSION || lockMode == EEntityLockMode.TRANSACTION;
+        final RadixConnection conn = isLocking ? (RadixConnection) getArte().getDbConnection().get() : null;
+        if (conn != null) {
+            conn.setOperationDescription("Reading and locking object with PID " + pid.getEntityId() + "->" + pid.toString());
+        }
         if (lockMode == EEntityLockMode.SESSION) {
             lock(lockMode, waitTime);
             //else if (lockMode == EEntityLockMode.TRANSACTION) - select "for update" will be constructed
@@ -1575,6 +1754,9 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
                 try {
                     q.read(pid, loadedPropVals);
                 } finally {
+                    if (conn != null) {
+                        conn.setOperationDescription(null);
+                    }
                     q.free();
                 }
                 if (lockMode == EEntityLockMode.TRANSACTION) {
@@ -1584,6 +1766,19 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
             } catch (EntityObjectNotExistsError e) {
                 dbObjDoesNotExistsAnyMore();
                 throw e;
+            }
+        }
+        if (promisedClassGuid != null) {
+            final PropOptional propOptional = loadedPropVals.getPropOptionalById(getDdsMeta().getClassGuidColumn().getId());
+            final Object actualClassGuid;
+            if (propOptional.isPresent()) {
+                actualClassGuid = propOptional.get();
+            } else {
+                actualClassGuid = null;
+            }
+            if (!Objects.equals(actualClassGuid, promisedClassGuid)) {
+                discard();
+                throw new IllegalStateException("Actual classGuid in DB '" + actualClassGuid + "' differs from classGuid supplied during entity creation: '" + promisedClassGuid + "'");
             }
         }
         afterRead();
@@ -1620,24 +1815,25 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
                 final Entity refEnt = (Entity) val;
                 val = onCalcParentTitle(propId, refEnt, refEnt.calcTitle());
             }
-            if (val == null) { // replace null strings by empty strings
+            String defaulValue = null;
+            if (val == null) { // replace null strings by empty strings;
                 final RadPropDef propDef = getRadMeta().getPropById(propId);
                 switch (propDef.getValType()) {
                     case STR:
                     case CHAR:
                     case CLOB:
                     case XML:
-                        val = "";
+                        defaulValue = "";
                         break;
                 }
             }
-            res.append(titleItem.format(getArte(), val));
+            res.append(titleItem.format(getArte(), val, defaulValue));
         }
-        
+
         if (titleFormat.getDefinitionContextType() == RadEntityTitleFormatDef.DefinitionContextType.PROPERTY) {
             return res.toString();
         }
-        
+
         return onCalcTitle(res.toString());
     }
 
@@ -1646,7 +1842,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     }
 
     public final boolean autoUpdate(final EAutoUpdateReason r) {
-        if (!state.isInDatabase() && !state.isNewObject()) {
+        if (!state.isInDatabase() && !state.isNewOrInited()) {
             return false;
         }
         if (state.isInDatabase() && !isModified()) //no modifications
@@ -1668,6 +1864,10 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
             }
         }
         return true;
+    }
+
+    protected boolean isAfterCommitRequired() {
+        return false;
     }
 
     public final void update() {
@@ -1698,6 +1898,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         if (!isModified()) {
             return;
         }
+        touch();
         try { //saving innate properties
             final UpdateObjectQuery qry = getArte().getDefManager().getDbQueryBuilder().buildUpdate(this, modifiedPropIds);
             if (qry != null) {
@@ -1723,20 +1924,20 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
                 final RadUserPropDef prop = ((RadUserPropDef) getRadMeta().getPropById(propId));
                 String sec = ETimingSection.RDX_ENTITY_DB_UPDATE.getValue() + ":" + getRadMeta().getName() + "." + prop.getName();
                 if (getUserPropHasOwnVal(propId)) {
+                    getArte().getProfiler().enterTimingSection(sec);
                     try {
-                        getArte().getProfiler().enterTimingSection(sec);
-                        try {
-                            if (prop.getValType() == EValType.OBJECT) { //TWRBS-1509
-                                //to remove old object if it exists
-                                prop.delValue(pid);
-                            }
-                            final Object val = loadedPropVals.getPropValById(propId);
-                            prop.setValue(this, val);
-                        } finally {
-                            getArte().getProfiler().leaveTimingSection(sec);
+                        if (prop.getValType() == EValType.OBJECT) { //TWRBS-1509
+                            //to remove old object if it exists
+                            prop.delValue(pid);
                         }
-                    } catch (PropNotLoadedException e) {
-                        throw new RadixError("Value of modified property is lost", e);
+                        final PropOptional propOptional = loadedPropVals.getPropOptionalById(propId);
+                        if (propOptional.isPresent()) {
+                            prop.setValue(this, propOptional.get());
+                        } else {
+                            throw new RadixError("Value of modified property is lost", propOptional.cause(propId));
+                        }
+                    } finally {
+                        getArte().getProfiler().leaveTimingSection(sec);
                     }
                 } else {
                     getArte().getProfiler().enterTimingSection(sec);
@@ -1750,6 +1951,8 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         }
         //DBP-1587 oracle clones LOBs on insert and update let's clear our handlers they are not actual any more
         loadedPropVals.removeModifiedLobs(modifiedPropIds);
+        lastModifiedPropIds.clear();
+        lastModifiedPropIds.addAll(modifiedPropIds);
         modifiedPropIds.clear();
         if (detailsByRef != null) {
             for (EntityDetails detail : detailsByRef.values()) {
@@ -1816,7 +2019,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
 
     public final void delete() {
         state.assertDbWriteAllowed();
-        if (!state.isInDatabase() && !state.isNewObject()) {
+        if (!state.isInDatabase() && !state.isNewOrInited()) {
             throw new IllegalUsageError("Can't delete object which is not in database");
         }
         final boolean wasExistingObj = isInDatabase(false);
@@ -1855,24 +2058,35 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     public final void discard() {
         if (state.isInDatabase()) {
             getArte().unregisterExistingEntityObject(this);
-        } else if (state.isNewObject()) {            
-            getArte().unregisterNewEntityObject(this); 
+        } else if (state.isNewOrInited()) {
+            getArte().unregisterNewEntityObject(this);
             discardLinkedPropObjects();
         }
         state.set(EntityState.Enum.DISCARDED);
     }
-    private void discardLinkedPropObjects(){
-         //discard user prop objects userproperties
+
+    public final void markAsDeleted() {
+        if (state.isInDatabase()) {
+            dbObjDoesNotExistsAnyMore();
+        } else if (state.isNewOrInited()) {
+            arte.unregisterNewEntityObject(this);
+            state.set(EntityState.Enum.DELETED);
+        }
+        arte.unregisterFromAfterCommit(this);
+    }
+
+    private void discardLinkedPropObjects() {
+        //discard user prop objects userproperties
         for (RadPropDef prop : getRadMeta().getProps()) {
-            if(prop.getValType() == EValType.OBJECT && prop instanceof RadUserPropDef && getPropHasOwnVal(prop.getId())){
+            if (prop.getValType() == EValType.OBJECT && prop instanceof RadUserPropDef && getPropHasOwnVal(prop.getId())) {
                 Object val = getUserProp(prop.getId());
-                if(val instanceof Entity){
-                    Entity userPropVal = (Entity)val;
-                    if(userPropVal.isNewObject()){
+                if (val instanceof Entity) {
+                    Entity userPropVal = (Entity) val;
+                    if (userPropVal.isNewObject()) {
                         userPropVal.discard();
                     }
                 }
-            }         
+            }
         }
     }
 
@@ -1943,7 +2157,11 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
 
     @Override
     public String toString() {
-        return getClass().getName() + " {\n\tPID = " + String.valueOf(pid) + "\n\tLoadedProps = " + loadedPropVals + "\n}";
+        return getClass().getName() + "[PID = " + String.valueOf(pid) + "]";
+    }
+
+    public Collection<Id> getLastOwnModifiedPropIds() {
+        return new ArrayList<>(lastModifiedPropIds);
     }
 
     /**
@@ -2006,8 +2224,19 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         state.setKeepInCache(maxAgeInSeconds);
     }
 
+    /**
+     *
+     * @return true if object can be removed from cache by timeout
+     * @deprecated Use version with explicit current time for better performance
+     * when checking multiple objects
+     */
+    @Deprecated
     public final boolean getCanBeRemovedFromCache() {
-        return state.getCanBeRemovedFromCache();
+        return getCanBeRemovedFromCache(System.currentTimeMillis());
+    }
+
+    public final boolean getCanBeRemovedFromCache(final long curTimeMillis) {
+        return state.getCanBeRemovedFromCache(curTimeMillis);
     }
 //trace 
 
@@ -2047,16 +2276,18 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         if (curUserRoleIds == null) {
             state.assertReadAllowed();
             if (isInDatabase(false)) {
+                PropOptional propOptional = loadedPropVals.getPropOptionalById(QuerySqlBuilder.ALL_ROLES_FIELD_COL_ID);
                 String roleIds;
-                try {
-                    roleIds = (String) loadedPropVals.getPropValById(QuerySqlBuilder.ALL_ROLES_FIELD_COL_ID);
-                } catch (PropNotLoadedException e) {
+                if (propOptional.isPresent()) {
+                    roleIds = (String) propOptional.get();
+                } else {
                     state.setReadRights(true);
                     read(EEntityLockMode.NONE, null);
-                    try {
-                        roleIds = (String) loadedPropVals.getPropValById(QuerySqlBuilder.ALL_ROLES_FIELD_COL_ID);
-                    } catch (PropNotLoadedException err) {
-                        throw new DbQueryBuilderError("Current user applicable roles requested but not loaded", err);
+                    propOptional = loadedPropVals.getPropOptionalById(QuerySqlBuilder.ALL_ROLES_FIELD_COL_ID);
+                    if (propOptional.isPresent()) {
+                        roleIds = (String) propOptional.get();
+                    } else {
+                        throw new DbQueryBuilderError("Current user applicable roles requested but not loaded", propOptional.cause(QuerySqlBuilder.ALL_ROLES_FIELD_COL_ID));
                     }
                 }
                 final List<Id> arrIdRoleIds = new ArrayList<Id>(10);
@@ -2076,16 +2307,18 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     public final String getAcsCoordinatesAsString() {
         state.assertReadAllowed();
         if (isInDatabase(false)) {
+            PropOptional propOptional = loadedPropVals.getPropOptionalById(QuerySqlBuilder.ACS_COORDINATES_AS_STR_COL_ID);
             String acsCoordinatesStr;
-            try {
-                acsCoordinatesStr = (String) loadedPropVals.getPropValById(QuerySqlBuilder.ACS_COORDINATES_AS_STR_COL_ID);
-            } catch (PropNotLoadedException e) {
+            if (propOptional.isPresent()) {
+                acsCoordinatesStr = (String) propOptional.get();
+            } else {
                 state.setReadAcsCoords(true);
                 read(EEntityLockMode.NONE, null);
-                try {
-                    acsCoordinatesStr = (String) loadedPropVals.getPropValById(QuerySqlBuilder.ACS_COORDINATES_AS_STR_COL_ID);
-                } catch (PropNotLoadedException err) {
-                    throw new DbQueryBuilderError("Acs coordinates were not loaded", err);
+                propOptional = loadedPropVals.getPropOptionalById(QuerySqlBuilder.ACS_COORDINATES_AS_STR_COL_ID);
+                if (propOptional.isPresent()) {
+                    acsCoordinatesStr = (String) propOptional.get();
+                } else {
+                    throw new DbQueryBuilderError("Acs coordinates were not loaded", propOptional.cause(QuerySqlBuilder.ACS_COORDINATES_AS_STR_COL_ID));
                 }
             }
             return acsCoordinatesStr;
@@ -2171,7 +2404,7 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
     }
 
     public final boolean isNewObject() {
-        return state.isNewObject();
+        return state.isNewOrInited();
     }
 
     public boolean isCreatedAfterSavePoint(final String spId) { //see RADIX-4942
@@ -2256,8 +2489,43 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
         setProp(prop.getId(), val);
     }
 
+    public void touch() {
+        if (entityTouchListener != null) {
+            entityTouchListener.onTouch(this);
+        }
+    }
+
+    public long getTouchTimeMillis() {
+        return touchTimeMillis;
+    }
+
     public void purgePropCacheOnRollback(final String savepointId) {
         purgePropCache();
+    }
+
+    public Entity getDescriptiveOwner() {
+        return null;
+    }
+
+    public String calcDescriptiveTitle() {
+        final Entity descriptiveOwner = getDescriptiveOwner();
+        if (descriptiveOwner != null) {
+            return descriptiveOwner.calcDescriptiveTitle() + " / " + calcTitle();
+        }
+        return calcTitle();
+    }
+
+    private static int count(List list, Object obj) {
+        if (list == null) {
+            return 0;
+        }
+        int result = 0;
+        for (Object o : list) {
+            if (o == obj) {
+                result++;
+            }
+        }
+        return result;
     }
 
     public static class ErrorOnEntityCreation extends RadixError {
@@ -2268,6 +2536,13 @@ public abstract class Entity extends EntityEvents implements IRadClassInstance {
 
         public ErrorOnEntityCreation(String mess) {
             super(mess);
+        }
+    }
+
+    public static class TouchListenerSetter {
+
+        public static void setTouchListener(final Entity entity, final IEntityTouchListener listener) {
+            entity.entityTouchListener = listener;
         }
     }
 }

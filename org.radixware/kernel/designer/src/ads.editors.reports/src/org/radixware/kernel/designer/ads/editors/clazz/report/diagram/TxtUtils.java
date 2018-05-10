@@ -16,6 +16,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JComponent;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 
@@ -24,7 +27,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
  * @author akrylov
  */
 public class TxtUtils {
-
+    private static Font[] defaultFonts = new Font[]{new Font("Courier New", Font.PLAIN, 1), new Font(Font.MONOSPACED, Font.PLAIN, 1), new Font("Monospaced.plain", Font.PLAIN, 1)};
     private static boolean isMeasured = false;
     private static Font FONT;
 
@@ -35,40 +38,55 @@ public class TxtUtils {
             }
             try {
                 Font[] allFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-                for (Font font : allFonts) {
-                    FontMetrics fm = graphics.getFontMetrics(font);
-                    if (isMonospaced(fm)) {
-                        Font monospacedFont = font;
-
-                        while (true) {
-                            Rectangle2D rect = fm.getStringBounds("A", graphics);
-                            if (rect.getWidth() < 10 || rect.getHeight() < 20) {
-                                monospacedFont = monospacedFont.deriveFont((float) monospacedFont.getSize() + 1f);
-                                fm = graphics.getFontMetrics(monospacedFont);
-                            } else {
-                                break;
-                            }
+                List<Font> fonts = new ArrayList<>(Arrays.asList(allFonts));
+                for (Font font : defaultFonts){
+                    if(fonts.contains(font)){
+                        if (saveFont(font, graphics)) {
+                            break;
                         }
-
-                        while (true) {
-                            Rectangle2D rect = fm.getStringBounds("A", graphics);
-                            if (rect.getWidth() > 10 && rect.getHeight() > 20) {
-                                monospacedFont = monospacedFont.deriveFont((float) monospacedFont.getSize() - 1);
-                                fm = graphics.getFontMetrics(monospacedFont);
-                            } else {
-                                CHAR_WIDTH = (int) rect.getWidth();
-                                CHAR_HEIGHT = (int) rect.getHeight();
-                                FONT = monospacedFont;
-                                break;
-                            }
+                    }
+                }
+                if (FONT == null) {
+                    for (Font font : allFonts) {
+                        if (saveFont(font, graphics)) {
+                            break;
                         }
-                        break;
                     }
                 }
             } finally {
                 isMeasured = true;
             }
         }
+    }
+    
+    private static boolean saveFont(Font font, Graphics2D graphics) {
+        FontMetrics fm = graphics.getFontMetrics(font);
+        if (isMonospaced(fm)) {
+            Font monospacedFont = font;
+            while (true) {
+                Rectangle2D rect = fm.getStringBounds("A", graphics);
+                if (rect.getWidth() < 10 || rect.getHeight() < 20) {
+                    monospacedFont = monospacedFont.deriveFont((float) monospacedFont.getSize() + 1f);
+                    fm = graphics.getFontMetrics(monospacedFont);
+                } else {
+                    break;
+                }
+            }
+
+            while (true) {
+                Rectangle2D rect = fm.getStringBounds("A", graphics);
+                if (rect.getWidth() > 10 && rect.getHeight() > 20) {
+                    monospacedFont = monospacedFont.deriveFont((float) monospacedFont.getSize() - 1);
+                    fm = graphics.getFontMetrics(monospacedFont);
+                } else {
+                    CHAR_WIDTH = (int) rect.getWidth();
+                    CHAR_HEIGHT = (int) rect.getHeight();
+                    FONT = monospacedFont;
+                    break;
+                }
+            }
+        }
+        return FONT != null;
     }
 
     public static Font getFont() {

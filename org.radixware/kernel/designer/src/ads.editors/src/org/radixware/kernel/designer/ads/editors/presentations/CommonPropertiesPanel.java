@@ -26,6 +26,7 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.netbeans.api.visual.layout.LayoutFactory;
 import org.openide.util.ChangeSupport;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
@@ -79,6 +80,7 @@ class CommonPropertiesPanel extends javax.swing.JPanel {
     private final CreatePresentationsListPanel editorForCreation = new CreatePresentationsListPanel();
     //private DefinitionLinkEditPanel editorForCreation = new DefinitionLinkEditPanel();
     private final javax.swing.JCheckBox inheritClassCatalog = new javax.swing.JCheckBox(NbBundle.getMessage(CommonPropertiesPanel.class, "InheritClassCatalog"));
+    private final javax.swing.JCheckBox isAutoSortInstantiatableClassCatalog = new javax.swing.JCheckBox("Auto sort by title");
     private final javax.swing.JLabel classCatalogLabel = new javax.swing.JLabel(NbBundle.getMessage(CommonPropertiesPanel.class, "ClassCatalog"));
     private final DefinitionLinkEditPanel classCatalogEditor = new DefinitionLinkEditPanel();
     private final javax.swing.JCheckBox inheritRightsInheritanceMode = new javax.swing.JCheckBox(NbBundle.getMessage(CommonPropertiesPanel.class, "RightInheritance-InheritTip"));
@@ -180,6 +182,13 @@ class CommonPropertiesPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CommonPropertiesPanel.this.onClassCatalogInheritanceChange();
+            }
+        });
+        
+        isAutoSortInstantiatableClassCatalog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                 CommonPropertiesPanel.this.onAutoSortClassesChange();
             }
         });
 
@@ -429,6 +438,8 @@ class CommonPropertiesPanel extends javax.swing.JPanel {
             }
             classCatalogEditor.open(asSelector.findCreationClassCatalog().get(), asSelector.getCreationClassCatalogId());
             classCatalogEditor.setEnabled(!readonly && !asSelector.isCreationClassCatalogInherited());
+            isAutoSortInstantiatableClassCatalog.setEnabled(!readonly && !asSelector.isCreationClassCatalogInherited());
+            isAutoSortInstantiatableClassCatalog.setSelected(asSelector.isAutoSortClasses());
 
             cbAutoExpand.setVisible(true);
             cbRestorePosition.setVisible(true);
@@ -635,11 +646,14 @@ class CommonPropertiesPanel extends javax.swing.JPanel {
             c.gridy = isOverSmth ? 5 : 4;
             c.gridx = 1;
             c.weightx = 1.0;
-            c.gridwidth = 3;
+            c.gridwidth = 1;
             c.insets = new Insets(0, 10, 10, 10);
             gbl.setConstraints(inheritClassCatalog, c);
             common.add(inheritClassCatalog);
-
+            
+            
+            
+            
             c.gridy = isOverSmth ? 6 : 5;
             c.gridx = 0;
             c.weightx = 0.0;
@@ -650,8 +664,14 @@ class CommonPropertiesPanel extends javax.swing.JPanel {
             c.gridx = 1;
             c.insets = new Insets(0, 10, 10, 10);
             c.gridwidth = 3;
-            gbl.setConstraints(classCatalogEditor, c);
-            common.add(classCatalogEditor);
+            
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+            panel.add(classCatalogEditor);
+            panel.add(isAutoSortInstantiatableClassCatalog);
+            isAutoSortInstantiatableClassCatalog.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+            gbl.setConstraints(panel, c);
+            common.add(panel);
 
             c.gridwidth = 1;
             c.gridy = isOverSmth ? 7 : 6;
@@ -974,6 +994,12 @@ class CommonPropertiesPanel extends javax.swing.JPanel {
             ((AdsSelectorPresentationDef) presentation).setCreationClassCatalogId(classCatalogEditor.getDefinitionId());
         }
     }
+    
+    private void onAutoSortClassesChange(){
+        if (!isUpdate && presentation != null) {
+            ((AdsSelectorPresentationDef) presentation).setAutoSortClasses(isAutoSortInstantiatableClassCatalog.isSelected());
+        }
+    }
 
     private void onClassCatalogInheritanceChange() {
         if (!isUpdate && presentation != null) {
@@ -982,6 +1008,8 @@ class CommonPropertiesPanel extends javax.swing.JPanel {
             asSelector.setCreationClassCatalogInherited(isSelected);
             classCatalogEditor.open(asSelector.findCreationClassCatalog().get(), asSelector.getCreationClassCatalogId());
             classCatalogEditor.setEnabled(!isSelected);
+            isAutoSortInstantiatableClassCatalog.setEnabled(!isSelected);
+            isAutoSortInstantiatableClassCatalog.setSelected(asSelector.isAutoSortClasses());
             if (!isSelected) {
                 inheritClassCatalog.setEnabled(asSelector.getBasePresentationId() != null || asSelector.getHierarchy().findOverwritten().get() != null);
                 inheritClassCatalog.setForeground(defaultForeground);

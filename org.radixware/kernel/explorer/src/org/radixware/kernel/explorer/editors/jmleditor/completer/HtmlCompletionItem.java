@@ -49,7 +49,7 @@ public class HtmlCompletionItem {
         Column(final String text, final QFontMetrics nm, final QFontMetrics bm) {
             this.fontMetrics = nm;
             this.boldMetrics = bm;
-            this.text = changeColor(text);           
+            this.text = changeColor(text);
         }
 
         private int getColumnWidth() {

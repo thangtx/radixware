@@ -180,7 +180,7 @@ public class AdsXmlJavaSourceSupport extends JavaSourceSupport {
     }
 
     public String getContentResourceName() {
-        char[][] names = JavaSourceSupport.getPackageNameComponents(getCurrentRoot(), getUsagePurpose());
+        char[][] names = JavaSourceSupport.getPackageNameComponents(getCurrentRoot(), false, getUsagePurpose());
         StringBuilder result = new StringBuilder();
         result.append(CharOperations.merge(names, '/'));
         result.append('/');
@@ -482,7 +482,7 @@ public class AdsXmlJavaSourceSupport extends JavaSourceSupport {
             final char[] configPrefix;
 
             if (xmlType instanceof XmlType) {
-                configPrefix = ((XmlType) xmlType).getJavaSourceSupport().getQualifiedPackageName(null);
+                configPrefix = ((XmlType) xmlType).getJavaSourceSupport().getQualifiedPackageName(null, false);
             } else {
                 return null;
             }
@@ -585,7 +585,7 @@ public class AdsXmlJavaSourceSupport extends JavaSourceSupport {
                                             AdsDefinition enumDef = AdsSearcher.Factory.newAdsDefinitionSearcher(root).findById(constSetId).get();
                                             if (enumDef instanceof AdsEnumDef) {
                                                 AdsEnumDef e = (AdsEnumDef) enumDef;
-                                                cc.getDomNode().getFirstChild().setNodeValue(new String(e.getType(e.getItemType(), null).getJavaSourceSupport().getQualifiedTypeName(UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, CodeType.EXCUTABLE))));
+                                                cc.getDomNode().getFirstChild().setNodeValue(new String(e.getType(e.getItemType(), null).getJavaSourceSupport().getQualifiedTypeName(UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, CodeType.EXCUTABLE), false)));
                                                 if (cc.getDomNode() instanceof Element) {
                                                     Node node = cc.getDomNode().getOwnerDocument().createAttribute("classId");
                                                     ((Element) cc.getDomNode()).getAttributes().setNamedItem(node);
@@ -624,7 +624,7 @@ public class AdsXmlJavaSourceSupport extends JavaSourceSupport {
     @Override
     public char[][] getMainClassName(UsagePurpose env) {
         if (getDefinition() instanceof AdsMsdlSchemeDef) {
-            char[][] packages = getPackageNameComponents(getCurrentRoot(), env);
+            char[][] packages = getPackageNameComponents(getCurrentRoot(), false, env);//TODO:!!!
             char[][] mainClassName = new char[packages.length + 1][];
             System.arraycopy(packages, 0, mainClassName, 0, packages.length);
             mainClassName[packages.length + 1] = MSDL_ROOT_CLASS_NAME;

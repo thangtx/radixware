@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.dbq.sqml;
 
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
@@ -33,62 +32,74 @@ import org.radixware.kernel.server.meta.clazzes.RadUserPropDef;
 import org.radixware.kernel.server.sqml.Sqml;
 import org.radixware.kernel.server.meta.clazzes.RadDetailPropDef;
 
-
 abstract class QueryTagTranslator<T extends Sqml.Tag> implements ITagTranslator<T> {
 
-	private final SqlBuilder queryBuilder;
-	private final EMode translationMode;
+    private final SqlBuilder queryBuilder;
+    private final EMode translationMode;
 
     protected QueryTagTranslator(final SqlBuilder queryBuilder, final QuerySqmlTranslator.EMode translationMode) {
         super();
-		this.translationMode = translationMode;
-		this.queryBuilder = queryBuilder;
+        this.translationMode = translationMode;
+        this.queryBuilder = queryBuilder;
     }
 
-	public SqlBuilder getQueryBuilder() {
-		return queryBuilder;
-	}
+    public SqlBuilder getQueryBuilder() {
+        return queryBuilder;
+    }
 
-	public EMode getTranslationMode() {
-		return translationMode;
-	}
+    public EMode getTranslationMode() {
+        return translationMode;
+    }
 
-    protected void printDbPropBuilderFieldSqlPres( final CodePrinter cp, final SqlBuilder builder, final Id propId, String tabAlias, final Tag tag) throws TagTranslateError {
+    protected void printDbPropBuilderFieldSqlPres(final CodePrinter cp, final SqlBuilder builder, final Id propId, String tabAlias, final Tag tag) throws TagTranslateError {
         final RadPropDef prop = builder.getEntityClass().getPropById(propId);
-        DdsColumnDef ddsProp = null;
-        org.radixware.kernel.common.sqml.Sqml expression = null;
         if (prop instanceof RadInnatePropDef) {
-            ddsProp = builder.getTable().getColumns().getById(propId, ExtendableDefinitions.EScope.ALL);
-            expression = ddsProp.getExpression();
-        } else if (prop instanceof RadSqmlPropDef) {
-            expression =((RadSqmlPropDef) prop).getExpression();
+            final DdsColumnDef ddsProp = builder.getTable().getColumns().getById(propId, ExtendableDefinitions.EScope.ALL);
+            printColumnSqlPres(cp, builder, ddsProp, tabAlias);
         } else if (prop instanceof RadDetailPropDef) {
             final RadDetailPropDef detailProp = (RadDetailPropDef) prop;
             final JoinSqlBuilder joinBuilder = builder.getJoinBuilder(detailProp.getDetailReference(), true);
             printDbPropBuilderFieldSqlPres(cp, joinBuilder, detailProp.getJoinedPropId(), joinBuilder.getAlias(), tag);
-            return;
+        }else if (prop instanceof RadSqmlPropDef) {
+            final org.radixware.kernel.common.sqml.Sqml expression = ((RadSqmlPropDef) prop).getExpression();
+            printSqlExpression(cp, builder, expression);
+        } 
+        else{
+            throw new TagTranslateError(tag, new WrongFormatError("Unsupported column type \"" + prop.getClass().getName() + "\"", null));            
         }
-		if (expression != null) {
-			cp.print('('); //TODO ? tabAlias (from Tag) in expressions
-			cp.print(builder.translateSqml(expression));
-			cp.print(')');
-		} else if (ddsProp != null) {
-            if (tabAlias == null)
-                tabAlias = builder.getAlias();
-            if (tabAlias != null && !tabAlias.isEmpty()) {
-				cp.print(tabAlias);
-				cp.print('.');
-            }
-			cp.print(ddsProp.getDbName());
-		} else {
-			throw new TagTranslateError(tag, new WrongFormatError("Unsupported column type \"" + prop.getClass().getName() + "\"", null));
-		}
-	}
+    }
+    
+    protected final void printColumnSqlPres(final CodePrinter cp, final SqlBuilder builder, final DdsColumnDef column, String tabAlias){
+        final org.radixware.kernel.common.sqml.Sqml expression = column.getExpression();
+        if (expression == null) {
+            printColumnName(cp, builder, column.getDbName(), tabAlias);            
+        } else {
+            printSqlExpression(cp, builder, expression);
+        }
+    }
+    
+    private void printSqlExpression(final CodePrinter cp, final SqlBuilder builder, final org.radixware.kernel.common.sqml.Sqml expression){
+        cp.print('('); //TODO ? tabAlias (from Tag) in expressions
+        cp.print(builder.translateSqml(expression));
+        cp.print(')');        
+    }
+    
+    private void printColumnName(final CodePrinter cp, final SqlBuilder builder, final String columnName, String tabAlias){
+        if (tabAlias == null) {
+            tabAlias = builder.getAlias();
+        }
+        if (tabAlias != null && !tabAlias.isEmpty()) {
+            cp.print(tabAlias);
+            cp.print('.');
+        }
+        cp.print(columnName);
+    }
 
     protected void printPropSqlPres(final CodePrinter cp, SqlBuilder builder, final Id propId, String tabAlias, final Tag tag) throws TagTranslateError {
-        if (tabAlias == null)
+        if (tabAlias == null) {
             tabAlias = builder.getAlias();
-		final RadPropDef prop = builder.getEntityClass().getPropById(propId);
+        }
+        final RadPropDef prop = builder.getEntityClass().getPropById(propId);
         if (prop instanceof RadUserPropDef) {
             cp.print(UpValSqlBuilder.getValGetSql("'" + prop.getId() + "'", prop.getValType(), "'" + builder.getTable().getId() + "'", SqlBuilder.getPidScript(getQueryBuilder().getTable(), tabAlias)));
         } else if ((prop instanceof IRadRefPropertyDef) && ((IRadRefPropertyDef) prop).getReference() != null) {

@@ -20,10 +20,13 @@ import org.radixware.kernel.common.client.widgets.IEditMaskEditorFactory;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.EEditMaskType;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.explorer.editors.editmask.booleditor.BoolEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.consteditor.ConstSetEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.datetimeeditor.DateTimeEditMaskEditorWidget;
+import org.radixware.kernel.explorer.editors.editmask.filepatheditor.FilePathEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.inteditor.IntEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.numeditor.NumEditMaskEditorWidget;
+import org.radixware.kernel.explorer.editors.editmask.refeditor.RefEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.streditor.StrEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.timeintervaleditor.TimeIntervalEditMaskEditorWidget;
 
@@ -39,9 +42,10 @@ public class EditMaskEditorFactory implements IEditMaskEditorFactory {
             case STR : return new StrEditMaskEditorWidget(environment, (QWidget)parent);
             case TIME_INTERVAL : return new TimeIntervalEditMaskEditorWidget(environment, (QWidget)parent);
             case ENUM : throw new UnsupportedOperationException("Unsupported for ENUM. Use newEditMaskConstSetEditor(IClientEnvironment, IWidget, RadEnumPresentationDef)");
-            case BOOL: throw new UnsupportedOperationException("Unsupported for BOOL. Use newEditMaskEditor(IClientEnvironment, IWidget, EValType)");
+            case BOOL: return new BoolEditMaskEditorWidget(environment, (QWidget)parent);
             case LIST : throw new UnsupportedOperationException("Unsupported for LIST. Use newEditMaskEditor(IClientEnvironment, IWidget, EValType)");
-            case OBJECT_REFERENCE : throw new UnsupportedOperationException("Unsupported for OBJECT_REFERENCE. Use newEditMaskEditor(IClientEnvironment, IWidget, EValType)");
+            case OBJECT_REFERENCE: return new RefEditMaskEditorWidget(environment, (QWidget)parent);
+            case FILE_PATH : return new FilePathEditMaskEditorWidget(environment, (QWidget)parent);
             default : throw new IllegalArgumentException("Unknown argument's value");
         }
     }

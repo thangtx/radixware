@@ -36,7 +36,7 @@ public class MsdlField extends RadixObject {
     private ISchemeSearcher searcher = null;
     private boolean fetchedFromTemplate = false;
     private int position = -1;
-
+    
     public void setSchemeSearcher(ISchemeSearcher searcher) {
         this.searcher = searcher;
     }
@@ -82,11 +82,7 @@ public class MsdlField extends RadixObject {
         model = AbstractFieldModel.Factory.newInstance(this, EFieldType.getFieldType(field), field);
         //setName(field.getName());
     }
-
-    public AnyField getField() {
-        return anyField;
-    }
-
+    
     public AnyField getFullField() {
         AnyField res = (AnyField) anyField.copy();
         fillAnyField(res, model.getFullField());
@@ -114,6 +110,14 @@ public class MsdlField extends RadixObject {
         }
         return enumId;
     }
+    
+    public Definition findDefinition(final Id defId) {
+        if (defId != null) {
+            final IAdsDefinitionLookup lookup = findAdsDefinitionLookup();
+            return lookup != null ? lookup.findDefinition(defId) : null;
+        }
+        return null;
+    }
 
     public Definition findReferencedEnum() {
         Id enumId = getReferncedEnumId();
@@ -133,6 +137,15 @@ public class MsdlField extends RadixObject {
         for (RadixObject container = getContainer(); container != null; container = container.getContainer()) {
             if (container instanceof IEnumLookuper) {
                 return (IEnumLookuper) container;
+            }
+        }
+        return null;
+    }
+    
+    private IAdsDefinitionLookup findAdsDefinitionLookup() {
+        for (RadixObject container = getContainer(); container != null; container = container.getContainer()) {
+            if (container instanceof IAdsDefinitionLookup) {
+                return (IAdsDefinitionLookup) container;
             }
         }
         return null;
@@ -306,6 +319,9 @@ public class MsdlField extends RadixObject {
         if (oldField.isSetComment()) {
             newType.addNewComment().set(oldField.getComment());
         }
+        if (oldField.isSetDevComment()) {
+            newType.addNewDevComment().set(oldField.getDevComment());
+        }
         newType.setIsRequired(oldField.getIsRequired());
         if (oldField.isSetMergeFunctionName()) {
             newType.setMergeFunctionName(oldField.getMergeFunctionName());
@@ -327,7 +343,7 @@ public class MsdlField extends RadixObject {
         clearAnyField(anyField);
         model.delete();
         model = newModel;
-        getStructureChangedSupport().fireEvent(new MsdlFieldStructureChangedEvent());
+        getStructureChangedSupport().fireEvent(new MsdlFieldStructureChangedEvent(MsdlFieldStructureChangedEvent.EType.TYPE_CHANGED));
         setModified();
     }
 
@@ -351,7 +367,25 @@ public class MsdlField extends RadixObject {
 
     public static class MsdlFieldStructureChangedEvent extends RadixEvent {
 
-        public boolean nameOnly = false;
+        private final EType type;
+
+        public MsdlFieldStructureChangedEvent() {
+            type = EType.PROP_CHANGED;
+        }
+
+        public MsdlFieldStructureChangedEvent(EType type) {
+            this.type = type;
+        }
+
+        public static enum EType {
+
+            TYPE_CHANGED, PROP_CHANGED, NAME_ONLY
+        }
+
+        public EType getType() {
+            return type;
+        }
+
     }
 
     public interface MsdlFieldStructureChangedListener extends IRadixEventListener<MsdlFieldStructureChangedEvent> {

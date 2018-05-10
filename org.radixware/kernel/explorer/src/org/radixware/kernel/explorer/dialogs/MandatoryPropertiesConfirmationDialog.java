@@ -11,15 +11,12 @@
 
 package org.radixware.kernel.explorer.dialogs;
 
-import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.core.Qt.ScrollBarPolicy;
 import com.trolltech.qt.core.Qt.WindowFlags;
 import com.trolltech.qt.core.Qt.WindowType;
-import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QCheckBox;
-import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QFontMetrics;
 import com.trolltech.qt.gui.QFrame;
 import com.trolltech.qt.gui.QHBoxLayout;
@@ -43,6 +40,7 @@ import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.MessageFilter;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 public final class MandatoryPropertiesConfirmationDialog extends ExplorerDialog implements IMandatoryPropertiesConfirmationDialog {
     
@@ -57,7 +55,7 @@ public final class MandatoryPropertiesConfirmationDialog extends ExplorerDialog 
     private boolean dontAskAgain;
     private List<String> propertyTitles;
 
-    public MandatoryPropertiesConfirmationDialog(final IClientEnvironment environment, QWidget parent) {
+    public MandatoryPropertiesConfirmationDialog(final IClientEnvironment environment, final QWidget parent) {
         super(environment,parent);
 
         final WindowFlags f = new WindowFlags();
@@ -92,8 +90,9 @@ public final class MandatoryPropertiesConfirmationDialog extends ExplorerDialog 
         iconLabel.setObjectName("question_icon");
         iconLabel.setFixedSize(32, 32);
         iconLabel.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed);
-        if (icon!=null)
+        if (icon!=null){
             iconLabel.setPixmap(icon.pixmap(32));
+        }
         hLayout.addWidget(iconLabel, 0, new AlignmentFlag[]{AlignmentFlag.AlignTop, AlignmentFlag.AlignLeft});
         hLayout.addWidget(lbMessage);
 
@@ -210,13 +209,12 @@ public final class MandatoryPropertiesConfirmationDialog extends ExplorerDialog 
         return visibleLinesCount * fontMetrics.height() + 8;
     }
 
-    private void updateSize() {
-        final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();
-        final int hardLimit = Math.min(screenSize.width() - 480, 1000);
+    private void updateSize() {        
+        final int hardLimit = WidgetUtils.getWndowMaxSize().width;            
 
         final String[] lines = teProperties.toPlainText().split("\n");
         final int ln_count = lines.length;
-        QFontMetrics fm = teProperties.fontMetrics();
+        final QFontMetrics fm = teProperties.fontMetrics();
 
         teProperties.setMinimumHeight(calcMessageHeight(ln_count, fm));
         teProperties.resize(teProperties.width(), calcMessageHeight(ln_count, fm));
@@ -248,9 +246,8 @@ public final class MandatoryPropertiesConfirmationDialog extends ExplorerDialog 
             teProperties.setMinimumHeight(messageHeight);
             teProperties.resize(teProperties.width(), messageHeight);
         }
-
-        fm = fontMetrics();
-        final int windowTitleWidth = Math.min(fm.width(windowTitle()) + 150, hardLimit);
+        
+        final int windowTitleWidth = Math.min(WidgetUtils.calcWindowHeaderWidth(this), hardLimit);
         if (windowTitleWidth > width) {
             width = windowTitleWidth;
         }
@@ -267,8 +264,9 @@ public final class MandatoryPropertiesConfirmationDialog extends ExplorerDialog 
         teProperties.clear();
         final StringBuilder propertyText = new StringBuilder();
         for (String propertyTitle: propertyTitles){
-            if (propertyText.length()>0)
+            if (propertyText.length()>0){
                 propertyText.append("\n");
+            }
             propertyText.append(propertyTitle);
         }
         teProperties.append(propertyText.toString());
@@ -306,7 +304,5 @@ public final class MandatoryPropertiesConfirmationDialog extends ExplorerDialog 
     @Override
     public boolean isDontAskAgainOptionChecked() {
         return isDontAskAgainOptionVisible && dontAskAgain;
-    }
-    
-    
+    }       
 }

@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.monitoring;
 
 import java.sql.SQLException;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @deprecated
  *
  * This class provides common infrastructure for managing metrics in
  * multithreaded environment, where data come from multiple worker threads and
@@ -25,26 +23,20 @@ import java.util.List;
  */
 public abstract class AbstractMetricController<T> {
 
-    private final Object settingsSem;
-    private final Object dataSem;
+    private final Object settingsSem = new Object();
+    private final Object dataSem = new Object();
     private final List<RegisteredItem<T>> registeredData = new ArrayList<>();
+    private AbstractStat stat = null;
+    private final MetricDescription metricDescription;
 
-    public AbstractMetricController() {
-        this(new Object(), new Object());
+    public AbstractMetricController(final MetricDescription metricDescription) {
+        this.metricDescription = metricDescription;
     }
-
-    /**
-     * Use provided objects for synchronization. Useful in cases when you want
-     * two or more controllers use the same objects for syncronization
-     *
-     * @param dataSem
-     * @param settingsSem
-     */
-    public AbstractMetricController(final Object dataSem, final Object settingsSem) {
-        this.settingsSem = settingsSem;
-        this.dataSem = dataSem;
+    
+    protected AbstractStat getStat() {
+        return stat;
     }
-
+    
     /**
      * Register some measured data. It will be added to the queue of collected
      * data and lately transformed to statistic. ThreadSafe.
@@ -78,13 +70,15 @@ public abstract class AbstractMetricController<T> {
      * Flush collected data. ThreadSafe.
      */
     public final List<MetricRecord> flush() {
+        final List<MetricRecord> result;
         synchronized (dataSem) {
             synchronized (settingsSem) {
                 process(registeredData);
                 registeredData.clear();
-                return flushInternal();
+                result = flushInternal();
             }
         }
+        return result;
     }
 
     /**
@@ -107,7 +101,9 @@ public abstract class AbstractMetricController<T> {
      *
      * @param item
      */
-    protected abstract RegisteredItem<T> beforeRegister(RegisteredItem<T> item);
+    protected RegisteredItem<T> beforeRegister(RegisteredItem<T> item) {
+        return item;
+    }
 
     /**
      * Get values collected since last call. Called under synchronization on
@@ -115,7 +111,17 @@ public abstract class AbstractMetricController<T> {
      *
      * @return
      */
-    protected abstract List<MetricRecord> flushInternal();
+    protected List<MetricRecord> flushInternal() {
+        final List<MetricRecord> toWrite = new ArrayList<>();
+        if (stat != null) {
+            stat.processToTime(System.currentTimeMillis());
+            toWrite.addAll(stat.popRecords());
+            if (stat.getState() == EMetricState.DISABLED) {
+                stat = null;
+            }
+        }
+        return toWrite;
+    }
 
     /**
      * Transform accumulated data to statistic. Called under synchronization on
@@ -123,7 +129,29 @@ public abstract class AbstractMetricController<T> {
      *
      * @param collectedData
      */
-    protected abstract void process(List<RegisteredItem<T>> collectedData);
+    protected void process(final List<RegisteredItem<T>> collectedData) {
+        if (collectedData == null) {
+            return;
+        }
+        final List<RegisteredItem> uncheckedList = new ArrayList<>(collectedData.size());
+        for (RegisteredItem item : collectedData) {
+            uncheckedList.add(item);
+        }
+        processUnchecked(uncheckedList);
+    }
+
+    public void ensureStarted(final RegisteredItem<T> item) {
+        if (!stat.isStarted()) {
+            stat.start(item);
+        }
+    }
+
+    protected void processUnchecked(final List<RegisteredItem> uncheckedData) {
+        if (stat != null && !uncheckedData.isEmpty()) {
+            ensureStarted(uncheckedData.get(0));
+            stat.appendAll(uncheckedData);
+        }
+    }
 
     /**
      * Create task for updating settings (active stats, etc). Returned task will
@@ -133,5 +161,27 @@ public abstract class AbstractMetricController<T> {
      *
      * @return
      */
-    protected abstract Runnable createSettingsUpdateTask(final MonitoringDbQueries dbQueries) throws SQLException;
+    protected Runnable createSettingsUpdateTask(final MonitoringDbQueries dbQueries) throws SQLException {
+        final MetricParameters parameters = dbQueries.readMetricParameters(metricDescription);
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (stat != null) {
+                    if (parameters == null) {
+                        stat.setState(EMetricState.DISABLED);
+                    } else {
+                        stat.setParameters(parameters);
+                    }
+                } else if (parameters != null) {
+                    stat = createStat(parameters);
+                }
+            }
+        };
+    }
+
+    public MetricDescription getMetricDescription() {
+        return metricDescription;
+    }
+
+    protected abstract AbstractStat createStat(final MetricParameters parameters);
 }

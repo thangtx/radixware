@@ -711,7 +711,7 @@ public abstract class AdsClassCatalogDef extends AdsPresentationsMember implemen
 
     public static class Virtual extends AdsClassCatalogDef {
 
-        private SelfReference ref = null;
+        private volatile SelfReference ref = null;
 
         private Virtual() {
             super();
@@ -771,8 +771,8 @@ public abstract class AdsClassCatalogDef extends AdsPresentationsMember implemen
 
         @Override
         public void appendTo(org.radixware.schemas.adsdef.ClassDefinition.Presentations.ClassCatalogs.ClassCatalog xDef, ESaveMode saveMode) {
+            super.appendTo(xDef, saveMode);
             synchronized (this) {
-                super.appendTo(xDef, saveMode);
                 if (ref != null) {
                     ref.appendTo(xDef.addNewClassRef());
                 }
@@ -781,8 +781,8 @@ public abstract class AdsClassCatalogDef extends AdsPresentationsMember implemen
 
         @Override
         public void visitChildren(IVisitor visitor, VisitorProvider provider) {
+            super.visitChildren(visitor, provider);
             synchronized (this) {
-                super.visitChildren(visitor, provider);
                 if (ref != null) {
                     ref.visit(visitor, provider);
                 }
@@ -864,7 +864,7 @@ public abstract class AdsClassCatalogDef extends AdsPresentationsMember implemen
                 locator = new TopicLocator(ovr);
             }
             loop:
-            for (Topic t : this) {
+            for (Topic t : list()) {
                 AdsClassCatalogDef.Topic ovrt = null;
                 if (locator != null) {
                     ovrt = locator.findTopic(t.getId());

@@ -76,15 +76,17 @@ public class RadixObjectLocator {
                 
                 int lineStart = this.start;
                 int scmlLineStart = 0;
-                int count = Math.min(lines.length, leadingTabs.length);
-                for (int i = 0; i < count; i++) {
+                //int count = Math.min(lines.length, leadingTabs.length);
+                int leadingTabsCount = leadingTabs.length;
+                for (int i = 0; i < lines.length; i++) {
                     int scmlLineLen = lines[i].length();
-                    int lineLen = scmlLineLen + leadingTabs[i];
+                    int count = i < leadingTabsCount? leadingTabs[i] : 0;
+                    int lineLen = scmlLineLen + count;
                     int lineEnd = lineStart + lineLen;
 
                     if (position >= lineStart && position <= lineEnd) {
                         int offsetInLine = position - lineStart;
-                        int offsetInScmlLine = offsetInLine - leadingTabs[i];
+                        int offsetInScmlLine = offsetInLine - count;
                         return scmlLineStart + offsetInScmlLine;
                     }
                     lineStart = lineEnd + 1;

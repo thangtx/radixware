@@ -16,6 +16,7 @@ import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportDbImageCell;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.enums.EValType;
 
 
@@ -36,6 +37,7 @@ public class AdsReportDbImageCellChecker<T extends AdsReportDbImageCell> extends
             if (imageDataProp.getValue().getType().getTypeId() != EValType.BLOB) {
                 error(cell, problemHandler, "Image data property must be BLOB");
             }
+            ReleaseUtils.checkExprationRelease(cell, imageDataProp, problemHandler);
         } else {
             error(cell, problemHandler, "Image data property not found: #" + String.valueOf(cell.getDataPropertyId()));
         }
@@ -45,6 +47,7 @@ public class AdsReportDbImageCellChecker<T extends AdsReportDbImageCell> extends
             if (mimeTypeProp.getValue().getType().getTypeId() != EValType.STR) {
                 error(cell, problemHandler, "Image mime-type property must be STR");
             }
+            ReleaseUtils.checkExprationRelease(cell, mimeTypeProp, problemHandler);
         } else {
             error(cell, problemHandler, "Image mime-type property not found: #" + String.valueOf(cell.getMimeTypePropertyId()));
         }

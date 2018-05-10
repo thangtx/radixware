@@ -11,10 +11,13 @@
 package org.radixware.kernel.designer.ads.editors.clazz.report.diagram;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import javax.swing.JComponent;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
+import org.radixware.kernel.common.enums.EReportBorderStyle;
+import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.selection.SelectionEvent;
 import org.radixware.kernel.designer.common.general.editors.EditorsManager;
 
 public abstract class AbstractAdsReportWidget extends JComponent {
@@ -26,6 +29,10 @@ public abstract class AbstractAdsReportWidget extends JComponent {
         super();
         this.diagram = diagram;
         this.radixObject = radixObject;
+    }
+
+    public RadixObject getRadixObject() {
+        return radixObject;
     }
 
     public void edit() {
@@ -44,56 +51,82 @@ public abstract class AbstractAdsReportWidget extends JComponent {
 
     protected abstract void update();
 
-    protected void fireSelectionChanged() {
+    protected void fireSelectionChanged(SelectionEvent event) {
         for (Container container = this.getParent(); container != null; container = container.getParent()) {
             if (container instanceof AdsReportFormDiagram) {
                 final AdsReportFormDiagram formDiagram = (AdsReportFormDiagram) container;
-                formDiagram.fireSelectionChanged();
+                formDiagram.fireSelectionChanged(event);
             }
         }
     }
     private static final Stroke DOTTED_STROKE = new BasicStroke(1, 0, 0, 1, new float[]{2, 2}, 0);
     private static final Stroke HASHED_STROKE = new BasicStroke(1, 0, 0, 1, new float[]{7, 2}, 0);
     private static final Stroke SOLID_STROKE = new BasicStroke();
+    private static final int BORDER_ALPHA = 197;
 
-    public static void paintBorder(final AdsReportAbstractAppearance.Border border, final Graphics g, final int width, final int height) {
-        if (!border.isDisplayed()) {
+    public void paintBorder(final AdsReportAbstractAppearance.Border border, final Graphics g, final int width, final int height) {
+        if (getDiagramMode() != AdsReportForm.Mode.GRAPHICS  || border == null || !border.isDisplayed()) {
             return;
         }
-
-        g.setColor(border.getColor());
-
+        
         final Graphics2D g2 = (Graphics2D) g;
-        switch (border.getStyle()) {
-            case DASHED:
-                g2.setStroke(HASHED_STROKE);
-                break;
-            case DOTTED:
-                g2.setStroke(DOTTED_STROKE);
-                break;
-            case SOLID:
-                g2.setStroke(SOLID_STROKE);
-                break;
-            default:
-                break;
-        }
+        float topThickness = 0;
+        float rightThickness = 0;
+        float leftThickness = 0;
 
         if (border.isOnTop()) {
-            g.drawLine(0, 0, width, 0);
+            Color c = border.getTopColor();
+            g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), BORDER_ALPHA));
+            topThickness = getRealBorderThickness(border.getTopThicknessMm());
+            setStroke(g2, border.getTopStyle(), topThickness);
+            g2.draw(new Line2D.Float(0, 0, width, 0));
         }
 
         if (border.isOnRight()) {
-            g.drawLine(width - 1, 0, width - 1, height);
-        }
-
-        if (border.isOnBottom()) {
-            g.drawLine(0, height - 1, width, height - 1);
+            Color c = border.getRightColor();
+            g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), BORDER_ALPHA));
+            rightThickness = getRealBorderThickness(border.getRightThicknessMm());
+            setStroke(g2, border.getRightStyle(), rightThickness);
+            g2.draw(new Line2D.Float(width - 1, topThickness/2 + rightThickness/2, width - 1, height));
         }
 
         if (border.isOnLeft()) {
-            g.drawLine(0, 0, 0, height);
+            Color c = border.getLeftColor();
+            g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), BORDER_ALPHA));
+            leftThickness = getRealBorderThickness(border.getLeftThicknessMm());
+            setStroke(g2, border.getLeftStyle(), leftThickness);
+            g2.draw(new Line2D.Float(0, topThickness/2 + leftThickness/2, 0, height));
+        }
+        
+        if (border.isOnBottom()) {
+            Color c = border.getBottomColor();
+            g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), BORDER_ALPHA));
+            float thickness = getRealBorderThickness(border.getBottomThicknessMm());
+            setStroke(g2, border.getBottomStyle(), thickness);
+            g2.draw(new Line2D.Float(leftThickness/2 + thickness/2, height - 1, width - rightThickness/2 - thickness/2 - 1, height - 1));
         }
 
-        g2.setStroke(SOLID_STROKE);
+        g2.setStroke(SOLID_STROKE);       
+    }  
+    
+    private void setStroke(final Graphics2D g2, EReportBorderStyle style, float thickness) {
+
+        float dashThickness = thickness > 0 ? thickness: 1;
+        switch (style) {
+            case DASHED:
+                g2.setStroke(new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1, new float[]{dashThickness, dashThickness / 2}, 0));
+                break;
+            case DOTTED:
+                g2.setStroke(new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1, new float[]{dashThickness / 2, dashThickness / 2}, 0));
+                break;
+            default:
+                g2.setStroke(new BasicStroke(thickness));
+        }
     }
+    
+    private float getRealBorderThickness(double thickness){
+        float result = MmUtils.mm2px(thickness);
+        return result > 0 ? result * 2 : 1;
+    }
+    
 }

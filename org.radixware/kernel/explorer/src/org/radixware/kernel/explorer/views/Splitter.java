@@ -22,6 +22,7 @@ import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFrame;
 import com.trolltech.qt.gui.QHBoxLayout;
+import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QPainter;
 import com.trolltech.qt.gui.QPalette;
@@ -46,6 +47,7 @@ public class Splitter extends QSplitter implements ISplitter {
     final private ClientSettings settings;
     final private double initialRatio;
     private List<SplitterCollapser> collapsers;
+    final public Signal2<Integer, Integer> onIllegalMove = new Signal2<>();
 
     private static class MoveHandlerEvent extends QEvent {
 
@@ -84,25 +86,27 @@ public class Splitter extends QSplitter implements ISplitter {
 
     private static class Handle extends QSplitterHandle {
 
-        final private QFrame frame = new QFrame(this);
+        private final QFrame frame = new QFrame(this);        
+        private final QPen shadowPen = new QPen();
+        private final QPen lightPen = new QPen();
+        private final Splitter splitter;
+        private final boolean isVertical;
+        private boolean underCursor;
+        private int mouseOffset;
 
-        public Handle(Qt.Orientation orientation, QSplitter parent) {
+        public Handle(final Qt.Orientation orientation, final Splitter parent) {
             super(orientation, parent);
-
-            final QBoxLayout layout;
-            if (orientation == Qt.Orientation.Horizontal) {
-                layout = new QHBoxLayout(this);
-                //             frame.setMaximumHeight(2);
-            } else {
-                layout = new QVBoxLayout(this);
-//                frame.setMaximumWidth(2);
-            }
+            splitter = parent;
+            isVertical = orientation == Qt.Orientation.Vertical;
+            final QBoxLayout layout = isVertical ? new QVBoxLayout(this) : new QHBoxLayout(this);
             setLayout(layout);
             frame.setFrameShape(QFrame.Shape.Box);
             frame.setFrameStyle(QFrame.Shadow.Raised.value());
-            layout().addWidget(frame);
-        }
-        private boolean underCursor;
+            layout.addWidget(frame);
+            
+            shadowPen.setWidth(1);
+            lightPen.setWidth(1);
+        }        
 
         @Override
         protected void enterEvent(QEvent event) {
@@ -114,65 +118,81 @@ public class Splitter extends QSplitter implements ISplitter {
         }
 
         @Override
-        protected void leaveEvent(QEvent arg__1) {
+        protected void leaveEvent(QEvent event) {
             underCursor = false;
-            super.leaveEvent(arg__1);
+            super.leaveEvent(event);
             repaint();
         }
 
         @Override
-        protected void paintEvent(QPaintEvent event) {
+        protected void paintEvent(final QPaintEvent event) {
             final QPainter painter = new QPainter(this);
             painter.save();
             // hover appearance
-            QBrush fillColor = palette().window();
+            final QPalette palette = palette();
+            QBrush fillColor = palette.window();
             if (underCursor && isEnabled()) {
-                fillColor = palette().toolTipBase();
+                fillColor = palette.toolTipBase();
             }
 
             painter.fillRect(event.rect(), fillColor);
 
-            QColor grooveColor = WidgetUtils.mergedColors(palette().color(QPalette.ColorRole.Dark).lighter(110), palette().button().color(), 40);
-            QColor gripShadow = grooveColor.darker(110);
-            QPalette palette = palette();
-            boolean vertical = orientation() != Qt.Orientation.Horizontal;
+            final QColor grooveColor = 
+                WidgetUtils.mergedColors(palette.color(QPalette.ColorRole.Dark).lighter(110), palette.button().color(), 40);
+            final QColor gripShadow = grooveColor.darker(110);
+            shadowPen.setColor(gripShadow);
+            lightPen.setBrush(palette.light());            
             QRect scrollBarSlider = event.rect();
             int gripMargin = 4;
             //draw grips
-            if (vertical) {
+            if (isVertical) {
+                final int centerX = scrollBarSlider.center().x();
+                final int top = scrollBarSlider.top() + gripMargin;
+                final int bottom = scrollBarSlider.bottom() - gripMargin;
                 for (int i = -20; i < 20; i += 2) {
-                    painter.setPen(new QPen(gripShadow, 1));
-                    painter.drawLine(
-                            new QPoint(scrollBarSlider.center().x() + i,
-                            scrollBarSlider.top() + gripMargin),
-                            new QPoint(scrollBarSlider.center().x() + i,
-                            scrollBarSlider.bottom() - gripMargin));
-                    painter.setPen(new QPen(palette.light(), 1));
-                    painter.drawLine(
-                            new QPoint(scrollBarSlider.center().x() + i + 1,
-                            scrollBarSlider.top() + gripMargin),
-                            new QPoint(scrollBarSlider.center().x() + i + 1,
-                            scrollBarSlider.bottom() - gripMargin));
+                    painter.setPen(shadowPen);
+                    painter.drawLine(centerX + i, top, centerX + i, bottom);
+                    painter.setPen(lightPen);
+                    painter.drawLine(centerX + i + 1, top, centerX + i + 1, bottom);
                 }
             } else {
+                final int centerY = scrollBarSlider.center().y();
+                final int left = scrollBarSlider.left() + gripMargin;
+                final int right = scrollBarSlider.right() - gripMargin;
                 for (int i = -20; i < 20; i += 2) {
-                    painter.setPen(new QPen(gripShadow, 1));
-                    painter.drawLine(
-                            new QPoint(scrollBarSlider.left() + gripMargin,
-                            scrollBarSlider.center().y() + i),
-                            new QPoint(scrollBarSlider.right() - gripMargin,
-                            scrollBarSlider.center().y() + i));
-                    painter.setPen(new QPen(palette.light(), 1));
-                    painter.drawLine(
-                            new QPoint(scrollBarSlider.left() + gripMargin,
-                            scrollBarSlider.center().y() + 1 + i),
-                            new QPoint(scrollBarSlider.right() - gripMargin,
-                            scrollBarSlider.center().y() + 1 + i));
-
+                    painter.setPen(shadowPen);
+                    painter.drawLine(left, centerY + i, right, centerY + i);
+                    painter.setPen(lightPen);
+                    painter.drawLine(left, centerY + i + 1, right, centerY + i + 1);
                 }
             }
             painter.restore();
         }
+
+        @Override
+        protected void mousePressEvent(final QMouseEvent event) {            
+            if (event.button() == Qt.MouseButton.LeftButton) {
+                mouseOffset = pick(event.pos());
+            }
+            super.mousePressEvent(event);
+        }
+
+        @Override
+        protected void mouseMoveEvent(final QMouseEvent event) {            
+            super.mouseMoveEvent(event);
+            if (event.buttons().isSet(Qt.MouseButton.LeftButton)){
+                final int pos = pick(splitter.mapFromGlobal(event.globalPos())) - mouseOffset;
+                final int legalPos = closestLegalPosition(pos);
+                if (pos!=legalPos){
+                    splitter.onIllegalMove.emit(pos, legalPos);
+                }
+            }            
+        }
+        
+        private int pick(final QPoint point){
+            return isVertical ? point.y() : point.x();
+        }
+        
     }
 
     public Splitter(final QWidget parent, final ClientSettings settings, final String cfgPrefix, final double initialRatio) {
@@ -231,7 +251,7 @@ public class Splitter extends QSplitter implements ISplitter {
             curPos = savePos;
             moveToPosition(savePos);
         }
-    }
+    }        
 
     public void saveRatioToConfig(final String key) {
         if (settings==null){
@@ -389,6 +409,7 @@ public class Splitter extends QSplitter implements ISplitter {
                 removeCollapser(collapsers.get(i));
             }
         }
+        onIllegalMove.disconnect();
         super.closeEvent(event);
     }
     

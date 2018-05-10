@@ -50,46 +50,48 @@ public class AdsParameterPropertyObjectRemover extends ObjectRemover {
                     return;
                 }
                 UserReportListRsDocument xReports = UserExtensionManager.getInstance().getUFRequestExecutor().listReportsWithParam(owner, prop.getId());
-                if(xReports == null || xReports.getUserReportListRs().getReportList().isEmpty()) {
+                if(xReports == null) {
                     return;
                 }
                 
-                List<UserReport> users = new LinkedList<>();
-                List<UserReport> reports = new LinkedList<>();
-                for(UserReportHeader xReport : xReports.getUserReportListRs().getReportList()) {
-                    reports.add(UserExtensionManager.getInstance().getUserReports().findReportById(xReport.getId()));
-                }
+                if (!xReports.getUserReportListRs().getReportList().isEmpty()) {
+                    List<UserReport> users = new LinkedList<>();
+                    List<UserReport> reports = new LinkedList<>();
+                    for(UserReportHeader xReport : xReports.getUserReportListRs().getReportList()) {
+                        reports.add(UserExtensionManager.getInstance().getUserReports().findReportById(xReport.getId()));
+                    }
 
-                for (UserReport r : reports) {
-                    UserReport.ReportVersion v = r.getVersions().getCurrent();
-                    AdsUserReportClassDef report = v.findReportDefinition();
-                    final List<Definition> deps = new ArrayList<>();
-                    if (report != null && !report.isParentOf(prop)) {
-                        deps.clear();
-                        report.visit(new IVisitor() {
+                    for (UserReport r : reports) {
+                        UserReport.ReportVersion v = r.getVersions().getCurrent();
+                        AdsUserReportClassDef report = v.findReportDefinition();
+                        final List<Definition> deps = new ArrayList<>();
+                        if (report != null && !report.isParentOf(prop)) {
+                            deps.clear();
+                            report.visit(new IVisitor() {
 
-                            @Override
-                            public void accept(RadixObject radixObject) {
-                                radixObject.collectDirectDependences(deps);
+                                @Override
+                                public void accept(RadixObject radixObject) {
+                                    radixObject.collectDirectDependences(deps);
+                                }
+                            }, VisitorProviderFactory.createDefaultVisitorProvider());
+
+
+                            if (deps.contains(prop)) {
+                                users.add(r);
                             }
-                        }, VisitorProviderFactory.createDefaultVisitorProvider());
-
-
-                        if (deps.contains(prop)) {
-                            users.add(r);
                         }
                     }
-                }
-                if (!users.isEmpty()) {
-                    StringBuilder message = new StringBuilder("Report parameter " + prop.getQualifiedName() + " is used by current versions of following reports:\n");
-                    for (UserReport report : users) {
-                        message.append("- ").append(report.getName()).append("\n");
-                    }
-                    message.append("Continue?");
-                    if (!DialogUtils.messageConfirmation(message.toString())) {
-                        return;
-                    }
+                    if (!users.isEmpty()) {
+                        StringBuilder message = new StringBuilder("Report parameter " + prop.getQualifiedName() + " is used by current versions of following reports:\n");
+                        for (UserReport report : users) {
+                            message.append("- ").append(report.getName()).append("\n");
+                        }
+                        message.append("Continue?");
+                        if (!DialogUtils.messageConfirmation(message.toString())) {
+                            return;
+                        }
 
+                    }
                 }
                 if (prop.isInBranch() && prop.canDelete()) {
                     prop.delete();

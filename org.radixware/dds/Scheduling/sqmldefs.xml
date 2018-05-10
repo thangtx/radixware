@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlC4USCT2SABE3PJRBZXO2N46RQY" QualifiedName="Radix::Scheduling">
+  <PackageDef Id="pkg2BJL4ICFHNH7FJNIJBKZONCG7Q" Name="RDX_JS_IntervalSchedule">
+    <Function Id="dfnZDUXHEVBBVD7VCTNBNXUAARFDY" Name="isIn" ResultDbType="integer">
+      <Parameter Id="dfpCLOTO5DIABDHJGZ6VWW4HQ5AKY" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp7BJD62EWSZELVFWBG7VB7WMU7U" Name="pDateTime" DbName="pDateTime" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnT2NNINFXG5CMLMSNJNCSS3B6LQ" Name="nextStartTime" ResultDbType="date">
+      <Parameter Id="dfpZA3VP2VEKRAORAWNLE475IZNSM" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpNPWQJZBHNBAZDPGA5YJCMT26TY" Name="pDateTime" DbName="pDateTime" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnM77LYUMS3BDDTFCH32OLWKYL6M" Name="nextFinishTime" ResultDbType="date">
+      <Parameter Id="dfpKMSV73UPJBF53NFXMJVPWYUDGI" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpJQUJODWDXNF7FIH5OEBT7MZGSA" Name="pDateTime" DbName="pDateTime" DbType="date" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnYX65V6FZ5BBN5KFVOU4V7WETPU" Name="prevStartTime" ResultDbType="date">
+      <Parameter Id="dfpJ2MKFVGQHFHPHJ4YN3S74GKWOA" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpGQS2NALKEZGAHG2YCYSDODPBSY" Name="pDateTime" DbName="pDateTime" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfn5XWC6ZKAGJGGPIEMGLRNQNXGS4" Name="prevFinishTime" ResultDbType="date">
+      <Parameter Id="dfpSJRDZ5EP3VGSVM277KVBGWNVIY" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpZ7UV2GGOWJHCROQ6LXCXW7EFDA" Name="pDateTime" DbName="pDateTime" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <PackageDef Id="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE" Name="RDX_JS_Vars">
+    <Function Id="dfnRONV6WQNBVBJXHUKHMPE6DMIMI" Name="getLastUpdateTime" ResultDbType="date"/>
+    <Function Id="dfnGT3V5VRN45CINCOUQAJP2WQOEU" Name="setLastUpdateTime" ResultDbType="">
+      <Parameter Id="dfpSJEPAZOIP5HQNHRDWHUYEXZXT4" Name="pLastUpdateTime" DbName="pLastUpdateTime" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <PackageDef Id="pkgRZIOQWPPVJFOFH7ZD3EPQZKEZY" Name="RDX_JS_EventSchedule">
+    <Function Id="dfn4QY6MMCHWBBZ3HIHSMDVEAVT4U" Name="next" ResultDbType="timestamp">
+      <Parameter Id="dfpRPITVM7ZKFC5RKBXUCTI2ADZYY" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpTODYOP5RORDJ5A4KXIQ6YULX3A" Name="pDateTime" DbName="pDateTime" DbType="timestamp" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnJQDXHA2NXVEYZA4HUUW4XA4J2I" Name="prev" ResultDbType="timestamp">
+      <Parameter Id="dfpZCPQM3HHMNDILOTVUKNVNLYZFQ" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpVZWJ6IIFXBC2JGUFJNR5R7SU2E" Name="pDateTime" DbName="pDateTime" DbType="timestamp" ValType="12" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <PackageDef Id="pkgVYNJ4H375FFY7LF3EAKG4TZYF4" Name="RDX_JS_CalendarSchedule">
+    <Function Id="dfn5RARDUHJ3NGOJOPUH6V22LCT24" Name="constClassGuidAbsCalendar" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnUPYTRH33BBCY7BKF5JIOTXKBKU" Name="constClassGuidDayOfWeek" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnVB6QX4E66NCRVLALABKUKGUB24" Name="constClassGuidDayOfMonth" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnCLTK5VHNGJAP3IDXS6IPD3QL3Y" Name="constClassGuidAbsDate" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnYOBRQF5RJ5AJPOYP76C5LMMRD4" Name="constClassGuidIncCalendar" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnZYQYOKEN65D7PI6Q4ZWMMUULLY" Name="constClassGuidDaily" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnKMLM57Y24VCGTOPXUWMJCSZ4A4" Name="constClassGuidDayOfQuarter" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnRDVJG6E5AFEGDKRMWUFDC5ZKNE" Name="constClassGuidDayOfYear" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnHGFMWQM7KJHQ5B33OY6ZOIZWTU" Name="constKeyFormat" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnMU7ICIDRQZFCVHJZPCFW2HWNR4" Name="isIn" ResultDbType="integer">
+      <Parameter Id="dfpM3XOGEH5HJBKLF4BTIKSQ4ZX4I" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp63CZEGSNVNEZFMWMUEV7CR2HEU" Name="pDate" DbName="pDate" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnENRPSW67KRADLKERDULMTARPDY" Name="next" ResultDbType="date">
+      <Parameter Id="dfpTSOBVSDJ75DHND6M5L7U5B6X74" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp7NTPWCL2TNGGRM5Y7EGVAKZ3NA" Name="pDate" DbName="pDate" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnMUVFCARLXND3RLO3BD4FQDO334" Name="nextNotIn" ResultDbType="date">
+      <Parameter Id="dfpZRLSCEYHIFHNPDTN7PWRGYHEVY" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp5CIWCQJKQRAABDU3EQSPDDM62M" Name="pDate" DbName="pDate" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfn427GPP6PO5GEVCNPTWDANUZUFU" Name="prev" ResultDbType="date">
+      <Parameter Id="dfpDURWBLE4XJANZL22G3OGEKIBNM" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpMBJVKKCWIJDL5DM7TC4RGANRQI" Name="pDate" DbName="pDate" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnLG5OWUVUKNECBIQINMMRCMGRA4" Name="prevNotIn" ResultDbType="date">
+      <Parameter Id="dfpZ5M2RVTI3NH2VC6ZD2C2EP55K4" Name="pId" DbName="pId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpY2J2ZPB3B5BKLBAS6VGCXNUQXE" Name="pDate" DbName="pDate" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <PackageDef Id="pkgXPLP6LU2EZGRNOPNT4KJQNYGJI" Name="RDX_JS_JOB">
+    <Function Id="dfnJTODGIFJBZEQNLMVQ5EUYNU5XU" Name="constTaskExecutorClassName" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnLE4U75GSNZDUVPBDT3N3OUWCXE" Name="constTaskExecutorMethodName" ResultDbType="varchar2" IsWNDS="true"/>
+    <Function Id="dfnY65XUFYMZZESVHQWXSJCGB24LE" Name="shedulePeriodical" ResultDbType="">
+      <Parameter Id="dfpITBT7EZ6VZCRDIHTZ6LK4SR6XM" Name="pTaskId" DbName="pTaskId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpJOBADGPCT5G4DEYIGOIDJKS4OU" Name="pExecTime" DbName="pExecTime" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfn6MVF2B3JANANXPFYCKE574TFME" Name="calcPriority" ResultDbType="integer">
+      <Parameter Id="dfpI3JJXYHEZVHMHLQDZ6PPJII3FI" Name="iBasePriority" DbName="iBasePriority" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpDVYXG5QLW5DYFLMG662LG4U7RI" Name="iCurPriority" DbName="iCurPriority" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpZRNYX3GBSFFM5AURZFAYQ4GZRI" Name="iPriorityBoostingSpeed" DbName="iPriorityBoostingSpeed" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp2GWAAG2S3VFOVNV7WBOKJSOQ3A" Name="tDueTime" DbName="tDueTime" DbType="timestamp" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnSUT2P5CEAFCWFCGZAXLTZ2HOGU" Name="schedule" ResultDbType="integer">
+      <Parameter Id="dfpPHFBG2J2RJDH5B3NY3QFWPF7GU" Name="iAllowRerun" DbName="iAllowRerun" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpKSZYM3X45FDABJPXRLAJZ4LTXU" Name="tJobTime" DbName="tJobTime" DbType="timestamp" ValType="12" Direction="0"/>
+      <Parameter Id="dfpVP2ODRQGONDBPC6N7KJPTR4GWQ" Name="sJobClass" DbName="sJobClass" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpGBVCQA5DPNBLFBORTRDDWJR3BE" Name="sJobMethod" DbName="sJobMethod" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpWY2QU7EVZ5B27C4IFO3Q3Y5FTA" Name="iJobPriority" DbName="iJobPriority" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp3EUMC36V3RACNG44J6D7HVGVWU" Name="iJobBoosting" DbName="iJobBoosting" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpLTFOV6MBHBFILAAPR5J6MYSZQY" Name="sExecRequesterId" DbName="sExecRequesterId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpJLHEVZIDUBFFRMEANWZBGXINCY" Name="sCreatorEntityGuid" DbName="sCreatorEntityGuid" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpK4KPZG2STBFYHBWYMKH6YUKXRY" Name="sCreatorPid" DbName="sCreatorPid" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpZJWMADOAW5GWTJVMHRIMHD3TVM" Name="sTitle" DbName="sTitle" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpJIBCIRHJ7BABFICAYSWTNBURSA" Name="sScpName" DbName="sScpName" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpRT6NUJR6JNCKLIGA75Y3HJJYSM" Name="iTaskId" DbName="iTaskId" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpETFKRDGM3JA77GCJPGKTS5UISM" Name="pAadcMemberId" DbName="pAadcMemberId" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpJGAL6BVBY5A7TOU3NNWTKWHLIU" Name="threadPoolClassGuid" DbName="threadPoolClassGuid" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpPCRJ5HXU2BGQVPURAMWAWCSMPE" Name="threadPoolPid" DbName="threadPoolPid" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpNQP52GFXDNE7PKICEWOZEADPUY" Name="threadKey" DbName="threadKey" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnBGRXK7MOOFEMHA2REQU42NSBWY" Name="awake" ResultDbType="">
+      <Parameter Id="dfpDGXEITTGRNAU3MAVILIQQFF23E" Name="iJobId" DbName="iJobId" DbType="number" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnVT6RWVFGJRB4XCHDAXBRARE5EU" Name="addParam" ResultDbType="integer">
+      <Parameter Id="dfp2B6U3JFTVRBH3H46U3BMUXEH4U" Name="iParJobId" DbName="iParJobId" DbType="number" ValType="2" Direction="0"/>
+      <Parameter Id="dfpANUMNK5FENBGVMSEKRTZ7UMDGE" Name="sParName" DbName="sParName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpID232USILZGEFCUNNPOWJM7EP4" Name="iParValType" DbName="iParValType" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpG3FQDFQORNFB3JAJ33I52KVGRA" Name="sParVal" DbName="sParVal" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnYQLAUGL5FVASXDL66T6G36XUEE" Name="addBlobParam" ResultDbType="integer">
+      <Parameter Id="dfpC2MHS3DWSRBKPITEBCRPCIBHRQ" Name="iParJobId" DbName="iParJobId" DbType="number" ValType="2" Direction="0"/>
+      <Parameter Id="dfpUIK6U4CNAZBMLH7DONUXM3MKZE" Name="sParName" DbName="sParName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpR2DS5Y7TBBH65ALYGJTCJGM2CM" Name="parVal" DbName="parVal" DbType="blob" ValType="28" Direction="0"/>
+    </Function>
+    <Function Id="dfnPWXFUQRMY5HR7FLCFHMRG3MQ6Y" Name="addClobParam" ResultDbType="integer">
+      <Parameter Id="dfpJ4YJ3KZRPVCQLCRIX4TFC3KO4I" Name="iParJobId" DbName="iParJobId" DbType="number" ValType="2" Direction="0"/>
+      <Parameter Id="dfpX6EHREXGBFGGVCNJ6G4EV5FH5Y" Name="sParName" DbName="sParName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpKNK7EW7AKRB23BF7ERLCBFDD6I" Name="parVal" DbName="parVal" DbType="clob" ValType="27" Direction="0"/>
+    </Function>
+    <Function Id="dfn2TAX2AT6CNGMZKVJU2G36FOVXM" Name="setParam" ResultDbType="integer">
+      <Parameter Id="dfpEOJGG4CYH5ARNEIABCGOV5IYA4" Name="iParJobId" DbName="iParJobId" DbType="number" ValType="2" Direction="0"/>
+      <Parameter Id="dfpWVFHLRXWSBCGXH5PMK62UGM3NM" Name="sParName" DbName="sParName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp4FQ3ABY5WNDCHM5IKISAOM4SJQ" Name="sParVal" DbName="sParVal" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnPJIEEROJGBALHH4U7U6V2CEOGA" Name="calcThreadPriorityMap" ResultDbType="varchar2"/>
+    <Function Id="dfnLYEFBHUS7ZCNJLXO3G7NN2QDOI" Name="scheduleRelative" ResultDbType="integer">
+      <Parameter Id="dfpYLMFEWEL3VF3REGI2YN5AHAKCU" Name="pAllowRerun" DbName="pAllowRerun" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpNAES5RRVOZFHPF5PHLQB3SXJOU" Name="iDelayMillis" DbName="iDelayMillis" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpX7QYCEED6JCAZDH7JGUYDJYBV4" Name="sJobClass" DbName="sJobClass" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpL6HYJFO4VNCUHOHDKLTNBCZFDQ" Name="sJobMethod" DbName="sJobMethod" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpNIQQZEIXNBAORFNBIMSMX6UVDY" Name="iJobPriority" DbName="iJobPriority" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpL2JG5GWDHFAJHKJNZAR2ANRKKA" Name="iJobBoosting" DbName="iJobBoosting" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpAO5Q65I4LZFDHKX5WUZWAZL4K4" Name="sExecRequesterId" DbName="sExecRequesterId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpBVODA3MWE5ABBFCFRO6SLGR2WM" Name="sCreatorEntityGuid" DbName="sCreatorEntityGuid" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfp5PVYRAME4FHSNPFCOQ4YTCQVAE" Name="sCreatorPid" DbName="sCreatorPid" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfp3WSE7ST7YFFYTJBWRWSEIIZG54" Name="sTitle" DbName="sTitle" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpTI33TPSMHVFNNMXT5RJGDOL34Y" Name="sScpName" DbName="sScpName" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpPZGEP2DS2JHAVK5AXDTPHUNCFU" Name="iTaskId" DbName="iTaskId" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpN5TFGO34MFC2ZHKYINDNR7OC4Y" Name="aadcMemberId" DbName="aadcMemberId" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpZCCZAYQLTBCU5BVM32XPG47MPM" Name="threadPoolClassGuid" DbName="threadPoolClassGuid" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfpEEWQ64ER5JBXNFT5OE6ZGOZZNI" Name="threadPoolPid" DbName="threadPoolPid" DbType="varchar2" ValType="21" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+      <Parameter Id="dfp5D5HFF3N2NBUFEZT4S3ENVAY5M" Name="threadKey" DbName="threadKey" DbType="integer" ValType="2" Direction="0">
+        <DefaultValue>null</DefaultValue>
+      </Parameter>
+    </Function>
+    <Function Id="dfnR7V7IURAD5BF3PEOHPDS7MTCJY" Name="adjustToNearestMinute" ResultDbType="timestamp">
+      <Parameter Id="dfpVHGDKZJUJZEFFGO7UITCLHOXPI" Name="iTimestamp" DbName="iTimestamp" DbType="timestamp" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnLDDJGK7FGVCTXKRYDSWOLDRFXE" Name="onStartJobExecution" ResultDbType="">
+      <Parameter Id="dfpS6OSDQMQ4JGABOQTMH6LJYAE7A" Name="jobId" DbName="jobId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnYMDQY4TY7FCZFPKVERQREUN5QQ" Name="scheduleTask" ResultDbType="">
+      <Parameter Id="dfpDYFACMFSUFCXVBSABLPIRGMQQE" Name="taskId" DbName="taskId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpWVWG4RTL4NAVDLWHAJ6YSDOTWQ" Name="initiatorName" DbName="initiatorName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpZQFQ5QZEQZGCVFY34NCEZNFI3E" Name="execTime" DbName="execTime" DbType="date" ValType="12" Direction="0"/>
+      <Parameter Id="dfpLPX3FD7IBFCRFKMTJBEKZ6KRVA" Name="execToken" DbName="execToken" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnUHZYHDYZRNGDVO27KA3HK55PC4" Name="isTaskExecuteCall" ResultDbType="integer">
+      <Parameter Id="dfpDH6RNFM5TBD7NHGOKDSSIM6Z7E" Name="pClassName" DbName="pClassName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp2CRWD532H5A7XAU3JUTITJZLYI" Name="pMethodName" DbName="pMethodName" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnY7NSCGHHGNHGBPOLHWVZA5SWJA" Name="adjustToNearest10Sec" ResultDbType="timestamp">
+      <Parameter Id="dfpDH7HHG2L3FBKXMMIQMLFSIWBPY" Name="iTimestamp" DbName="iTimestamp" DbType="timestamp" ValType="50" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <TableDef Id="tbl2ZW5SCE4DVFAXABS7LA5PFIURY" Name="JobExecutorPriorityMap">
+    <Indexes>
+      <Index Id="idxLJKJTG5R4JGARCCIJFZNE5YKVM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colMCND7EXCJBCI3C2GTXVISWKZVI"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colMCND7EXCJBCI3C2GTXVISWKZVI" Name="appPriority" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colC6FDIR2A6BDEPC3JOR42FQZISY" Name="sysPriority" ValType="2" Length="1" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl3DD7EMEOIHNRDJIEACQMTAIZT4" Name="JobExecutorUnit" MasterTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E">
+    <Indexes>
+      <Index Id="idx3DD7EMEOIHNRDJIEACQMTAIZT4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col3XD7EMEOIHNRDJIEACQMTAIZT4"/>
+    </Indexes>
+    <ReferenceToMasterTable Id="refJXQCGBUPIHNRDJIEACQMTAIZT4" Name="JobExecutorUnit=>Unit (id=>id)"/>
+    <Columns>
+      <Column Id="col3XD7EMEOIHNRDJIEACQMTAIZT4" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colXOBNJSQM5BFTJLTZLAOM4U2QOE" Name="avgExecCount" ValType="11" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colUT45Q6GJB5EZ7ESVA3I35OFKKE" Name="avgWaitCount" ValType="11" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colPJDE6LVONJB3PPTQ7ZCF6UPQOI" Name="parallelCnt" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colYS346KYNLVBNFJEHV2EA2KPKKM" Name="aboveNormalDelta" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colHBV4J6LEWNCOTM4WHJRSIMLKFM" Name="highDelta" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNJB3FZVNRNGXXMYCHMBRAXJZI4" Name="veryHighDelta" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colUX424WYE3ZGARCSQMV4REKOFK4" Name="criticalDelta" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colCCFCKQ4OIHNRDJIEACQMTAIZT4" Name="execPeriod" ValType="11" Length="9" Precision="3" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblARTOV5KBI3OBDCIOAALOMT5GDM" Name="IntervalSchdItem">
+    <Indexes>
+      <Index Id="idxARTOV5KBI3OBDCIOAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colAZTOV5KBI3OBDCIOAALOMT5GDM colNW6EUHKCI3OBDCIOAALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refCTUEMNCCI3OBDCIOAALOMT5GDM" Name="IntervalSchdItem=>Calendar (calendarId=>id)" ReferencedTableId="tblHC6VVBZ4I3OBDCIOAALOMT5GDM" ChildColumnNames="calendarId"/>
+      <Reference Id="refSBROEBSCI3OBDCIOAALOMT5GDM" Name="IntervalSchdItem=>IntervalSchd (scheduleId=>id)" ReferencedTableId="tblZBS5MS2BI3OBDCIOAALOMT5GDM" ChildColumnNames="scheduleId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colAZTOV5KBI3OBDCIOAALOMT5GDM" Name="scheduleId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNW6EUHKCI3OBDCIOAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col3J7ROKKCI3OBDCIOAALOMT5GDM" Name="calendarId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colPKW6YWCCI3OBDCIOAALOMT5GDM" Name="startTime" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colFCO7W2SCI3OBDCIOAALOMT5GDM" Name="endTime" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colENAVBBZCRFGDHCHE6MA2CK6IWA" Name="timeZoneRegion" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblCRD53OZ5I3OBDCIOAALOMT5GDM" Name="CalendarItem">
+    <Indexes>
+      <Index Id="idxCRD53OZ5I3OBDCIOAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colMF3T2LPMKXOBDCI6AALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref6SVAPKZ7I3OBDCIOAALOMT5GDM" Name="CalendarItem=>Calendar (incCalendarId=>id)" ReferencedTableId="tblHC6VVBZ4I3OBDCIOAALOMT5GDM" ChildColumnNames="incCalendarId"/>
+      <Reference Id="refALG64NJ6I3OBDCIOAALOMT5GDM" Name="CalendarItem=>Calendar (calendarId=>id)" ReferencedTableId="tblHC6VVBZ4I3OBDCIOAALOMT5GDM" ChildColumnNames="calendarId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colMF3T2LPMKXOBDCI6AALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNQYSFERBHRCIJA4XABBUNWKGEM" Name="classGuid" ValType="21" Length="29" Precision="0" NotNull="true"/>
+      <Column Id="colKRZR7QR5I3OBDCIOAALOMT5GDM" Name="calendarId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colOCF4R7J5I3OBDCIOAALOMT5GDM" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colFDW6KVZ6I3OBDCIOAALOMT5GDM" Name="oper" ValType="3" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colYTXRDPZ6I3OBDCIOAALOMT5GDM" Name="offset" ValType="2" Length="5" Precision="0"/>
+      <Column Id="colDKQ7RUH5YZGIZMYREMQUYMV4OM" Name="offsetDir" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colFQ4EXXZ6I3OBDCIOAALOMT5GDM" Name="incCalendarId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colAZNNMYJ7I3OBDCIOAALOMT5GDM" Name="absDate" ValType="12" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblHC6VVBZ4I3OBDCIOAALOMT5GDM" Name="Calendar">
+    <Indexes>
+      <Index Id="idxHC6VVBZ4I3OBDCIOAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col2BAXRDR4I3OBDCIOAALOMT5GDM"/>
+      <Index Id="idxQX5AD5UMEVCINB2ZRDTOZFUZTU" Name="RID" IndexColumns="colCDHUTBIP2VC75MTHAIDAV7E7L4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refC7XQLCC5I3OBDCIOAALOMT5GDM" Name="Calendar=>User (lastUpdateUser=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUser"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="col2BAXRDR4I3OBDCIOAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colGREF2QX3WVF3DJNRVMZTPNP2NQ" Name="guid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colCDHUTBIP2VC75MTHAIDAV7E7L4" Name="rid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colHAF43WR4I3OBDCIOAALOMT5GDM" Name="title" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colNZP25ZZ4I3OBDCIOAALOMT5GDM" Name="notes" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colUJIT2SZ5I3OBDCIOAALOMT5GDM" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colUNIT2SZ5I3OBDCIOAALOMT5GDM" Name="lastUpdateUser" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colZF3E2THJKBAC5PGPW7CUML47BA" Name="classGuid" ValType="21" Length="29" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblHRWUWEEMIHNRDJIEACQMTAIZT4" Name="JobQueue">
+    <Indexes>
+      <Index Id="idxHRWUWEEMIHNRDJIEACQMTAIZT4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colAAQIIHUMIHNRDJIEACQMTAIZT4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refF6XD46FP6FEWDFSXAX42HAQ2RI" Name="JobQueue=>Task (taskId=>id)" ReferencedTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ChildColumnNames="taskId"/>
+      <Reference Id="refLSE7DXO36FG4DEJGTZWLIASZPY" Name="JobQueue=>Unit (executorId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="executorId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colAAQIIHUMIHNRDJIEACQMTAIZT4" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colHQPRKNPYGZFVRPPKUDNLNLD5G4" Name="aadcMemberId" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colBMKNBRS6MFDOHOCOER7UVUAKY4" Name="taskId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colPSF7WRUMIHNRDJIEACQMTAIZT4" Name="dueTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colHCKW54UMIHNRDJIEACQMTAIZT4" Name="className" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colUA2AEBUNIHNRDJIEACQMTAIZT4" Name="methodName" ValType="21" Length="1000" Precision="0" NotNull="true"/>
+      <Column Id="colI5ZY2POKPRDRVK3IC2OJNUZNZU" Name="scpName" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colOB766EUNIHNRDJIEACQMTAIZT4" Name="priority" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colOJ766EUNIHNRDJIEACQMTAIZT4" Name="priorityBoostingSpeed" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colUC47CLMNIHNRDJIEACQMTAIZT4" Name="curPriority" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colKO3GLUKLZVBJ5LB74GGO6QEBKE" Name="creatorEntityGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col3QEST2453NB6VO2QYXLW6IJTMM" Name="creatorPid" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colBOGCPSGVIBAB7JKMSBOY55RGH4" Name="execRequesterId" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colGYABEOPPRBD53G55ZT4ZW24ZIQ" Name="title" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colOUMGEJUNOFGHFAJ7DVSCUCIP2A" Name="executorId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col2RDV26FFFVAQFKMPGQ2BHZT36Y" Name="processorTitle" ValType="21" Length="500" Precision="0"/>
+      <Column Id="colAYF4OD52OBHS5B2XMSUBN6T3RI" Name="unlockCount" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colU4UPMUTPR5DZ5NOZ3N4A232YJA" Name="selfCheckTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colKGWUJPPZSBFFFKCPSF7VX7ZNHA" Name="allowRerun" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colLW73UERCJZDNTAPMRGCASBDVIU" Name="selfCheckTimeMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colVTHNRM2E6ZHQ3CN4YNPTZZ7VJ4" Name="threadPoolClassGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colGGVHH5VP2RA3NBSWE6F4COHET4" Name="threadPoolPid" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colSQ62QBZJ6NBR5HDABNEIOOTF7U" Name="threadKey" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblLSU45NKDI3OBDCIOAALOMT5GDM" Name="EventSchd">
+    <Indexes>
+      <Index Id="idxLSU45NKDI3OBDCIOAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colDQQG5QKDI3OBDCIOAALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refJ7AQNEK5I3OBDCIOAALOMT5GDM" Name="EventSchd=>User (lastUpdateUser=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUser"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colDQQG5QKDI3OBDCIOAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colDBHUGPSQORF2ZL2ZTMP3Y7NCKI" Name="rid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colIJ2DSJLSLBE5NN7Z2YAKDKAGYI" Name="guid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colPCE5XVCDI3OBDCIOAALOMT5GDM" Name="title" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colN3PKXXCDI3OBDCIOAALOMT5GDM" Name="notes" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colYZCK5ZCDI3OBDCIOAALOMT5GDM" Name="lastUpdateTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colY5CK5ZCDI3OBDCIOAALOMT5GDM" Name="lastUpdateUser" ValType="21" Length="250" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblPBK5LEENIHNRDJIEACQMTAIZT4" Name="JobParam">
+    <Indexes>
+      <Index Id="idxPBK5LEENIHNRDJIEACQMTAIZT4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colORJZLHMNIHNRDJIEACQMTAIZT4 colQRZHTN4NIHNRDJIEACQMTAIZT4"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refOAVYLSUNIHNRDJIEACQMTAIZT4" Name="JobParam=>JobQueue (jobId=>id)" ReferencedTableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" ChildColumnNames="jobId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colORJZLHMNIHNRDJIEACQMTAIZT4" Name="jobId" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colQRZHTN4NIHNRDJIEACQMTAIZT4" Name="name" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colFRO2724NIHNRDJIEACQMTAIZT4" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colCBWV4A4OIHNRDJIEACQMTAIZT4" Name="valType" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colRDXWAG4OIHNRDJIEACQMTAIZT4" Name="val" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colFRCBBAHHIJFLZC5LTN6THMJFLE" Name="clobVal" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colCLI7G43WAFGSPF5ZZAZS5QUADU" Name="blobVal" ValType="28" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblPCE24TUPIHNRDJIEACQMTAIZT4" Name="JobExecutorUnitBoost">
+    <Indexes>
+      <Index Id="idxPCE24TUPIHNRDJIEACQMTAIZT4" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colATBS4XMPIHNRDJIEACQMTAIZT4"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colATBS4XMPIHNRDJIEACQMTAIZT4" Name="speed" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="col2SZPQ7UPIHNRDJIEACQMTAIZT4" Name="delay" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col33CWYGOTI3NRDJIIACQMTAIZT4" Name="maxIncrement" ValType="2" Length="9" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblWZB7K4HLJPOBDCIUAALOMT5GDM" Name="Task">
+    <Indexes>
+      <Index Id="idxWZB7K4HLJPOBDCIUAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colPU65PF7LJPOBDCIUAALOMT5GDM"/>
+      <Index Id="idxZ27CG5NEABGYLOXYVPG4SD7SYY" Name="RID" IndexColumns="col7PEOSLRVM5GQLNRYMHH4V7B2JI"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref2HESFGUAAVG75GNB3WBVAXAMTY" Name="Task=>Task (parentId=>id)" ReferencedTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ChildColumnNames="parentId"/>
+      <Reference Id="refP6PKJLPLJPOBDCIUAALOMT5GDM" Name="Task=>Unit (unitId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="unitId"/>
+      <Reference Id="refTE4SUWTG5RGNPETFKKYSIT2CS4" Name="Task=>Scp (scpName=>name, systemId=>systemId)" ReferencedTableId="tblAAU55TOEHJWDRPOYAAYQQ2Y3GB" ChildColumnNames="scpName systemId"/>
+      <Reference Id="refXHY652GB7RAKNDBMYRW3TMDH2E" Name="Task=>Task (directoryId=>id)" ReferencedTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ChildColumnNames="directoryId"/>
+      <Reference Id="refZAAZ347LJPOBDCIUAALOMT5GDM" Name="Task=>EventSchd (scheduleId=>id)" ReferencedTableId="tblLSU45NKDI3OBDCIOAALOMT5GDM" ChildColumnNames="scheduleId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colPU65PF7LJPOBDCIUAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col7PEOSLRVM5GQLNRYMHH4V7B2JI" Name="rid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col4W7CE76W7VATBNLH5FLEE3FAVA" Name="aadcMemberId" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colRMU7WRHOUZDINIVZWJHT6KSOFM" Name="createTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colWDY2TRTHU5CBNOYBLCQRTQSCZM" Name="seq" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colBHMUC3KGIJE3PA6RVXKLXFHP3U" Name="parentId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colC7IXI3MF4ZHHRJGGR7KVS6LL7Y" Name="directoryId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colVVAT5W3YSLOBDCKTAALOMT5GDM" Name="title" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colP2PKJLPLJPOBDCIUAALOMT5GDM" Name="unitId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colNAPRJRHLJPOBDCIUAALOMT5GDM" Name="scheduleId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colFDCRWKPMJPOBDCIUAALOMT5GDM" Name="classGuid" ValType="21" Length="29" Precision="0" NotNull="true"/>
+      <Column Id="col5D6MV3QAFFGVTMVNH4JQCJUDSI" Name="execRoleGuids" ValType="221" Length="4000" Precision="0"/>
+      <Column Id="col7JDCGRXMJPOBDCIUAALOMT5GDM" Name="priority" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col33LE4YHMJPOBDCIUAALOMT5GDM" Name="priorityBoostingSpeed" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colYQWRAN7SK5GA3EGFI6TEPHYWL4" Name="expiredPolicy" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colOUMR2SR6ONCFXNV5Z7HRKETX4U" Name="scpName" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col3KGCFAFD3BEEDB6F3B5VKDFKMI" Name="systemId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colU6DGXRTARRBNPLA6PLNVYQCOVM" Name="startExecTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colDQSM4MYVNVDZJIYOCLNDQG3HWM" Name="finishExecTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colITNAQ6PMJPOBDCIUAALOMT5GDM" Name="lastExecTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colCPXFOPZCTFAZLBTSI3N2YRAZQM" Name="prevExecTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="col3Y2V4U6ZQ5AJRCY4AAORP72JFA" Name="faultMess" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colS2GMOWN56FG3ROKFDXV4TH3OHU" Name="execResults" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colSPQ7GFBANJFXBJRZTRXETWZFG4" Name="execToken" ValType="2" Length="18" Precision="0"/>
+      <Column Id="col3JBEZJEWOJG3TIZHOM2T2IQ6AQ" Name="finishedChildsCount" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colPT5IWXJ4O5AIPIYP3NSPZTDK54" Name="status" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colMX5YRN5VQBDXDENSJNDBHHMKPE" Name="selfCheckTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colN3YHDMKAUBATXCL5OSXE7ZU63Y" Name="isActualizableByRelatedJobs" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colRMH5P2FSTNABBMBNUIXU3AINEQ" Name="isActive" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colOGDESIMOTNGTHJH4B53GOIAQKU" Name="skipIfExecuting" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colWUT4YIFRL5CALJVFCEHD2GYJPY" Name="expectedDurationSec" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col2ELHAWP2QNCDBNTGVTIBLC65O4" Name="lastSchedulingTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colU3KMHGIYZFFCRGJML6HIXFWZQE" Name="selfCheckTimeMillis" ValType="2" Length="18" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" Name="EventSchdItem">
+    <Indexes>
+      <Index Id="idxZ3SDCSSEI3OBDCIOAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colJZOMAUCEI3OBDCIOAALOMT5GDM colPBSJNFSRI3OBDCIOAALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refI3UOQWCEI3OBDCIOAALOMT5GDM" Name="EventSchdItem=>EventSchd (scheduleId=>id)" ReferencedTableId="tblLSU45NKDI3OBDCIOAALOMT5GDM" ChildColumnNames="scheduleId"/>
+      <Reference Id="refUYHNVJSSI3OBDCIOAALOMT5GDM" Name="EventSchdItem=>Calendar (calendarId=>id)" ReferencedTableId="tblHC6VVBZ4I3OBDCIOAALOMT5GDM" ChildColumnNames="calendarId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colJZOMAUCEI3OBDCIOAALOMT5GDM" Name="scheduleId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colPBSJNFSRI3OBDCIOAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col2Y4Z3HSRI3OBDCIOAALOMT5GDM" Name="calendarId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colIINJLJ2RI3OBDCIOAALOMT5GDM" Name="repeatable" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="colVZL6POCRI3OBDCIOAALOMT5GDM" Name="startTime" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colQ2O2LSKRI3OBDCIOAALOMT5GDM" Name="endTime" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colR3BKZWCRI3OBDCIOAALOMT5GDM" Name="period" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colKDDQ37CRI3OBDCIOAALOMT5GDM" Name="eventTime" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colDZAPXPBYLNCCTL6KOAPGWDUSYE" Name="timeZoneRegion" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblZBS5MS2BI3OBDCIOAALOMT5GDM" Name="IntervalSchd">
+    <Indexes>
+      <Index Id="idxZBS5MS2BI3OBDCIOAALOMT5GDM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colDHYHOUSBI3OBDCIOAALOMT5GDM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refUCVUG5C5I3OBDCIOAALOMT5GDM" Name="IntervalSchd=>User (lastUpdateUser=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUser"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colDHYHOUSBI3OBDCIOAALOMT5GDM" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNWMQHAB6WVDX7FGU27A6QZ5B2E" Name="rid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colLKOV4ATWBFGENJOB6DZNQK3BRA" Name="guid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colMDJZRCCBI3OBDCIOAALOMT5GDM" Name="title" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colZBVMTD2BI3OBDCIOAALOMT5GDM" Name="notes" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colKCIYPFSBI3OBDCIOAALOMT5GDM" Name="lastUpdateTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col3DCWZJCBI3OBDCIOAALOMT5GDM" Name="lastUpdateUser" ValType="21" Length="250" Precision="0"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

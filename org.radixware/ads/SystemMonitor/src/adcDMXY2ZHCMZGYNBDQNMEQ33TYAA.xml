@@ -351,12 +351,63 @@ parameters.add(new </xsc:Java>
         </Sources>
       </Method>
       <Method Id="mthWNDIL2JLY5CVZJOPADHUANEZAE" Name="isReadonly" Nature="0" IsOverride="true">
-        <AccessRules/>
+        <AccessRules IsFinal="true"/>
         <ReturnType TypeId="401" extStr="boolean"/>
         <Sources>
           <Src>
             <xsc:Item>
               <xsc:Java>return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthY6ULZVZ3JZGM3F7NESUUPJCEHQ" Name="exportToXml" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final org.radixware.schemas.groupsettings.FilterParameters xmlParameters =
+    org.radixware.schemas.groupsettings.FilterParameters.Factory.newInstance();
+for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicIE3EW6PV3NH7VELFM2GPPPFESQ">
+                <xsc:Presentation>Explorer.Sqml::ISqmlParameter</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parameter : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcDMXY2ZHCMZGYNBDQNMEQ33TYAA mth76P2EFMW4ZGV3I5WHLIVPEJ3TA" Invoke="true">
+                <xsc:Presentation>getAll</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    org.radixware.kernel.common.client.meta.filters.RadFilterParamDef.writeToXml(parameter, xmlParameters);
+}
+return xmlParameters;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVEOG7PXM6FD7NJKKKIRE6AKUMU" Name="importFromXml" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="xml" Id="mprWR7VBAO3TJFPLP36TI6IJEYJVM">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mpr3CVWK5ICAFGI5M5RCK7BVG7UBY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>throw new UnsupportedOperationException("Not supported in this implementation.");</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

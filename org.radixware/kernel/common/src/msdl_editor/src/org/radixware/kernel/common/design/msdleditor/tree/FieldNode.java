@@ -12,7 +12,6 @@
 package org.radixware.kernel.common.design.msdleditor.tree;
 
 import javax.swing.JPanel;
-import org.radixware.kernel.common.defs.RadixObject.RenameListener;
 import org.radixware.kernel.common.msdl.MsdlField;
 import org.radixware.kernel.common.design.msdleditor.field.FieldPanel;
 import org.radixware.kernel.common.msdl.MsdlField.MsdlFieldStructureChangedEvent;
@@ -46,7 +45,7 @@ public class FieldNode extends ItemNode  implements MsdlFieldStructureChangedLis
 
     @Override
     public void onEvent(MsdlFieldStructureChangedEvent e) {
-        if (!e.nameOnly) {
+        if (e.getType() != MsdlFieldStructureChangedEvent.EType.NAME_ONLY) {
             FieldChildren fc = new FieldChildren(tree,fieldModel,this);
             setChildren(fc);
             fc.structureChanged();

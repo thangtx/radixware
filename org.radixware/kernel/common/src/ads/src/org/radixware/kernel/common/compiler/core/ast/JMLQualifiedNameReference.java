@@ -54,15 +54,18 @@ public class JMLQualifiedNameReference extends QualifiedNameReference implements
             RadixObjectLocator.RadixObjectData[] data = locator.take(sourceStart, end);
             if (data != null && data.length > 0) {
                 StringBuilder sb = new StringBuilder();
-
+                
+                int start = sourceStart;
                 for (RadixObjectLocator.RadixObjectData d : data) {
                     if (d.radixObject instanceof Jml.Tag) {
                         sb.append('`').append(((Jml.Tag) d.radixObject).getDisplayName()).append('`');
+                        start = d.end;
                     } else if (d.radixObject instanceof Scml.Text) {
                         String text = ((Scml.Text) d.radixObject).getText();
 
-                        int startOffset = d.convertSrcPosToObjectOffset(sourceStart);
+                        int startOffset = d.convertSrcPosToObjectOffset(start);
                         int endOffset = d.convertSrcPosToObjectOffset(end);
+                        startOffset = startOffset == d.start && start != sourceStart? 0 : startOffset;
                         if (startOffset > 0) {
                             text = text.substring(startOffset);
                         }
@@ -128,12 +131,13 @@ public class JMLQualifiedNameReference extends QualifiedNameReference implements
                 currentIndex++;
                 final Binding nextPackage = ((PackageBinding) binding).getTypeOrPackage(tokens[currentIndex]);
                 if (nextPackage == null || !nextPackage.isValidBinding()) {
+                    this.constant = Constant.NotAConstant;
                     if (nextPackage instanceof ProblemReferenceBinding) {
                         this.binding = nextPackage;
                         return this.resolvedType = reportError(scope);
                     }
                     this.binding = new ProblemReferenceBinding(this.tokens, null, ProblemReasons.NotFound);
-
+                    
                     return this.resolvedType = reportError(scope);
                 }
 

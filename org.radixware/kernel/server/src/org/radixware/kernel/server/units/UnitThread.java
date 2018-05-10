@@ -8,29 +8,32 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.units;
 
+import java.lang.management.ThreadInfo;
 import java.sql.Connection;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.trace.IRadixTrace;
-import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
-import org.radixware.kernel.server.trace.IServerThread;
+import org.radixware.kernel.common.enums.EInstanceThreadKind;
+import org.radixware.kernel.server.instance.InstanceThreadStateRecord;
+import org.radixware.kernel.server.jdbc.RadixConnection;
+import org.radixware.kernel.server.trace.ServerThread;
 
-public class UnitThread extends Thread implements IServerThread {
+public class UnitThread extends ServerThread {
 
-    private static final long DELAY_BEFORE_START_AFTER_FAILURE = 5000;
+    
     private final Unit unit;
-    private final LocalTracer localTracer;
-
+    private volatile boolean aborted = false;
+    
     UnitThread(final Unit unit) {
-        super();
+        super(unit.getFullTitle(), null, unit.getClass().getClassLoader(), unit.getTrace().newTracer(unit.getEventSource()));
         this.unit = unit;
-        setName(unit.getFullTitle());
-        setContextClassLoader(unit.getClass().getClassLoader());
-        localTracer = unit.getTrace().newTracer(unit.getEventSource());
+    }
+
+    public Unit getUnit() {
+        return unit;
     }
 
     @Override
@@ -41,11 +44,6 @@ public class UnitThread extends Thread implements IServerThread {
     @Override
     public IRadixTrace getTrace() {
         return unit.getTrace();
-    }
-
-    @Override
-    public LocalTracer getLocalTracer() {
-        return localTracer;
     }
 
     @Override
@@ -68,20 +66,23 @@ public class UnitThread extends Thread implements IServerThread {
         } finally {
             interrupted();
             try {
+                unit.setShutdownStarted();
                 unit.setState(UnitState.STOPPING, null);
                 unit.stopImpl();
             } catch (Throwable e) {
                 logExceptionOnStop(e);
             } finally {
                 try {
-                    unit.setState(UnitState.STOPPED, null);
-                    if (needPostponeBecauseStartImplReturnedFalse) {
-                        unit.postponeStart(Messages.UNABLE_TO_START_UNIT);
-                    } else if (!unit.isShutdownRequested() || unit.isPostponeStartAfterStopRequested()) {
-                        //an unexpected failure or intended interruption for postponed start
-                        unit.requestStopAndPostponedRestart(Messages.UNIT_THREAD_UNEXPECTED_STOP, System.currentTimeMillis() + DELAY_BEFORE_START_AFTER_FAILURE);
+                    if (!isAborted()) {
+                        unit.setState(UnitState.STOPPED, null);
+                        if (needPostponeBecauseStartImplReturnedFalse) {
+                            unit.postponeStart(Messages.UNABLE_TO_START_UNIT);
+                        } else if (!unit.isShutdownRequested() || unit.isPostponeStartAfterStopRequested()) {
+                            //an unexpected failure or intended interruption for postponed start
+                            unit.requestStopAndPostponedRestart(Messages.UNIT_THREAD_UNEXPECTED_STOP, System.currentTimeMillis() + Unit.DELAY_BEFORE_START_AFTER_FAILURE);
+                        }
+                        unit.setDbConnection(null);
                     }
-                    unit.setDbConnection(null);
                 } catch (Throwable e) {
                     logExceptionOnStop(e);
                 }
@@ -91,7 +92,24 @@ public class UnitThread extends Thread implements IServerThread {
     }
 
     private void logExceptionOnStop(Throwable e) {
-        final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
-        unit.getTrace().put(EEventSeverity.ERROR, Messages.ERR_ON_UNIT_STOP + exStack, Messages.MLS_ID_ERR_ON_UNIT_STOP, new ArrStr(unit.getFullTitle(), exStack), unit.getEventSource(), false);
+        if (!isAborted()) {
+            final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
+            unit.getTrace().put(EEventSeverity.ERROR, Messages.ERR_ON_UNIT_STOP + exStack, Messages.MLS_ID_ERR_ON_UNIT_STOP, new ArrStr(unit.getFullTitle(), exStack), unit.getEventSource(), false);
+        }
+    }
+
+    @Override
+    public boolean isAborted() {
+        return aborted;
+    }
+
+    public void setAborted(boolean aborted) {
+        this.aborted = aborted;
+        setName(getName() + "[aborted]");
+    }
+
+    @Override
+    public InstanceThreadStateRecord getThreadStateRecord(ThreadInfo threadInfo) {
+        return InstanceThreadStateRecord.createRecord(EInstanceThreadKind.UNIT, this, threadInfo, null, null, null, (RadixConnection) getConnection());
     }
 }

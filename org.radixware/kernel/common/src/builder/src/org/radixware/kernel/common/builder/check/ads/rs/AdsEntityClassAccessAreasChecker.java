@@ -34,6 +34,7 @@ import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.enums.EAccessAreaType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegistration;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 
@@ -80,6 +81,7 @@ public class AdsEntityClassAccessAreasChecker extends RadixObjectChecker<AdsEnti
                                     error(p, problemHandler, "Can not find referenced class");
                                 }
                             } else {
+                                ReleaseUtils.checkExprationRelease(p, prop, problemHandler);
                                 Definition head = family.findHead();
                                 if (head instanceof AdsEnumDef) {
                                     AdsType type = prop.getValue().getType().resolve(area.getOwnerClass()).get();

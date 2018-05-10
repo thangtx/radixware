@@ -56,7 +56,7 @@ public final class ClientValueFormatter {
             }
         }
         return result.toString();
-    }
+    }    
 
     public static String capitalizeIfNecessary(IClientEnvironment env, final String text) {
         return capitalizeIfNecessary(env.getLanguage(), text);
@@ -68,7 +68,7 @@ public final class ClientValueFormatter {
                 "before", "behind", "below", "beside", "between", "by", "down", "during", "except", "for", "from",
                 "in", "inside", "into", "like", "near", "of", "off", "on", "onto", "outside", "over", "past", "since", "through",
                 "to", "toward", "under", "underneath", "until", "up", "upon", "with", "within", "without");
-
+    
     public static String capitalizeIfNecessary(EIsoLanguage language, final String text) {
         if (language == EIsoLanguage.ENGLISH
                 && text != null && !text.isEmpty()) {
@@ -112,4 +112,60 @@ public final class ClientValueFormatter {
         }
         return text;
     }
+    
+    public static String decapitalizeIfNecessary(IClientEnvironment env, final String text) {
+        return decapitalizeIfNecessary(env.getLanguage(), text);
+    }    
+    
+    public static String decapitalizeIfNecessary(EIsoLanguage language, final String text) {
+        if (language == EIsoLanguage.ENGLISH && text != null && !text.isEmpty()) {
+
+            final StringBuffer result = new StringBuffer(32);
+            final StringBuffer wordBuffer = new StringBuffer(8);            
+            char currentChar;
+            boolean escape = false;
+            boolean ignore = false;
+            boolean firstWord = true;
+            boolean firstChar = true;
+            
+            for (int i = 0; i < text.length(); ++i) {
+                currentChar = text.charAt(i);
+                if (Character.isLetter(currentChar)){
+                    if (!firstChar && Character.isUpperCase(currentChar)){
+                        ignore = true;
+                    }
+                    firstChar = false;
+                    wordBuffer.append(currentChar);
+                }else{
+                    firstChar = true;
+                    if (wordBuffer.length()>0){
+                        final String word = wordBuffer.toString();                        
+                        if (firstWord || escape || ignore){
+                            result.append(word);
+                            firstWord = false;
+                            ignore = false;
+                        } else {
+                            result.append(word.substring(0, 1).toLowerCase());
+                            result.append(word.substring(1));                            
+                        }
+                        wordBuffer.setLength(0);
+                    }
+                    escape = i>0 && Character.isLetter(text.charAt(i-1)) && (currentChar=='\'' || currentChar=='`');                    
+                    result.append(currentChar);
+                }
+            }
+            if (wordBuffer.length()>0){
+                final String word = wordBuffer.toString();
+                if (firstWord || escape || ignore) {
+                    result.append(word);
+                } else {
+                    result.append(word.substring(0, 1).toLowerCase());
+                    result.append(word.substring(1));                            
+                }
+            }
+            return result.toString();
+        }
+        return text;
+    }
+    
 }

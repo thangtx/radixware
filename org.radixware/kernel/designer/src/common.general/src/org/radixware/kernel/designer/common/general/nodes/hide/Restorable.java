@@ -15,5 +15,6 @@ package org.radixware.kernel.designer.common.general.nodes.hide;
 public interface Restorable {
 
     void restore();
-
+    
+    void restore(boolean auto);
 }

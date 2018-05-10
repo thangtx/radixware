@@ -11,70 +11,48 @@
 
 package org.radixware.kernel.explorer.dialogs.trace;
 
-import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QWidget;
-import org.radixware.kernel.explorer.dialogs.ExplorerMessageBox;
-import org.radixware.kernel.explorer.env.Application;
+import org.radixware.kernel.common.client.IClientEnvironment;
 
 
-public class Finder{
+final class Finder extends AbstractFinder{
 
-    private SearchDialog searchDialog = null;
-
-    private final ITokenProvider tokenProvider;
+    private final ITokenProvider tokenProvider;    
     
-    public Finder(ITokenProvider tokenProvider) {
+    public Finder(final IClientEnvironment environment, final ITokenProvider tokenProvider) {
+        super(environment, (QWidget)tokenProvider);
         this.tokenProvider = tokenProvider;
     }
-    
-    public void showDialog() {
-        if (searchDialog == null) {
-            searchDialog = new SearchDialog((QWidget)tokenProvider);
-            searchDialog.find.connect(this, "find()");
-        }
-        searchDialog.show();
-    }
 
-    public void find() {
-        String searchString = searchDialog==null ? null : searchDialog.getSearchString();
-        if (searchString==null || searchString.isEmpty()){
-            showDialog();
+    @Override
+    protected boolean findNext(final IClientEnvironment environment, 
+                                        final String searchString, final boolean forward, final boolean caseSensitive) {
+        final String normalizedSearchString;
+        if (caseSensitive){
+            normalizedSearchString = searchString;
         }else{
-            if (!searchDialog.isCaseSensetive()) 
-                searchString = searchString.toLowerCase();
-            if (searchDialog.isForward()) {
-                while (tokenProvider.hasNextToken()) {
-                    IToken token = tokenProvider.getNextToken();
-                    String source = token.getValue();
-                    if (!searchDialog.isCaseSensetive())
-                        source = source.toLowerCase();
-                    int pos = source.indexOf(searchString);
-                    if (pos != -1) {
-                        token.select();
-                        return;
-                    }
-                }
-            } else {
-                while (tokenProvider.hasPrevToken()) {
-                    IToken token = tokenProvider.getPrevToken();
-                    String source = token.getValue();
-                    if (!searchDialog.isCaseSensetive())
-                        source = source.toLowerCase();
-                    int pos = source.indexOf(searchString);
-                    if (pos != -1) {
-                        token.select();
-                        return;
-                    }
-                }
-            }
-            QWidget parent;
-            if (searchDialog.isVisible())
-                parent = (QWidget)searchDialog;
-            else
-                parent = (QWidget)tokenProvider;
-            final String message = Application.translate("TraceDialog", "Could not find string \"%s\"");
-            ExplorerMessageBox.information(parent, Application.translate("TraceDialog", "Information"), String.format(message, searchString));
+            normalizedSearchString = searchString.toLowerCase(environment.getLocale());
         }
+        String source;
+        for (IToken token = getNextToken(forward); token!=null; token = getNextToken(forward)){
+            source = token.getValue();
+            if (!caseSensitive){
+                source = source.toLowerCase(environment.getLocale());
+            }
+            if (source.contains(normalizedSearchString)) {
+                token.select();
+                return true;
+            }            
+        }
+        showStringNotFoundMessage();
+        return false;
     }
     
+    private IToken getNextToken(final boolean forward){
+        if (forward ? tokenProvider.hasNextToken() : tokenProvider.hasPrevToken()){
+            return forward ? tokenProvider.getNextToken() : tokenProvider.getPrevToken();
+        }else{
+            return null;
+        }
+    }
 }

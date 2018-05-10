@@ -23,6 +23,7 @@ import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.aio.Event;
 import org.radixware.kernel.server.aio.EventDispatcher;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.units.AsyncEventHandlerUnit;
 import org.radixware.kernel.server.units.UnitView;
 
@@ -94,7 +95,7 @@ public class SnmpAgentUnit extends AsyncEventHandlerUnit {
     }
 
     @Override
-    protected void setDbConnection(Connection dbConnection) {
+    protected void setDbConnection(RadixConnection dbConnection) {
         super.setDbConnection(dbConnection);
         dbQueries.closeAll();
         if (sap != null) {

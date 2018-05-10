@@ -11,6 +11,7 @@
 package org.radixware.kernel.server.reports.fo;
 
 import javax.xml.stream.XMLStreamException;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportUtils;
 
 class FoBlockContainer extends FoObject {
 
@@ -141,7 +142,11 @@ class FoBlockContainer extends FoObject {
         // 0.1mm - default border size in radix
         // 5.0 / 2.83464567 - coefficient to convert 0.1mm into 0.5pt
         //value += " 0.5pt";//+toFopMm(thicknessMm * 5.0 / 2.83464567);
-        sb.append(" 0.5pt");
+        //sb.append(" " + Double.toString(thicknessMm * 2.83464567) + "pt");
+        sb.append(" ");
+        sb.append(thicknessMm);
+        sb.append("mm");
+        //sb.append(" 0.5pt");
         if (rgbColor != null) {
             sb.append(" ").append(rgbColor);
             //value += " " + rgbColor;  // w/o convert
@@ -173,6 +178,7 @@ class FoBlockContainer extends FoObject {
         String foValue = toFopMm(marginMm);
         writeAttribute("margin", foValue);
     }
+    
 
     public void setLeftMargin(double marginMm) throws XMLStreamException {
         String foValue = toFopMm(marginMm);

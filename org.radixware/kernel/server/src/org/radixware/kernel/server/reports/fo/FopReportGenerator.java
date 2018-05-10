@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.server.reports.fo;
 
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.AdjustedCell;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,14 +32,16 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
-import org.apache.fop.apps.FopFactoryConfig;
+import org.apache.fop.pdf.PDFEncryptionParams;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
+import org.radixware.kernel.common.enums.EPdfPrintSecurityOption;
 import org.radixware.kernel.common.enums.EReportExportFormat;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.server.reports.AbstractReportGenerator;
 import org.radixware.kernel.server.reports.DefaultReportFileController;
 import org.radixware.kernel.server.reports.IReportFileController;
+import org.radixware.kernel.server.reports.PdfSecurityOptions;
 import org.radixware.kernel.server.reports.ReportGenerationException;
 import org.radixware.kernel.server.reports.ReportStateInfo;
 import org.radixware.kernel.server.types.Report;
@@ -65,7 +68,7 @@ public class FopReportGenerator extends AbstractReportGenerator {
     }
 
     @Override
-    protected void viewBand(final List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents) throws ReportGenerationException {
+    protected void viewBand(final List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents, ReportGenData currentGenData) throws ReportGenerationException {
         throw new IllegalStateException();
     }
 
@@ -93,8 +96,12 @@ public class FopReportGenerator extends AbstractReportGenerator {
                 final OutputStream stream = new BufferedOutputStream(fout);
                 try {
                     final FoReportGenerator reportGenerator = new FoReportGenerator(report, format, guide);
-
+                    reportGenerator.setColumnsSettings(columnsSettings);
+                    
                     reportGenerator.generateReport(stream);
+                    for (File tmp : reportGenerator.getTemporaryFiles()) {
+                        addTmpFile(tmp);
+                    }
 
                     if (target != null) {
                         target.load(reportGenerator.getStateInfo());
@@ -114,8 +121,11 @@ public class FopReportGenerator extends AbstractReportGenerator {
         } catch (ReportGenerationException ex) {//IOException was catched earlier
             file.delete();
             throw ex;
-        } catch (IOException ex) {
+        } catch (Throwable ex) {
             file.delete();
+            if (ex instanceof RuntimeException) {
+                throw (RuntimeException) ex;
+            }
             throw new ReportGenerationException(ex);
         }
 
@@ -124,14 +134,8 @@ public class FopReportGenerator extends AbstractReportGenerator {
 
     private void generateDocument(File foFile, OutputStream outputStream) throws Throwable {
         final FOUserAgent foUserAgent = FoUserAgentFactory.getFoUserAgent(mimeFormat);
-        FopFactoryBuilder builder = new FopFactoryBuilder(new File(".").toURI());
-        builder.setComplexScriptFeatures(true);
-        builder.setSourceResolution(DEFAULT_REPORT_DPI);
-        builder.setTargetResolution(DEFAULT_REPORT_DPI);
-        builder.setConfiguration(FoUserAgentFactory.createConfiguration());
-        FopFactory factory = builder.build();
-
-        final Fop fop = factory.newFop(mimeFormat, foUserAgent, outputStream);
+        changeEncriptingParams(foUserAgent);
+        final Fop fop = foUserAgent.newFop(mimeFormat, outputStream);
         final Transformer transformer = TransformerFactory.newInstance().newTransformer();
         final SAXResult saxResult = new SAXResult(fop.getDefaultHandler());
         final FileInputStream fin = new java.io.FileInputStream(foFile);
@@ -165,6 +169,7 @@ public class FopReportGenerator extends AbstractReportGenerator {
             }
         }
         foFile.delete();
+        removeTmpFiles();
     }
 
     private static class FlushOnCloseOutputStream extends OutputStream {
@@ -217,10 +222,13 @@ public class FopReportGenerator extends AbstractReportGenerator {
             generateDocument(foTemporaryFile, flushOnCloseOutputStream);
         } catch (Throwable ex) {
             foTemporaryFile.deleteOnExit(); // 	RADIX-4699
+            if (ex instanceof RuntimeException) {
+                throw (RuntimeException) ex;
+            }
             throw new ReportGenerationException("FO file saved in '" + foTemporaryFile.getAbsolutePath() + "'.", ex);
+        } finally {
+            foTemporaryFile.delete();
         }
-
-        foTemporaryFile.delete();
     }
 
     private class InnerFileController extends DefaultReportFileController {
@@ -259,11 +267,12 @@ public class FopReportGenerator extends AbstractReportGenerator {
 
         @Override
         public void afterCloseFile(Report report, File file) throws ReportGenerationException {
-            if (!file.exists()) {//
+            if (!file.exists()) {
                 return;
             }
             final String finalFileName = delegate.adjustFileName(report, FileUtils.getFileBaseName(file));
-            final File fopFile = new File(getDirectory(), finalFileName);
+            final File parentDir = delegate.getDirectory() == null ? getDirectory() : delegate.getDirectory();
+            final File fopFile = new File(parentDir, finalFileName);
             try {
                 final FileOutputStream out = new FileOutputStream(fopFile);
                 delegate.afterCreateFile(report, fopFile, out);
@@ -273,7 +282,7 @@ public class FopReportGenerator extends AbstractReportGenerator {
                 out.close();
                 delegate.afterCloseFile(report, fopFile);
             } catch (Throwable ex) {
-                ex.printStackTrace();
+                throw new ReportGenerationException(ex);
             }
         }
 
@@ -286,12 +295,53 @@ public class FopReportGenerator extends AbstractReportGenerator {
 
         final ReportStateInfo stateInfo = getStateInfo().getSource();
         final FoReportGenerator reportGenerator = new FoReportGenerator(report, format, stateInfo);
+        reportGenerator.setColumnsSettings(columnsSettings);
+        reportGenerator.setResultSetInfo(getResultSetInfo());        
+        reportGenerator.setResultSetCacheSizeController(getResultSetCacheSizeController());
         reportGenerator.setSeparateFileGroupLevel(separateFileGroupNumber);
 
         reportGenerator.generateReport(foFileController);
 
         if (stateInfo == null) {
             getStateInfo().load(reportGenerator.getStateInfo());
+        }
+    }
+
+    public void changeEncriptingParams(FOUserAgent foUserAgent) {
+        PdfSecurityOptions pdfSecurityParams = report.getPdfSecurityOptions();
+        if (pdfSecurityParams != null) {
+            PDFEncryptionParams params = new PDFEncryptionParams();
+            String password = pdfSecurityParams.getOwnerPassword();
+            if (password != null) {
+                params.setOwnerPassword(password);
+            }
+            password = pdfSecurityParams.getUserPassword();
+            if (password != null) {
+                params.setUserPassword(password);
+            }
+            int encryptionLength = pdfSecurityParams.getEncryptionLength();
+            if (encryptionLength != PdfSecurityOptions.DEFAULT_ENCRIPTION_LENGHT) {
+                params.setEncryptionLengthInBits(encryptionLength);
+            }
+            EPdfPrintSecurityOption printOption = pdfSecurityParams.getAllowPrint();
+            if (printOption != null) {
+                switch (printOption) {
+                    case NO_PRINT:
+                        params.setAllowPrint(false);
+                    case ALLOW_PRINT_LQ:
+                        params.setAllowPrintHq(false);
+                }
+            }
+            params.setAllowCopyContent(pdfSecurityParams.isAllowCopyContent());
+            params.setAllowEditContent(pdfSecurityParams.isAllowEditContent());
+            params.setAllowEditAnnotations(pdfSecurityParams.isAllowEditAnnotations());
+            params.setAllowFillInForms(pdfSecurityParams.isAllowFillInForms());
+            params.setAllowAccessContent(pdfSecurityParams.isAllowAccessContent());
+            params.setAllowAssembleDocument(pdfSecurityParams.isAllowAssembleDocument());
+            params.setEncryptMetadata(pdfSecurityParams.isEncryptMetadata());
+            foUserAgent.getRendererOptions().put("encryption-params", params);
+        } else {
+            foUserAgent.getRendererOptions().remove("encryption-params");
         }
     }
 }

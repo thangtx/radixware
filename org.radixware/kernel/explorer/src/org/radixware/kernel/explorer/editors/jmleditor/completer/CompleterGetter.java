@@ -22,6 +22,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import org.radixware.kernel.common.builder.completion.CompletionProviderFactoryManager;
+import org.radixware.kernel.common.client.trace.ClientTracer;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
@@ -43,6 +44,7 @@ class CompleterGetter implements Callable<Map<String, HtmlCompletionItem>> {
     private static final int PROCESS_ITEMS_RATE = 250;
 
     private final CompleterProcessor completerProcessor;
+    private final ClientTracer trace;
     private Jml jml;
     private int scmlItemIndex;
     private int scmlItemOffset;
@@ -51,24 +53,26 @@ class CompleterGetter implements Callable<Map<String, HtmlCompletionItem>> {
     private int itemWidth = CompleterProcessor.INITIAL_COMPLETER_ITEM_SIZE;
     //private String prefix;
 
-    CompleterGetter(final CompleterProcessor completerProcessor, Jml jml, int info[], /*int caretOffset,*/ QFont font/*
-     * ,String prefix
-     */) {
+    CompleterGetter(final CompleterProcessor completerProcessor, Jml jml, int info[], /*int caretOffset,*/ QFont font, ClientTracer trace) {
         this.completerProcessor = completerProcessor;
         this.jml = jml;
         this.font = font;
         scmlItemIndex = info[0];
         scmlItemOffset = info[1];
+        this.trace = trace;
         //this.prefix=prefix;
     }
 
     private Scml.Item getPrevComplItem(RadixObjects<Scml.Item> items) {
-        if (items.get(scmlItemIndex) instanceof Scml.Text) {
-            String text = ((Scml.Text) items.get(scmlItemIndex)).getText();
-            text = text.trim();
-            if (!text.isEmpty() && (text.charAt(0) == '.' || text.charAt(0) == ':')) {
-                //if ((text.startsWith(".")) || (text.startsWith(":"))) {
-                return items.get(scmlItemIndex - 1);
+        if (0 < scmlItemIndex && items.get(scmlItemIndex) instanceof Scml.Text) {
+            final String text = ((Scml.Text) items.get(scmlItemIndex)).getText();
+            final int offsetPos =  scmlItemOffset >= 1 ? scmlItemOffset - 1 : 0;
+            final String textBeforeOffset = text.substring(0, offsetPos);
+            if (!textBeforeOffset.contains(";")) {
+                final String textAfterOffset = text.substring(offsetPos);
+                if (!textAfterOffset.isEmpty() && (textAfterOffset.charAt(0) == '.' || textAfterOffset.charAt(0) == ':')) {
+                    return items.get(scmlItemIndex - 1);
+                }
             }
         }
         return null;
@@ -76,6 +80,7 @@ class CompleterGetter implements Callable<Map<String, HtmlCompletionItem>> {
 
     @Override
     public Map<String, HtmlCompletionItem> call() throws Exception {
+        final long t0 = System.currentTimeMillis();
         List<CompletionItem> resultItems = new ArrayList<>();
         RadixObjects<Scml.Item> items = jml.getItems();
         if (scmlItemIndex >= 0 && items.size() > scmlItemIndex) {
@@ -93,10 +98,12 @@ class CompleterGetter implements Callable<Map<String, HtmlCompletionItem>> {
             }
             CompletionProviderFactory factory = CompletionProviderFactoryManager.getInstance().first(jml);
             org.radixware.kernel.common.scml.ScmlCompletionProvider provider = factory.findCompletionProvider(item);
-            if (provider != null) {
-                provider.complete(scmlItemOffset, new ScmlCompletionRequestor(resultItems));
+            if (provider != null && completerProcessor != null) {
+                provider.complete(scmlItemOffset, completerProcessor.createRequestorWrapper(new ScmlCompletionRequestor(resultItems)));
             }
         }
+        final long compilerTime = System.currentTimeMillis() - t0;
+                
         LinkedHashMap<String, HtmlCompletionItem> resMap = new LinkedHashMap<>();
 
         if (!resultItems.isEmpty()) {
@@ -159,9 +166,12 @@ class CompleterGetter implements Callable<Map<String, HtmlCompletionItem>> {
                 HtmlCompletionItem item = htmlCompletionItemList.get(index);
                 resMap.put(item.getPlainText(), item);
             }
-
+            
             prevComplItem = getPrevComplItem(items);
         }
+        
+        final long totalTime = System.currentTimeMillis() - t0;
+        trace.debug(String.format("JmlEditor. Calculated %d completion items for %d ms (%d ms for compiler)", resultItems.size(), totalTime, compilerTime));
         if (completerProcessor != null) {
             QApplication.postEvent(completerProcessor, new CompleterProcessor.ExposeCompleterEvent(resMap, itemWidth, prevComplItem));
         }

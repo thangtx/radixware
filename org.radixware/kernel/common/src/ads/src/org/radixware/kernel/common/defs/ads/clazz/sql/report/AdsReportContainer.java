@@ -19,6 +19,7 @@ import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.enums.EReportLayout;
+import org.radixware.kernel.common.types.Id;
 
 
 class AdsReportContainer extends RadixObject{
@@ -158,27 +159,53 @@ class AdsReportContainer extends RadixObject{
         }
 
         @Override
-        protected void onModified() {
+        protected void onRemove(AdsReportWidget object) {
+            final AdsReportForm.ChangedEvent changedEvent = new AdsReportForm.ChangedEvent(object, AdsReportForm.ChangedEvent.ChangeEventType.REMOVE);
+            fireEvent(changedEvent);
+        }
+
+        @Override
+        protected void onAdd(AdsReportWidget object) {
+            if (object.isNewStyle()) {
+                AdsReportDefaultStyle.setDefaultWidgetStyle(object);
+            }
+            final AdsReportForm.ChangedEvent changedEvent = new AdsReportForm.ChangedEvent(object, AdsReportForm.ChangedEvent.ChangeEventType.ADD);
+            fireEvent(changedEvent);
+        }
+        
+        void fireEvent(AdsReportForm.ChangedEvent changedEvent) {
             final AdsReportContainer container = (AdsReportContainer) getContainer();
             if (container != null) {
-                container.onModified();
+                container.fireEvent(changedEvent);
             }
         }
     }
     
      @Override
-     protected void onModified() {           
-        if (getContainer() instanceof IReportWidgetContainer) {
-             final IReportWidgetContainer container = (IReportWidgetContainer)getContainer();
-             if(container.getOwnerForm()!=null)
-                container.getOwnerForm().onModified();
+     protected void onModified() {
+        final AdsReportForm.ChangedEvent changedEvent = new AdsReportForm.ChangedEvent(this, AdsReportForm.ChangedEvent.ChangeEventType.NONE);
+        fireEvent(changedEvent);
+    }
+        
+
+    void fireEvent(AdsReportForm.ChangedEvent changedEvent) {
+        final IReportWidgetContainer container = (IReportWidgetContainer) getContainer();
+        if (container.getOwnerForm() != null) {
+            container.getOwnerForm().fireEvent(changedEvent);
         }
-     }
-     
-   /*  @Override
-    public void collectDependences(List<Definition> list) {
-         for(AdsReportWidget w:reportWidgets){
-             w.collectDependences(list);                  
-         }
-    }*/    
+    }
+    
+    public AdsReportWidget findWidgetById(Id widgetId) {
+        for (AdsReportWidget widget : reportWidgets) {                        
+            if(widget instanceof AdsReportWidgetContainer) {
+                ((AdsReportWidgetContainer) widget).findWidgetById(widgetId);
+            } else if(widget instanceof AdsReportCell) {
+                AdsReportCell cell = (AdsReportCell) widget;
+                if (cell.getId() == widgetId) {
+                    return widget;
+                }
+            }
+        }
+        return null;
+    }
 }

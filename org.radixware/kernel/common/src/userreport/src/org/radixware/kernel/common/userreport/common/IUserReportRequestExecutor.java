@@ -108,4 +108,6 @@ public interface IUserReportRequestExecutor {
     boolean removeVersion(final UserReport.ReportVersion version, final Id reportId);
     
     void executeTask(final Runnable task);
+    
+    boolean messageConfirmation(final String message);
 }

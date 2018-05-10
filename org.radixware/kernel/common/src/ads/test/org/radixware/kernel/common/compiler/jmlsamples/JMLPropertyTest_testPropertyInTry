@@ -1,0 +1,21 @@
+
+class TestPublicProperty {
+
+    public Long getProp() throws Exception {
+	return null;
+    }
+
+    public void setProp(Long l) {
+    }
+}
+
+class Test {
+
+    static public void main(String[] args) {
+	TestPublicProperty t = new TestPublicProperty();
+	try {
+	    Long p = t.Prop;
+	} catch (Exception e) {
+	}
+    }
+}

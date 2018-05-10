@@ -64,6 +64,8 @@ import org.radixware.kernel.designer.ads.localization.RowString;
 import org.radixware.kernel.designer.ads.localization.dialog.FiltersDialog;
 import org.radixware.kernel.designer.ads.localization.dialog.StatisticsPanel;
 import org.radixware.kernel.designer.ads.localization.dialog.ViewHtmlDialog;
+import org.radixware.kernel.designer.ads.localization.merge.LocalizingStringMergeAction;
+import org.radixware.kernel.designer.ads.localization.merge.LocalizingStringMergeOptions;
 import org.radixware.kernel.designer.common.dialogs.RadixWareDesignerIcon;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinition;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
@@ -84,6 +86,8 @@ public class ToolBarUi {
     private JButton btnAddToPhraseBook;
     private JButton btnViewHtml;
     private JButton xlsExporer;
+    private JButton xlsImporter;
+    private JButton localizationExporer;
     private JToggleButton btnShowFilters;
     private JTextField textSearch;
     private NavigationToolBarUi navigateToolBarUi;
@@ -155,12 +159,13 @@ public class ToolBarUi {
             }
         };
         
-        icon = RadixWareDesignerIcon.EDIT.EDIT.getIcon(20);
+        icon = RadixWareIcons.MLSTRING_EDITOR.EXPORT_STR.getIcon(20);
         final Action actViewXLSExporer = new AbstractAction("XLS Explorer", icon) {
             @Override
             public void actionPerformed(final ActionEvent evt) {
-                Map<Layer, List<Module>> selected = panel.getLayersAndModules();
-                final Mls2XlsOptionsPanel optionsPanel = new Mls2XlsOptionsPanel(selected.keySet());
+                Map<Layer, List<Module>> selected = panel.getSelectedLayers();
+                Branch branch = RadixFileUtil.getOpenedBranches().iterator().next();
+                final Mls2XlsOptionsPanel optionsPanel = new Mls2XlsOptionsPanel(branch, selected);
                 ModalDisplayer options = new ModalDisplayer(optionsPanel, "Options");
                 if (options.showModal()) {
                     optionsPanel.save();
@@ -168,7 +173,7 @@ public class ToolBarUi {
 
                         @Override
                         public void run() {
-                            Mls2XlsExporter mls2XlsExporter =  new Mls2XlsExporter(optionsPanel.getBranch(), optionsPanel.getSelectedLayers(), optionsPanel.getFromDate(), optionsPanel.getToDate(), optionsPanel.getLastModifiedAuthor());
+                            Mls2XlsExporter mls2XlsExporter =  new Mls2XlsExporter(optionsPanel.getBranch(), optionsPanel.getSelectedLayers(), optionsPanel.getFromDate(), optionsPanel.getToDate(), optionsPanel.getLastModifiedAuthor(), optionsPanel.getStrinsType());
                             try {
                                 mls2XlsExporter.doExport(optionsPanel.getOutputFile());
                             } catch (IOException ex) {
@@ -263,6 +268,14 @@ public class ToolBarUi {
         xlsExporer = new JButton(actViewXLSExporer);
         tooltip = NbBundle.getMessage(ToolBarUi.class, "EXPORT_XLS");
         setButton(xlsExporer, tooltip);
+        
+        xlsImporter = new JButton(new XLSImporterAction(panel));
+        tooltip = NbBundle.getMessage(ToolBarUi.class, "IMPORT_XLS");
+        setButton(xlsImporter, tooltip);
+        
+        localizationExporer = new JButton(new LocalizingStringMergeAction(panel));
+        tooltip = NbBundle.getMessage(ToolBarUi.class, "EXPORT_LOCALIZATION");
+        setButton(localizationExporer, tooltip);
         toolBar.addSeparator();
     }
 
@@ -355,8 +368,7 @@ public class ToolBarUi {
                 
                 if ((definition instanceof AdsDefinition)
                         && (((AdsDefinition) radixObject).getDefinitionType() != EDefType.IMAGE)
-                        && (((AdsDefinition) radixObject).getDefinitionType() != EDefType.LOCALIZING_BUNDLE)
-                        && ((AdsDefinition) radixObject).getDefinitionType() != EDefType.XML_SCHEME){
+                        && (((AdsDefinition) radixObject).getDefinitionType() != EDefType.LOCALIZING_BUNDLE)) {
                     return ((AdsDefinition) radixObject).isTopLevelDefinition();
                 }
             }

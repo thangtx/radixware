@@ -30,6 +30,7 @@ import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.RadixObjectsUtils;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.designer.ads.common.sql.AdsSqlClassVisitorProviderFactory;
 import org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
@@ -112,16 +113,21 @@ class AdsReportPropertyCellEditor extends JPanel {
             public void stateChanged(final ChangeEvent e) {
                 if (!updating) {
                     final AdsReportPropertyCell propCell = AdsReportPropertyCellEditor.this.cell;
-                    propCell.setPropertyId(fieldEditor.getDefinitionId());
+                    Id id = propCell.getPropertyId();
+                    Id newId = fieldEditor.getDefinitionId();
+                    propCell.setPropertyId(newId); 
                     final AdsPropertyDef propertyDef = propCell.findProperty();
                     AdsTypeDeclaration type = null;
-                    if (propertyDef != null) {
+                    if (propertyDef != null) {          
                         type = propertyDef.getValue().getType();
                     }
                     if (type != null) {
                         propCell.getFormat().setUseDefaultFormat(true);
                         AdsReportPropertyCellEditor.this.formatPanel.open(propCell.getFormat(), type.getTypeId());
                     }
+                    if (!Utils.equals(id, newId)){
+                        firePropertyChange(AdsReportWidgetNamePanel.CHANGE_NAME, false, true);
+                    }               
                 }
             }
         });

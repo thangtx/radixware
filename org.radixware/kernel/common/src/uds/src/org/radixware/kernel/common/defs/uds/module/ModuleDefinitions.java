@@ -13,9 +13,10 @@ package org.radixware.kernel.common.defs.uds.module;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
+import org.radixware.kernel.common.defs.ads.localization.IAdsLocalizedDef;
+import org.radixware.kernel.common.defs.uds.IInnerLocalizingDef;
 import org.radixware.kernel.common.defs.uds.UdsDefinition;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
@@ -121,6 +122,12 @@ public class ModuleDefinitions extends org.radixware.kernel.common.defs.ads.modu
             super.save(def, mode);
         }
     }
+
+    @Override
+    public void savePreview(AdsDefinition def) {
+    }
+    
+    
 
     @Override
     protected AdsDefinition loadFromRepository(IRepositoryAdsDefinition definitionRepository) throws IOException {
@@ -242,4 +249,14 @@ public class ModuleDefinitions extends org.radixware.kernel.common.defs.ads.modu
     public UdsModule getModule() {
         return (UdsModule) super.getModule();
     }
+
+    @Override
+    public AdsLocalizingBundleDef findLocalizingBundleDef(IAdsLocalizedDef owner, boolean createIfNotExists) {
+        if (owner instanceof IInnerLocalizingDef) {
+            return ((IInnerLocalizingDef)owner).findLocalizingBundleImpl(createIfNotExists);
+        }
+        return super.findLocalizingBundleDef(owner, createIfNotExists);
+    }
+    
+    
 }

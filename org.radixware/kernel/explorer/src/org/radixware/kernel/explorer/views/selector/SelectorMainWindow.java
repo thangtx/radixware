@@ -12,16 +12,20 @@
 package org.radixware.kernel.explorer.views.selector;
 
 import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.QEventFilter;
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QFocusEvent;
-import com.trolltech.qt.gui.QResizeEvent;
+import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QShowEvent;
 import com.trolltech.qt.gui.QSizePolicy;
+import com.trolltech.qt.gui.QStackedWidget;
 import com.trolltech.qt.gui.QToolBar;
+import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
+import java.util.EnumSet;
+import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.errors.CantOpenSelectorError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.exceptions.CommonFilterIsObsoleteException;
@@ -32,12 +36,13 @@ import org.radixware.kernel.common.client.models.FilterModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.IContext;
 import org.radixware.kernel.common.client.models.groupsettings.FilterSettingsStorage;
+import org.radixware.kernel.common.client.views.IFilterParametersView;
 import org.radixware.kernel.common.client.views.ISelector.ISelectorMainWindow;
 import org.radixware.kernel.common.client.widgets.actions.IToolBar;
 import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.views.MainWindow;
@@ -47,20 +52,40 @@ import org.radixware.kernel.explorer.widgets.selector.IExplorerSelectorWidget;
 
 
 class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
-
+    
+    private static enum State {SELECTOR_CONTENT, FILTER_PARAMS};
+    
     private final Splitter splitter;
     private final QWidget centralWidget;
     private final ExplorerWidget content;
+    private final QStackedWidget contentHolder;    
     private final Selector selector;
     private final FilterSettingsStorage filterSettings;
-    private FilterAndOrderToolBar filterAndOrderToolbar;
-    private QSize currentSizeHint, currentMinimumSizeHint;
+    private final QEventFilter layoutEventListener = new QEventFilter(this){
+        @Override
+        public boolean eventFilter(final QObject target, final QEvent event) {
+            if (SelectorMainWindow.this.state==State.FILTER_PARAMS){
+                SelectorMainWindow.this.scheduleUpdateFilterAndOrderToolbarHeight();
+            }
+            return false;
+        }
+    };
+    private FilterAndOrderToolBar filterAndOrderToolbar;    
+    private int currentHeightHint = -1;
+    private int currentMinimumHeightHint = -1;
     private FilterModel initialFilter;
     private RadSortingDef initialSorting;
-    private boolean updateToolBarHeightScheduled = false;
+    private int initialFilterToolBarHeight = -1;
+    private int storedFilterToolBarHeight = -1;
+    private State state;
+    private boolean wasShown;
+    private boolean filterParamsCollapsedAfterCreation;
+    private boolean updateToolBarHeightScheduled;
+    private boolean toolbarCreated;
+    private boolean toolbarVisibleAfterCreation;
 
     @Override
-    public void addToolBar(IToolBar toolBar) {
+    public void addToolBar(final IToolBar toolBar) {
         if (toolBar instanceof QToolBar) {
             addToolBar((QToolBar) toolBar);
         }
@@ -80,19 +105,20 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
         public CreateToolBarEvent(final GroupModel group){
             super(QEvent.Type.User);
             this.group = group;
-        }
-        
-        
+        }                
     }
     
     public void prepareFilterAndOrderToolbar(final GroupModel group){
-        QApplication.postEvent(this, new CreateToolBarEvent(group));
+        if (!toolbarCreated){
+            QApplication.postEvent(this, new CreateToolBarEvent(group));
+        }
     }
 
     public SelectorMainWindow(final Selector ownerSelector) {
         super(ownerSelector);
         setObjectName("selector_main_window");
         this.selector = ownerSelector;
+        layoutEventListener.setProcessableEventTypes(EnumSet.of(QEvent.Type.LayoutRequest));
         filterSettings = selector.getEnvironment().getFilterSettingsStorage();
 
         setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
@@ -101,7 +127,7 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
         centralWidget = new QWidget(this) {
 
             @Override
-            protected void focusInEvent(QFocusEvent event) {
+            protected void focusInEvent(final QFocusEvent event) {
                 super.focusInEvent(event);
                 if (selector.isDisabled() && filterAndOrderToolbar != null) {
                     filterAndOrderToolbar.setFocus();
@@ -117,11 +143,15 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
         splitter = new Splitter(centralWidget, (ExplorerSettings) selector.getEnvironment().getConfigStore());
         splitter.setOrientation(Qt.Orientation.Vertical);
         centralWidget.layout().addWidget(splitter);
+        splitter.onIllegalMove.connect(this, "onSplitterIllegalMove(int, int)");
+        
+        contentHolder = new QStackedWidget();
+        contentHolder.setObjectName("selector_content_stacked_widget");
 
-        content = new ExplorerWidget(ownerSelector.getEnvironment(), splitter) {
+        content = new ExplorerWidget(ownerSelector.getEnvironment(), (QWidget)null) {
 
             @Override
-            protected void focusInEvent(QFocusEvent event) {
+            protected void focusInEvent(final QFocusEvent event) {
                 super.focusInEvent(event);
                 if (selector.getSelectorWidget() != null && ((IExplorerSelectorWidget) selector.getSelectorWidget()).asQWidget() != null) {
                     ((IExplorerSelectorWidget) selector.getSelectorWidget()).asQWidget().setFocus();
@@ -129,13 +159,28 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
             }
         };
         content.setObjectName("selector_content_widget");
-
-        splitter.addWidget(content);
+        
+        contentHolder.addWidget(content);
+        
+        final QWidget wdgApplyFilter = new QWidget();
+        wdgApplyFilter.setObjectName("selector_apply_filter_widget");
+        final QVBoxLayout layout = new QVBoxLayout(wdgApplyFilter);
+        layout.setAlignment(new Qt.Alignment(Qt.AlignmentFlag.AlignTop,Qt.AlignmentFlag.AlignHCenter));
+        final QPushButton pbApplyFilter = new QPushButton(wdgApplyFilter);
+        pbApplyFilter.setObjectName("selector_apply_filter_button");
+        pbApplyFilter.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed);
+        pbApplyFilter.setText(selector.getEnvironment().getMessageProvider().translate("Selector", "Apply Filter"));
+        pbApplyFilter.setIcon(ExplorerIcon.getQIcon(ClientIcon.Dialog.BUTTON_OK));
+        pbApplyFilter.clicked.connect(this,"applyFilterAndOrderChanges()");
+        layout.addWidget(pbApplyFilter);
+        contentHolder.addWidget(wdgApplyFilter);
+        
+        splitter.addWidget(contentHolder);
         setCentralWidget(centralWidget);
     }
 
     @Override
-    protected void focusInEvent(QFocusEvent event) {
+    protected void focusInEvent(final QFocusEvent event) {
         super.focusInEvent(event);
         if (centralWidget != null) {
             centralWidget.setFocus();
@@ -143,27 +188,29 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
     }
 
     private void createFilterAndOrderToolbar(final GroupModel group) {
-        if (filterAndOrderToolbar==null){
-            filterAndOrderToolbar = new FilterAndOrderToolBar(group.getEnvironment(), splitter, group, initialFilter, initialSorting);        
-            //filterAndOrderToolbar.refresh();
-            initialFilter = null;
-            initialSorting = null;
+        if (!toolbarCreated){
+            toolbarCreated = true;
+            filterAndOrderToolbar = new FilterAndOrderToolBar(group.getEnvironment(), splitter, group, initialFilter, initialSorting);
             filterAndOrderToolbar.setObjectName("filters_and_order_toolbar");
             splitter.insertWidget(0, filterAndOrderToolbar);
 
             splitter.setCollapsible(0, false);
             splitter.setCollapsible(1, false);
-            if (!isAnyFilter()) {
+            splitter.setStretchFactor(0, 0);
+            splitter.setStretchFactor(1, 1);
+            if (!isAnyFilter() && !toolbarVisibleAfterCreation) {
                 filterAndOrderToolbar.setVisible(false);
             }
-            filterAndOrderToolbar.onFilterSelected.connect(this,
-                    "scheduleUpdateFilterAndOrderToolbarHeight()");
+            filterAndOrderToolbar.onFilterSelected.connect(this, "scheduleUpdateFilterAndOrderToolbarHeight()");            
+            filterAndOrderToolbar.filterParamsExpanded.connect(this, "updateFilterAndOrderToolbarHeightForcedly()");
+            filterAndOrderToolbar.filterParamsCollapsed.connect(this, "scheduleUpdateFilterAndOrderToolbarHeight()");
+            if (filterParamsCollapsedAfterCreation && collapseFilterParams()){
+                filterParamsCollapsedAfterCreation = false;
+            }
+            installEventFilter(layoutEventListener);
         }
     }
     
-    private final static QCursor SPLITTER_CURSOR = new QCursor(Qt.CursorShape.SplitVCursor);
-    private final static QCursor APP_CURSOR = new QCursor(Qt.CursorShape.ArrowCursor);
-
     private void scheduleUpdateFilterAndOrderToolbarHeight() {
         if (!updateToolBarHeightScheduled){
             updateToolBarHeightScheduled = true;
@@ -172,11 +219,13 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
     }
 
     @Override
-    protected void customEvent(QEvent event) {
+    protected void customEvent(final QEvent event) {
         if (event instanceof UpdateToolBarHeightEvent) {
             event.accept();
-            updateToolBarHeightScheduled = false;
-            updateFilterAndOrderToolbarHeight();            
+            if (updateToolBarHeightScheduled){
+                updateToolBarHeightScheduled = false;
+                updateFilterAndOrderToolbarHeight();
+            }
         }else if (event instanceof CreateToolBarEvent){
             event.accept();
             createFilterAndOrderToolbar(((CreateToolBarEvent)event).group);
@@ -186,66 +235,33 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
 
     private void updateFilterAndOrderToolbarHeight() {
         if (filterAndOrderToolbar != null && filterAndOrderToolbar.nativeId() != 0
-                && (!Utils.equals(currentSizeHint, filterAndOrderToolbar.sizeHint())
-                || !Utils.equals(currentMinimumSizeHint, filterAndOrderToolbar.minimumSizeHint()))) {
-            currentSizeHint = filterAndOrderToolbar.sizeHint();
-            currentMinimumSizeHint = filterAndOrderToolbar.minimumSizeHint();
-            final int height = filterAndOrderToolbar.sizeHint().height();
-            final int minimumHeight = filterAndOrderToolbar.minimumSizeHint().height();
-            final int maxHeight = Math.max(height, minimumHeight);
-            filterAndOrderToolbar.setMaximumHeight(maxHeight);
-            splitter.moveToPosition(maxHeight);
-            filterAndOrderToolbar.repaint();
-            final int minHeight = Math.min(height, minimumHeight);
-            if (height == minHeight) {
-                splitter.handle(0).setCursor(APP_CURSOR);
-            } else {
-                splitter.handle(0).setCursor(SPLITTER_CURSOR);
+                && (currentHeightHint!=filterAndOrderToolbar.sizeHint().height()
+                       || currentMinimumHeightHint!=filterAndOrderToolbar.minimumSizeHint().height())) {            
+            currentMinimumHeightHint = filterAndOrderToolbar.minimumSizeHint().height();
+            currentHeightHint = filterAndOrderToolbar.sizeHint().height();
+            final int height;
+            if (initialFilterToolBarHeight>0){
+                height = Math.min(initialFilterToolBarHeight, filterAndOrderToolbar.sizeHint().height());
+            }else{
+                height = filterAndOrderToolbar.sizeHint().height();
             }
-
+            filterAndOrderToolbar.setMaximumHeight(Math.max(currentHeightHint, currentMinimumHeightHint));
+            splitter.moveToPosition(Math.max(height, currentMinimumHeightHint));
+            filterAndOrderToolbar.repaint();
             scheduleUpdateFilterAndOrderToolbarHeight();
+        }else{
+            initialFilterToolBarHeight = -1;
         }
     }
-    private boolean wasShown;
 
     @Override
-    protected void showEvent(QShowEvent event) {
+    protected void showEvent(final QShowEvent event) {
         super.showEvent(event);
         if (!wasShown) {
             if (filterAndOrderToolbar != null) {
                 scheduleUpdateFilterAndOrderToolbarHeight();
             }
             wasShown = true;
-        }
-
-    }
-
-    @Override
-    public boolean event(QEvent event) {
-        if (event.type() == QEvent.Type.LayoutRequest) {
-            scheduleUpdateFilterAndOrderToolbarHeight();
-        }
-        return super.event(event);
-    }
-
-    @Override
-    protected void resizeEvent(QResizeEvent event) {
-        super.resizeEvent(event);
-        if (filterAndOrderToolbar != null
-                && filterAndOrderToolbar.getCurrentFilter() != null
-                && event.oldSize().width() != event.size().width()) {
-
-            final int height = filterAndOrderToolbar.sizeHint().height();
-            final int minHeight = Math.min(height, filterAndOrderToolbar.minimumSizeHint().height());
-            final int maxHeight = Math.max(height, filterAndOrderToolbar.minimumSizeHint().height());
-            filterAndOrderToolbar.setMaximumHeight(maxHeight);
-
-            if (height == minHeight) {
-                splitter.handle(0).setCursor(APP_CURSOR);
-            } else {
-                splitter.handle(0).setCursor(SPLITTER_CURSOR);
-            }
-
         }
     }
 
@@ -265,6 +281,9 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
             return false;
         }
         if (filterAndOrderToolbar == null) {
+            if (group.getCurrentFilter()!=null){
+                return true;
+            }            
             //read in config
             if (filterSettings.isFilterSettingsStored(group)) {
                 final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(group);
@@ -286,10 +305,10 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
 
     @Override
     public void applyFilterAndOrderChanges() {
-        if (filterAndOrderToolbar!=null)
+        if (filterAndOrderToolbar!=null){
             filterAndOrderToolbar.applyChanges();
-    }   
-    
+        }
+    }       
 
     @Override
     public final void updateFilterAndOrderToolbarVisible(final boolean isVisible) {
@@ -307,10 +326,13 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
             if (!someGroupSettingCanBeChoosen) {
                 return;
             }
-
+            
             createFilterAndOrderToolbar(group);
-
-            filterAndOrderToolbar.setVisible(true);
+            if (filterAndOrderToolbar==null){
+                toolbarVisibleAfterCreation = true;
+            }else{
+                filterAndOrderToolbar.setVisible(true);
+                }
 
         } else {
             if (filterAndOrderToolbar != null
@@ -335,8 +357,11 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
     @Override
     public final boolean isInitialFilterNeedToBeApplyed() {
         final GroupModel group = getGroupModel();
-        if (filterAndOrderToolbar == null || group.getView()==null) {
-            return group != null && initialFilter != null && group.getCurrentFilter() == null;
+        if (group==null){
+            return false;
+        }
+        if (filterAndOrderToolbar == null || group.getView()==null) {//while group.getView() is null refresh of FilterAndOrderToolbar do nothing and result of filterAndOrderToolbar.getCurrentFilter() may be not actualized
+            return initialFilter != null && group.getCurrentFilter() == null;
         } else {
             return filterAndOrderToolbar.getCurrentFilter() != group.getCurrentFilter()
                     && !filterAndOrderToolbar.filterWasApplied();
@@ -345,6 +370,8 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
 
     @Override
     public boolean setupInitialFilterAndSorting() throws InterruptedException { 
+        initialFilter = null;
+        initialSorting = null;        
         final GroupModel group = getGroupModel();
         if (group == null) {
             return false;
@@ -356,9 +383,13 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
         else{
             lastUsedSortingId = null;
         }
-        try{            
-            return setupInitialFilter(lastUsedSortingId) //find and apply initial filter with last used sorting
-                   || setupInitialSorting(lastUsedSortingId);
+        try{
+            final boolean result = setupInitialFilter(lastUsedSortingId) //find and apply initial filter with last used sorting                            
+                                             || setupInitialSorting(lastUsedSortingId);
+            if (isInitialFilterNeedToBeApplyed()){
+                createFilterAndOrderToolbar(group);
+            }
+            return result;
         }        
         catch(ServiceClientException exception){
             throw new CantOpenSelectorError(group, exception);
@@ -369,8 +400,8 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
         final RadSortingDef sorting = getSortingForFilter(null, lastUsedSortingId);
         if (sorting!=null && sorting.isValid()){
             final GroupModel group = getGroupModel();
-            try{
-                group.setSorting(sorting);
+            try{                
+                group.setSorting(sorting);                
                 initialSorting = sorting;
                 return true;
             }
@@ -389,30 +420,32 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
         final boolean isContextFilterDefined;
         if (group.getContext() instanceof IContext.TableSelect){
             final IContext.TableSelect context = (IContext.TableSelect)group.getContext();
-            isContextFilterDefined = context.getFilter()!=null;
+            isContextFilterDefined = !context.getFilters().isEmpty();
         }else{
             isContextFilterDefined = false;
         }
-        final FilterModel defaultFilter = isContextFilterDefined ? null : group.getFilters().getDefaultFilter();        
         final FilterModel firstPredefined = isContextFilterDefined ? null : group.getFilters().getFirstPredefined();        
         if (filterSettings.isFilterSettingsStored(group)) {
             final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(group);
             final Id lastFilterId = settings.getLastFilterId();
             final Id lastSortingId = settings.getLastSortingId();
             if (lastFilterId != null) {
-                if (setStoredFilterAndSorting(lastFilterId,lastSortingId)) {
+                FilterModel defaultFilter = group.getFilters().getDefaultFilter(lastFilterId, !isContextFilterDefined);    //В тесте вместо default filter - invalid            
+                if (defaultFilter!=null && defaultFilter.getId().equals(lastFilterId) && setStoredFilterAndSorting(lastFilterId,lastSortingId)) {
                     return true;
-                } else if (defaultFilter != null && defaultFilter.getId() != lastFilterId && 
+                } else {
+                    defaultFilter = group.getFilters().getDefaultFilter(null, !isContextFilterDefined);    //В тесте вместо default filter - invalid
+                    if (defaultFilter != null && defaultFilter.getId() != lastFilterId && 
                            setDefaultFilter(defaultFilter, lastSortingId)
                           ) {
                     return true;
-                } else {
-                    return group.getFilters().isObligatory() ? setDefaultFilter(firstPredefined, lastSortingId) : false;
+                    }
                 }
+                return group.getFilters().isObligatory() ? setDefaultFilter(firstPredefined, lastSortingId) : false;
             } else {
                 return group.getFilters().isObligatory() ? setDefaultFilter(firstPredefined, lastUsedSortingId) : false;
             }
-        } else if (setDefaultFilter(defaultFilter, lastUsedSortingId)) {
+        } else if (setDefaultFilter(group.getFilters().getDefaultFilter(null, !isContextFilterDefined), lastUsedSortingId)) {
             return true;
         } else {
             return group.getFilters().isObligatory() ? setDefaultFilter(firstPredefined, lastUsedSortingId) : false;
@@ -432,7 +465,17 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
         }        
         final RadSortingDef sorting = getSortingForFilter(lastFilter, lastSortingId);
         if ((settings.lastFilterWasApplyed() && lastFilter.canApply()) || !lastFilter.hasParameters() || allParametersPersistent(lastFilter)) {
-            return setInitialSettings(lastFilter, selector.getEnvironment().getMessageProvider().translate("Selector", "previous filter"), sorting);
+            if (setInitialSettings(lastFilter, selector.getEnvironment().getMessageProvider().translate("Selector", "previous filter"), sorting)){
+                if (settings.filterParamsWasCollapsed()){
+                    filterParamsCollapsedAfterCreation = !collapseFilterParams();
+                    initialFilterToolBarHeight = -1;
+                }else{
+                    initialFilterToolBarHeight = settings.getFilterToolBarHeight();                    
+                }
+                return true;
+            }else{                
+                return false;
+            }
         } else {
             initialFilter = lastFilter;
             initialSorting = sorting;
@@ -446,7 +489,7 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
             return false;
         }
         if (filter != null && filter.isValid()) {
-            final RadSortingDef sorting = storedSortingId==null ? group.getSortings().getDefaultSorting(filter) : getSortingForFilter(filter, storedSortingId);
+            final RadSortingDef sorting = getSortingForFilter(filter, storedSortingId);
             if (!filter.hasParameters() || allParametersPersistent(filter)) {
                 return setInitialSettings(filter, selector.getEnvironment().getMessageProvider().translate("Selector", "default filter"),sorting);
             } else {
@@ -458,12 +501,14 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
         return false;
     }
 
-    private boolean setInitialSettings(final FilterModel filter, final String filterType, final RadSortingDef sorting) throws ServiceClientException, InterruptedException {
+    private boolean setInitialSettings(final FilterModel filter, 
+                                                      final String filterType,
+                                                      final RadSortingDef sorting) throws ServiceClientException, InterruptedException {
         final GroupModel group = getGroupModel();
         try {
             group.applySettings(filter, sorting);
             initialFilter = filter;
-            initialSorting = sorting;
+            initialSorting = sorting;            
             refreshFilterAndOrderToolbar();
             return true;
         } catch (ModelException exception) {
@@ -483,10 +528,8 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
                 } else {
                     initialFilter = filter;
                     initialSorting = sorting;
-                    if (filterAndOrderToolbar!=null){
-                        if (initialFilter!=null){
-                            filterAndOrderToolbar.setCurrentFilter(initialFilter, false);
-                        }
+                    if (filterAndOrderToolbar!=null && initialFilter!=null){
+                        filterAndOrderToolbar.setCurrentFilter(initialFilter, false);
                     }
                     return true;
                 }
@@ -505,14 +548,10 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
     
     private RadSortingDef getSortingForFilter(final FilterModel filter, final Id storedSortingId){
         final GroupModel group = getGroupModel();
-        final RadSortingDef sorting = storedSortingId==null ? null : group.getSortings().findById(storedSortingId);
-        if (sorting==null || !sorting.isValid() || !group.getSortings().isAcceptable(sorting, filter)){
-            return group.getSortings().getDefaultSorting(filter);            
-        }
-        return sorting;
+        return group.getSortings().getDefaultSorting(filter, storedSortingId);            
     }
 
-    private boolean allParametersPersistent(FilterModel filter) {
+    private boolean allParametersPersistent(final FilterModel filter) {
         return filter != null && filter.getFilterDef().getParameters().allParametersPersistent(filter.getEnvironment()) && filter.canApply();
     }
 
@@ -533,16 +572,104 @@ class SelectorMainWindow extends MainWindow implements ISelectorMainWindow {
             filterAndOrderToolbar.storeSettings();
         }
     }
+    
+    @Override
+    public void switchToSelectorContent(){
+        if (state!=State.SELECTOR_CONTENT){
+            state = State.SELECTOR_CONTENT;
+            contentHolder.setCurrentIndex(0);
+            setFilterParametersCollapsable(true);
+            if (filterParamsCollapsedAfterCreation){
+                filterParamsCollapsedAfterCreation = false;
+                initialFilterToolBarHeight = -1;
+                collapseFilterParams();
+            }else{                
+                if (storedFilterToolBarHeight>0){                    
+                    initialFilterToolBarHeight = storedFilterToolBarHeight;
+                    storedFilterToolBarHeight = -1;
+                }
+                updateFilterAndOrderToolbarHeightForcedly();
+            }
+        }
+    }
+    
+    @Override
+    public void switchToApplyFilter(){
+        if (state!=State.FILTER_PARAMS){
+            state = State.FILTER_PARAMS;
+            if (filterAndOrderToolbar==null){
+                createFilterAndOrderToolbar(getGroupModel());
+            }
+            filterParamsCollapsedAfterCreation = false;
+            initialFilterToolBarHeight = -1;
+            if (wasShown){
+                storedFilterToolBarHeight = filterAndOrderToolbar.height();
+            }
+            contentHolder.setCurrentIndex(1);
+            setFilterParametersCollapsable(false);
+        }
+    }
+        
+    private void setFilterParametersCollapsable(final boolean isCollapsable){
+        final IFilterParametersView filterView = getFilterView();
+        if (filterView!=null){
+            filterView.setCollapsable(isCollapsable);
+            filterAndOrderToolbar.updateGeometry();
+        }
+    }
+    
+    private boolean collapseFilterParams(){
+        final IFilterParametersView filterView = getFilterView();
+        if (filterView!=null && filterView.isCollapsable()){
+            filterView.collapse();
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    private IFilterParametersView getFilterView(){
+        if (filterAndOrderToolbar==null){
+            return null;
+        }else{
+            final FilterModel currentFilter = filterAndOrderToolbar.getCurrentFilter();            
+            return currentFilter==null || !currentFilter.hasParameters() ? null : currentFilter.getFilterView();
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    private void onSplitterIllegalMove(final int movePos, final int closestLegalPos){
+        final IFilterParametersView filterView = getFilterView();
+        if (filterView!=null){
+            final int delta = Math.abs(closestLegalPos - movePos);
+            final int maxDelta = 50;
+            if (!filterView.isCollapsed() && filterView.isCollapsable() && movePos<closestLegalPos && delta>maxDelta){
+                filterView.collapse();
+                updateGeometry();
+            }else if (filterView.isCollapsed() && movePos>closestLegalPos && delta>maxDelta){
+                filterView.expand();
+                updateGeometry();                    
+            }
+        }
+    }
+        
+    private void updateFilterAndOrderToolbarHeightForcedly(){
+        currentHeightHint = -1;
+        scheduleUpdateFilterAndOrderToolbarHeight();
+    }        
 
     @Override
     public final void clear() {
-        if (filterAndOrderToolbar != null) {
+        if (filterAndOrderToolbar != null) {            
             filterAndOrderToolbar.close();
+            removeEventFilter(layoutEventListener);
+            updateToolBarHeightScheduled = false;
         }
+        splitter.onIllegalMove.disconnect(this);
     }
 
     @Override
-    public void removeToolBarBreak(IToolBar toolBar) {
+    public void removeToolBarBreak(final IToolBar toolBar) {
         super.removeToolBarBreak((QToolBar) toolBar);
     }
 }

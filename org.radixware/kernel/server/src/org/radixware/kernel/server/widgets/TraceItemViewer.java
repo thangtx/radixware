@@ -12,15 +12,21 @@ package org.radixware.kernel.server.widgets;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -29,8 +35,6 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -46,15 +50,18 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.radixware.kernel.common.trace.TraceItem;
 import org.radixware.kernel.common.utils.Hex;
+import org.radixware.kernel.server.instance.InstanceConfigStore;
 import org.radixware.kernel.server.trace.ViewTraceItem;
 
 public final class TraceItemViewer {
 
+    private static final String STACK_TRACE_KEY = "stack-trace-key";
     private final JTextField edType;
     private final JTextField edDate;
     private final JTextField edTime;
@@ -64,6 +71,7 @@ public final class TraceItemViewer {
     private String xmlDocument;
     private final JButton btStartXmlViewer;
     private final JButton btDecodeHex;
+    private final JButton btShowStack;
     private Object parent;
     private final JOptionPane pane;
     private JDialog dialog = null;
@@ -89,6 +97,7 @@ public final class TraceItemViewer {
         lbType.setHorizontalAlignment(SwingConstants.RIGHT);
         labelPanel.add(lbType);
         edType = new JTextField();
+        edType.setEditable(false);
         lbType.setLabelFor(edType);
         textPanel.add(edType);
 
@@ -96,6 +105,7 @@ public final class TraceItemViewer {
         lbDate.setHorizontalAlignment(SwingConstants.RIGHT);
         labelPanel.add(lbDate);
         edDate = new JTextField();
+        edDate.setEditable(false);
         lbDate.setLabelFor(edDate);
         textPanel.add(edDate);
 
@@ -103,6 +113,7 @@ public final class TraceItemViewer {
         lbTime.setHorizontalAlignment(SwingConstants.RIGHT);
         labelPanel.add(lbTime);
         edTime = new JTextField();
+        edTime.setEditable(false);
         lbTime.setLabelFor(edTime);
         textPanel.add(edTime);
 
@@ -110,6 +121,7 @@ public final class TraceItemViewer {
         lbSource.setHorizontalAlignment(SwingConstants.RIGHT);
         labelPanel.add(lbSource);
         edSource = new JTextField();
+        edSource.setEditable(false);
         lbSource.setLabelFor(edSource);
         textPanel.add(edSource);
 
@@ -117,6 +129,7 @@ public final class TraceItemViewer {
         lblContext.setHorizontalAlignment(SwingConstants.RIGHT);
         labelPanel.add(lblContext);
         edContext = new JTextField();
+        edContext.setEditable(false);
         lblContext.setLabelFor(edContext);
         textPanel.add(edContext);
 
@@ -128,6 +141,7 @@ public final class TraceItemViewer {
         bottomPanel.add(lbMessage, BorderLayout.NORTH);
 
         edMessage = new JTextArea();
+        edMessage.setEditable(false);
         final JScrollPane scrollPane = new JScrollPane(edMessage);
         bottomPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -165,6 +179,44 @@ public final class TraceItemViewer {
             }
         });
         buttonBar.add(btDecodeHex);
+
+        btShowStack = new JButton(Messages.BTN_SHOW_STACK);
+        btShowStack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final JTextArea textArea = new JTextArea(String.valueOf(btShowStack.getClientProperty(STACK_TRACE_KEY)));
+                textArea.setEditable(false);
+                textArea.setCaretPosition(0);
+                final JScrollPane scrollPane = new JScrollPane(textArea);
+                scrollPane.setPreferredSize(new Dimension(800, 600));
+                final Window[] windowHolder = new Window[1];
+                final String sizeKey = "trace-item-stacktrace-window";
+                scrollPane.addHierarchyListener(new HierarchyListener() {
+                    public void hierarchyChanged(HierarchyEvent e) {
+                        final Window window = SwingUtilities.getWindowAncestor(scrollPane);
+                        if (window instanceof Dialog) {
+                            final Dialog dialog = (Dialog) window;
+                            if (!dialog.isResizable()) {
+                                dialog.setResizable(true);
+                            }
+                            InstanceConfigStore.restoreWindowBounds(sizeKey, window);
+                            windowHolder[0] = dialog;
+                            dialog.addWindowListener(new WindowAdapter() {
+
+                                @Override
+                                public void windowClosing(WindowEvent e) {
+                                    InstanceConfigStore.storeWindowBounds(sizeKey, e.getWindow());
+                                    super.windowClosing(e);
+                                }
+                                
+                            });
+                        }
+                    }
+                });
+                JOptionPane.showMessageDialog(dialog, scrollPane, "Stacktrace", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        buttonBar.add(btShowStack);
 
         edMessage.getCaret().addChangeListener(new ChangeListener() {
             @Override
@@ -291,6 +343,8 @@ public final class TraceItemViewer {
             KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
             dialog.getRootPane().registerKeyboardAction(actionListener, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
         }
+        btShowStack.setVisible(traceItem.stackTrace != null);
+        btShowStack.putClientProperty(STACK_TRACE_KEY, traceItem.stackTrace);
         dialog.setVisible(true);
     }
 
@@ -320,6 +374,8 @@ public final class TraceItemViewer {
             TITLE_SERVER_MESSAGE = bundle.getString("TITLE_SERVER_MESSAGE");
             BTN_SHOW_XML_TREE = bundle.getString("BTN_SHOW_XML_TREE");
             BTN_DECODE_HEX = bundle.getString("BTN_DECODE_HEX");
+            BTN_SHOW_STACK = bundle.getString("BTN_SHOW_STACK");
+
         }
         static final String COL_SEVERITY;
         static final String COL_DATE;
@@ -330,6 +386,7 @@ public final class TraceItemViewer {
         static final String BTN_CLOSE;
         static final String BTN_SHOW_XML_TREE;
         static final String BTN_DECODE_HEX;
+        static final String BTN_SHOW_STACK;
         static final String TITLE_SERVER_MESSAGE;
     }
 }

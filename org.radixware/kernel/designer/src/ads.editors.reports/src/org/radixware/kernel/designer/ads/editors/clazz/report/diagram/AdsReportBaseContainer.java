@@ -31,7 +31,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContai
 import org.radixware.kernel.common.enums.EReportCellType;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.palette.AdsReportAddNewItemAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.palette.AdsReportPaletteDragAndDropHandler;
-import org.radixware.kernel.designer.common.general.editors.EditorsManager;
+import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.selection.SelectionEvent;
 
 public class AdsReportBaseContainer extends AdsReportSelectableWidget implements DropTargetListener, IReportCellContainer {
 
@@ -54,7 +54,7 @@ public class AdsReportBaseContainer extends AdsReportSelectableWidget implements
                         final AdsReportWidget cell = (AdsReportWidget) e.object;
                         final AdsReportSelectableWidget cellWidget = findCellWidget(cell);
                         if (cellWidget != null) {
-                            AdsReportWidgetUtils.selectCell(cellWidget);
+                            fireSelectionChanged(new SelectionEvent(cellWidget, true));
                             layout.justifyLayout();
                         }
                     }
@@ -93,7 +93,7 @@ public class AdsReportBaseContainer extends AdsReportSelectableWidget implements
             }
             updateCells();
             layout.justifyLayout();
-            fireSelectionChanged();
+//            fireSelectionChanged();
         }
     }
 
@@ -114,18 +114,37 @@ public class AdsReportBaseContainer extends AdsReportSelectableWidget implements
             final AdsReportWidget cell = entry.getKey();
             if (!widgetContainer.getWidgets().contains(cell)) {
                 final AdsReportSelectableWidget cellWidget = entry.getValue();
+                if (cellWidget.isSelected()) {
+                    fireSelectionChanged(new SelectionEvent(cellWidget, false));
+                }
                 iterator.remove();
                 remove(cellWidget);
-                if (cellWidget.isSelected()) {
-                    fireSelectionChanged();
-                }
                 layout.justifyLayout();
             }
         }
     }
 
     public AdsReportSelectableWidget findCellWidget(final AdsReportWidget cell) {
-        return cell2Widget.get(cell);
+        return findCellWidget(cell, false);
+    }
+    
+    public AdsReportSelectableWidget findCellWidget(final AdsReportWidget cell, boolean deep) {
+        AdsReportSelectableWidget result = cell2Widget.get(cell);
+        if (!deep){
+            return result;
+        }
+        
+        if (result != null){
+            return result;
+        }
+        
+        for (AdsReportSelectableWidget widget : getCellWidgets()) {
+            if (widget instanceof AdsReportCellContainerWidget) {
+                return ((AdsReportCellContainerWidget)widget).findCellWidget(cell, deep);
+            }
+        }
+        
+        return null;
     }
 
     public void addCellWidget(final AdsReportSelectableWidget cellWidget) {
@@ -171,7 +190,9 @@ public class AdsReportBaseContainer extends AdsReportSelectableWidget implements
     }
 
     private void paintGrid(final Graphics g) {
-        if (!AdsReportFormDiagramOptions.getDefault().isShowGrid()) {
+        AdsReportForm form = widgetContainer.getOwnerForm();
+        double gridSizeMm = form != null ? form.getGridSizeMm() : AdsReportForm.DEFAULT_GRID_SIZE_MM;
+        if (form != null && !form.isShowGrid()) {
             return;
         }
 
@@ -182,12 +203,12 @@ public class AdsReportBaseContainer extends AdsReportSelectableWidget implements
             final int widthPx = getWidth();
             final int heightPx = getHeight();
 
-            for (double xMm = AdsReportBand.GRID_SIZE_MM; true; xMm += AdsReportBand.GRID_SIZE_MM) {
+            for (double xMm = gridSizeMm; true; xMm += gridSizeMm) {
                 final int x = MmUtils.mm2px(xMm);
                 if (x >= widthPx) {
                     break;
                 }
-                for (double yMm = AdsReportBand.GRID_SIZE_MM; true; yMm += AdsReportBand.GRID_SIZE_MM) {
+                for (double yMm = gridSizeMm; true; yMm += gridSizeMm) {
                     final int y = MmUtils.mm2px(yMm);
                     if (y >= heightPx) {
                         break;
@@ -358,7 +379,7 @@ public class AdsReportBaseContainer extends AdsReportSelectableWidget implements
             try {
                 blockUndoRedo(true);
                 wasAdd = newItemAction.addNewItem(widgetContainer, e.getLocation().x, e.getLocation().y);
-                EditorsManager.getDefault().open(widgetContainer.getOwnerForm().getOwnerReport()); // switch focuce to editor from pallette
+//                EditorsManager.getDefault().open(widgetContainer.getOwnerForm().getOwnerReport()); // switch focuce to editor from pallette
             } finally {
                 blockUndoRedo(false);
                 if (wasAdd) {
@@ -422,5 +443,5 @@ public class AdsReportBaseContainer extends AdsReportSelectableWidget implements
         }
         return newInfo;
     }
-
+    
 }

@@ -11,6 +11,8 @@
 
 package org.radixware.wps.views.selector.tree;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -23,37 +25,43 @@ class NodePath {
 
     private static class NodeDescriptor {
 
-        private final Pid pid;
+        private final Collection<Pid> pids;
         private final String displayName;
         private final Object userData;
 
         public NodeDescriptor(final Pid pid) {
-            this.pid = pid;
+            this.pids = Collections.singleton(pid);
             displayName = null;
             userData = null;
+        }
+        
+        public NodeDescriptor(final Collection<Pid> pids){
+            this.pids = pids;
+            displayName = null;
+            userData = null;            
         }
 
         public NodeDescriptor(final Node node) {
             if (node.getUserData() instanceof EntityModel){
-                pid = ((EntityModel)node.getUserData()).getPid();
+                pids = Collections.singleton( ((EntityModel)node.getUserData()).getPid() );
                 displayName = null;
                 userData = null;
             }
             else if (node.getUserData()!=null){
                 userData = node.getUserData();
                 displayName = null;
-                pid = null;
+                pids = null;
             }
             else{
                 displayName = node.getDisplayName();
-                pid = null;
+                pids = null;
                 userData = null;
             }
         }
         
         private boolean isMatch(final Node node){
             if (node.getUserData() instanceof EntityModel){
-                return Objects.equals(pid, ((EntityModel)node.getUserData()).getPid());
+                return pids.contains(((EntityModel)node.getUserData()).getPid());
             }
             else if (node.getUserData()!=null){
                 return Objects.equals(userData, node.getUserData());
@@ -81,7 +89,7 @@ class NodePath {
                 return false;
             }
             final NodeDescriptor other = (NodeDescriptor) obj;
-            if (!Objects.equals(this.pid, other.pid)) {
+            if (!Objects.equals(this.pids, other.pids)) {
                 return false;
             }
             if (!Objects.equals(this.displayName, other.displayName)) {
@@ -96,7 +104,11 @@ class NodePath {
         @Override
         public int hashCode() {
             int hash = 5;
-            hash = 79 * hash + Objects.hashCode(this.pid);
+            if (pids!=null){
+                for (Pid pid: pids){
+                    hash = 79 * hash + Objects.hashCode(pid);
+                }
+            }
             hash = 79 * hash + Objects.hashCode(this.displayName);
             hash = 79 * hash + Objects.hashCode(this.userData);
             return hash;
@@ -113,6 +125,12 @@ class NodePath {
         instance.path.add(new NodeDescriptor(pid));
         return instance;
     }
+    
+    public static NodePath fromPids(final Collection<Pid> pids){
+        final NodePath instance = new NodePath();
+        instance.path.add(new NodeDescriptor(pids));
+        return instance;
+    }    
 
     public static NodePath fromNode(final Node node, final Node endNode){
         final NodePath instance = new NodePath();

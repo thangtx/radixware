@@ -14,13 +14,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
-import org.radixware.kernel.common.enums.ELinkLevelProtocolKind;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.SrvRunParams;
@@ -51,18 +49,12 @@ final class Channels extends CopyOnWriteArrayList<NetChannel> {
                             add(new NetListener(
                                     unit,
                                     rs.getLong("id"),
-                                    rs.getString("title"),
-                                    ELinkLevelProtocolKind.getForValue(Long.valueOf(rs.getLong("linkLevelProtocolKind"))),
-                                    rs.getString("requestframe"),
-                                    rs.getString("responseframe")));
+                                    rs.getString("title")));
                         } else {
                             add(new NetClient(
                                     unit,
                                     rs.getLong("id"),
-                                    rs.getString("title"),
-                                    ELinkLevelProtocolKind.getForValue(Long.valueOf(rs.getLong("linkLevelProtocolKind"))),
-                                    rs.getString("requestframe"),
-                                    rs.getString("responseframe")));
+                                    rs.getString("title")));
                         }
 
                     }
@@ -180,6 +172,8 @@ final class Channels extends CopyOnWriteArrayList<NetChannel> {
                 }
             }
         }
+        
+        unit.getSeances().setCurSeancesCountInDbForChanged();
 
         super.clear();
         super.addAll(newChannels);

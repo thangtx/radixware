@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:this="http://schemas.radixware.org/systemcommands.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/systemcommands.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
-	<xs:complexType name="EventContext">
-		<xs:attribute name="Type" type="t:Str" use="required"/>
-		<xs:attribute name="ID" type="t:Str" use="required"/>
-	</xs:complexType>
-	<xs:complexType name="Event">
-		<xs:sequence>
-			<xs:element name="Message" type="t:Str" minOccurs="0"/>
-			<xs:element name="Words" type="t:BinBase64" minOccurs="0"/>
-			<xs:element name="EventContext" type="this:EventContext" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:attribute name="Severity" type="t:Int" use="required"/>
-		<xs:attribute name="RaiseTime" type="t:DateTime" use="required"/>
-		<xs:attribute name="Code" type="t:Str"/>
-		<xs:attribute name="Component" type="t:Str"/>
-	</xs:complexType>
-	<xs:element name="EventList">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="Event" type="this:Event" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-                        <xs:attribute name="TimeZone" type="t:Str" use="optional"/>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="EventsImportRq">
-		<xs:complexType>
-			<xs:attribute name="File" type="t:Str" use="required"/>
-		</xs:complexType>
-	</xs:element>
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="EventContext">
+        <xs:attribute name="Type" type="t:Str" use="required"/>
+        <xs:attribute name="ID" type="t:Str" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="Event">
+        <xs:sequence>
+            <xs:element name="Message" type="t:Str" minOccurs="0"/>
+            <xs:element name="Words" type="t:BinBase64" minOccurs="0"/>
+            <xs:element name="EventContext" type="this:EventContext" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="Severity" type="t:Int" use="required"/>
+        <xs:attribute name="RaiseTime" type="t:DateTime" use="required"/>
+        <xs:attribute name="Code" type="t:Str"/>
+        <xs:attribute name="Component" type="t:Str"/>
+    </xs:complexType>
+    <xs:element name="EventList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Event" type="this:Event" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="TimeZone" type="t:Str" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="EventsImportRq">
+        <xs:complexType>
+            <xs:attribute name="File" type="t:Str" use="required"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="RoleList">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="Role" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:attribute name="ID" type="xs:string"/>
-						<xs:attribute name="Name" type="xs:string"/>
-					</xs:complexType>
-				</xs:element>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Role" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="ID" type="xs:string"/>
+                        <xs:attribute name="Name" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    
 </xs:schema>

@@ -28,8 +28,10 @@ import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPageDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentableProperty;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.IPagePropertyGroup;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyUsageSupport;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.defs.ads.explorerItems.AdsExplorerItemDef;
 import org.radixware.kernel.common.enums.EEditorPageType;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
@@ -102,6 +104,7 @@ public class AdsEditorPageChecker extends AdsDefinitionChecker<AdsEditorPageDef>
                     error(editorPage, problemHandler, "Unknown property on editor page: #" + ref.getPropertyId());
                 } else {
                     AdsUtils.checkAccessibility(editorPage, prop, false, problemHandler);
+                    ReleaseUtils.checkExprationRelease(editorPage, prop, problemHandler);
                     //CheckUtils.checkExportedApiDatails(editorPage, prop, problemHandler);
                     if (prop instanceof AdsFieldPropertyDef) {//RADIX-3799
                         error(editorPage, problemHandler, "Field property on editor page: " + prop.getQualifiedName());
@@ -142,25 +145,34 @@ public class AdsEditorPageChecker extends AdsDefinitionChecker<AdsEditorPageDef>
             }
 
             //check property matrix
-            int columnCount = editorPage.getProperties().getColumnCount();
-            int rowCount = editorPage.getProperties().getRowCount();
-            if (columnCount > 0 && rowCount > 0) {
-                final AdsEditorPageDef.PagePropertyRef[][] matrix = new AdsEditorPageDef.PagePropertyRef[columnCount][rowCount];
-                for (AdsEditorPageDef.PagePropertyRef ref : editorPage.getProperties()) {
-                    int c = ref.getColumn();
-                    int r = ref.getRow();
-                    if (matrix[c][r] != null) {
-                        String propName1 = matrix[c][r].getReferencedPropertyName();
-                        String propName2 = ref.getReferencedPropertyName();
-                        error(editorPage, problemHandler, MessageFormat.format("Too many properties in single editor cell (column={0},row={1}) : {2} and {3}", c, r, propName1, propName2));
-                    } else {
-                        matrix[c][r] = ref;
-                    }
-                }
-            }
+            checkPropertyMatrix(editorPage, editorPage.getProperties(), problemHandler);
+            
         }
 
         availablePropertiesCheck(editorPage, problemHandler);
+    }
+    
+    private void checkPropertyMatrix(final AdsEditorPageDef editorPage, final IPagePropertyGroup group,  final IProblemHandler problemHandler) {
+        int columnCount = group.getColumnCount();
+        int rowCount = group.getRowCount();
+        if (columnCount > 0 && rowCount > 0) {
+            final AdsEditorPageDef.PagePropertyRef[][] matrix = new AdsEditorPageDef.PagePropertyRef[columnCount][rowCount];
+            for (AdsEditorPageDef.PagePropertyRef ref : group.list()) {
+                int c = ref.getColumn();
+                int r = ref.getRow();
+                if (matrix[c][r] != null) {
+                    String propName1 = matrix[c][r].getReferencedPropertyName();
+                    String propName2 = ref.getReferencedPropertyName();
+                    error(editorPage, problemHandler, MessageFormat.format("Too many properties in single editor cell (column={0},row={1}) : {2} and {3}", c, r, propName1, propName2));
+                } else {
+                    matrix[c][r] = ref;
+                }
+                
+                if (ref.getGroupDef() != null){
+                    checkPropertyMatrix(editorPage, ref.getGroupDef(), problemHandler);
+                }
+            }
+        }
     }
 
     private void availablePropertiesCheck(final AdsEditorPageDef editorPage, final IProblemHandler problemHandler) {

@@ -13,7 +13,7 @@ package org.radixware.kernel.common.client.views;
 
 import java.util.List;
 import org.radixware.kernel.common.client.models.EntityModel;
-import org.radixware.kernel.common.client.models.items.properties.PropertyRef;
+import org.radixware.kernel.common.client.models.items.properties.PropertyReference;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -25,7 +25,7 @@ public interface IEmbeddedEditor extends IEmbeddedView {
     @Override
     public EntityModel getModel();
     
-    public void setPropertyRef(final PropertyRef property);
+    public void setPropertyRef(final PropertyReference property);
         
     public void setPresentations(final Id ownerClassId, final List<Id> editorPresentationIds);
 

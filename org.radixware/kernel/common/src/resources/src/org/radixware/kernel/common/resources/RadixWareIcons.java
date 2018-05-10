@@ -8,10 +8,10 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.resources;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 
 /**
@@ -46,15 +46,15 @@ public class RadixWareIcons extends RadixIcon {
 
             public static final TEXT CENTER_BOTTOM = new TEXT("align/text/bottom-center.png");
             public static final TEXT CENTER_MIDDLE = new TEXT("align/text/center-center.png");
-            public static final TEXT CENTER_TOP = new TEXT("align/text/top-center.png");            
+            public static final TEXT CENTER_TOP = new TEXT("align/text/top-center.png");
             public static final TEXT LEFT_BOTTOM = new TEXT("align/text/bottom-left.png");
             public static final TEXT LEFT_MIDDLE = new TEXT("align/text/center-left.png");
-            public static final TEXT LEFT_TOP = new TEXT("align/text/top-left.png");            
+            public static final TEXT LEFT_TOP = new TEXT("align/text/top-left.png");
             public static final TEXT RIGHT_BOTTOM = new TEXT("align/text/bottom-right.png");
             public static final TEXT RIGHT_MIDDLE = new TEXT("align/text/center-right.png");
             public static final TEXT RIGHT_TOP = new TEXT("align/text/top-right.png");
-            
-            public static final TEXT JUSTIFY_CENTER = new TEXT("align/text/center-justify.png");            
+
+            public static final TEXT JUSTIFY_CENTER = new TEXT("align/text/center-justify.png");
             public static final TEXT JUSTIFY_BOTTOM = new TEXT("align/text/bottom-justify.png");
             public static final TEXT JUSTIFY_TOP = new TEXT("align/text/top-justify.png");
 
@@ -211,6 +211,7 @@ public class RadixWareIcons extends RadixIcon {
     public static class DIFF extends RadixWareIcons {
 
         public static final DIFF DIFF = new DIFF("diff/diff.svg");
+        public static final DIFF XSD_DIFF = new DIFF("diff/xsd_diff.svg");
 
         private DIFF(String uri) {
             super(uri);
@@ -228,6 +229,7 @@ public class RadixWareIcons extends RadixIcon {
         public static final EDIT PROPERTIES = new EDIT("edit/properties.svg");
         public static final EDIT PROPERTIES_PLUS = new EDIT("edit/properties_plus.svg");
         public static final EDIT VIEW_SQL = new EDIT("edit/view_sql.svg");
+        public static final EDIT VIEW = new EDIT("edit/view.svg");
         public static final EDIT FIX = new EDIT("edit/fix.svg");
         public static final EDIT REPLACE_IMAGE = new EDIT("edit/replace_image.svg");
         // for module images editor
@@ -320,7 +322,7 @@ public class RadixWareIcons extends RadixIcon {
         public static final JML_EDITOR XPATH_ATTRIBUTE = new JML_EDITOR("jmledit/xpath_attribute.svg");
         public static final JML_EDITOR READ_LICENSE = new JML_EDITOR("jmledit/read_license.svg");
         public static final JML_EDITOR CHECK_LICENSE = new JML_EDITOR("jmledit/check_license.svg");
-        public static final JML_EDITOR USERFUNC_LIB = new JML_EDITOR("jmledit/userfunc_library.svg");        
+        public static final JML_EDITOR USERFUNC_LIB = new JML_EDITOR("jmledit/userfunc_library.svg");
 
         private JML_EDITOR(String uri) {
             super(uri);
@@ -369,40 +371,40 @@ public class RadixWareIcons extends RadixIcon {
 
         public static final WIDGETS SNAP = new WIDGETS("widgets/snap.svg");
         /*
-        public static final WIDGETS BUTTON_BOX = new WIDGETS("widgets/button_box.svg");
-        public static final WIDGETS CHECK_BOX = new WIDGETS("widgets/check_box.svg");
-        public static final WIDGETS DATE_EDIT = new WIDGETS("widgets/date_edit.svg");
-        public static final WIDGETS TIME_EDIT = new WIDGETS("widgets/time_edit.svg");
-        public static final WIDGETS DATE_TIME_EDIT = new WIDGETS("widgets/date_time_edit.svg");
-        public static final WIDGETS GRID_LAYOUT = new WIDGETS("widgets/grid_layout.svg");
-        public static final WIDGETS GROUP_BOX = new WIDGETS("widgets/group_box.svg");
-        public static final WIDGETS HORIZONTAL_LAYOUT = new WIDGETS("widgets/horizontal_layout.svg");
-        public static final WIDGETS HORIZONTAL_SPACER = new WIDGETS("widgets/horizontal_spacer.svg");
-        public static final WIDGETS LABEL = new WIDGETS("widgets/label.svg");
-        public static final WIDGETS PROGRESS_BAR = new WIDGETS("widgets/progress_bar.svg");
-        public static final WIDGETS LINE_EDIT = new WIDGETS("widgets/line_edit.svg");
-        public static final WIDGETS COMBO_BOX = new WIDGETS("widgets/combo_box.svg");
-        public static final WIDGETS LIST = new WIDGETS("widgets/list.svg");
-        public static final WIDGETS PUSH_BUTTON = new WIDGETS("widgets/push_button.svg");
-        public static final WIDGETS RADIO_BUTTON = new WIDGETS("widgets/radio_button.svg");
-        public static final WIDGETS SPIN_BOX = new WIDGETS("widgets/spin_box.svg");
-        public static final WIDGETS DOUBLE_SPIN_BOX = new WIDGETS("widgets/double_spin_box.svg");
-        public static final WIDGETS TAB = new WIDGETS("widgets/tab.svg");
-        public static final WIDGETS TABLE = new WIDGETS("widgets/table.svg");
-        public static final WIDGETS TAB_SET = new WIDGETS("widgets/tab_set.svg");
-        public static final WIDGETS TEXT_EDIT = new WIDGETS("widgets/text_edit.svg");
-        public static final WIDGETS TOOL_BAR = new WIDGETS("widgets/tool_bar.svg");
-        public static final WIDGETS TOOL_BUTTON = new WIDGETS("widgets/tool_button.svg");
-        public static final WIDGETS TREE = new WIDGETS("widgets/tree.svg");
-        public static final WIDGETS VERTICAL_LAYOUT = new WIDGETS("widgets/vertical_layout.svg");
-        public static final WIDGETS VERTICAL_SPACER = new WIDGETS("widgets/vertical_spacer.svg");
+         public static final WIDGETS BUTTON_BOX = new WIDGETS("widgets/button_box.svg");
+         public static final WIDGETS CHECK_BOX = new WIDGETS("widgets/check_box.svg");
+         public static final WIDGETS DATE_EDIT = new WIDGETS("widgets/date_edit.svg");
+         public static final WIDGETS TIME_EDIT = new WIDGETS("widgets/time_edit.svg");
+         public static final WIDGETS DATE_TIME_EDIT = new WIDGETS("widgets/date_time_edit.svg");
+         public static final WIDGETS GRID_LAYOUT = new WIDGETS("widgets/grid_layout.svg");
+         public static final WIDGETS GROUP_BOX = new WIDGETS("widgets/group_box.svg");
+         public static final WIDGETS HORIZONTAL_LAYOUT = new WIDGETS("widgets/horizontal_layout.svg");
+         public static final WIDGETS HORIZONTAL_SPACER = new WIDGETS("widgets/horizontal_spacer.svg");
+         public static final WIDGETS LABEL = new WIDGETS("widgets/label.svg");
+         public static final WIDGETS PROGRESS_BAR = new WIDGETS("widgets/progress_bar.svg");
+         public static final WIDGETS LINE_EDIT = new WIDGETS("widgets/line_edit.svg");
+         public static final WIDGETS COMBO_BOX = new WIDGETS("widgets/combo_box.svg");
+         public static final WIDGETS LIST = new WIDGETS("widgets/list.svg");
+         public static final WIDGETS PUSH_BUTTON = new WIDGETS("widgets/push_button.svg");
+         public static final WIDGETS RADIO_BUTTON = new WIDGETS("widgets/radio_button.svg");
+         public static final WIDGETS SPIN_BOX = new WIDGETS("widgets/spin_box.svg");
+         public static final WIDGETS DOUBLE_SPIN_BOX = new WIDGETS("widgets/double_spin_box.svg");
+         public static final WIDGETS TAB = new WIDGETS("widgets/tab.svg");
+         public static final WIDGETS TABLE = new WIDGETS("widgets/table.svg");
+         public static final WIDGETS TAB_SET = new WIDGETS("widgets/tab_set.svg");
+         public static final WIDGETS TEXT_EDIT = new WIDGETS("widgets/text_edit.svg");
+         public static final WIDGETS TOOL_BAR = new WIDGETS("widgets/tool_bar.svg");
+         public static final WIDGETS TOOL_BUTTON = new WIDGETS("widgets/tool_button.svg");
+         public static final WIDGETS TREE = new WIDGETS("widgets/tree.svg");
+         public static final WIDGETS VERTICAL_LAYOUT = new WIDGETS("widgets/vertical_layout.svg");
+         public static final WIDGETS VERTICAL_SPACER = new WIDGETS("widgets/vertical_spacer.svg");
 
-        public static final RadixIcon PROP_LABEL = AdsDefinitionIcon.CLASS_FORM_HANDLER;
-        public static final RadixIcon PROP_EDITOR = AdsDefinitionIcon.CLASS_FORM_HANDLER;
-        public static final RadixIcon COMMAND_PUSH_BUTTON_ITEM = AdsDefinitionIcon.CLASS_FORM_HANDLER;
-        public static final RadixIcon EDITOR_PAGE_ITEM = AdsDefinitionIcon.CLASS_FORM_HANDLER;
-        public static final RadixIcon EMBEDDED_EDITOR_ITEM = AdsDefinitionIcon.CLASS_FORM_HANDLER;
-        public static final RadixIcon EMBEDDED_SELECTOR_ITEM = AdsDefinitionIcon.CLASS_FORM_HANDLER;
+         public static final RadixIcon PROP_LABEL = AdsDefinitionIcon.CLASS_FORM_HANDLER;
+         public static final RadixIcon PROP_EDITOR = AdsDefinitionIcon.CLASS_FORM_HANDLER;
+         public static final RadixIcon COMMAND_PUSH_BUTTON_ITEM = AdsDefinitionIcon.CLASS_FORM_HANDLER;
+         public static final RadixIcon EDITOR_PAGE_ITEM = AdsDefinitionIcon.CLASS_FORM_HANDLER;
+         public static final RadixIcon EMBEDDED_EDITOR_ITEM = AdsDefinitionIcon.CLASS_FORM_HANDLER;
+         public static final RadixIcon EMBEDDED_SELECTOR_ITEM = AdsDefinitionIcon.CLASS_FORM_HANDLER;
          */
         public static final WIDGETS CHECK_BOX_CHECKED = new WIDGETS("widgets/checkbox_checked.svg");
         public static final WIDGETS CHECK_BOX_UNCHECKED = new WIDGETS("widgets/checkbox_unchecked.svg");
@@ -434,7 +436,6 @@ public class RadixWareIcons extends RadixIcon {
         public static final WIDGETS SIGNALS = new WIDGETS("widgets/signals.svg");
         public static final WIDGETS PARAMS = new WIDGETS("widgets/params.svg");
 
-
         private WIDGETS(String uri) {
             super(uri);
         }
@@ -442,22 +443,23 @@ public class RadixWareIcons extends RadixIcon {
 
     public static class WORKFLOW extends RadixWareIcons {
         /*
-        public static final WORKFLOW NOTE = new WORKFLOW("workflow/palette/note.svg");
-        public static final WORKFLOW WAIT = new WORKFLOW("workflow/palette/wait.svg");
-        public static final WORKFLOW EMPTY = new WORKFLOW("workflow/palette/empty.svg");
-        public static final WORKFLOW FORK = new WORKFLOW("workflow/palette/fork.svg");
-        public static final WORKFLOW MERGE = new WORKFLOW("workflow/palette/merge.svg");
-        public static final WORKFLOW SCOPE = new WORKFLOW("workflow/palette/scope.svg");
-        public static final WORKFLOW VAR = new WORKFLOW("workflow/palette/var.svg");
-        public static final WORKFLOW CATCH = new WORKFLOW("workflow/palette/catch.svg");
-        public static final WORKFLOW FINISH = new WORKFLOW("workflow/palette/finish.svg");
-        public static final WORKFLOW PROGRAM = new WORKFLOW("workflow/palette/program.svg");
-        public static final WORKFLOW RETURN = new WORKFLOW("workflow/palette/return.svg");
-        public static final WORKFLOW START = new WORKFLOW("workflow/palette/start.svg");
-        public static final WORKFLOW TERM = new WORKFLOW("workflow/palette/term.svg");
-        public static final WORKFLOW THROW = new WORKFLOW("workflow/palette/throw.svg");
-        public static final WORKFLOW INCLUDE = new WORKFLOW("workflow/palette/include.svg");
-        */
+         public static final WORKFLOW NOTE = new WORKFLOW("workflow/palette/note.svg");
+         public static final WORKFLOW WAIT = new WORKFLOW("workflow/palette/wait.svg");
+         public static final WORKFLOW EMPTY = new WORKFLOW("workflow/palette/empty.svg");
+         public static final WORKFLOW FORK = new WORKFLOW("workflow/palette/fork.svg");
+         public static final WORKFLOW MERGE = new WORKFLOW("workflow/palette/merge.svg");
+         public static final WORKFLOW SCOPE = new WORKFLOW("workflow/palette/scope.svg");
+         public static final WORKFLOW VAR = new WORKFLOW("workflow/palette/var.svg");
+         public static final WORKFLOW CATCH = new WORKFLOW("workflow/palette/catch.svg");
+         public static final WORKFLOW FINISH = new WORKFLOW("workflow/palette/finish.svg");
+         public static final WORKFLOW PROGRAM = new WORKFLOW("workflow/palette/program.svg");
+         public static final WORKFLOW RETURN = new WORKFLOW("workflow/palette/return.svg");
+         public static final WORKFLOW START = new WORKFLOW("workflow/palette/start.svg");
+         public static final WORKFLOW TERM = new WORKFLOW("workflow/palette/term.svg");
+         public static final WORKFLOW THROW = new WORKFLOW("workflow/palette/throw.svg");
+         public static final WORKFLOW INCLUDE = new WORKFLOW("workflow/palette/include.svg");
+         */
+
         public static final WORKFLOW WIDGET_FINISH = new WORKFLOW("workflow/widget/finish.svg");
         public static final WORKFLOW WIDGET_RETURN = new WORKFLOW("workflow/widget/return.svg");
         public static final WORKFLOW WIDGET_START = new WORKFLOW("workflow/widget/start.svg");
@@ -466,15 +468,15 @@ public class RadixWareIcons extends RadixIcon {
         public static final WORKFLOW WIDGET_FORK = new WORKFLOW("workflow/widget/fork.svg");
         public static final WORKFLOW WIDGET_MERGE = new WORKFLOW("workflow/widget/merge.svg");
         /*
-        public static final WORKFLOW DOC_MANAGER_CREATOR = new WORKFLOW("workflow/app/docmanagercreator.svg");
-        public static final WORKFLOW PERSONAL_COMMUNICATOR = new WORKFLOW("workflow/app/personalcommunicator.svg");
-        public static final WORKFLOW EDITOR_FORM_CREATOR = new WORKFLOW("workflow/app/editorformcreator.svg");
-        public static final WORKFLOW SELECTOR_FORM_CREATOR = new WORKFLOW("workflow/app/selectorformcreator.svg");
-        public static final WORKFLOW REPORT_GENERATOR = new WORKFLOW("workflow/app/reportgenerator.svg");
-        public static final WORKFLOW DIALOG_CREATOR = new WORKFLOW("workflow/app/dialogcreator.svg");
-        public static final WORKFLOW DIALOG_DUPLICATOR = new WORKFLOW("workflow/app/dialogduplicator.svg");
-        public static final WORKFLOW NETPORT = new WORKFLOW("workflow/app/netport.svg");
-        */
+         public static final WORKFLOW DOC_MANAGER_CREATOR = new WORKFLOW("workflow/app/docmanagercreator.svg");
+         public static final WORKFLOW PERSONAL_COMMUNICATOR = new WORKFLOW("workflow/app/personalcommunicator.svg");
+         public static final WORKFLOW EDITOR_FORM_CREATOR = new WORKFLOW("workflow/app/editorformcreator.svg");
+         public static final WORKFLOW SELECTOR_FORM_CREATOR = new WORKFLOW("workflow/app/selectorformcreator.svg");
+         public static final WORKFLOW REPORT_GENERATOR = new WORKFLOW("workflow/app/reportgenerator.svg");
+         public static final WORKFLOW DIALOG_CREATOR = new WORKFLOW("workflow/app/dialogcreator.svg");
+         public static final WORKFLOW DIALOG_DUPLICATOR = new WORKFLOW("workflow/app/dialogduplicator.svg");
+         public static final WORKFLOW NETPORT = new WORKFLOW("workflow/app/netport.svg");
+         */
 
         private WORKFLOW(String uri) {
             super(uri);
@@ -491,7 +493,7 @@ public class RadixWareIcons extends RadixIcon {
         public static final MLSTRING_EDITOR TRANSLATION_NOT_CHECKED = new MLSTRING_EDITOR("mlstr/translation_not_checked.svg");
         public static final MLSTRING_EDITOR TRANSLATION_NOT_CHECKED_DISABLED = new MLSTRING_EDITOR("mlstr/translation_not_checked_disabled.svg");
         public static final MLSTRING_EDITOR TRANSLAT_DISABLED = new MLSTRING_EDITOR("mlstr/translate_disabled.svg");
-        public static final MLSTRING_EDITOR NEW_LINE = new MLSTRING_EDITOR("mlstr/new_line.svg");       
+        public static final MLSTRING_EDITOR NEW_LINE = new MLSTRING_EDITOR("mlstr/new_line.svg");
         public static final MLSTRING_EDITOR TRANSLATION_NOT_CHECKED_BORDERED = new MLSTRING_EDITOR("mlstr/translation_not_checked_bordered.svg");
         public static final MLSTRING_EDITOR TRANSLATE_BORDERED = new MLSTRING_EDITOR("mlstr/translate_bordered.svg");
         public static final MLSTRING_EDITOR PREV_CHECKED_STRING = new MLSTRING_EDITOR("mlstr/prev_unchecked.svg");
@@ -506,9 +508,19 @@ public class RadixWareIcons extends RadixIcon {
         public static final MLSTRING_EDITOR LEFT = new MLSTRING_EDITOR("mlstr/left.svg");
         public static final MLSTRING_EDITOR RIGHT = new MLSTRING_EDITOR("mlstr/right.svg");
         public static final MLSTRING_EDITOR API = new MLSTRING_EDITOR("mlstr/api.svg");
-        public static final MLSTRING_EDITOR API_HIDE = new MLSTRING_EDITOR("mlstr/api_hide.svg");        
+        public static final MLSTRING_EDITOR API_HIDE = new MLSTRING_EDITOR("mlstr/api_hide.svg");
         public static final MLSTRING_EDITOR PUBLISHED_API = new MLSTRING_EDITOR("mlstr/published_api.svg");
-         public static final MLSTRING_EDITOR COMMENTED_STR = new MLSTRING_EDITOR("mlstr/commenter_str.svg");
+        public static final MLSTRING_EDITOR COMMENTED_STR = new MLSTRING_EDITOR("mlstr/commenter_str.svg");
+        public static final MLSTRING_EDITOR AGREED_STR = new MLSTRING_EDITOR("mlstr/agreed.svg");
+        public static final MLSTRING_EDITOR DISAGREED_STR = new MLSTRING_EDITOR("mlstr/disagreed.svg");
+        public static final MLSTRING_EDITOR CHECKED_STR = new MLSTRING_EDITOR("mlstr/checked.svg");
+        public static final MLSTRING_EDITOR UNCHECKED_STR = new MLSTRING_EDITOR("mlstr/unchecked.svg");
+        public static final MLSTRING_EDITOR EXPORT_STR = new MLSTRING_EDITOR("mlstr/export_strings.svg");
+        public static final MLSTRING_EDITOR IMPORT_STR = new MLSTRING_EDITOR("mlstr/import_strings.svg");
+        public static final MLSTRING_EDITOR ACCEPT_CURRENT_VALUES = new MLSTRING_EDITOR("mlstr/accept_current_val.svg");
+        public static final MLSTRING_EDITOR ACCEPT_IMPORT_VALUES = new MLSTRING_EDITOR("mlstr/accept_import_val.svg");
+        public static final MLSTRING_EDITOR SPELLCHECK = new MLSTRING_EDITOR("mlstr/spellcheck.svg");
+        public static final MLSTRING_EDITOR MERGE_STRINGS = new MLSTRING_EDITOR("mlstr/move.svg");
 
         private MLSTRING_EDITOR(String uri) {
             super(uri);
@@ -541,13 +553,19 @@ public class RadixWareIcons extends RadixIcon {
         public static final REPORT WRAP_WORD = new REPORT("ads/report/wrap_word.svg");
         public static final REPORT CLIP_CONTENT = new REPORT("ads/report/clip_content.svg");
         public static final REPORT FONT = new REPORT("ads/report/font.svg");
+        public static final REPORT PLAIN_TEXT = new REPORT("ads/report/plain_text.svg");
+        public static final REPORT LINE_SPACING = new REPORT("ads/report/line_spacing.svg");
+        public static final REPORT MARGIN = new REPORT("ads/report/margin.svg");
+        public static final REPORT SHOW_ALWAYS = new REPORT("ads/report/show_always.svg");
+        public static final REPORT SHOW_TEXT = new REPORT("ads/report/show_text.svg");
+        public static final REPORT SHOW_GRAPHICS = new REPORT("ads/report/show_graphics.svg");
 
         private REPORT(String uri) {
             super(uri);
         }
     }
 
-    public static class SUBVERSION extends RadixWareIcons{
+    public static class SUBVERSION extends RadixWareIcons {
 
         public static final SUBVERSION SEARCH_HOSTORY = new SUBVERSION("subversion/search_hist.png");
         public static final SUBVERSION PROPERTIES = new SUBVERSION("subversion/info.png");
@@ -562,25 +580,96 @@ public class RadixWareIcons extends RadixIcon {
         }
     }
 
-    public static class ENUMERATION extends RadixWareIcons{
+    public static class ENUMERATION extends RadixWareIcons {
 
         public static final ENUMERATION DIRECT_SORT = new ENUMERATION("ads/enum_direct_sorting.svg");
         public static final ENUMERATION REVERT_SORT = new ENUMERATION("ads/enum_revert_sorting.svg");
 
-        private ENUMERATION(String uri){
+        private ENUMERATION(String uri) {
             super(uri);
         }
     }
 
-    public static class DICTIONARY extends RadixWareIcons{
+    public static class DICTIONARY extends RadixWareIcons {
 
         public static final DICTIONARY SORTING = new DICTIONARY("ads/sorting.svg");
         public static final DICTIONARY DICTIONARY = new DICTIONARY("ads/phrase_book.svg");
 
-        private DICTIONARY(String uri){
+        private DICTIONARY(String uri) {
             super(uri);
         }
     }
+
+    public static class XML extends RadixWareIcons {
+
+        public static final XML ALL = new XML("ads/xml/all.svg");
+        public static final XML ATTRIBUTE = new XML("ads/xml/attribute.svg");
+        public static final XML ATTRIBUTE_GROUP = new XML("ads/xml/attribute_group.svg");
+        public static final XML CHOICE = new XML("ads/xml/choise.svg");
+        public static final XML COMPLEX_TYPE = new XML("ads/xml/complex_type.svg");
+        public static final XML ELEMENT = new XML("ads/xml/element.svg");
+        public static final XML ENUM = new XML("ads/xml/enum.svg");
+        public static final XML IMPORTED_SCHEMA = new XML("ads/xml/imported_schema.svg");
+        public static final XML RESTRICTION = new XML("ads/xml/restriction.svg");
+        public static final XML SCHEMA = new XML("ads/xml/schema.svg");
+        public static final XML SEQUENCE = new XML("ads/xml/sequence.svg");
+        public static final XML SIMPLE_TYPE = new XML("ads/xml/simple_type.svg");
+
+        public static final XML CHANGE_LOG = new XML("ads/xml/changelog.svg");
+        public static final XML HIDE_DOCUMENTED_NODES = new XML("ads/xml/hide_documented_nodes.svg");
+        public static final XML HIDE_UNDOCUMENTED_NODES = new XML("ads/xml/hide_undocumented_nodes.svg");
+        public static final XML HIDE_SERVICE_NODES = new XML("ads/xml/hide_service_nodes.svg");
+
+        public static final XML NEXT_UNDOCUMENTED = new XML("ads/xml/next_undocumented.svg");
+        public static final XML PREV_UNDOCUMENTED = new XML("ads/xml/prev_undocumented.svg");
+
+        public static final XML LINKED_SCHEMAS = new XML("ads/xml/linked_schemas.svg");
+        
+        public static final XML WARNING = new XML("eventseverity/warning.svg");
+
+        private XML(String uri) {
+            super(uri);
+        }
+    }
+
+    public static class LANGS extends RadixWareIcons {
+
+        public static final LANGS getForLang(EIsoLanguage lang) {
+            LANGS tmp = new LANGS("langs/" + lang.getValue() + ".png");
+            if (tmp.getIcon() == null) {
+                return new LANGS("langs/unknown.png");
+            } else {
+                return tmp;
+            }
+        }
+
+        private LANGS(String uri) {
+            super(uri);
+        }
+    }
+    
+    public static class LICENSES extends RadixWareIcons {
+
+        public static final LICENSES LICENSE = new LICENSES("licenses/license.svg");
+        public static final LICENSES LICENSE_GROUP = new LICENSES("licenses/license_group.svg");
+        public static final LICENSES HIDE_MODULE_DEPENDENCIES = new LICENSES("licenses/hide_module_dependencies.svg");
+        public static final LICENSES HIDE_LICENSE_DEPENDENCIES = new LICENSES("licenses/hide_license_dependencies.svg");
+
+        private LICENSES(String uri) {
+            super(uri);
+        }
+    }
+    
+      public static class TECHNICAL_DOCUMENTATION extends RadixWareIcons {
+
+        public static final TECHNICAL_DOCUMENTATION MAP = new TECHNICAL_DOCUMENTATION("technicaldocumentation/map.svg");
+        public static final TECHNICAL_DOCUMENTATION TOPIC = new TECHNICAL_DOCUMENTATION("technicaldocumentation/topic.svg");
+        
+        private TECHNICAL_DOCUMENTATION(String uri) {
+            super(uri);
+        }
+    }
+
     private RadixWareIcons(String uri) {
         super(uri);
     }

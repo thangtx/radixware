@@ -12,6 +12,8 @@
 
 package org.radixware.kernel.common.client.trace;
 
+import java.io.IOException;
+import java.io.Writer;
 import org.radixware.kernel.common.enums.EEventSeverity;
 
 
@@ -27,5 +29,10 @@ public interface IClientTraceItem {
 
     EEventSeverity getSeverity();
         
-    String getDisplayText();        
+    String getDisplayText();
+    
+    /**
+     * Write this to writer in a streamed manner. Returns number of chars written.
+     */
+    int toWriter(Writer writer) throws IOException;
 }

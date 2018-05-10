@@ -17,6 +17,8 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
+import org.radixware.wps.rwt.RwtMenu;
 
 
 public class RwtAction implements Action {
@@ -31,6 +33,8 @@ public class RwtAction implements Action {
     private ClientIcon clientIcon;
     private String title;
     private String toolTip;
+    private RwtMenu menu;
+    private Object userObject;
     private final List<ActionListener> listeners = new LinkedList<>();
     private final List<ActionStateListener> stateListeners = new LinkedList<>();
     private final List<ActionToggleListener> toggleListeners = new LinkedList<>();
@@ -278,4 +282,26 @@ public class RwtAction implements Action {
         firePresentationChange();
         fireToggled();
     }
+
+    @Override
+    public RwtMenu getActionMenu() {
+        return menu;
+    }
+
+    @Override
+    public void setActionMenu(final IMenu menu) {
+        this.menu = (RwtMenu)menu;
+        firePresentationChange();
+    }        
+
+    @Override
+    public Object getUserObject() {
+        return userObject;
+    }
+
+    @Override
+    public void setUserObject(final Object object) {
+        userObject = object;
+    }
+        
 }

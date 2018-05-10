@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.dialogs.chooseobject;
 
 import java.util.List;
@@ -23,18 +22,23 @@ public class ChooseDefinition {
     private ChooseDefinition() {
     }
 
-    private static final List<Definition> chooseDefinition(ChooseDefinitionCfg cfg, boolean multipleSelectionAllowed) {
+    private static final List<Definition> chooseDefinition(ChooseDefinitionCfg cfg, boolean multipleSelectionAllowed, boolean isMulticolumnDialog) {
         final VisitorProvider provider = cfg.getProvider();
         if (provider != null) {
             provider.setCancelled(false);
         }
 
         final IChooseDefinitionModalDisplayer modalDisplayer;
-        if (cfg.getStepCount() > 1) {
-            modalDisplayer = new ChooseDefinitionWizard(cfg, multipleSelectionAllowed);
+
+        if (isMulticolumnDialog) {
+            modalDisplayer = new ChooseDefinitionExModalDisplayer(cfg);
         } else {
-            final ChooseDefinitionPanel panel = new ChooseDefinitionPanel();
-            modalDisplayer = new ChooseDefinitionModalDisplayer(panel, cfg, multipleSelectionAllowed);
+            if (cfg.getStepCount() > 1) {
+                modalDisplayer = new ChooseDefinitionWizard(cfg, multipleSelectionAllowed);
+            } else {
+                final ChooseDefinitionPanel panel = new ChooseDefinitionPanel();
+                modalDisplayer = new ChooseDefinitionModalDisplayer(panel, cfg, multipleSelectionAllowed);
+            }
         }
 
         if (modalDisplayer.showModal()) {
@@ -48,7 +52,7 @@ public class ChooseDefinition {
     }
 
     public static final Definition chooseDefinition(ChooseDefinitionCfg cfg) {
-        List<? extends Definition> selectedObjects = chooseDefinition(cfg, false);
+        List<? extends Definition> selectedObjects = chooseDefinition(cfg, false, false);
         if (selectedObjects != null && !selectedObjects.isEmpty()) {
             return selectedObjects.get(0);
         } else {
@@ -57,7 +61,16 @@ public class ChooseDefinition {
     }
 
     public static final List<Definition> chooseDefinitions(ChooseDefinitionCfg cfg) {
-        List<Definition> selectedObjects = chooseDefinition(cfg, true);
+        List<Definition> selectedObjects = chooseDefinition(cfg, true, false);
+        if (selectedObjects != null && !selectedObjects.isEmpty()) {
+            return selectedObjects;
+        } else {
+            return null;
+        }
+    }
+
+    public static final List<Definition> chooseDefinitionsEx(ChooseDefinitionCfg cfg) {
+        List<Definition> selectedObjects = chooseDefinition(cfg, true, true);
         if (selectedObjects != null && !selectedObjects.isEmpty()) {
             return selectedObjects;
         } else {

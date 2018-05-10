@@ -10,12 +10,15 @@
  */
 package org.radixware.kernel.common.defs.ads.explorerItems;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.AdsDefinitionProblems;
 import org.radixware.kernel.common.defs.ads.AdsDefinitions;
 import org.radixware.kernel.common.defs.ads.ITitledDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
@@ -28,15 +31,22 @@ import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.schemas.adsdef.TitledAdsDefinition;
+import org.radixware.schemas.adsdef.AbstractExplorerItemDefinition;
 
-public abstract class AdsExplorerItemDef extends AdsDefinition implements IJavaSource, IOverridable, IOverwritable, ITitledDefinition {
+ public abstract class AdsExplorerItemDef extends AdsDefinition implements IJavaSource, IOverridable, IOverwritable, ITitledDefinition {
 
     protected Id titleId = null;
+    private Problems problems = null;
 
-    public AdsExplorerItemDef(TitledAdsDefinition xDef) {
+    public AdsExplorerItemDef(AbstractExplorerItemDefinition xDef) {
         super(xDef);
         this.titleId = xDef.getTitleId();
+        if (xDef.isSetSuppressedWarnings()) {
+            List<Integer> list = xDef.getSuppressedWarnings();
+            if (!list.isEmpty()) {
+                this.problems = instantiateWarningsSupport(list);
+            }
+        }
     }
 
     public AdsExplorerItemDef(Id id, String name) {
@@ -71,10 +81,20 @@ public abstract class AdsExplorerItemDef extends AdsDefinition implements IJavaS
         return true;
     }
 
-    public void appendTo(TitledAdsDefinition xDef, ESaveMode saveMode) {
+    public void appendTo(AbstractExplorerItemDefinition xDef, ESaveMode saveMode) {
         super.appendTo(xDef, saveMode);
         if (titleId != null) {
             xDef.setTitleId(titleId);
+        }
+        if (saveMode == ESaveMode.NORMAL) {
+            if (problems != null && !problems.isEmpty()) {
+                int[] warnings = problems.getSuppressedWarnings();
+                List<Integer> list = new ArrayList<>(warnings.length);
+                for (int w : warnings) {
+                    list.add(Integer.valueOf(w));
+                }
+                xDef.setSuppressedWarnings(list);
+            }
         }
     }
 
@@ -472,5 +492,35 @@ public abstract class AdsExplorerItemDef extends AdsDefinition implements IJavaS
                 }
             }
         }
+    }
+    
+    private static class Problems extends AdsDefinitionProblems {
+
+        public Problems(AdsDefinition owner) {
+            super(owner);
+        }
+
+        public Problems(AdsDefinition owner, List warnings) {
+            super(owner, warnings);
+        }
+    }
+
+    @Override
+    public RadixProblem.WarningSuppressionSupport getWarningSuppressionSupport(boolean createIfAbsent) {
+        synchronized (this) {
+            if (problems == null) {
+                problems = new Problems(this);
+            }
+            return problems;
+        }
+    }
+    
+    protected Problems instantiateWarningsSupport(List<Integer> list) {
+        return new Problems(this, list);
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return ERuntimeEnvironmentType.EXPLORER;
     }
 }

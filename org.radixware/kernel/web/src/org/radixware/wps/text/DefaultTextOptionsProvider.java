@@ -192,13 +192,19 @@ public class DefaultTextOptionsProvider implements ITextOptionsProvider {
             }
             cfgPath.append(cfgGroup);
         }
-
-        WpsTextOptions options = getSettings().readTextOptions(cfgPath.toString());
-        return options;
+        final WpsSettings settings = getSettings();
+        settings.pushGroup();
+        try{
+            settings.endAllGroups();
+            return settings.readTextOptions(cfgPath.toString());
+        }finally{
+            settings.popGroup();
+        }
     }
 
     private String readColor(final List<String> cfgGroups, final String value, String opt) {
-        if (getSettings() == null) {
+        final WpsSettings settings = getSettings();
+        if (settings == null) {
             return null;
         }
         final StringBuilder cfgPath = new StringBuilder();
@@ -214,9 +220,14 @@ public class DefaultTextOptionsProvider implements ITextOptionsProvider {
         if (value != null) {
             cfgPath.append("/");
             cfgPath.append(value);
-        }
-        final String colorAsStr = getSettings().readString(cfgPath.toString());
-        return colorAsStr;
+        }        
+        settings.pushGroup();
+        try{
+            settings.endAllGroups();
+            return settings.readString(cfgPath.toString());
+        }finally{
+            settings.popGroup();
+        }        
     }
 
     protected WpsSettings getSettings() {

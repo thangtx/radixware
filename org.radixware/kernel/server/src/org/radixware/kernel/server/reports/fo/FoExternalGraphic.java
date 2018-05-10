@@ -44,6 +44,8 @@ class FoExternalGraphic extends FoObject {
     public static final String ALIGN_RIGHT = "right";
     public static final String ALIGN_TOP = "top";
     public static final String ALIGN_BOTTOM = "bottom";
+    public static final String SCALING_UNIFORM = "uniform";
+    public static final String SCALING_NONUNIFORM = "non-uniform";
 
     public void setContentWidth(final String contentWidth) throws XMLStreamException {
         writeAttribute("content-width", contentWidth);
@@ -84,6 +86,10 @@ class FoExternalGraphic extends FoObject {
                 break;
         }
         writeAttribute("text-align", strAlign);
+    }
+    
+    public void setScaling(String type) throws XMLStreamException{
+        writeAttribute("scaling", type);
     }
 
     //content-width="scale-to-fit" content-height="scale-to-fit"

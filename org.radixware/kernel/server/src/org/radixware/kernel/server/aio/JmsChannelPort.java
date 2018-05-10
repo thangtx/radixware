@@ -113,7 +113,7 @@ public class JmsChannelPort extends ChannelPort {
     }
 
     @Override
-    SelectableChannel getSelectableInChannel() {
+    public SelectableChannel getSelectableInChannel() {
         return connectionChannel.getSelectableChannel();
     }
 

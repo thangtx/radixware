@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="adcN75M56PCGVETRM4UD2SPS2ZXCQ" Name="UserFuncCompiler" Type="3" Environment="common">
-    <AccessRules Access="4" IsFinal="true" IsPublished="false">
+    <AccessRules IsFinal="true" IsPublished="false">
       <Transparence Extendable="false"/>
     </AccessRules>
     <Headers>
@@ -12,7 +12,8 @@
         <xsc:Item>
           <xsc:Java>private org.radixware.kernel.common.compiler.lookup.AdsWorkspace sharedWorkspace;
 private org.radixware.kernel.common.check.IProblemHandler externalHandler;
-public boolean useSharedWorkspace = false;</xsc:Java>
+public boolean useSharedWorkspace = false;
+public static final String USE_SHARED_WORKSPACE_ON_CFG_IMPORT = "rdx.use.shared.workspace.on.cfg.import";</xsc:Java>
         </xsc:Item>
       </Src>
     </Bodies>
@@ -28,12 +29,6 @@ public boolean useSharedWorkspace = false;</xsc:Java>
           </Parameter>
           <Parameter Name="problemHandler" Id="mpr5OXUGDE2PVCCLKLG3BXD7TYMVA">
             <Type TypeId="400" extStr="org.radixware.kernel.common.check.IProblemHandler"/>
-          </Parameter>
-          <Parameter Name="storedVersion" Id="mprFGHOQMOWVVBI7DSQZZYODALCAU">
-            <Type TypeId="2"/>
-          </Parameter>
-          <Parameter Name="currentVersion" Id="mprWG3K42DMX5EP7DYTYJNZL3SXTI">
-            <Type TypeId="2"/>
           </Parameter>
           <Parameter Name="fakeResult" Id="mprZ7TGMSV6VVGZ5KIB5VMJMORHGI">
             <Type TypeId="401" extStr="boolean"/>
@@ -75,7 +70,9 @@ try {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcN75M56PCGVETRM4UD2SPS2ZXCQ mthJHAUJF4G35B45JOECUUALIXX3I" Invoke="true"/>
+              <xsc:IdReference Path="adcN75M56PCGVETRM4UD2SPS2ZXCQ mthJHAUJF4G35B45JOECUUALIXX3I" Invoke="true">
+                <xsc:Presentation>initializeWorkspace</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(userFunc.getBranch());
@@ -86,7 +83,9 @@ try {
         make.compile(userFunc, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciABE2KZKRJRELNJAMWZGMPNLOC4" Invoke="true"/>
+              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciABE2KZKRJRELNJAMWZGMPNLOC4" Invoke="true">
+                <xsc:Presentation>Common::RuntimeEnvironmentType:SERVER</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, diagnoseHandler, null, true, true);
@@ -103,7 +102,9 @@ try {
         ufDists = make.computeDistribution(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciABE2KZKRJRELNJAMWZGMPNLOC4" Invoke="true"/>
+              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciABE2KZKRJRELNJAMWZGMPNLOC4" Invoke="true">
+                <xsc:Presentation>Common::RuntimeEnvironmentType:SERVER</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, problemHandler, null);
@@ -116,14 +117,18 @@ try {
             make.compile(bundle, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciANTA3DRPMNFQTLS2LVJHGJDKQI" Invoke="true"/>
+              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciANTA3DRPMNFQTLS2LVJHGJDKQI" Invoke="true">
+                <xsc:Presentation>Common::RuntimeEnvironmentType:COMMON</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, diagnoseHandler, null, true, false);
             java.util.List&lt;org.radixware.kernel.common.defs.ads.build.Make.Distribution> mlbDists = make.computeDistribution(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciANTA3DRPMNFQTLS2LVJHGJDKQI" Invoke="true"/>
+              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciANTA3DRPMNFQTLS2LVJHGJDKQI" Invoke="true">
+                <xsc:Presentation>Common::RuntimeEnvironmentType:COMMON</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, problemHandler, null);
@@ -157,7 +162,9 @@ try {
             } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {

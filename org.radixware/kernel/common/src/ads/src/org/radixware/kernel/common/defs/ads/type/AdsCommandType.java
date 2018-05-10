@@ -41,14 +41,14 @@ public class AdsCommandType extends AdsDefinitionType {
     public TypeJavaSourceSupport getJavaSourceSupport() {
         return new TypeJavaSourceSupport(this) {
             @Override
-            public char[][] getPackageNameComponents(UsagePurpose env) {
+            public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
 
 
                 if (getSource().getDefinitionType() == EDefType.CONTEXTLESS_COMMAND) {
                     if (env.getEnvironment() == ERuntimeEnvironmentType.EXPLORER || env.getEnvironment() == ERuntimeEnvironmentType.WEB) {
-                        return JavaSourceSupport.getPackageNameComponents(source, UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON_CLIENT, env.getCodeType()));
+                        return JavaSourceSupport.getPackageNameComponents(source, isHumanReadable, UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON_CLIENT, env.getCodeType()));
                     } else {
-                        return JavaSourceSupport.getPackageNameComponents(source, env);
+                        return JavaSourceSupport.getPackageNameComponents(source, isHumanReadable, env);
                     }
                 } else {
                     assert env.getEnvironment() == ERuntimeEnvironmentType.EXPLORER || env.getEnvironment() == ERuntimeEnvironmentType.WEB || env.getEnvironment() == ERuntimeEnvironmentType.COMMON_CLIENT;
@@ -58,14 +58,14 @@ public class AdsCommandType extends AdsDefinitionType {
                         commandSrc = ovr;
                         ovr = commandSrc.getHierarchy().findOverridden().get();
                     }
-                    return JavaSourceSupport.getPackageNameComponents(((AdsScopeCommandDef) commandSrc).getOwnerClass(), /*
+                    return JavaSourceSupport.getPackageNameComponents(((AdsScopeCommandDef) commandSrc).getOwnerClass(), isHumanReadable,/*
                              * UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON_CLIENT, env.getCodeType()
                              */ env);
                 }
             }
 
             @Override
-            public char[] getLocalTypeName(UsagePurpose env) {
+            public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
                 if (getSource().getDefinitionType() == EDefType.CONTEXTLESS_COMMAND) {
                     return source.getId().toCharArray();
                 } else {
@@ -76,7 +76,7 @@ public class AdsCommandType extends AdsDefinitionType {
                         commandSrc = ovr;
                         ovr = commandSrc.getHierarchy().findOverridden().get();
                     }
-                    return CharOperation.concat(((AdsScopeCommandDef) commandSrc).getOwnerClass().getRuntimeLocalClassName().toCharArray(), commandSrc.getId().toCharArray(), '.');
+                    return CharOperation.concat(((AdsScopeCommandDef) commandSrc).getOwnerClass().getRuntimeLocalClassName(isHumanReadable).toCharArray(), JavaSourceSupport.getName(commandSrc, isHumanReadable, true), '.');
                 }
             }
         };

@@ -18,13 +18,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.IEnumDef;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObjectIcon;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsDynamicPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsExpressionPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsFieldPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
-import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef.UsedTable;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumUtils;
@@ -35,6 +35,8 @@ import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 import org.radixware.kernel.common.defs.dds.DdsPlSqlObjectDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTable;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.scml.Scml.Tag;
@@ -75,8 +77,8 @@ public class DefaultNodeInfoFactory implements AdsSqlClassTree.NodeInfoFactory {
             return new FieldInfo((AdsFieldPropertyDef) object);
         } else if (object instanceof DdsColumnDef) {
             return new ColumnInfo((DdsColumnDef) object);
-        } else if (object instanceof UsedTable) {
-            return new TableInfo((UsedTable) object);
+        } else if (object instanceof IUsedTable) {
+            return new TableInfo((IUsedTable) object);
         } else if (object instanceof DdsIndexDef) {
             return new IndexInfo((DdsIndexDef) object);
         } else if (object instanceof DdsPlSqlObjectDef) {
@@ -195,8 +197,13 @@ public class DefaultNodeInfoFactory implements AdsSqlClassTree.NodeInfoFactory {
             final DdsColumnDef columnDef = (DdsColumnDef) node.getNodeInfo().getObject();
             final AdsEnumDef enumDef = AdsEnumUtils.findColumnEnum(columnDef);
 
-            tree.getSqlClass().getModule().getDependences().add(enumDef.getModule());
-
+             Definition owner = tree.getSqlDef().getDefinition();
+            if (owner != null){
+                Module module = owner.getModule();
+                if (module != null){
+                    module.getDependences().add(enumDef.getModule());
+                }
+            }
             tag.setEnumId(enumDef.getId());
 
             return tag;
@@ -278,9 +285,9 @@ public class DefaultNodeInfoFactory implements AdsSqlClassTree.NodeInfoFactory {
             final JoinTag tag = JoinTag.Factory.newInstance();
             tag.setReferenceId(getObject().getId());
             final Node usedTableNode = AdsSqlClassTreeUtilities.getParentUsedTableNode((TreeNode) tree.getSelectionPath().getLastPathComponent());
-            final UsedTable usedTable = (UsedTable) usedTableNode.getNodeInfo().getObject();
+            final IUsedTable usedTable = (IUsedTable) usedTableNode.getNodeInfo().getObject();
             final JoinTagEditor.AliasCookie aliasCookie = new JoinTagEditor.AliasCookie(usedTable.getAlias(), null);
-            if (tree.getEditor().getPane().editTag(tag, Lookups.fixed(tree.getSqlClass(), getObject(), aliasCookie))) {
+            if (tree.getEditor().getPane().editTag(tag, Lookups.fixed(tree.getSqlDef(), getObject(), aliasCookie))) {
                 return tag;
             }
             return null;
@@ -551,7 +558,7 @@ public class DefaultNodeInfoFactory implements AdsSqlClassTree.NodeInfoFactory {
         public Scml.Tag createTag(final AdsSqlClassTree tree) {
             final Node usedTableNode = AdsSqlClassTreeUtilities.getParentUsedTableNode((TreeNode) tree.getSelectionPath().getLastPathComponent());
             final NodeInfo info = usedTableNode.getNodeInfo();
-            final UsedTable usedTable = (UsedTable) info.getObject();
+            final IUsedTable usedTable = (IUsedTable) info.getObject();
             final PropSqlNameTag tag = PropSqlNameTag.Factory.newInstance();
             tag.setPropId(getObject().getId());
             tag.setPropOwnerId(getObject().getOwnerDefinition().getId());
@@ -607,7 +614,7 @@ public class DefaultNodeInfoFactory implements AdsSqlClassTree.NodeInfoFactory {
         public Scml.Tag createTag(final AdsSqlClassTree tree) {
             final Node usedTableNode = AdsSqlClassTreeUtilities.getParentUsedTableNode((TreeNode) tree.getSelectionPath().getLastPathComponent());
             final NodeInfo info = usedTableNode.getNodeInfo();
-            final UsedTable usedTable = (UsedTable) info.getObject();
+            final IUsedTable usedTable = (IUsedTable) info.getObject();
             final PropSqlNameTag tag = PropSqlNameTag.Factory.newInstance();
             tag.setPropId(getObject().getId());
             tag.setPropOwnerId(getObject().getOwnerDefinition().getId());
@@ -617,11 +624,11 @@ public class DefaultNodeInfoFactory implements AdsSqlClassTree.NodeInfoFactory {
         }
     }
 
-    private static class TableInfo<T extends UsedTable> extends NodeInfo<T> {
+    private static class TableInfo<T extends IUsedTable> extends NodeInfo<IUsedTable> {
 
         private final String notFoundMessage = NbBundle.getMessage(DefaultNodeInfoFactory.class, "table-not-found");
 
-        public TableInfo(final T table) {
+        public TableInfo(final IUsedTable table) {
             super(table);
             setIcon(DdsDefinitionIcon.TABLE.getIcon());
 
@@ -676,8 +683,8 @@ public class DefaultNodeInfoFactory implements AdsSqlClassTree.NodeInfoFactory {
 
         @Override
         public void remove(final AdsSqlClassTree tree) {
-            final AdsSqlClassDef sqlClass = tree.getSqlClass();
-            sqlClass.getUsedTables().remove(getObject());
+            final ISqlDef sqlClass = tree.getSqlDef();
+            sqlClass.getUsedTables().remove((IUsedTable)getObject());
         }
 
         @Override

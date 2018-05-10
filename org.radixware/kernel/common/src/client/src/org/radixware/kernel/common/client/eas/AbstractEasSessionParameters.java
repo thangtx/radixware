@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.eas;
 
 import java.security.cert.X509Certificate;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.enums.EAuthType;
 
 
@@ -19,10 +20,21 @@ abstract class AbstractEasSessionParameters {
     
     private final String stationName;
     private final String userName;
+    private final PasswordHash.Algorithm hashAlgorithm;
+    private final boolean isWebDriverEnabled;
     
-    public AbstractEasSessionParameters(final String userName, final String stationName){
+    public AbstractEasSessionParameters(final String userName, 
+                                                           final String stationName, 
+                                                           final PasswordHash.Algorithm hashAlgo,
+                                                           final boolean isWebDriverEnabled){
         this.userName = userName;
         this.stationName = stationName;
+        this.hashAlgorithm = hashAlgo;
+        this.isWebDriverEnabled = isWebDriverEnabled;
+    }
+    
+    public PasswordHash.Algorithm getPwdHashAlgorithm(){
+        return hashAlgorithm;
     }
 
     public String getStationName() {
@@ -33,11 +45,15 @@ abstract class AbstractEasSessionParameters {
         return userName;
     }   
     
+    public boolean isWebDriverEnabled(){
+        return isWebDriverEnabled;
+    }
+    
     public abstract EAuthType getAuthType();
     
     public abstract boolean hasUserCerts();
     
     public abstract X509Certificate[] getUserCertificates();
     
-    public abstract AbstractEasSessionParameters createCopy(final String newUserName);
+    public abstract AbstractEasSessionParameters createCopy(final String newUserName, final PasswordHash.Algorithm newHashAlgo);
 }

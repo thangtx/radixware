@@ -13,6 +13,7 @@ package org.radixware.kernel.reporteditor.common;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,11 +71,15 @@ import static org.radixware.kernel.common.userreport.repository.UserReport.REPOR
 import static org.radixware.kernel.common.userreport.repository.UserReport.REPORT_VERSION_ORDER_PROP_ID;
 import static org.radixware.kernel.common.userreport.repository.UserReport.REPORT_VERSION_REPORT_ID_PROP_ID;
 import static org.radixware.kernel.common.userreport.repository.UserReport.REPORT_VERSION_SOURCE_PROP_ID;
+import static org.radixware.kernel.common.userreport.repository.UserReport.REPORT_VERSION_SOURCE_WITH_ACTUAL_CHANGELOG_PROP_ID;
 import static org.radixware.kernel.common.userreport.repository.UserReport.REPORT_VERSION_VERSION_PROP_ID;
 import static org.radixware.kernel.common.userreport.repository.UserReport.getReportPid;
+import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 import org.radixware.kernel.reporteditor.tree.ChooseImportActionDialog;
 import org.radixware.schemas.adsdef.AdsUserReportExchangeDocument;
+import org.radixware.schemas.adsdef.Report;
+import org.radixware.schemas.commondef.ChangeLogDocument;
 import org.radixware.schemas.eas.CommandRs;
 import org.radixware.schemas.types.StrDocument;
 
@@ -82,6 +87,9 @@ public class URRequestExecutor implements IUserReportRequestExecutor {
 
     @Override
     public List<ModuleInfo> listModules() {
+        if (!UserExtensionManager.getInstance().needLoadReportModules()) {
+            return Collections.emptyList();
+        }
         final List<ModuleInfo> res = new ArrayList<>();
         UserExtensionManager.getInstance().getRequestExecutor().submitAction(new RequestExecutor.ExplorerActionWithWaitImpl() {
             @Override
@@ -94,7 +102,7 @@ public class URRequestExecutor implements IUserReportRequestExecutor {
                     String moduleName = ((String) module.getProperty(ReportsModuleRepository.REPORT_MODULE_TITLE_PROP_ID).getValueObject());
                     String moduleDescription = ((String) module.getProperty(ReportsModuleRepository.REPORT_MODULE_DESC_PROP_ID).getValueObject());
                     res.add(new ModuleInfo(moduleId, moduleName, moduleDescription));
-                        //try {
+                            //try {
                     //registerModule(moduleId, createModuleRepository(moduleId, moduleName, moduleDescription), true);
                     //} catch (IOException e) {
                     //    env.processException(e);
@@ -161,7 +169,7 @@ public class URRequestExecutor implements IUserReportRequestExecutor {
             public void execute(final IClientEnvironment env) {
                 try {
                     EntityModel model = UserReport.openReportVersionModel(UserExtensionManager.getInstance().getEnvironment(), reportId, version);
-                    Object reportData = model.getProperty(ReportsModuleRepository.REPORT_VERSION_SRC_PROP_ID).getValueObject();
+                    Object reportData = model.getProperty(REPORT_VERSION_SOURCE_WITH_ACTUAL_CHANGELOG_PROP_ID).getValueObject();
                     Id lastRuntimeId = Id.Factory.loadFrom((String) model.getProperty(ReportsModuleRepository.REPORT_VERSION_USER_CLASS_GUID_PROP_ID).getValueObject());
                     AdsUserReportDefinitionDocument xml = XmlObjectProcessor.cast(getClass().getClassLoader(), (XmlObject) reportData, AdsUserReportDefinitionDocument.class);
                     reoprtInfo.add(new ReportDataInfo(lastRuntimeId, xml));
@@ -191,13 +199,6 @@ public class URRequestExecutor implements IUserReportRequestExecutor {
 
     @Override
     public boolean removeVersion(final UserReport.ReportVersion version, final Id id) {
-        /*boolean fire = false;
-         synchronized (this) {
-
-         if (version.isCurrent()) {
-         return;
-         }*/
-
         final boolean[] done = new boolean[]{false};
         UserExtensionManager.getInstance().getRequestExecutor().submitAction(new RequestExecutor.ExplorerActionWithWaitImpl() {
             @Override
@@ -213,17 +214,6 @@ public class URRequestExecutor implements IUserReportRequestExecutor {
             }
         });
 
-        /* if (done[0]) {
-         version.lockDefinitionSearch(true);
-         version.cleanup();
-         removeFromVersions(version);
-         fire = true;
-         }
-
-         }
-         if (fire) {
-         fireChange();
-         }*/
         return done[0];
     }
 
@@ -283,6 +273,12 @@ public class URRequestExecutor implements IUserReportRequestExecutor {
                 try {
                     EntityModel versionModel = UserReport.openReportVersionModel(UserExtensionManager.getInstance().getEnvironment(), reportId, version);
                     versionModel.getProperty(UserReport.REPORT_VERSION_SOURCE_PROP_ID).setValueObject(xDoc);
+                    Report xRep = xDoc.getAdsUserReportDefinition().getReport().getReport();
+                    if (xRep.isSetChangeLog()) {
+                        ChangeLogDocument xLog = ChangeLogDocument.Factory.newInstance();
+                        xLog.addNewChangeLog().set(xRep.getChangeLog());
+                        versionModel.getProperty(UserReport.REPORT_VERSION_CHANGE_LOG_PROP_ID).setValueObject(xLog);
+                    }
 
                     if (runtimeFile != null) {
                         Bin runtimeData = new Bin(FileUtils.readBinaryFile(runtimeFile));
@@ -496,5 +492,10 @@ public class URRequestExecutor implements IUserReportRequestExecutor {
                 task.run();
             }
         });
+    }
+    
+    @Override
+    public boolean messageConfirmation(final String message) {
+        return DialogUtils.messageConfirmation(message);
     }
 }

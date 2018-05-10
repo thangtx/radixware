@@ -64,8 +64,10 @@ import org.radixware.kernel.common.radixdoc.IRadixdocProvider;
 import org.radixware.kernel.common.radixdoc.RadixdocSupport;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.ENamingPolicy;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import static org.radixware.kernel.common.enums.EValType.ARR_BOOL;
 import org.radixware.kernel.common.radixdoc.DocumentOptions;
 import org.radixware.kernel.common.sqml.ads.AdsSqmlEnvironment;
 import org.radixware.kernel.common.utils.ValTypes;
@@ -408,7 +410,7 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
             setEditState(EEditState.MODIFIED);
         }
 
-        protected AdsFilterDef getOwnerFilter() {
+        public AdsFilterDef getOwnerFilter() {
             for (RadixObject owner = getContainer(); owner != null; owner = owner.getContainer()) {
                 if (owner instanceof AdsFilterDef) {
                     return (AdsFilterDef) owner;
@@ -452,6 +454,11 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
             super.collectDependences(list);
             if (this.editOptions != null) {
                 this.editOptions.collectDependences(list);
+                
+                final AdsSelectorPresentationDef presentation = this.editOptions.findParentSelectorPresentation();
+                if (presentation != null) {
+                    list.add(presentation);
+                }
             }
             if (type != null) {
                 AdsType resolved = type.resolve(this).get();
@@ -469,7 +476,7 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
             if (type == null) {
                 return false;
             }
-            return !type.isArrayType() && (ValTypes.INNATE_PROPERTY_TYPES.contains(type) || type == EValType.PARENT_REF);
+            return type != ARR_BOOL && (ValTypes.INNATE_PROPERTY_TYPES.contains(type) || type == EValType.PARENT_REF);
         }
 
         @Override
@@ -552,6 +559,11 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
         public boolean isSuitableContainer(AdsDefinitions collection) {
             return collection instanceof Parameters;
         }
+
+        @Override
+        public ERuntimeEnvironmentType getDocEnvironment() {
+            return ERuntimeEnvironmentType.COMMON_CLIENT;
+        }
     }
 
     private class Parameters extends AdsDefinitions<Parameter> {
@@ -586,6 +598,7 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
         }
     }
     private final Sqml condition = new FilterSqml();
+    private final Sqml conditionFrom = new FilterSqml();
     private final Sqml hint = new FilterSqml();
     private boolean anyBaseSortingEnabled;
     private boolean customSortingEnabled;
@@ -621,6 +634,7 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
     protected AdsFilterDef(Filter xFilter) {
         super(xFilter);
         this.condition.loadFrom(xFilter.getCondition());
+        this.conditionFrom.loadFrom(xFilter.getConditionFrom());
         this.anyBaseSortingEnabled = xFilter.getAnyBaseSortingEnabled();
         this.customSortingEnabled = xFilter.getCustomSortingEnabled();
         this.defaultSortingId = xFilter.getDefaultSortingId();
@@ -697,6 +711,7 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
         super.appendTo(xDef, saveMode);
         if (saveMode == ESaveMode.NORMAL) {
             this.condition.appendTo(xDef.addNewCondition());
+            this.conditionFrom.appendTo(xDef.addNewConditionFrom());
             this.hint.appendTo(xDef.addNewHint());
             xDef.setCustomSortingEnabled(customSortingEnabled);
             xDef.setAnyBaseSortingEnabled(anyBaseSortingEnabled);
@@ -756,6 +771,10 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
 
     public Sqml getCondition() {
         return condition;
+    }
+
+    public Sqml getConditionFrom() {
+        return conditionFrom;
     }
 
     public boolean isCustomSortingEnabled() {
@@ -819,6 +838,7 @@ public class AdsFilterDef extends AdsPresentationsMember implements IJavaSource,
     @Override
     public void visitChildren(IVisitor visitor, VisitorProvider provider) {
         this.condition.visit(visitor, provider);
+        this.conditionFrom.visit(visitor, provider);
         this.hint.visit(visitor, provider);
         this.enabledSortings.visit(visitor, provider);
         this.parameters.visit(visitor, provider);

@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.text;
 
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QBrush;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFont;
@@ -28,6 +29,7 @@ import org.radixware.kernel.common.client.enums.ETextDecoration;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.text.IFont;
 import org.radixware.kernel.common.client.text.TextOptions;
+import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
@@ -181,6 +183,23 @@ public final class ExplorerTextOptions extends TextOptions {
     
     public QFont getQFont(){
         return getFont()==null ? null : getFont().getQFont();
+    }
+    
+    public Qt.AlignmentFlag getQAlignment(){
+        final ETextAlignment alignment = getAlignment();
+        if (alignment==null){
+            return null;
+        }
+        switch(alignment){
+            case CENTER:
+                return Qt.AlignmentFlag.AlignCenter;
+            case LEFT:
+                return Qt.AlignmentFlag.AlignLeft;
+            case RIGHT:
+                return Qt.AlignmentFlag.AlignRight;
+            default:
+                throw new IllegalUsageError("Failed to convert \'"+alignment.name()+"\' to Qt alignment");
+        }
     }
     
     public static Color qtColor2awtColor(final QColor color){

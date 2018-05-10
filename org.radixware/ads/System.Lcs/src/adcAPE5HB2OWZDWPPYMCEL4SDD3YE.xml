@@ -18,7 +18,7 @@
     <PropertyGroup Id="cpgLHFQRVP2XBDZLHIYUD6KUEDBVE" Name="Root"/>
     <Properties/>
     <Methods>
-      <Method Id="mthL4HQ67WNEZHZHLF74TNN6Y4OV4" Name="add" Nature="0" IsOverride="false">
+      <Method Id="mthFNKYEN6BY5E6XLD4MY4OH4RD5M" Name="add" Nature="0" IsOverride="false">
         <AccessRules Access="1"/>
         <Parameters>
           <Parameter Name="path" Id="mpr3U2BCTEDDNAZZC7HLGEZ6Z32UU">
@@ -27,12 +27,15 @@
           <Parameter Name="sqlQuery" Id="mprYWUCJTHKSZAUFPRLDHHMEZTI2Q">
             <Type TypeId="21"/>
           </Parameter>
+          <Parameter Name="delegate" Id="mprMGXFNBWESJE4PCAM3HJDI73BXU">
+            <Type TypeId="411" Path="aicO3PELDMZ5ZA5DJJ5TKQF5MKTUE"/>
+          </Parameter>
         </Parameters>
         <Sources>
           <Src>
             <xsc:Item>
               <xsc:Java>if (internalList != null) {
-    internalList.add(new org.radixware.kernel.license.ILicenseReport.Entry(sqlQuery, path));
+    internalList.add(new org.radixware.kernel.license.ILicenseReport.Entry(path, sqlQuery, delegate));
 }</xsc:Java>
             </xsc:Item>
           </Src>
@@ -65,7 +68,9 @@
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthGXZYGBA7YVHYXFBXTGWFZVFYCI" Invoke="true"/>
+              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthGXZYGBA7YVHYXFBXTGWFZVFYCI" Invoke="true">
+                <xsc:Presentation>build</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -74,6 +79,29 @@
 }
 
 </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthL4HQ67WNEZHZHLF74TNN6Y4OV4" Name="add" Nature="0" IsOverride="false">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="path" Id="mpr3U2BCTEDDNAZZC7HLGEZ6Z32UU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="sqlQuery" Id="mprYWUCJTHKSZAUFPRLDHHMEZTI2Q">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthFNKYEN6BY5E6XLD4MY4OH4RD5M" Invoke="true">
+                <xsc:Presentation>add</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(path, sqlQuery, null);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

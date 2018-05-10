@@ -168,6 +168,7 @@ public class AdsSelectorPresentationDef extends AdsPresentationDef implements IJ
                 }
             }
             this.visibility = source.visibility;
+            this.sizePolicy = source.sizePolicy;
         }
 
         private SelectorColumn(AdsPropertyDef prop) {
@@ -415,6 +416,7 @@ public class AdsSelectorPresentationDef extends AdsPresentationDef implements IJ
     }
     private AdsCondition condition;
     private Id creationClassCatalogId;
+    private boolean isAutoSortClasses = false;
     private Id transferSelectorPresentationId;
     private final CreatePresentationsList createPresentationList;
     private final EditorPresentations editorPresentations;
@@ -483,7 +485,11 @@ public class AdsSelectorPresentationDef extends AdsPresentationDef implements IJ
         }
         if (xDef.getClientEnvironment() != null && xDef.getClientEnvironment().isClientEnv()) {
             this.clientEnvironment = xDef.getClientEnvironment();
+        }        
+        if (xDef.isSetAutoSortClasses()) {
+            this.isAutoSortClasses = xDef.getAutoSortClasses();
         }
+        
     }
 
     protected AdsSelectorPresentationDef() {
@@ -574,6 +580,19 @@ public class AdsSelectorPresentationDef extends AdsPresentationDef implements IJ
         }
     }
 
+    public boolean isAutoSortClasses() {
+        return findAttributeOwner(EPresentationAttrInheritance.CLASS_CATALOG).get().isAutoSortClasses;
+    }
+
+    public boolean setAutoSortClasses(boolean isAutoSortClasses) {
+        if (!isCreationClassCatalogInherited() && this.isAutoSortClasses != isAutoSortClasses) {
+            this.isAutoSortClasses = isAutoSortClasses;
+            setEditState(EEditState.MODIFIED);
+            return  true;
+        }
+        return false;
+    }
+
     public EditorPresentations getEditorPresentations() {
         return editorPresentations;
     }
@@ -609,7 +628,9 @@ public class AdsSelectorPresentationDef extends AdsPresentationDef implements IJ
 
     /**
      * Looks for editor presentation used for newly created objects
+     * @deprecated not used anymore
      */
+    @Deprecated
     public AdsSelectorPresentationDef findSelectorPresentationForTransfer() {
         if (transferSelectorPresentationId == null) {
             return null;
@@ -832,6 +853,11 @@ public class AdsSelectorPresentationDef extends AdsPresentationDef implements IJ
             if (autoExpand) {
                 xDef.setAutoExpand(true);
             }
+            
+            if (isAutoSortClasses) {
+                xDef.setAutoSortClasses(true);
+            }
+            
             if (!restorePosition) {
                 xDef.setRestorePosition(false);
             }
@@ -894,10 +920,6 @@ public class AdsSelectorPresentationDef extends AdsPresentationDef implements IJ
         super.collectDependences(list);
         findBaseSelectorPresentation().save(list);
 
-        AdsSelectorPresentationDef s = findSelectorPresentationForTransfer();
-        if (s != null) {
-            list.add(s);
-        }
         SearchResult<AdsClassCatalogDef> cc = findCreationClassCatalog();
         if (!cc.isEmpty()) {
             if (direct) {

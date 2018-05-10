@@ -14,6 +14,7 @@ import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.jdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.jdt.internal.compiler.lookup.TagBits;
 import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
@@ -46,7 +47,13 @@ public class JMLFieldDeclaration extends FieldDeclaration {
     public void resolve(MethodScope initializationScope) {
         this.binding.tagBits &= ~TagBits.AnnotationResolved;
         if (this.initialization instanceof IJMLExpression) {
+            FieldBinding previousField = initializationScope.initializedField;
+            int previousFieldID = initializationScope.lastVisibleFieldID;
+            initializationScope.initializedField = this.binding;
+            initializationScope.lastVisibleFieldID = this.binding.id;
             this.initialization.resolveType(initializationScope);
+            initializationScope.initializedField = previousField;
+            initializationScope.lastVisibleFieldID = previousFieldID;
             final Expression subst = ((IJMLExpression) this.initialization).getSubstitution(initializationScope);
             if (subst != null) {
                 this.initialization = subst;

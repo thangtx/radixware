@@ -32,6 +32,6 @@ public class AdsAlgoClassParamChecker extends AdsDefinitionChecker<AdsAlgoClassD
     @Override
     public void check(AdsAlgoClassDef.Param param, IProblemHandler problemHandler) {
         super.check(param, problemHandler);
-        param.getType().check(param, problemHandler);
+        param.getType().check(param, problemHandler, getHistory().getMap());
     }
 }

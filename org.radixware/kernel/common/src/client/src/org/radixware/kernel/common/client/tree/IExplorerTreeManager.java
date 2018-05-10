@@ -20,11 +20,12 @@ import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.clientstate.ClientState;
 
 
 public interface IExplorerTreeManager {
 
-    public IExplorerTree openTree(final List<ExplorerRoot> explorerRoots, final IWidget parentWindow) throws ServiceClientException, InterruptedException;
+    public IExplorerTree openTree(final List<ExplorerRoot> explorerRoots, final IWidget parentWindow, ClientState xml) throws ServiceClientException, InterruptedException;
 
     public IExplorerTree openSubTree(final IExplorerTreeNode node, final IWidget parentWindow);
 
@@ -33,6 +34,8 @@ public interface IExplorerTreeManager {
     public void updateVersion(Collection<Id> changedDefinitions) throws CantUpdateVersionException;
 
     public void afterEntitiesRemoved(Collection<Pid> removedEntitiesPids, IWidget currentView);//RADIX-2425
+    
+    public void writeStateToXml(ClientState xml);
 
     public boolean closeAll(final boolean forced);
 

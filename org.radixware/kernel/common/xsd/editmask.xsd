@@ -87,12 +87,20 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="Title" type="xs:string" minOccurs="0"/>
+                        <xs:element name="ExtendedTitle" type="xs:string" minOccurs="0"/>
+                        <xs:element name="ToolTip" type="xs:string" minOccurs="0"/>
                         <xs:element name="Value" type="xs:string" minOccurs="0"/>
                     </xs:sequence>
-                    <xs:attribute name="TitleId" type="types:Id"/>
+                    <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+                    <xs:attribute name="TitleOwnerId" type="types:Id" use="optional"/>
+                    <xs:attribute name="ExtendedTitleId" type="types:Id" use="optional"/>
+                    <xs:attribute name="IconId" type="types:Id" use="optional"/>
+                    <xs:attribute name="ToolTipId" type="types:Id" use="optional"/>                    
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
+        <xs:attribute name="MaxItemsInDDList" type="xs:int" use="optional" default="-1"/>
+        <xs:attribute name="AutoSortByTitle" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
     <xs:complexType name="EditMaskStr">
         <xs:attribute name="ValidatorType" type="xs:int" use="optional"/>
@@ -173,6 +181,7 @@
                 <xs:list itemType="types:Id"/>
             </xs:simpleType>
         </xs:attribute>
+        <xs:attribute name="MaxItemsInDDList" type="xs:int" use="optional" default="-1"/>
     </xs:complexType>
     <xs:complexType name="EditMaskBool">
         <xs:attribute name="TrueValue" type="xs:string" use="optional" default="1"></xs:attribute>
@@ -195,6 +204,36 @@
         </xs:attribute>
     </xs:complexType>
     <xs:complexType name="EditMaskFilePath">
+        <xs:sequence>
+            <xs:element name="MimeTypes" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                            <xs:simpleType>
+                                <xs:annotation>
+                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                        <types:class>org.radixware.kernel.common.enums.EMimeType</types:class>
+                                    </xs:appinfo>
+                                </xs:annotation>
+                                <xs:restriction base="types:StrEnum"/>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="InitialPath" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="MimeType" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:documentation>Deprecated. Used when MimeTypes elements not defined</xs:documentation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EMimeType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
         <xs:attribute name="StoreLastPath" type="xs:boolean" use="optional" default="true"></xs:attribute>
         <xs:attribute name="SelectionMode" use="optional">
             <xs:simpleType>
@@ -206,16 +245,16 @@
                 <xs:restriction base="types:IntEnum"/>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="MimeType" use="optional">
+        <xs:attribute name="FileDialogMode" use="optional">
             <xs:simpleType>
                 <xs:annotation>
                     <xs:appinfo source="http://schemas.radixware.org/types.xsd">
-                        <types:class>org.radixware.kernel.common.enums.EMimeType</types:class>
+                        <types:class>org.radixware.kernel.common.enums.EFileDialogOpenMode</types:class>
                     </xs:appinfo>
                 </xs:annotation>
-                <xs:restriction base="types:StrEnum"/>
+                <xs:restriction base="types:IntEnum"/>
             </xs:simpleType>
-        </xs:attribute>
+        </xs:attribute>        
         <xs:attribute name="HandleInputAvailable" type="xs:boolean" use="optional" default="false"></xs:attribute>
         <xs:attribute name="FileDialogTitle" type="xs:string" use="optional" default="File Dialog"></xs:attribute>
         <xs:attribute name="CheckIfPathExists" type="xs:boolean" use="optional" default="false"></xs:attribute>
@@ -235,5 +274,6 @@
                 <xs:list itemType="types:Id"/>
             </xs:simpleType>
         </xs:attribute>
+        <xs:attribute name="UseDropDownList" type="xs:boolean" use="optional" default="false"></xs:attribute>
     </xs:complexType>
 </xs:schema>

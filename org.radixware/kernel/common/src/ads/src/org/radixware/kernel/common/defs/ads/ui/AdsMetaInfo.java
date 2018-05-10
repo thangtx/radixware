@@ -216,28 +216,28 @@ public class AdsMetaInfo {
         //UIObject
         clazzInh.put(RWT_ANCHOR_CONTAINER_ELEMENT, null);
         List<AdsUIProperty> props = new ArrayList<>();
-        props.add(new AdsUIProperty.AnchorProperty("anchor"));
+        props.add(new AdsUIProperty.AnchorProperty(AdsWidgetProperties.ANCHOR));
         clazzProps.put(RWT_ANCHOR_CONTAINER_ELEMENT, props);
 
 
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.IntProperty("gridColumn", 0));
-        props.add(new AdsUIProperty.IntProperty("gridRow", -1));
-        props.add(new AdsUIProperty.IntProperty("colSpan", 1));
+        props.add(new AdsUIProperty.IntProperty(AdsWidgetProperties.GRID_COLUMN, 0));
+        props.add(new AdsUIProperty.IntProperty(AdsWidgetProperties.GRID_ROW, -1));
+        props.add(new AdsUIProperty.IntProperty(AdsWidgetProperties.COL_SPAN, 1));
         clazzInh.put(RWT_EDIT_GRID_ELEMENT, RWT_ANCHOR_CONTAINER_ELEMENT);
         clazzProps.put(RWT_EDIT_GRID_ELEMENT, props);
         clazzInh.put(RWT_LABELED_EDIT_GRID_ELEMENT, RWT_EDIT_GRID_ELEMENT);
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.LocalizedStringRefProperty("label"));
+        props.add(new AdsUIProperty.LocalizedStringRefProperty(AdsWidgetProperties.LABEL));
         clazzProps.put(RWT_LABELED_EDIT_GRID_ELEMENT, props);
         //  clazzInh.put(RWT_UI_OBJECT, RWT_LABELED_EDIT_GRID_ELEMENT);
 
 
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.BooleanProperty("expand", false));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.EXPAND, false));
         clazzProps.put(RWT_BOX_ELEMENT, props);
 
         clazzInh.put(RWT_BOX_ELEMENT, RWT_LABELED_EDIT_GRID_ELEMENT);
@@ -246,13 +246,15 @@ public class AdsMetaInfo {
 
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.StringProperty("objectName", "widget"));
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 100, 100));
+        props.add(new AdsUIProperty.StringProperty(AdsWidgetProperties.OBJECT_NAME, "widget"));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 100, 100));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.AUTO_WIDTH, false));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.AUTO_HEIGHT, false));
 //        props.add(new AdsUIProperty.BooleanProperty("useHCoverage", false));
 //        props.add(new AdsUIProperty.BooleanProperty("useVCoverage", false));
 //        props.add(new AdsUIProperty.FloatProperty("hCoverage", 100));
 //        props.add(new AdsUIProperty.FloatProperty("vCoverage", 100));
-        props.add(new AdsUIProperty.BooleanProperty("enabled", true));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.ENABLED, true));
 
 
 
@@ -264,8 +266,8 @@ public class AdsMetaInfo {
         connections = new LinkedList<>();
         connections.add(new AdsUIConnection("onSelectionChange(org.radixware.wps.rwt.CheckBox checkBox)", "org.radixware.wps.rwt.CheckBox.SelectionStateListener", "addSelectionStateListener", "void"));
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.BooleanProperty("selected", false));
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 100, 20));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.SELECTED, false));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 100, 20));
         clazzConns.put(RWT_UI_CHECK_BOX, connections);
         clazzProps.put(RWT_UI_CHECK_BOX, props);
         clazzInh.put(RWT_UI_RADIO_BUTTON, RWT_UI_CHECK_BOX);
@@ -280,22 +282,22 @@ public class AdsMetaInfo {
         clazzInh.put(RWT_UI_GROUP_BOX, RWT_UI_CONTAINER);
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 50, 20));
-        props.add(new AdsUIProperty.LocalizedStringRefProperty("text"));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 50, 20));
+        props.add(new AdsUIProperty.LocalizedStringRefProperty(AdsWidgetProperties.TEXT));
         clazzProps.put(RWT_UI_LABEL, props);
         clazzInh.put(RWT_UI_LABEL, RWT_UI_OBJECT);
 
         //grid box container
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 120, 120));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 120, 120));
         clazzInh.put(RWT_UI_GRID_BOX_CONTAINER, RWT_UI_OBJECT);
         clazzProps.put(RWT_UI_GRID_BOX_CONTAINER, props);
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.IntProperty("row", -1));
-        props.add(new AdsUIProperty.IntProperty("col", -1));
-        props.add(new AdsUIProperty.IntProperty("rowSpan", 1));
-        props.add(new AdsUIProperty.IntProperty("colSpan", 1));
+        props.add(new AdsUIProperty.IntProperty(AdsWidgetProperties.ROW, -1));
+        props.add(new AdsUIProperty.IntProperty(AdsWidgetProperties.COL, -1));
+        props.add(new AdsUIProperty.IntProperty(AdsWidgetProperties.ROW_SPAN, 1));
+        props.add(new AdsUIProperty.IntProperty(AdsWidgetProperties.COL_SPAN, 1));
         clazzInh.put(RWT_GRID_BOX_ELEMENT, RWT_BOX_ELEMENT);
         clazzProps.put(RWT_GRID_BOX_ELEMENT, props);
         clazzInh.put(RWT_GRID_ELEMENT, RWT_GRID_BOX_ELEMENT);
@@ -304,17 +306,17 @@ public class AdsMetaInfo {
 
         //page editor
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 200, 200));
-        props.add(new AdsUIProperty.StringProperty("objectName", "editorPage"));
-        props.add(new AdsUIProperty.EditorPageRefProperty("editorPage", null));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 200, 200));
+        props.add(new AdsUIProperty.StringProperty(AdsWidgetProperties.OBJECT_NAME, "editorPage"));
+        props.add(new AdsUIProperty.EditorPageRefProperty(AdsWidgetProperties.EDITOR_PAGE, null));
         clazzInh.put(RWT_EDITOR_PAGE, RWT_UI_OBJECT);
         clazzProps.put(RWT_EDITOR_PAGE, props);
         //end of page editor
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.LocalizedStringRefProperty("text"));
-        props.add(new AdsUIProperty.ImageProperty("icon"));
-        props.add(new AdsUIProperty.SizeProperty("iconSize", 13, 13));
+        props.add(new AdsUIProperty.LocalizedStringRefProperty(AdsWidgetProperties.TEXT));
+        props.add(new AdsUIProperty.ImageProperty(AdsWidgetProperties.ICON));
+        props.add(new AdsUIProperty.SizeProperty(AdsWidgetProperties.ICON_SIZE, 13, 13));
 
         connections = new LinkedList<>();
         connections.add(new AdsUIConnection("onClick(org.radixware.kernel.common.client.widgets.IButton button)", "org.radixware.kernel.common.client.widgets.IButton.ClickHandler", "addClickHandler", "void"));
@@ -324,41 +326,42 @@ public class AdsMetaInfo {
 
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 100, 20));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 100, 20));
         clazzProps.put(RWT_UI_PUSH_BUTTON, props);
         clazzInh.put(RWT_UI_PUSH_BUTTON, RWT_UI_BUTTON_BASE);
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 100, 20));
-        props.add(new AdsUIProperty.LocalizedStringRefProperty("text"));
-        props.add(new AdsUIProperty.BooleanProperty("password", false));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 100, 20));
+        props.add(new AdsUIProperty.LocalizedStringRefProperty(AdsWidgetProperties.TEXT));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.PASSWORD, false));
         clazzProps.put(RWT_UI_TEXT_FIELD, props);
         clazzInh.put(RWT_UI_TEXT_FIELD, RWT_UI_OBJECT);
 
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.StringProperty("text"));
+        props.add(new AdsUIProperty.StringProperty(AdsWidgetProperties.TEXT));
         clazzProps.put(RWT_UI_TEXT_AREA, props);
         clazzInh.put(RWT_UI_TEXT_AREA, RWT_UI_OBJECT);
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 100, 20));
-        props.add(new AdsUIProperty.StringProperty("value", ""));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 100, 20));
+        props.add(new AdsUIProperty.StringProperty(AdsWidgetProperties.VALUE, ""));
         clazzProps.put(RWT_UI_INPUT_BOX, props);
         clazzInh.put(RWT_UI_INPUT_BOX, RWT_UI_OBJECT);
         //toolbar
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.IdListProperty("actions"));
-        props.add(new AdsUIProperty.EnumValueProperty("orientation", EOrientation.Horizontal.getValue()));
+        props.add(new AdsUIProperty.IdListProperty(AdsWidgetProperties.ACTIONS));
+        props.add(new AdsUIProperty.EnumValueProperty(AdsWidgetProperties.ORIENTATION, EOrientation.Horizontal.getValue()));
         clazzProps.put(RWT_TOOL_BAR, props);
         clazzInh.put(RWT_TOOL_BAR, RWT_UI_OBJECT);
         //toolbar
         //dialog
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 200, 200));
-        props.add(new AdsUIProperty.LocalizedStringRefProperty("windowTitle"));
-        props.add(new AdsUIProperty.BooleanProperty("buttonBoxVisible", true));
-        props.add(new AdsUIProperty.SetProperty("standardButtons", EStandardButton.Ok.getValue() + "|" + EStandardButton.Cancel.getValue()));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 200, 200));
+        props.add(new AdsUIProperty.LocalizedStringRefProperty(AdsWidgetProperties.WINDOW_TITLE));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.BUTTON_BOX_VISIBLE, true));
+        props.add(new AdsUIProperty.SetProperty(AdsWidgetProperties.STANDARD_BUTTONS, EStandardButton.Ok.getValue() + "|" + EStandardButton.Cancel.getValue()));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.AUTO_RESIZE, true));
         clazzProps.put(RWT_UI_DIALOG, props);
         connections = new LinkedList<>();
         connections.add(new AdsUIConnection("onClose(org.radixware.kernel.common.enums.EDialogButtonType closeButtonType,org.radixware.kernel.common.client.views.IDialog.DialogResult closeResult)", "org.radixware.wps.rwt.Dialog.CloseButtonListener", "addCloseButtonListener", "void"));
@@ -370,7 +373,7 @@ public class AdsMetaInfo {
         //dialog
         //tab set
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.IntProperty("currentIndex", -1));
+        props.add(new AdsUIProperty.IntProperty(AdsWidgetProperties.CURRENT_INDEX, -1));
 
 
         connections = new LinkedList<>();
@@ -380,14 +383,14 @@ public class AdsMetaInfo {
         clazzInh.put(RWT_TAB_SET, RWT_UI_OBJECT);
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.LocalizedStringRefProperty("title"));
-        props.add(new AdsUIProperty.ImageProperty("icon"));
+        props.add(new AdsUIProperty.LocalizedStringRefProperty(AdsWidgetProperties.TITLE));
+        props.add(new AdsUIProperty.ImageProperty(AdsWidgetProperties.ICON));
         clazzProps.put(RWT_TAB_SET_TAB, props);
         clazzInh.put(RWT_TAB_SET_TAB, RWT_UI_CONTAINER);
         //tab set
         //splitter
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.EnumValueProperty("orientation", EOrientation.Horizontal.getValue()));
+        props.add(new AdsUIProperty.EnumValueProperty(AdsWidgetProperties.ORIENTATION, EOrientation.Horizontal.getValue()));
         clazzProps.put(RWT_SPLITTER, props);
         clazzInh.put(RWT_SPLITTER, RWT_UI_OBJECT);
         //splitter
@@ -481,16 +484,16 @@ public class AdsMetaInfo {
 
         //prop editor
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.PropertyRefProperty("property", null));
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 100, 20));
+        props.add(new AdsUIProperty.PropertyRefProperty(AdsWidgetProperties.PROPERTY, null));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 100, 20));
         clazzProps.put(RWT_PROP_EDITOR, props);
         clazzInh.put(RWT_PROP_EDITOR, RWT_UI_OBJECT);
         //prop editor
 
         //prop label
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.PropertyRefProperty("property", null));
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 70, 20));
+        props.add(new AdsUIProperty.PropertyRefProperty(AdsWidgetProperties.PROPERTY, null));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 70, 20));
         clazzProps.put(RWT_PROP_LABEL, props);
         clazzInh.put(RWT_PROP_LABEL, RWT_UI_OBJECT);
         //prop label
@@ -517,19 +520,19 @@ public class AdsMetaInfo {
 
         props = new LinkedList<>();
 
-        props.add(new AdsUIProperty.CommandRefProperty("command", null));
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 100, 20));
-        props.add(new AdsUIProperty.BooleanProperty("useCommandTitle", true));
+        props.add(new AdsUIProperty.CommandRefProperty(AdsWidgetProperties.COMMAND, null));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 100, 20));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.USE_COMMAND_TITLE, true));
         clazzProps.put(RWT_COMMAND_PUSH_BUTTON, props);
         clazzInh.put(RWT_COMMAND_PUSH_BUTTON, RWT_UI_BUTTON_BASE);
 
 
         props = new ArrayList<>();
-        props.add(new AdsUIProperty.StringProperty("objectName", "action"));
-        props.add(new AdsUIProperty.ImageProperty("icon"));
-        props.add(new AdsUIProperty.LocalizedStringRefProperty("text"));
-        props.add(new AdsUIProperty.LocalizedStringRefProperty("toolTip"));
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 50, 50));
+        props.add(new AdsUIProperty.StringProperty(AdsWidgetProperties.OBJECT_NAME, "action"));
+        props.add(new AdsUIProperty.ImageProperty(AdsWidgetProperties.ICON));
+        props.add(new AdsUIProperty.LocalizedStringRefProperty(AdsWidgetProperties.TEXT));
+        props.add(new AdsUIProperty.LocalizedStringRefProperty(AdsWidgetProperties.TOOLTIP));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 50, 50));
         clazzProps.put(RWT_ACTION, props);
         connections = new LinkedList<>();
         connections.add(new AdsUIConnection("triggered(org.radixware.kernel.common.client.widgets.actions.Action action)", "org.radixware.kernel.common.client.widgets.actions.Action.ActionListener", "addActionListener", "void"));
@@ -540,9 +543,9 @@ public class AdsMetaInfo {
         clazzInh.put(RWT_ACTION, null);
 
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.EmbeddedEditorOpenParamsProperty("openParams"));
-        props.add(new AdsUIProperty.BooleanProperty("synchronizedWithParentView", false));
-        props.add(new AdsUIProperty.BooleanProperty("readOnly", false));
+        props.add(new AdsUIProperty.EmbeddedEditorOpenParamsProperty(AdsWidgetProperties.OPEN_PARAMS));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.SYNCHRONIZED_WITH_PARENT_VIEW, false));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.READ_ONLY, false));
         clazzProps.put(RWT_EMBEDDED_EDITOR, props);
         connections = new LinkedList<>();
         connections.add(new AdsUIConnection("afterOpen()", "org.radixware.kernel.common.client.views.IEditor.OpenHandler", "addOpenHandler", "void"));
@@ -552,9 +555,9 @@ public class AdsMetaInfo {
         clazzInh.put(RWT_EMBEDDED_EDITOR, RWT_UI_OBJECT);
 
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.EmbeddedSelectorOpenParamsProperty("openParams"));
-        props.add(new AdsUIProperty.BooleanProperty("synchronizedWithParentView", false));
-        props.add(new AdsUIProperty.BooleanProperty("readOnly", false));
+        props.add(new AdsUIProperty.EmbeddedSelectorOpenParamsProperty(AdsWidgetProperties.OPEN_PARAMS));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.SYNCHRONIZED_WITH_PARENT_VIEW, false));
+        props.add(new AdsUIProperty.BooleanProperty(AdsWidgetProperties.READ_ONLY, false));
         clazzProps.put(RWT_EMBEDDED_SELECTOR, props);
         connections = new LinkedList<>();
         connections.add(new AdsUIConnection("onSetCurrentEntity(org.radixware.kernel.common.client.models.EntityModel entity)", "org.radixware.wps.views.selector.RwtSelector.CurrentEntitySetAdapter", "addCurrentEntityHandler", "void"));
@@ -570,7 +573,7 @@ public class AdsMetaInfo {
 
 
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 100, 20));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 100, 20));
         clazzProps.put(RWT_VAL_EDITOR, props);
         clazzInh.put(RWT_VAL_STR_EDITOR, RWT_VAL_EDITOR);
         clazzInh.put(RWT_VAL_INT_EDITOR, RWT_VAL_EDITOR);
@@ -579,11 +582,11 @@ public class AdsMetaInfo {
         clazzInh.put(RWT_VAL_BIN_EDITOR, RWT_VAL_EDITOR);
         clazzInh.put(RWT_VAL_FILE_PATH_EDITOR, RWT_VAL_EDITOR);
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.EnumRefProperty("enumeration", null));
+        props.add(new AdsUIProperty.EnumRefProperty(AdsWidgetProperties.ENUMERATION, null));
         clazzProps.put(RWT_VAL_ENUM_EDITOR, props);
         clazzInh.put(RWT_VAL_ENUM_EDITOR, RWT_VAL_EDITOR);
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.TypeDeclarationProperty("itemType"));
+        props.add(new AdsUIProperty.TypeDeclarationProperty(AdsWidgetProperties.ITEM_TYPE));
         clazzProps.put(RWT_VAL_LIST_EDITOR, props);
         clazzInh.put(RWT_VAL_LIST_EDITOR, RWT_VAL_EDITOR);
         clazzInh.put(RWT_VAL_REF_EDITOR, RWT_VAL_EDITOR);
@@ -592,7 +595,7 @@ public class AdsMetaInfo {
         clazzInh.put(RWT_VAL_BOOL_EDITOR, RWT_VAL_EDITOR);
 
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.EnumValueProperty("arrayType", EArrayClassName.ARR_INT.getValue()));
+        props.add(new AdsUIProperty.EnumValueProperty(AdsWidgetProperties.ARRAY_TYPE, EArrayClassName.ARR_INT.getValue()));
         clazzProps.put(RWT_VAL_ARR_EDITOR, props);
 
         clazzInh.put(RWT_VAL_ARR_EDITOR, RWT_VAL_EDITOR);
@@ -602,9 +605,9 @@ public class AdsMetaInfo {
         connections.add(new AdsUIConnection("onClick(org.radixware.kernel.common.client.widgets.IButton button)", "org.radixware.kernel.common.client.widgets.IButton.ClickHandler", "addClickHandler", "void"));
         clazzConns.put(RWT_UI_BUTTON_BOX, connections);
         props = new LinkedList<>();
-        props.add(new AdsUIProperty.RectProperty("geometry", 0, 0, 200, 25));
-        props.add(new AdsUIProperty.SetProperty("standardButtons", EStandardButton.Ok.getValue() + "|" + EStandardButton.Cancel.getValue()));
-        props.add(new AdsUIProperty.IdListProperty("actions"));
+        props.add(new AdsUIProperty.RectProperty(AdsWidgetProperties.GEOMETRY, 0, 0, 200, 25));
+        props.add(new AdsUIProperty.SetProperty(AdsWidgetProperties.STANDARD_BUTTONS, EStandardButton.Ok.getValue() + "|" + EStandardButton.Cancel.getValue()));
+        props.add(new AdsUIProperty.IdListProperty(AdsWidgetProperties.ACTIONS));
         clazzProps.put(RWT_UI_BUTTON_BOX, props);
         clazzInh.put(RWT_UI_BUTTON_BOX, RWT_UI_OBJECT);
 

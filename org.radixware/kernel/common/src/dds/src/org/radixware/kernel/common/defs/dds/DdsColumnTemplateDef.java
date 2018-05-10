@@ -23,6 +23,7 @@ import org.radixware.kernel.common.defs.dds.utils.DbTypeUtils;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.utils.Utils;
@@ -343,5 +344,10 @@ public class DdsColumnTemplateDef extends DdsDefinition implements IDbType {
     public void setDeprecated(boolean isDeprecated) {
         this.isDeprecated = isDeprecated;
         setEditState(EEditState.MODIFIED);
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.TABLE_PROPERTY;
     }
 }

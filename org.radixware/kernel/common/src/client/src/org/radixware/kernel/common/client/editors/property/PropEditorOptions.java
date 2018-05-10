@@ -23,6 +23,7 @@ public final class PropEditorOptions {
     private EditMask editMask;
     private boolean isMandatory;
     private boolean isReadonly;
+    private boolean isEnabled;
     private UnacceptableInput unacceptableInput;
             
     public PropEditorOptions(){
@@ -75,5 +76,13 @@ public final class PropEditorOptions {
     
     public void setUnacceptableInput(final UnacceptableInput input){
         unacceptableInput = input;
+    }
+    
+    public boolean isEnabled(){
+        return isEnabled;
+    }
+    
+    public void setEnabled(final boolean isEnabled){
+        this.isEnabled = isEnabled;
     }
 }

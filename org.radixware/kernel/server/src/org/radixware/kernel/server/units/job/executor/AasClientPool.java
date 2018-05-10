@@ -22,7 +22,8 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.Utils;
-import org.radixware.kernel.server.utils.PriorityResourceManager;
+import org.radixware.kernel.server.utils.IPriorityResourceManager;
+import org.radixware.kernel.server.utils.SynchronizedPriorityResourceManager;
 
 
 final class AasClientPool {
@@ -33,7 +34,7 @@ final class AasClientPool {
     private final List<JeAasClient> free;
     private static final String SCP_ANY = "any-free-client";
     private final List<JeAasClient> usedOnLastIteration = new ArrayList<>();
-    private final PriorityResourceManager priorityManager = new PriorityResourceManager();
+    private final IPriorityResourceManager priorityManager = new SynchronizedPriorityResourceManager();
 
     public static enum EInvokeResult {
 
@@ -53,7 +54,7 @@ final class AasClientPool {
     }
     
     public void onUnitOptionsChanged() {
-        priorityManager.setOptions(new PriorityResourceManager.Options(
+        priorityManager.setOptions(new IPriorityResourceManager.Options(
                 unit.getOptions().parallelCount,
                 unit.getOptions().aboveNormalDelta,
                 unit.getOptions().highDelta,
@@ -91,7 +92,7 @@ final class AasClientPool {
         if (isStopped()) {
             throw new IllegalUsageError("AAS client pool is stopped");
         }
-        final PriorityResourceManager.Ticket ticket = priorityManager.requestTicketNow(job.getRadixPriority());
+        final IPriorityResourceManager.Ticket ticket = priorityManager.requestTicketNow(job.getRadixPriority());
         if (ticket != null) {
             try {
                 JeAasClient client = captureFreeClient(job.getScpName());//capture free client with appropriate scp

@@ -16,10 +16,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -62,6 +64,7 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import static org.radixware.kernel.common.enums.EDefinitionIdPrefix.ADS_FORM_MODEL_CLASS;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.EParamDirection;
 import org.radixware.kernel.common.enums.EPropNature;
@@ -74,6 +77,9 @@ import org.radixware.kernel.common.radixdoc.DocumentOptions;
 import org.radixware.kernel.common.radixdoc.IRadixdocPage;
 import org.radixware.kernel.common.radixdoc.RadixdocSupport;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
+import org.radixware.kernel.common.defs.utils.changelog.ChangeLog;
+import org.radixware.kernel.common.defs.utils.changelog.IChangeLogOwner;
+import org.radixware.kernel.common.enums.EMultilingualStringKind;
 import org.radixware.kernel.common.utils.Base64;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.Utils;
@@ -81,6 +87,8 @@ import org.radixware.kernel.common.utils.XmlFormatter;
 import org.radixware.schemas.adsdef.AbstractMethodDefinition;
 import org.radixware.schemas.adsdef.AdsUserReportExchangeDocument;
 import org.radixware.schemas.adsdef.ClassDefinition;
+import org.radixware.schemas.adsdef.ExportReportToCsvInfo;
+import org.radixware.schemas.adsdef.ReportColumnDefinition;
 import org.radixware.schemas.adsdef.UserReportDefinitionType;
 import org.radixware.schemas.adsdef.UserReportExchangeType;
 import org.radixware.schemas.radixdoc.Page;
@@ -89,7 +97,7 @@ import org.radixware.schemas.radixdoc.Page;
  * ADS Report Class Definition.
  *
  */
-public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresentableClass, UdsExportable {
+public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresentableClass, UdsExportable, IChangeLogOwner {
 
     public static final String PLATFORM_CLASS_NAME = "org.radixware.kernel.server.types.Report";
     public static final Id PREDEFINED_ID = Id.Factory.loadFrom("pdcReport____________________");
@@ -102,7 +110,11 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
     private Id contextParameterId = null;
     private boolean subreport = false;
     private final transient AdsCsvReportInfo csvReportInfo;
+    private final transient AdsXlsxReportInfo xlsxReportInfo;
     private ContextParameterTypeRestriction contextParamTypeRestriction;
+    protected ChangeLog changeLog;
+
+    private final transient AdsReportColumns columns = new AdsReportColumns(this);
 
     public static class AdsReportSysMethod extends AdsSystemMethodDef {
 
@@ -117,6 +129,11 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
         @Override
         public boolean canChangePublishing() {
             return false;
+        }
+
+        @Override
+        public EDocGroup getDocGroup() {
+            return EDocGroup.NONE;
         }
     }
 
@@ -267,16 +284,45 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
                 if (xReport.isSetIsSubreport()) {
                     this.subreport = xReport.getIsSubreport();
                 }
-                //!{
+
+                // SECOND PART OF CONDITION IS ONLY FOR TESTING AND SHOULD BE REMOVED
+                if (xReport.getReportColumns() != null && !xReport.getReportColumns().getReportColumnList().isEmpty()) {
+                    for (ReportColumnDefinition xColumn : xReport.getReportColumns().getReportColumnList()) {
+                        columns.add(new AdsReportColumnDef(xColumn));
+                    }
+                } else {
+                    if (xReport.isSetExportReportToCsvInfo() && xReport.getExportReportToCsvInfo().getExportCsvColumnList() != null) {
+                        int emergencySuffix = 0;
+                        for (ExportReportToCsvInfo.ExportCsvColumn xColumn : xReport.getExportReportToCsvInfo().getExportCsvColumnList()) {
+                            AdsPropertyDef prop = this.getProperties().findById(xColumn.getId(), EScope.LOCAL).get();
+
+                            String extName = xColumn.getExtName() != null ? xColumn.getExtName().replaceAll("[^a-zA-Z0-9.-]", "_") : "Column" + emergencySuffix++;
+                            String columnName = prop != null ? prop.getName() : extName;
+
+                            columns.add(new AdsReportColumnDef(xColumn, columnName));
+                        }
+                    }
+                }
+
                 if (xReport.isSetExportReportToCsvInfo()) {
                     csvReportInfo = new AdsCsvReportInfo(this, xReport.getExportReportToCsvInfo());
                 } else {
                     csvReportInfo = new AdsCsvReportInfo(this, null);
                 }
-                //!}
+
+                if (xReport.isSetExportReportToXlsxInfo()) {
+                    xlsxReportInfo = new AdsXlsxReportInfo(this, xReport.getExportReportToXlsxInfo());
+                } else {
+                    xlsxReportInfo = new AdsXlsxReportInfo(this, null);
+                }
+
+                if (xReport.isSetChangeLog()) {
+                    changeLog = ChangeLog.Factory.loadFromXml(xReport.getChangeLog());
+                }
             } else {
                 this.form = new AdsReportForm(this);
                 csvReportInfo = new AdsCsvReportInfo(this, null);
+                xlsxReportInfo = new AdsXlsxReportInfo(this, null);
             }
             if (xDef.getPresentations() == null) {
                 this.presentations = (AbstractFormPresentations) ClassPresentations.Factory.newInstance(this);
@@ -286,6 +332,7 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
         } else {
             this.form = new AdsReportForm(this);
             this.csvReportInfo = new AdsCsvReportInfo(this, null);
+            this.xlsxReportInfo = new AdsXlsxReportInfo(this, null);
             this.presentations = (AbstractFormPresentations) ClassPresentations.Factory.newInstance(this);
         }
     }
@@ -295,6 +342,7 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
         this.form = new AdsReportForm(this);
         this.presentations = (AbstractFormPresentations) ClassPresentations.Factory.newInstance(this);
         this.csvReportInfo = new AdsCsvReportInfo(this, null);
+        this.xlsxReportInfo = new AdsXlsxReportInfo(this, null);
     }
 
     protected AdsReportClassDef(final String name) {
@@ -306,7 +354,7 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
         super.appendTo(xClassDef, saveMode);
 
         final org.radixware.schemas.adsdef.Report xReport = xClassDef.addNewReport();
-        if (saveMode == ESaveMode.NORMAL) {
+        if (saveMode == ESaveMode.NORMAL || saveMode == ESaveMode.API) {
             form.appendTo(xReport.addNewForm(), saveMode);
         }
         if (this.contextParameterId != null) {
@@ -315,12 +363,23 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
         if (this.subreport) {
             xReport.setIsSubreport(true);
         }
+
+        columns.appendTo(xReport.addNewReportColumns());
+
         //!{
         if (csvReportInfo.isExportToCsvEnabled()) {
             csvReportInfo.appendTo(xReport.addNewExportReportToCsvInfo(), saveMode);
         }
+
+        if (xlsxReportInfo.isExportToXlsxEnabled()) {
+            xlsxReportInfo.appendTo(xReport.addNewExportReportToXlsxInfo(), saveMode);
+        }
         //!}
         this.presentations.appendTo(xClassDef.addNewPresentations(), saveMode);
+
+        if (changeLog != null && !changeLog.isEmpty()) {
+            changeLog.appendTo(xReport.addNewChangeLog(), true);
+        }
     }
 
     @Override
@@ -344,26 +403,20 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
         }
     }
 
+    public AdsReportColumns getColumns() {
+        return columns;
+    }
+
     //!{ 
     public AdsCsvReportInfo getCsvInfo() {
         return csvReportInfo;
     }
-    /*
-     * public RadixObjects<AdsExportCsvColumn> getExportCsvColumn(){ return
-     * csvReportInfo.getExportCsvColumn(); }
-     *
-     * public boolean isExportToCsvEnabled(){ return
-     * csvReportInfo.isExportToCsvEnabled(); }
-     *
-     * public void setIsExportToCsvEnabled(boolean isExportToCsv) { if
-     * (csvReportInfo.isExportToCsvEnabled() != isExportToCsv) {
-     * csvReportInfo.setIsExportToCsvEnabled(isExportToCsv);
-     * setEditState(EEditState.MODIFIED); } }
-     *
-     * public Jml getCsvRowVisibleCondition() { return
-     * csvReportInfo.getCsvRowVisibleCondition(); }
-     */
-    //!}
+
+    public AdsXlsxReportInfo getXlsxReportInfo() {
+        return xlsxReportInfo;
+    }
+
+
 
     public AdsReportForm getForm() {
         return form;
@@ -394,10 +447,17 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
     }
 
     @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
+    }
+
+    @Override
     public void visitChildren(final IVisitor visitor, final VisitorProvider provider) {
         super.visitChildren(visitor, provider);
         csvReportInfo.visit(visitor, provider);
-        form.visit(visitor, provider);        
+        xlsxReportInfo.visit(visitor, provider);
+        columns.visit(visitor, provider);
+        form.visit(visitor, provider);
     }
 
     @Override
@@ -722,6 +782,13 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
             }
             return result;
         }
+
+        public static AdsPropertyDef findProperty(AdsReportClassDef report, Id propId) {
+            if (report != null) {
+                return report.getProperties().findById(propId, EScope.LOCAL).get();
+            }
+            return null;
+        }
     }
 
     @Override
@@ -733,4 +800,60 @@ public class AdsReportClassDef extends AdsSqlClassDef implements IAdsFormPresent
             }
         };
     }
+
+    @Override
+    public void setChangeLog(ChangeLog log) {
+        if (!Objects.equals(this.changeLog, log)) {
+            this.changeLog = log;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    @Override
+    public ChangeLog getChangeLog() {
+        if (changeLog == null) {
+            changeLog = ChangeLog.Factory.newInstance();
+        }
+        return changeLog;
+    }
+
+    @Override
+    public void collectUsedMlStringIds(Collection<MultilingualStringInfo> ids) {
+        super.collectUsedMlStringIds(ids);
+        if (xlsxReportInfo != null && xlsxReportInfo.getSheetNameId() != null) {
+            ids.add(new MultilingualStringInfo(this) {
+
+                @Override
+                public String getContextDescription() {
+                    return " Xlsx Export Parameter 'Sheet Name'";
+                }
+
+                @Override
+                public Id getId() {
+                    return xlsxReportInfo.getSheetNameId();
+                }
+
+                @Override
+                public EAccess getAccess() {
+                    return AdsReportClassDef.this.getAccessMode();
+                }
+
+                @Override
+                public void updateId(Id newId) {
+                    setTitleId(xlsxReportInfo.getSheetNameId());
+                }
+
+                @Override
+                public boolean isPublished() {
+                    return AdsReportClassDef.this.isPublished();
+                }
+
+                @Override
+                public EMultilingualStringKind getKind() {
+                    return EMultilingualStringKind.TITLE;
+                }
+            });
+        }
+    }
+
 }

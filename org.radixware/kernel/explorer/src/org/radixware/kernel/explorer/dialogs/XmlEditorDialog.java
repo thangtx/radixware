@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.dialogs;
 
+import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.gui.QCloseEvent;
 import org.apache.xmlbeans.XmlObject;
 
@@ -27,8 +28,15 @@ import org.radixware.kernel.explorer.exceptions.CancelXmlDocumentCreationExcepti
 import org.radixware.kernel.explorer.exceptions.XmlEditorException;
 
 public class XmlEditorDialog extends ExplorerDialog {
+    
+    private final static class ShowEditorEvent extends QEvent{                
+        public ShowEditorEvent(){
+            super(QEvent.Type.User);            
+        }        
+    }
 
     private final XmlEditor editor;
+    private boolean reused;
 
     public XmlEditorDialog(final IClientEnvironment environment, final QWidget parent) {
         this(environment, parent, Application.translate("XmlEditor", "Xml Editor"));
@@ -69,8 +77,9 @@ public class XmlEditorDialog extends ExplorerDialog {
             getEnvironment().messageError(exception.getTitle(getEnvironment().getMessageProvider()), exception.getLocalizedMessage(getEnvironment().getMessageProvider()));
             return null;
         }
-        setVisible(true);
-        editor.setVisible(true);
+        if (reused){
+            QApplication.postEvent(this, new ShowEditorEvent());
+        }
         if (exec() == DialogCode.Accepted.value()) {
             return getResult();
         }
@@ -87,8 +96,9 @@ public class XmlEditorDialog extends ExplorerDialog {
             Application.messageError(exception.getTitle(getEnvironment().getMessageProvider()), exception.getLocalizedMessage(getEnvironment().getMessageProvider()));
             return null;
         }
-        setVisible(true);
-        editor.setVisible(true);
+        if (reused){
+            QApplication.postEvent(this, new ShowEditorEvent());
+        }
         if (exec() == DialogCode.Accepted.value()) {
             return getResult();
         }
@@ -106,8 +116,9 @@ public class XmlEditorDialog extends ExplorerDialog {
             Application.messageError(exception.getTitle(getEnvironment().getMessageProvider()), exception.getLocalizedMessage(getEnvironment().getMessageProvider()));
             return null;
         }
-        setVisible(true);
-        editor.setVisible(true);
+        if (reused){
+            QApplication.postEvent(this, new ShowEditorEvent());
+        }
         if (exec() == DialogCode.Accepted.value()) {
             return getResult();
         }
@@ -132,12 +143,28 @@ public class XmlEditorDialog extends ExplorerDialog {
                 editor.validate();
             }
         }
-
     }
-
+       
     private XmlObject getResult() {
         return editor.getCurrentDocument();
     }
+
+    @Override
+    public int exec() {
+        final int result = super.exec();
+        reused = true;
+        return result;
+    }    
+
+    @Override
+    protected void customEvent(final QEvent event) {
+        if (event instanceof ShowEditorEvent){
+            editor.setVisible(true);
+            event.accept();
+        }else{
+            super.customEvent(event);
+        }
+    }        
 
     @Override
     protected void closeEvent(final QCloseEvent event) {

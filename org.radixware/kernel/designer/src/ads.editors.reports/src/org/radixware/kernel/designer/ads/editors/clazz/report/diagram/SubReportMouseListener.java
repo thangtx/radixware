@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPopupMenu;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsSubReport;
+import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.selection.SelectionEvent;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 
 
@@ -30,16 +31,21 @@ class SubReportMouseListener extends WidgetMouseListener {
 
     @Override
     protected void select(final boolean expand) {
-        final AdsReportBandWidget bandWidget = subReportWidget.getOwnerBandWidget();
-        if (!bandWidget.isSelected()) {
-            AdsReportWidgetUtils.selectBand(bandWidget);
-        }
-
-        if (expand) {
-            subReportWidget.setSelected(!subReportWidget.isSelected());
-        } else {
-            AdsReportWidgetUtils.unselectCellsAndSubReports(bandWidget);
-            subReportWidget.setSelected(true);
+//        final AdsReportFormDiagram diagram = subReportWidget.getDiagram();
+////        if (!bandWidget.isSelected()) {
+////            AdsReportWidgetUtils.selectBand(bandWidget);
+////        }
+//        boolean selected;
+//        if (expand) {
+//            selected = !subReportWidget.isSelected();
+//        } else {
+//            selected = true;
+////            AdsReportWidgetUtils.unselectCellsAndSubReports(diagram);
+//        }
+//        subReportWidget.setSelected(selected);
+        final AdsReportFormDiagram formDiagram = subReportWidget.getDiagram();
+        if (formDiagram != null && formDiagram.isVisible()){
+            formDiagram.fireSelectionChanged(new SelectionEvent(subReportWidget, expand, subReportWidget.isSelected()));
         }
     }
 
@@ -120,7 +126,7 @@ class SubReportMouseListener extends WidgetMouseListener {
     @Override
     protected void popup(final Component component, final int x,final int y) {
         if (!subReportWidget.isSelected()) {
-            AdsReportWidgetUtils.selectSubReport(subReportWidget);
+            subReportWidget.getDiagram().fireSelectionChanged(new SelectionEvent(subReportWidget, true));
         }
         final JPopupMenu popupMenu = DialogUtils.createPopupMenu(subReportWidget);
         popupMenu.show(component, x, y);

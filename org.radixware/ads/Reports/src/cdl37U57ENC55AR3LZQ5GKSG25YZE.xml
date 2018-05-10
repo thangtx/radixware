@@ -1,0 +1,1450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" FormatVersion="0">
+  <AdsWebCustomDialogDefinition Id="cdl37U57ENC55AR3LZQ5GKSG25YZE" Name="ChooseReportExportFormatsDialogWeb">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="widget" id="wdgZEIJWTHDE5HGXMTPA64OIUD3YY" class="cdl37U57ENC55AR3LZQ5GKSG25YZE" weight="0.0">
+        <ui:property name="standardButtons">
+          <ui:set>Ok|Cancel</ui:set>
+        </ui:property>
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>393</ui:width>
+            <ui:height>308</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mls5LAKG4WTM5AMHHYASS56Z6YOS4</ui:mlstringid>
+        </ui:property>
+        <ui:widget name="mainContainer" id="wdgP724QLAFINAXJASMDL5RRH4K4M" class="org.radixware.wps.rwt.VerticalBoxContainer" weight="0.0">
+          <ui:property name="geometry">
+            <ui:rect>
+              <ui:x>5</ui:x>
+              <ui:y>5</ui:y>
+              <ui:width>383</ui:width>
+              <ui:height>268</ui:height>
+            </ui:rect>
+          </ui:property>
+          <ui:property name="anchor">
+            <ui:anchor>
+              <ui:Top Part="0.0" Offset="5"/>
+              <ui:Left Part="0.0" Offset="5"/>
+              <ui:Bottom Part="1.0" Offset="-5"/>
+              <ui:Right Part="1.0" Offset="-5"/>
+            </ui:anchor>
+          </ui:property>
+          <ui:property name="objectName">
+            <ui:string>mainContainer</ui:string>
+          </ui:property>
+          <ui:widget name="chbPDF" id="wdgWT3YTR3VRFFR7AIIPYIRZMVJSY" class="org.radixware.wps.rwt.CheckBox" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsNOMWZMVL7NGSPDKXAPXVTG5NZ4</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>47</ui:x>
+                <ui:y>222</ui:y>
+                <ui:width>371</ui:width>
+                <ui:height>20</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>chbPDF</ui:string>
+            </ui:property>
+            <ui:property name="iconSize">
+              <ui:size>
+                <ui:width>32</ui:width>
+                <ui:height>32</ui:height>
+              </ui:size>
+            </ui:property>
+            <ui:property name="icon">
+              <ui:imageRef xsi:nil="true"/>
+            </ui:property>
+            <ui:property name="autoHeight">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="chbXML" id="wdgIDA5HCSAMRCYPEGRBBTGQFFICA" class="org.radixware.wps.rwt.CheckBox" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsQM7YUW7Q7FH2TFP6SWKV2L2XIE</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>16</ui:x>
+                <ui:y>167</ui:y>
+                <ui:width>371</ui:width>
+                <ui:height>20</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>chbXML</ui:string>
+            </ui:property>
+            <ui:property name="iconSize">
+              <ui:size>
+                <ui:width>32</ui:width>
+                <ui:height>32</ui:height>
+              </ui:size>
+            </ui:property>
+            <ui:property name="icon">
+              <ui:imageRef xsi:nil="true"/>
+            </ui:property>
+            <ui:property name="autoHeight">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="chbCSV" id="wdgTM5YJGJ3BFHE3CHPGTVQNFIAEQ" class="org.radixware.wps.rwt.CheckBox" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsT2L5TTOT7VCXXEATR574PWZ4IE</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>43</ui:x>
+                <ui:y>192</ui:y>
+                <ui:width>371</ui:width>
+                <ui:height>20</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>chbCSV</ui:string>
+            </ui:property>
+            <ui:property name="iconSize">
+              <ui:size>
+                <ui:width>32</ui:width>
+                <ui:height>32</ui:height>
+              </ui:size>
+            </ui:property>
+            <ui:property name="icon">
+              <ui:imageRef xsi:nil="true"/>
+            </ui:property>
+            <ui:property name="autoHeight">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="chbXLS" id="wdgBVIVB3OEMRG6VGAUZQ75YL6TFU" class="org.radixware.wps.rwt.CheckBox" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsTPFYEPHVNJGMFFWQAF2KQ2MWVU</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>3</ui:x>
+                <ui:y>61</ui:y>
+                <ui:width>377</ui:width>
+                <ui:height>20</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>chbXLS</ui:string>
+            </ui:property>
+            <ui:property name="iconSize">
+              <ui:size>
+                <ui:width>32</ui:width>
+                <ui:height>32</ui:height>
+              </ui:size>
+            </ui:property>
+            <ui:property name="icon">
+              <ui:imageRef xsi:nil="true"/>
+            </ui:property>
+            <ui:property name="autoHeight">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="chbXLSX" id="wdg5XXCAF3COJEGTH2QTOOF7SH3AM" class="org.radixware.wps.rwt.CheckBox" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsVYP3NARVBRCLRJJTXZB5XW6OV4</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>23</ui:x>
+                <ui:y>178</ui:y>
+                <ui:width>377</ui:width>
+                <ui:height>27</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>chbXLSX</ui:string>
+            </ui:property>
+            <ui:property name="iconSize">
+              <ui:size>
+                <ui:width>32</ui:width>
+                <ui:height>32</ui:height>
+              </ui:size>
+            </ui:property>
+            <ui:property name="icon">
+              <ui:imageRef xsi:nil="true"/>
+            </ui:property>
+            <ui:property name="autoHeight">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="chbTXT" id="wdgZFIERLH54VBRBBC6BSXGR6CIAM" class="org.radixware.wps.rwt.CheckBox" weight="0.0">
+            <ui:property name="text">
+              <ui:mlstringid>mlsAYYIBXPOXFERXBNZP2KFRXXT4I</ui:mlstringid>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>8</ui:x>
+                <ui:y>123</ui:y>
+                <ui:width>377</ui:width>
+                <ui:height>20</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>chbTXT</ui:string>
+            </ui:property>
+            <ui:property name="iconSize">
+              <ui:size>
+                <ui:width>32</ui:width>
+                <ui:height>32</ui:height>
+              </ui:size>
+            </ui:property>
+            <ui:property name="icon">
+              <ui:imageRef xsi:nil="true"/>
+            </ui:property>
+            <ui:property name="autoHeight">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="splitter" id="wdgLB5D257WJNG65IX3Y2PVR6WOAY" class="org.radixware.wps.rwt.Splitter" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>3</ui:x>
+                <ui:y>130</ui:y>
+                <ui:width>377</ui:width>
+                <ui:height>5</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>splitter</ui:string>
+            </ui:property>
+          </ui:widget>
+          <ui:widget name="fileNameContainer" id="wdgI2DMDPBZNFE55KVZWMGRA53Z4M" class="org.radixware.wps.views.editor.PropertiesGrid" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>7</ui:x>
+                <ui:y>157</ui:y>
+                <ui:width>377</ui:width>
+                <ui:height>100</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="autoWidth">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+            <ui:property name="autoHeight">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>fileNameContainer</ui:string>
+            </ui:property>
+            <ui:widget name="fileNameWidgetEditor" id="wdg5LIJGYDA3NDUPETJGM6OYG77WU" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>125</ui:x>
+                  <ui:y>18</ui:y>
+                  <ui:width>100</ui:width>
+                  <ui:height>20</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="gridColumn">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="gridRow">
+                <ui:int>0</ui:int>
+              </ui:property>
+              <ui:property name="property">
+                <ui:propertyRef>prd6LHHZRVCPFADRNZSI54FE3KFDA</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>fileNameWidgetEditor</ui:string>
+              </ui:property>
+              <ui:property name="autoWidth">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+              <ui:property name="autoHeight">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+          </ui:widget>
+        </ui:widget>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgZEIJWTHDE5HGXMTPA64OIUD3YY</ui:sender>
+          <ui:signal>onClose(org.radixware.kernel.common.enums.EDialogButtonType closeButtonType,org.radixware.kernel.common.client.views.IDialog.DialogResult closeResult)</ui:signal>
+          <ui:slot>mthDFBJYQJLBRGJHCSPUNMJ5KWTBY</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.Dialog.CloseButtonListener</ui:interface>
+          <ui:registrator>addCloseButtonListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgZEIJWTHDE5HGXMTPA64OIUD3YY</ui:sender>
+          <ui:signal>opened()</ui:signal>
+          <ui:slot>mthV3V6BIRSCRFZXOUYISTWBJFEE4</ui:slot>
+          <ui:interface>org.radixware.wps.views.dialog.RwtDialog.RwtDialogListener</ui:interface>
+          <ui:registrator>addDialogListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgWT3YTR3VRFFR7AIIPYIRZMVJSY</ui:sender>
+          <ui:signal>onSelectionChange(org.radixware.wps.rwt.CheckBox checkBox)</ui:signal>
+          <ui:slot>mthIRU7UGENOJFIBJO7F6V63ZXKRE</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.CheckBox.SelectionStateListener</ui:interface>
+          <ui:registrator>addSelectionStateListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgIDA5HCSAMRCYPEGRBBTGQFFICA</ui:sender>
+          <ui:signal>onSelectionChange(org.radixware.wps.rwt.CheckBox checkBox)</ui:signal>
+          <ui:slot>mthIRU7UGENOJFIBJO7F6V63ZXKRE</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.CheckBox.SelectionStateListener</ui:interface>
+          <ui:registrator>addSelectionStateListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgTM5YJGJ3BFHE3CHPGTVQNFIAEQ</ui:sender>
+          <ui:signal>onSelectionChange(org.radixware.wps.rwt.CheckBox checkBox)</ui:signal>
+          <ui:slot>mthIRU7UGENOJFIBJO7F6V63ZXKRE</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.CheckBox.SelectionStateListener</ui:interface>
+          <ui:registrator>addSelectionStateListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdg5XXCAF3COJEGTH2QTOOF7SH3AM</ui:sender>
+          <ui:signal>onSelectionChange(org.radixware.wps.rwt.CheckBox checkBox)</ui:signal>
+          <ui:slot>mthIRU7UGENOJFIBJO7F6V63ZXKRE</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.CheckBox.SelectionStateListener</ui:interface>
+          <ui:registrator>addSelectionStateListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgBVIVB3OEMRG6VGAUZQ75YL6TFU</ui:sender>
+          <ui:signal>onSelectionChange(org.radixware.wps.rwt.CheckBox checkBox)</ui:signal>
+          <ui:slot>mthIRU7UGENOJFIBJO7F6V63ZXKRE</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.CheckBox.SelectionStateListener</ui:interface>
+          <ui:registrator>addSelectionStateListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgZFIERLH54VBRBBC6BSXGR6CIAM</ui:sender>
+          <ui:signal>onSelectionChange(org.radixware.wps.rwt.CheckBox checkBox)</ui:signal>
+          <ui:slot>mthIRU7UGENOJFIBJO7F6V63ZXKRE</ui:slot>
+          <ui:interface>org.radixware.wps.rwt.CheckBox.SelectionStateListener</ui:interface>
+          <ui:registrator>addSelectionStateListener</ui:registrator>
+          <ui:returnType>void</ui:returnType>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="adm37U57ENC55AR3LZQ5GKSG25YZE" Name="ChooseReportExportFormatsDialogWeb:Model" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="Headeradm37U57ENC55AR3LZQ5GKSG25YZE"/>
+      </Headers>
+      <Bodies>
+        <Src Name="Bodyadm37U57ENC55AR3LZQ5GKSG25YZE"/>
+      </Bodies>
+      <MethodGroup Id="cmgXVAYAFISBVGAXE3TPUWHXPVAWI" Name="Root">
+        <Group Id="cmgM3SD6NMAG5B77DB7S2RS3AJXB4" Name="Events" Members="mthDFBJYQJLBRGJHCSPUNMJ5KWTBY mthV3V6BIRSCRFZXOUYISTWBJFEE4 mthIRU7UGENOJFIBJO7F6V63ZXKRE"/>
+        <Group Id="cmg7HCI36ATE5EWLO4HAFV6JCTCX4" Name="Methods" Members="mth6LB2XZ3B75BJXEAHEYINUH6WGQ mthGD2BMHHGH5GKTCEDUT2VVYK52A mth6EJT3U6KSJGIJDNWIA3GDGOSYY mthY5I2TABY3VE4LOTJ4ENRGZD7YI mthYFA2UES4ENAMPOQHETOXMUHTLU mthRENH2SHF5ZFT3CX4U7RUKJ7PIU mthT2WLCPH635HTRPSTVXLHQK4PDQ mthCXN5IW5H4JHSVADMTTQXSE5UQY"/>
+      </MethodGroup>
+      <PropertyGroup Id="cpgBDLWDII6JNHQBHHCI7EIMKTWIQ" Name="Root">
+        <Group Id="cpgYNALLIHZNZAPHKIGTJHSN3WC2E" Name="Properties" Members="prdQDTJWJWBO5ERFGNJ5AS4UUBXTI prdDG2PI3UV7NFBHHYH7S42IP2YGU prdJ4GIJ6MU5BE6JDL33FHIB6GFQI prdKJC4E6T3LRC75HXPB4ZQRFN4GU prdPIGY2GNJCBEFHNSBS7PEVJ43XE prd6LHHZRVCPFADRNZSI54FE3KFDA prdB5VRNNPZMZD6NLZ4J653WJ3NBY prd3GKTESHISZESFEWWVK56BH4KOI"/>
+        <Group Id="cpgXJTJ34ZSCNBVJFSF67GDRV64EA" Name="Constants" Members="prdMYJYBGNLC5DXNLCPMO7IX4AJI4 prdXIXWFJ6RYFHF3BZ7PJQYFHKJYE prdYILKU4X5URCYHJJLULCNB5EIKE prdKK4JENHYO5G6RF25W4ADWXHCG4 prdB5IVTFJUIZGRFDG2GQKNUH2YV4"/>
+      </PropertyGroup>
+      <Properties>
+        <Property Id="prdQDTJWJWBO5ERFGNJ5AS4UUBXTI" Name="enabledFormats" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Type TypeId="221" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+        </Property>
+        <Property Id="prdDG2PI3UV7NFBHHYH7S42IP2YGU" Name="isOkEnabled" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Type TypeId="401" extStr="boolean"/>
+          <GetterSources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>boolean result = false;
+
+for (org.radixware.wps.rwt.CheckBox checkBox : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.values()) {
+    result = result || checkBox.isSelected();
+}
+
+return result;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </GetterSources>
+        </Property>
+        <Property Id="prdJ4GIJ6MU5BE6JDL33FHIB6GFQI" Name="selectedFormats" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Type TypeId="221" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+          <InitialValue>
+            <Jml>
+              <xsc:Item>
+                <xsc:Java>new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="221" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                  <xsc:Presentation>Arr&lt;ReportExportFormat></xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Jml>
+          </InitialValue>
+        </Property>
+        <Property Id="prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Name="formatToCheckboxMap" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Type TypeId="400" extStr="java.util.Map">
+            <xsc:GenericArguments>
+              <xsc:Argument Alias="?">
+                <xsc:Type TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+              </xsc:Argument>
+              <xsc:Argument Alias="?">
+                <xsc:Type TypeId="400" extStr="org.radixware.wps.rwt.CheckBox"/>
+              </xsc:Argument>
+            </xsc:GenericArguments>
+          </Type>
+          <InitialValue>
+            <Jml>
+              <xsc:Item>
+                <xsc:Java>new java.util.HashMap&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                  <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, org.radixware.wps.rwt.CheckBox>();</xsc:Java>
+              </xsc:Item>
+            </Jml>
+          </InitialValue>
+        </Property>
+        <Property Id="prdMYJYBGNLC5DXNLCPMO7IX4AJI4" Name="REPORT_EXPORT_CONFIG" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsFinal="true" IsPublished="false"/>
+          <Type TypeId="21"/>
+          <InitialValue>
+            <ValAsStr>REPORT_EXPORT_CONFIG</ValAsStr>
+          </InitialValue>
+        </Property>
+        <Property Id="prdXIXWFJ6RYFHF3BZ7PJQYFHKJYE" Name="REPORT_EXPORT_DIR" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsFinal="true" IsPublished="false"/>
+          <Type TypeId="21"/>
+          <InitialValue>
+            <ValAsStr>REPORT_EXPORT_DIR</ValAsStr>
+          </InitialValue>
+        </Property>
+        <Property Id="prdYILKU4X5URCYHJJLULCNB5EIKE" Name="REPORT_EXPORT_FORMAT" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsFinal="true" IsPublished="false"/>
+          <Type TypeId="21"/>
+          <InitialValue>
+            <ValAsStr>REPORT_EXPORT_FORMAT_</ValAsStr>
+          </InitialValue>
+        </Property>
+        <Property Id="prdKK4JENHYO5G6RF25W4ADWXHCG4" Name="REPORT_EXPORT_FORMATS" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsFinal="true" IsPublished="false"/>
+          <Type TypeId="21"/>
+          <InitialValue>
+            <ValAsStr>REPORT_EXPORT_FORMATS</ValAsStr>
+          </InitialValue>
+        </Property>
+        <Property Id="prdPIGY2GNJCBEFHNSBS7PEVJ43XE" Name="windowTitle" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Type TypeId="21"/>
+        </Property>
+        <Property Id="prd6LHHZRVCPFADRNZSI54FE3KFDA" Name="fileName" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Type TypeId="21"/>
+          <InitialValue>
+            <Jml>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdB5VRNNPZMZD6NLZ4J653WJ3NBY" Invoke="true">
+                  <xsc:Presentation>defaultFileName</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+            </Jml>
+          </InitialValue>
+          <DependentItems/>
+          <EmbeddedProperty Id="prd6LHHZRVCPFADRNZSI54FE3KFDA" Name="fileName" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="21"/>
+            <Presentation TitleId="mls5QA4N4C7B5DNBNNJ6YJ7GPFTPU" InheritanceMask="4">
+              <Editing IsDuplicatesEnabled="true">
+                <EditMask>
+                  <edit:Str IsPassword="false" Mask="" NoBlankCharacter="false"/>
+                </EditMask>
+              </Editing>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdB5VRNNPZMZD6NLZ4J653WJ3NBY" Name="defaultFileName" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Type TypeId="21"/>
+        </Property>
+        <Property Id="prdB5IVTFJUIZGRFDG2GQKNUH2YV4" Name="REPORT_EXPORT_FILE_NAME" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsFinal="true" IsPublished="false"/>
+          <Type TypeId="21"/>
+          <InitialValue>
+            <ValAsStr>REPORT_EXPORT_FILE_NAME</ValAsStr>
+          </InitialValue>
+          <GetterSources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prd3GKTESHISZESFEWWVK56BH4KOI" Invoke="true">
+                  <xsc:Presentation>reportPubId</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.toString() + </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdB5IVTFJUIZGRFDG2GQKNUH2YV4" Invoke="true" extStr="#STD_PROP_VALUE#">
+                  <xsc:Presentation>REPORT_EXPORT_FILE_NAME</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </GetterSources>
+        </Property>
+        <Property Id="prd3GKTESHISZESFEWWVK56BH4KOI" Name="reportPubPid" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthDFBJYQJLBRGJHCSPUNMJ5KWTBY" Name="widget_onClose" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="closeButtonType" Id="mprYYEDQWD3IRBFLIHOJJZWF46BFI">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EDialogButtonType"/>
+            </Parameter>
+            <Parameter Name="closeResult" Id="mprVXUR7GOKBZC4BP7C4UTCK57DUY">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IDialog.DialogResult"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>for (java.util.Map.Entry&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                  <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, org.radixware.wps.rwt.CheckBox> entry : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.entrySet()) {
+    if (entry.getValue().isSelected()) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdJ4GIJ6MU5BE6JDL33FHIB6GFQI" Invoke="true">
+                  <xsc:Presentation>selectedFormats</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.add(entry.getKey());
+    }
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mthGD2BMHHGH5GKTCEDUT2VVYK52A" Invoke="true">
+                  <xsc:Presentation>saveConfig</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthV3V6BIRSCRFZXOUYISTWBJFEE4" Name="widget_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdgZEIJWTHDE5HGXMTPA64OIUD3YY" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setWindowTitle(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdPIGY2GNJCBEFHNSBS7PEVJ43XE" Invoke="true">
+                  <xsc:Presentation>windowTitle</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.put(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciL63KG5SUZRCGBAIMS6WUX5IHAY" Invoke="true">
+                  <xsc:Presentation>ReportExportFormat:PDF</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdgWT3YTR3VRFFR7AIIPYIRZMVJSY" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget:mainContainer:chbPDF</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.put(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciRO6YJVU2UJARPETZGVPPEDVGN4" Invoke="true">
+                  <xsc:Presentation>ReportExportFormat:XML</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdgIDA5HCSAMRCYPEGRBBTGQFFICA" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget:mainContainer:chbXML</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.put(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciKNDWK7PMWRD7JHQ25GV6BV7BEY" Invoke="true">
+                  <xsc:Presentation>ReportExportFormat:CSV</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdgTM5YJGJ3BFHE3CHPGTVQNFIAEQ" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget:mainContainer:chbCSV</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.put(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciIL3YBS33E5GHDLWOROHNBPAC5M" Invoke="true">
+                  <xsc:Presentation>ReportExportFormat:XLS</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdgBVIVB3OEMRG6VGAUZQ75YL6TFU" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget:mainContainer:chbXLS</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.put(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciTAY4OE2XWBED7BPZXUCIX46ARA" Invoke="true">
+                  <xsc:Presentation>ReportExportFormat:XLSX</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdg5XXCAF3COJEGTH2QTOOF7SH3AM" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget:mainContainer:chbXLSX</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.put(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciW2UXJEKEEJDCTEIMOBGJLBPZVU" Invoke="true">
+                  <xsc:Presentation>ReportExportFormat:TXT</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdgZFIERLH54VBRBBC6BSXGR6CIAM" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget:mainContainer:chbTXT</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdQDTJWJWBO5ERFGNJ5AS4UUBXTI" Invoke="true">
+                  <xsc:Presentation>enabledFormats</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null &amp;&amp; !</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdQDTJWJWBO5ERFGNJ5AS4UUBXTI" Invoke="true">
+                  <xsc:Presentation>enabledFormats</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.isEmpty()) {
+    for (java.util.Map.Entry&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                  <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, org.radixware.wps.rwt.CheckBox> entry : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.entrySet()) {
+        entry.getValue().setEnabled(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdQDTJWJWBO5ERFGNJ5AS4UUBXTI" Invoke="true">
+                  <xsc:Presentation>enabledFormats</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.contains(entry.getKey()));
+    }
+}
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQQIPH33FVFCJHMXXIODLS4BEHY mthJ7PEWYRVFZHMDHOF6A4IBYZ5HU" Invoke="true">
+                  <xsc:Presentation>EditMaskFilePath</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> fileSelectEditMask = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQQIPH33FVFCJHMXXIODLS4BEHY mthJ7PEWYRVFZHMDHOF6A4IBYZ5HU" Invoke="true">
+                  <xsc:Presentation>EditMaskFilePath</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsCGFUSSWHMRGVXDACHWEMRZX7AI aciAD5GQ6XJENB3RJKLIPNDYO5JXQ" Invoke="true">
+                  <xsc:Presentation>Client.Types::EFileSelectionMode:SELECT_DIRECTORY</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>,
+        true,
+        null,
+        false,
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsCWFEWN2PA5ADXDVGYFD7HVW5G4"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>,
+        false
+);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adc72R345IHKFGF5IS7RI5UVP5EWQ">
+                  <xsc:Presentation>Web.Widgets::ValFilePathEditorController</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> controller = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc72R345IHKFGF5IS7RI5UVP5EWQ mthTVQOWBQF3BHZVDFA7OCM5IIXAQ" Invoke="true">
+                  <xsc:Presentation>ValFilePathEditorController</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), fileSelectEditMask);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdgZEIJWTHDE5HGXMTPA64OIUD3YY" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getButton(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Client.Resources::DialogButtonType:Ok</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicGX7XFFFXMFCYZPB5272MO5VRCA mthTLXT5MDETFFKPGI6CWMWYMZNXA" Invoke="true">
+                  <xsc:Presentation>setEnabled</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdDG2PI3UV7NFBHHYH7S42IP2YGU" Invoke="true">
+                  <xsc:Presentation>isOkEnabled</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mth6LB2XZ3B75BJXEAHEYINUH6WGQ" Invoke="true">
+                  <xsc:Presentation>loadConfig</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6LB2XZ3B75BJXEAHEYINUH6WGQ" Name="loadConfig" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ">
+                  <xsc:Presentation>Client.Env::ClientSettings</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> settings = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true">
+                  <xsc:Presentation>getConfigStore</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthSYDCALYD7FFVZELCLSPMFW47ME" Invoke="true">
+                  <xsc:Presentation>beginGroup</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdMYJYBGNLC5DXNLCPMO7IX4AJI4" Invoke="true">
+                  <xsc:Presentation>REPORT_EXPORT_CONFIG</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prd6LHHZRVCPFADRNZSI54FE3KFDA" Invoke="true">
+                  <xsc:Presentation>fileName</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthZBTI63XF4RBXJJXOH54ZV3GT6I" Invoke="true">
+                  <xsc:Presentation>setValueObject</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthWJC3OVXT6RHTHPGHLVR2JJZNJE" Invoke="true">
+                  <xsc:Presentation>readString</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdB5IVTFJUIZGRFDG2GQKNUH2YV4" Invoke="true">
+                  <xsc:Presentation>REPORT_EXPORT_FILE_NAME</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdB5VRNNPZMZD6NLZ4J653WJ3NBY" Invoke="true">
+                  <xsc:Presentation>defaultFileName</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>));
+
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mth3NLAJSJNV5GVDAJJ65TVSQ26TQ" Invoke="true">
+                  <xsc:Presentation>beginReadArray</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKK4JENHYO5G6RF25W4ADWXHCG4" Invoke="true">
+                  <xsc:Presentation>REPORT_EXPORT_FORMATS</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+int i = 0;
+for (java.util.Map.Entry&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                  <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, org.radixware.wps.rwt.CheckBox> entry : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.entrySet()) {
+    settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthLZHAFMOK4NFGFN2JF4GUNUZVMM" Invoke="true">
+                  <xsc:Presentation>setArrayIndex</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(i);
+    entry.getValue().setSelected(settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthLM2ODUTLPRFPPEFOWOPQLLWOCM" Invoke="true">
+                  <xsc:Presentation>readBoolean</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdYILKU4X5URCYHJJLULCNB5EIKE" Invoke="true">
+                  <xsc:Presentation>REPORT_EXPORT_FORMAT</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> + entry.getKey().getName()) &amp;&amp; entry.getValue().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthAXES74XOORFVFN26TW2DXVSYKU" Invoke="true">
+                  <xsc:Presentation>isEnabled</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+    i++;
+}
+
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthBRPNEAGBBVGW5G3OFR4B6M6QWI" Invoke="true">
+                  <xsc:Presentation>endArray</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthW3ROOUPACZEQHG66DVJJZZICWQ" Invoke="true">
+                  <xsc:Presentation>endGroup</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthGD2BMHHGH5GKTCEDUT2VVYK52A" Name="saveConfig" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ">
+                  <xsc:Presentation>Client.Env::ClientSettings</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> settings = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthOICRIYTJ6FDK7IKIQGIULAMNHQ" Invoke="true">
+                  <xsc:Presentation>getConfigStore</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthSYDCALYD7FFVZELCLSPMFW47ME" Invoke="true">
+                  <xsc:Presentation>beginGroup</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdMYJYBGNLC5DXNLCPMO7IX4AJI4" Invoke="true">
+                  <xsc:Presentation>REPORT_EXPORT_CONFIG</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthAL342767O5GMFPXUORM2UVWPQE" Invoke="true">
+                  <xsc:Presentation>writeString</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdB5IVTFJUIZGRFDG2GQKNUH2YV4" Invoke="true">
+                  <xsc:Presentation>REPORT_EXPORT_FILE_NAME</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE mthT2WLCPH635HTRPSTVXLHQK4PDQ" Invoke="true">
+                  <xsc:Presentation>getFileName</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthDNDX6R25BNDGRPVXFG63JKFKLM" Invoke="true">
+                  <xsc:Presentation>beginWriteArray</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKK4JENHYO5G6RF25W4ADWXHCG4" Invoke="true">
+                  <xsc:Presentation>REPORT_EXPORT_FORMATS</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+
+int i = 0;
+for (java.util.Map.Entry&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                  <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, org.radixware.wps.rwt.CheckBox> entry : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdKJC4E6T3LRC75HXPB4ZQRFN4GU" Invoke="true">
+                  <xsc:Presentation>formatToCheckboxMap</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.entrySet()) {
+    settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthLZHAFMOK4NFGFN2JF4GUNUZVMM" Invoke="true">
+                  <xsc:Presentation>setArrayIndex</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(i);
+    settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthDJYHE3PFZNFHHMLOE4PUXYX4BA" Invoke="true">
+                  <xsc:Presentation>writeBoolean</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdYILKU4X5URCYHJJLULCNB5EIKE" Invoke="true">
+                  <xsc:Presentation>REPORT_EXPORT_FORMAT</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> + entry.getKey().getName(), entry.getValue().isSelected());
+    i++;
+}
+
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthBRPNEAGBBVGW5G3OFR4B6M6QWI" Invoke="true">
+                  <xsc:Presentation>endArray</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+settings.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicXNGHW5ZB2RHKZL6MCWSDVLD5FQ mthW3ROOUPACZEQHG66DVJJZZICWQ" Invoke="true">
+                  <xsc:Presentation>endGroup</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthIRU7UGENOJFIBJO7F6V63ZXKRE" Name="checkbox_onSelectionChange" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="checkBox" Id="mpr6B55I7AUN5DA7AUE652NOAPAFY">
+              <Type TypeId="400" extStr="org.radixware.wps.rwt.CheckBox"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE wdgZEIJWTHDE5HGXMTPA64OIUD3YY" Invoke="true">
+                  <xsc:Presentation>ChooseReportExportFormatsDialogWeb:widget</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getButton(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                  <xsc:Presentation>Client.Resources::DialogButtonType:Ok</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicGX7XFFFXMFCYZPB5272MO5VRCA mthTLXT5MDETFFKPGI6CWMWYMZNXA" Invoke="true">
+                  <xsc:Presentation>setEnabled</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdDG2PI3UV7NFBHHYH7S42IP2YGU" Invoke="true">
+                  <xsc:Presentation>isOkEnabled</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6EJT3U6KSJGIJDNWIA3GDGOSYY" Name="setEnabledFormats" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="enabledFormats" Id="mprOYSPAHLMERA3POZIOTIFGUONVI">
+              <Type TypeId="221" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdQDTJWJWBO5ERFGNJ5AS4UUBXTI" Invoke="true">
+                  <xsc:Presentation>enabledFormats</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = enabledFormats;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthY5I2TABY3VE4LOTJ4ENRGZD7YI" Name="getSelectedFormats" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="221" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdJ4GIJ6MU5BE6JDL33FHIB6GFQI" Invoke="true">
+                  <xsc:Presentation>selectedFormats</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthYFA2UES4ENAMPOQHETOXMUHTLU" Name="setWindowTitle" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="windowTitle" Id="mpr3E5ULHHUP5FDJJMCEJ3SZYJ4NM">
+              <Type TypeId="21"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdPIGY2GNJCBEFHNSBS7PEVJ43XE" Invoke="true">
+                  <xsc:Presentation>windowTitle</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = windowTitle;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthRENH2SHF5ZFT3CX4U7RUKJ7PIU" Name="setDefaultFileName" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="defaultFileName" Id="mprDF2YH6A4PFD2RFRPFMIMZS6CTI">
+              <Type TypeId="21"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prdB5VRNNPZMZD6NLZ4J653WJ3NBY" Invoke="true">
+                  <xsc:Presentation>defaultFileName</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = defaultFileName;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthT2WLCPH635HTRPSTVXLHQK4PDQ" Name="getFileName" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <ReturnType TypeId="21"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prd6LHHZRVCPFADRNZSI54FE3KFDA" Invoke="true">
+                  <xsc:Presentation>fileName</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthLSANOBLXINHNPFDVOGRUZDVNV4" Invoke="true">
+                  <xsc:Presentation>getValueObject</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() == null ? null : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prd6LHHZRVCPFADRNZSI54FE3KFDA" Invoke="true">
+                  <xsc:Presentation>fileName</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mth7OXSCLQHDFCWJNUZN7LX5OO7VE" Invoke="true">
+                  <xsc:Presentation>getValueAsString</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthCXN5IW5H4JHSVADMTTQXSE5UQY" Name="setReportPubPid" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="reportPubPid" Id="mprR4DI62K5D5C4BFNDDWAF4ZMFMQ">
+              <Type TypeId="411" Path="adc6MUJT675HNGATDJ477ZWLDUOHM"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>this.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdl37U57ENC55AR3LZQ5GKSG25YZE adm37U57ENC55AR3LZQ5GKSG25YZE prd3GKTESHISZESFEWWVK56BH4KOI" Invoke="true">
+                  <xsc:Presentation>reportPubPid</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> = reportPubPid;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsWebCustomDialogDefinition>
+</AdsDefinition>

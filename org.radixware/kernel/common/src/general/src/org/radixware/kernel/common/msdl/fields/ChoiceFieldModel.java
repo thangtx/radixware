@@ -12,15 +12,11 @@
 package org.radixware.kernel.common.msdl.fields;
 
 import java.util.List;
-import org.apache.commons.logging.LogFactory;
-import org.radixware.kernel.common.exceptions.SmioException;
 import org.radixware.kernel.common.msdl.EFieldType;
 import org.radixware.kernel.common.msdl.MsdlField;
 import org.radixware.kernel.common.msdl.MsdlVariantField;
 import org.radixware.kernel.common.msdl.MsdlVariantFields;
 import org.radixware.kernel.common.msdl.fields.extras.MsdlFieldDescriptorsList;
-import org.radixware.kernel.common.msdl.fields.parser.SmioField;
-import org.radixware.kernel.common.msdl.fields.parser.SmioFieldChoice;
 import org.radixware.schemas.msdl.ChoiceField;
 import org.radixware.schemas.msdl.ChoiceFieldVariant;
 import org.radixware.schemas.msdl.Field;
@@ -80,20 +76,9 @@ public class ChoiceFieldModel extends TemplateInstanceFieldModel {
     }
 
     @Override
-    public SmioField getParser() {
-        if (parser == null) {
-            try {
-                parser = new SmioFieldChoice(this);
-            } catch (SmioException e) {
-                LogFactory.getLog(ChoiceFieldModel.class).warn(String.format("Could not create ChoiceFieldParse: %s; Id: %s", getName(), getDefinition().getId().toString()));
-            }
-        }
-        return parser;
-    }
-
-    @Override
     public void clearParser() {
         super.clearParser();
+        selector.clearParser();
         for (MsdlField cur : fields) {
             cur.getFieldModel().clearParser();
         }

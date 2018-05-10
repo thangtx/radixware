@@ -65,4 +65,6 @@ public interface IRepositoryModule<T extends Module> extends IRadixRepository {
     void uninstallInjection();
 
     List<IJarDataProvider> getBinaries();
+    
+    void setModule(T module);
 }

@@ -26,7 +26,7 @@ public class SqmlTag_EndIf  extends SqmlTag {
         super(environment,source);
     }
     
-    public SqmlTag_EndIf(final IClientEnvironment environment, final int pos){
+    public SqmlTag_EndIf(final IClientEnvironment environment, final long pos){
         super(environment,pos);
         setDisplayedInfo(null,"#END IF");
     }

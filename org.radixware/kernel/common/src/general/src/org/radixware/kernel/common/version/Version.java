@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.version;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 /**
@@ -75,6 +76,12 @@ public class Version extends ArrayList<Integer> implements Comparable<Version> {
     public boolean isZero() {
         return size() == 1 && get(0).equals(0);
     }
+    
+    public void setZero() {
+        this.clear();
+        this.add(0);
+    }
+    
 
     public Version inc() {
         final Version ver = new Version(this);
@@ -97,8 +104,22 @@ public class Version extends ArrayList<Integer> implements Comparable<Version> {
         return sb.toString();
     }
 
+    public boolean startFrom(final Version ver) {
+        if (ver==null || this.size()<ver.size()){
+            return false;
+        }
+        for (int i=0; i<ver.size(); i++){
+            if (!Objects.equals(ver.get(i), get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
+    
     @Override
-    public int compareTo(Version ver) {
+    public int compareTo(final Version ver) {
         int i = 0;
         if (ver == null) {
             return 1;

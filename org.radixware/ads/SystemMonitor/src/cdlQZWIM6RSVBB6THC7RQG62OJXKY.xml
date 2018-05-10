@@ -56,7 +56,7 @@
               </ui:property>
             </ui:widget>
           </ui:item>
-          <ui:item column="1" row="3" colSpan="1" rowSpan="1">
+          <ui:item column="1" row="4" colSpan="1" rowSpan="1">
             <ui:spacer name="spacer">
               <ui:property name="orientation">
                 <ui:enum>com.trolltech.qt.core.Qt.Orientation.Vertical</ui:enum>
@@ -69,7 +69,7 @@
               </ui:property>
             </ui:spacer>
           </ui:item>
-          <ui:item column="0" row="4" colSpan="2" rowSpan="1">
+          <ui:item column="0" row="5" colSpan="2" rowSpan="1">
             <ui:widget name="buttonBox" id="wdgZF34JIK5J5GW3MCZZDMK3PYEKI" class="QDialogButtonBox" weight="0.0">
               <ui:property name="standardButtons">
                 <ui:set>org.radixware.kernel.common.enums.EDialogButtonType.OK | org.radixware.kernel.common.enums.EDialogButtonType.CANCEL</ui:set>
@@ -168,6 +168,29 @@
               </ui:property>
             </ui:widget>
           </ui:item>
+          <ui:item column="1" row="3" colSpan="1" rowSpan="1">
+            <ui:widget name="isOnlyActivePropEditor" id="wdgUT6HBLIWH5ET3FYCOLPBT6YXUA" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+              <ui:property name="property">
+                <ui:propertyRef>prdY5K7BK63G5AWXCY4U4GSRP6DZM</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>isOnlyActivePropEditor</ui:string>
+              </ui:property>
+              <ui:property name="layoutDirection">
+                <ui:enum>com.trolltech.qt.core.Qt.LayoutDirection.RightToLeft</ui:enum>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="3" colSpan="1" rowSpan="1">
+            <ui:widget name="isOnlyActivePropTitle" id="wdgEXMV5HSYIFBONG674COCAZ55DM" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+              <ui:property name="property">
+                <ui:propertyRef>prdY5K7BK63G5AWXCY4U4GSRP6DZM</ui:propertyRef>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>isOnlyActivePropTitle</ui:string>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
         </ui:layout>
       </ui:widget>
     </ui:ui>
@@ -217,6 +240,21 @@
             <AccessRules IsPublished="false"/>
             <Type TypeId="1"/>
             <Presentation TitleId="mlsR5EXZIXJBZHIFAFDZEOMIVDSPA" InheritanceMask="4">
+              <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
+        <Property Id="prdY5K7BK63G5AWXCY4U4GSRP6DZM" Name="isOnlyActiveInstances" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="1"/>
+          <InitialValue>
+            <ValAsStr>0</ValAsStr>
+          </InitialValue>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdY5K7BK63G5AWXCY4U4GSRP6DZM" Name="isOnlyActiveInstances" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="1"/>
+            <Presentation TitleId="mlsRU7KTAGPG5D25D5KXLMJ5EM4QU" InheritanceMask="4">
               <Editing NotNull="true" IsDuplicatesEnabled="true"/>
             </Presentation>
           </EmbeddedProperty>

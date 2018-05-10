@@ -14,11 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.CancellationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.errors.BranchIsNotAccessibleError;
+import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.enums.*;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
@@ -35,8 +37,58 @@ import org.radixware.schemas.product.Definitions;
 import org.radixware.schemas.product.DefinitionsDocument;
 import org.radixware.schemas.product.Module;
 import org.radixware.schemas.product.ModuleDocument;
+import org.radixware.kernel.common.client.utils.ThreadDumper;
+import org.radixware.kernel.common.defs.IVisitor;
+import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 
 public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRepository {
+    
+    private final class BranchLoadingTask implements Runnable{
+        
+        private volatile boolean cancelled;
+        private final Object semaphore = new Object();
+        
+        @Override
+        public void run() {
+            try{
+                final MessageProvider mp = env.getMessageProvider();
+                env.getTracer().debug(mp.translate("TraceMessage", "Loading Branch"));
+                final long time = System.currentTimeMillis();
+                final Branch branch = ReleaseRepository.super.getBranch();
+                try{
+                    branch.visitAll(new IVisitor() {
+                        @Override
+                        public void accept(final RadixObject radixObject) {
+                            synchronized(semaphore){
+                                if (cancelled){
+                                    throw new CancellationException();
+                                }
+                            }                      
+                        }
+                    });
+                }catch(CancellationException exception){
+                    final String message = 
+                        env.getMessageProvider().translate("TraceMessage", "Loading branch was interrupted.");
+                    env.getTracer().debug(message);
+                    return;
+                }
+                final long elapsedTime = System.currentTimeMillis() - time;
+                final String message = 
+                    env.getMessageProvider().translate("TraceMessage", "Loading branch was finished. Elapsed time %1$s ms");                
+                env.getTracer().debug(String.format(message, String.valueOf(elapsedTime)));
+            }catch(IOException exception){
+                final String message = env.getMessageProvider().translate("TraceMessage", "Failed to load branch");
+                env.getTracer().error(message, exception);
+            }
+        }
+        
+        public void cancel(){
+            synchronized(semaphore){
+                cancelled = true;
+            }            
+        }
+    }
 
     private final Map<Id, MapEntry<String>> images = new HashMap<>();
     private final Map<Id, MapEntry<String>> metaClassNameByDefId;
@@ -53,10 +105,13 @@ public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRe
     private final static String DEFINITIONS_XML_SHORT_FILE_NAME = "definitions.xml";
     private final static String MODULE_XML_SHORT_FILE_NAME = "module.xml";
     private final Object rootMsdlSchemeLock = new Object();
-    private final RevisionMeta revisionMeta;
-    // private final long revisionVersion;
+    private final RevisionMeta revisionMeta;        
     private final IClientApplication env;
     private final List<EIsoLanguage> languages;
+    private final BranchLoadingTask branchLoadingTask = new  BranchLoadingTask();
+    private final Thread branchPreloadThread = new Thread(branchLoadingTask, "Branch preloader");
+    private final Object loadingBranchSemaphore = new Object();
+    private volatile boolean loadingBranchStarted;
 
     IdListsById getAncestorsIdsById() {
         return ancestorsIdsById;
@@ -80,19 +135,22 @@ public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRe
         public final EDefType type;
         public final long subtype;
         public final LayerMeta layer;
+        public final Id titleId;
 
         public DefinitionInfo(final Id id,
                 final Id moduleId,
                 final String name,
                 final EDefType type,
                 final long subtype,
-                final LayerMeta layer) {
+                final LayerMeta layer,
+                final Id titleId) {
             this.id = id;
             this.moduleId = moduleId;
             this.name = name;
             this.type = type;
             this.subtype = subtype;
             this.layer = layer;
+            this.titleId = titleId;
         }
     }
 
@@ -194,9 +252,9 @@ public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRe
                         final String defXmlName = moduleDirName + DEFINITIONS_XML_SHORT_FILE_NAME;
                         final String moduleXmlName = moduleDirName + MODULE_XML_SHORT_FILE_NAME;
                         try {
-                            DefinitionInfo moduleInfo = registerModule(getRepositoryFileStream(moduleXmlName), moduleShortName, layerMeta);
+                            DefinitionInfo moduleInfo = registerModule(getRepositoryFileStream(moduleXmlName,0), moduleShortName, layerMeta);
 //                            makeImagesIndexation(getRepositoryFileStream(seg.getDirectory()+ File.separator +moduleDirXmlFileName),moduleDirName);
-                            makeDefinitionsIndexation(getRepositoryFileStream(defXmlName), moduleInfo.id, moduleDirName, moduleShortName, layerMeta);
+                            makeDefinitionsIndexation(getRepositoryFileStream(defXmlName,0), moduleInfo.id, moduleDirName, moduleShortName, layerMeta);
                         } catch (IOException exception) {
                             final String message = env.getMessageProvider().translate("TraceMessage", "Can\'t load modules in %s\n: Can\'t parse file %s");
                             env.getTracer().error(String.format(message, seg.getDirectory(), defXmlName), exception);
@@ -250,7 +308,8 @@ public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRe
                 moduleId,
                 module.getName(), EDefType.MODULE,
                 -1,
-                layerMeta);
+                layerMeta,
+                null);
         definitions.put(moduleId, new MapEntry<>(result, moduleName, layerMeta));
         return result;
     }
@@ -268,7 +327,7 @@ public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRe
                 if (isTopLevelDefinition(def) || DEF_TYPES_TO_INDEX.contains(def.getType())) {
                     final long subType = def.isSetSubType() ? def.getSubType() : -1;
                     if (def.getType() != EDefType.DOMAIN || def.getDomains() == null) {
-                        checkAndPut(definitions, id, new DefinitionInfo(id, moduleId, def.getName(), def.getType(), subType, layerMeta), moduleShortName, layerMeta, "Definition");
+                        checkAndPut(definitions, id, new DefinitionInfo(id, moduleId, def.getName(), def.getType(), subType, layerMeta, def.getTitleId()), moduleShortName, layerMeta, "Definition");
                     }
                 }
                 if (def.getType() == EDefType.IMAGE) {
@@ -565,6 +624,14 @@ public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRe
         }
         return Collections.unmodifiableCollection(result);
     }
+    
+    public Id getDefinitionTitleId(final Id definitionId) throws DefinitionNotFoundError{
+        final MapEntry<DefinitionInfo> entry = definitions.get(definitionId);
+        if (entry==null){
+            throw new DefinitionNotFoundError(definitionId);
+        }
+        return entry.value.titleId;
+    }
 
     public Collection<DefinitionInfo> getDefinitionsForDomain(final Id domainId, EDefType type) {
         final Collection<DefinitionInfo> result = new ArrayList<>(256);
@@ -679,7 +746,57 @@ public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRe
 
     @Override
     public void close() {
+        int tryNumber = 0;        
+        while (branchPreloadThread.isAlive() && tryNumber<10){                        
+            branchLoadingTask.cancel();
+            branchPreloadThread.interrupt();
+            try{
+                branchPreloadThread.join(5000);
+            }catch(InterruptedException exception){
+                return;
+            }
+            tryNumber++;
+        }
         super.close();
+    }
+    
+    private void startPreloadBranchThread(){
+        synchronized(loadingBranchSemaphore){
+            if (!loadingBranchStarted){
+                loadingBranchStarted = true;
+                branchPreloadThread.setPriority(Thread.MIN_PRIORITY);
+                branchPreloadThread.start();
+            }
+        }
+    }  
+    
+    private void waitForLoadBranch(){
+        branchPreloadThread.setPriority(Thread.NORM_PRIORITY);
+        try{
+            branchPreloadThread.join(600000);
+        }catch(InterruptedException ex){
+            throw new DefinitionError("Failed to load branch", ex);
+        }
+        if (branchPreloadThread.isAlive()){
+            final String dumps = ThreadDumper.dumpSync(branchPreloadThread, 10, 5000);
+            if (dumps!=null){
+                final String message = env.getMessageProvider().translate("TraceMessage", "Failed to load branch")+":\n"+dumps;
+                throw new DefinitionError(message);
+            }
+        }
+    }
+    
+    public boolean isPreloadBranchRunning() {
+        return branchPreloadThread.isAlive();
+    }
+    
+    public void preloadBranch(){
+        if (!env.isExtendedMetaInformationAccessible()){
+            throw new BranchIsNotAccessibleError();
+        }
+        if (!branchPreloadThread.isAlive()){
+            startPreloadBranchThread();
+        }
     }
     
     @Override
@@ -687,6 +804,13 @@ public class ReleaseRepository extends org.radixware.kernel.release.fs.ReleaseRe
         if (!env.isExtendedMetaInformationAccessible()){
             throw new BranchIsNotAccessibleError();
         }
+        if (branchPreloadThread.isAlive()){
+            waitForLoadBranch();
+        }
         return super.getBranch();
+    }
+    
+    public boolean isRepositoryFileExists(final String fileName){
+        return getRevisionMeta().findFile(fileName)!=null;
     }
 }

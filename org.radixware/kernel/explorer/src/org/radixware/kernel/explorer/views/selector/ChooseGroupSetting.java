@@ -66,9 +66,28 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
         }
 
     }
-    
+
+    /**
+     * Копия последнего установленного ComboBox.popupShownTimestamp
+     */
+    private static volatile long lastPopupShownTimestamp;
+
+    /**
+     * Вовзращает время (System.currentTimeMillis()), когда последний выпадающтй список был показан.
+     * Это копия последнего установленного ComboBox.popupShownTimestamp.
+     */
+    public static long getLastPopupShownTimestamp() {
+        return lastPopupShownTimestamp;
+    }
+
+    /**
+     * Время в мс, в течение которого действует запрет на закрытие выпадающего
+     * списка сразу после его раскрытия.
+     */
+    public static final long dontHidePopupDelay = 500;
+
     private class ComboBox extends QComboBox implements IResponseListener{
-                
+
         private class ComboBoxStyle extends WidgetUtils.CustomStyle{//RADIX-5375
 
             public ComboBoxStyle(){
@@ -102,12 +121,12 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
         //private IGroupSetting selectedAddon;
         private T selectedAddon;
         private boolean openSettingsManager;
-        private boolean popupShown;
+        private long popupShownTimestamp;
         private boolean dontHidePopup;
         private long startLoadingTime;
         private RequestHandle loadingSettingsRequestHandle;
         private final ComboBoxStyle style = new ComboBoxStyle();
-        
+
         private final QLineEdit lineEdit = new QLineEdit(this) {
 
             @Override
@@ -135,8 +154,12 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
                         if (model().rowCount(index) > 0) {
                             dontHidePopup = true;
                         } else {
-                            if (itemFromIndex(index) == openSettingsManagerItem) {
+                            final QTreeWidgetItem treeItem = itemFromIndex(index);
+                            if (treeItem == openSettingsManagerItem) {
                                 openSettingsManager = true;
+                            } else if (!treeItem.flags().isSet(Qt.ItemFlag.ItemIsSelectable)){
+                                openSettingsManager = false;
+                                dontHidePopup = true;
                             } else {
                                 openSettingsManager = false;
                                 selectedAddon = getSettingForIndex(index);
@@ -186,7 +209,12 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
                     }else{
                         final QModelIndex index = indexAt(event.pos());
                         if (index != null) {
-                            dontHidePopup = model().rowCount(index) > 0;
+                            if (model().rowCount(index) > 0){
+                                dontHidePopup = true;
+                            }else{
+                                final QTreeWidgetItem treeItem = itemFromIndex(index);
+                                dontHidePopup = !treeItem.flags().isSet(Qt.ItemFlag.ItemIsSelectable);
+                            }
                         }
                     }
                     super.mouseDoubleClickEvent(event);
@@ -241,12 +269,15 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
         }
 
         @Override
-        public void hidePopup() {            
-            if (popupShown) {
-                if (!dontHidePopup) {                    
+        public void hidePopup() {  
+            if (popupShownTimestamp>0 && System.currentTimeMillis()-popupShownTimestamp>dontHidePopupDelay && tree.isVisible()) {
+                if (dontHidePopup) {                    
+                    dontHidePopup = false;
+                } else {
                     super.hidePopup();
-                    popupShown = false;
-                    if (!openSettingsManager) {                        
+                    popupShownTimestamp = 0;
+                    WidgetUtils.resumeAsyncGroupModelReadersAfterHideDropDownList(this);
+                    if (!openSettingsManager) {                             
                         final Id selectedAddonId = selectedAddon != null ? selectedAddon.getId() : null;
                         final Id currentAddonId = currentAddon != null ? currentAddon.getId() : null;
                         if (!Utils.equals(selectedAddonId, currentAddonId)) {
@@ -254,8 +285,6 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
                             addonChanged.emit(currentAddon);
                         }
                     }
-                } else {
-                    dontHidePopup = false;
                 }
                 activated();
                 if (openSettingsManager) {
@@ -266,7 +295,7 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
         }
         
         private void afterSelectItem(){
-            if (!popupShown){
+            if (popupShownTimestamp==0){
                 if (openSettingsManager){
                     openSettingsManager = false;
                     ChooseGroupSetting.this.openSettingsManager.emit();                
@@ -311,11 +340,13 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
         }
 
         @Override
-        public void showPopup() {            
+        public void showPopup() {
             try{
                 if (isLoadingItems()){
+                    WidgetUtils.pauseAsyncGroupModelReadersBeforeShowDropDownList(this);
                     super.showPopup();
-                    popupShown = true;
+                    popupShownTimestamp = System.currentTimeMillis();
+                    lastPopupShownTimestamp = popupShownTimestamp;
                     return;
                 }else if (!ChooseGroupSetting.this.isSettingsLoaded()){
                     initPleaseWaitItems();
@@ -323,15 +354,19 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
                     startLoadingTime = System.currentTimeMillis();
                     if (loadingSettingsRequestHandle!=null){
                         loadingSettingsRequestHandle.addListener(this);
+                        WidgetUtils.pauseAsyncGroupModelReadersBeforeShowDropDownList(this);
                         super.showPopup();
-                        popupShown = true;
+                        popupShownTimestamp = System.currentTimeMillis();
+                        lastPopupShownTimestamp = popupShownTimestamp;
                         return;
                     }
                 } if (!tree.addons.isEmpty()) {
                     prepareToShow();
                     final T current = getCurrentAddon();
+                    WidgetUtils.pauseAsyncGroupModelReadersBeforeShowDropDownList(this);
                     super.showPopup();
-                    popupShown = true;
+                    popupShownTimestamp = System.currentTimeMillis();
+                    lastPopupShownTimestamp = popupShownTimestamp;
                     if (current != null) {
                         tree.setCurrent(current);
                     }
@@ -358,7 +393,7 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
         }
 
         public boolean isPopupShown() {
-            return popupShown;
+            return popupShownTimestamp>0;
         }
 
         public void updateStyleSheet() {
@@ -420,12 +455,16 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
                 loadingSettingsRequestHandle.removeListener(this);
                 loadingSettingsRequestHandle.cancel();
             }
-            popupShown = false;
+            popupShownTimestamp = 0;
             loadingSettingsRequestHandle = null;
-            setStyle(null);
-            WidgetUtils.CustomStyle.release(style);
             super.closeEvent(event);
         }
+
+        @Override
+        protected void disposed() {
+            WidgetUtils.CustomStyle.release(style);
+            super.disposed();
+        }                
 
         @Override
         public void registerRequestHandle(final RequestHandle handle) {
@@ -441,28 +480,28 @@ public class ChooseGroupSetting<T extends IGroupSetting> extends ExplorerFrame {
         }
 
         @Override
-        public void onServiceClientException(final ServiceClientException exception, final RequestHandle handle) {            
+        public void onServiceClientException(final ServiceClientException exception, final RequestHandle handle) {
             onLoadingFinished();
         }
 
         @Override
-        public void onRequestCancelled(final XmlObject request, final RequestHandle handler) {            
+        public void onRequestCancelled(final XmlObject request, final RequestHandle handler) {
             onLoadingFinished();
-        }        
+        }
         
-        private void onLoadingFinished(){            
+        private void onLoadingFinished(){
             loadingSettingsRequestHandle = null;
-            if (popupShown){
-                if (System.currentTimeMillis()-startLoadingTime<500){
-                    Application.sleep(500);
+            if (popupShownTimestamp>0){
+                if (System.currentTimeMillis()-startLoadingTime<dontHidePopupDelay){
+                    Application.sleep((int)dontHidePopupDelay);
                 }
                 tree.setRootIsDecorated(true);
                 tree.setIndentation(20);
                 prepareToShow();
             }else{
                 tree.setRootIsDecorated(true);
-                tree.setIndentation(20);                
-            }         
+                tree.setIndentation(20);
+            }
         }
     }
     //private IGroupSetting currentAddon;

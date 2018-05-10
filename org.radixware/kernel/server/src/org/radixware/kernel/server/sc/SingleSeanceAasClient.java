@@ -24,8 +24,10 @@ import org.radixware.schemas.aas.InvokeRs;
  * @author dsafonov
  */
 public abstract class SingleSeanceAasClient<T extends AasInvokeItem> extends AasClient {
-    
+
     protected T item;
+    private long lastInvokeStartMillis;
+    private long lastInvokeDurationMillis;
 
     public SingleSeanceAasClient(Unit unit, ServiceManifestLoader manifestLoader, LocalTracer tracer, EventDispatcher dispatcher) {
         super(unit, manifestLoader, tracer, dispatcher);
@@ -34,14 +36,16 @@ public abstract class SingleSeanceAasClient<T extends AasInvokeItem> extends Aas
     public boolean busy() {
         return item != null || !seances.isEmpty() && seances.get(0).busy();
     }
-    
+
     public void invoke(final T invokeItem) {
+        lastInvokeStartMillis = System.currentTimeMillis();
         item = invokeItem;
-        invoke(invokeItem.getInvokeDoc(), invokeItem.getHeaders(), invokeItem.isKeepConnect(), invokeItem.getTimeoutMillis(), invokeItem.getScpName());
+        invoke(invokeItem.getInvokeDoc(), invokeItem.getHeaders(), invokeItem.isKeepConnect(), invokeItem.getTimeoutMillis(), invokeItem.getScpName(), invokeItem.getAadcAffinity());
     }
 
     @Override
     protected void onInvokeResponse(InvokeRs rs) {
+        lastInvokeDurationMillis = System.currentTimeMillis() - lastInvokeStartMillis;
         try {
             onInvokeResponseImpl(rs);
         } finally {
@@ -51,19 +55,28 @@ public abstract class SingleSeanceAasClient<T extends AasInvokeItem> extends Aas
 
     @Override
     protected void onInvokeException(ServiceClientException exception) {
+        lastInvokeDurationMillis = System.currentTimeMillis() - lastInvokeStartMillis;
         try {
             onInvokeExceptionImpl(exception);
         } finally {
             item = null;
         }
     }
-    
+
     public T getItem() {
         return item;
     }
+
+    public long getLastInvokeDurationMillis() {
+        return lastInvokeDurationMillis;
+    }
+
+    public long getLastInvokeStartMillis() {
+        return lastInvokeStartMillis;
+    }
     
     protected abstract void onInvokeResponseImpl(InvokeRs rs);
-        
+
     protected abstract void onInvokeExceptionImpl(ServiceClientException ex);
 
 }

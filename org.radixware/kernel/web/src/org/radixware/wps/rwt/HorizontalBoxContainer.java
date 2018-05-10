@@ -11,9 +11,21 @@
 
 package org.radixware.wps.rwt;
 
+import org.radixware.kernel.common.html.Html;
+
 
 public class HorizontalBoxContainer extends LinearBoxContainer {
 
+    private final static int DEFAULT_SPACE = 3;
+    
+    private static class HorizontalDevider extends UIObject{
+        public HorizontalDevider(final int width){
+            super(new Html("div"));
+            setMinimumWidth(width);
+            getHtml().setCss("max-width", width+"px");
+        }
+    }   
+    
     public HorizontalBoxContainer() {
         super("horizontalBox");
     }
@@ -43,5 +55,15 @@ public class HorizontalBoxContainer extends LinearBoxContainer {
         } else {
             return Alignment.LEFT;
         }
+    }
+    
+    public UIObject addSpace(final int height){
+        final UIObject space = new HorizontalDevider(height);
+        add(space);
+        return space;
+    }
+    
+    public UIObject addSpace(){
+        return addSpace(DEFAULT_SPACE);
     }
 }

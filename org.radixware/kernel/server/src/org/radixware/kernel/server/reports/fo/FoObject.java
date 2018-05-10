@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.server.reports.fo;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.radixware.kernel.common.utils.XmlUtils;
@@ -68,9 +70,12 @@ abstract class FoObject {
         stream.writeAttribute(name, value);
     }
 
-    private static String stringToFopString(String s) {
+    private static List<String> stringToFopString(String s) {
+        List<String> result = new ArrayList<>();
+        
         if (s == null || s.isEmpty()) {
-            return s;
+            result.add(s);
+            return result;
         }
         
         // replace unsupported by XML properties by '?'
@@ -78,18 +83,35 @@ abstract class FoObject {
 
         // replace unsupported by FOP characters by '?', otherwise - IndexOutOfBoundException :-(
         final char[] chars = s.toCharArray();
-        boolean converted = false;
-        for (int i = chars.length - 1; i >= 0; i--) {
+        final StringBuilder fopStringBuilder = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
+            
             if (org.apache.fop.text.linebreak.LineBreakUtils.getLineBreakProperty(c) == 0) {
-                chars[i] = '?';
-                converted = true;
+                fopStringBuilder.append('?');
+                continue;
             }
+            
+            if (i > 1) {
+                if (chars[i - 1] == ']' && chars[i - 2] == ']' && c == '>') {
+                    result.add(fopStringBuilder.toString());
+                    fopStringBuilder.setLength(0);
+                }
+            }
+            
+            fopStringBuilder.append(c);
         }
-        return (converted ? String.valueOf(chars) : s);
+        
+        if (fopStringBuilder.length() != 0) {
+            result.add(fopStringBuilder.toString());
+        }
+        
+        return result;
     }
 
     protected void writeText(final String value) throws XMLStreamException {
-        stream.writeCData(stringToFopString(value));
+        for (String fopString : stringToFopString(value)) {
+            stream.writeCData(fopString);
+        }
     }
 }

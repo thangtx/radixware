@@ -21,6 +21,7 @@ import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.xmlbeans.XmlException;
+import org.radixware.kernel.common.environment.IRadixDefManager;
 import org.radixware.kernel.common.utils.SystemTools;
 import org.radixware.schemas.msdl.Message;
 
@@ -54,6 +55,10 @@ public class MsdlEditor extends javax.swing.JFrame {
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(editor,BorderLayout.CENTER);
         jPanel1.validate();
+    }
+    
+    public void setSchemeSearcher(IRadixDefManager manager) {
+        editor.setSchemeSearcher(manager);
     }
 
     private Editor editor;

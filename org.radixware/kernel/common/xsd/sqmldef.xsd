@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/sqmldef.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" targetNamespace="http://schemas.radixware.org/sqmldef.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    
+    <xs:annotation>
+        <xs:documentation>---------- Definitions sturcture ----------</xs:documentation>
+    </xs:annotation>    
+    
+    <xs:complexType name="SqmlDefinition" abstract="true">
+        <xs:attribute name="Id" type="types:Id" use="required"/>
+        <xs:attribute name="Name" type="xs:string"/>
+        <xs:attribute name="ModuleName" type="xs:string" use="optional"/>
+        <xs:attribute name="IdPath" use="optional">
+            <xs:annotation>
+                <xs:documentation>Definition.getIdPath()</xs:documentation>
+            </xs:annotation>            
+            <xs:simpleType>
+                <xs:list itemType="types:Id"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlDomainDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:sequence>
+                    <xs:element name="SubDomain" type="this:SqmlDomainDef" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>        
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlEnumItemDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">                
+                <xs:sequence>
+                    <xs:element name="ValAsStr" type="types:SafeStr" minOccurs="1" maxOccurs="1" nillable="true"/>
+                </xs:sequence>
+                <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlEnumDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:sequence>
+                    <xs:element name="Item" type="this:SqmlEnumItemDef" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+                <xs:attribute name="ValType" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlFunctionParamDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:sequence>
+                    <xs:element name="DefaultValue" type="types:SafeStr" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute name="DbName" type="xs:string" use="required"/>
+                <xs:attribute name="DbType" type="xs:string" use="required"/>
+                <xs:attribute name="ValType" use="optional">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Direction" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EParamDirection</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EParamDirection</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlFunctionDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:sequence>
+                    <xs:element name="Parameter" type="this:SqmlFunctionParamDef" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>                
+                <xs:attribute name="ResultDbType" type="xs:string" use="required"/>
+                <xs:attribute name="IsWNDS" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlPackageDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:sequence>
+                    <xs:element name="Function" type="this:SqmlFunctionDef" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                    список дефиниций public DDS-функций:
+                                    for (DdsPlSqlObjectItemDef sqlItem : packageDef.getHeader().getItems()) {
+                                        if (sqlItem instanceof DdsPrototypeDef) {
+                                            function = ((DdsPrototypeDef) sqlItem).findFunction();
+                                            if (function != null and function.isPublic()) {
+                                                //Заполнить атрибуты функции
+                                            }
+                                        }
+                                    }                                  
+                            </xs:documentation>
+                        </xs:annotation>                                    
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlDetailTableReferenceDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:attribute name="ReferencedTableId" type="types:Id" use="required">
+                    <xs:annotation>
+                        <xs:documentation>DdsReferenceDef.getChildTableId()</xs:documentation>
+                    </xs:annotation>                    
+                </xs:attribute>                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlOutgoingReferenceDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:attribute name="ReferencedTableId" type="types:Id" use="required">
+                    <xs:annotation>
+                        <xs:documentation>DdsReferenceDef.getParentTableId()</xs:documentation>
+                    </xs:annotation>                    
+                </xs:attribute>
+                <xs:attribute name="ChildColumnNames" use="required">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Список имен дочерних колонок:
+                            for (DdsReferenceDef.ColumnsInfoItem columnInfo : reference.getColumnsInfo()) {
+                                childColumnNames.add(columnInfo.findChildColumn() == null ? "#" + columnInfo.getChildColumnId().toString() :  columnInfo.findChildColumn().getName());
+                            }
+                        </xs:documentation>
+                    </xs:annotation>                    
+                    <xs:simpleType>
+                        <xs:list itemType="xs:string"/>
+                    </xs:simpleType>
+                </xs:attribute>                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>    
+    
+    <xs:complexType name="SqmlIndexDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:attribute name="IsPrimaryKey" type="xs:boolean" use="optional" default="false"/>
+                <xs:attribute name="IndexColumns" use="required">
+                    <xs:annotation>
+                        <xs:documentation>
+                            for (DdsColumnInfo columnInfo : indexDef.getColumnsInfo()) {
+                                indexColumns.add(columnInfo.getColumnId());
+                            }
+                        </xs:documentation>
+                    </xs:annotation>                    
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlTableColumnDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:attribute name="ValType" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Length" type="xs:int" use="required"/>
+                <xs:attribute name="Precision" type="xs:int" use="optional"/>
+                <xs:attribute name="NotNull" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>            
+    </xs:complexType>
+    
+    <xs:complexType name="SqmlTableDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:sequence>
+                    <xs:element name="Indexes" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>DdsTableDef.getIndices().get(EScope.ALL)</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Index" type="this:SqmlIndexDef" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ReferenceToMasterTable" type="this:SqmlDefinition" minOccurs="0" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                            Ссылка на мастер-таблицу
+                            </xs:documentation>
+                        </xs:annotation>                        
+                    </xs:element>
+                    <xs:element name="OutgoingReferences" minOccurs="0" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                            Список исходящих ссылок
+                                refDefs = ddsTable.collectOutgoingReferences();
+                                final DdsReferenceDef masterReference = ddsTable.findMasterReference();
+                                final Id masterTableId = masterReference==null ? null : masterReference.getParentTableId();
+                                for (DdsReferenceDef ddsReference : refDefs) {
+                                    if (masterTableId==null || !masterTableId.equals(ddsReference.getParentTableId())){
+                                        ...
+                                    }
+                                }
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Reference" type="this:SqmlOutgoingReferenceDef" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>                         
+                    </xs:element>
+                    <xs:element name="Columns" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                            final List ddsColumns = tableDef.getColumns().get(EScope.LOCAL_AND_OVERWRITE);
+                            for (DdsColumnDef ddsColumn : ddsColumns) {
+                                if (!ddsColumn.isHidden()) {
+                                    //register column
+                                }
+                            }                          
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Column" type="this:SqmlTableColumnDef" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="MasterTableId" type="types:Id" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Идентификатор мастер-таблицы (заполняется только у таблицы деталей)
+                            DdsTableDef.findMasterReference().getParentTableId();
+                        </xs:documentation>
+                    </xs:annotation>                    
+                </xs:attribute>                    
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="EditMask">
+        <xs:choice>
+            <xs:element name="Int">
+                <xs:complexType>
+                    <xs:attribute name="DbMaxValue" type="xs:long" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>                                
+                                EditMaskInt.getDbMaxValue()
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>               
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Num">
+                <xs:complexType>
+                    <xs:attribute name="DbMaxValue" type="xs:decimal" use="required">
+                        <xs:annotation>
+                            <xs:documentation>                                
+                                EditMaskNum.getDbMaxValue()
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="Precision" type="xs:int" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>                                
+                                EditMaskNum.getPrecision()
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Str">
+                <xs:complexType>
+                    <xs:attribute name="DbMaxLen" type="xs:int" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>                                
+                                EditMaskStr.getDbMaxLen()
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>               
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="TimeInterval">
+                <xs:complexType>
+                    <xs:attribute name="Mask" type="types:SafeStr" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>    
+                                EditMaskTimeInterval.getMask()
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="Scale" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>
+                                EditMaskStr.getScale()
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>    
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="DateTime">
+                <xs:complexType>
+                    <xs:attribute name="Mask" type="types:SafeStr" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>                                
+                                EditMaskDateTime.getMask()
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>       
+        </xs:choice>
+    </xs:complexType>    
+    
+    <xs:complexType name="SqmlClassPropertyDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:sequence>
+                    <xs:element name="EditMask" type="this:EditMask" minOccurs="0" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>                                
+                                Некоторые атрибуты маски редактирования. 
+                                Заполняется только если атрибут EnumId не задан и
+                                propertyDef.getPresentationSupport().getPresentation()!=null и 
+                                propertyDef.getPresentationSupport().getPresentation().getEditOptions()!=null и 
+                                propertyDef.getPresentationSupport().getPresentation().getEditOptions().getEditMask()!=null
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ParentIndex" type="this:SqmlIndexDef" minOccurs="0" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Индекс, который используется свойством-сылкой. 
+                                Заполняется только если свойство является инстанцией класса ParentRefProperty:
+                                final ParentReferenceInfo referenceInfo = ((ParentRefProperty) propertyDef).getParentReferenceInfo();
+                                final DdsReferenceDef referenceDef = referenceInfo == null ? null : referenceInfo.findParentReference();
+                                final DdsIndexDef indexDef = referenceDef == null ? null : referenceDef.findParentIndex();
+                                if (indexDef!=null){
+                                    ...
+                                }                                
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ChildColumns" minOccurs="0" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                            Идентификаторы дочерних колонок для свойства-ссылки.
+                            Заполняется только если свойство является инстанцией класса ParentRefProperty.
+                            final ParentReferenceInfo referenceInfo = ((ParentRefProperty) propertyDef).getParentReferenceInfo();
+                            final DdsReferenceDef referenceDef = referenceInfo == null ? null : referenceInfo.findParentReference();
+                            if (referenceDef != null) {
+                                final DdsReferenceDef.ColumnsInfoItems columnsInfo = referenceDef.getColumnsInfo();
+                                for (DdsReferenceDef.ColumnsInfoItem item : columnsInfo) {
+                                    //Идентификатор таблицы нужен т.к. колонка может быть в таблице деталей
+                                    item.getChildColumnId()
+                                    item.getChildColumn().getOwnerTable().getId());
+                                }
+                            }                                
+                            </xs:documentation>                        
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Column" minOccurs="1" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="Id" type="types:Id" use="required"/>
+                                        <xs:attribute name="TableId" type="types:Id" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="QualifiedName" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>RadixObject.getQualifiedName()</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>                
+                <xs:attribute name="ValType" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation>Enum EValType</xs:documentation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="EnumId" type="types:Id" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            final AdsType type = propertyDef.getValue().getType().resolve(propertyDef).get();
+                            if (type instanceof AdsEnumType) {
+                                return ((AdsEnumType) type).getSource().getId();
+                            } else {
+                                return null;
+                            }                            
+                        </xs:documentation>
+                    </xs:annotation>                    
+                </xs:attribute>
+                <xs:attribute name="DetailColumnId" type="types:Id" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Идентификатор соответствующей колонки в таблице деталей:
+                            if (propertyDef instanceof AdsDetailColumnPropertyDef) {
+                                return ((AdsDetailColumnPropertyDef) propertyDef).getColumnInfo().getColumnId();
+                            }
+                            return null;
+                        </xs:documentation>
+                    </xs:annotation>                    
+                </xs:attribute>
+                <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+                <xs:attribute name="TitleOwnerId" type="types:Id" use="optional"/>
+                <xs:attribute name="NotNull" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation>
+                            propertyDef.getPresentationSupport().getPresentation().getEditOptions().isNotNull()
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="OwnerClassId" type="types:Id" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            propertyDef.getOwnerClass().getId()
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="InnateColumn" type="xs:boolean" use="optional" default="true">
+                    <xs:annotation>
+                        <xs:documentation>
+                            propertyDef instanceof AdsInnateColumnPropertyDef
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>                    
+                <xs:attribute name="OwnerTableId" type="types:Id" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            if (propertyDef instanceof AdsInnateColumnPropertyDef) {
+                                return ((AdsInnateColumnPropertyDef) propertyDef).findTable().getId();
+                            }
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="ReferencedTableId" type="types:Id" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            AdsPropertyDef finalProperty = propertyDef;
+                            while (finalProperty instanceof AdsParentPropertyDef) {
+                                finalProperty = ((AdsParentPropertyDef) finalProperty).getParentInfo().findOriginalProperty();
+                            }
+                            if (finalProperty instanceof AdsParentRefPropertyDef) {
+                                return ((AdsParentRefPropertyDef) finalProperty).findReferencedEntityClass().findTable(propertyDef).getId();
+                            }                            
+                        </xs:documentation>
+                    </xs:annotation>                    
+                </xs:attribute>    
+            </xs:extension>
+        </xs:complexContent>        
+    </xs:complexType>    
+    
+    <xs:complexType name="SqmlClassDef">
+        <xs:complexContent>
+            <xs:extension base="this:SqmlDefinition">
+                <xs:sequence>
+                    <xs:element name="Properties" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                            final List ddsColumns = tableDef.getColumns().get(EScope.LOCAL_AND_OVERWRITE);
+                            for (DdsColumnDef ddsColumn : ddsColumns) {
+                                if (!ddsColumn.isHidden()) {
+                                    //register column
+                                }
+                            }                          
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Property" type="this:SqmlClassPropertyDef" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:annotation>
+                                        <xs:documentation>
+                                        final List properties = classDef.getProperties().get(EScope.ALL);
+                                        AdsPropertyDef finalProperty;
+                                        for (AdsPropertyDef property : properties) {
+                                            if ((property instanceof AdsTablePropertyDef) 
+                                                || (property instanceof AdsExpressionPropertyDef)) {
+                                                finalProperty = property;
+                                                //parent properties temporary restricted
+                                                if (finalProperty instanceof AdsParentPropertyDef) {
+                                                    continue;
+                                                }
+                                                //register property
+                                            }
+                                        }
+                                        </xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                             </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ContextlessSelectorPresentations" minOccurs="0" maxOccurs="1">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Presentation" type="this:SqmlDefinition" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>                    
+                <xs:attribute name="TitleId" type="types:Id" use="optional"/>
+                <xs:attribute name="HasDetails" type="xs:boolean" use="optional" default="false">
+                    <xs:annotation>
+                        <xs:documentation>                          
+                            (classDef instanceof AdsApplicationClassDef) and ((AdsApplicationClassDef) classDef).isDetailPropsAllowed();
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="AllowedDetailRefs" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Список идентификаторов ссылок на таблицы деталей
+                            final List detailRefInfoList = classDef.getAllowedDetailRefs();
+                            DdsReferenceDef reference;
+                            for (AdsEntityObjectClassDef.DetailReferenceInfo detailRefInfo : detailRefInfoList) {
+                               detailRefInfo.getReferenceId()
+                            }
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>                
+                <xs:attribute name="AllowedDetails" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Список идентификаторов таблиц-деталей
+                            final List detailRefInfoList = classDef.getAllowedDetailRefs();
+                            DdsReferenceDef reference;
+                            for (AdsEntityObjectClassDef.DetailReferenceInfo detailRefInfo : detailRefInfoList) {
+                               reference = detailRefInfo.findReference();
+                               if (reference != null) {
+                                  reference.getChildTableId();
+                               }
+                            }
+                        </xs:documentation>
+                    </xs:annotation>                    
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="TableId" type="types:Id" use="required">
+                    <xs:annotation>
+                        <xs:documentation>
+                            classDef.findTable(classDef).getId()
+                        </xs:documentation>
+                    </xs:annotation>                    
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:annotation>
+        <xs:documentation>---------- SqmlRepository ----------</xs:documentation>
+    </xs:annotation>
+    
+    <xs:complexType name="SqmlModule">
+            <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="TableDef" type="this:SqmlTableDef"/>
+                    <xs:element name="PackageDef" type="this:SqmlPackageDef"/>
+                    <xs:element name="ClassDef" type="this:SqmlClassDef"/>
+                    <xs:element name="DomainDef" type="this:SqmlDomainDef"/>
+                    <xs:element name="EnumDef" type="this:SqmlEnumDef"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="Id" type="types:Id" use="required"/>
+            <xs:attribute name="QualifiedName" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>RadixObject.getQualifiedName()</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+    </xs:complexType>
+    
+    <xs:element name="SqmlModule" type="this:SqmlModule"/>
+    
+</xs:schema>

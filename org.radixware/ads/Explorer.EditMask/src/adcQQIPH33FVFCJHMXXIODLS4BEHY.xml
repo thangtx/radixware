@@ -29,17 +29,6 @@
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthVWPX5GZ7DJCSFLGLEQGE5S4DLY" Name="equals" Nature="0" IsOverride="false">
-        <AccessRules>
-          <Transparence Extendable="false" PublishedName="equals(Ljava.lang.Object;)Z"/>
-        </AccessRules>
-        <Parameters>
-          <Parameter Name="object" Id="mprR4YETL4WKVDH5MGLLCS25L7I2E">
-            <Type TypeId="400" extStr="java.lang.Object"/>
-          </Parameter>
-        </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
-      </Method>
       <Method Id="mthNC3ICW5WMVDYHPBIJWVE4XQOQI" Name="getHandleInputAvailable" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="getHandleInputAvailable()Z"/>
@@ -63,18 +52,6 @@
             </xsc:Argument>
           </xsc:GenericArguments>
         </ReturnType>
-      </Method>
-      <Method Id="mthRBTIHOVALFGE5M7YVEICIOJKJQ" Name="getType" Nature="0" IsOverride="false">
-        <AccessRules>
-          <Transparence Extendable="false" PublishedName="getType()Lorg.radixware.kernel.common.enums.EEditMaskType;"/>
-        </AccessRules>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EEditMaskType"/>
-      </Method>
-      <Method Id="mthENLX2VMO5ZH5NGT7ZEKH2UEY5M" Name="hashCode" Nature="0" IsOverride="false">
-        <AccessRules>
-          <Transparence Extendable="false" PublishedName="hashCode()I"/>
-        </AccessRules>
-        <ReturnType TypeId="401" extStr="int"/>
       </Method>
       <Method Id="mthXN6EEWNFA5ARJC7EL3SEPB5PZM" Name="setFileDialogTitle" Nature="0" IsOverride="false">
         <AccessRules>
@@ -115,12 +92,6 @@
             <Type TypeId="400" extStr="org.radixware.schemas.editmask.EditMask"/>
           </Parameter>
         </Parameters>
-      </Method>
-      <Method Id="mthFPD2ZEOFPVFKTISZ2O4RZTXXRU" Name="getMimeType" Nature="0" IsOverride="false">
-        <AccessRules>
-          <Transparence Extendable="false" PublishedName="getMimeType()Lorg.radixware.kernel.common.enums.EMimeType;"/>
-        </AccessRules>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EMimeType"/>
       </Method>
       <Method Id="mthTJ6UIWSVGZGZNP7H4RHJ7WYIOE" Name="setMimeType" Nature="0" IsOverride="false">
         <AccessRules>
@@ -184,12 +155,6 @@
         </Parameters>
         <ReturnType TypeId="21"/>
       </Method>
-      <Method Id="mthTQCICPI3RBBCVHPYXVOPYZWE5A" Name="getFileDialogTitleAsStr" Nature="0" IsOverride="false">
-        <AccessRules>
-          <Transparence Extendable="false" PublishedName="getFileDialogTitleAsStr()Ljava.lang.String;"/>
-        </AccessRules>
-        <ReturnType TypeId="21"/>
-      </Method>
       <Method Id="mthPN4XS3RSC5FADLX76Z5F3A3RQE" Name="getTitleOwnerId" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="getTitleOwnerId()Lorg.radixware.kernel.common.types.Id;"/>
@@ -246,6 +211,66 @@
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
+      </Method>
+      <Method Id="mthNPRXY2F3KBDEFOWRVWE32MTKJQ" Name="getMimeTypes" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getMimeTypes()Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.enums.EMimeType;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.EnumSet">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EMimeType"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthXFVPBI5KBNEHLLTCMBFW4NMWOI" Name="getInitialPath" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getInitialPath()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthM4UTMJYGUFHRHM3VYNTZ3WMGPY" Name="setInitialPath" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setInitialPath(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="initialPath" Id="mprQ5OCQQMTSNARPBOJH2TUBEQ4EA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTMYOHNZWINHMVPMPWNHTAAH6KQ" Name="setMimeTypes" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setMimeTypes(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.enums.EMimeType;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="types" Id="mprK22Z2YE3EVFATP4IZU6FQYODY4">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EMimeType"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3424EFSFIBGFHFC6GCAYMCWKUQ" Name="setDialogMode" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="setDialogMode(Lorg.radixware.kernel.common.enums.EFileDialogOpenMode;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="dialogMode" Id="mprEPMVWUIBBNACZFKN4WEIAEAYEQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EFileDialogOpenMode"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7VCT6YBDLVH7XAXON6K5V73CIY" Name="getDialogMode" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDialogMode()Lorg.radixware.kernel.common.enums.EFileDialogOpenMode;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EFileDialogOpenMode"/>
       </Method>
     </Methods>
   </AdsClassDefinition>

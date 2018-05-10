@@ -24,7 +24,7 @@ public class NoSnapEdgesAction  extends AbstractAction {
     private final AdsReportFormDiagram diagram;
 
     public NoSnapEdgesAction(final AdsReportFormDiagram diagram) {
-        super("Do not snap edges",RadixWareIcons.EDIT.NO_ICON.getIcon());
+        super("Do not Snap Edges",RadixWareIcons.EDIT.NO_ICON.getIcon());
         this.diagram = diagram;
     }
 

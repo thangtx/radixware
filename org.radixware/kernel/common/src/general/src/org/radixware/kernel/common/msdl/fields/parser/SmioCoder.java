@@ -19,6 +19,10 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.MalformedInputException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,7 +65,11 @@ public class SmioCoder {
                     replacement[0] = 0x6F;
                 }
                 encoder.replaceWith(replacement);
-                return encoder.encode(fromBuffer).array();
+                
+                final ByteBuffer encodedBuffer = encoder.encode(fromBuffer);
+                final byte res[] = new byte[encodedBuffer.remaining()];
+                encodedBuffer.get(res);
+                return res;
             } else {
                 Long temp;
                 int i;
@@ -154,12 +162,13 @@ public class SmioCoder {
                 return res.toString();
             } else if (encoding == EncodingDef.LITTLE_ENDIAN_BIN) {
                 Long res = 0L;
+                int numIndex = 0;
                 while (bf.remaining() > 0) {
-                    int temp = bf.get();
+                    long temp = bf.get();
                     if (temp < 0) {
                         temp += 256;
                     }
-                    res = res * 256 + temp;
+                    res |= (temp << 8 * numIndex++);
                 }
                 return res.toString();
             } else if (encoding == EncodingDef.BCD) {
@@ -167,8 +176,10 @@ public class SmioCoder {
                 while (bf.remaining() > 0) {
                     final byte b = bf.get();
                     final int digit1 = (b >> 4) & 15;
+                    checkDigitInBCD(digit1);
                     r = r.append(Integer.toString(digit1));
                     final int digit2 = b & 15;
+                    checkDigitInBCD(digit2);
                     r = r.append(Integer.toString(digit2));
                 }
                 return r.toString();
@@ -176,9 +187,52 @@ public class SmioCoder {
             throw new SmioException("Not supported encoding");
         }
     }
+    
+    private void checkDigitInBCD(final int digit) throws SmioException {
+        if (0 <= digit && digit <= 9) {
+            return;
+        }
+        throw new SmioException("Field encoded not in BCD format");
+    }
 
     public String decode(final IDataSource ids, final int len) throws SmioException, IOException {
-        return decode(ByteBuffer.wrap(ids.get(len)));
+        if (StandardCharsets.UTF_8 != getCharset(name)) {
+            return decode(ByteBuffer.wrap(ids.get(len)));
+        }
+        
+        //Decode UTF-8
+        final CharsetDecoder decoder = getCharset(name).newDecoder();
+        decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+        final StringBuilder result = new StringBuilder();
+        final List<Byte> charBytes = new ArrayList<>();
+        int charsDecoded = 0;
+        
+        do {
+            if (!ids.hasAvailable()) {
+                throw new SmioException("Not enough bytes to decode data in charset: " + name);
+            }
+            charBytes.add(ids.get());
+            final byte tmpArr[] = new byte[charBytes.size()];
+            int i = 0;
+            for (; i < charBytes.size(); i++) {
+                tmpArr[i] = charBytes.get(i);
+            }
+            
+            try {
+                final char c = decoder.decode(ByteBuffer.wrap(tmpArr)).get();
+                result.append(c);
+            } catch (MalformedInputException ex) {
+                if (tmpArr.length == 4) {//Max unicode symbol size
+                    result.append(decoder.replacement());
+                } else {
+                    continue;
+                }
+            }
+            charBytes.clear();
+            charsDecoded++;
+        } while (charsDecoded < len);
+        
+        return result.toString();
     }
 
     public SmioCoder(final String encodingName) {
@@ -189,7 +243,7 @@ public class SmioCoder {
             charIsConstLen = true;
             charLen = 1;
             resultName = "US-ASCII";
-        } else if (encoding == EncodingDef.HEX_EBCDIC) {
+        } else if (encoding == EncodingDef.HEX_EBCDIC || encoding == EncodingDef.EBCDIC_CP_1047) {
             isStandart = true;
             charIsConstLen = true;
             charLen = 1;

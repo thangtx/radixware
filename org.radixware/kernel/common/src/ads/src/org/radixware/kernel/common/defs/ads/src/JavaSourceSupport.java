@@ -481,7 +481,7 @@ public abstract class JavaSourceSupport {
 //                return currentRoot.getId().toString() + "_" + ((AdsCustomPageEditorDef) currentRoot).getOwnerEditorPage().getOwnerDef().getId().toString();
 //            } else {
             if (currentRoot instanceof AdsClassDef) {
-                return ((AdsClassDef) currentRoot).getRuntimeLocalClassName();
+                return ((AdsClassDef) currentRoot).getRuntimeLocalClassName(false);
             } else if (currentRoot instanceof AdsRoleDef && ((AdsRoleDef) currentRoot).isAppRole()) {
                 return ((AdsRoleDef) currentRoot).getRuntimeId().toString();
             } else if (currentRoot instanceof AdsLocalizingBundleDef) {
@@ -562,14 +562,17 @@ public abstract class JavaSourceSupport {
         }
     }
 
-    public static String getClassFullQualifiedJavaName(AdsPath path, AdsModule module) {
+    public static String getClassFullQualifiedJavaName(AdsPath path, AdsModule module, boolean isHumanReadable) {
         final Definition definition = path.resolve(module).get();
 
         if (definition instanceof AdsClassDef) {
             final AdsClassDef cls = (AdsClassDef) definition;
+//            if (isHumanReadable) {
+//                return cls.getQualifiedName(module);
+//            }
             final StringBuilder builder = new StringBuilder();
             final String packageName = getPackageName(cls, JavaSourceSupport.UsagePurpose.getPurpose(
-                    cls.getUsageEnvironment(), CodeType.EXCUTABLE));
+                    cls.getUsageEnvironment(), CodeType.EXCUTABLE), false);
 
             if (AdsTransparence.isTransparent(cls)) {
                 return cls.getTransparence().getPublishedName();
@@ -591,8 +594,8 @@ public abstract class JavaSourceSupport {
         return null;
     }
 
-    public static final String getPackageName(Definition def, UsagePurpose purpose) {
-        final char[][] components = getPackageNameComponents(def, purpose);
+    public static final String getPackageName(Definition def, UsagePurpose purpose, boolean isHumanReadable) {
+        final char[][] components = getPackageNameComponents(def, isHumanReadable, purpose);
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < components.length; i++) {
             if (i > 0) {
@@ -605,7 +608,7 @@ public abstract class JavaSourceSupport {
     }
 
     public static final File getPackageDir(File packagesRoot, Definition def, UsagePurpose purpose) {
-        final char[][] packageNames = getPackageNameComponents(def, purpose);
+        final char[][] packageNames = getPackageNameComponents(def, false, purpose);
         File res = packagesRoot;
         for (int i = 0; i < packageNames.length; i++) {
             res = new File(res, new String(packageNames[i]));
@@ -615,23 +618,61 @@ public abstract class JavaSourceSupport {
     private static final char[] META_PACKAGE_NAME = new char[]{'m', 'e', 't', 'a'};
 
     public static char[] getModulePackageName(Module module) {
+        return getModulePackageName(module, false);
+    }
+    
+    public static char[] getModulePackageName(Module module, boolean isHumanReadable) {
         if (module instanceof AdsModule) {
             final AdsModule companion = ((AdsModule) module).findCompanionModule();
             if (companion != null) {
-                return getModulePackageName(companion);
+                return getModulePackageName(companion, isHumanReadable);
             } else {
-                return module.getId().toCharArray();
+                return getName(module, isHumanReadable);
             }
         } else {
-            return module.getId().toCharArray();
+            return getName(module, isHumanReadable);
         }
     }
-
-    public static final char[][] getPackageNameComponents(Definition def, UsagePurpose purpose) {
-        return getPackageNameComponents(def, purpose, false);
+    
+    public static final char[] getName(Definition def, Id id, boolean isHumanReadable, boolean capitalize) { 
+        if (isHumanReadable) {
+            char[] result = def.getName().toCharArray();
+            if (capitalize && result.length > 0) {
+                result[0] = Character.toUpperCase(result[0]);
+            }
+            return result;
+        } else {
+            return id.toCharArray();
+        }
+    }
+    
+    public static final char[] getName(Definition def, boolean isHumanReadable, boolean capitalize) {
+        return getName(def, def.getId(), isHumanReadable, capitalize);
+    }
+    
+    public static final char[] getName(Definition def, Id id, boolean isHumanReadable) {
+        return getName(def, id, isHumanReadable, false);
+    }
+    
+    public static final char[] getName(Definition def, boolean isHumanReadable) {
+        return getName(def, def.getId(), isHumanReadable);
+    }
+    
+    public static final char[] getMetaName(Definition def, boolean isHumanReadable) {
+        char[] name = getName(def, isHumanReadable);
+        return CharOperations.merge(name, META_CLASS_SUFFIX);
+    }
+    
+    public static final char[] getMetaName(Definition def, Id id,  boolean isHumanReadable) {
+        char[] name = getName(def, id, isHumanReadable);
+        return CharOperations.merge(name, META_CLASS_SUFFIX);
     }
 
-    public static final char[][] getPackageNameComponents(Definition def, UsagePurpose purpose, boolean withOwnLayer) {
+    public static final char[][] getPackageNameComponents(Definition def, boolean isHumanReadable, UsagePurpose purpose) {
+        return getPackageNameComponents(def, isHumanReadable, purpose, false);
+    }
+
+    public static final char[][] getPackageNameComponents(Definition def, boolean isHumanReadable, UsagePurpose purpose, boolean withOwnLayer) {
         Module module;
 
         boolean idIsPackagePart = false;
@@ -678,7 +719,7 @@ public abstract class JavaSourceSupport {
         res[i++] = segment.getName().toLowerCase().toCharArray();
 
 
-        res[i++] = getModulePackageName(module);
+        res[i++] = getModulePackageName(module, isHumanReadable);
 
         switch (purpose.getEnvironment()) {
             case SERVER:
@@ -700,14 +741,14 @@ public abstract class JavaSourceSupport {
                 break;
         }
         if (idIsPackagePart) {
-            res[i++] = def.getId().toCharArray();
+            res[i++] = getName(def, isHumanReadable);
         }
 
         return res;
     }
-
+    
     public char[][] getMainClassName(UsagePurpose up) {
-        final char[][] packages = getPackageNameComponents(getCurrentRoot(), up);
+        final char[][] packages = getPackageNameComponents(getCurrentRoot(), false, up);
         final char[][] result = new char[packages.length + 1][];
         System.arraycopy(packages, 0, result, 0, packages.length);
         if (up.isMeta()) {
@@ -806,7 +847,7 @@ public abstract class JavaSourceSupport {
                     return null;
                 }
 
-                AdsDefinition def = module.getDefinitions().findById(classDefinitionId);
+                AdsDefinition def = module.getTopContainer().findById(classDefinitionId);
                 AdsDefinition defRoot = null;
                 if (def == null) {
                     for (AdsDefinition root : module.getDefinitions()) {

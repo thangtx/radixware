@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcOZLGSGP6MRDSDHEDP6BFLYRWIU" Name="EntityCursorIterator" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="411" Path="pdcEntity____________________"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderadcOZLGSGP6MRDSDHEDP6BFLYRWIU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcOZLGSGP6MRDSDHEDP6BFLYRWIU"/>
+    </Bodies>
+    <MethodGroup Id="cmgFB4MSUGLZRF43FCLTEEW7OHIR4" Name="Root"/>
+    <PropertyGroup Id="cpg7DCK3ON7GFAL7PHBLOCV3VRB7E" Name="Root"/>
+    <Properties>
+      <Property Id="prdIC7TFI2TIVB6NPWXASA2PM4DTA" Name="entityFieldId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthOGY63IRLURA6HC2GKBCQ7SP3M4" Name="EntityCursorIterator" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="cursor" Id="mpr3USWSDOYBJGBNHTZK55UM7EFWQ">
+            <Type TypeId="411" Path="pdcCursor____________________"/>
+          </Parameter>
+          <Parameter Name="entityFieldId" Id="mprVMQ3Z5QPYNE7NIY3SN4JGX3WLY">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(cursor);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOZLGSGP6MRDSDHEDP6BFLYRWIU prdIC7TFI2TIVB6NPWXASA2PM4DTA" Invoke="true">
+                <xsc:Presentation>entityFieldId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = entityFieldId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthSJSOP3KSWJEBBHE5SCY5HQMQQ4" Name="getEntity" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="cursor" Id="mprUVIOHQTBUNC3RD7YOOVUFFL3CM">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Cursor"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (T) ((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcCursor____________________">
+                <xsc:Presentation>Types::Cursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) cursor).getReadAccessor().get(cursor, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcOZLGSGP6MRDSDHEDP6BFLYRWIU prdIC7TFI2TIVB6NPWXASA2PM4DTA" Invoke="true">
+                <xsc:Presentation>entityFieldId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcAZIRFX4WSVHYXB2TWGK3IQGYSI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

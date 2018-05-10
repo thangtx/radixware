@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.userreport.repository.role;
 
 import java.io.File;
@@ -30,15 +29,14 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.userreport.common.UserExtensionManagerCommon;
 import org.radixware.kernel.common.userreport.extrepository.UserExtRepository;
 
-
-
 public class RolesModule extends AdsModule {
 
-    public static final Id MODULE_ID = Id.Factory.newInstance(EDefinitionIdPrefix.MODULE);
+    public static final Id MODULE_ID = AdsModule.UD_ROLES_MODULE_ID;
+
     private static RolesModule instance = null;
 
     public static RolesModule getInstance() {
-        synchronized (MODULE_ID) {
+        synchronized (UD_ROLES_MODULE_ID) {
             if (instance == null) {
                 instance = new RolesModule();
             }
@@ -47,13 +45,13 @@ public class RolesModule extends AdsModule {
     }
 
     public static void dispose() {
-        synchronized (MODULE_ID) {
+        synchronized (UD_ROLES_MODULE_ID) {
             instance = null;
         }
     }
 
     private RolesModule() {
-        super(MODULE_ID, "User Defined Roles");
+        super(UD_ROLES_MODULE_ID, "User Defined Roles");
     }
 
     private void updateDependences(final Layer layer) {
@@ -79,13 +77,12 @@ public class RolesModule extends AdsModule {
     protected void loadFrom(final org.radixware.schemas.product.Module xModule) {
         super.loadFrom(xModule);
         updateDependences(UserExtRepository.getInstance().getUserExtSegment().getLayer());
-    
+
     }
 
     /*void reloadFromRepository() {
-        ((RolesModuleDefinitions) getDefinitions()).reloadFromRepository();
-    }*/
-
+     ((RolesModuleDefinitions) getDefinitions()).reloadFromRepository();
+     }*/
     @Override
     protected ModuleDefinitions createDefinitinosList() {
         return new RolesModuleDefinitions(this, true);
@@ -95,7 +92,7 @@ public class RolesModule extends AdsModule {
 
         private final ReentrantLock loadFindLock = new ReentrantLock();
 
-        public RolesModuleDefinitions(final AdsModule owner,final boolean upload) {
+        public RolesModuleDefinitions(final AdsModule owner, final boolean upload) {
             super(owner, upload);
         }
 
@@ -133,7 +130,7 @@ public class RolesModule extends AdsModule {
         }
 
         @Override
-        public void save(final AdsDefinition def,final AdsDefinition.ESaveMode saveMode) throws IOException {
+        public void save(final AdsDefinition def, final AdsDefinition.ESaveMode saveMode) throws IOException {
             super.save(def, saveMode);
             if (def instanceof AdsRoleDef) {
                 final AppRole role = UserExtensionManagerCommon.getInstance().getAppRoles().findAppRole(def.getId());
@@ -151,29 +148,29 @@ public class RolesModule extends AdsModule {
                 if (def != null) {
                     return def;
                 } //else {
-                    final AppRole role = UserExtensionManagerCommon.getInstance().getAppRoles().findAppRole(roleId);
-                    if (role != null) {
-                        final File defFile = ((RolesModuleRepository) getModule().getRepository()).uploadRole(role);
-                        if (defFile != null) {
-                            try {
-                                addFromRepository(new FSRepositoryAdsDefinition(defFile));
-                                return super.findById(roleId);
-                            } catch (final IOException ex) {
-                                SwingUtilities.invokeLater(new Runnable() {
+                final AppRole role = UserExtensionManagerCommon.getInstance().getAppRoles().findAppRole(roleId);
+                if (role != null) {
+                    final File defFile = ((RolesModuleRepository) getModule().getRepository()).uploadRole(role);
+                    if (defFile != null) {
+                        try {
+                            addFromRepository(new FSRepositoryAdsDefinition(defFile));
+                            return super.findById(roleId);
+                        } catch (final IOException ex) {
+                            SwingUtilities.invokeLater(new Runnable() {
 
-                                    @Override
-                                    public void run() {
-                                       // Exceptions.printStackTrace(ex);
-                                        UserExtensionManagerCommon.getInstance().getUFRequestExecutor().processException(ex);
-                                    }
-                                });
+                                @Override
+                                public void run() {
+                                    // Exceptions.printStackTrace(ex);
+                                    UserExtensionManagerCommon.getInstance().getUFRequestExecutor().processException(ex);
+                                }
+                            });
 
-                            }
                         }
                     }
+                }
 
-                    return null;
-               // }
+                return null;
+                // }
             } finally {
                 loadFindLock.unlock();
             }
@@ -183,7 +180,7 @@ public class RolesModule extends AdsModule {
     @Override
     public boolean isReadOnly(final AdsDefinition def) {
         if (def instanceof AdsRoleDef) {
-           final  AppRole appRole = UserExtensionManagerCommon.getInstance().getAppRoles().findAppRole(def.getId());
+            final AppRole appRole = UserExtensionManagerCommon.getInstance().getAppRoles().findAppRole(def.getId());
             if (appRole == null) {
                 return true;
             } else {
@@ -192,5 +189,10 @@ public class RolesModule extends AdsModule {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public boolean isUserModule() {
+        return true;
     }
 }

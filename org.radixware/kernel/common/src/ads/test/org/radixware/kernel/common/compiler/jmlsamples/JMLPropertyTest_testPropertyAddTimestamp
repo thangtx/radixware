@@ -1,0 +1,21 @@
+
+import java.sql.Timestamp;
+
+class TestPublicProperty {
+
+    public Timestamp getvDate() {
+	return null;
+    }
+
+    public void func() {
+	System.err.println("time = " + vDate);
+    }
+}
+
+class Test {
+
+    static public void main(String[] args) {
+	TestPublicProperty t = new TestPublicProperty();
+	t.func();
+    }
+}

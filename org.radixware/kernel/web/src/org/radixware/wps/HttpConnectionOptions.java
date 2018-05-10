@@ -13,6 +13,8 @@ package org.radixware.wps;
 
 import java.util.Map;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
@@ -20,16 +22,20 @@ import org.radixware.kernel.common.ssl.CertificateUtils;
 
 
 public final class HttpConnectionOptions {
-    
+
     private final boolean isSecure;
+    private final boolean isAdminPanel;
+    private final String userNameCertAttr;
     private final X509Certificate[] certificates;
-    private final String stationName;
-    private final String traceProfile;
-    private final EIsoLanguage language;
+    private final EIsoLanguage browserLanguage;
+    private final EIsoLanguage urlLanguage;    
     private final EWebBrowserEngineType browserEngine;
+    private final Map<String,String> urlParameters;
+    private final Map<String, String> customParamsMap = new HashMap<>();
     
-    HttpConnectionOptions(final HttpServletRequest request){
+    HttpConnectionOptions(final HttpServletRequest request, final String userNameCertAttr, final String urlParams){
         isSecure = request.isSecure();
+        this.userNameCertAttr = userNameCertAttr;
         final Object cert = request.getAttribute("javax.servlet.request.X509Certificate");
         if (cert instanceof java.security.cert.X509Certificate){
             certificates = 
@@ -46,13 +52,27 @@ public final class HttpConnectionOptions {
             certificates = null;
         }                
         final Map<String,String> queryParameters = HttpHeaderParser.parseQueryString(request.getQueryString());        
-        final EIsoLanguage browserLanguage = 
-                parseLanguage(queryParameters.get("browser_locale"),EIsoLanguage.ENGLISH);
+        browserLanguage = 
+                parseLanguage(queryParameters.get("browser_locale"),null);
         final String url = request.getHeader(HttpHeaderConstants.REFERER);        
-        final Map<String,String> urlParameters = HttpHeaderParser.parseQueryString(url);
-        stationName = urlParameters.get("station");
-        traceProfile = urlParameters.get("trace");
-        language = parseLanguage(urlParameters.get("language"),browserLanguage);
+        urlParameters = HttpHeaderParser.parseQueryString(urlParams==null ? url : urlParams);
+        urlLanguage = parseLanguage(urlParameters.get("language"),null);
+        final String adminUrlParam = WebServerRunParams.getAdminPanelUrlParam();
+        if (isSecure 
+            && adminUrlParam!=null 
+            && !adminUrlParam.isEmpty() 
+            && urlParameters.containsKey(adminUrlParam)){
+            final String userName = getUserNameFromCertificate();
+            isAdminPanel = userName!=null && !userName.isEmpty() && WebServerRunParams.getAdminUserNames().contains(userName);
+        }else{
+            isAdminPanel = false;
+        }
+        for (Entry<String, String> entry : urlParameters.entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith("_")) {
+                customParamsMap.put(key.substring(1), entry.getValue());
+            }
+        }
         browserEngine = parseUserAgent(request.getHeader("user-agent"));
     }
     
@@ -96,20 +116,67 @@ public final class HttpConnectionOptions {
     public X509Certificate[] getClientCertificates() {
         return certificates;
     }
+    
+    public String getUserNameFromCertificate() {
+        if (certificates!=null && certificates.length>0){            
+            final Map<String, String> dn
+                    = CertificateUtils.parseDistinguishedName(certificates[0].getSubjectDN().getName());
+            return dn.get(userNameCertAttr);
+        }else{
+            return null;
+        }
+    }    
 
     public String getStationName() {
-        return stationName;
+        return urlParameters.get("station");
+    }
+    
+    public String getExplorerRootId() {
+        return urlParameters.get("explorerRoot");
+    }
+    
+    public String getUserName() {
+        return urlParameters.get("user");
     }
     
     public String getTraceProfile() {
-        return traceProfile;
+        return urlParameters.get("trace");
     }
-
-    public EIsoLanguage getClientLanguage() {
-        return language;
+    
+    public String getPassword() {
+        return urlParameters.get("password");
+    }
+    
+    public String getPwdHash256() {
+        return urlParameters.get("pwdHash256");
+    }
+    
+    public String getPwdHash1() {
+        return urlParameters.get("pwdHash1");
+    }
+    
+    public EIsoLanguage getBrowserLanguage() {
+        return browserLanguage;
+    }
+    
+    public EIsoLanguage getUrlLanguage() {
+        return urlLanguage;
     }
 
     public EWebBrowserEngineType getBrowserEngineType(){
         return browserEngine;
+    }
+    
+    public boolean isAdminPanel(){
+        return isAdminPanel;
+    }
+    
+    public String getEntryPoint(){
+        return urlParameters.get("entryPoint");
+    }
+    
+    public Map<String,String> getCustomParams(){
+        final Map<String,String> params = new HashMap<>(customParamsMap);
+        return params;
     }
 }

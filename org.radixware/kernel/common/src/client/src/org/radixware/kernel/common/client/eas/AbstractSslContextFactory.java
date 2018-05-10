@@ -11,11 +11,15 @@
 
 package org.radixware.kernel.common.client.eas;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import javax.net.ssl.SSLContext;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.connections.ConnectionOptions;
+import org.radixware.kernel.common.client.utils.ISecretStore;
+import org.radixware.kernel.common.client.utils.TokenProcessor;
 import org.radixware.kernel.common.enums.EKeyStoreType;
 import org.radixware.kernel.common.exceptions.CertificateUtilsException;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
@@ -38,27 +42,30 @@ public abstract class AbstractSslContextFactory implements ISslContextFactory{
     }
     
     @Override
-    public SSLContext createSslContext(final char[] keyStorePwd) throws KeystoreControllerException, CertificateUtilsException{
+    public SSLContext createSslContext(final ISecretStore secretStore) throws KeystoreControllerException, CertificateUtilsException{
         final ConnectionOptions.SslOptions sslOptions = connection.getSslOptions();
         if (keystoreController!=null){
             connection.onClose();//
             keystoreController = null;
         }
         
-        keystoreController = createKeyStoreController(keyStorePwd);
-        
+        final char[] password;
+        final byte[] encryptedPwd = secretStore==null ? null : secretStore.getSecret();
+        password = encryptedPwd==null ? new char[0] : new TokenProcessor().decrypt(encryptedPwd);
+        if (encryptedPwd!=null){
+            Arrays.fill(encryptedPwd, (byte)0);        
+        }        
         final char[] keyPassword;
-        if (sslOptions.useSSLAuth()) {
-            if (sslOptions.getKeyStoreType() == EKeyStoreType.PKCS11) {
-                keyPassword = new char[]{};
-            } else {
-                keyPassword = keyStorePwd;
-            }
-        } else {
-            keyPassword = null;
+        if (sslOptions.getKeyStoreType() == EKeyStoreType.PKCS11) {
+            keyPassword = new char[]{}; //no password for single key
+        }else{
+            keyPassword = secretStore==null ? null : password;
         }
+        
+        keystoreController = createKeyStoreController(password);
+        
         final String certAlias = connection.getSslOptions().getCertificateAlias();
-        final AbstractSslTrustManager trustManager = getSslTrustManager(keyStorePwd);
+        final AbstractSslTrustManager trustManager = getSslTrustManager(password);
         return 
             CertificateUtils.prepareSslContext(keystoreController, keyPassword, trustManager, certAlias);
     }
@@ -75,10 +82,11 @@ public abstract class AbstractSslContextFactory implements ISslContextFactory{
     private AbstractSslTrustManager getSslTrustManager(final char[] keyStorePwd){
         if (sslTrustManager==null){
             final String trustStorePath;
-            if (connection.getSslOptions().getTrustStoreFilePath()==null || connection.getSslOptions().getTrustStoreFilePath().isEmpty()){
-                trustStorePath = calcDefaultTrustKeyStorePath(connection.getId());
+            final File trustStoreFile = connection.getSslOptions().getTrustStoreFile(environment.getWorkPath());
+            if (trustStoreFile!=null && trustStoreFile.isFile() && trustStoreFile.canRead()){
+                trustStorePath = trustStoreFile.getAbsolutePath();
             }else{
-                trustStorePath = connection.getSslOptions().getTrustStoreFilePath();
+                trustStorePath = calcDefaultTrustKeyStorePath(connection.getId());
             }
             try{
                 sslTrustManager = 

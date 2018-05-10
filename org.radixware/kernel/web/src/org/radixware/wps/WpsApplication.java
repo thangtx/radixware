@@ -129,22 +129,24 @@ class WpsApplication implements IClientApplication {
     };
     private ImageManager imageManager;
     private List<HttpSessionContext> sessions = new LinkedList<>();
-    private Collection<Id> createReason;
-    WebServer server;
+    private final Collection<Id> createReason;
+    private final long version;
+    final WebServer server;
 
-    public WpsApplication(WebServer server, Collection<Id> createReason) {
+    public WpsApplication(final WebServer server,
+                                     final Collection<Id> createReason, 
+                                     final long version) {
         this.server = server;
         if (createReason != null) {
             this.createReason = Collections.unmodifiableCollection(createReason);
+        }else{
+            this.createReason = Collections.emptyList();
         }
+        this.version = version;
     }
 
     public Collection<Id> getCreateReason() {
-        if (createReason == null) {
-            return Collections.emptyList();
-        } else {
-            return createReason;
-        }
+        return createReason;
     }
 
     void register(HttpSessionContext e) {
@@ -170,8 +172,8 @@ class WpsApplication implements IClientApplication {
             if (defManager == null) {
                 defManager = new DefManager(this) {
                     @Override
-                    protected AdsVersion createVersion(IClientApplication env) {
-                        return new WpsAdsVersion(env);
+                    protected AdsVersion createVersion(final IClientApplication env) {
+                        return new WpsAdsVersion(env,version);
                     }
                 };
             }
@@ -219,6 +221,12 @@ class WpsApplication implements IClientApplication {
             return ownTracer;
         }
 
+    }
+    
+    void closeOwnTracer(){
+        if (ownTracer!=null){
+            ownTracer.close();
+        }
     }
 
     @Override
@@ -384,6 +392,11 @@ class WpsApplication implements IClientApplication {
                 }
                 secret = null;
             }
+
+            @Override
+            public boolean isEmpty() {
+                return secret==null;
+            }
         };
     }
 
@@ -391,4 +404,10 @@ class WpsApplication implements IClientApplication {
     public boolean isExtendedMetaInformationAccessible() {
         return true;
     }        
+
+    @Override
+    public boolean isSqmlAccessible() {
+        return true;
+    }
+        
 }

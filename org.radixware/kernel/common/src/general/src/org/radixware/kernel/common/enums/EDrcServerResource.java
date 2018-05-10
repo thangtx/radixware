@@ -85,4 +85,11 @@ public enum EDrcServerResource implements IKernelStrEnum {
                 return "not defined";
         }
     }
+    
+    public boolean isDeprecated() {//RADIX-13126
+        return EDrcServerResource.EAS_COLORING_CREATION.equals(this)
+            || EDrcServerResource.EAS_SERVER_FILES.equals(this)
+            || EDrcServerResource.DEBUG.equals(this);
+    }
+    
 }

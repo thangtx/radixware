@@ -163,7 +163,7 @@ public class AppBlockNetPort {
 						/*resultClass*/ProcessDocument.class, 
 						/*service*/"http://schemas.radixware.org/netporthandler.wsdl#" + unitId,
 						/*keepConnectTime*/NETPORT_SERVICE_KEEP_CONNECTIONTIME, 
-						/*timeout*/NETPORT_SERVICE_TIMEOUT);
+						/*timeout*/NETPORT_SERVICE_TIMEOUT, null);
 			} catch (ServiceCallFault e) {
 				// disconnect
 				return exit(EXIT_DISCONNECT, timeout);				

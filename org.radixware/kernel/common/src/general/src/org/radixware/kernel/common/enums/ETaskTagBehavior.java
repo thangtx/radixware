@@ -63,4 +63,9 @@ public enum ETaskTagBehavior implements IKernelStrEnum {
     public boolean isInDomains(List<Id> ids) {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return getDescription();
+    }
 }

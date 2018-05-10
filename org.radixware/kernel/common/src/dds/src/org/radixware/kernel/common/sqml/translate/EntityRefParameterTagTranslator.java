@@ -27,6 +27,10 @@ public class EntityRefParameterTagTranslator<T extends EntityRefParameterTag> ex
     @Override
     public void translate(final T tag, final CodePrinter cp) {
         final IParameterDef param = tag.getParameter(); // for check
+        final boolean multy = (param != null && param.isMulty());
+        if (multy) {
+            cp.print('(');
+        }
         if (tag.getOwnerSqml() != null) {
             final Sqml sqml = tag.getOwnerSqml();
             final DdsTableDef referencedTable = sqml.getEnvironment().findTableById(tag.getReferencedTableId());
@@ -50,6 +54,10 @@ public class EntityRefParameterTagTranslator<T extends EntityRefParameterTag> ex
             }
         } else {
             cp.printError();
+        }
+        
+        if (multy) {
+            cp.print(",...)");
         }
     }
 

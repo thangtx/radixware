@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.eas;
 
+import java.nio.ByteBuffer;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlObject;
 import org.ietf.jgss.GSSException;
-import org.radixware.kernel.common.auth.AuthUtils;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.auth.ClientAuthUtils;
 import org.radixware.kernel.common.client.dialogs.DialogFactory;
@@ -47,8 +48,10 @@ import org.radixware.kernel.common.client.errors.UniqueConstraintViolationError;
 import org.radixware.kernel.common.client.errors.UnsupportedDefinitionVersionError;
 import org.radixware.kernel.common.client.errors.UserAccountLockedError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
+import org.radixware.kernel.common.client.exceptions.NoSapsForCurrentVersion;
 import org.radixware.kernel.common.client.exceptions.ServiceAuthenticationException;
 import org.radixware.kernel.common.client.exceptions.SignatureException;
+import org.radixware.kernel.common.client.exceptions.TerminalResourceException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.models.EntityModel;
@@ -61,7 +64,9 @@ import org.radixware.kernel.common.client.models.ReportParamDialogModel;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.trace.ClientTracer;
 import org.radixware.kernel.common.client.trace.AbstractTraceBuffer;
+import org.radixware.kernel.common.client.types.AggregateFunctionCall;
 import org.radixware.kernel.common.client.types.Pid;
+import org.radixware.kernel.common.client.utils.CryptoUtils;
 import org.radixware.kernel.common.client.utils.ISecretStore;
 import org.radixware.kernel.common.enums.EAuthType;
 import org.radixware.kernel.common.trace.LocalTracer;
@@ -76,13 +81,19 @@ import org.radixware.kernel.common.client.views.IDialog;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.enums.EDialogIconType;
 import org.radixware.kernel.common.enums.EDrcServerResource;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.CertificateUtilsException;
 import org.radixware.kernel.common.exceptions.IllegalArgumentError;
+import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.exceptions.ServiceCallFault;
+import org.radixware.kernel.common.exceptions.ServiceCallRecvException;
+import org.radixware.kernel.common.exceptions.ServiceCallSendException;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
+import org.radixware.kernel.common.exceptions.ShouldNeverHappenError;
 import org.radixware.kernel.common.ssl.KeystoreController;
 import org.radixware.kernel.common.trace.TraceItem;
 import org.radixware.kernel.common.types.Id;
@@ -90,11 +101,80 @@ import org.radixware.kernel.common.utils.Base64;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.XmlObjectProcessor;
 import org.radixware.kernel.common.utils.XmlUtils;
+import org.radixware.schemas.clientstate.ConnectionParams;
 import org.radixware.schemas.eas.*;//NOPMD
 import org.radixware.schemas.easWsdl.GetSecurityTokenDocument;
 
 
 public abstract class AbstractEasSession implements IEasSession {
+    
+    public interface IResponseNotificationScheduler{
+        void block();
+        void unblock();
+        void scheduleNotificationTask(Runnable task);
+    }
+    
+    private final static class DefaultResponseNotificationScheduler implements IResponseNotificationScheduler{
+        
+        private final java.lang.Object semaphore = new java.lang.Object();
+        private final List<Runnable> scheduledTasks = new LinkedList<>();
+        private final IClientEnvironment environment;
+        private int blockCounter;
+        
+        public DefaultResponseNotificationScheduler(final IClientEnvironment environment){            
+            this.environment = environment;
+        }
+
+        @Override
+        public void block() {
+            synchronized(semaphore){
+                blockCounter++;
+            }
+        }
+
+        @Override
+        public void unblock() {            
+            synchronized(semaphore){
+                blockCounter--;
+                if (blockCounter==0){
+                    final List<Runnable> tasks;
+                    tasks = new LinkedList<>(scheduledTasks);
+                    scheduledTasks.clear();
+                    if (!tasks.isEmpty()){
+                        runTasks(tasks);
+                    }                    
+                }
+            }
+        }
+        
+        @Override
+        public void scheduleNotificationTask(final Runnable task) {            
+            synchronized(semaphore){
+                final List<Runnable> tasks;
+                if (blockCounter>0){
+                    scheduledTasks.add(task);
+                    tasks = null;
+                }else{
+                    tasks = Collections.singletonList(task);
+                }
+                if (tasks!=null){
+                    runTasks(tasks);
+                }                
+            }
+        }
+        
+        private void runTasks(final List<Runnable> tasks){            
+            for (Runnable task: tasks){
+                try{
+                    task.run();
+                }catch (RuntimeException ex) {
+                    final String message = environment.getMessageProvider().translate("ExplorerError", "Unhandled exception on request result processing:\n%s");
+                    final String exceptionStr = ClientException.getExceptionReason(environment.getMessageProvider(), ex) + "\n" + ClientException.exceptionStackToString(ex);
+                    environment.getTracer().error(String.format(message, exceptionStr));
+                }
+            }
+        }
+    }
     
     private static final class EnterPasswordDialogTask implements Callable<String>{
         
@@ -102,14 +182,18 @@ public abstract class AbstractEasSession implements IEasSession {
         private final String confirmMessage;
         private final IClientEnvironment environment;
         private final boolean isGuiThread;
+        private final boolean confirmToDisconnect;
         private final String title;        
         
-        public EnterPasswordDialogTask(final IClientEnvironment environment, final String title){
+        public EnterPasswordDialogTask(final IClientEnvironment environment,
+                                                         final String title,
+                                                         final boolean confirmToDisconnect){
             final MessageProvider mp = environment.getMessageProvider();
             confirmTitle = mp.translate("ExplorerMessage", "Confirm to Disconnect");
             confirmMessage = mp.translate("ExplorerMessage", "Do you really want to disconnect?\nIf you answer 'Yes' all unsaved data will be lost.");
             this.title = title;
             this.environment = environment;
+            this.confirmToDisconnect = confirmToDisconnect;
             isGuiThread = environment.getApplication().isInGuiThread();
         }
 
@@ -117,20 +201,21 @@ public abstract class AbstractEasSession implements IEasSession {
         public String call() throws Exception {
             environment.getProgressHandleManager().blockProgress();
             try{
-                while(true){
+                for(int i=1; i<=100; i++){
                     final IEnterPasswordDialog passwordDialog =
                         environment.getApplication().getDialogFactory().newEnterPasswordDialog(environment);        
                     passwordDialog.setMessage(title);
                     if (passwordDialog.execDialog() == DialogResult.ACCEPTED){
                         return passwordDialog.getPassword();
                     }
-                    if (environment.messageConfirmation(confirmTitle, confirmMessage)){
+                    if (!confirmToDisconnect || environment.messageConfirmation(confirmTitle, confirmMessage)){
                         if (!isGuiThread){
                             environment.processException(new CredentialsWasNotDefinedError());
                         }
                         return null;
                     }
                 }
+                return null;
             }finally{
                 environment.getProgressHandleManager().unblockProgress();
             }            
@@ -242,11 +327,25 @@ public abstract class AbstractEasSession implements IEasSession {
     }
 
     private static final int INFINITE_RESPONSE_TIMEOUT = 0;
+    private static final int MAX_REPEAT_RO_REQUEST=2;
+    
+    private static final List<Class<? extends XmlObject>> READONLY_RQ_MESSAGE_CLASSES  = 
+                    Arrays.<Class<? extends XmlObject>>asList(ListEdPresVisibleExpItemsMess.class,
+                                                                                        SelectMess.class,
+                                                                                        ReadMess.class,
+                                                                                        GetObjectTitlesMess.class,
+                                                                                        PrepareCreateMess.class,
+                                                                                        ListInstantiatableClassesMess.class,
+                                                                                        CalcSelectionStatisticMess.class,
+                                                                                        SetParentMess.class,
+                                                                                        GetPasswordRequirementsMess.class,
+                                                                                        GetDatabaseInfoMess.class
+                                                                                        );
     
     volatile ITokenCalculator tokenCalculator;
     volatile RequestExecutor executor;
-    volatile AbstractEasSessionParameters params;  
-    private volatile DatabaseInfo databaseInfo;
+    volatile AbstractEasSessionParameters params;
+    private volatile DatabaseInfo databaseInfo = DatabaseInfo.EMPTY_INSTANCE;
     private volatile EasMessageProcessor messageProcessor;
     private volatile EasMessageProcessor previousMessageProcessor;
     private volatile boolean opened;
@@ -264,18 +363,44 @@ public abstract class AbstractEasSession implements IEasSession {
     private final ClientTracer tracer;
     private final EasTrace easTrace;
     private final AbstractEasSession masterSession;
+    private final IResponseNotificationScheduler scheduler;
+    
+    public AbstractEasSession(final IClientEnvironment environment, 
+                                          final AbstractEasSession masterSession) {
+        this(environment, null, null, masterSession);
+    }    
 
-    public AbstractEasSession(final IClientEnvironment environment, final AbstractEasSession masterSession) {
-        this(environment, null, masterSession);
+    public AbstractEasSession(final IClientEnvironment environment, 
+                                          final IResponseNotificationScheduler scheduler,
+                                          final AbstractEasSession masterSession) {
+        this(environment, null, scheduler, masterSession);
     }
+    
+    public AbstractEasSession(final IClientEnvironment environment, 
+                                          final ISecretStore secretStore, 
+                                          final AbstractEasSession masterSession) {
+        this(environment, secretStore, null, masterSession);
+    }    
 
-    public AbstractEasSession(final IClientEnvironment environment, final ISecretStore secretStore, final AbstractEasSession masterSession) {
-        this.environment = environment;        
+    public AbstractEasSession(final IClientEnvironment environment, 
+                                          final ISecretStore secretStore, 
+                                          final IResponseNotificationScheduler scheduler,
+                                          final AbstractEasSession masterSession) {
+        this.environment = environment;
         this.easTrace = new EasTrace(environment);
         this.secretStore = secretStore;
         tracer = environment.getTracer();
         mp = environment.getMessageProvider();
         serverKeyStore = environment.getApplication().newSecretStore();
+        if (scheduler==null){
+            if (masterSession==null){
+                this.scheduler = new DefaultResponseNotificationScheduler(environment);
+            }else{
+                this.scheduler = masterSession.scheduler;
+            }
+        }else{
+            this.scheduler = scheduler;
+        }
         this.masterSession = masterSession;
     }
 
@@ -283,8 +408,7 @@ public abstract class AbstractEasSession implements IEasSession {
     public LocalTracer getSessionTrace() {
         return easTrace;
     }        
-
-    @SuppressWarnings("unchecked")
+    
     protected final XmlObject send(final RequestHandle handler, final boolean resend) throws ServiceClientException, InterruptedException {
         if (executor == null || params==null) {
             throw new ServiceClientException(mp.translate("ClientSessionException", "Can't send request to server: session is not opened"));
@@ -292,32 +416,96 @@ public abstract class AbstractEasSession implements IEasSession {
         if (!credentialsDefined){
             throw new CredentialsWasNotDefinedError();
         }
+        
         if (!isOpened() && !isCreateSessionRequest(handler) && !isLoginRequest(handler) && !isCloseSessionRequest(handler)){
             if (isInteractive()){
-                if (!restore(resend)){
+                final CreateSessionRs response = restore(resend, true);
+                if (response==null){
                     credentialsDefined = false;
                     throw new CredentialsWasNotDefinedError();
+                }else {
+                    return response;
                 }
             }else{
                 createSession(resend);
                 return send(handler, resend);
             }
         }
-        XmlObject result;
-
-        final AbstractTraceBuffer nativeBuffer = tracer.getBuffer();
-        if (!resend) {
-            synchronized (semaphore) {
-                isBusy++;
-                if (isBusy == 1) {
-                    notifyBeforeProcess(handler);
+        
+        if (resend){
+            return execRequestAndSubmitNext(handler, true);
+        }else{
+            scheduler.block();
+            try{                
+                for (int tryNum=0; tryNum<=MAX_REPEAT_RO_REQUEST; tryNum++){
+                    try{
+                        return execRequestWithNotifications(handler);
+                    }catch(ServiceCallSendException | ServiceCallRecvException exception){
+                        if (isReadOnlyRequest(handler.getExpectedResponseMessageClass())
+                            && tryNum<MAX_REPEAT_RO_REQUEST){
+                            tracer.debug(environment.getMessageProvider().translate("TraceMessage", "Connection problem"), exception);
+                        }else{
+                            throw exception;
+                        }
+                    }
                 }
+                throw new ShouldNeverHappenError("");
+            }finally{
+                scheduler.unblock();
             }
         }
-        try {
-            //result = executor.execute(messageProcessor.prepareRequest(request), resultClass);
-            easTrace.clear();
-            easTrace.getBuffer().setMaxSize(nativeBuffer.getMaxSize());
+    }
+    
+    private XmlObject execRequestWithNotifications(final RequestHandle handler) throws ServiceClientException, InterruptedException {
+        synchronized (semaphore) {
+            isBusy++;
+            if (isBusy == 1) {
+                notifyBeforeProcess(handler);
+            }                
+        }
+        try{
+            return execRequestAndSubmitNext(handler, false);
+        }finally{
+            synchronized (semaphore) {
+                isBusy--;
+                if (isBusy == 0) {
+                    notifyAfterProcess(handler);
+                }
+            }            
+        }
+    }
+    
+    private XmlObject execRequestAndSubmitNext(final RequestHandle handler, final boolean resend) throws ServiceClientException, InterruptedException {
+        try{
+            return execRequestAndFreeResources(handler, resend);
+        }finally{
+            if (executor != null) {//session may be closed at this moment
+                executor.afterResponseWasReceived();
+            }
+        }
+    }
+    
+    private XmlObject execRequestAndFreeResources(final RequestHandle handler, final boolean resend)throws ServiceClientException, InterruptedException {
+        try{
+            return execRequest(handler, resend);
+        }finally{
+            try{
+                TerminalResources.getInstance(environment).freeAllResources(environment);
+            }catch(TerminalResourceException exception){
+                final String message = mp.translate("ExplorerError", "Can't free terminal resources");
+                tracer.error(message, exception);                
+            }
+        }
+    }        
+    
+    @SuppressWarnings("unchecked")
+    private XmlObject execRequest(final RequestHandle handler, final boolean resend)throws ServiceClientException, InterruptedException {
+        final XmlObject result;
+        final AbstractTraceBuffer nativeBuffer = tracer.getBuffer();
+        easTrace.clear();
+        easTrace.getBuffer().setMaxSize(nativeBuffer.getMaxSize());
+        
+        try {            
             result = executor.execute(handler);
             //Put into explorer trace all messages from EAS-CLIENT trace
             //except of last one
@@ -386,6 +574,8 @@ public abstract class AbstractEasSession implements IEasSession {
             } else {
                 throw error;
             }
+        } catch (NoSapsForCurrentVersion error){
+            throw new UnsupportedDefinitionVersionError(mp, error, environment.getApplication().getRuntimeEnvironmentType()==ERuntimeEnvironmentType.WEB);
         } catch (EasError error){
             if (error.getSouceFault()!=null){
                 traceFault(error.getSouceFault(), nativeBuffer);
@@ -400,27 +590,9 @@ public abstract class AbstractEasSession implements IEasSession {
                 nativeBuffer.add(easTrace.getBuffer());
             }
             //Flush all explorer trace messages
-//            QApplication.processEvents();
             easTrace.clear();
-            try {
-                TerminalResources.getInstance(environment).freeAllResources(environment);
-            } catch (Throwable ex) {
-                final String message = mp.translate("ExplorerError", "Can't free terminal resources");
-                tracer.error(message, ex);
-            }
-            if (executor != null) {//session may be closed at this moment
-                executor.afterResponseWasReceived();
-            }
-            if (!resend) {
-                synchronized (semaphore) {
-                    isBusy--;
-                    if (isBusy == 0) {
-                        notifyAfterProcess(handler);
-                    }
-                }
-            }
         }
-    }
+    }        
     
     @SuppressWarnings("unchecked")
     private void traceFault(final ServiceCallFault fault, final AbstractTraceBuffer nativeBuffer){
@@ -482,7 +654,7 @@ public abstract class AbstractEasSession implements IEasSession {
         final String message = mp.translate("ExplorerMessage", "Your password was successfully updated!");
         environment.messageInformation(title, message);
         return true;
-    }    
+    }
     
     @Override
     public void changePassword(final String oldPassword, final String newPassword) throws ServiceClientException, InterruptedException {
@@ -490,22 +662,72 @@ public abstract class AbstractEasSession implements IEasSession {
         final EasMessageProcessor savedMessageProcessor = messageProcessor;
         final String userName = params.getUserName();
         final EAuthType authType = params.getAuthType();
-        final PwdTokenCalculator oldPwdTokenCalculator = new PwdTokenCalculator(userName, oldPassword);
-        messageProcessor = messageProcessor.createCopy(oldPwdTokenCalculator, authType);
-        request.setNewPwdHash(oldPwdTokenCalculator.createEncryptedHashForNewPassword(userName, newPassword.toCharArray()));
-        boolean passwordWasChanged = false;
-        try {
-            send(new DefaultRequestHandle(environment, request, ChangePasswordMess.class), false);
-            if (params instanceof EasSessionPwdParameters) {
-                if (secretStore == null) {
-                    tokenCalculator = ((EasSessionPwdParameters)params).createTokenCalculator(newPassword);
-                } else {
-                    secretStore.setSecret(new TokenProcessor().encrypt(AuthUtils.calcPwdHash(userName, newPassword)));
+        final PwdTokenCalculator oldPwdTokenCalculator = new PwdTokenCalculator(userName, oldPassword, params.getPwdHashAlgorithm());
+        try{
+            messageProcessor = messageProcessor.createCopy(oldPwdTokenCalculator, authType);
+            final PasswordHash newPwdHash = PasswordHash.Factory.newInstance(userName, newPassword.toCharArray());
+            try{
+                request.setNewPwdHash( oldPwdTokenCalculator.createEncryptedHashForNewPassword(newPwdHash) );
+                boolean passwordWasChanged = false;
+                try {
+                    send(new DefaultRequestHandle(environment, request, ChangePasswordMess.class), false);
+                    if (params instanceof EasSessionPwdParameters) {
+                        if (params.getPwdHashAlgorithm()!=PasswordHash.DEFAULT_ALGORITHM){
+                            params = params.createCopy(null, PasswordHash.DEFAULT_ALGORITHM);
+                        }
+                        applyNewCredentials(userName, newPassword);
+                    }else{
+                        messageProcessor = savedMessageProcessor;
+                    }
+                    passwordWasChanged = true;
+                } finally {
+                    if (!passwordWasChanged){
+                        messageProcessor = savedMessageProcessor;
+                    }
                 }
+            }finally{
+                newPwdHash.erase();
             }
-            passwordWasChanged = true;
-        } finally {
-            messageProcessor = passwordWasChanged ? messageProcessor.createCopy(tokenCalculator, authType) : savedMessageProcessor;
+        }finally{
+            oldPwdTokenCalculator.dispose();
+        }
+    }    
+    
+    private void applyNewCredentials(final String userName, final String password){
+        applyNewPasswordHashAndErase( PasswordHash.Factory.newInstance(userName, password) );        
+    }
+    
+    private void applyNewPasswordHashAndErase(final PasswordHash pwdHash){
+        try{
+            if (tokenCalculator!=null){
+                tokenCalculator.dispose();//this call will erase data in secretStore
+            }
+            if (secretStore!=null){
+                writePasswordHashToSecretStore(pwdHash, secretStore);//for radixware designer
+            }
+            writePasswordHashToSecretStore(pwdHash, serverKeyStore);
+            setTokenCalculator( ((EasSessionPwdParameters)params).createTokenCalculator(serverKeyStore) );
+            messageProcessor = messageProcessor.createCopy(tokenCalculator, EAuthType.PASSWORD);
+        }finally{
+            pwdHash.erase();
+        }
+    }
+    
+    private void applyNewChallengeEncryptionKey(final byte[] serverEncKey) {
+        serverKeyStore.setSecret(new TokenProcessor().encrypt(serverEncKey));
+        Arrays.fill(serverEncKey, (byte) 0);
+        setTokenCalculator( new KeyTokenCalculator(serverKeyStore) );
+        messageProcessor = messageProcessor.createCopy(tokenCalculator, params.getAuthType());
+    }    
+    
+    private static void writePasswordHashToSecretStore(final PasswordHash pwdHash, final ISecretStore secretStore){
+        final byte[] newPwdHashData = pwdHash.export();
+        try{
+            final byte[] encryptedNewPwdHashData = new TokenProcessor().encrypt(newPwdHashData);
+            secretStore.setSecret( encryptedNewPwdHashData );
+            Arrays.fill(encryptedNewPwdHashData, (byte)0);
+        }finally{
+            Arrays.fill(newPwdHashData, (byte)0);
         }
     }
     
@@ -513,8 +735,9 @@ public abstract class AbstractEasSession implements IEasSession {
         if (isInteractive()){
             final String dlgMessage = mp.translate("ExplorerMessage",
                     "You must reauthorize to continue working\nPlease enter your password or press cancel to disconnect");        
+            final boolean isCreateSessionRequest = isCreateSessionRequest(handle);
             while (true) {
-                final String password = askForPassword(dlgMessage);
+                final String password = askForPassword(dlgMessage, !isCreateSessionRequest);
                 if (password==null){
                     throw new CredentialsWasNotDefinedError();
                 }
@@ -535,15 +758,15 @@ public abstract class AbstractEasSession implements IEasSession {
                     }
                 }
             }
-        }else{            
-            createSession(false);            
+        }else{
+            createSession(false); 
             return send(handle, true);
         }
     }
     
-    private String askForPassword(final String title){
+    private String askForPassword(final String title, final boolean confirmToDisconnect){
         try{
-            final String result = environment.runInGuiThread(new EnterPasswordDialogTask(environment, title));
+            final String result = environment.runInGuiThread(new EnterPasswordDialogTask(environment, title, confirmToDisconnect));
             if (result==null){
                 credentialsDefined = false;
             }
@@ -604,21 +827,12 @@ public abstract class AbstractEasSession implements IEasSession {
     
     protected final void setTokenCalculator(final ITokenCalculator calculator){
         tokenCalculator = calculator;
-    }    
+    }
     
     protected final ISecretStore getSecretStore(){
         return secretStore;
     }
-    
-    protected final void setPassword(final EasSessionPwdParameters params, final String password){
-        if (secretStore==null){
-            setTokenCalculator(params.createTokenCalculator(password));
-        }else{
-            
-            setTokenCalculator(params.createTokenCalculator(secretStore));
-        }
-    }
-    
+        
     protected final void setConnection(IEasClient soapConnection){
         executor = createNewRequestExecutor(soapConnection);
     }
@@ -665,9 +879,10 @@ public abstract class AbstractEasSession implements IEasSession {
             tracer.put(EEventSeverity.WARNING,String.format(itemText, faultMessage),EEventSource.CLIENT_SESSION.getValue());
         }
         
-        final AbstractEasSession restoringSession;
+        final boolean isCreateSessionRequest = isCreateSessionRequest(handler);
+        final AbstractEasSession restoringSession;        
         synchronized(semaphore){
-            if (masterSession!=null && isCreateSessionRequest(handler)){
+            if (masterSession!=null && isCreateSessionRequest){
                 //trying to create background session when master session does not exists
                 if (!canRestore){
                     throw error;
@@ -679,16 +894,18 @@ public abstract class AbstractEasSession implements IEasSession {
             restoringSession.opened = false;
             restoringSession.sessionRestorePolicy = restorePolicy;
         }
-        if (restoringSession.restore(true)){
-            if (masterSession!=null && isCreateSessionRequest(handler)){
-                return createSession(true);//cant use current request handler with old sessionId
-            }
-            else {
-                return send(handler, true);
-            }
-        }else{
+        final CreateSessionRs response = restoringSession.restore(true, !isCreateSessionRequest);
+        if (response==null){
             credentialsDefined = false;
-            throw new CredentialsWasNotDefinedError();
+            throw new CredentialsWasNotDefinedError();            
+        }else{
+            if (masterSession!=null && isCreateSessionRequest){
+                return createSession(true);//cant use current request handler with old sessionId
+            } else if (!isCreateSessionRequest) {
+                return send(handler, true);
+            } else{
+                return response;
+            }
         }        
     }
     
@@ -726,26 +943,21 @@ public abstract class AbstractEasSession implements IEasSession {
 
     private void updatePassword(final String newPassword) {
         final boolean isPwdAuth = params instanceof EasSessionPwdParameters;
-        if (secretStore != null) {
-            if (isPwdAuth) {
-                secretStore.setSecret(new TokenProcessor().encrypt(AuthUtils.calcPwdHash(params.getUserName(), newPassword)));
-            } else {
-                secretStore.setSecret(new TokenProcessor().encrypt(newPassword.toCharArray()));
-            }
-        } else if (isPwdAuth) {
-            tokenCalculator = 
-                ((EasSessionPwdParameters)params).createTokenCalculator(newPassword);
-            messageProcessor = messageProcessor.createCopy(tokenCalculator, EAuthType.PASSWORD);
+        if (isPwdAuth){
+            applyNewCredentials(params.getUserName(), newPassword);            
+        }else if (secretStore != null){
+            //password for keystore
+            secretStore.setSecret(new TokenProcessor().encrypt(newPassword.toCharArray()));
         }
     }
     
-    private boolean restore(final boolean resend) throws ServiceClientException, InterruptedException {
+    private CreateSessionRs restore(final boolean resend, final boolean confirmToDisconnect) throws ServiceClientException, InterruptedException {
         synchronized(semaphore){
             if (!canRestore){
-                return false;
+                return null;
             }
             if (isOpened()){
-                return true;
+                throw new IllegalStateException("Unable to restore opened session");
             }
             final boolean authWithoutPwd = params.getAuthType() == EAuthType.KERBEROS
                     || (params.getAuthType() == EAuthType.CERTIFICATE && params.hasUserCerts());
@@ -756,11 +968,10 @@ public abstract class AbstractEasSession implements IEasSession {
                     tracer.put(EEventSeverity.DEBUG,itemText,EEventSource.CLIENT_SESSION.getValue());
                 }
                 try {
-                    createSession(resend);                
+                    return createSession(resend);                
                 } catch (InterruptedException exception) {//NOPWD
-                    return false;
+                    return null;
                 }            
-                return true;
             }
 
             final String itemText = "Session identifier is wrong. Trying to reopen session. User must reenter password. ";
@@ -779,14 +990,15 @@ public abstract class AbstractEasSession implements IEasSession {
                 title = mp.translate("ExplorerDialog", "Please enter your password or press cancel to disconnect");
             }
             while (true) {
-                final String password = askForPassword(title);
+                final String password = askForPassword(title, confirmToDisconnect);
                 if (password==null){
-                    return false;
-                }
+                    return null;
+                }                
                 if (isCertificateAuth) {
                     try {
                         final char[] keyStorePassword = password.toCharArray();
                         renewSslContext(keyStorePassword);
+                        Arrays.fill(keyStorePassword, '\0');
                     } catch (KeystoreControllerException | CertificateUtilsException exception) {
                         if (KeystoreController.isIncorrectPasswordException(exception)) {
                             final String message = mp.translate("ExplorerError", "Password is Invalid!");
@@ -796,10 +1008,11 @@ public abstract class AbstractEasSession implements IEasSession {
                             throw new ServiceClientException(mp.translate("ClientSessionException", "Failed to create security context"), exception);
                         }
                     }
-                }
-                try {
+                }else{
                     updatePassword(password);
-                    createSession(resend);
+                }
+                try {                    
+                    return createSession(resend);
                 } catch (InterruptedException ex) {//NOPMD
                     continue;
                 } catch (ServiceCallFault newFault) {
@@ -813,7 +1026,6 @@ public abstract class AbstractEasSession implements IEasSession {
                         throw newFault;
                     }
                 }
-                return true;
             }        
         }
     }
@@ -822,21 +1034,21 @@ public abstract class AbstractEasSession implements IEasSession {
         if (executor != null) {
             close(false);
         }
-        tokenCalculator = src.tokenCalculator.copy(environment);
+        setTokenCalculator( src.tokenCalculator.copy(environment) );
         final EasClient soapConnection = 
                 new EasClient(mp, getSessionTrace(), (EasClient) src.executor.getConnection());
         executor = createNewRequestExecutor(soapConnection);
-        return createSession(params, false, desiredExplorerRootId);
+        return createSession(params, false, desiredExplorerRootId, null);
     }
     
     @Override
     public IEasSession createBackgroundSession(){
         final BackgroundEasSession newSession = new BackgroundEasSession(environment, isInteractive() ? this : masterSession);
-        newSession.tokenCalculator = tokenCalculator;
+        newSession.setTokenCalculator(tokenCalculator);
         final EasClient soapConnection = 
                 new EasClient(mp, newSession.getSessionTrace(), (EasClient) executor.getConnection());
         newSession.executor = newSession.createNewRequestExecutor(soapConnection);
-        newSession.params = params.createCopy(null);
+        newSession.params = params.createCopy(null,null);
         return newSession;
     }
 
@@ -849,31 +1061,19 @@ public abstract class AbstractEasSession implements IEasSession {
         return new RequestExecutor(environment, easTrace, soapConnection, isInteractive()) {
             @Override
             protected XmlObject prepareRequest(final XmlObject request) throws ServiceClientException {
-                easTrace.clear();
                 return messageProcessor.prepareRequest(request);
             }
 
             @Override
             protected long getCurrentDefinitionVersion(final XmlObject requestBody) {
-                if (requestBody instanceof Request){
-                    return getEnvironment().getDefManager().getAdsVersion().getNumber();
-                }else{
-                    return 0;
-                }
+                return getEnvironment().getDefManager().getAdsVersion().getNumber();
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             protected XmlObject onResponseReceived(final XmlObject answer) throws ServiceAuthenticationException {
-                tracer.getBuffer().startMerge(easTrace.getBuffer());
-                try {
-                    final XmlObject response = preprocessResponse(answer, tracer.getBuffer());
-                    executor.setCurrentScpName(messageProcessor.getCurrentScpName());
-                    return response;
-                } finally {
-                    tracer.getBuffer().finishMerge();
-                    easTrace.clear();
-                }
+                final XmlObject response = preprocessResponse(answer, tracer.getBuffer());
+                executor.setCurrentScpName(messageProcessor.getCurrentScpName());
+                return response;
             }
 
             @Override
@@ -885,10 +1085,39 @@ public abstract class AbstractEasSession implements IEasSession {
                     callbackRq = response == null ? request : ((GetSecurityTokenMess) response).getGetSecurityTokenRq();
                     final GetSecurityTokenDocument document = GetSecurityTokenDocument.Factory.newInstance();
                     final byte[] inToken = callbackRq.getInputToken();
-                    if (inToken == null || inToken.length == 0) {
+                    if (inToken == null || inToken.length == 0) {//kerberos initial token
+                        final ITokenCalculator prevCalculator = tCalculator;
                         tCalculator = tCalculator.copy(environment);
+                        prevCalculator.dispose();
+                    }else if (tCalculator instanceof PwdTokenCalculator){
+                        if (request.getHashAlgorithm()==null){
+                            final String message = mp.translate("ExplorerError", "Unable to create authentication data. Server version is too old.");
+                            response = executor.getConnection().sendFaultMessage(message, null, INFINITE_RESPONSE_TIMEOUT);
+                            continue;                            
+                        }else{
+                            final PwdTokenCalculator pwdTokenCalculator = ((PwdTokenCalculator)tCalculator);
+                            final PasswordHash.Algorithm requestedHashAlgorithm = 
+                                PasswordHash.Algorithm.getForTitle( request.getHashAlgorithm().toString() );
+                            if (requestedHashAlgorithm!=pwdTokenCalculator.getPasswordHashAlgorithm()){
+                                tCalculator = pwdTokenCalculator.createCopyForHashAlgo(requestedHashAlgorithm);
+                            }
+                        }
                     }
-                    final ITokenCalculator.SecurityToken result = tCalculator.calcToken(inToken);
+                    final ITokenCalculator.SecurityToken result;
+                    try{
+                        result = tCalculator.calcToken(inToken);
+                    }catch(IllegalUsageError | IllegalArgumentException ex){
+                        environment.getTracer().debug(ex);
+                        final String reason = ex.getMessage();
+                        final String message;
+                        if (reason!=null && !reason.isEmpty()){
+                            message = mp.translate("ExplorerError", "Unable to get authentication data")+"\n"+reason;
+                        }else{
+                            message = mp.translate("ExplorerError", "Unable to get authentication data");
+                        }
+                        response = executor.getConnection().sendFaultMessage(message, null, INFINITE_RESPONSE_TIMEOUT);
+                        continue;
+                    }
                     if (result == null) {
                         final String message = mp.translate("ExplorerError", "Unable to get authentication data");
                         response = executor.getConnection().sendFaultMessage(message, null, INFINITE_RESPONSE_TIMEOUT);
@@ -900,9 +1129,6 @@ public abstract class AbstractEasSession implements IEasSession {
                 } while (response instanceof GetSecurityTokenMess);
 
                 if (tCalculator != tokenCalculator) {
-                    if (tokenCalculator != null) {
-                        tokenCalculator.dispose();
-                    }
                     tokenCalculator = tCalculator;
                     messageProcessor = messageProcessor.createCopy(tokenCalculator, params.getAuthType());
                 }
@@ -912,20 +1138,21 @@ public abstract class AbstractEasSession implements IEasSession {
     }
     
     private CreateSessionRs createSession(final boolean resend) throws ServiceClientException, InterruptedException{
-        return createSession(params, resend, null);
+        return createSession(params, resend, null, null);
     }
     
     final void open() throws ServiceClientException, InterruptedException{
         synchronized(semaphore){
             if (!isOpened()){
-                createSession(params,false,null);
+                createSession(params, false, null, null);
             }
         }
-    }    
+    }
 
     protected final CreateSessionRs createSession(AbstractEasSessionParameters parameters,
             final boolean isResend,
-            final Id desiredExplorerRootId) throws ServiceClientException, InterruptedException {        
+            final Id desiredExplorerRootId,
+            final Long replacedSessionId) throws ServiceClientException, InterruptedException {        
         if (parameters instanceof EasSessionKrbParameters) {
             final KrbTokenCalculator krbTokenCalculator = 
                 ((EasSessionKrbParameters)parameters).createTokenCalculator(environment);                
@@ -938,6 +1165,7 @@ public abstract class AbstractEasSession implements IEasSession {
                         createSessionImpl(parameters,
                         isResend,
                         desiredExplorerRootId,
+                        replacedSessionId,
                         krbTokenCalculator.getKeyStorage());
                 if (response.isSetEncKey()) {
                     final byte[] krbEncKey = response.getEncKey();
@@ -958,51 +1186,30 @@ public abstract class AbstractEasSession implements IEasSession {
                 }
                 throw new KerberosError(exception);
             } finally {
-                krbTokenCalculator.dispose();
+                krbTokenCalculator.dispose(false);
             }
             if (decryptedKey != null) {
-                applyNewChallengeEncryptionKey(decryptedKey, null);
+                applyNewChallengeEncryptionKey(decryptedKey);
             }
-            updateDatabaseInfo(response);
             return response;
         } else {
             final CreateSessionRs response =
                     createSessionImpl(parameters,
                     isResend,
                     desiredExplorerRootId,
+                    replacedSessionId,
                     null);
-            if (parameters instanceof EasSessionCertParameters && response.isSetEncKey()){
-                
-                final byte[] krbEncKey = response.getEncKey();
-                
-            }
             if (response.isSetEncKey()) {
-                applyNewChallengeEncryptionKey(response.getEncKey(), null);
+                applyNewChallengeEncryptionKey( response.getEncKey() );
             }
-            updateDatabaseInfo(response);
             return response;
-        }
-    }    
-    
-    private void updateDatabaseInfo(final CreateSessionRs response){
-        final CreateSessionRs.DatabaseInfo dbInfo = response==null ? null : response.getDatabaseInfo();
-        databaseInfo = dbInfo==null ? DatabaseInfo.EMPTY_INSTANCE : new DatabaseInfo(dbInfo);
-    }
-
-    private void applyNewChallengeEncryptionKey(final byte[] serverEncKey, final ISecretStore clientEncKeyStorage) {
-        serverKeyStore.setSecret(new TokenProcessor().encrypt(serverEncKey));
-        Arrays.fill(serverEncKey, (byte) 0);
-        tokenCalculator = new PwdTokenCalculator(serverKeyStore);
-        if (clientEncKeyStorage == null) {
-            messageProcessor = messageProcessor.createCopy(tokenCalculator, params.getAuthType());
-        } else {
-            messageProcessor = messageProcessor.createCopy(tokenCalculator, clientEncKeyStorage, params.getAuthType());
         }
     }
 
     private CreateSessionRs createSessionImpl(final AbstractEasSessionParameters parameters,
             final boolean isResend,
             final Id desiredExplorerRootId,
+            final Long replacedSessionId,
             final ISecretStore clientSecretStore) throws ServiceClientException, InterruptedException {
         mp = environment.getMessageProvider();
         params = parameters;
@@ -1020,7 +1227,9 @@ public abstract class AbstractEasSession implements IEasSession {
                 environment.getCountry(),
                 environment.getApplication().getRuntimeEnvironmentType(),
                 desiredExplorerRootId,
-                isInteractive() ? null : masterSession.messageProcessor.getSessionId());
+                replacedSessionId,
+                isInteractive() ? null : masterSession.messageProcessor.getSessionId(),
+                parameters.isWebDriverEnabled());
         if (parameters.getAuthType() == EAuthType.KERBEROS) {
             final ITokenCalculator.SecurityToken secToken = tokenCalculator.calcToken(new byte[]{});
             request.setKrbInitialToken(secToken.token);
@@ -1072,14 +1281,34 @@ public abstract class AbstractEasSession implements IEasSession {
     private void processCreateSessionResponse(final CreateSessionRs response,
                                               final AbstractEasSessionParameters parameters,
                                               final ISecretStore clientSecretStore,
-                                              final boolean isResend) throws InterruptedException, ServiceClientException{        
+                                              final boolean isResend) throws InterruptedException, ServiceClientException{
         sessionRestorePolicy = null;
-        if (clientSecretStore != null) {
+        final String actualUserName = response.getUser();
+        final PasswordHash.Algorithm actualPwdHashAlgo;
+        if (response.getHashAlgorithm()==null){
+            if (params.getAuthType()==EAuthType.PASSWORD){
+                final String message = mp.translate("ExplorerError", "Unable to create authentication data. Server version is too old.");
+                throw new InterruptedException(message);
+            }else{
+                actualPwdHashAlgo = null;
+            }
+        }else{
+            actualPwdHashAlgo = PasswordHash.Algorithm.getForTitle( response.getHashAlgorithm().toString() );
+        }
+        final boolean hashAlgoChanged = actualPwdHashAlgo!=params.getPwdHashAlgorithm();
+        if ( !Objects.equals(params.getUserName(), actualUserName) 
+             || hashAlgoChanged
+           ){
+            params = params.createCopy(actualUserName, actualPwdHashAlgo);
+        }
+        boolean needToUpdateMessageProcessor = clientSecretStore != null;
+        if (hashAlgoChanged && tokenCalculator instanceof PwdTokenCalculator){            
+            setTokenCalculator( ((PwdTokenCalculator)tokenCalculator).createCopyForHashAlgo(actualPwdHashAlgo) );
+            needToUpdateMessageProcessor = true;
+        }
+        if (needToUpdateMessageProcessor) {
             messageProcessor = messageProcessor.createCopy(tokenCalculator, clientSecretStore, parameters.getAuthType());
-        }
-        if (!Objects.equals(params.getUserName(),response.getUser())){
-            params = params.createCopy(response.getUser());
-        }
+        }        
         final CreateSessionRs.ServerResources resources = response.getServerResources();
         boolean canTrace = false;
         if (resources != null && resources.getItemList() != null) {
@@ -1167,19 +1396,13 @@ public abstract class AbstractEasSession implements IEasSession {
     private void switchToPwdAuthType() throws InterruptedException {
         final String message = mp.translate("ExplorerDialog", "Please enter password for \"%1$s\" account");
         final String userName = params.getUserName();
-        final String password = askForPassword(String.format(message, userName));            
+        final String password = askForPassword(String.format(message, userName), false);
         if (password == null) {
             throw new InterruptedException("Password is invalid");
         } else {
-            if (tokenCalculator != null) {
-                tokenCalculator.dispose();
-            }
-            params = new EasSessionPwdParameters(userName, params.getStationName());
-            if (secretStore != null) {
-                //Для передачи пароля в дизайнер
-                secretStore.setSecret(new TokenProcessor().encrypt(AuthUtils.calcPwdHash(userName, password)));
-            }
-            applyNewChallengeEncryptionKey(AuthUtils.calcPwdHash(userName, password), null);
+            params = 
+                new EasSessionPwdParameters(userName, params.getStationName(), params.getPwdHashAlgorithm(), params.isWebDriverEnabled());
+            applyNewCredentials(userName, password);
         }
     }
 
@@ -1215,9 +1438,15 @@ public abstract class AbstractEasSession implements IEasSession {
             }
         }while(response==null);
         if (response.isSetEncKey()) {
-            applyNewChallengeEncryptionKey(response.getEncKey(), null);
+            applyNewChallengeEncryptionKey( response.getEncKey() );
         }
         return true;
+    }
+    
+    public boolean inInteractiveCallBackRequestProcessing(){
+        synchronized(semaphore){
+            return executor!=null && executor.inInteractiveCallBackRequestProcessing();
+        }
     }
 
     @Override
@@ -1285,7 +1514,9 @@ public abstract class AbstractEasSession implements IEasSession {
             propertyList = currentData.addNewProperties();
             for (Property property : properties) {
                 if (!property.isLocal()
-                        && (!property.isValueModifiedByChangingParentRef() || entityModel.isNew())) {
+                    && (!property.isValueModifiedByChangingParentRef() || entityModel.isNew())
+                    && ( property.getType()!=EValType.OBJECT || !entityModel.isNew() )
+                    ) {
                     property.writeValue2Xml(propertyList.addNewItem());
                 }
             }
@@ -1368,26 +1599,54 @@ public abstract class AbstractEasSession implements IEasSession {
             final Collection<Property> predefinedVals)
             throws ServiceClientException, InterruptedException {
         final PrepareCreateRq request = PrepareCreateRq.Factory.newInstance();
-        request.setContext(ctx.toXml());
-        request.addNewClass1().setId(classId);
+        request.setContext(ctx.toXml());        
         final PrepareCreateRq.Presentations presentations = request.addNewPresentations();
         for (Id presentationId : creationPresentationIds) {
             presentations.addNewItem().setId(presentationId);
         }
-        request.addNewData().setClassId(classId);
+        final org.radixware.schemas.eas.Object objectXml = request.addNewObjectTemplate();        
+        objectXml.setClassId(classId);
         if (srcPid != null) {
-            request.getData().setSrcPID(srcPid.toString());
+            objectXml.setSrcPID(srcPid.toString());
         }
         if (predefinedVals != null && !predefinedVals.isEmpty()) {
-            final PropertyList properties = request.getData().addNewProperties();
-            for (Property value : predefinedVals) {
-                if (!value.isLocal()) {
-                    value.writeValue2Xml(properties.addNewItem());
+            final PropertyList properties = objectXml.addNewProperties();
+            for (Property property : predefinedVals) {
+                if (!property.isLocal() && property.getType()!=EValType.OBJECT) {
+                    property.writeValue2Xml(properties.addNewItem());
                 }
             }
         }
         return (PrepareCreateRs) send(new DefaultRequestHandle(environment, request, PrepareCreateMess.class), false);
     }
+    
+    @Override
+    public PrepareCreateRs prepareCreate(
+            final List<Id> creationPresentationIds,
+            final IContext.Entity ctx,
+            final List<EntityModel> templates)
+            throws ServiceClientException, InterruptedException {
+        final PrepareCreateRq request = PrepareCreateRq.Factory.newInstance();
+        request.setContext(ctx.toXml());        
+        final PrepareCreateRq.Presentations presentations = request.addNewPresentations();
+        for (Id presentationId : creationPresentationIds) {
+            presentations.addNewItem().setId(presentationId);
+        }
+        for (EntityModel template: templates){
+            final org.radixware.schemas.eas.Object objectXml = request.addNewObjectTemplate();        
+            objectXml.setClassId(template.getClassId());
+            final Collection<Property> predefined = template.getActiveProperties();
+            if (!predefined.isEmpty()) {
+                final PropertyList properties = objectXml.addNewProperties();
+                for (Property property : predefined) {
+                    if (!property.isLocal() && property.getType()!=EValType.OBJECT) {
+                        property.writeValue2Xml(properties.addNewItem());
+                    }
+                }
+            }
+        }
+        return (PrepareCreateRs) send(new DefaultRequestHandle(environment, request, PrepareCreateMess.class), false);
+    }    
 
     @Override
     public CreateRs create(EntityModel entity) throws ServiceClientException, InterruptedException {
@@ -1395,7 +1654,13 @@ public abstract class AbstractEasSession implements IEasSession {
         request.setContext(((IContext.Entity) entity.getContext()).toXml());
         request.addNewClass1().setId(entity.getClassId());
         request.addNewPresentation().setId(entity.getDefinition().getId());
-        entity.writeToXml(request.addNewData(), false);
+        final org.radixware.schemas.eas.Object entityObject = request.addNewData();
+        entity.writeToXml(entityObject, false);
+        for (Property property: entity.getActiveProperties()){
+            if (property.getType()==EValType.OBJECT){
+                property.writeValue2Xml(entityObject.getProperties().addNewItem());
+            }
+        }
         return (CreateRs) send(new DefaultRequestHandle(environment, request, CreateMess.class), false);
     }
 
@@ -1577,6 +1842,12 @@ public abstract class AbstractEasSession implements IEasSession {
     }    
 
     @Override
+    public CalcSelectionStatisticRs calcSelectionStatistic(final GroupModel group, final List<AggregateFunctionCall> aggregateFunctions) throws ServiceClientException, InterruptedException {
+        final CalcSelectionStatisticRq request = RequestCreator.getCalcSelectionStatistic(group, aggregateFunctions);
+        return (CalcSelectionStatisticRs) send(new DefaultRequestHandle(environment, request, CalcSelectionStatisticMess.class), false);
+    }        
+
+    @Override
     public org.radixware.kernel.common.auth.PasswordRequirements getPasswordRequirements() throws ServiceClientException, InterruptedException {
         final GetPasswordRequirementsRq request = GetPasswordRequirementsRq.Factory.newInstance();
         final GetPasswordRequirementsRs response = 
@@ -1617,23 +1888,33 @@ public abstract class AbstractEasSession implements IEasSession {
 
     @Override
     public void close(final boolean forced) {
-        if (executor != null) {
-            if (!forced && isOpened()){
-                closeEasSession();
+        try{
+            if (executor != null) {
+                try{
+                    if (!forced 
+                        && isOpened() 
+                        && (executor.isSupportedVersion() || environment.getApplication().getRuntimeEnvironmentType()==ERuntimeEnvironmentType.WEB)){
+                        closeEasSession();
+                    }
+                }finally{
+                    executor.close();
+                    synchronized(semaphore){
+                        executor = null;
+                    }
+                }
             }
-            executor.close();
-            executor = null;
+        }finally{
+            if (tokenCalculator != null && masterSession==null) {
+                tokenCalculator.dispose();
+                tokenCalculator = null;
+            }
+            if (messageProcessor != null) {
+                messageProcessor = null;
+            }
+            previousMessageProcessor = null;
+            opened = false;
+            params = null;            
         }
-        if (tokenCalculator != null) {
-            tokenCalculator.dispose();
-            tokenCalculator = null;
-        }
-        if (messageProcessor != null) {
-            messageProcessor = null;
-        }
-        previousMessageProcessor = null;
-        opened = false;
-        params = null;
     }
         
     private static boolean isCloseSessionRequest(final RequestHandle handle){
@@ -1672,7 +1953,7 @@ public abstract class AbstractEasSession implements IEasSession {
         if (handle.isDone()) {
             throw new IllegalArgumentException("Can't use request handle one more time");
         }
-        if (!isOpened()){
+        if (!isOpened() && !isBusy()){
             try{
                 createSession(false);
             }catch(ServiceClientException exception){
@@ -1689,7 +1970,8 @@ public abstract class AbstractEasSession implements IEasSession {
     }
 
     public void renewSslContext(final char[] password) throws KeystoreControllerException, CertificateUtilsException {
-        executor.getConnection().renewSslContext(password);
+        secretStore.setSecret(new TokenProcessor().encrypt(password));        
+        executor.getConnection().renewSslContext(secretStore);
     }
 
     @Override
@@ -1713,13 +1995,28 @@ public abstract class AbstractEasSession implements IEasSession {
     
     @Override
     public DatabaseInfo getDatabaseInfo(){
-        return databaseInfo==null ? DatabaseInfo.EMPTY_INSTANCE : databaseInfo;
+        final GetDatabaseInfoRq request = GetDatabaseInfoRq.Factory.newInstance();        
+        final GetDatabaseInfoRs response;
+        try{
+            response =
+                (GetDatabaseInfoRs)send(new DefaultRequestHandle(environment, request, GetDatabaseInfoMess.class), false);
+        }catch(ServiceClientException exception){
+            final String message = environment.getMessageProvider().translate("TraceMessage","Failed to get information about database");
+            environment.getTracer().error(message, exception);
+            return databaseInfo;
+        }catch(InterruptedException ex){            
+            return databaseInfo;
+        }
+        databaseInfo = new DatabaseInfo(response);
+        return databaseInfo;
     }
 
     @Override
     public byte[] decryptBySessionKey(byte[] data){
         if (tokenCalculator instanceof PwdTokenCalculator){
-            return ((PwdTokenCalculator)tokenCalculator).decryptData(data);
+            return ((PwdTokenCalculator)tokenCalculator).decryptData(data, params.getPwdHashAlgorithm());
+        }else if (tokenCalculator instanceof KeyTokenCalculator){
+            return ((KeyTokenCalculator)tokenCalculator).decryptData(data);
         }else{
             throw new IllegalStateException("Session key does not accessible");
         }        
@@ -1728,7 +2025,9 @@ public abstract class AbstractEasSession implements IEasSession {
     @Override
     public byte[] encryptBySessionKey(byte[] data){
         if (tokenCalculator instanceof PwdTokenCalculator){
-            return ((PwdTokenCalculator)tokenCalculator).encryptData(data);
+            return ((PwdTokenCalculator)tokenCalculator).encryptData(data, params.getPwdHashAlgorithm());
+        }else if (tokenCalculator instanceof KeyTokenCalculator){
+            return ((KeyTokenCalculator)tokenCalculator).encryptData(data);
         }else{
             throw new IllegalStateException("Session key does not accessible");
         }
@@ -1752,4 +2051,29 @@ public abstract class AbstractEasSession implements IEasSession {
             listener.afterSyncRequestProcessed(handle);
         }
     }        
+
+    @Override
+    public final void scheduleResponseNotificationTask(final Runnable task) {
+        scheduler.scheduleNotificationTask(task);
+    }    
+    
+    public void writeSessionId(final ConnectionParams connectionParams){
+        if (messageProcessor!=null){            
+            final long sessionId = messageProcessor.getSessionId();
+            final ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE/Byte.SIZE);
+            buffer.putLong(sessionId);
+            final byte[] encryptedSessionId;
+            if (secretStore!=null && !secretStore.isEmpty()){
+                encryptedSessionId = CryptoUtils.encrypt3Des(buffer.array(), secretStore);
+            }else{
+                encryptedSessionId = CryptoUtils.encrypt3Des(buffer.array(), new byte[]{});
+            }
+            connectionParams.setEncSessionId(encryptedSessionId);
+        }
+    }
+    
+    private static boolean isReadOnlyRequest(final Class<? extends XmlObject> messageClass){        
+        return READONLY_RQ_MESSAGE_CLASSES.contains(messageClass);
+    }
+    
 }

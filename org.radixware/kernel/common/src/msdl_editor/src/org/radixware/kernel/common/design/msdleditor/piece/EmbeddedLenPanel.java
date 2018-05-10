@@ -19,10 +19,7 @@ package org.radixware.kernel.common.design.msdleditor.piece;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JSpinner;
@@ -32,23 +29,20 @@ import org.radixware.kernel.common.design.msdleditor.enums.EPieceType;
 import org.radixware.kernel.common.design.msdleditor.enums.ESelfInclusive;
 import org.radixware.kernel.common.design.msdleditor.enums.EUnit;
 import org.radixware.schemas.msdl.EmbeddedLenDef;
-import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
 import javax.swing.JOptionPane;
-import org.radixware.kernel.common.exceptions.SmioException;
 import org.radixware.kernel.common.design.msdleditor.enums.EAlign;
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
+import org.radixware.kernel.common.design.msdleditor.field.panel.simple.IUnitValueStructure;
+import org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel;
 import org.radixware.kernel.common.msdl.MsdlUnitContext;
 import org.radixware.kernel.common.msdl.fields.IntFieldModel;
 
 
 
-public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListener, ChangeListener, PadFiller.ICoderProvider {
+public class EmbeddedLenPanel extends AbstractMsdlPanel implements ActionListener, ChangeListener, AbstractMsdlPanel.IEncodingField {
 
     private EmbeddedLenDef embeddedLenDef;
     private AbstractFieldModel field;
-    private SmioCoder smioCoder;
-    private PadFiller pf = null;
     private boolean inited = false;
 
     /** Creates new form EmbeddedLenPanel */
@@ -66,21 +60,13 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         smodel.addElement(EEncoding.CP1251);
         smodel.addElement(EEncoding.CP1252);
         smodel.addElement(EEncoding.EBCDIC);
+        smodel.addElement(EEncoding.EBCDIC_CP1047);
         smodel.addElement(EEncoding.CP866);
         smodel.addElement(EEncoding.UTF8);
         smodel.addElement(EEncoding.BIGENDIANBIN);
         smodel.addElement(EEncoding.LITTLEENDIANBIN);
         encodingPanel1.setEncodingModel(smodel);
 
-        ArrayList<JLabel> l = new ArrayList<JLabel>();
-        l.add(jLabelSelf);
-        l.add(jLabelUnit);
-        l.add(jLabelEncoding);
-        ArrayList<JComponent> e = new ArrayList<JComponent>();
-        e.add(selfInclusivePanel1);
-        e.add(unitPanel1);
-        e.add(encodingPanel1);
-        //DefaultLayout.doLayout(jPanel1, l, e,true);
         setBoundsEnabled(false);
         boundedCheckBox.addActionListener(new ActionListener() {
             @Override
@@ -98,14 +84,18 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
     }
 
     public void open(AbstractFieldModel field, EmbeddedLenDef embeddedLenDef) {
+        super.open(field, field.getMsdlField());
         this.field = field;
         this.embeddedLenDef = embeddedLenDef;
         piecePanel.open(field, embeddedLenDef);
+        boundedPadPanel.open(new EmbeddedLenStruct(embeddedLenDef, field, unitPanel1));
         update();
         addActionListeners();
     }
 
     public void update() {
+        inited = false;
+        unitPanel1.setElementAllowed(field);
         unitPanel1.setUnit(EUnit.getInstance(embeddedLenDef.getUnit()),
                 EUnit.getInstance(field.getUnit(true,
                                 new MsdlUnitContext(MsdlUnitContext.EContext.EMBEDDED_LEN))));
@@ -121,9 +111,16 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         }
         
         piecePanel.update();
+        inited = true;
     }
 
-    public void save() {
+    @Override
+    public EEncoding getEncoding() {
+        return encodingPanel1.getEncoding();
+    }
+    
+    @Override
+    public void doSave() {
         embeddedLenDef.setUnit(unitPanel1.getUnit().getValue());
         embeddedLenDef.setIsSelfInclusive(selfInclusivePanel1.getSelfInclusive().getValue());
         embeddedLenDef.setEncoding(encodingPanel1.getEncoding().getValue());
@@ -132,7 +129,7 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         }
 
         if (boundedCheckBox.isSelected()) {
-            if (getSpinnerValue(lowBoundSpinner) < getSpinnerValue(highBoundSpinner)) {
+            if (getSpinnerValue(lowBoundSpinner) <= getSpinnerValue(highBoundSpinner)) {
                 EmbeddedLenDef.Bounds real = null;
                 if (!embeddedLenDef.isSetBounds()) {
                     real = embeddedLenDef.addNewBounds();
@@ -153,10 +150,9 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
                     embeddedLenDef.setPadChar(null);
                 }
 
-                initPf();
-                pf.fillDefinition();
+                boundedPadPanel.fillDefinition();
             } else {
-                JOptionPane.showMessageDialog(null, "High bound must be greater than low bound.");
+                JOptionPane.showMessageDialog(null, "High bound must be greater or equal to low bound.");
             }
         } else {
             if (embeddedLenDef.isSetBounds()) {
@@ -169,7 +165,6 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
                 embeddedLenDef.setPadChar(null);
             }
         }
-        field.setModified();
     }
 
     /** This method is called from within the constructor to
@@ -196,19 +191,18 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         jLabelHighBound = new javax.swing.JLabel();
         lowBoundSpinner = new javax.swing.JSpinner();
         highBoundSpinner = new javax.swing.JSpinner();
-        boundedPadPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
         jLabelPad = new javax.swing.JLabel();
         alignPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.AlignPanel(new EAlign[]{EAlign.LEFT,EAlign.RIGHT});
         jLabelAlign = new javax.swing.JLabel();
+        boundedPadPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/field/panel/Bundle"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("LENGTH"))); // NOI18N
-        setPreferredSize(new java.awt.Dimension(800, 500));
         setLayout(new java.awt.BorderLayout());
         add(piecePanel, java.awt.BorderLayout.NORTH);
 
         middlePanel.setMinimumSize(new java.awt.Dimension(100, 80));
-        middlePanel.setPreferredSize(new java.awt.Dimension(800, 90));
+        middlePanel.setPreferredSize(new java.awt.Dimension(600, 90));
         middlePanel.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -332,16 +326,6 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         middlePanel.add(highBoundSpinner, gridBagConstraints);
 
-        boundedPadPanel.setPreferredSize(new java.awt.Dimension(400, 24));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        middlePanel.add(boundedPadPanel, gridBagConstraints);
-
         jLabelPad.setText("Padding");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
@@ -369,6 +353,14 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 0);
         middlePanel.add(jLabelAlign, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
+        middlePanel.add(boundedPadPanel, gridBagConstraints);
 
         add(middlePanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -377,7 +369,7 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.AlignPanel alignPanel;
     private javax.swing.JCheckBox boundedCheckBox;
-    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel boundedPadPanel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel boundedPadPanel;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel encodingPanel1;
     private javax.swing.JSpinner highBoundSpinner;
     private javax.swing.JLabel jLabelAlign;
@@ -397,6 +389,8 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (!inited)
+            return;
         save();
     }
     
@@ -415,8 +409,7 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         highBoundSpinner.setValue(embeddedLenDef.getBounds().getHighBound());
         alignPanel.setAlign(EAlign.getInstance(embeddedLenDef.getAlign()), EAlign.getInstance(field.getAlign()));
         
-        initPf();
-        pf.fillWidgets();
+        boundedPadPanel.fillWidgets();
         
         inited = true;
     }
@@ -427,40 +420,17 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         lowBoundSpinner.setValue(0);
         highBoundSpinner.setValue(1);
         
-        initPf();
-        pf.fillWidgets();
+        boundedPadPanel.fillWidgets();
         
         setBoundsEnabled(false);
         
         inited = true;
     }
     
-    @Override
-    public SmioCoder getCoder() {
-        if (smioCoder == null) {
-            String encoding = field.getEncoding();
-            if (encoding != null) {
-                smioCoder = new SmioCoder(encoding);
-            }
-        }
-        return smioCoder;
-    }
-
     private int getSpinnerValue(JSpinner spin) {
         return ((Integer)spin.getModel().getValue()).intValue();
     }
-    
-    private void initPf() {
-        if (pf == null)
-            try {
-                pf = new PadFiller(embeddedLenDef, unitPanel1, boundedPadPanel, this, field);
-            }
-            catch(SmioException exc) {
-                Logger.getLogger(EmbeddedLenPanel.class.getName()).log(Level.SEVERE, null, exc);
-                pf = null;
-            }
-    }
-    
+        
     @Override
     public void stateChanged(ChangeEvent e) {
         if(inited)
@@ -468,8 +438,6 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
     }
     
     void addActionListeners() {
-        unitPanel1.addActionListener(this);
-        unitPanel1.getSetParentPanel().addActionListener(this);
         selfInclusivePanel1.addActionListener(this);
         selfInclusivePanel1.getSetParentPanel().addActionListener(this);
         encodingPanel1.addActionListener(this);
@@ -478,6 +446,57 @@ public class EmbeddedLenPanel extends javax.swing.JPanel implements ActionListen
         highBoundSpinner.addChangeListener(this);
         alignPanel.addActionListener(this);
         alignPanel.getSetParentPanel().addActionListener(this);
+        unitPanel1.addActionListener(boundedPadPanel);
+        unitPanel1.getSetParentPanel().addActionListener(boundedPadPanel);
         boundedPadPanel.addActionListener(this);
+    }
+    
+    
+    private class EmbeddedLenStruct implements IUnitValueStructure {
+        
+        private final EmbeddedLenDef xDef;
+        private final AbstractFieldModel model;
+        private final UnitPanel unitPanel;
+        
+        public EmbeddedLenStruct(EmbeddedLenDef xDef, AbstractFieldModel model, UnitPanel unitPanel) {
+            this.xDef = xDef;
+            this.model = model;
+            this.unitPanel = unitPanel;
+        }
+
+        @Override
+        public String getPadChar() {
+            return xDef.getPadChar();
+        }
+
+        @Override
+        public String getExtPadChar() {
+            return model.getPadChar();
+        }
+
+        @Override
+        public void setPadChar(String chars) {
+            xDef.setPadChar(chars);
+        }
+
+        @Override
+        public byte[] getPadBin() {
+            return xDef.getPadBin();
+        }
+
+        @Override
+        public byte[] getExtPadBin() {
+            return model.getPadBin();
+        }
+
+        @Override
+        public void setPadBin(byte[] bytes) {
+            xDef.setPadBin(bytes);
+        }
+
+        @Override
+        public EUnit getViewedUnit() {
+            return unitPanel.getViewedUnit();
+        }
     }
 }

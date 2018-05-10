@@ -19,19 +19,21 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException;
 import org.radixware.kernel.common.client.meta.RadClassPresentationDef;
+import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.GroupModelReader;
+import org.radixware.kernel.common.client.models.IContext;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.items.properties.PropertyObject;
+import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.views.IProgressHandle;
-import org.radixware.kernel.common.exceptions.ServiceClientException;
+import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.Utils;
 
 public final class Clipboard implements Iterable<EntityModel> {
 
@@ -39,46 +41,172 @@ public final class Clipboard implements Iterable<EntityModel> {
 
         public void stateChanged();
     }
+    
+    private final static class ListenerWrapper{
+        
+        private final ChangeListener listener;
+        private final String callStack;
+        
+        public ListenerWrapper(final ChangeListener listener, final String callStack){
+            this.listener = listener;
+            this.callStack = callStack;
+        }        
+        
+        public void notifyListener(){
+            listener.stateChanged();
+        }
+        
+        public String getCallStack(){
+            return callStack;                    
+        }
+        
+        public ChangeListener getListener(){
+            return listener;
+        }
+    }
+    
+    private final static class Listeners implements Iterable<ListenerWrapper>{
+        
+        private final LinkedList<ListenerWrapper> listeners = new LinkedList<>();
+        
+        public Listeners(final ListenerWrapper listener){
+            listeners.add(listener);
+        }
+        
+        public void remove(final ChangeListener listener){
+            for (int i=listeners.size()-1; i>=0; i--){
+                if (listeners.get(i).getListener()==listener){
+                    listeners.remove(i);
+                }
+            }
+        }
+        
+        public boolean isEmpty(){
+            return listeners.isEmpty();
+        }
+        
+        public void add(final ListenerWrapper listener){
+            for (ListenerWrapper wrapper: listeners){
+                if (wrapper.getListener()==listener.getListener()){
+                    return;
+                }
+            }
+            listeners.add(listener);
+        }
+        
+        public void notifyListeners(){
+            for (ListenerWrapper wrapper: listeners){
+                wrapper.notifyListener();
+            }
+        }
+
+        @Override
+        public Iterator<ListenerWrapper> iterator() {
+            return listeners.iterator();
+        }                
+    }
+            
     private final IClientEnvironment environment;
     private final List<EntityModel> content = new ArrayList<>();
     private RadClassPresentationDef classDef = null;
-    private final LinkedList<ChangeListener> listeners = new LinkedList<>();
-    private final Map<Model, LinkedList<ChangeListener>> listenersByModel = new HashMap<>();
+    private IExplorerTreeNode listenersContextNode;
+    
+    private final Map<IExplorerTreeNode, Listeners> listenersByTreeNode = new HashMap<>();
+    private final Map<Model, Listeners> listenersByModel = new HashMap<>();
 
     public void addChangeListener(final ChangeListener listener) {
         addChangeListener(listener, null);
     }
 
     public void addChangeListener(final ChangeListener listener, final Model contextModel) {
-        synchronized (listeners) {
-            if (listener != null && !listeners.contains(listener)) {
-                listeners.add(listener);
-                if (contextModel != null) {
-                    LinkedList<ChangeListener> listenersForModel = listenersByModel.get(contextModel);
-                    if (listenersForModel == null) {
-                        listenersForModel = new LinkedList<>();
-                        listenersByModel.put(contextModel, listenersForModel);
-                    }
-                    listenersForModel.add(listener);
+        if (listenersContextNode==null){
+            throw new IllegalStateException("Listeners context tree node was not set");
+        }
+        
+        if (listener != null) {
+            final ListenerWrapper wrapper = createWrapper(listener);
+            Listeners listeners = listenersByTreeNode.get(listenersContextNode);
+            if (listeners==null){
+                listeners = new Listeners(wrapper);
+                listenersByTreeNode.put(listenersContextNode, listeners);
+            }else{
+                listeners.add(wrapper);
+            }
+            if (contextModel!=null){
+                listeners = listenersByModel.get(contextModel);
+                if (listeners==null){
+                    listeners = new Listeners(wrapper);
+                    listenersByModel.put(contextModel, listeners);
+                }else{
+                    listeners.add(wrapper);
                 }
             }
         }
     }
 
-    public void removeChangeListener(final ChangeListener listener) {
-        synchronized (listeners) {
-            listeners.remove(listener);
+    public void removeChangeListener(final ChangeListener listener) {        
+        removeFromListenersByModel(listener);
+        removeFromListenersByTreeNode(listener);
+    }
+    
+    private void removeFromListenersByModel(final ChangeListener listener){
+        final List<Model> emptyListeners = new LinkedList<>();
+        for (Map.Entry<Model,Listeners> entry: listenersByModel.entrySet()){
+            entry.getValue().remove(listener);
+            if (entry.getValue().isEmpty()){
+                emptyListeners.add(entry.getKey());
+            }
         }
+        for (Model model: emptyListeners){
+            listenersByModel.remove(model);
+        }        
+    }
+    
+    private void removeFromListenersByTreeNode(final ChangeListener listener){
+        final List<IExplorerTreeNode> emptyListeners = new LinkedList<>();
+        for (Map.Entry<IExplorerTreeNode,Listeners> entry: listenersByTreeNode.entrySet()){
+            entry.getValue().remove(listener);
+            if (entry.getValue().isEmpty()){
+                emptyListeners.add(entry.getKey());
+            }
+        }
+        for (IExplorerTreeNode treeNode: emptyListeners){
+            listenersByModel.remove(treeNode);
+        }        
     }
 
     public void removeAllChangeListeners(final Model contextModel) {
-        synchronized (listeners) {
-            final LinkedList<ChangeListener> listenersForModel = listenersByModel.get(contextModel);
-            if (listenersForModel != null) {
-                listeners.removeAll(listenersForModel);
+        final Listeners listenersForModel = listenersByModel.get(contextModel);
+        if (listenersForModel != null) {
+            for (ListenerWrapper wrapper: listenersForModel){
+                removeFromListenersByTreeNode(wrapper.getListener());
             }
-            listenersByModel.remove(contextModel);
         }
+        listenersByModel.remove(contextModel);
+    }
+    
+    public void removeAllChangeListeners(final IExplorerTreeNode node){
+        final Listeners listenersForNode = listenersByTreeNode.get(node);
+        if (listenersForNode!=null){
+            for (ListenerWrapper wrapper: listenersForNode){
+                traceWarning(wrapper, node);
+                removeFromListenersByModel(wrapper.getListener());
+            }
+            listenersByTreeNode.remove(listenersForNode);
+        }
+    }
+    
+    private void traceWarning(final ListenerWrapper wrapper, final IExplorerTreeNode node){
+        final String callStack = wrapper.getCallStack();
+        if (callStack!=null && !callStack.isEmpty()){
+            final String message = 
+                environment.getMessageProvider().translate("TraceMessage", "Clipboard event handler was not removed in '%1$s':\n%2$s");
+            environment.getTracer().warning(String.format(message, node.getPath(), callStack));
+        }
+    }
+    
+    public void setListenersContext(final IExplorerTreeNode node){
+        listenersContextNode = node;
     }
 
     public Clipboard(final IClientEnvironment environment) {
@@ -86,10 +214,8 @@ public final class Clipboard implements Iterable<EntityModel> {
     }
 
     private void stateChanged() {
-        synchronized (listeners) {
-            for (ChangeListener l : listeners) {
-                l.stateChanged();
-            }
+        for (Listeners listeners: listenersByTreeNode.values()){
+            listeners.notifyListeners();
         }
     }
 
@@ -99,7 +225,7 @@ public final class Clipboard implements Iterable<EntityModel> {
 
     public boolean isCompatibleWith(final GroupModel group) {
         for (EntityModel entityModel : content) {
-            if (group.canPaste(entityModel)) {
+            if (entityModel.isExists() && group.canPaste(entityModel)) {
                 return true;
             }
         }
@@ -108,13 +234,10 @@ public final class Clipboard implements Iterable<EntityModel> {
 
     public boolean isCompatibleWith(final PropertyObject property) {
         if (classDef != null && content.size() == 1) {
-            final Id actualClassId = property.getDefinition().getReferencedClassId();
-            final RadClassPresentationDef actualClassDef =
-                    property.getEnvironment().getDefManager().getClassPresentationDef(actualClassId);
-            return classDef.getId().equals(actualClassDef.getId()) || actualClassDef.isAncestorOf(classDef);
-        } else {
-            return false;
+            return property.canPaste(content.get(0));
         }
+        return false;
+        
     }
 
     public RadClassPresentationDef getClassPresentationDef() {
@@ -126,12 +249,31 @@ public final class Clipboard implements Iterable<EntityModel> {
     }
 
     public void push(final EntityModel entity) {
-        if (entity != null && entity.isExists()) {
+        if (entity != null 
+            && (entity.isExists() || isPropertyValueInNewEntityObject(entity))            
+            ) {
             content.clear();
             classDef = entity.getClassPresentationDef();
-            content.add(entity);
+            content.add(isPropertyValueInNewEntityObject(entity) ? createModelCopy(entity) : entity);
             stateChanged();
         }
+    }
+    
+    private static EntityModel createModelCopy(final EntityModel source){
+        final RadEditorPresentationDef editorPresentation = source.getEditorPresentationDef();
+        final Id classId = source.getClassId();
+        final String msg = "creating model for new entity with class #%s was created by editor presentation %s.";
+        source.getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format(msg, classId, editorPresentation.toString()), EEventSource.EXPLORER);
+        
+        final EntityModel entity = editorPresentation.createModel(source.getContext());        
+        entity.activateCopy(source);
+        return entity;
+    }
+    
+    private static boolean isPropertyValueInNewEntityObject(final EntityModel entity){
+        return entity.isNew() 
+                  && entity.getContext() instanceof IContext.ObjectPropCreating
+                  && ((IContext.ObjectPropCreating)entity.getContext()).propOwner.isNew();
     }
 
     public void push(final GroupModel group) {
@@ -168,8 +310,10 @@ public final class Clipboard implements Iterable<EntityModel> {
 
     public void remove(final Pid pid) {
         final int sizeBefore = content.size();
+        Pid objectPid;
         for (int i = sizeBefore - 1; i >= 0; i--) {
-            if (content.get(i).getPid().equals(pid)) {
+            objectPid = content.get(i).getPid();
+            if (objectPid!=null && objectPid.equals(pid)) {
                 content.remove(i);
             }
         }
@@ -180,9 +324,11 @@ public final class Clipboard implements Iterable<EntityModel> {
 
     public void remove(final Collection<EntityModel> entities) {
         final int sizeBefore = content.size();
+        Pid objectPid;        
         for (int i = sizeBefore - 1; i >= 0; i--) {
+            objectPid = content.get(i).getPid();
             for (EntityModel entity : entities) {
-                if (content.get(i).getPid().equals(entity.getPid())) {
+                if (objectPid!=null && objectPid.equals(entity.getPid())) {
                     content.remove(i);
                     break;
                 }
@@ -209,5 +355,14 @@ public final class Clipboard implements Iterable<EntityModel> {
     void reset() {
         content.clear();
         classDef = null;
+    }
+    
+    private ListenerWrapper createWrapper(final ChangeListener listener){
+        if (RunParams.isDevelopmentMode()){
+            final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            return new ListenerWrapper(listener, Utils.stackToString(stack));
+        }else{
+            return new ListenerWrapper(listener, null);
+        }
     }
 }

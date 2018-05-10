@@ -24,6 +24,7 @@ import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSortingDef;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.defs.dds.DdsViewDef;
@@ -52,6 +53,7 @@ public class AdsSortingChecker extends AdsDefinitionChecker<AdsSortingDef> {
             } else {
                 props.add(prop);
                 AdsUtils.checkAccessibility(sorting, prop, false, problemHandler);
+                ReleaseUtils.checkExprationRelease(sorting, prop, problemHandler);
                 //CheckUtils.checkExportedApiDatails(sorting, prop, problemHandler);
                 //CLOB, BLOB, PARENT_REF, OBJECT, а также свойства с Nature = EPropNature.DYNAMIC
                 prop.canBeUsedInSorting(sorting, problemHandler);

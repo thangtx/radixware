@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" Name="SbXsd" TargetNamespace="http://schemas.radixware.org/sb.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/sb.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://schemas.radixware.org/eas.xsd" xmlns:this="http://schemas.radixware.org/sb.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:mq="http://schemas.radixware.org/messagequeue.xsd">
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" Name="SbXsd" TargetNamespace="http://schemas.radixware.org/sb.xsd" NeedsDoc="false" Environment="common"><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsd6JHHAUMDPXORDBMMABIFNQAABA" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/sb.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://schemas.radixware.org/eas.xsd" xmlns:this="http://schemas.radixware.org/sb.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:mq="http://schemas.radixware.org/messagequeue.xsd">
 	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
 	<xs:import namespace="http://schemas.radixware.org/eas.xsd" schemaLocation="eas.xsd"/>
         <xs:import namespace="http://schemas.radixware.org/messagequeue.xsd" schemaLocation="messagequeue.xsd"/>
@@ -63,6 +67,8 @@
 		<xs:complexContent>
 			<xs:extension base="this:PipelineMessage">
 				<xs:sequence>
+                                        <xs:element name="Event" type="this:PipeEvent"/>
+					<xs:element name="ErrorMess" type="t:Str" minOccurs="0"/>
 					<xs:element name="CurStage" type="this:StageRs"/>
 					<xs:element name="PrevStage" type="this:StageRs" minOccurs="0"/>
 					<xs:element name="PrevStages">

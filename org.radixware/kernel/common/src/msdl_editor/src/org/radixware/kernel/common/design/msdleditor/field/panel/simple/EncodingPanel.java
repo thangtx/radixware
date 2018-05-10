@@ -22,7 +22,6 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
-import java.util.List;
 
 
 public class EncodingPanel extends AbstractEditItem {
@@ -31,7 +30,7 @@ public class EncodingPanel extends AbstractEditItem {
     public static class EncodingModel extends DefaultComboBoxModel {
         public EncodingModel() {
             super(new EEncoding[]{EEncoding.NONE,EEncoding.ASCII,EEncoding.BCD,EEncoding.BIN,
-                           EEncoding.CP866,EEncoding.CP1251,EEncoding.CP1252,EEncoding.EBCDIC,
+                           EEncoding.CP866,EEncoding.CP1251,EEncoding.CP1252,EEncoding.EBCDIC, EEncoding.EBCDIC_CP1047,
                            EEncoding.HEXEBCDIC,EEncoding.HEX,EEncoding.LITTLEENDIANBIN,
                            EEncoding.BIGENDIANBIN,EEncoding.UTF8,EEncoding.DECIMAL});
         }
@@ -71,17 +70,18 @@ public class EncodingPanel extends AbstractEditItem {
         this.parentValue = parentValue;
         getSetParentPanel().setSelected(false);
         jComboBoxEncoding.getModel().setSelectedItem(value);
-        getSetParentPanel().setEnabled(parentValue != EEncoding.NONE);
+        boolean isParentValNone = parentValue == EEncoding.NONE;
+        getSetParentPanel().setEnabled(!isParentValNone);
         if (value == EEncoding.NONE) {
             if(isAcceptableEncoding(parentValue)) {
-                getSetParentPanel().setSelected(parentValue != EEncoding.NONE);
+                getSetParentPanel().setSelected(!isParentValNone);
                 jComboBoxEncoding.getModel().setSelectedItem(parentValue);
-                jComboBoxEncoding.setEnabled(parentValue == EEncoding.NONE);
+                jComboBoxEncoding.setEnabled(isParentValNone);
             }
             else {
                 jComboBoxEncoding.getModel().setSelectedItem(EEncoding.getInstance(null));
                 jComboBoxEncoding.setEnabled(true);
-                getSetParentPanel().setEnabled(true);
+                getSetParentPanel().setEnabled(false);
             }
         }
     }

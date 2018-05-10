@@ -64,6 +64,10 @@ public class AdsJavaPackage {
         this.context = context;
     }
 
+    public ERuntimeEnvironmentType getEnvironmentType() {
+        return env;
+    }
+
     public NameEnvironmentAnswer findAnswer(char[][] typeName) {
         final char[][] fullName = getFullName();
         NameEnvironmentAnswer lastAnswer = null;
@@ -175,7 +179,11 @@ public class AdsJavaPackage {
                             if (km.getId() == AdsLookup.RADIX_KERNEL_COMMON && km.getLayer().getURI().equals("org.radixware")) {
                                 continue;
                             }
-                            diff.add(KernelModulePackageLocation.getInstance((KernelModule) km));
+                            KernelModule module = (KernelModule) km;
+                            if (!module.isSuitableForEnvironment(env)) {
+                                continue;
+                            }
+                            diff.add(KernelModulePackageLocation.getInstance(module));
                         }
                     }
                 });

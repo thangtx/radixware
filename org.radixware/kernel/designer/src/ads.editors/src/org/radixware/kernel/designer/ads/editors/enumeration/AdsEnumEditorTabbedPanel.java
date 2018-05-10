@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.enumeration;
 
 import java.awt.BorderLayout;
@@ -18,7 +17,6 @@ import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
-
 
 public class AdsEnumEditorTabbedPanel extends JPanel {
 

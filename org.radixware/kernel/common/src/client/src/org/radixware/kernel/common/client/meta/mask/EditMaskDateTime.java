@@ -18,10 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,7 +29,9 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.exceptions.DateTimeFieldNotDefinedException;
 import org.radixware.kernel.common.client.exceptions.DateTimeFieldOutOfBoundsException;
 import org.radixware.kernel.common.client.exceptions.WrongAmPmFieldValue;
@@ -44,28 +46,42 @@ import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.common.types.ArrDateTime;
 
 
-public final class EditMaskDateTime extends org.radixware.kernel.common.client.meta.mask.EditMask {
+public final class EditMaskDateTime extends org.radixware.kernel.common.client.meta.mask.EditMask {        
+    
+    private final static String DATE_FORMAT_SETTING_NAME=SettingNames.SYSTEM+"/"
+                                                                                            +SettingNames.FORMAT_SETTINGS+"/"
+                                                                                            +SettingNames.FormatSettings.DATE;
+    
+    private final static String TIME_FORMAT_SETTING_NAME=SettingNames.SYSTEM+"/"
+                                                                                            +SettingNames.FORMAT_SETTINGS+"/"
+                                                                                            +SettingNames.FormatSettings.TIME;    
+    
+    private static final Pattern DATE_TIME_FORMAT_SYMBOLS = Pattern.compile(".*[a-zA-Z].*");        
     
     private static enum Unit {
-        YEAR(Calendar.YEAR, "9999"),
-        MONTH(Calendar.MONTH, "99"),
-        DAY(Calendar.DATE, "99"),
-        HOUR(Calendar.HOUR_OF_DAY, "99"),
-        MINUTE(Calendar.MINUTE, "99"),
-        SECOND(Calendar.SECOND, "99"),
-        MILSEC(Calendar.MILLISECOND, "999"),
-        AMPM(Calendar.AM_PM, "AM"),
-        DELIM(-1, ""),
-        FILLER(-1, Character.toString('_')),
-        LITERAL(-1, ""),
-        QUOTE(-1, "");
+        YEAR(Calendar.YEAR, "9999", null),
+        MONTH(Calendar.MONTH, "99", null),
+        DAY(Calendar.DATE, "99", null),
+        HOUR(Calendar.HOUR_OF_DAY, "99", "HH"),
+        MINUTE(Calendar.MINUTE, "99", "mm"),
+        SECOND(Calendar.SECOND, "99", "ss"),
+        MILSEC(Calendar.MILLISECOND, "999", "zzz"),
+        AMPM(Calendar.AM_PM, "AM", "ap"),
+        DELIM(-1, "", null),
+        ERA(-1, "", null),
+        TIME_ZONE(-1, "", null),
+        FILLER(-1, Character.toString('_'), null),
+        LITERAL(-1, "", null),
+        QUOTE(-1, "", null);
         
         private final int javaCalendarScale;
         private final String inputMaskSymbol;
+        private final String qtTimeField;
                 
-        Unit(final int javaCalendarScale, final String inputMaskSymbol) {
+        Unit(final int javaCalendarScale, final String inputMaskSymbol, final String qtTimeMask) {
             this.javaCalendarScale = javaCalendarScale;
             this.inputMaskSymbol = inputMaskSymbol;
+            this.qtTimeField = qtTimeMask;
         }
         
         public int getCalendarScale() {
@@ -83,7 +99,54 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
             return inputMaskSymbol;
         }
         
-        public static Unit getUnit(final char input) {
+        public String getQtTimeFild(){
+            return qtTimeField;
+        }
+        
+        public static Unit getUnitForQtFormat(final char input) {
+            switch(input) {
+                case 'y':
+                    return YEAR;
+                case 'M':
+                    return MONTH;
+                case 'd':
+                    return DAY;
+                case 'h':
+                case 'H':
+                    return HOUR;
+                case 'm':
+                    return MINUTE;
+                case 's':
+                    return SECOND;
+                case 'z': 
+                    return MILSEC;
+                case 'a':
+                case 'A':
+                case 'p':
+                case 'P':
+                    return AMPM;
+                case '.':
+                case ':':
+                case '-':
+                case '/':
+                case ',':
+                case ' ': 
+                    return DELIM;
+                case '_': 
+                    return FILLER;
+                case '\'':
+                case '\"':
+                    return QUOTE;
+                case 'T':
+                case 'Z':
+                case 'X':
+                    return TIME_ZONE;                
+                default: 
+                    return LITERAL;
+            }
+        }        
+        
+        public static Unit getUnitForJavaFormat(final char input) {
             switch(input) {
                 case 'y': 
                     return YEAR;
@@ -101,10 +164,16 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
                     return SECOND;
                 case 'S': 
                     return MILSEC;
+                case 'z':
+                case 'Z':
+                case 'X':
+                    return TIME_ZONE;
+                case 'G':
+                    return ERA;
                 case 'a':
-                case 'A': 
+                case 'A':
                 case 'p':
-                case 'P': 
+                case 'P':
                     return AMPM;
                 case '.':
                 case ':':
@@ -126,7 +195,9 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
             final long[] unitValues = new long[Unit.values().length];
             for(int i = 0; i < unitValues.length; i++) {
                 final int scale = Unit.values()[i].getCalendarScale();
-                if(scale == -1) continue;
+                if (scale == -1){
+                    continue;
+                }
                 unitValues[i] = date.get(scale);
                 if(scale == Calendar.MONTH) {
                      unitValues[i] += 1;
@@ -142,6 +213,9 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
         }
     }
     
+    private static final List<Unit> TIME_UNITS= new LinkedList<>(Arrays.asList(Unit.HOUR, Unit.MINUTE, Unit.SECOND, Unit.MILSEC, Unit.AMPM));
+    private static final List<Unit> DATE_UNITS= new LinkedList<>(Arrays.asList(Unit.DAY, Unit.MONTH, Unit.YEAR));
+    
     private static class Token {
 
         public final Unit unit;
@@ -151,7 +225,7 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
             this.unit = unit;
             this.literal = literal;
         }
-    }
+    }       
     
     private static class Scanner {
         private int position;
@@ -197,17 +271,70 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
         }
     }
     
-    private static class DateTimeFormatParser{
+    private static abstract class DateTimeFormatParser{
         
-        private final static DateTimeFormatParser INSTANCE = new DateTimeFormatParser();
+        protected Queue<Token> parse(final String format, final boolean javaFormat){
+            final Queue<Token> tokens = new ArrayDeque<>();
+            String curToken = "";
+            Unit lastUnit = null, curUnit;
+            boolean quoted = false;
+            char curChar;
+
+            for(int i = 0, count=format.length(); i < count; i++) {
+                curChar = format.charAt(i);
+                curUnit = javaFormat ? Unit.getUnitForJavaFormat(curChar) : Unit.getUnitForQtFormat(curChar);
+                if (curUnit==Unit.QUOTE 
+                    && i+1<count 
+                    && curChar==format.charAt(i+1)
+                ){//"''" represents a single quote
+                     curUnit = Unit.LITERAL;
+                     i++;
+                }
+                if (curUnit==Unit.QUOTE){
+                    if(!quoted){
+                        if (i+1<count){
+                            curChar=format.charAt(i+1);
+                            i++;
+                        }
+                        if (lastUnit!=null && lastUnit!=Unit.LITERAL){
+                            tokens.add(new Token(lastUnit, curToken));
+                            curToken = String.valueOf(curChar);                            
+                        }else{
+                            curToken += curChar;
+                        }
+                        lastUnit = Unit.LITERAL;
+                    }
+                    quoted = !quoted;
+                }else if (!quoted && curUnit != lastUnit){//NOPMD
+                    if (lastUnit!=null){
+                        tokens.add(new Token(lastUnit, curToken));
+                        curToken = String.valueOf(curChar);
+                    }else{
+                        curToken += curChar;//NOPMD
+                    }
+                    lastUnit = curUnit;                
+                }else{
+                    curToken += curChar;//NOPMD
+                }
+            }
+            if (lastUnit!=null){
+                tokens.add(new Token(lastUnit, curToken));
+            } 
+            return tokens;            
+        }        
+    }
+    
+    private static class JavaDateTimeFormatParser extends DateTimeFormatParser{
+        
+        private final static JavaDateTimeFormatParser INSTANCE = new JavaDateTimeFormatParser();
         private final Map<String, Queue<Token>> tokensCache = new HashMap<>();
         private final Object semaphore = new Object();
         
-        private DateTimeFormatParser(){
+        private JavaDateTimeFormatParser(){
             
         }
         
-        public static DateTimeFormatParser getInstance(){
+        public static JavaDateTimeFormatParser getInstance(){
             return INSTANCE;
         }
         
@@ -217,56 +344,47 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
 
                 tokens = tokensCache.get(displayFormat);
                 if(tokens != null){
-                    return tokens;
+                    return new ArrayDeque<>(tokens);
                 }
-
-                tokens = new ArrayDeque<>();
-                String curToken = "";
-                Unit lastUnit = null;
-                boolean quoted = false;
-                char curChar;
-
-                for(int i = 0; i < displayFormat.length(); i++) {
-                    curChar = displayFormat.charAt(i);
-                    final Unit curUnit = Unit.getUnit(curChar);
-                    if (curUnit==Unit.QUOTE){
-                        if (quoted){
-                            if (curToken.length()>0){//case when some text between two quotes
-                                tokens.add(new Token(Unit.LITERAL, curToken));
-                            }
-                            lastUnit = null;
-                        }else{
-                            if (lastUnit!=null){
-                                tokens.add(new Token(lastUnit, curToken));
-                            }
-                            lastUnit = Unit.LITERAL;                    
-                        }
-                        curToken = "";
-                        quoted = !quoted;
-                    }            
-                    else if (!quoted && curUnit != lastUnit){//NOPMD
-                        if (lastUnit!=null){
-                            tokens.add(new Token(lastUnit, curToken));
-                            curToken = String.valueOf(curChar);
-                        }else{
-                            curToken += curChar;//NOPMD
-                        }
-                        lastUnit = curUnit;                
-                    }else{
-                        curToken += curChar;//NOPMD
-                    }
-                }
-                if (lastUnit!=null){
-                    tokens.add(new Token(lastUnit, curToken));
-                }        
+                
+                tokens = parse(displayFormat, true);
+                
                 tokensCache.put(displayFormat, tokens);
-                return tokens;
+                return new ArrayDeque<>(tokens);
             }
-        }        
-        
+        }                
     }
+    
+    private static class QtDateTimeFormatParser extends DateTimeFormatParser{
         
-    final private static char QUOTE = '"';
+        private final static QtDateTimeFormatParser INSTANCE = new QtDateTimeFormatParser();
+        private final Map<String, Queue<Token>> tokensCache = new HashMap<>();
+        private final Object semaphore = new Object();
+        
+        private QtDateTimeFormatParser(){
+            
+        }
+        
+        public static QtDateTimeFormatParser getInstance(){
+            return INSTANCE;
+        }
+        
+        private Queue<Token> getTokens(final String displayFormat){
+            synchronized(semaphore){
+                Queue<Token> tokens;
+
+                tokens = tokensCache.get(displayFormat);
+                if(tokens != null){
+                    return new ArrayDeque<>(tokens);
+                }
+
+                tokens = parse(displayFormat, false);
+                
+                tokensCache.put(displayFormat, tokens);                
+                return new ArrayDeque<>(tokens);
+            }
+        }                
+    }            
     
     private Timestamp minimumTime = null;
     private Timestamp maximumTime = null;
@@ -275,7 +393,9 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
     
     private static final EnumSet<EValType> SUPPORTED_VALTYPES =
             EnumSet.of(EValType.DATE_TIME, EValType.ARR_DATE_TIME);
+    
     private final Map<Locale,String> displayFormatCache = new HashMap<>();
+    
     
     public EditMaskDateTime(final EDateTimeStyle dateStyle,
                             final EDateTimeStyle timeStyle,
@@ -371,33 +491,93 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
         afterModify();
     }
 
-    public String getDisplayFormat(final java.util.Locale locale) {
+    @Deprecated
+    public String getDisplayFormat(final java.util.Locale locale) {//returns java format
         String actualDisplayFormat = displayFormatCache.get(locale);
         if (actualDisplayFormat==null){
-            final String javaFormat;
-            if(isCustomPatternEmpty()) {
-                DateFormat format;
-                if(timeStyle == EDateTimeStyle.NONE && dateStyle != EDateTimeStyle.NONE) {
-                    format = DateFormat.getDateInstance(dateStyle.getJavaDateTimeStyle(), locale);
-                } else if(timeStyle != EDateTimeStyle.NONE &&  dateStyle == EDateTimeStyle.NONE) {
-                    format = DateFormat.getTimeInstance(timeStyle.getJavaDateTimeStyle(), locale);
-                } else {
-                    format = DateFormat.getDateTimeInstance(dateStyle.getJavaDateTimeStyle(),
-                            timeStyle.getJavaDateTimeStyle(),
-                            locale);
-                }
-                javaFormat = ((java.text.SimpleDateFormat)format).toPattern();                        
-            } else {
-                javaFormat = qtFormat2JavaFormat(locale, displayFormat);
-            }
+            final String javaFormat = getJavaFormat(locale);
             actualDisplayFormat = extendJavaFormatToInputFormat(javaFormat);
             displayFormatCache.put(locale, actualDisplayFormat);
         }
         return actualDisplayFormat;
     }
     
+    public String getDisplayFormat(final IClientEnvironment environment) {//returns java format
+        final String javaFormat = getJavaFormat(environment);
+        return extendJavaFormatToInputFormat(javaFormat);
+    }
+    
+    private String getJavaFormat(final java.util.Locale locale){
+        if(isCustomPatternEmpty()) {
+            DateFormat format;
+            if(timeStyle == EDateTimeStyle.NONE && dateStyle != EDateTimeStyle.NONE) {
+                format = DateFormat.getDateInstance(dateStyle.getJavaDateTimeStyle(), locale);
+            } else if(timeStyle != EDateTimeStyle.NONE &&  dateStyle == EDateTimeStyle.NONE) {
+                format = DateFormat.getTimeInstance(timeStyle.getJavaDateTimeStyle(), locale);
+            } else {
+                format = DateFormat.getDateTimeInstance(dateStyle.getJavaDateTimeStyle(),
+                        timeStyle.getJavaDateTimeStyle(),
+                        locale);
+            }
+            return ((java.text.SimpleDateFormat)format).toPattern();                        
+        } else {                
+            return qtFormat2JavaFormat(locale, displayFormat);
+        }
+    }   
+    
+    private String getJavaFormat(final IClientEnvironment environment){
+        final Locale locale = environment==null ? Locale.getDefault() : environment.getLocale();
+        if(isCustomPatternEmpty()) {            
+            DateFormat format;
+            if(timeStyle == EDateTimeStyle.NONE && dateStyle != EDateTimeStyle.NONE) {
+                final String settingFormat =  
+                    environment==null ? null : environment.getConfigStore().readString(DATE_FORMAT_SETTING_NAME+"/"+dateStyle.name().toLowerCase(), null);
+                if (settingFormat!=null && !settingFormat.isEmpty()){
+                    return qtFormat2JavaFormat(locale, settingFormat);
+                }                
+                format = DateFormat.getDateInstance(dateStyle.getJavaDateTimeStyle(), locale);
+            } else if(timeStyle != EDateTimeStyle.NONE &&  dateStyle == EDateTimeStyle.NONE) {
+                final String settingFormat =  
+                    environment==null ? null : environment.getConfigStore().readString(TIME_FORMAT_SETTING_NAME+"/"+timeStyle.name().toLowerCase(), null);
+                if (settingFormat!=null && !settingFormat.isEmpty()){
+                    return qtFormat2JavaFormat(locale, settingFormat);
+                }                
+                format = DateFormat.getTimeInstance(timeStyle.getJavaDateTimeStyle(), locale);
+            } else {
+                final String settingDateFormat =  
+                    environment==null ? null : environment.getConfigStore().readString(DATE_FORMAT_SETTING_NAME+"/"+dateStyle.name().toLowerCase(), null);
+                final String settingTimeFormat =
+                    environment==null ? null : environment.getConfigStore().readString(TIME_FORMAT_SETTING_NAME+"/"+timeStyle.name().toLowerCase(), null);    
+                if ((settingDateFormat!=null && !settingDateFormat.isEmpty()) || (settingTimeFormat!=null && !settingTimeFormat.isEmpty())){
+                    final String dateFormat;
+                    if (settingDateFormat!=null && !settingDateFormat.isEmpty()){
+                        dateFormat = qtFormat2JavaFormat(locale, settingDateFormat);
+                    }else{
+                        format = DateFormat.getDateInstance(dateStyle.getJavaDateTimeStyle(), locale);
+                        dateFormat = ((java.text.SimpleDateFormat)format).toPattern();
+                    }
+                    final String timeFormat;
+                    if (settingTimeFormat!=null && !settingTimeFormat.isEmpty()){
+                        timeFormat = qtFormat2JavaFormat(locale, settingTimeFormat);
+                    }else{
+                        format = DateFormat.getTimeInstance(timeStyle.getJavaDateTimeStyle(), locale);
+                        timeFormat =  ((java.text.SimpleDateFormat)format).toPattern();
+                    }
+                    return dateFormat+" "+timeFormat;
+                }else{
+                    format = DateFormat.getDateTimeInstance(dateStyle.getJavaDateTimeStyle(),
+                            timeStyle.getJavaDateTimeStyle(),
+                            locale);
+                }
+            }
+            return ((java.text.SimpleDateFormat)format).toPattern();
+        } else {                
+            return qtFormat2JavaFormat(locale, displayFormat);
+        }
+    }    
+    
     private String extendJavaFormatToInputFormat(final String displayFormat){
-        final Queue<Token> currentTokens = DateTimeFormatParser.getInstance().getTokens(displayFormat);
+        final Queue<Token> currentTokens = JavaDateTimeFormatParser.getInstance().getTokens(displayFormat);
         final StringBuilder formatBuilder = new StringBuilder();
         for (Token token: currentTokens){            
             switch(token.unit){
@@ -406,7 +586,9 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
                 case HOUR:
                 case MINUTE:
                 case SECOND:
-                case MILSEC:{
+                case MILSEC:
+                case TIME_ZONE:
+                case ERA:{
                     final int inputFormatLength = token.unit.getSymbol().length();
                     if (token.literal.length()<inputFormatLength){
                         final char smb = token.literal.charAt(0);
@@ -419,9 +601,14 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
                 }
                 break;
                 case LITERAL:{
-                    formatBuilder.append('\'');
-                    formatBuilder.append(token.literal);
-                    formatBuilder.append('\'');
+                    final String literals = token.literal.replace("\'", "\'\'");
+                    if (DATE_TIME_FORMAT_SYMBOLS.matcher(literals).matches()){
+                        formatBuilder.append('\'');
+                        formatBuilder.append(literals);
+                        formatBuilder.append('\'');                        
+                    }else{
+                        formatBuilder.append(literals);
+                    }
                 }
                 break;
                 case QUOTE:{
@@ -501,11 +688,33 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
         return result.toString();
     }
     
+    @Deprecated
+    private Queue<Token> getTokens(final Locale locale){
+        return JavaDateTimeFormatParser.getInstance().getTokens(getDisplayFormat(locale));
+    }       
+    
+    private Queue<Token> getTokens(final IClientEnvironment environmnet){
+        return JavaDateTimeFormatParser.getInstance().getTokens(getDisplayFormat(environmnet));
+    }    
+    
+    @Deprecated // use getInputMask(final IClientEnvironment environment)
     public String getInputMask(final Locale locale) {
+        return getInputMask(getTokens(locale));
+    }
+    
+    public String getInputMask(final IClientEnvironment environment) {
+        return getInputMask(getTokens(environment));
+    }    
+    
+    private static String getInputMask(final Queue<Token> tokens){
         final StringBuilder sb = new StringBuilder();
-        final String format = getDisplayFormat(locale).replaceAll("[zZ]?", ""); // remove time zone designator in input mask
-        final Queue<Token> tokens = DateTimeFormatParser.getInstance().getTokens(format);
-        for(Token currentToken : tokens) {
+        for(int i=0,count=tokens.size(); i<count; i++) {
+            final Token currentToken = tokens.poll();
+            if (currentToken.unit==Unit.DELIM 
+               && tokens.peek()!=null 
+               && (tokens.peek().unit==Unit.TIME_ZONE || tokens.peek().unit==Unit.ERA)){
+                continue;
+            }
             switch(currentToken.unit) {
                 case DELIM:
                     sb.append(currentToken.literal);
@@ -514,7 +723,7 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
                     sb.append(currentToken.unit.withYearLength(currentToken.literal.length()));
                     break;
                 case LITERAL:
-                    sb.append(currentToken.literal.replaceAll("(\\.)", "\\\\1"));
+                    sb.append(currentToken.literal);
                     break;
                 default:
                     sb.append(currentToken.unit.getSymbol());
@@ -523,13 +732,15 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
         }
         sb.append(';');
         sb.append(Unit.FILLER.getSymbol());
-        return sb.toString();
+        return sb.toString();        
     }
+        
+    private String getInputTextForNullValue(final IClientEnvironment environmnet){
+        return getInputTextForNullValue(getTokens(environmnet));
+    }    
     
-    private String getInputTextForNullValue(final Locale locale){
+    private static String getInputTextForNullValue(final Queue<Token> tokens){
         final StringBuilder sb = new StringBuilder();
-        final String format = getDisplayFormat(locale).replaceAll("[zZ]?", ""); // remove time zone designator in input mask
-        final Queue<Token> tokens = DateTimeFormatParser.getInstance().getTokens(format);
         for(Token currentToken : tokens) {            
             switch(currentToken.unit) {
                 case QUOTE:                
@@ -551,20 +762,27 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
                 default:
                     for (int i=1,length=currentToken.unit.getSymbol().length(); i<=length; i++){
                         sb.append(Unit.FILLER.getSymbol());
-                    }                    
+                    }
             }            
         }
-        return sb.toString();
+        return sb.toString();        
+    }
+        
+    @Deprecated // use getInputTextForValue(final Timestamp value, final IClientEnvironment environmnet)
+    public String getInputTextForValue(final Timestamp value, final Locale locale) {
+        return getInputTextForValue(value, getTokens(locale));
     }
     
+    public String getInputTextForValue(final Timestamp value, final IClientEnvironment environmnet) {
+        return getInputTextForValue(value, getTokens(environmnet));
+    }    
+    
     // The method is needed to perform possibly alphabetical values to numerical ones
-    public String getInputTextForValue(final Timestamp value, final Locale locale) {
-        if (isSpecialValue(value)){
-            return getInputTextForNullValue(locale);
+    private static String getInputTextForValue(final Timestamp value, Queue<Token> tokens) {
+        if (value==null){            
+            return getInputTextForNullValue(tokens);
         }
-        final String format = getDisplayFormat(locale);
-        final Queue<Token> tokens = DateTimeFormatParser.getInstance().getTokens(format);
-        final StringBuffer result = new StringBuffer();        
+        final StringBuffer result = new StringBuffer();
         final Calendar date = Calendar.getInstance();
         date.setTimeInMillis(value.getTime());
         //final int 
@@ -602,6 +820,10 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
                 case LITERAL:
                     strValue = nextToken.literal;
                     break;
+                case QUOTE:
+                case ERA:
+                case TIME_ZONE:
+                    continue;
                 default:
                     strValue = String.valueOf(longValue); 
                     while (strValue.length() < nextToken.unit.getSymbol().length()) {
@@ -613,24 +835,19 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
         }
         
         return result.toString(); 
-    }
+    }    
     
-    public boolean isEmptyInput(final String inputText, final Locale locale){
+    public boolean isEmptyInput(final String inputText, final IClientEnvironment environment){
         return inputText==null 
                || inputText.isEmpty() 
-               || inputText.equals(getInputTextForNullValue(locale));
+               || inputText.equals(getInputTextForNullValue(environment));
     }
-    
+        
     @SuppressWarnings({"fallthrough", "PMD.MissingBreakInSwitch"})
-    public Timestamp getValueForInputText(final String inputText, final Locale locale) throws WrongFormatException {
-        if (isEmptyInput(inputText, locale)){
-            return null;
-        }
-        final String format = getDisplayFormat(locale);
+    private Timestamp getValueForInputText(final String inputText, final Queue<Token> tokens) throws WrongFormatException {
         final Calendar date = Calendar.getInstance();
         date.setLenient(false);
         date.clear();        
-        final Queue<Token> tokens = DateTimeFormatParser.getInstance().getTokens(format);
         final EnumMap<Unit, Integer> parsedValues = new EnumMap<>(Unit.class);
         boolean isYearTwoDigit = false;
         boolean isPm = false;
@@ -668,6 +885,10 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
                         ampm = buildAmPm(scanner);
                         scanner.moveNext();
                         valuesMap.put(t.unit, ampm);
+                        break;
+                    case TIME_ZONE:
+                    case ERA:
+                        //no input for time zone or Era
                         break;
                     default:
                         for (int i=0; i<t.literal.length(); i++){
@@ -716,16 +937,21 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
                         break;
                     case HOUR:
                         currentValue = Integer.valueOf(currentStringValue);
-                        if (isTwelveHourFormat && (currentValue<1 || currentValue>12)){
-                            throw new DateTimeFieldOutOfBoundsException(Calendar.HOUR_OF_DAY, 1, 12, currentValue, null);
-                        }
                         if(ampm!=null) {
                             isPm = ampm.equalsIgnoreCase("p") || ampm.equalsIgnoreCase("pm");
-                            if (isPm && currentValue<12){
-                                currentValue+=12;
-                            }else if (!isPm && currentValue==12){
-                                currentValue = 0;
-                            }                            
+                            if (isPm){
+                                if (isTwelveHourFormat && currentValue<1){
+                                    throw new DateTimeFieldOutOfBoundsException(Calendar.HOUR_OF_DAY, 1, 12, currentValue, null);
+                                }else if (currentValue<12){
+                                    currentValue+=12;
+                                }
+                            }else{
+                                if (currentValue==12){
+                                    currentValue=0;
+                                }else if (isTwelveHourFormat && currentValue>12){
+                                    throw new DateTimeFieldOutOfBoundsException(Calendar.HOUR_OF_DAY, 1, 12, currentValue, null);
+                                }
+                            }
                         }
                         break;                    
                     case AMPM:
@@ -754,7 +980,31 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
             throw new WrongFormatException("Wrong unit value", iae);
         }
                 
-        return new Timestamp(millis);
+        return new Timestamp(millis);        
+    }
+    
+    @SuppressWarnings({"fallthrough", "PMD.MissingBreakInSwitch"})
+    @Deprecated
+    public Timestamp getValueForInputText(final String inputText, final Locale locale) throws WrongFormatException {
+        if (inputText==null || inputText.isEmpty()){
+            return null;
+        }
+        final String format = getDisplayFormat(locale);
+        final Queue<Token> tokens = JavaDateTimeFormatParser.getInstance().getTokens(format);
+        if (inputText.equals(getInputTextForNullValue(tokens))){
+            return null;
+        }
+        return getValueForInputText(inputText, tokens);
+    }
+    
+    @SuppressWarnings({"fallthrough", "PMD.MissingBreakInSwitch"})
+    public Timestamp getValueForInputText(final String inputText, final IClientEnvironment environment) throws WrongFormatException {
+        if (isEmptyInput(inputText, environment)){
+            return null;
+        }
+        final String format = getDisplayFormat(environment);
+        final Queue<Token> tokens = JavaDateTimeFormatParser.getInstance().getTokens(format);
+        return getValueForInputText(inputText, tokens);
     }
     
     //Check if some field was not defined
@@ -806,28 +1056,76 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
         }
     }
     
-    static String qtFormat2JavaFormat(final Locale locale, final String qtFormat) {
-                
-        final boolean isAmPmMarkPresent = qtFormat.toLowerCase().contains("ap");
-        
-        String result = isAmPmMarkPresent ? qtFormat : qtFormat.replace('h', 'H');
-        
-        if (result.contains("MMMM")) {//full month name
-            result = result.replace("MMMM", computeFullMonthMask(locale));
+    static String qtFormat2JavaFormat(final Locale locale, final String qtFormat) {                
+        final StringBuilder format = new StringBuilder();
+        final Queue<Token> tokens = QtDateTimeFormatParser.getInstance().getTokens(qtFormat);                
+        boolean isAmPmMarkPresent = false;
+        for (Token token: tokens){
+            if (token.unit==Unit.AMPM){
+                isAmPmMarkPresent = true;
+                break;
+            }
         }
-        if (result.contains("dddd")){//full week day name
-            result = result.replace("dddd", computeFullWeekDayMask(locale));
+        for (Token token: tokens){
+            if (token.unit==Unit.MONTH && "MMMM".equals(token.literal)){//full month name
+                format.append(computeFullMonthMask(locale));
+                continue;
+            }
+            if (token.unit==Unit.DAY){
+                if ("dddd".equals(token.literal)){//full week day name
+                    format.append(computeFullWeekDayMask(locale));
+                    continue;
+                }
+                if ("ddd".equals(token.literal)){
+                    format.append("EEE");//short week day name
+                    continue;
+                }                
+            }
+            if (token.unit==Unit.MILSEC){
+                for (int i=0,count=token.literal.length(); i<count; i++){
+                    format.append('S');
+                }
+                continue;
+            }
+            if (token.unit==Unit.AMPM){
+                format.append('a');
+                continue;
+            }
+            if (token.unit==Unit.HOUR && !isAmPmMarkPresent){
+                for (int i=0,count=token.literal.length(); i<count; i++){
+                    format.append('H');
+                }
+                continue;
+            }
+            if (token.unit==Unit.QUOTE){
+                format.append('\'');
+                continue;
+            }
+            if (token.unit==Unit.LITERAL){
+                if (DATE_TIME_FORMAT_SYMBOLS.matcher(token.literal).matches()){                    
+                    format.append('\'');
+                    for (int i=0,count=token.literal.length(); i<count; i++){
+                        char c = token.literal.charAt(i);
+                        if (c=='\''){
+                            format.append('\'');
+                        }
+                        format.append(c);
+                    }
+                    format.append('\'');
+                }else{
+                    format.append(token.literal);
+                }
+                continue;
+            }
+            if (token.unit==Unit.TIME_ZONE && token.literal.charAt(0)=='T'){
+                for (int i=0,count=token.literal.length(); i<count; i++){
+                    format.append('z');
+                }
+                continue;
+            }
+            format.append(token.literal);
         }
-        if (result.contains("ddd")){//short week day name
-            result = result.replace("ddd", "EEE");
-        }
-        if (result.contains("z")){//milliseconds
-            result = result.replace("z", "S");
-        }
-        
-        result = result.replaceAll("(?i)(?u)ap?", "a"); // ("a" | "ap" | "A" | "AP") -> "a"
-        
-        return result;
+        return format.toString();
     }
 
     static String computeFullMonthMask(final Locale locale) {
@@ -864,12 +1162,12 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
     public String toStr(final IClientEnvironment environment, final Object value) {
         //if (wasInherited()) return INHERITED_VALUE;
         if (value == null) {
-            return getNoValueStr(environment.getMessageProvider());
+            return getNoValueStr(environment==null ? null : environment.getMessageProvider());
         }
         if (value instanceof Timestamp) {
             //final QDateTime dateTime = ValueConverter.timestamp2QtTime((Timestamp) value);
             final Locale loc = environment == null ? Locale.getDefault() : environment.getLocale();
-            final String pattern = getDisplayFormat(loc);
+            final String pattern = getDisplayFormat(environment);
             try {
                 if (environment==null){
                     return new SimpleDateFormat(pattern, loc).format(value);
@@ -927,93 +1225,157 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
         return ValidationResult.ACCEPTABLE;
     }  
 
+    @Deprecated
     public boolean timeFieldPresent(final Locale locale) {
-        return checkForFields(Arrays.asList('h', 'H', 'm', 's', 'z'), locale);
+        final Queue<Token> tokens = getTokens(locale);
+        for(Token token: tokens){
+            if (TIME_UNITS.contains(token.unit) && token.unit!=Unit.AMPM){
+                return true;
+            }
+        }
+        return false;
     }
 
+    @Deprecated
     public boolean dateFieldPresent(final Locale locale) {
-        return checkForFields(Arrays.asList('d', 'M', 'y'), locale);
+        final Queue<Token> tokens = getTokens(locale);
+        for(Token token: tokens){
+            if (DATE_UNITS.contains(token.unit)){
+                return true;
+            }
+        }
+        return false;
     }
     
+    @Deprecated
     public boolean halfDayFieldPresent(final Locale locale){
-        return checkForFields(Arrays.asList('a'), locale);
+        return findTokenForUnit(Unit.AMPM, getTokens(locale))!=null;
+    }
+    
+    public boolean timeFieldPresent(final IClientEnvironment environment) {
+        final Queue<Token> tokens = getTokens(environment);
+        for(Token token: tokens){
+            if (TIME_UNITS.contains(token.unit) && token.unit!=Unit.AMPM){
+                return true;
+            }
+        }
+        return false;
     }
 
+    public boolean dateFieldPresent(final IClientEnvironment environment) {
+        final Queue<Token> tokens = getTokens(environment);
+        for(Token token: tokens){
+            if (DATE_UNITS.contains(token.unit)){
+                return true;
+            }
+        }
+        return false;
+    }
+        
+    public boolean halfDayFieldPresent(final IClientEnvironment environment){
+        return findTokenForUnit(Unit.AMPM, getTokens(environment))!=null;
+    }    
+
+    @Deprecated
     public Timestamp copyFields(final Timestamp source, final Locale locale) {
+        if (source == null) {
+            return null;
+        }
+        return copyFields(source, getTokens(locale));
+    }
+    
+    public Timestamp copyFields(final Timestamp source, final IClientEnvironment environment) {
+        if (source == null) {
+            return null;
+        }
+        return copyFields(source, getTokens(environment));
+    }    
+    
+    public static Timestamp copyFields(final Timestamp source, final Queue<Token> tokens) {
         if (source == null) {
             return null;
         }
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(source.getTime());
-
-        final int day = checkForFields(Arrays.asList('d', 'E'), locale) ? cal.get(Calendar.DAY_OF_MONTH) : 1;
-        final int month = checkForFields(Collections.singletonList('M'), locale) ? cal.get(Calendar.MONTH) : 0;
-        final int year = checkForFields(Collections.singletonList('y'), locale) ? cal.get(Calendar.YEAR) : 1970;
-
-        final int hour = checkForFields(Arrays.asList('h', 'H'), locale) ? cal.get(Calendar.HOUR_OF_DAY) : 0;
-        final int minute = checkForFields(Collections.singletonList('m'), locale) ? cal.get(Calendar.MINUTE) : 0;
-        final int second = checkForFields(Collections.singletonList('s'), locale) ? cal.get(Calendar.SECOND) : 0;
-        final int msec = checkForFields(Collections.singletonList('S'), locale) ? cal.get(Calendar.MILLISECOND) : 0;
-
+        int day = 1;
+        int month = 0;
+        int year = 1970;
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+        int msec = 0;
+        for(Token token: tokens){
+            switch(token.unit){
+                case DAY:
+                    day = cal.get(Calendar.DAY_OF_MONTH);
+                    break;
+                case MONTH:
+                    month = cal.get(Calendar.MONTH);
+                    break;
+                case YEAR:
+                    year = cal.get(Calendar.YEAR);
+                    break;
+                case HOUR:
+                    hour = cal.get(Calendar.HOUR_OF_DAY);
+                    break;
+                case MINUTE:
+                    minute = cal.get(Calendar.MINUTE);
+                    break;
+                case SECOND:
+                    second = cal.get(Calendar.SECOND);
+                    break;
+                case MILSEC:
+                    msec = cal.get(Calendar.MILLISECOND);
+                    break;
+            }
+        }        
         cal.set(year, month, day, hour, minute, second);
         cal.set(Calendar.MILLISECOND, msec);
         return new Timestamp(cal.getTimeInMillis());
+    }    
+    
+    private static Token findTokenForUnit(final Unit unit, final Queue<Token> tokens){
+        for(Token token: tokens){
+            if (token.unit==unit){
+                return token;
+            }
+        }
+        return null;
+    }
+
+    @Deprecated
+    public String getInputTimeFormat(final Locale locale) {
+        return getInputTimeFormat(getTokens(locale));
     }
     
-    private static boolean checkForFields(final String format, final List<Character> fieldsForCheck) {
-        boolean wasQuote = false;        
-        for (int i = 0; i < format.length(); ++i) {
-            if (format.charAt(i) == QUOTE) {
-                if (format.length() > (i + 1) && format.charAt(i + 1) == QUOTE) {
-                    i++;
-                } else {
-                    wasQuote = !wasQuote;
-                }
-            } else if (!wasQuote && fieldsForCheck.contains(format.charAt(i))) {
-                return true;
-            }
-        }
-        return false;
+    public String getInputTimeFormat(final IClientEnvironment environmnet) {
+        return getInputTimeFormat(getTokens(environmnet));
     }    
-
-    private boolean checkForFields(final List<Character> fieldsForCheck, Locale locale) {
-        return checkForFields(getDisplayFormat(locale), fieldsForCheck);
-    }
-
-    public String getInputTimeFormat(final Locale locale) {
-        final StringBuilder result;
-        if (checkForFields(Arrays.asList('H'), locale)) {
-            result = new StringBuilder("HH");
-        } else if (checkForFields(Arrays.asList('h'), locale)) {
-            result = new StringBuilder("hh");
-        }else{
-            result = new StringBuilder();
-        }
-        if (checkForFields(Arrays.asList('m'), locale)) {
-            if (result.length()>0){
-                result.append(':');
+    
+    private static String getInputTimeFormat(final Queue<Token> tokens) {
+        final List<Token> timeTokens = new LinkedList<>();
+        for (Unit timeUnit: TIME_UNITS){
+            final Token timeToken = findTokenForUnit(timeUnit, tokens);
+            if (timeToken!=null && timeToken.literal.length()>0){
+                timeTokens.add(timeToken);
             }
-            result.append("mm");
         }
-        if (checkForFields(Arrays.asList('s'), locale)) {
-            if (result.length()>0){
-                result.append(':');
+        final StringBuilder timeFormat = new StringBuilder();
+        for (Token timeToken: timeTokens){
+            if (timeFormat.length()>0){
+                timeFormat.append(timeToken.unit==Unit.AMPM ? ' ' : ':');                    
             }
-            result.append("ss");
-        }
-        if (checkForFields(Arrays.asList('S'), locale)) {
-            if (result.length()>0){
-                result.append(':');
+            if (timeToken.unit==Unit.HOUR){
+                if (Character.isUpperCase(timeToken.literal.charAt(0))){
+                    timeFormat.append(timeToken.unit.getQtTimeFild().toUpperCase());
+                }else{
+                    timeFormat.append(timeToken.unit.getQtTimeFild().toLowerCase());
+                }
+            }else{
+                timeFormat.append(timeToken.unit.getQtTimeFild());
             }
-            result.append("zzz");          
         }
-        if (halfDayFieldPresent(locale)) {
-            if (result.length()>0){
-                result.append(' ');
-            }
-            result.append("ap");
-        }
-        return result.toString();
+        return timeFormat.toString();        
     }
 
     private static Timestamp copyTime(final Timestamp time) {
@@ -1111,4 +1473,192 @@ public final class EditMaskDateTime extends org.radixware.kernel.common.client.m
     private void clearCaches(){
         displayFormatCache.clear();
     }
+        
+    public static String javaFormat2QtFormat(final Locale locale, final String javaFormat){
+        return javaFormat2QtFormat(locale, javaFormat, false, false);
+    }
+        
+    public static String javaFormat2QtFormat(final Locale locale, final String javaFormat, final boolean ignoreDate, final boolean ignoreTime){
+        final StringBuilder format = new StringBuilder();
+        final Queue<Token> tokens = JavaDateTimeFormatParser.getInstance().getTokens(javaFormat);
+        for (Token token: tokens){
+            final Unit tokenUnit = token.unit;
+            if (ignoreDate && (DATE_UNITS.contains(tokenUnit) || tokenUnit==Unit.ERA)){
+                format.append('\'');
+                format.append(token.literal);
+                format.append('\'');
+            }else if (ignoreTime && (TIME_UNITS.contains(tokenUnit) || tokenUnit==Unit.TIME_ZONE)){
+                format.append('\'');
+                format.append(token.literal);
+                format.append('\'');
+            }else {
+                switch (tokenUnit){
+                    case AMPM:{
+                        format.append("AP");
+                        break;
+                    }case DAY:{
+                        final int length=token.literal.length();
+                        if (length>3){
+                            format.append("dddd");
+                        }else{
+                            for (int i=0; i<length; i++){
+                                format.append("d");
+                            }
+                        }
+                        break;
+                    }case HOUR:{
+                        final int length=token.literal.length();
+                        final char c = token.literal.charAt(0);
+                        format.append(c);
+                        if (length>1){
+                            format.append(c);
+                        }
+                        break;
+                    }case LITERAL:{
+                        if (DATE_TIME_FORMAT_SYMBOLS.matcher(token.literal).matches()){
+                            format.append('\'');
+                            for (int i=0,count=token.literal.length(); i<count; i++){
+                                char c = token.literal.charAt(i);
+                                if (c=='\''){
+                                    format.append('\'');
+                                }
+                                format.append(c);
+                            }
+                            format.append('\'');
+                        }else{
+                            format.append(token.literal);
+                        }
+                        break;
+                    }case MILSEC:{
+                        final int length=token.literal.length();
+                        if (length>1){
+                            format.append("zzz");
+                        }else{
+                            format.append('z');
+                        }
+                        break;
+                    }case MINUTE:{
+                        final int length=token.literal.length();
+                        if (length>1){
+                            format.append("mm");
+                        }else{
+                            format.append('m');
+                        }
+                        break;
+                    }case MONTH:{
+                        final int length=token.literal.length();
+                        if (length>3){
+                            format.append("MMMM");
+                        }else{
+                            format.append(token.literal);
+                        }
+                        break;
+                    }case QUOTE:{
+                        format.append('\'');
+                        break;
+                    }case SECOND:{
+                        final int length=token.literal.length();
+                        if (length>1){
+                            format.append("ss");
+                        }else{
+                            format.append('s');
+                        }
+                        break;
+                    }case TIME_ZONE:{
+                        if (token.literal.charAt(0)=='z'){
+                            for (int i=0,count=token.literal.length(); i<count; i++){
+                                format.append('T');
+                            }                
+                        }else{
+                            format.append(token.literal);
+                        }
+                        break;
+                    }case YEAR:{
+                        final int length=token.literal.length();
+                        if (length>2){
+                            format.append("yyyy");
+                        }else{
+                            format.append("yy");
+                        }
+                        break;
+                    }default:{
+                        format.append(token.literal);
+                    }
+                }
+            }
+        }
+        return format.toString();
+    }
+    
+    public static String stripDateFormat(final String qtFormat){
+        if (qtFormat==null || qtFormat.isEmpty()){
+            return qtFormat;
+        }
+        final StringBuilder format = new StringBuilder();
+        final Queue<Token> tokens = QtDateTimeFormatParser.getInstance().getTokens(qtFormat);
+        for (Token token: tokens){
+            final Unit tokenUnit = token.unit;
+            if (DATE_UNITS.contains(tokenUnit) || tokenUnit==Unit.ERA){
+                format.append('\'');
+                format.append(token.literal);
+                format.append('\'');
+            }else if (tokenUnit==Unit.LITERAL){
+                if (DATE_TIME_FORMAT_SYMBOLS.matcher(token.literal).matches()){
+                    format.append('\'');
+                    for (int i=0,count=token.literal.length(); i<count; i++){
+                        char c = token.literal.charAt(i);
+                        if (c=='\''){
+                            format.append('\'');
+                        }
+                        format.append(c);
+                    }
+                    format.append('\'');
+                }else{
+                    format.append(token.literal);
+                }                
+            }else if (tokenUnit==Unit.QUOTE){
+                format.append('\'');
+            }else{
+                format.append(token.literal);
+            }
+        }
+        return format.toString();
+    }
+    
+    public static String stripTimeFormat(final String qtFormat){
+        if (qtFormat==null || qtFormat.isEmpty()){
+            return qtFormat;
+        }        
+        final StringBuilder format = new StringBuilder();
+        final Queue<Token> tokens = QtDateTimeFormatParser.getInstance().getTokens(qtFormat);
+        for (Token token: tokens){
+            final Unit tokenUnit = token.unit;
+            if (TIME_UNITS.contains(tokenUnit) || tokenUnit==Unit.TIME_ZONE){
+                format.append('\'');
+                format.append(token.literal);
+                format.append('\'');
+            }else if (tokenUnit==Unit.LITERAL){
+                if (DATE_TIME_FORMAT_SYMBOLS.matcher(token.literal).matches()){
+                    format.append('\'');
+                    for (int i=0,count=token.literal.length(); i<count; i++){
+                        char c = token.literal.charAt(i);
+                        if (c=='\''){
+                            format.append('\'');
+                        }
+                        format.append(c);
+                    }
+                    format.append('\'');
+                }else{
+                    format.append(token.literal);
+                }                
+            }else if (tokenUnit==Unit.QUOTE){
+                format.append('\'');
+            }else{
+                format.append(token.literal);
+            }
+        }
+        return format.toString();
+    }    
+    
+    
 }

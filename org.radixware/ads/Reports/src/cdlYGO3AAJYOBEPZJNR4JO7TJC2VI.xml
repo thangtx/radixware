@@ -15,48 +15,104 @@
         <ui:property name="standardButtons">
           <ui:set>com.trolltech.qt.gui.QDialogButtonBox.StandardButton.Close</ui:set>
         </ui:property>
-        <ui:widget name="tabs" id="wdg2IWCRUFZXJABBC5276U6NPHOB4" class="org.radixware.wps.rwt.TabLayout" weight="0.0">
-          <ui:property name="currentIndex">
-            <ui:int>0</ui:int>
-          </ui:property>
+        <ui:widget name="vbox" id="wdgYVMDTWKTLJCPVOU436ILGXLYKA" class="org.radixware.wps.rwt.VerticalBoxContainer" weight="0.0">
           <ui:property name="geometry">
             <ui:rect>
-              <ui:x>10</ui:x>
-              <ui:y>10</ui:y>
-              <ui:width>480</ui:width>
-              <ui:height>384</ui:height>
+              <ui:x>3</ui:x>
+              <ui:y>3</ui:y>
+              <ui:width>494</ui:width>
+              <ui:height>398</ui:height>
             </ui:rect>
           </ui:property>
           <ui:property name="anchor">
             <ui:anchor>
-              <ui:Bottom Part="1.0" Offset="-10"/>
-              <ui:Right Part="1.0" Offset="-10"/>
+              <ui:Top Part="0.0" Offset="3"/>
+              <ui:Left Part="0.0" Offset="3"/>
+              <ui:Bottom Part="1.0" Offset="-3"/>
+              <ui:Right Part="1.0" Offset="-3"/>
             </ui:anchor>
           </ui:property>
           <ui:property name="objectName">
-            <ui:string>tabs</ui:string>
+            <ui:string>vbox</ui:string>
           </ui:property>
-          <ui:property name="enabled">
-            <ui:bool>true</ui:bool>
-          </ui:property>
-          <ui:widget name="tab" id="wdgMOYESK4N4FCXBMV25XRARLUTBU" class="org.radixware.wps.rwt.TabLayout.Tab" weight="0.0">
-            <ui:property name="title">
-              <ui:mlstringid>mlsBCKC4B6MFVF7VFSIZHVVV45ZMI</ui:mlstringid>
+          <ui:widget name="pbContext" id="wdgZ5VBFTGZ2JARLLIF7DSRYNFPIU" class=" org.radixware.wps.views.editor.property.PropEditor" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>249</ui:x>
+                <ui:y>101</ui:y>
+                <ui:width>488</ui:width>
+                <ui:height>21</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="property">
+              <ui:propertyRef>prdOOPYIEQGZVFZ3CMXHI74X66MU4</ui:propertyRef>
             </ui:property>
             <ui:property name="objectName">
-              <ui:string>tab</ui:string>
+              <ui:string>pbContext</ui:string>
             </ui:property>
-            <ui:property name="icon">
-              <ui:imageRef xsi:nil="true"/>
+            <ui:property name="objectName">
+              <ui:string>widget</ui:string>
             </ui:property>
           </ui:widget>
-          <ui:widget name="tab_2" id="wdgGAISMTR5UVD5XNHVH7CVXT74EU" class="org.radixware.wps.rwt.TabLayout.Tab" weight="0.0">
-            <ui:property name="title">
-              <ui:mlstringid>mlsIZWRBZ2VTFE43NXEKE4SJUWRDA</ui:mlstringid>
+          <ui:widget name="spacer" id="wdgF2ZXMOSTUFERFNTXZEIZRRPDPA" class="org.radixware.wps.rwt.AbstractContainer" weight="0.0">
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>-1</ui:x>
+                <ui:y>1</ui:y>
+                <ui:width>488</ui:width>
+                <ui:height>100</ui:height>
+              </ui:rect>
             </ui:property>
             <ui:property name="objectName">
-              <ui:string>tab_2</ui:string>
+              <ui:string>spacer</ui:string>
             </ui:property>
+          </ui:widget>
+          <ui:widget name="tabs" id="wdg2IWCRUFZXJABBC5276U6NPHOB4" class="org.radixware.wps.rwt.TabLayout" weight="0.0">
+            <ui:property name="currentIndex">
+              <ui:int>0</ui:int>
+            </ui:property>
+            <ui:property name="geometry">
+              <ui:rect>
+                <ui:x>24</ui:x>
+                <ui:y>126</ui:y>
+                <ui:width>394</ui:width>
+                <ui:height>353</ui:height>
+              </ui:rect>
+            </ui:property>
+            <ui:property name="anchor">
+              <ui:anchor>
+                <ui:Bottom Part="1.0" Offset="-10"/>
+                <ui:Right Part="1.0" Offset="-10"/>
+              </ui:anchor>
+            </ui:property>
+            <ui:property name="objectName">
+              <ui:string>tabs</ui:string>
+            </ui:property>
+            <ui:property name="enabled">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+            <ui:property name="expand">
+              <ui:bool>true</ui:bool>
+            </ui:property>
+            <ui:widget name="tab" id="wdgMOYESK4N4FCXBMV25XRARLUTBU" class="org.radixware.wps.rwt.TabLayout.Tab" weight="0.0">
+              <ui:property name="title">
+                <ui:mlstringid>mlsBCKC4B6MFVF7VFSIZHVVV45ZMI</ui:mlstringid>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>tab</ui:string>
+              </ui:property>
+              <ui:property name="icon">
+                <ui:imageRef xsi:nil="true"/>
+              </ui:property>
+            </ui:widget>
+            <ui:widget name="tab_2" id="wdgGAISMTR5UVD5XNHVH7CVXT74EU" class="org.radixware.wps.rwt.TabLayout.Tab" weight="0.0">
+              <ui:property name="title">
+                <ui:mlstringid>mlsIZWRBZ2VTFE43NXEKE4SJUWRDA</ui:mlstringid>
+              </ui:property>
+              <ui:property name="objectName">
+                <ui:string>tab_2</ui:string>
+              </ui:property>
+            </ui:widget>
           </ui:widget>
         </ui:widget>
       </ui:widget>
@@ -94,6 +150,18 @@
           <AccessRules/>
           <Type TypeId="411" Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM"/>
         </Property>
+        <Property Id="prdOOPYIEQGZVFZ3CMXHI74X66MU4" Name="publicationContext" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsPublished="false"/>
+          <Type TypeId="21"/>
+          <DependentItems/>
+          <EmbeddedProperty Id="prdOOPYIEQGZVFZ3CMXHI74X66MU4" Name="publicationContext" Nature="2" IsConst="false">
+            <AccessRules IsPublished="false"/>
+            <Type TypeId="21"/>
+            <Presentation TitleId="mlsPITKZ6ZAJJBYBOVP2P3XASEAEA" InheritanceMask="4">
+              <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
+            </Presentation>
+          </EmbeddedProperty>
+        </Property>
       </Properties>
       <Methods>
         <Method Id="mthNY65THDPJVHO7FYQAFB55APMT4" Name="widget_opened" Nature="2" IsReflectiveCallable="true" IsOverride="false">
@@ -105,13 +173,17 @@
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true"/>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthKFPFBBN2DBA73E6LCUFCLDLB6Q" Invoke="true">
+                  <xsc:Presentation>getDialogView</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>().</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mthLK6D4276YBB23HG3TYDL37YRXU" Invoke="true"/>
+                <xsc:IdReference Path="aic6XXEZKQ2K5AEJFYAA3DX7EFR6U mthLK6D4276YBB23HG3TYDL37YRXU" Invoke="true">
+                  <xsc:Presentation>setWindowTitle</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
@@ -120,58 +192,285 @@
                 <xsc:LocalizedString StringId="mlsLNMES7FMMVBR5IYSVO6AT6ZTXI"/>
               </xsc:Item>
               <xsc:Item>
+                <xsc:Java>);   
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdg2IWCRUFZXJABBC5276U6NPHOB4" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:tabs</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.clear();    
+    final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21">
+                  <xsc:Presentation>Str</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> pubContextTitle = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY">
+                  <xsc:Presentation>ReportsExplorerUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthEPG525G4D5GL3JZAWHZQI3NVSA" Invoke="true">
+                  <xsc:Presentation>calcPubModelTitle</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdSEBYFORSNJDWLAR2VVEUNA6AIM" Invoke="true">
+                  <xsc:Presentation>pubModel</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
                 <xsc:Java>);
+    if (pubContextTitle==null){
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdOOPYIEQGZVFZ3CMXHI74X66MU4" Invoke="true">
+                  <xsc:Presentation>publicationContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mth4T63BURJVZCBFLV2N3ZL7X6SBM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(false);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdgF2ZXMOSTUFERFNTXZEIZRRPDPA" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:spacer</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mth4T63BURJVZCBFLV2N3ZL7X6SBM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(false);
+    }else{
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdgZ5VBFTGZ2JARLLIF7DSRYNFPIU" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:pbContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthTFV5BLYXFNBR3LTNQJ26VNXHRY" Invoke="true">
+                  <xsc:Presentation>setPreferredHeight</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(21);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdgF2ZXMOSTUFERFNTXZEIZRRPDPA" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:spacer</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthDCI43YPDYZH2FOH2G6WCEYSOZ4" Invoke="true">
+                  <xsc:Presentation>setMinimumHeight</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(5);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdgF2ZXMOSTUFERFNTXZEIZRRPDPA" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:spacer</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getHtml().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcF5CYWG2U4ZDCHOUBX64NT3LCYA mthTHOXZPL6J5DYJDZW7WNZP2VU54" Invoke="true">
+                  <xsc:Presentation>setCss</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>("max-height","5px");
+        ((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcHR6EUFQZ7FGD7PL4VAJBUYVID4">
+                  <xsc:Presentation>Web.Widgets::PropEditor</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdgZ5VBFTGZ2JARLLIF7DSRYNFPIU" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:pbContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>).setLabel(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdOOPYIEQGZVFZ3CMXHI74X66MU4" Invoke="true">
+                  <xsc:Presentation>publicationContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthL7NBE6M475HVBP5EDTN2LXKQCU" Invoke="true">
+                  <xsc:Presentation>getTitle</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdOOPYIEQGZVFZ3CMXHI74X66MU4" Invoke="true">
+                  <xsc:Presentation>publicationContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.setValue(pubContextTitle);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdgZ5VBFTGZ2JARLLIF7DSRYNFPIU" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:pbContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcZPJX2XEVDRCKFDQD7FZFMVINUU mthOEER6FUTNVENPA4JWAPQLEFLXE" Invoke="true">
+                  <xsc:Presentation>setLabelVisible</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdgZ5VBFTGZ2JARLLIF7DSRYNFPIU" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:pbContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthTFV5BLYXFNBR3LTNQJ26VNXHRY" Invoke="true">
+                  <xsc:Presentation>setPreferredHeight</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(21);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdgZ5VBFTGZ2JARLLIF7DSRYNFPIU" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:vbox:pbContext</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mth6O4ZYTHJ5NFNZLH47LQS34CE2M" Invoke="true">
+                  <xsc:Presentation>setHeight</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(21);
+    }
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdg2IWCRUFZXJABBC5276U6NPHOB4" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.clear();
-    </xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI mthQZPDLGXSJZFAJO2ACSBDN3SSFQ" Invoke="true"/>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI mthQZPDLGXSJZFAJO2ACSBDN3SSFQ" Invoke="true">
+                  <xsc:Presentation>init</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
 } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                  <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> ex) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true">
+                  <xsc:Presentation>rejectDialog</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
 } catch (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                  <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> ex) {
     Environment.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthKZ34JWV7QFDPBJW4JKVSP3AE3E" Invoke="true"/>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthKZ34JWV7QFDPBJW4JKVSP3AE3E" Invoke="true">
+                  <xsc:Presentation>processException</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(ex);
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true"/>
+                <xsc:IdReference Path="adcJY23D47GDFBFTLU26GY5RGU7KY mthYEMLDE62GNCTVNB2L3I2YFWHF4" Invoke="true">
+                  <xsc:Presentation>rejectDialog</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
-}
-</xsc:Java>
+}</xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>
@@ -189,13 +488,17 @@
 final java.util.Collection&lt;ReleaseRepository.DefinitionInfo> pubListClassesInfo = Environment.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true">
+                  <xsc:Presentation>getDefManager</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>().Repository.getDefinitionsForDomain(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdUMXTOKLWENCB7O6JYFR5YHCXYQ" Invoke="true"/>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdUMXTOKLWENCB7O6JYFR5YHCXYQ" Invoke="true">
+                  <xsc:Presentation>pubListDomainId</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
@@ -204,13 +507,17 @@ final java.util.Collection&lt;ReleaseRepository.DefinitionInfo> pubListClassesIn
 final java.util.List&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY">
+                  <xsc:Presentation>Explorer.Meta::PresentationClassDef</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>> pubListClassDefs = new java.util.ArrayList&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY">
+                  <xsc:Presentation>Explorer.Meta::PresentationClassDef</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>>();
@@ -218,13 +525,17 @@ for (ReleaseRepository.DefinitionInfo pubListClassInfo : pubListClassesInfo) {
     final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY">
+                  <xsc:Presentation>Explorer.Meta::PresentationClassDef</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubListClassDef = Environment.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true">
+                  <xsc:Presentation>getDefManager</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>().getClassPresentationDef(pubListClassInfo.id);
@@ -235,7 +546,9 @@ for (ReleaseRepository.DefinitionInfo pubListClassInfo : pubListClassesInfo) {
 java.util.Collections.sort(pubListClassDefs, new java.util.Comparator&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY">
+                  <xsc:Presentation>Explorer.Meta::PresentationClassDef</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>>() {
@@ -244,13 +557,17 @@ java.util.Collections.sort(pubListClassDefs, new java.util.Comparator&lt;</xsc:J
     public int compare(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY">
+                  <xsc:Presentation>Explorer.Meta::PresentationClassDef</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubListClassDef1, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY">
+                  <xsc:Presentation>Explorer.Meta::PresentationClassDef</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubListClassDef2) {
@@ -259,7 +576,9 @@ java.util.Collections.sort(pubListClassDefs, new java.util.Comparator&lt;</xsc:J
         } else if (pubListClassDef1.Id == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aclZSPRDRISTJDSHAEQ7HWUORIYIQ"/>
+                <xsc:IdReference Path="aclZSPRDRISTJDSHAEQ7HWUORIYIQ">
+                  <xsc:Presentation>ReportPubList.Contextless</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
@@ -267,7 +586,9 @@ java.util.Collections.sort(pubListClassDefs, new java.util.Comparator&lt;</xsc:J
         } else if (pubListClassDef2.Id == </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aclZSPRDRISTJDSHAEQ7HWUORIYIQ"/>
+                <xsc:IdReference Path="aclZSPRDRISTJDSHAEQ7HWUORIYIQ">
+                  <xsc:Presentation>ReportPubList.Contextless</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>) {
@@ -284,19 +605,25 @@ java.util.Collections.sort(pubListClassDefs, new java.util.Comparator&lt;</xsc:J
 final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                  <xsc:Presentation>Types::Id</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> contextClassId = this.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdSEBYFORSNJDWLAR2VVEUNA6AIM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdSEBYFORSNJDWLAR2VVEUNA6AIM" Invoke="true">
+                  <xsc:Presentation>pubModel</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mth3YOXXEMIA5A57DA5LSRC57UMQE" Invoke="true"/>
+                <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mth3YOXXEMIA5A57DA5LSRC57UMQE" Invoke="true">
+                  <xsc:Presentation>getReportContextClassId</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
@@ -304,94 +631,124 @@ final String contextClassGuid = (contextClassId!=null ? contextClassId.toString(
 final String contextObjectPid = this.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdSEBYFORSNJDWLAR2VVEUNA6AIM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI prdSEBYFORSNJDWLAR2VVEUNA6AIM" Invoke="true">
+                  <xsc:Presentation>pubModel</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mth6KVP5LQUDNECBDB7RJ5KIBSBYQ" Invoke="true"/>
+                <xsc:IdReference Path="aic7HTUN45DRJBV3FWNY7QQ4I5YQM mth6KVP5LQUDNECBDB7RJ5KIBSBYQ" Invoke="true">
+                  <xsc:Presentation>getReportContextId</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(); // can be null
 final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ">
+                  <xsc:Presentation>Explorer.Utils::SqmlExpression</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> sqml1 = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY">
+                  <xsc:Presentation>ReportsExplorerUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthXFNJK6LX7BAG5M2EJWKXWVZBNU" Invoke="true"/>
+                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthXFNJK6LX7BAG5M2EJWKXWVZBNU" Invoke="true">
+                  <xsc:Presentation>createSqmlExpression</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="tblQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+                <xsc:IdReference Path="tblQ5T72ARKKBHHNBHOH3LPATQA6M">
+                  <xsc:Presentation>Reports::ReportPubList</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M colWZ4H7UJ6RFA6FMTXPZBFRNV52M"/>
+                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M colWZ4H7UJ6RFA6FMTXPZBFRNV52M">
+                  <xsc:Presentation>ReportPubList:pubContextClassGuid</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, contextClassGuid);
 final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ">
+                  <xsc:Presentation>Explorer.Utils::SqmlExpression</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> sqml2 = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY">
+                  <xsc:Presentation>ReportsExplorerUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthXFNJK6LX7BAG5M2EJWKXWVZBNU" Invoke="true"/>
+                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthXFNJK6LX7BAG5M2EJWKXWVZBNU" Invoke="true">
+                  <xsc:Presentation>createSqmlExpression</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="tblQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+                <xsc:IdReference Path="tblQ5T72ARKKBHHNBHOH3LPATQA6M">
+                  <xsc:Presentation>Reports::ReportPubList</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M colULDE4U54JZHEFOCELCQKPNYX6M"/>
+                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M colULDE4U54JZHEFOCELCQKPNYX6M">
+                  <xsc:Presentation>ReportPubList:contextPid</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, contextObjectPid);
 final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ">
+                  <xsc:Presentation>Explorer.Utils::SqmlExpression</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> sqml = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ">
+                  <xsc:Presentation>Explorer.Utils::SqmlExpression</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ mthJJ7P7N7MTNAYZBBW3K2QQFR5KE" Invoke="true"/>
+                <xsc:IdReference Path="adcT2UYOCLRSNAI3IONE4OQUGNVNQ mthJJ7P7N7MTNAYZBBW3K2QQFR5KE" Invoke="true">
+                  <xsc:Presentation>and</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(sqml1, sqml2);
@@ -399,38 +756,50 @@ final </xsc:Java>
 final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I">
+                  <xsc:Presentation>Explorer.Models::GroupModel</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubLists = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I">
+                  <xsc:Presentation>Explorer.Models::GroupModel</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mth2WYIGFEZYRF37MLJQKURTWGEDQ" Invoke="true"/>
+                <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mth2WYIGFEZYRF37MLJQKURTWGEDQ" Invoke="true">
+                  <xsc:Presentation>openTableContextlessSelectorModel</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(Environment,</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M"/>
+                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M">
+                  <xsc:Presentation>ReportPubList</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M spr7U6ZGF3DHBA4DOFJDLFXMQLCQY"/>
+                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M spr7U6ZGF3DHBA4DOFJDLFXMQLCQY">
+                  <xsc:Presentation>ReportPubList:Common</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>);
 pubLists.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mth2MZZOBQ3HRHTLAMQHMCCQ5Y7VI" Invoke="true"/>
+                <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mth2MZZOBQ3HRHTLAMQHMCCQ5Y7VI" Invoke="true">
+                  <xsc:Presentation>setCondition</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(sqml);
@@ -439,25 +808,33 @@ pubLists.</xsc:Java>
 final java.util.Map&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                  <xsc:Presentation>Types::Id</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA">
+                  <xsc:Presentation>ReportPubList:Common:Model</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>> id2PubList = new java.util.HashMap&lt;</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                  <xsc:Presentation>Types::Id</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>, </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA">
+                  <xsc:Presentation>ReportPubList:Common:Model</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>>();
@@ -469,19 +846,25 @@ for (int i = 0; true; i++) {
     final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA">
+                  <xsc:Presentation>ReportPubList:Common:Model</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubList = (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA">
+                  <xsc:Presentation>ReportPubList:Common:Model</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>)pubLists.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthARV3U2S4MFEYPIPJYGXL2HZ5CI" Invoke="true"/>
+                <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthARV3U2S4MFEYPIPJYGXL2HZ5CI" Invoke="true">
+                  <xsc:Presentation>getEntity</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(i);
@@ -489,19 +872,25 @@ for (int i = 0; true; i++) {
         id2PubList.put(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                  <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+                <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+                  <xsc:Presentation>loadFrom</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(pubList.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M colYKEM5Q2LR5BORNW7UDQGGHK7BU" Invoke="true"/>
+                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M colYKEM5Q2LR5BORNW7UDQGGHK7BU" Invoke="true">
+                  <xsc:Presentation>classGuid</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.Value), pubList);
@@ -515,7 +904,9 @@ for (int i = 0; true; i++) {
     final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA">
+                  <xsc:Presentation>ReportPubList:Common:Model</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubList;
@@ -523,13 +914,17 @@ for (int i = 0; true; i++) {
         pubList = (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA">
+                  <xsc:Presentation>ReportPubList:Common:Model</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>)pubLists.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthARV3U2S4MFEYPIPJYGXL2HZ5CI" Invoke="true"/>
+                <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthARV3U2S4MFEYPIPJYGXL2HZ5CI" Invoke="true">
+                  <xsc:Presentation>getEntity</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(i);
@@ -537,7 +932,9 @@ for (int i = 0; true; i++) {
     catch(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axc7K62E4I5UFEKTDUIZINZ3II5K4"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axc7K62E4I5UFEKTDUIZINZ3II5K4">
+                  <xsc:Presentation>Explorer.Exceptions::BrokenEntityObjectException</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> exception){
@@ -547,19 +944,25 @@ for (int i = 0; true; i++) {
         id2PubList.put(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                  <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+                <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+                  <xsc:Presentation>loadFrom</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(pubList.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M colYKEM5Q2LR5BORNW7UDQGGHK7BU" Invoke="true"/>
+                <xsc:IdReference Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M colYKEM5Q2LR5BORNW7UDQGGHK7BU" Invoke="true">
+                  <xsc:Presentation>classGuid</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.Value), pubList);
@@ -573,21 +976,27 @@ for (int i = 0; true; i++) {
 for (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcS24WA4C5SNAKJMW6G6CVRNWCSY">
+                  <xsc:Presentation>Explorer.Meta::PresentationClassDef</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubListClassDef : pubListClassDefs) {
     final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA"/>
+                <xsc:TypeDeclaration TypeId="411" Path="aecQ5T72ARKKBHHNBHOH3LPATQA6M eprSMKGLY4AKBDWRB4XEFTYEFZKUA aemSMKGLY4AKBDWRB4XEFTYEFZKUA">
+                  <xsc:Presentation>ReportPubList:Common:Model</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> pubList = id2PubList.get(pubListClassDef.Id); // can be null if not created
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI mthER7XJFXS7FHCXO7AQ3KDCGEUIM" Invoke="true"/>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI admYGO3AAJYOBEPZJNR4JO7TJC2VI mthER7XJFXS7FHCXO7AQ3KDCGEUIM" Invoke="true">
+                  <xsc:Presentation>addTab</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(pubListClassDef, pubList);
@@ -613,20 +1022,26 @@ for (</xsc:Java>
                 <xsc:Java>final </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM">
+                  <xsc:Presentation>CfgReportsTabWidgetWeb</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> tabWidget = new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM"/>
+                <xsc:TypeDeclaration TypeId="411" Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM">
+                  <xsc:Presentation>CfgReportsTabWidgetWeb</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(Environment);
 org.radixware.wps.rwt.TabLayout.Tab tab = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdg2IWCRUFZXJABBC5276U6NPHOB4" Invoke="true"/>
+                <xsc:IdReference Path="cdlYGO3AAJYOBEPZJNR4JO7TJC2VI wdg2IWCRUFZXJABBC5276U6NPHOB4" Invoke="true">
+                  <xsc:Presentation>CfgReportsDialogWeb:widget:tabs</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.addTab(pubListClassDef.ClassTitle);
@@ -636,21 +1051,27 @@ tabWidget.Anchors.Right = new org.radixware.wps.rwt.UIObject.Anchors.Anchor(1,-1
 tabWidget.Model.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM admUABJZPEHJ5BFTIZ3YPRNFKEBWM prdG4YGDLJOBNAIPKDG7A4VW7GM6Q" Invoke="true"/>
+                <xsc:IdReference Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM admUABJZPEHJ5BFTIZ3YPRNFKEBWM prdG4YGDLJOBNAIPKDG7A4VW7GM6Q" Invoke="true">
+                  <xsc:Presentation>pubListClassDef</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = pubListClassDef;
 tabWidget.Model.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM admUABJZPEHJ5BFTIZ3YPRNFKEBWM prdUITJ3QT2HZFTDH5IVCE5UBRPUM" Invoke="true"/>
+                <xsc:IdReference Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM admUABJZPEHJ5BFTIZ3YPRNFKEBWM prdUITJ3QT2HZFTDH5IVCE5UBRPUM" Invoke="true">
+                  <xsc:Presentation>pubList</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = pubList;
 tabWidget.Model.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM admUABJZPEHJ5BFTIZ3YPRNFKEBWM prdAQCHB4UJQNCMPGVVU7HIXHZA2I" Invoke="true"/>
+                <xsc:IdReference Path="wdcUABJZPEHJ5BFTIZ3YPRNFKEBWM admUABJZPEHJ5BFTIZ3YPRNFKEBWM prdAQCHB4UJQNCMPGVVU7HIXHZA2I" Invoke="true">
+                  <xsc:Presentation>cfgReportsDialogModel</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> = this;

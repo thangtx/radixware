@@ -8,9 +8,9 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.dbq.sqml;
 
+import java.util.Map;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.scml.ITagTranslator;
 import org.radixware.kernel.common.scml.Scml.Tag;
@@ -21,7 +21,8 @@ import org.radixware.kernel.common.sqml.translate.SqmlPreprocessor;
 import org.radixware.kernel.common.sqml.translate.SqmlProcessor;
 import org.radixware.kernel.server.dbq.SqlBuilder;
 import org.radixware.kernel.common.repository.DbConfiguration;
-
+import org.radixware.kernel.common.sqml.translate.ISqmlPreprocessorConfig;
+import org.radixware.kernel.common.types.Id;
 
 public class QuerySqmlTranslator {
 
@@ -75,13 +76,17 @@ public class QuerySqmlTranslator {
         }
     }
 
-    public final void translate(final Sqml sqml, final CodePrinter cp, final DbConfiguration dbConfiguration) {
+    public final void translate(final Sqml sqml, final CodePrinter cp, final ISqmlPreprocessorConfig preprocessorConfig) {
         final TranslateProcessor translateProcessor = new TranslateProcessor(cp, getTagTranslatorFactory());
-        translateProcessor.process(preprocess(sqml, dbConfiguration));
+        translateProcessor.process(preprocessorConfig == null ? sqml : preprocess(sqml, preprocessorConfig));
     }
 
-    public static Sqml preprocess(final Sqml sqml, final DbConfiguration dbConfiguration) {
-        final Sqml preprocessedSqml = new SqmlPreprocessor().preprocess(sqml, new PreprocessorConfigByDbConfiguration(dbConfiguration));
+    public static Sqml preprocess(final Sqml sqml, final DbConfiguration dbConfiguration, final Map<Id, Object> paramValues) {
+        return preprocess(sqml, new ServerPreprocessorConfig(dbConfiguration, paramValues));
+    }
+
+    public static Sqml preprocess(final Sqml sqml, final ISqmlPreprocessorConfig config) {
+        final Sqml preprocessedSqml = new SqmlPreprocessor().preprocess(sqml, config);
         preprocessedSqml.setEnvironment(sqml.getEnvironment());
         return preprocessedSqml;
     }

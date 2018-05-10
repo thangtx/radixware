@@ -12,11 +12,9 @@
 
 package org.radixware.kernel.explorer.editors.xscmleditor;
 
-import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QWidget;
 
-
-public abstract class AbstractXscmlEditor extends QTextEdit{
+public abstract class AbstractXscmlEditor extends TextEditorWithLineNumbers {
     
     public AbstractXscmlEditor(final QWidget parent){
         super(parent);

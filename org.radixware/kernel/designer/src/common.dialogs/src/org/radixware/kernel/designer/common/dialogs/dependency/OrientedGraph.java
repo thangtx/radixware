@@ -8,12 +8,10 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.dialogs.dependency;
 
 import java.util.*;
 import org.radixware.kernel.common.utils.graphs.GraphWalker;
-
 
 public abstract class OrientedGraph<T> {
 
@@ -60,7 +58,7 @@ public abstract class OrientedGraph<T> {
         }
 
         public boolean isRoot() {
-            return getOutNodes().isEmpty();
+            return getInNodes().isEmpty();
         }
 
         public boolean isLeaf() {
@@ -120,7 +118,7 @@ public abstract class OrientedGraph<T> {
 
                 @Override
                 protected boolean view(Node node, int level) {
-                    return !allOutNodes.contains(node);
+                    return true;
                 }
             }, this, EEdgeDirection.OUT);
 

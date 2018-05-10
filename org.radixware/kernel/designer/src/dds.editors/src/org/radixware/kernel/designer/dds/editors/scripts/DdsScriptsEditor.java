@@ -8,9 +8,9 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.dds.editors.scripts;
 
+import org.radixware.kernel.common.dialogs.db.DdsScriptUtils;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
@@ -32,7 +32,6 @@ import org.radixware.kernel.designer.common.annotations.registrators.EditorFacto
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.editors.RadixObjectEditor;
 import org.radixware.kernel.designer.common.general.editors.IEditorFactory;
-
 
 public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
         UpdateInfoList.EditingUpdateInfoChangeListener, BaseLayerInfoList.EditingBaseLayerChangeListener {
@@ -94,7 +93,6 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
 //        for (DdsUpdateInfo info : ddsScripts.getUpdatesInfo()) {
 //            fileNames[moo++] = info.getUpdateFileName();
 //        }
-
         lastScriptComboBox.setModel(new DefaultComboBoxModel(new String[]{}));
 //
 //        ddsScripts.getUpdatesInfo().addEditStateListener(new EditStateChangeListener() {
@@ -205,6 +203,7 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
         releaseNumberTextField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         lastScriptComboBox = new javax.swing.JComboBox();
+        aadcTransform = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         editButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
@@ -256,8 +255,8 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(releaseNumberTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                    .addComponent(lastScriptComboBox, 0, 265, Short.MAX_VALUE))
+                    .addComponent(releaseNumberTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                    .addComponent(lastScriptComboBox, 0, 317, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -270,7 +269,7 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(lastScriptComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(273, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jSplitPane2.setRightComponent(jPanel4);
@@ -281,15 +280,17 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        aadcTransform.setText(org.openide.util.NbBundle.getMessage(DdsScriptsEditor.class, "DdsScriptsEditor.aadcTransform.text")); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -298,12 +299,16 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bcCheckBox)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fileNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)))
+                        .addComponent(fileNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(bcCheckBox)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(aadcTransform, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, 0)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -315,8 +320,9 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
                     .addComponent(jLabel1)
                     .addComponent(fileNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(aadcTransform, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -370,7 +376,7 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
                 .addContainerGap()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
+                .addComponent(jSplitPane1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -409,7 +415,12 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void bcCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bcCheckBoxActionPerformed
-        currentUpdateInfo.setBackwardCompatible(bcCheckBox.isSelected());
+
+        if (DdsScriptUtils.showCompatibleWarning()) {
+            currentUpdateInfo.setBackwardCompatible(bcCheckBox.isSelected());
+        } else {
+            bcCheckBox.setSelected(currentUpdateInfo.isBackwardCompatible());
+        }
     }//GEN-LAST:event_bcCheckBoxActionPerformed
 
     private void lastScriptComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lastScriptComboBoxItemStateChanged
@@ -429,6 +440,7 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
             bcCheckBox.setSelected(false);
             fileNameTextField.setText("");
             baseLayerInfoList.setDdsUpdateInfo(null);
+            aadcTransform.setText("");
         } else {
             bcCheckBox.setSelected(currentUpdateInfo.isBackwardCompatible());
             fileNameTextField.setText(currentUpdateInfo.getUpdateFileName());
@@ -436,6 +448,7 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
             if (currentUpdateInfo.getBaseLayersInfo().size() > 0) {
                 baseLayerInfoList.setSelectedIndex(0);
             }
+            aadcTransform.setText(currentUpdateInfo.getDdsAadcTransform().getStateTitle());
         }
         updating = false;
     }
@@ -498,6 +511,7 @@ public class DdsScriptsEditor extends RadixObjectEditor<DdsScripts> implements
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel aadcTransform;
     private javax.swing.JCheckBox bcCheckBox;
     private javax.swing.JButton deleteButton;
     private javax.swing.JButton editButton;

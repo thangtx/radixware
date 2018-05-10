@@ -20,6 +20,7 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.utils.ValueConverter;
@@ -30,6 +31,13 @@ import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.common.types.ArrNum;
 
 public final class EditMaskNum extends org.radixware.kernel.common.client.meta.mask.EditMask {
+    
+    private final static String GROUPING_SEPARATOR_SETTING_NAME=SettingNames.SYSTEM+"/"
+        +SettingNames.FORMAT_SETTINGS+"/"
+        +SettingNames.FormatSettings.NUMBER+"/"+SettingNames.FormatSettings.Number.GROUP_SEPARATOR;
+    private final static String DECIMAL_MARK_SETTING_NAME=SettingNames.SYSTEM+"/"
+        +SettingNames.FORMAT_SETTINGS+"/"
+        +SettingNames.FormatSettings.NUMBER+"/"+SettingNames.FormatSettings.Number.DECIMAL_PART_SEPARATOR;    
 
     private BigDecimal minValue = null;
     private BigDecimal maxValue = null;
@@ -38,7 +46,8 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
     private Character customTriadDelimeter = null;
     private Character customDecimalDelimeter = null;
     private int precision = -1;
-    private NumberFormat numberFormat;
+    private NumberFormat cachedNumberFormat;    
+    private String cacheKey;
     private static final EnumSet<EValType> SUPPORTED_VALTYPES =
             EnumSet.of(EValType.NUM, EValType.ARR_NUM);
 
@@ -170,7 +179,7 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
 
     public void setTriadDelimeterType(final ETriadDelimeterType triadDelimeterType) {
         this.triadDelimeterType = triadDelimeterType;
-        numberFormat = null;
+        cachedNumberFormat = null;
         afterModify();
     }
 
@@ -182,7 +191,7 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
         checkTriadDelimeter(delimeter);
         this.customTriadDelimeter = delimeter;
         triadDelimeterType = customTriadDelimeter == null ? ETriadDelimeterType.NONE : ETriadDelimeterType.SPECIFIED;
-        numberFormat = null;
+        cachedNumberFormat = null;
         afterModify();
     }
 
@@ -193,7 +202,7 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
     public void setCustomDecimalDelimeter(final Character delimeter) {
         checkDecimalDelimeter(delimeter);
         this.customDecimalDelimeter = delimeter;
-        numberFormat = null;
+        cachedNumberFormat = null;
         afterModify();
     }
 
@@ -203,7 +212,7 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
 
     public void setPrecision(final int precision) {
         this.precision = precision;
-        numberFormat = null;
+        cachedNumberFormat = null;
         afterModify();
     }
 
@@ -245,7 +254,7 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
         } else {
             //final NumberFormat roundedNumberFormat = (NumberFormat) NumberFormat.getNumberInstance(environment.getLocale()).clone();
             //roundedNumberFormat.setGroupingUsed(false);
-            final NumberFormat roundedNumberFormat = (NumberFormat)getNumberFormat(environment.getLocale()).clone();
+            final NumberFormat roundedNumberFormat = (NumberFormat)getNumberFormat(environment).clone();
             if (getPrecision() >= 0) {
                 roundedNumberFormat.setRoundingMode(RoundingMode.HALF_EVEN);
                 roundedNumberFormat.setMaximumFractionDigits(getPrecision());
@@ -282,42 +291,99 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
             }
         }
     }
-
+    
+    public NumberFormat getNumberFormat(final IClientEnvironment environment) {
+        return getNumberFormat(environment, environment.getLocale());
+    }
+    
     public NumberFormat getNumberFormat(final Locale locale) {
-        if (numberFormat == null) {
-            numberFormat = (NumberFormat) NumberFormat.getNumberInstance(locale).clone();
-            numberFormat.setRoundingMode(RoundingMode.UNNECESSARY);
+        return getNumberFormat(null, locale);
+    }
+    
+    private NumberFormat getNumberFormat(final IClientEnvironment environment, final Locale locale){
+        if (cachedNumberFormat == null || !Objects.equals(cacheKey, calcCacheKey(environment))) {
+            cachedNumberFormat = (NumberFormat) NumberFormat.getNumberInstance(locale).clone();
+            cachedNumberFormat.setRoundingMode(RoundingMode.UNNECESSARY);
             if (getPrecision()>=0){
                 if (Math.abs(getScale())>=10){
                     final int scaledPrecision = (int)Math.log10(Math.abs(getScale()));
                     if (scaledPrecision<precision){
-                        numberFormat.setMinimumFractionDigits(precision - scaledPrecision);
+                        cachedNumberFormat.setMinimumFractionDigits(precision - scaledPrecision);
                     }
                 }else{
-                    numberFormat.setMinimumFractionDigits(getPrecision());
+                    cachedNumberFormat.setMinimumFractionDigits(getPrecision());
                 }                                
             }
-            numberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
-            if (triadDelimeterType == ETriadDelimeterType.NONE || (triadDelimeterType == ETriadDelimeterType.SPECIFIED && customTriadDelimeter == null)) {
-                numberFormat.setGroupingUsed(false);
-            }
-            if (numberFormat instanceof DecimalFormat) {
-                final DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
-                if ((triadDelimeterType == ETriadDelimeterType.SPECIFIED && customTriadDelimeter != null) || customDecimalDelimeter != null) {
-                    final DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-                    if (triadDelimeterType == ETriadDelimeterType.SPECIFIED && customTriadDelimeter != null) {
-                        symbols.setGroupingSeparator(customTriadDelimeter.charValue());
-                    }
-                    if (customDecimalDelimeter != null) {
-                        symbols.setDecimalSeparator(customDecimalDelimeter.charValue());
-                    }
-                    decimalFormat.setDecimalFormatSymbols(symbols);                    
-                }
-                decimalFormat.setParseBigDecimal(true);
+            cachedNumberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
+            if (cachedNumberFormat instanceof DecimalFormat) {
+                setupDecimalFormatSymbols((DecimalFormat) cachedNumberFormat, locale, environment);
+                cacheKey = calcCacheKey(environment);
             }
         }
-        return numberFormat;
-    }   
+        return cachedNumberFormat;           
+    }
+    
+    private void setupDecimalFormatSymbols(final DecimalFormat format, final Locale locale, final IClientEnvironment environment){
+        final Character triadDelimeter = getTriadDelimeterImpl(environment);
+        final boolean noTriadDelimeter = triadDelimeter!=null && Character.valueOf('\0').equals(triadDelimeter);
+        final Character decimalDelimeter = getDecimalDelimeterImpl(environment);        
+        if (noTriadDelimeter){
+            format.setGroupingUsed(false);
+        }
+        if ((triadDelimeter!=null && !noTriadDelimeter) || decimalDelimeter!=null){            
+            final DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
+            if (triadDelimeter!=null && !noTriadDelimeter){
+                format.setGroupingUsed(true);
+                symbols.setGroupingSeparator(triadDelimeter);                
+            }
+            if (decimalDelimeter!=null){
+                symbols.setDecimalSeparator(decimalDelimeter);
+            }
+            format.setDecimalFormatSymbols(symbols);
+        }
+        format.setParseBigDecimal(true);
+    }
+    
+    private Character getTriadDelimeterImpl(final IClientEnvironment environment){
+        if (triadDelimeterType == ETriadDelimeterType.NONE || (triadDelimeterType == ETriadDelimeterType.SPECIFIED && customTriadDelimeter == null)) {
+            return '\0';
+        }
+        if (triadDelimeterType == ETriadDelimeterType.SPECIFIED && customTriadDelimeter != null){
+            return customTriadDelimeter;
+        }
+        return environment==null ? null : readTriadDelimeterFromConfig(environment);
+    }
+    
+    private Character getDecimalDelimeterImpl(final IClientEnvironment environment){
+        if (customDecimalDelimeter == null){
+            return environment==null ? null : readDecimalDelimeterFromConfig(environment);
+        }else{
+            return customDecimalDelimeter;
+        }
+    }
+    
+    private static Character readTriadDelimeterFromConfig(final IClientEnvironment environment){
+        final String delimeter = environment.getConfigStore().readString(GROUPING_SEPARATOR_SETTING_NAME,null);
+        return delimeter==null || delimeter.isEmpty() ? null : delimeter.charAt(0);
+    }
+    
+    private static Character readDecimalDelimeterFromConfig(final IClientEnvironment environment){
+        final String delimeter = environment.getConfigStore().readString(DECIMAL_MARK_SETTING_NAME, null);
+        return delimeter==null || delimeter.isEmpty() ? null : delimeter.charAt(0);
+    }
+    
+    private String calcCacheKey(final IClientEnvironment environment){                
+        final Character triadDelimeter = getTriadDelimeterImpl(environment);
+        final Character decimalDelimeter = getDecimalDelimeterImpl(environment);
+        if (triadDelimeter==null && decimalDelimeter==null){
+            return null;
+        }
+        String key = triadDelimeter==null ? "0" : String.valueOf(triadDelimeter);
+        if (decimalDelimeter!=null){
+            key+=String.valueOf(decimalDelimeter);
+        }
+        return key;
+    }
 
     @Override
     public String toStr(final IClientEnvironment environmnet, final Object o) {
@@ -326,10 +392,10 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
             return getNoValueStr(environmnet.getMessageProvider());
         } else if (o instanceof Double) {
             final Double value = (Double) o * getScale();
-            return getNumberFormat(environmnet.getLocale()).format(value);
+            return getNumberFormat(environmnet).format(value);
         } else if (o instanceof BigDecimal) {
             final BigDecimal value = ((BigDecimal) o).multiply(BigDecimal.valueOf(getScale()));
-            return getNumberFormat(environmnet.getLocale()).format(value);
+            return getNumberFormat(environmnet).format(value);
         } else if (o instanceof ArrNum) {
             return arrToStr(environmnet, (ArrNum) o);
         } else {
@@ -338,9 +404,19 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
     }
     
     public BigDecimal fromStr(final IClientEnvironment environment, final String inputString) throws NumberFormatException{
-        return ValueConverter.parseBigDecimal(inputString, getNumberFormat(environment.getLocale()));
+        return ValueConverter.parseBigDecimal(inputString, getNumberFormat(environment));
     }
     
+    public char getDecimalDelimeter(final IClientEnvironment environment){
+        final NumberFormat numFormat = getNumberFormat(environment);
+        if (numFormat instanceof DecimalFormat){
+            return ((DecimalFormat)numFormat).getDecimalFormatSymbols().getDecimalSeparator();
+        }else{
+            return '.';
+        }
+    }
+    
+    @Deprecated //use getDecimalDelimeter(final IClientEnvironment environment)
     public char getDecimalDelimeter(final Locale locale){
         final NumberFormat numFormat = getNumberFormat(locale);
         if (numFormat instanceof DecimalFormat){
@@ -350,6 +426,7 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
         }
     }
     
+    @Deprecated //use getTriadDelimeter(final IClientEnvironment environment)
     public Character getTriadDelimeter(final Locale locale){
         final NumberFormat numFormat = getNumberFormat(locale);
         if (numFormat.isGroupingUsed() && numFormat instanceof DecimalFormat){
@@ -358,13 +435,32 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
             return null;
         }
     }
+        
+    public Character getTriadDelimeter(final IClientEnvironment environment){
+        final NumberFormat numFormat = getNumberFormat(environment);
+        if (numFormat.isGroupingUsed() && numFormat instanceof DecimalFormat){
+            return ((DecimalFormat)numFormat).getDecimalFormatSymbols().getGroupingSeparator();
+        }else{
+            return null;
+        }
+    } 
     
+    @Deprecated //use getSymbols(final IClientEnvironment environment)
     private DecimalFormatSymbols getSymbols(final Locale locale){
         final NumberFormat numFormat = getNumberFormat(locale);
         if (numFormat instanceof DecimalFormat){
             return ((DecimalFormat)numFormat).getDecimalFormatSymbols();
         }else{
             return DecimalFormatSymbols.getInstance(locale);
+        }
+    }
+    
+    private DecimalFormatSymbols getSymbols(final IClientEnvironment environment){
+        final NumberFormat numFormat = getNumberFormat(environment);
+        if (numFormat instanceof DecimalFormat){
+            return ((DecimalFormat)numFormat).getDecimalFormatSymbols();
+        }else{
+            return DecimalFormatSymbols.getInstance(environment.getLocale());
         }
     }    
     
@@ -375,11 +471,11 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
         }
         final StringBuffer buffer = new StringBuffer();
         final Locale locale = environment.getLocale();
-        final char decimalDelimeter = getDecimalDelimeter(locale);
-        final char minusCharacter = getSymbols(locale).getMinusSign();
+        final char decimalDelimeter = getDecimalDelimeter(environment);
+        final char minusCharacter = getSymbols(environment).getMinusSign();
         final char plusCharacter = '+';        
-        final char zeroDigitChar = getSymbols(locale).getZeroDigit();
-        final Character triadDelimeter = getTriadDelimeter(locale);                
+        final char zeroDigitChar = getSymbols(environment).getZeroDigit();
+        final Character triadDelimeter = getTriadDelimeter(environment);                
         final int integerPartLength;
         int leadingZeroDigits = 0;
         int trailingZeroDigits = 0;        
@@ -433,7 +529,7 @@ public final class EditMaskNum extends org.radixware.kernel.common.client.meta.m
         }
         {//format value
             final int valueScale = value.scale();
-            final NumberFormat format = (NumberFormat)numberFormat.clone();
+            final NumberFormat format = (NumberFormat)cachedNumberFormat.clone();
             if (leadingZeroDigits>0){                                        
                 format.setMinimumIntegerDigits(integerPartLength);
             }

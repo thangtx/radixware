@@ -11,13 +11,14 @@
 
 package org.radixware.kernel.designer.common.dialogs.chooseobject;
 
+import org.radixware.kernel.common.utils.namefilter.NameMatcher;
 import java.util.*;
-import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
 import org.netbeans.spi.jumpto.type.SearchType;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.utils.RadixObjectsUtils;
+import org.radixware.kernel.common.utils.namefilter.NameFilterUtils;
 
 /**
  * Choose Radix object list model.
@@ -117,16 +118,16 @@ class DefinitionsPanelModel implements ListModel {
 
         if (exact) {
             searchKind = (caseSensitive ? SearchType.EXACT_NAME : SearchType.CASE_INSENSITIVE_EXACT_NAME);
-        } else if (isAllUpper(text) && text.length() > 1) {
+        } else if (NameFilterUtils.isAllUpper(text) && text.length() > 1) {
             searchKind = SearchType.CAMEL_CASE;
-        } else if (containsWildCard(text) != -1) {
-            text = transformWildCardsToJavaStyle(text);
+        } else if (NameFilterUtils.containsWildCard(text) != -1) {
+            text = NameFilterUtils.transformWildCardsToJavaStyle(text);
             searchKind = caseSensitive ? SearchType.REGEXP : SearchType.CASE_INSENSITIVE_REGEXP;
         } else {
             searchKind = caseSensitive ? SearchType.PREFIX : SearchType.CASE_INSENSITIVE_PREFIX;
         }
 
-        final NameMatcher matcher = NameMatcherFactory.createNameMatcher(text, searchKind, displayMode);
+        final NameMatcher matcher = DefinitionsNameMatcherFactory.createNameMatcher(text, SearchTypeConverter.convertNb2RdxSearchType(searchKind), displayMode);
         if (matcher == null) {
             return Collections.emptyList();
         }
@@ -157,43 +158,7 @@ class DefinitionsPanelModel implements ListModel {
 
         return true;
     }
-
-    public static int containsWildCard(String text) {
-        for (int i = 0; i < text.length(); i++) {
-            if (text.charAt(i) == '?' || text.charAt(i) == '*') { // NOI18N
-                return i;
-            }
-        }
-        return -1;
-    }
-    private static Pattern camelCasePattern = Pattern.compile("(?:\\p{javaUpperCase}(?:\\p{javaLowerCase}|\\p{Digit}|\\.|\\$)*){2,}"); // NOI18N
-
-    public static boolean isCamelCase(String text) {
-        return camelCasePattern.matcher(text).matches();
-    }
-
-    private static String transformWildCardsToJavaStyle(String text) {
-        final StringBuilder regexp = new StringBuilder(""); // NOI18N
-        int lastWildCardPosition = 0;
-        for (int i = 0; i < text.length(); i++) {
-            if (text.charAt(i) == '?') { // NOI18N
-                regexp.append(text.substring(lastWildCardPosition, i));
-                regexp.append('.'); // NOI18N
-                lastWildCardPosition = i + 1;
-            } else if (text.charAt(i) == '.') { // NOI18N
-                regexp.append(text.substring(lastWildCardPosition, i));
-                regexp.append("\\."); // NOI18N
-                lastWildCardPosition = i + 1;
-            } else if (text.charAt(i) == '*') { // NOI18N
-                regexp.append(text.substring(lastWildCardPosition, i));
-                regexp.append(".*"); // NOI18N
-                lastWildCardPosition = i + 1;
-            }
-        }
-        regexp.append(text.substring(lastWildCardPosition, text.length()));
-        return regexp.toString();
-    }
-
+    
     @Override
     public RadixObject getElementAt(int index) {
         return displayedObjects.get(index);

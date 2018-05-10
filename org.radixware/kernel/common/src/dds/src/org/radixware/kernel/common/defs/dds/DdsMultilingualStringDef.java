@@ -22,8 +22,11 @@ import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ELocalizedStringKind;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.adsdef.LocalizedString;
 
@@ -212,4 +215,52 @@ public class DdsMultilingualStringDef extends Definition implements IMultilingua
     public void updateLanguages(Set<EIsoLanguage> languages) {
         storage.updateLanguages(languages);
     }
+    
+     @Override
+    public boolean isAgreed(EIsoLanguage language) {
+        return storage.isAgreed(language);
+    }
+
+    @Override
+    public void setAgreed(EIsoLanguage language, boolean isAgreed) {
+        storage.setAgreed(language, isAgreed);
+    }
+
+    @Override
+    public String getAuthorChangeAgreedString(EIsoLanguage language){
+        return storage.getAuthorChangeAgreedString(language);
+    }
+    
+    @Override
+    public Timestamp getTimeChangeAgreedString(EIsoLanguage language){
+        return storage.getTimeChangeAgreedString(language);
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return ERuntimeEnvironmentType.SERVER;
+    }
+    
+    @Override
+    public long getVersion(EIsoLanguage language){
+        Layer l = getLayer();
+        if (l != null) {
+            List<EIsoLanguage> languages = l.getLanguages();
+            if (languages != null && !languages.contains(language)){
+                return storage.getVersion(language);
+            }
+        }
+        return storage.getMaxLayerVersion();
+    }
+    
+    @Override
+    public long getMaxLayerVersion() {
+        return storage.getMaxLayerVersion();
+    }
+
 }

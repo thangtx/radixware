@@ -8,19 +8,25 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.trace;
 
 import java.util.Objects;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 
 public final class TraceContext {
 
     public final String type;
     public final String id;
+    private final String enterStack;
 
-    TraceContext(final String type_, final String id_) {
-        type = type_;
-        id = id_;
+    public TraceContext(final String type, final String id, final String enterStack) {
+        this.type = type;
+        this.id = id;
+        this.enterStack = enterStack;
+    }
+
+    public TraceContext(final String type_, final String id_) {
+        this(type_, id_, null);
     }
 
     @Override
@@ -44,6 +50,10 @@ public final class TraceContext {
             return false;
         }
         return true;
+    }
+
+    public String getEnterStack() {
+        return enterStack;
     }
 
     @Override

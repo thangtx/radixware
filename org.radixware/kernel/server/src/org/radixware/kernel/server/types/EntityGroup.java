@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.types;
 
 import java.sql.PreparedStatement;
@@ -31,6 +30,8 @@ import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.enums.EDeleteMode;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.EPaginationMethod;
+import org.radixware.kernel.common.enums.ESelectionMode;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.exceptions.AppException;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
@@ -61,10 +62,10 @@ import org.radixware.kernel.server.meta.presentations.RadParentTitlePropertyPres
 import org.radixware.kernel.server.meta.presentations.RadSelectorPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadSortingDef;
 
-
 public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
-    
-    public static interface EntityFilter<T extends Entity>{
+
+    public static interface EntityFilter<T extends Entity> {
+
         boolean omitEntity(T entity);
     }
 
@@ -80,11 +81,12 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
             return selectionClassDef;
         }
     }
-    
-    public static final class EmptyContext extends Context {        
-        public EmptyContext(final RadClassDef selClassDef){
+
+    public static final class EmptyContext extends Context {
+
+        public EmptyContext(final RadClassDef selClassDef) {
             super(selClassDef);
-        }        
+        }
     }
 
     public static final class TreeContext extends Context {
@@ -160,29 +162,37 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
             return childInst;
         }
     }
-    
-    private final Arte arte;    
+
+    private final Arte arte;
     private final boolean isContextWrapper;
     private EntityFilter<T> filter;
     private EntitySelection selection;
+    private Sqml additionalCond = null;
+    private Sqml additionalFrom = null;
+    private Map<Id, Object> fltParamValsById = null;
+    private Sqml hint = null;
+    private PkSubQuery pkSelectSql = null;
+    private EPaginationMethod paginationMethod = EPaginationMethod.ABSOLUTE;
+    private Pid previousEntityPid;
+    private Id previousEntityClassId;
 
     public final Arte getArte() {
         return arte;
     }
 
     public EntityGroup() {
-        this(null,false);
+        this(null, false);
     }
 
     public EntityGroup(final Arte arte) {
-        this(arte,false);        
+        this(arte, false);
     }
-    
-    public EntityGroup(final boolean isContextWrapper){
-        this(null,isContextWrapper);
+
+    public EntityGroup(final boolean isContextWrapper) {
+        this(null, isContextWrapper);
     }
-    
-    public EntityGroup(final Arte arte, final boolean isContextWrapper){
+
+    public EntityGroup(final Arte arte, final boolean isContextWrapper) {
         super();
         this.arte = arte != null ? arte : ((AdsClassLoader) getClass().getClassLoader()).getArte();
         this.isContextWrapper = isContextWrapper;
@@ -192,7 +202,7 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
     public RadClassDef getSelectionClassDef() {
         return getArte().getDefManager().getClassDef(getSelectionClassId());
     }
-    
+
     private DdsTableDef ddsMeta = null;
 
     public DdsTableDef getDdsMeta() {
@@ -249,7 +259,7 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
         checkInited();
         return context;
     }
-    
+
     private RadSelectorPresentationDef presentation = null;
 
     public final RadSelectorPresentationDef getPresentation() {
@@ -266,9 +276,11 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
         checkInited();
         return additionalCond;
     }
-    
-    private Sqml additionalCond = null;
-    private Map<Id, Object> fltParamValsById = null;
+
+    public final Sqml getAdditionalFrom() {
+        checkInited();
+        return additionalFrom;
+    }
 
     public final Map<Id, Object> getFltParamValsById() {
         checkInited();
@@ -280,8 +292,18 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
         checkInited();
         return orderBy;
     }
-    
-    private Sqml hint = null;
+
+    public EPaginationMethod getPaginationMethod() {
+        return paginationMethod;
+    }
+
+    public Pid getPreviousEntityPid() {
+        return previousEntityPid;
+    }
+
+    public Id getPreviousEntityClassId() {
+        return previousEntityClassId;
+    }
 
     public final Sqml getHint() {
         checkInited();
@@ -293,21 +315,21 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
         checkIfContextWrapper();
         return new GroupIterator<>(this);
     }
-    
-    public final void setEntityFilter(EntityFilter<T> filter){
+
+    public final void setEntityFilter(EntityFilter<T> filter) {
         this.filter = filter;
     }
-    
-    public EntityFilter<T> getEntityFilter(){
+
+    public EntityFilter<T> getEntityFilter() {
         return filter;
     }
-    
-    public final void setEntitySelection(final EntitySelection selection){
+
+    public final void setEntitySelection(final EntitySelection selection) {
         this.selection = selection;
     }
-    
-    public final EntitySelection getEntitySelection(){
-        return selection==null ? EntitySelection.EMPTY : selection;
+
+    public final EntitySelection getEntitySelection() {
+        return selection == null ? EntitySelection.EMPTY : selection;
     }
 
     /**
@@ -327,10 +349,8 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
         checkIfContextWrapper();
         return saveSelectionOrder ? getPkQueryWithSelectionOrder() : getPkQuery();
     }
-    
-    private PkSubQuery pkSelectSql = null;
 
-    private PkSubQuery getPkQuery() {        
+    private PkSubQuery getPkQuery() {
         if (pkSelectSql == null) {
             pkSelectSql = getArte().getDefManager().getDbQueryBuilder().buildPkSelectQuery(this, false);
         }
@@ -338,15 +358,25 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
     }
     private PkSubQuery pkSelectSqlWithSelectionOrder = null;
 
-    private PkSubQuery getPkQueryWithSelectionOrder() {        
+    private PkSubQuery getPkQueryWithSelectionOrder() {
         if (pkSelectSqlWithSelectionOrder == null) {
             pkSelectSqlWithSelectionOrder = getArte().getDefManager().getDbQueryBuilder().buildPkSelectQuery(this, true);
         }
         return pkSelectSqlWithSelectionOrder;
     }
 
-    public QueryBuilderDelegate getQueryBuilderDelegate() {        
+    public QueryBuilderDelegate getQueryBuilderDelegate() {
         return null;
+    }
+
+    public void set(
+            final EntityGroup.Context context,
+            final RadSelectorPresentationDef presentation,
+            final Sqml additionalCondSqml,
+            final Map<Id, Object> fltParamValsById,
+            final List<RadSortingDef.Item> orderBy,
+            final Sqml hint) {
+        set(context, presentation, additionalCondSqml, null, fltParamValsById, orderBy, hint);
     }
 
     /**
@@ -361,31 +391,53 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
      * @param orderBy
      * @param hint
      */
-    public void set(
-            final EntityGroup.Context context,
+    public void set(final EntityGroup.Context context,
             final RadSelectorPresentationDef presentation,
             final Sqml additionalCondSqml,
+            final Sqml additionalFromSqml,
             final Map<Id, Object> fltParamValsById,
             final List<RadSortingDef.Item> orderBy,
             final Sqml hint) {
+        EntityGroup.Parameters params = new EntityGroup.Parameters(
+                context,
+                presentation,
+                additionalCondSqml,
+                additionalFromSqml,
+                fltParamValsById,
+                orderBy,
+                hint,
+                EPaginationMethod.ABSOLUTE,
+                null,
+                null);
+        set(params);
+    }
+
+    public void set(EntityGroup.Parameters params) {
         checkIfContextWrapper();
-        this.context = context;
-        this.presentation = presentation;
-        this.additionalCond = additionalCondSqml;
+        this.context = params.getContext();
+        this.presentation = params.getPresentation();
+        this.additionalCond = params.getAdditionalCondSqml();
         if (this.additionalCond != null) {
             this.additionalCond.switchOnWriteProtection();
         }
-        this.fltParamValsById = fltParamValsById;
-        if (orderBy != null) {
-            this.orderBy = Collections.unmodifiableList(orderBy);
+        this.additionalFrom = params.getAdditionalFromSqml();
+        if (this.additionalFrom != null) {
+            this.additionalFrom.switchOnWriteProtection();
+        }
+        this.fltParamValsById = params.getFltParamValsById();
+        if (params.getOrderBy() != null) {
+            this.orderBy = Collections.unmodifiableList(params.getOrderBy());
         } else {
             this.orderBy = Collections.emptyList();
         }
-        this.hint = hint;
+        this.hint = params.getHint();
         if (this.hint != null) {
             this.hint.switchOnWriteProtection();
         }
-        inited = true;
+        this.paginationMethod = params.getPaginationMethod();
+        this.previousEntityPid = params.getPreviousEntityPid();
+        this.previousEntityClassId = params.getPreviousEntityClassId();
+        this.inited = true;
     }
 
     public Id getSelectionClassId() {
@@ -406,15 +458,15 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
     protected void doCheckCascadeBeforeDelete(final boolean bDeleteCascade) throws DeleteCascadeRestrictedException, DeleteCascadeConfirmationRequiredException {
         defaultCheckCascadeBeforeDelete(bDeleteCascade);
     }
-    
-    protected void doDelete() throws FilterParamNotDefinedException{
+
+    protected void doDelete() throws FilterParamNotDefinedException {
         final DeleteGroupQuery q = getArte().getDefManager().getDbQueryBuilder().buildDeleteGroupQuery(this);
         try {
             final Pid parentPid = getParentPidIfInTree();
             q.delete(this, parentPid);
         } finally {
             q.free();
-        }        
+        }
     }
 
     public final void delete(final boolean bDeleteCascade) throws FilterParamNotDefinedException, DeleteCascadeRestrictedException, DeleteCascadeConfirmationRequiredException {
@@ -430,21 +482,21 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
     private Pid getParentPidIfInTree() {
         return (getContext() instanceof TreeContext) ? ((TreeContext) getContext()).getParentPid() : null;
     }
-    
+
     public static EntityGroup getDefaultGroupEventHandler(final Arte arte, final DdsTableDef table, final boolean isContextWrapper) {
         return new DefaultGroupEventHandler(arte, table, isContextWrapper);
-    }    
+    }
 
     public static EntityGroup getDefaultGroupEventHandler(final Arte arte, final DdsTableDef table) {
         return getDefaultGroupEventHandler(arte, table, false);
     }
-    
+
     public static EntityGroup getDefaultGroupEventHandler(final Arte arte, final Id entityId, final boolean isContextWrapper) {
         return getDefaultGroupEventHandler(arte, arte.getDefManager().getTableDef(entityId), isContextWrapper);
     }
-    
+
     public static EntityGroup getDefaultGroupEventHandler(final Arte arte, final Id entityId) {
-        return getDefaultGroupEventHandler(arte, arte.getDefManager().getTableDef(entityId),false);
+        return getDefaultGroupEventHandler(arte, arte.getDefManager().getTableDef(entityId), false);
     }
 
     public final void update(final EntityPropVals propVals) throws FilterParamNotDefinedException {
@@ -492,7 +544,7 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
             this.title = title;
             itemId = null;
         }
-        
+
         public ClassCatalogItem(final int level, final Id classId, final String title, final Id itemId) {
             this.classId = classId;
             this.level = level;
@@ -511,10 +563,10 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
         public String getTitle() {
             return title;
         }
-        
-        public Id getItemId(){
+
+        public Id getItemId() {
             return itemId;
-        }        
+        }
 
         public void setClassId(final Id classId) {
             this.classId = classId;
@@ -526,7 +578,7 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
 
         public void setTitle(final String title) {
             this.title = title;
-        }        
+        }
     }
 
     /**
@@ -537,7 +589,7 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
      */
     public void onListInstantiableClasses(final Id classCatalogId, final List<ClassCatalogItem> list) {
     }
-    
+
     private boolean inited = false;
 
     private void checkInited() {
@@ -545,9 +597,13 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
             throw new IllegalUsageError("EntityGroup must be inited before first usage");
         }
     }
-    
-    private void checkIfContextWrapper(){
-        if (isContextWrapper){
+
+    public final boolean wasInited() {
+        return inited;
+    }
+
+    private void checkIfContextWrapper() {
+        if (isContextWrapper) {
             throw new IllegalUsageError("This operation cannot be used in context entity group");
         }
     }
@@ -555,14 +611,14 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
     private static final class DefaultGroupEventHandler extends EntityGroup {
 
         DefaultGroupEventHandler(final Arte arte, final DdsTableDef table) {
-            this(arte,table,false);
+            this(arte, table, false);
         }
-        
+
         DefaultGroupEventHandler(final Arte arte, final DdsTableDef table, final boolean isContextWrapper) {
-            super(arte,isContextWrapper);
+            super(arte, isContextWrapper);
             this.table = table;
         }
-        
+
         private final DdsTableDef table;
 
         @Override
@@ -584,6 +640,7 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
         private final EntityFilter<E> filter;
         private final EntitySelection selection;//not null
         private boolean endOfGrp = false;
+        private int numberOfRestSelectedObjects;
         private E curObj = null;
         private E nextObj = null;
 
@@ -591,6 +648,11 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
             this.group = group;
             filter = group.getEntityFilter();
             selection = group.getEntitySelection();
+            if (!selection.isEmpty() && selection.getMode() == ESelectionMode.INCLUSION) {
+                numberOfRestSelectedObjects = selection.getSelection().size();
+            } else {
+                numberOfRestSelectedObjects = -1;
+            }
             final PkSubQuery pkQry = group.getPrimaryKeyQuery(true);
             try {
                 group.getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
@@ -623,8 +685,8 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
             }
             try {
                 E objectCandidate;
-                do{
-                    if (!rs.next()) {
+                do {
+                    if (numberOfRestSelectedObjects == 0 || !rs.next()) {
                         endOfGrp = true;
                         nextObj = null;
                         try {
@@ -650,8 +712,11 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
                         i++;
                     }
                     objectCandidate = (E) group.getArte().getEntityObject(new Pid(group.getArte(), group.getDdsMeta(), key.asMap()), key, false);
-                }while( ( filter!=null && filter.omitEntity(objectCandidate) ) ||  (!selection.isEmpty() && !selection.isEntitySelected(objectCandidate)) );
+                } while ((filter != null && filter.omitEntity(objectCandidate)) || (!selection.isEmpty() && !selection.isEntitySelected(objectCandidate)));
                 nextObj = objectCandidate;
+                if (selection.getMode() == ESelectionMode.INCLUSION) {
+                    numberOfRestSelectedObjects--;
+                }
                 return true;
             } catch (SQLException e) {
                 throw new DatabaseError("Can't load next entity of group: " + String.valueOf(e.getMessage()), e);
@@ -686,8 +751,8 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
                     //TODO use ML strings
 
                     getArte().getClientLanguage() != EIsoLanguage.RUSSIAN ? (subNullEntitiesList.length() != 0 ? "Do you want to clear child references to these objects: " + subNullEntitiesList + "?\n" : "")
-                    + (subDelEntitiesList.length() != 0 ? "Do you  want to delete subobject: " + subDelEntitiesList + "?" : "") : (subNullEntitiesList.length() != 0 ? "Обнулить ссылки на эти объекты в дочерних подобъектах: " + subNullEntitiesList + "?\n" : "")
-                    + (subDelEntitiesList.length() != 0 ? "Удалить подобъекты: " + subDelEntitiesList + "?" : ""));
+                            + (subDelEntitiesList.length() != 0 ? "Do you  want to delete subobject: " + subDelEntitiesList + "?" : "") : (subNullEntitiesList.length() != 0 ? "Обнулить ссылки на эти объекты в дочерних подобъектах: " + subNullEntitiesList + "?\n" : "")
+                            + (subDelEntitiesList.length() != 0 ? "Удалить подобъекты: " + subDelEntitiesList + "?" : ""));
         }
     }
 
@@ -764,4 +829,77 @@ public abstract class EntityGroup<T extends Entity> implements Iterable<T> {
             throw new DefinitionNotFoundError(id);
         }
     }
+
+    public Restrictions getAdditionalRestrictions(final RadSelectorPresentationDef presentation, final List<Id> applicableRoles) {
+        return Restrictions.ZERO;
+    }
+
+    public static class Parameters {
+
+        private final EntityGroup.Context context;
+        private final RadSelectorPresentationDef presentation;
+        private final Sqml additionalCondSqml;
+        private final Sqml additionalFromSqml;
+        private final Map<Id, Object> fltParamValsById;
+        private final List<RadSortingDef.Item> orderBy;
+        private final Sqml hint;
+        private final EPaginationMethod paginationMethod;
+        private final Pid previousEntityPid;
+        private final Id previousEntityClassId;
+
+        public Parameters(Context context, RadSelectorPresentationDef presentation, Sqml additionalCondSqml, Sqml additionalFromSqml, Map<Id, Object> fltParamValsById, List<RadSortingDef.Item> orderBy, Sqml hint, EPaginationMethod paginationMethod, Pid previousEntity, Id previousEntityClassId) {
+            this.context = context;
+            this.presentation = presentation;
+            this.additionalCondSqml = additionalCondSqml;
+            this.additionalFromSqml = additionalFromSqml;
+            this.fltParamValsById = fltParamValsById;
+            this.orderBy = orderBy;
+            this.hint = hint;
+            this.paginationMethod = paginationMethod;
+            this.previousEntityPid = previousEntity;
+            this.previousEntityClassId = previousEntityClassId;
+        }
+
+        public Context getContext() {
+            return context;
+        }
+
+        public RadSelectorPresentationDef getPresentation() {
+            return presentation;
+        }
+
+        public Sqml getAdditionalCondSqml() {
+            return additionalCondSqml;
+        }
+
+        public Sqml getAdditionalFromSqml() {
+            return additionalFromSqml;
+        }
+
+        public Map<Id, Object> getFltParamValsById() {
+            return fltParamValsById;
+        }
+
+        public List<RadSortingDef.Item> getOrderBy() {
+            return orderBy;
+        }
+
+        public Sqml getHint() {
+            return hint;
+        }
+
+        public EPaginationMethod getPaginationMethod() {
+            return paginationMethod;
+        }
+
+        public Pid getPreviousEntityPid() {
+            return previousEntityPid;
+        }
+
+        public Id getPreviousEntityClassId() {
+            return previousEntityClassId;
+        }
+
+    }
+
 }

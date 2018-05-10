@@ -17,10 +17,12 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.core.Qt.Orientation;
+import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QFrame;
 import com.trolltech.qt.gui.QFrame.Shape;
 import com.trolltech.qt.gui.QHBoxLayout;
 import com.trolltech.qt.gui.QItemDelegate;
+import com.trolltech.qt.gui.QLayout;
 import com.trolltech.qt.gui.QListWidgetItem;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QShowEvent;
@@ -31,12 +33,16 @@ import com.trolltech.qt.gui.QTreeView;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import java.util.*;
+import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.SettingNames;
+import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitionsFilter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameters;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
+import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
@@ -51,11 +57,33 @@ import org.radixware.kernel.explorer.views.Splitter;
 import org.radixware.kernel.explorer.widgets.QExtTabWidget;
 
 
-public class SqmlEditor_UI {
+final class SqmlEditor_UI {
+    
+    private final static class UserPropsFilter implements ISqmlDefinitionsFilter{
+        
+        public static UserPropsFilter INSTANCE = new UserPropsFilter();
+        
+        private UserPropsFilter(){            
+        }
+
+        @Override
+        public boolean isAccepted(final ISqmlDefinition definition, final ISqmlDefinition ownerDefinition) {
+            if (definition instanceof ISqmlColumnDef){
+                final ISqmlColumnDef column = (ISqmlColumnDef)definition;
+                if (column.getType()==EValType.OBJECT
+                    || (column.getId().getPrefix()==EDefinitionIdPrefix.ADS_USER_PROP && column.getType()==EValType.PARENT_REF)){
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+    }
 
     private final QVBoxLayout editorLayout = new QVBoxLayout();
     private Splitter splitter;
     private QPushButton btn_AddTag;
+    private QPushButton btn_AddParamCount;
     private QPushButton btn_AddExp;
     private final SqmlEditor editor;
     private QFrame rightPanel;
@@ -68,8 +96,10 @@ public class SqmlEditor_UI {
     private ISqmlParameters params;
     private QExtTabWidget tabTree;
     private final Map<String, Id> tablesAliases = new HashMap<>();
+    private final Set<Id> additionalTables = new HashSet<>();
+    private boolean isTranslateSqmlEnabled = true;
     private QModelIndex curIndex = null;
-    private final static String SPLITTER_KEY_NAME = "splitterSqmlEditor";    
+    private final static String SPLITTER_KEY_NAME = "splitterSqmlEditor";        
     
     public SqmlEditor_UI(final SqmlEditor editor, final ISqmlParameters param) {
         this.editor = editor;
@@ -91,6 +121,9 @@ public class SqmlEditor_UI {
         if (paramToolBar != null) {
             paramToolBar.setParameters(parameters);
             paramToolBar.refresh();
+        }
+        if (toolBar!=null){
+            toolBar.updateInsertConditionTagBtn();
         }
     }
 
@@ -182,7 +215,7 @@ public class SqmlEditor_UI {
         leftLayout.setMargin(0);
         leftLayout.setWidgetSpacing(0);
 
-        toolBar = new ToolBar(editor);
+        toolBar = new ToolBar(editor);        
         leftLayout.addWidget(toolBar.getToolBar());
         leftLayout.addWidget(editText);
         w.setLayout(leftLayout);
@@ -197,26 +230,27 @@ public class SqmlEditor_UI {
         panel.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred);
         panel.setFrameShape(Shape.NoFrame);
         final QVBoxLayout layout = new QVBoxLayout();
-
-        btn_AddTag = new QPushButton(panel);
-        btn_AddTag.setObjectName("btn_AddTag");
-        btn_AddTag.setIcon(ExplorerIcon.getQIcon(SqmlEditor.SqmlEditorIcons.IMG_ADD_TAG));
-        btn_AddTag.setToolTip(editor.getEnvironment().getMessageProvider().translate("SqmlEditor", "Add Tag"));
-        btn_AddTag.clicked.connect(this, "btn_AddTag_clicked()");
-        btn_AddTag.setFixedSize(30, 30);
-        btn_AddTag.setEnabled(false);
-
-        btn_AddExp = new QPushButton(panel);
-        btn_AddExp.setObjectName("btn_AddExp");
-        btn_AddExp.setIcon(ExplorerIcon.getQIcon(SqmlEditor.SqmlEditorIcons.IMG_ADD_CONDITION));
-        btn_AddExp.setToolTip(editor.getEnvironment().getMessageProvider().translate("SqmlEditor", "Add Condition"));
-        btn_AddExp.clicked.connect(this, "btn_AddExp_clicked()");
-        btn_AddExp.setFixedSize(30, 30);
-        btn_AddExp.setEnabled(false);
-
-        layout.addWidget(btn_AddTag);
-        layout.addWidget(btn_AddExp);
-
+        
+        final MessageProvider mp = editor.getEnvironment().getMessageProvider();
+        btn_AddTag = createButton(SqmlEditor.SqmlEditorIcons.IMG_ADD_TAG, 
+                                  mp.translate("SqmlEditor", "Add Tag"),
+                                  "btn_AddTag_clicked()",
+                                  "btn_AddTag",
+                                  panel,
+                                  layout);
+        btn_AddParamCount = createButton(SqmlEditor.SqmlEditorIcons.IMG_ADD_PARAM_VAL_CAOUNT, 
+                                         mp.translate("SqmlEditor", "Add Count of Values in Parameter"),
+                                        "btn_AddParamValCount_clicked()",
+                                        "btn_AddParamValCount",
+                                        panel,
+                                        layout);
+        btn_AddExp = createButton(SqmlEditor.SqmlEditorIcons.IMG_ADD_CONDITION, 
+                          mp.translate("SqmlEditor", "Add Condition"),
+                          "btn_AddExp_clicked()",
+                          "btn_AddExp",
+                          panel,
+                          layout);        
+        
         final Alignment al = new Alignment();
         al.set(AlignmentFlag.AlignCenter);
         layout.setAlignment(al);
@@ -225,6 +259,23 @@ public class SqmlEditor_UI {
         createTree(panel);
 
         return panel;
+    }
+    
+    private QPushButton createButton(final ClientIcon icon,
+                                     final String toolTip, 
+                                     final String handler,
+                                     final String objectName,
+                                     final QWidget owner,
+                                     final QLayout layout){
+        final QPushButton button = new QPushButton(owner);
+        button.setObjectName(objectName);
+        button.setIcon(ExplorerIcon.getQIcon(icon));
+        button.setToolTip(toolTip);
+        button.clicked.connect(this, handler);
+        button.setFixedSize(30, 30);
+        button.setEnabled(false);        
+        layout.addWidget(button);
+        return button;
     }
 
     public void updatePropTree() {
@@ -237,7 +288,16 @@ public class SqmlEditor_UI {
     public void contextClassChanged(final ISqmlTableDef contextClass) {
         boolean enable=contextClass!=null;
         toolBar.setBtnThisTableRefEnable(enable);
-        toolBar.setBtnTranslateSqmlEnable(enable);
+        toolBar.setBtnTranslateSqmlEnable(isTranslateSqmlEnabled);
+    }
+    
+    public void setTranslateButtonEnabled(final boolean isEnabled){
+        isTranslateSqmlEnabled = isEnabled;
+        toolBar.setBtnTranslateSqmlEnable(isTranslateSqmlEnabled());
+    }
+    
+    public boolean isTranslateSqmlEnabled(){
+        return isTranslateSqmlEnabled;
     }
 
     private boolean fillPropTree(final QTreeView tree, final ISqmlTableDef contextClass) {
@@ -253,10 +313,11 @@ public class SqmlEditor_UI {
         final SqmlTreeModel sqmlModel = new SqmlTreeModel(editor.getEnvironment(), tables);
         sqmlModel.hideDefinitions(SqmlTreeModel.ItemType.INDEX);
         sqmlModel.hideDefinitions(SqmlTreeModel.ItemType.MODULE_INFO);
+        sqmlModel.hideDefinitions(SqmlTreeModel.ItemType.SELECTOR);
         sqmlModel.setMarkDeprecatedItems(true);
         sqmlModel.setDisplayMode(editText.getTagConverter().getShowMode());
         final QModelIndex rootIndex = sqmlModel.index(0, 0, null);
-        proxyModel = new SqmlTreeModelProxy(sqmlModel, null);
+        proxyModel = new SqmlTreeModelProxy(sqmlModel, UserPropsFilter.INSTANCE);
         proxyModel.setFilterKeyColumn(0);
         proxyModel.sort(0, Qt.SortOrder.AscendingOrder);
         tree.setModel(proxyModel);
@@ -291,6 +352,7 @@ public class SqmlEditor_UI {
         }
         if (paramList.count() > 0) {
             paramList.setCurrentRow(0);
+            btn_AddParamCount.setEnabled(false);
         }
     }
 
@@ -321,7 +383,7 @@ public class SqmlEditor_UI {
         return tree;
     }    
 
-    private ISqmlDefinition setCurItemValue(final QModelIndex modelIndex) {
+    private ISqmlDefinition getCurItemValue(final QModelIndex modelIndex) {
         if (modelIndex == null) {
             return null;
         }
@@ -366,19 +428,20 @@ public class SqmlEditor_UI {
     @SuppressWarnings("unused")
     private void onTreeItemClick(final QModelIndex modelIndex) {
         curIndex = modelIndex;
-        final ISqmlDefinition curItemValue = setCurItemValue(modelIndex);
+        final ISqmlDefinition curItemValue = getCurItemValue(modelIndex);
         btn_AddTag.setEnabled(curItemValue != null && btn_AddTag_isEnabled(curItemValue));
         btn_AddExp.setEnabled(curItemValue != null && btn_AddExp_isEnabled(curItemValue));
+        btn_AddParamCount.setEnabled(false);
     }
 
     @SuppressWarnings("unused")
     private void onParameterItemClick(final QListWidgetItem curItem, final QListWidgetItem item2) {
         btn_AddTag.setEnabled(curItem != null);
+        btn_AddParamCount.setEnabled(curItem != null);
         btn_AddExp.setEnabled(false);
         if (paramToolBar != null) {
             paramToolBar.refresh();
         }
-
     }
 
     @SuppressWarnings("unused")
@@ -447,10 +510,18 @@ public class SqmlEditor_UI {
             addSqmlTag();
         }
     }
+    
+    @SuppressWarnings("unused")
+    private void btn_AddParamValCount_clicked(){
+        final ParameterItem curParameter = (ParameterItem) paramList.currentItem();
+        if (curParameter!=null && curParameter.getParameter()!=null){
+            editor.getSqmlTagInsertion().insertParamValCountTag(curParameter.getParameter());
+        }
+    }
 
     @SuppressWarnings("unused")
     private void btn_AddExp_clicked() {
-        final ISqmlDefinition curItemValue = setCurItemValue(curIndex);
+        final ISqmlDefinition curItemValue = getCurItemValue(curIndex);
         addSqmlExpression(curItemValue);
     }
 
@@ -460,7 +531,7 @@ public class SqmlEditor_UI {
     }
     
     private boolean isPropTreeVisible(){
-        return editor.getContextClassDef()!=null || !tablesAliases.isEmpty();
+        return editor.getContextClassDef()!=null || !tablesAliases.isEmpty() || !additionalTables.isEmpty();
     }
     
     private boolean isRightPanelVisible(){
@@ -485,7 +556,7 @@ public class SqmlEditor_UI {
     }
 
     private void addSqmlTag() {
-        final Object obj = setCurItemValue(curIndex);
+        final Object obj = getCurItemValue(curIndex);
         editor.getSqmlTagInsertion().insertTag(obj, getTableAlias(), curIndex);
     }
 
@@ -493,14 +564,16 @@ public class SqmlEditor_UI {
         if (!(obj instanceof ISqmlColumnDef)) {
             return;
         }
-        final ISqmlColumnDef prop = (ISqmlColumnDef) obj;
-        final Condition_Dialog d = new Condition_Dialog(editor.getEnvironment(), editor, prop, null, null, editText.getTagConverter().getShowMode());
-        if ((d.isValid()) && (d.exec() == 1)) {
+        final ISqmlColumnDef prop = (ISqmlColumnDef) obj;        
+        final Condition_Dialog dialog = 
+            new Condition_Dialog(editor.getEnvironment(), prop, null, null, editText.getTagConverter().getShowMode(), editor);
+        if (dialog.exec()==QDialog.DialogCode.Accepted.value()) {
+            final List<Object> values = dialog.getValues();
             if (prop.getType() == EValType.PARENT_REF) {
                 final QTextCursor tc = editText.textCursor();
-                editor.getSqmlTagInsertion().insertParentCondition(d.isParentCondition(), d.getValue(), prop, d.getStrOperator(), d.getOperator(), getTableAlias(), tc);
+                editor.getSqmlTagInsertion().insertParentCondition(dialog.isParentCondition(), values, prop,  dialog.getOperator(), getTableAlias(), tc);
             } else {
-                editor.getSqmlTagInsertion().insertCondition(d.isParentCondition(), d.getValue(), prop, d.getStrOperator(), d.getOperator(), getTableAlias(), curIndex);
+                editor.getSqmlTagInsertion().insertCondition(values, prop, dialog.getOperator(), getTableAlias(), curIndex);
             }
         }
     }
@@ -541,7 +614,7 @@ public class SqmlEditor_UI {
     }
 
     public void addAliases(final Map<String, Id> aliases) {
-        if (aliases.keySet() == null || aliases.isEmpty()) {
+        if (aliases == null || aliases.isEmpty()) {
             return;
         }        
         ISqmlTableDef table;
@@ -556,7 +629,7 @@ public class SqmlEditor_UI {
             }
         }
         if (!tables.isEmpty()) {
-            if (proxyModel==null){
+            if (proxyModel==null){//tree was not opened yet
                 fillPropTree(propTree, tables);
             }else{
                 final SqmlTreeModel sqmlModel = (SqmlTreeModel) proxyModel.sourceModel();
@@ -566,6 +639,31 @@ public class SqmlEditor_UI {
         }
         updateTabSet();
         updateRightPanelVisiblity();
+    }
+    
+    public void addTables(final Set<Id> tableIds) {
+        if (tableIds!= null && !tableIds.isEmpty()) {
+            ISqmlTableDef table;
+            final List<ISqmlDefinition> tables = new ArrayList<>();
+            for (Id tableId: tableIds) {
+                table = editor.getEnvironment().getSqmlDefinitions().findTableById(tableId);
+                if (table != null && !additionalTables.contains(tableId)) {
+                    tables.add(table);
+                    additionalTables.add(tableId);
+                }
+            }
+            if (!tables.isEmpty()) {
+                if (proxyModel==null){//tree was not opened yet
+                    fillPropTree(propTree, tables);
+                }else{
+                    final SqmlTreeModel sqmlModel = (SqmlTreeModel) proxyModel.sourceModel();
+                    sqmlModel.addTopLevelDefinitions(tables);
+                    propTree.expandToDepth(0);
+                }
+            }
+            updateTabSet();
+            updateRightPanelVisiblity();
+        }
     }
 
     private class SqmlDefinitionsTree extends QTreeView {
@@ -603,6 +701,22 @@ public class SqmlEditor_UI {
         toolBar.insertToolButton(toolBtn);
     }
     
+    public void setImportAccessible(final boolean isAccessible){
+        toolBar.setImportAccessible(isAccessible);
+    }
+    
+    public boolean isImportAccessible(){
+        return toolBar.isImportAccessible();
+    }
+    
+    public void setExportAccessible(final boolean isAccessible){
+        toolBar.setExportAccessible(isAccessible);
+    }
+    
+    public boolean isExportAccessible(){
+        return toolBar.isExportAccessible();
+    }
+    
     void clearAliases() {
         if (!tablesAliases.isEmpty()){
             final SqmlTreeModel sqmlModel = proxyModel==null ? null : (SqmlTreeModel) proxyModel.sourceModel();
@@ -613,7 +727,11 @@ public class SqmlEditor_UI {
                     table = editor.getEnvironment().getSqmlDefinitions().findTableById(entry.getValue());
                     tables.add(table.createCopyWithAlias(entry.getKey()));
                 }
+                for (Id tableId: additionalTables){
+                    tables.add(editor.getEnvironment().getSqmlDefinitions().findTableById(tableId));
+                }
                 sqmlModel.removeTopLevelDefinitions(tables);
+                additionalTables.clear();
                 tablesAliases.clear();
             }
             updatePropTree();

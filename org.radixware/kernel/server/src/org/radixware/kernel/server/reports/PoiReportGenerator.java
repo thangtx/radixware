@@ -32,21 +32,25 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.record.PaletteRecord;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
-import org.apache.poi.hssf.usermodel.HSSFPatriarch;
-import org.apache.poi.hssf.usermodel.HSSFPicture;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Picture;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance.Font;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
@@ -73,18 +77,22 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Base64;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.Utils;
-import org.radixware.kernel.server.reports.fo.AdjustedCell;
-import org.radixware.kernel.server.reports.fo.CellContents;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.AdjustedCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellContents;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellParagraph;
+import org.radixware.kernel.common.enums.EReportBorderStyle;
 import org.radixware.kernel.server.reports.fo.CellsAdjuster;
 import org.radixware.kernel.server.reports.fo.ChartBuilder;
 import org.radixware.kernel.server.types.Report;
 
 public class PoiReportGenerator extends AbstractReportGenerator {
 
-    private HSSFWorkbook workbook;
-    private HSSFSheet spreadsheet;
-    private CellsAdjuster.Guides columnGuides;
+    private Workbook workbook;
+    private Sheet spreadsheet;
+    private Map<Id, CellsAdjuster.Guides> reportsColumnGuides = new HashMap<>();
     private Map<Id, Map<String, BandInfo>> bandRowsInfo = new HashMap<>();
+    private short lastUsedColorIndex = PaletteRecord.FIRST_COLOR_INDEX;
+    private byte[] usedColor = new byte[PaletteRecord.FIRST_COLOR_INDEX + PaletteRecord.STANDARD_PALETTE_SIZE];
     private static final int MAX_CELL_LENGTH = 32767;
     private static final int UNIT_IN_POINT_HEIGHT = 23;
     private static final int MAX_WIDTH = 256;
@@ -145,13 +153,17 @@ public class PoiReportGenerator extends AbstractReportGenerator {
             this.startColumn = startColumn;
             this.endColum = endColum;
         }
-
     }
 
+
     public PoiReportGenerator(final Report report, ReportStateInfo stateInfo) {
+        this(report, stateInfo, false);
+    }
+
+    public PoiReportGenerator(final Report report, ReportStateInfo stateInfo, boolean xlsx) {
         super(report, EReportExportFormat.OOXML, stateInfo);
         this.report = report;
-        workbook = new HSSFWorkbook();
+        workbook = xlsx ? new XSSFWorkbook() : new HSSFWorkbook();
         spreadsheet = workbook.createSheet("new sheet");
     }
 
@@ -172,11 +184,15 @@ public class PoiReportGenerator extends AbstractReportGenerator {
 
     @Override
     protected void calcTableStructure(final AdsReportForm form) {
-        List<AdsReportWidget> cells = getReportCells(form, report.getId());
-        columnGuides = CellsAdjuster.findHorizontalGuides(cells);
-        calcBandInfo(form, report.getId());
+        calcTableStructure(report.getId(), form);
     }
-
+    
+    protected void calcTableStructure(final Id reportId, final AdsReportForm form) {
+        List<AdsReportWidget> cells = getReportCells(form, reportId);
+        reportsColumnGuides.put(reportId, CellsAdjuster.findHorizontalGuides(cells));
+        calcBandInfo(form, reportId);
+    }
+    
     private List<AdsReportWidget> getReportCells(final AdsReportForm form, final Id reportId) {
         List<AdsReportWidget> cells = new ArrayList<>();
         getAllBandCells(form.getTitleBands(), reportId, cells);
@@ -213,19 +229,7 @@ public class PoiReportGenerator extends AbstractReportGenerator {
             Map<String, BandInfo> map = bandRowsInfo.get(reportId);
             BandInfo bundInfo = map.get(band.getName());
             if (bundInfo != null) {
-                getBandRowsInfo(bundInfo);
-                if (band.getPreReports() != null) {
-                    for (AdsSubReport subReport : band.getPreReports()) {
-                        AdsReportForm form = getForm(subReport);
-                        calcBandInfo(form, subReport.getReportId());
-                    }
-                }
-                if (band.getPostReports() != null) {
-                    for (AdsSubReport subReport : band.getPostReports()) {
-                        AdsReportForm form = getForm(subReport);
-                        calcBandInfo(form, subReport.getReportId());
-                    }
-                }
+                getBandRowsInfo(reportId, bundInfo);
             }
         }
     }
@@ -239,57 +243,18 @@ public class PoiReportGenerator extends AbstractReportGenerator {
     private void getAllBandCells(final AdsReportBand band, final Id reportId, List<AdsReportWidget> cells) {
 
         if (band != null) {
-            cells.addAll(getBandCells(band));
+            List<? extends AdsReportWidget> bandCells = getBandCells(band);
+            cells.addAll(bandCells);
             if (bandRowsInfo.containsKey(reportId)) {
                 Map<String, BandInfo> map = bandRowsInfo.get(reportId);
-                map.put(band.getName(), new BandInfo(new ArrayList<>(cells)));
+                map.put(band.getName(), new BandInfo(new ArrayList<>(bandCells)));
             } else {
                 Map<String, BandInfo> map = new HashMap<>();
-                map.put(band.getName(), new BandInfo(new ArrayList<>(cells)));
+                map.put(band.getName(), new BandInfo(new ArrayList<>(bandCells)));
                 bandRowsInfo.put(reportId, map);
             }
-            if (band.getPreReports() != null) {
-                for (AdsSubReport subReport : band.getPreReports()) {
-                    AdsReportForm form = getForm(subReport);
-                    //validateCellsPosition(null);
-                    cells.addAll(getReportCells(form, subReport.getReportId()));
-                }
-            }
-            if (band.getPostReports() != null) {
-                for (AdsSubReport subReport : band.getPostReports()) {
-                    AdsReportForm form = getForm(subReport);
-                    //validateCellsPosition(null);
-                    cells.addAll(getReportCells(form, subReport.getReportId()));
-                }
-            }
 
         }
-    }
-
-    private AdsReportForm getForm(final AdsSubReport subReport) {
-        final Id subReportId = subReport.getReportId();
-        final Class subReportClass = report.getArte().getDefManager().getClass(subReportId);
-        final Report sR;
-
-        try {
-            sR = (Report) subReportClass.newInstance();
-            //subreportList.put(subReportId, sR);
-        } catch (InstantiationException | IllegalAccessException cause) {
-            throw new DefinitionError("Unable to instantiate subreport #" + subReportId, cause);
-        }
-        AdsReportForm form = sR.createForm();
-
-        adjustCellsPosition(form.getPageHeaderBands());
-        adjustCellsPosition(form.getTitleBands());
-        adjustCellsPosition(form.getColumnHeaderBands());
-        adjustCellsPosition(form.getDetailBands());
-        adjustCellsPosition(form.getSummaryBands());
-        adjustCellsPosition(form.getPageFooterBands());
-        for (AdsReportGroup group : form.getGroups()) {
-            adjustCellsPosition(group.getHeaderBand());
-            adjustCellsPosition(group.getFooterBand());
-        }
-        return form;
     }
 
     protected void adjustCellsPosition(final AdsReportForm.Bands container) {
@@ -304,12 +269,16 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         cellsAdjuster.adjustCellsPosition(container);
     }
 
-    private void getBandRowsInfo(final BandInfo bandInfo) {
+    private void getBandRowsInfo(final Id reportId, final BandInfo bandInfo) {
         List<AdsReportWidget> cells = new ArrayList<>();
         cells.addAll(bandInfo.getCells());
         CellsAdjuster.Guides rowGuides = CellsAdjuster.findVerticalGuides(cells);
-
+        
         List<MergeStructure> mergeStructureList = new ArrayList<>();
+        CellsAdjuster.Guides columnGuides = reportsColumnGuides.get(reportId);
+        if (columnGuides == null) {
+            return;
+        }
         for (AdsReportWidget w : cells) {
             int startColumn = 0, endColumn = 0, startRow = 0, endRow = 0;
             for (int i = 0; i < rowGuides.size(); i++) {
@@ -331,7 +300,8 @@ public class PoiReportGenerator extends AbstractReportGenerator {
                 }
             }
             if (((endRow - startRow) > 1 || (endColumn - startColumn) > 1) && endRow >= startRow && endColumn >= startColumn) {
-                MergeStructure mergeStructure = new MergeStructure(startRow, endRow - 1, startColumn, endColumn - 1);
+                MergeStructure mergeStructure = new MergeStructure(startRow, endRow == startRow? endRow : endRow - 1, 
+                        startColumn, endColumn == startColumn? endColumn : endColumn - 1);
                 mergeStructureList.add(mergeStructure);
             }
         }
@@ -341,7 +311,7 @@ public class PoiReportGenerator extends AbstractReportGenerator {
 
     private List<AdsReportCell> getBandCells(final IReportWidgetContainer cellsContainer) {
         List<AdsReportCell> cells = new ArrayList<>();
-        for (AdsReportWidget w : cellsContainer.getWidgets().list()) {
+        for (AdsReportWidget w : cellsContainer.getWidgets()) {
             if (w.isReportContainer()) {
                 cells.addAll(getBandCells((AdsReportWidgetContainer) w));
             } else {
@@ -353,28 +323,37 @@ public class PoiReportGenerator extends AbstractReportGenerator {
     }
 
     @Override
-    protected void viewBand(final List<ReportGenData> genDataList, final AdsReportBand band, final Map<AdsReportCell, AdjustedCell> adjustedCellContents) throws ReportGenerationException {
+    protected void viewBand(final List<ReportGenData> genDataList, final AdsReportBand band, final Map<AdsReportCell, AdjustedCell> adjustedCellContents, ReportGenData currentGenData) throws ReportGenerationException {
         if (band.getType() == EReportBandType.PAGE_FOOTER || band.getType() == EReportBandType.PAGE_HEADER) {
             return;
         }
         Id reportId = genDataList.get(genDataList.size() - 1).reportId;
         Map<String, BandInfo> map = bandRowsInfo.get(reportId);
-        BandInfo bundInfo = map.get(band.getName());
+        if (map == null) {
+            AdsReportForm form = genDataList.get(genDataList.size() - 1).form;
+            calcTableStructure(reportId, form);
+            map = bandRowsInfo.get(reportId);
+        }
+        BandInfo bundInfo = map == null? null : map.get(band.getName());
         int bandStartRow = rowIndex;
         List<Integer> autoSizeColumn = new ArrayList<>();
         if (bundInfo != null) {
             Double rowHeight;
             CellsAdjuster.Guides rowGuides = bundInfo.getRowGuides();
+            CellsAdjuster.Guides columnGuides = reportsColumnGuides.get(reportId);
+            if (columnGuides == null) {
+                return;
+            }
             for (int i = 0; i < rowGuides.size() - 1; i++) {
                 rowHeight = null;
                 CellsAdjuster.Guide rowGuide = rowGuides.get(i);
-                HSSFRow row = spreadsheet.createRow(rowIndex);
+                Row row = spreadsheet.createRow(rowIndex);
                 if (report.getId().equals(reportId)) {
                     for (AdsReportWidget w : rowGuide.getNextCells()) {
                         for (int j = 0; j < columnGuides.size() - 1; j++) {
                             CellsAdjuster.Guide columnGuide = columnGuides.get(j);
                             if (columnGuide.getNextCells().contains(w)) {
-                                HSSFCell cell = row.createCell(j);
+                                Cell cell = row.createCell(j);
                                 final AdjustedCell adjustedCell = adjustedCellContents == null ? null : adjustedCellContents.get((AdsReportCell) w);
 
                                 viewCell(cell, w, adjustedCell, bundInfo, rowIndex - bandStartRow);
@@ -395,7 +374,7 @@ public class PoiReportGenerator extends AbstractReportGenerator {
                 } else {
                     for (int j = 0; j < columnGuides.size() - 1; j++) {
                         CellsAdjuster.Guide columnGuide = columnGuides.get(j);
-                        HSSFCell cell = row.createCell(j);
+                        Cell cell = row.createCell(j);
                         for (AdsReportWidget bw : band.getWidgets()) {
                             if (bw.getTopMm() == rowGuide.getPos() && bw.getLeftMm() == columnGuide.getPos()) {
                                 final AdjustedCell adjustedCell = adjustedCellContents == null ? null : adjustedCellContents.get((AdsReportCell) bw);
@@ -424,13 +403,13 @@ public class PoiReportGenerator extends AbstractReportGenerator {
             }
 
             for (MergeStructure ms : bundInfo.getMergeStructure()) {
-                HSSFRow row = spreadsheet.getRow(ms.startRow + bandStartRow);
-                HSSFCell cellStart = row.getCell(ms.startColumn);
-                HSSFCellStyle cellStyle = cellStart.getCellStyle();
+                Row row = spreadsheet.getRow(ms.startRow + bandStartRow);
+                Cell cellStart = row.getCell(ms.startColumn);
+                CellStyle cellStyle = cellStart.getCellStyle();
                 for (int i = ms.startRow + bandStartRow; i <= ms.endRow + bandStartRow; i++) {
-                    HSSFRow r = spreadsheet.getRow(i);
+                    Row r = spreadsheet.getRow(i);
                     for (int j = ms.startColumn; j <= ms.endColum; j++) {
-                        HSSFCell cell = r.getCell(j);
+                        Cell cell = r.getCell(j);
                         if (cell == null) {
                             cell = r.createCell(j);
                         }
@@ -446,8 +425,11 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         }
     }
 
-    private void viewCell(final HSSFCell cell, final AdsReportWidget w, final AdjustedCell adjustedCell, BandInfo bundInfo, int rowInBand) {
+    private void viewCell(final Cell cell, final AdsReportWidget w, final AdjustedCell adjustedCell, BandInfo bundInfo, int rowInBand) throws ReportGenerationException {
         final AdsReportCell reportCell = (AdsReportCell) w;
+        if (!reportCell.isVisible()) {
+            return;
+        }
         if ((reportCell.getCellType() == EReportCellType.IMAGE || reportCell.getCellType() == EReportCellType.DB_IMAGE || reportCell.getCellType() == EReportCellType.CHART)) {
             int mergeRow = 0, mergeColumn = 0;
             for (MergeStructure ms : bundInfo.getMergeStructure()) {
@@ -462,7 +444,7 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         }
     }
 
-    private void viewImageCell(final HSSFCell cell, final AdsReportCell reportCell, final int mergeRow, final int mergeColumn) {
+    private void viewImageCell(final Cell cell, final AdsReportCell reportCell, final int mergeRow, final int mergeColumn) {
         String content = reportCell.getRunTimeContent();
         if (content != null && !content.isEmpty()) {
 
@@ -480,15 +462,15 @@ public class PoiReportGenerator extends AbstractReportGenerator {
     private class FontDescription {
 
         private final String name;
-        private HSSFFont font;
+        private org.apache.poi.ss.usermodel.Font font;
         private final short heightInPoints;
         private final boolean isItalic;
         private final boolean isBold;
         private final boolean isLineThrough;
         private final byte underLine;
-        private final HSSFColor cellFgColor;
+        private final org.apache.poi.ss.usermodel.Color cellFgColor;
 
-        public FontDescription(Font font, HSSFColor cellFgColor) {
+        public FontDescription(Font font, org.apache.poi.ss.usermodel.Color cellFgColor) {
             this.name = font.getName();
             this.heightInPoints = (short) ChartBuilder.mm2px(font.getSizeMm());
             this.isItalic = font.isItalic();
@@ -498,7 +480,7 @@ public class PoiReportGenerator extends AbstractReportGenerator {
             this.cellFgColor = cellFgColor;
         }
 
-        private HSSFFont getFont() {
+        private org.apache.poi.ss.usermodel.Font getFont() {
             if (font == null) {
                 font = workbook.createFont();
                 font.setFontName(name);
@@ -507,9 +489,8 @@ public class PoiReportGenerator extends AbstractReportGenerator {
                 font.setBold(isBold);
                 font.setStrikeout(isLineThrough);
                 font.setUnderline(underLine);
-                if (cellFgColor != null) {
-                    font.setColor(cellFgColor.getIndex());
-                }
+                font.setColor(getColorIndex(cellFgColor));
+
             }
             return font;
         }
@@ -546,7 +527,7 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         }
     }
 
-    private static boolean colorEquals(HSSFColor one, HSSFColor another) {
+    private static boolean colorEquals(org.apache.poi.ss.usermodel.Color one, org.apache.poi.ss.usermodel.Color another) {
         if (one == null && another != null) {
             return false;
         }
@@ -556,12 +537,17 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         if (one == null && another == null) {
             return true;
         }
-        final short[] thisTriplet = one.getTriplet();
-        final short[] anotherTriplet = another.getTriplet();
-        if (!Arrays.equals(thisTriplet, anotherTriplet)) {
+        if (one instanceof HSSFColor && another instanceof HSSFColor) {
+            final short[] thisTriplet = ((HSSFColor) one).getTriplet();
+            final short[] anotherTriplet = ((HSSFColor) another).getTriplet();
+            return Arrays.equals(thisTriplet, anotherTriplet);
+        } else if (one instanceof XSSFColor && another instanceof XSSFColor) {
+            final String thisColor = ((XSSFColor) one).getARGBHex();
+            final String anotherColor = ((XSSFColor) another).getARGBHex();
+            return thisColor.equals(anotherColor);
+        } else {
             return false;
         }
-        return true;
     }
 
     private static final boolean DEBUG = false;
@@ -599,42 +585,75 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         return template;
     }
 
+    private static short getColorIndex(org.apache.poi.ss.usermodel.Color color) {
+        if (color instanceof HSSFColor) {
+            return ((HSSFColor) color).getIndex();
+        } else if (color instanceof XSSFColor) {
+            return ((XSSFColor) color).getIndexed();
+        }
+        return 0;
+    }
+
     private class StyleDescription {
 
         private class Border {
 
             private boolean left, top, right, bottom;
-            private final HSSFColor color;
-            private final short thickness;
+            private org.apache.poi.ss.usermodel.Color colorLeft, colorTop, colorRight, colorBottom;
+            private short thicknessLeft, thicknessTop, thicknessRight, thicknessBottom;
 
-            public Border(HSSFColor color, short thickness) {
-                this.color = color;
-                this.thickness = thickness;
+            public Border() {
             }
 
-            public void setLeft() {
+            public void setLeft(org.apache.poi.ss.usermodel.Color color, short thickness) {
                 this.left = true;
+                colorLeft = color;
+                thicknessLeft = thickness;
             }
 
-            public void setTop() {
+            public void setTop(org.apache.poi.ss.usermodel.Color color, short thickness) {
                 this.top = true;
+                colorTop = color;
+                thicknessTop = thickness;
             }
 
-            public void setRight() {
+            public void setRight(org.apache.poi.ss.usermodel.Color color, short thickness) {
                 this.right = true;
+                colorRight = color;
+                thicknessRight = thickness;
             }
 
-            public void setBottom() {
+            public void setBottom(org.apache.poi.ss.usermodel.Color color, short thickness) {
                 this.bottom = true;
+                colorBottom = color;
+                thicknessBottom = thickness;
             }
 
             public boolean equals(Object obj) {
                 if (obj instanceof Border) {
                     final Border another = (Border) obj;
-                    if (thickness != another.thickness) {
+                    if (thicknessTop != another.thicknessTop) {
                         return false;
                     }
-                    if (!colorEquals(color, another.color)) {
+                    if (thicknessLeft != another.thicknessLeft) {
+                        return false;
+                    }
+                    if (thicknessBottom != another.thicknessBottom) {
+                        return false;
+                    }
+                    if (thicknessRight != another.thicknessRight) {
+                        return false;
+                    }
+                    if (!colorEquals(colorTop, another.colorTop)) {
+                        return false;
+                    }
+                    if (!colorEquals(colorLeft, another.colorLeft)) {
+                        return false;
+                    }
+                    if (!colorEquals(colorBottom, another.colorBottom)) {
+                        return false;
+                    }
+                    if (!colorEquals(colorRight, another.colorRight)) {
                         return false;
                     }
                     if (this.left != another.left) {
@@ -657,14 +676,14 @@ public class PoiReportGenerator extends AbstractReportGenerator {
             }
 
         }
-        private HSSFColor cellBgColor;
+        private org.apache.poi.ss.usermodel.Color cellBgColor;
 
         private boolean wrapText;
         private Border border;
         private short verticalAlignment;
         private short alignment;
         private FontDescription font;
-        private HSSFCellStyle style;
+        private CellStyle style;
 
         public void setWrapText(boolean wrapText) {
             this.wrapText = wrapText;
@@ -682,12 +701,12 @@ public class PoiReportGenerator extends AbstractReportGenerator {
             this.font = font;
         }
 
-        private HSSFCellStyle getStyle() {
+        private CellStyle getStyle() {
             if (style == null) {
                 style = workbook.createCellStyle();
                 style.setWrapText(wrapText);
                 if (cellBgColor != null) {
-                    style.setFillForegroundColor(cellBgColor.getIndex());
+                    style.setFillForegroundColor(getColorIndex(cellBgColor));
                     style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
                 }
                 if (font != null) {
@@ -695,20 +714,20 @@ public class PoiReportGenerator extends AbstractReportGenerator {
                 }
                 if (border != null) {
                     if (border.left) {
-                        style.setLeftBorderColor(border.color.getIndex());
-                        style.setBorderLeft(border.thickness);
+                        style.setLeftBorderColor(getColorIndex(border.colorLeft));
+                        style.setBorderLeft(border.thicknessLeft);
                     }
                     if (border.right) {
-                        style.setRightBorderColor(border.color.getIndex());
-                        style.setBorderRight(border.thickness);
+                        style.setRightBorderColor(getColorIndex(border.colorRight));
+                        style.setBorderRight(border.thicknessRight);
                     }
                     if (border.top) {
-                        style.setTopBorderColor(border.color.getIndex());
-                        style.setBorderTop(border.thickness);
+                        style.setTopBorderColor(getColorIndex(border.colorTop));
+                        style.setBorderTop(border.thicknessTop);
                     }
                     if (border.bottom) {
-                        style.setBottomBorderColor(border.color.getIndex());
-                        style.setBorderBottom(border.thickness);
+                        style.setBottomBorderColor(getColorIndex(border.colorBottom));
+                        style.setBorderBottom(border.thicknessBottom);
                     }
                 }
                 style.setVerticalAlignment(verticalAlignment);
@@ -717,12 +736,12 @@ public class PoiReportGenerator extends AbstractReportGenerator {
             return style;
         }
 
-        public void setCellBgColor(HSSFColor cellBgColor) {
+        public void setCellBgColor(org.apache.poi.ss.usermodel.Color cellBgColor) {
             this.cellBgColor = cellBgColor;
         }
 
-        public Border setBorder(short thickness, HSSFColor color) {
-            return this.border = new Border(color, thickness);
+        public Border setBorder() {
+            return this.border = new Border();
         }
 
         @Override
@@ -769,58 +788,54 @@ public class PoiReportGenerator extends AbstractReportGenerator {
             }
         }
     }
+    
+    private short getBorderStyle(EReportBorderStyle style) {
+        switch (style) {
+            case DASHED:
+                return HSSFCellStyle.BORDER_DASHED;
+            case DOTTED:
+                return HSSFCellStyle.BORDER_DOTTED;
+            case SOLID:
+                return HSSFCellStyle.BORDER_THIN;
+            default:
+                return HSSFCellStyle.BORDER_NONE;
+        }
+    }
 
-    private void viewTextCell(HSSFCell cell, AdsReportCell w, final AdjustedCell adjustedCell) {
+    private void viewTextCell(Cell cell, AdsReportCell w, final AdjustedCell adjustedCell) throws ReportGenerationException {
         final AdsReportCell reportCell = (AdsReportCell) w;
         String content = reportCell.getRunTimeContent();
         StyleDescription cellStyle = new StyleDescription();
         cellStyle.setWrapText(((AdsReportCell) w).isWrapWord());
-        HSSFColor cellBgColor = null, cellFgColor = null;
-        if (!w.isBgColorInherited()) {
-            cellBgColor = calcColor(w.getBgColor(), HSSFColor.AQUA.index);
+        org.apache.poi.ss.usermodel.Color cellBgColor = null;
+        Color bg = w.getBgColor();
+        if (bg != Color.WHITE) {
+            cellBgColor = calcColor(bg);
         }
-        if (!w.isFgColorInherited()) {
-            cellFgColor = calcColor(w.getFgColor(), HSSFColor.LIME.index);
-        }
+        org.apache.poi.ss.usermodel.Color cellFgColor = calcColor(w.getFgColor());
         if (cellBgColor != null) {
             cellStyle.setCellBgColor(cellBgColor);
         }
 
-        if (w.getFont() != null) {
-            FontDescription hSSFFont = createFont(w.getFont(), cellFgColor);//workbook.createFont();
-            cellStyle.setFont(hSSFFont);
-        }
+        FontDescription hSSFFont = createFont(w.getFont(), cellFgColor);
+        cellStyle.setFont(hSSFFont);
 
         if (w.getBorder() != null && w.getBorder().isDisplayed()) {
-            short borderThickness = 1;
-            switch (w.getBorder().getStyle()) {
-                case DASHED:
-                    borderThickness = HSSFCellStyle.BORDER_DASHED;
-                    break;
-                case DOTTED:
-                    borderThickness = HSSFCellStyle.BORDER_DOTTED;
-                    break;
-                case SOLID:
-                    borderThickness = HSSFCellStyle.BORDER_THIN;
-                    break;
-                default:
-                    borderThickness = HSSFCellStyle.BORDER_NONE;
-            }
             //ChartBuilder.mm2px( w.getBorder().getThicknessMm());
 
-            HSSFColor borderColor = calcColor(w.getBorder().getColor(), HSSFColor.LAVENDER.index);
-            StyleDescription.Border border = cellStyle.setBorder(borderThickness, borderColor);
+
+            StyleDescription.Border border = cellStyle.setBorder();
             if (w.getBorder().isOnLeft()) {
-                border.setLeft();
+                border.setLeft(calcColor(w.getBorder().getLeftColor()), getBorderStyle(w.getBorder().getLeftStyle()));
             }
             if (w.getBorder().isOnRight()) {
-                border.setRight();
+                border.setRight(calcColor(w.getBorder().getRightColor()), getBorderStyle(w.getBorder().getRightStyle()));
             }
             if (w.getBorder().isOnTop()) {
-                border.setTop();
+                border.setTop(calcColor(w.getBorder().getTopColor()), getBorderStyle(w.getBorder().getTopStyle()));
             }
             if (w.getBorder().isOnBottom()) {
-                border.setBottom();
+                border.setBottom(calcColor(w.getBorder().getBottomColor()), getBorderStyle(w.getBorder().getBottomStyle()));
             }
         }
 
@@ -857,22 +872,27 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         if (adjustedCell == null) {
             cell.setCellValue(content);
         } else {
-            List<List<CellContents>> lineList = adjustedCell.getLineCellContents();
             HSSFRichTextString richString = new HSSFRichTextString(content);
             int index = 0;
-            for (int i = 0; i < lineList.size(); i++) {
-                List<CellContents> cellContents = lineList.get(i);
-                for (CellContents cellContent : cellContents) {
-                    String text = cellContent.getText();
-                    if ((index + text.length()) >= MAX_CELL_LENGTH) {
-                        text = new String(text.substring(0, MAX_CELL_LENGTH - index - 1));
+            for (int j = 0; j < adjustedCell.getParagraphsCount(); j++) {
+                CellParagraph cellParagraph = adjustedCell.getParagraph(j);
+                for (int i = 0; i < cellParagraph.getLinesCount(); i++) {
+                    List<CellContents> cellContents = cellParagraph.getContentsByLine(i);
+                    for (CellContents cellContent : cellContents) {
+                        String text = cellContent.getText();
+                        if ((index + text.length()) >= MAX_CELL_LENGTH) {
+                            text = new String(text.substring(0, MAX_CELL_LENGTH - index - 1));
+                        }
+                        org.apache.poi.ss.usermodel.Color color = cellFgColor;
+                        if (cellContent.getFgColor() != null) {
+                            color = calcColor(cellContent.getFgColor());
+                        }
+                        richString.applyFont(index, index + text.length(), createFont(cellContent.getFont(), color).getFont());
+                        index += text.length();
+                        if (index >= MAX_CELL_LENGTH) {
+                            break;
+                        }
                     }
-                    HSSFColor color = cellFgColor;
-                    if (cellContent.getFgColor() != null) {
-                        color = calcColor(cellContent.getFgColor(), HSSFColor.AQUA.index);
-                    }
-                    richString.applyFont(index, index + text.length(), createFont(cellContent.getFont(), color).getFont());
-                    index += text.length();
                     if (index >= MAX_CELL_LENGTH) {
                         break;
                     }
@@ -885,22 +905,37 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         }
     }
 
-    private FontDescription createFont(final Font font, final HSSFColor cellFgColor) {
+    private FontDescription createFont(final Font font, final org.apache.poi.ss.usermodel.Color cellFgColor) {
         FontDescription desc = new FontDescription(font, cellFgColor);
         return findFont(desc);
     }
-
-    private HSSFColor calcColor(final Color color, final short index) {
-        HSSFPalette palette = workbook.getCustomPalette();
+    
+    private org.apache.poi.ss.usermodel.Color calcColor(final Color color) throws ReportGenerationException {
+        HSSFPalette palette = ((HSSFWorkbook) workbook).getCustomPalette();
         HSSFColor result = palette.findColor((byte) color.getRed(), (byte) color.getGreen(), (byte) color.getBlue());
         if (result == null) {
-            palette.setColorAtIndex(index, (byte) color.getRed(), (byte) color.getGreen(), (byte) color.getBlue());
-            result = palette.getColor(index);
+            while (usedColor != null && usedColor[lastUsedColorIndex] == 1) {
+                lastUsedColorIndex++;
+                if (lastUsedColorIndex >= PaletteRecord.FIRST_COLOR_INDEX + PaletteRecord.STANDARD_PALETTE_SIZE) {
+                    usedColor = null;
+                    break;
+                }
+            }
+            if (usedColor == null || lastUsedColorIndex >= PaletteRecord.FIRST_COLOR_INDEX + PaletteRecord.STANDARD_PALETTE_SIZE) {
+                throw new ReportGenerationException("The number of colors exceeds the XLS limit");
+            }
+            palette.setColorAtIndex(lastUsedColorIndex, (byte) color.getRed(), (byte) color.getGreen(), (byte) color.getBlue());
+            usedColor[lastUsedColorIndex]  = 1;
+            result = palette.getColor(lastUsedColorIndex);
+        } else {
+            if (usedColor != null) {
+                usedColor[result.getIndex()]  = 1;
+            }
         }
         return result;
     }
 
-    private void createImage(final String url, final HSSFCell cell, final AdsReportWidget w, final int mergeRow, final int mergeColumn) {
+    private void createImage(final String url, final Cell cell, final AdsReportWidget w, final int mergeRow, final int mergeColumn) {
         try {
             String data;
             if (url.startsWith("url('")) {
@@ -968,17 +1003,17 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         }
     }
 
-    private void createChart(final String path, final HSSFCell cell, final AdsReportWidget w, final int mergeRow, final int mergeColumn) {
+    private void createChart(final String path, final Cell cell, final AdsReportWidget w, final int mergeRow, final int mergeColumn) {
 //        final byte[] content = svgToJPEG(path, w);
 //        image(content, cell, mergeRow, mergeColumn);
         createImage(path, cell, w, mergeRow, mergeColumn);
     }
 
-    private void image(final byte[] pictureData, final HSSFCell cell, final int mergeRow, final int mergeColumn) {
+    private void image(final byte[] pictureData, final Cell cell, final int mergeRow, final int mergeColumn) {
         int row = cell.getRowIndex();
         int column = cell.getColumnIndex();
         int my_picture_id = workbook.addPicture(pictureData, Workbook.PICTURE_TYPE_PNG);
-        HSSFPatriarch drawing = spreadsheet.createDrawingPatriarch();
+        Drawing drawing = spreadsheet.createDrawingPatriarch();
         ClientAnchor my_anchor = new HSSFClientAnchor();
 
         my_anchor.setCol1(column);
@@ -989,7 +1024,7 @@ public class PoiReportGenerator extends AbstractReportGenerator {
         if (mergeRow > 0) {
             my_anchor.setRow2(row + mergeRow + 1);
         }
-        HSSFPicture my_picture = drawing.createPicture(my_anchor, my_picture_id);
+        Picture my_picture = drawing.createPicture(my_anchor, my_picture_id);
         my_picture.resize(1, 1);
     }
 

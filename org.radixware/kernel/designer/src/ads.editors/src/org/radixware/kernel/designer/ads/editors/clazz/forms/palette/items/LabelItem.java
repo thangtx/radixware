@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import org.radixware.kernel.designer.ads.editors.clazz.forms.palette.*;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import org.netbeans.api.visual.widget.Widget;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.ui.AdsMetaInfo;
@@ -46,9 +45,13 @@ public class LabelItem extends Item {
     public Dimension adjustHintSize(RadixObject node, Dimension defaultSize) {
         AdsUIProperty.LocalizedStringRefProperty text = (AdsUIProperty.LocalizedStringRefProperty) AdsUIUtil.getUiProperty(node, "text");
         String label = Item.getTextById(node, text.getStringId());
-
-        int height = DrawUtil.DEFAULT_FONT_METRICS.getHeight();
-        int width = DrawUtil.DEFAULT_FONT_METRICS.stringWidth(label);
+        return adjustHintSize(node, defaultSize, label);
+    }
+    
+    public Dimension adjustHintSize(RadixObject node, Dimension defaultSize, String label) {
+        
+        int height = DrawUtil.getFontMetrics().getHeight();
+        int width = DrawUtil.getFontMetrics().stringWidth(label == null? "": label);
 
         //return new Dimension(Math.max(defaultSize.width, width), Math.max(defaultSize.height, height));
         return new Dimension(width + 2, Math.max(defaultSize.height, height + 2));

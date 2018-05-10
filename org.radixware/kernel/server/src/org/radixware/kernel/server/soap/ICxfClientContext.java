@@ -14,7 +14,7 @@ package org.radixware.kernel.server.soap;
 import java.io.IOException;
 import java.net.URL;
 import org.radixware.kernel.common.sc.SapClientOptions;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
 
 
 public interface ICxfClientContext {

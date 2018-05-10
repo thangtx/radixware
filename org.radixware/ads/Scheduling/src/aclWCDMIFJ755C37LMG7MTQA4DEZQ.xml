@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclWCDMIFJ755C37LMG7MTQA4DEZQ" Name="CalendarItem.Absolute.Daily" Type="2">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaclWCDMIFJ755C37LMG7MTQA4DEZQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclWCDMIFJ755C37LMG7MTQA4DEZQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgOCAZAZLES5AE3GHQMKUFQ4BQPY" Name="Root"/>
+    <PropertyGroup Id="cpgLCV5FLXNXBERHNOQWAC3VK5YBQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Name="isExcluded" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprJ5XEQD6JC5AEZMLRBRDHMDFLWI">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="dayOfWeek" Id="mpr4RU7ESF6QBBI3C552JGSZSAR44">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInMonth" Id="mprTJOGDAFKTJH6ZDYJQK2IWFO6JM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfMonth" Id="mprKEHLZZGSBZF2NGNAPWVX3SDVHI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInQuarter" Id="mprBT3EMIPWSVENHA6EUVEVXFLYOI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfQuarter" Id="mprAG5Q6TWCKZBKZPPK52DIT2OPCI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInYear" Id="mprSSITLJ32CZHETIN75ZUAAST3OE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfYear" Id="mprOWRU54UY4FDATBFZBULZDXIOD4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>oper</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true">
+                <xsc:Presentation>CalendarOper:Plus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Name="isIncluded" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="date" Id="mprAFYZVOGOINDNDEJF2XYOMOSZ7M">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="dayOfWeek" Id="mpr77EMMPXDLNCQ7NJXYY3MNX6IDA">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInMonth" Id="mprA3PLGCYYSVGN3G4OZSC2EMNNIE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfMonth" Id="mprBALXRUT7BNANJDTCT3HHXSWW2I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInQuarter" Id="mpr2H2GKHC3HZG6LDITGKBPY4OZTI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfQuarter" Id="mprTJJK4S2EUFE6ZOXEPIK76USDCQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInYear" Id="mprLK7JDPCWWBBK3CEO6IQFDUD2GU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfYear" Id="mpr5BEFIKLOOVFWHC6KQHDOWPJ7DI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>oper</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true">
+                <xsc:Presentation>CalendarOper:Plus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVW4XVUSPYFHDVM34UMIJ6K4SAY" Name="getValueTitle" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls4ANY3JWRVFEGBDMCXSCQ3XAW44"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblCRD53OZ5I3OBDCIOAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsSXPJ37UUTRAOXMQBWNDO7YCEW4">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccTNVRW53A3FBSDHD6UFIKCAJPNA" Name="Absolute">
+          <AccessRules Access="4" IsPublished="false"/>
+          <ClassRef Order="310.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aclWV4N5V7EE5ELXHLIMHSI3FSJ5Y"/>
+  </AdsClassDefinition>
+</AdsDefinition>

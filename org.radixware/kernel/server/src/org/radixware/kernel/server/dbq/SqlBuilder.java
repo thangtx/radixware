@@ -13,7 +13,7 @@ package org.radixware.kernel.server.dbq;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -25,6 +25,8 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.enums.EAggregateFunction;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.RadixError;
@@ -33,8 +35,11 @@ import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.sqml.ISqmlEnvironment;
 import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.common.sqml.tags.PropSqlNameTag;
+import org.radixware.kernel.common.sqml.translate.ISqmlPreprocessorConfig;
 import org.radixware.kernel.server.arte.Arte;
+import static org.radixware.kernel.server.dbq.QuerySqlBuilder.ROWS_COUNT_FIELD_ALIAS;
 import org.radixware.kernel.server.dbq.sqml.QuerySqmlTranslator;
+import org.radixware.kernel.server.dbq.sqml.ServerPreprocessorConfig;
 import org.radixware.kernel.server.exceptions.DbQueryBuilderError;
 import org.radixware.kernel.server.meta.clazzes.IRadRefPropertyDef;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
@@ -89,6 +94,10 @@ public abstract class SqlBuilder {
          * Property must be returned as query field
          */
         FIELD,
+        
+        /*Property used as an argument of aggregation function*/
+        AGGREGATION_FUNC_ARG,
+        
         /**
          * other usages, for example, as expression args
          */
@@ -189,9 +198,33 @@ public abstract class SqlBuilder {
         public Definition getProp() {
             return prop;
         }
+        
+        public Id getId(){
+            return prop.getId();
+        }
+        
+        public EValType getValType(){
+            if (prop instanceof DdsColumnDef) {
+                return ((DdsColumnDef) prop).getValType();
+            }
+            if (prop instanceof RadPropDef) {
+                return ((RadPropDef) prop).getValType();
+            }
+            throw new IllegalUsageError("Unsupported property");
+        }
+        
+        public String getDbType(){
+            if (prop instanceof DdsColumnDef) {
+                return ((DdsColumnDef) prop).getDbType();
+            }
+            if (prop instanceof RadPropDef) {
+                return ((RadPropDef) prop).getDbType();
+            }
+            throw new IllegalUsageError("Unsupported property");            
+        }
     }
 
-    protected static final class JoinField extends Field {
+    protected static class JoinField extends Field {
         //Public fields
 
         public Field joinField;
@@ -206,6 +239,104 @@ public abstract class SqlBuilder {
             this.joinField = joinField;
         }
     }//Protected fields
+    
+    protected static interface IAggregationField{
+        EAggregateFunction getFunction();
+    }    
+    
+    protected static final class AggregationJoinField extends JoinField implements IAggregationField{
+        
+        private final EAggregateFunction function;
+        
+        AggregationJoinField(final SqlBuilder builder, final RadJoinPropDef prop,  final Field joinField, final EAggregateFunction function){
+            super(builder, prop,  joinField.getAlias(), joinField);
+            this.function = function;
+        }
+        
+        @Override
+        public EAggregateFunction getFunction(){
+            return function;
+        }
+        
+        @Override
+        public EValType getValType() {           
+            return function==EAggregateFunction.AVG ? EValType.NUM : super.getValType();
+        }        
+                
+        @Override
+        public Id getId(){
+            /*Definition targetProp = this.getProp();
+            for (Field field=this; field instanceof JoinField; field=((JoinField)field).joinField){
+               targetProp = field.prop;
+            }*/
+            return Id.Factory.append(super.getId(), "_"+function.getValue());
+        }
+    }    
+    
+    protected static final class CountField extends Field implements IAggregationField{
+        
+        CountField(final SqlBuilder builder){
+            super(builder,null,ROWS_COUNT_FIELD_ALIAS);
+        }
+
+        @Override
+        public EAggregateFunction getFunction() {
+            return EAggregateFunction.COUNT;
+        }
+
+        @Override
+        public EValType getValType() {
+            return EValType.INT;
+        }
+
+        @Override
+        public String getDbType() {
+            return "Number(12,0)";//actually this string is not used for EValType.INT
+        }                
+
+        @Override
+        public Id getId() {
+            return QuerySqlBuilder.ROWS_COUNT_FIELD_COL_ID;
+        }
+
+        @Override
+        public Sqml getExpression() {
+            final Sqml expression = Sqml.Factory.newInstance();
+            expression.setSql("*");
+            return expression;
+        }
+
+        @Override
+        public boolean isExpression() {
+            return true;
+        }
+    }
+    
+    protected static final class AggregationField extends Field implements IAggregationField{
+        
+        private final EAggregateFunction function;
+        
+        AggregationField(final SqlBuilder builder,final Definition prop, final String alias, final EAggregateFunction function){
+            super(builder, prop, alias);
+            this.function = function;
+        }
+                
+        @Override
+        public EAggregateFunction getFunction(){
+            return function;
+        }
+
+        @Override
+        public EValType getValType() {           
+            return function==EAggregateFunction.AVG ? EValType.NUM : super.getValType();
+        }                
+        
+        @Override
+        public Id getId(){
+            return Id.Factory.append(super.getId(), "_"+function.getValue());
+        }
+    }
+    
     private final DdsTableDef table;
     protected final Map<String, Field> fieldsByPropId;
     Map<String, JoinSqlBuilder> joinBuilders;
@@ -238,6 +369,14 @@ public abstract class SqlBuilder {
     public abstract RadClassDef getEntityClass();
 
     public abstract void addParameter(final DbQuery.Param param);
+    
+    public int getNumberOfItemsInParameterValue(final Id parameterId){
+        throw new IllegalUsageError("condition parameter #"+String.valueOf(parameterId)+" was not found");
+    }
+    
+    public boolean isParameterDefined(final Id parameterId){
+        return false;
+    }
 
     public AtomicInteger getNextFieldIdx() {
         return nextFieldIdx;
@@ -246,6 +385,77 @@ public abstract class SqlBuilder {
 //Protected methods
     Id getMainPropId(final Id propId) {
         return propId;
+    }
+    
+    public Field addAggregationFunctionCall(final Id propId, final EAggregateFunction function){
+        RadPropDef prop = null;
+        DdsColumnDef dbpProp = null;
+        try {
+            prop = getEntityClass().getPropById(propId);
+        } catch (DefinitionNotFoundError ex) {
+            dbpProp = getTable().getColumns().getById(propId, ExtendableDefinitions.EScope.ALL);
+        }        
+        if (prop instanceof RadDetailPropDef) {
+            final RadDetailPropDef detailProp = (RadDetailPropDef) prop;
+            final JoinSqlBuilder joinBuilder = getJoinBuilder(detailProp.getDetailReference(), true);
+            final Field destField = joinBuilder.addAggregationFunctionCall(detailProp.getJoinedPropId(), function);
+            final Field field = new AggregationJoinField(this, detailProp, destField, function);
+            fieldsByPropId.put(field.getId().toString(), field);
+            return field;
+        } else if (prop instanceof RadParentPropDef) {
+            final RadParentPropDef parentProp = (RadParentPropDef) prop;
+            boolean isDbRefsUsed = true;
+            for (IRadRefPropertyDef refProp : parentProp.getRefProps()) {
+                if (refProp instanceof RadInnateRefPropDef == false //TWRBS-3070
+                        && refProp instanceof RadUserRefPropDef == false//RADIX-7772
+                        && refProp instanceof RadDetailParentRefPropDef == false
+                        ) {
+                    isDbRefsUsed = false;
+                    break;
+                }
+            }
+            if (isDbRefsUsed) { //TWRBS-1386
+                final RadClassDef parentClassDef = getArte().getDefManager().getClassDef(parentProp.getJoinedClassId());
+                final RadPropDef destProp = parentClassDef.getPropById(parentProp.getJoinedPropId());
+                if (isDbColOrSqlExpressProp(destProp)) {
+                    final List<SqlBuilder> joins = new LinkedList<>();
+                    SqlBuilder currentSqlBuilder = this, parentJoinBuilder;
+                    joins.add(currentSqlBuilder);                    
+                    for (IRadRefPropertyDef refProp : parentProp.getRefProps()) {                        
+                        parentJoinBuilder = currentSqlBuilder.getParentJoinBuilder(refProp);
+                        joins.add(parentJoinBuilder);
+                        currentSqlBuilder = parentJoinBuilder;
+                    }
+                    Field field = currentSqlBuilder.addAggregationFunctionCall(parentProp.getJoinedPropId(), function);
+                    for (int i=joins.size()-1; i>=1; i--){
+                        field = new AggregationJoinField(this, parentProp, field, function);
+                        currentSqlBuilder = joins.get(i-1);
+                        currentSqlBuilder.fieldsByPropId.put(field.getId().toString(), field);
+                    }                    
+                    return field;
+                }
+            }
+        } else if (isDbColOrSqlExpressProp(prop) || dbpProp != null) {
+            final String sFieldName = genPropAlias();
+            final Field field;
+            if (prop instanceof RadInnatePropDef || dbpProp != null) {
+                if (dbpProp == null) {
+                    dbpProp = getTable().getColumns().getById(propId, ExtendableDefinitions.EScope.ALL);
+                }
+                field = new AggregationField(this, dbpProp, sFieldName, function);
+                if (dbpProp.getExpression() != null) {
+                    addPropsFromSqml(dbpProp.getExpression());
+                }
+            } else if (prop instanceof RadSqmlPropDef) {
+                field = new AggregationField(this, prop, sFieldName, function);
+                addPropsFromSqml(((RadSqmlPropDef) prop).getExpression());
+            } else {
+                field = new AggregationField(this, prop, sFieldName, function);
+            }
+            fieldsByPropId.put(field.getId().toString(), field);
+            return field;
+        }
+        return null;
     }
 
     public Field addProp(final Id propId, final EPropUsageType propUsageType, final String propAlias) {
@@ -279,6 +489,7 @@ public abstract class SqlBuilder {
                 for (IRadRefPropertyDef refProp : parentProp.getRefProps()) {
                     if (refProp instanceof RadInnateRefPropDef == false //TWRBS-3070
                             && refProp instanceof RadUserRefPropDef == false//RADIX-7772
+                            && refProp instanceof RadDetailParentRefPropDef == false
                             ) {
                         isDbRefsUsed = false;
                         break;
@@ -337,21 +548,74 @@ public abstract class SqlBuilder {
     protected final void addPropsFromSqml(final Sqml sqml) {
         try {
             sqml.setThreadLocalEnvironment(getSqmlEnvironment());
-            QuerySqmlTranslator.Factory.newInstance(this, QuerySqmlTranslator.EMode.QUERY_TREE_CONSTRUCTION).translate(sqml, CodePrinter.Factory.newNullPrinter(), getArte() == null ? null : getArte().getDbConfiguration());
+            QuerySqmlTranslator.Factory.newInstance(this, QuerySqmlTranslator.EMode.QUERY_TREE_CONSTRUCTION).translate(sqml, CodePrinter.Factory.newNullPrinter(), getPreprocessorConfig());
         } finally {
             sqml.setThreadLocalEnvironment(null);
         }
     }
+    
+    protected final boolean appendAggregationFieldsStr() {
+        final StringBuilder qry = getMainBuilder().querySql;
+        boolean res = false;
+        for (Field field : fieldsByPropId.values()) {
+            if (field.getAlias() != null                   
+                && (field.isExpression() || field.getProp() instanceof DdsColumnDef)) {
+                
+                if (field instanceof IAggregationField==false){
+                    field.alias = null;
+                    continue;
+                }
+                
+                if (res) {
+                    qry.append(',');
+                }                                
+                
+                final EAggregateFunction function = ((IAggregationField)field).getFunction();                
+                qry.append(function.getValue());
+                qry.append('(');
+                if (field.isExpression()){
+                    qry.append(translateSqml(field.getExpression()));
+                }else{
+                    qry.append(getAlias());
+                    qry.append('.');
+                    qry.append(((DdsColumnDef) field.getProp()).getDbName());
+                }
+                qry.append(") ");                    
+                qry.append(field.getAlias());
+                field.setIndex(getMainBuilder().getNextFieldIdx().getAndIncrement());
+                res = true;
+            }
+        }
 
-    protected final boolean appendFieldsStr(final boolean bForSelectParent) {
+        if (joinBuilders != null) {
+            for (SqlBuilder joinBuilder : joinBuilders.values()) {
+                if (res) {
+                    qry.append(',');
+                }
+                if (joinBuilder.appendAggregationFieldsStr()) {
+                    res = true;
+                } else {
+                    if (res)// deleting unused ','
+                    {
+                        qry.setLength(qry.length() - 1);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+    
+    protected final boolean appendFieldsStr() {
         final StringBuilder qry = getMainBuilder().querySql;
         boolean res = false;
         for (Field field : fieldsByPropId.values()) {
             if (field.getAlias() != null
-                    && (field.isExpression() || field.getProp() instanceof DdsColumnDef)) {
+                && (field.isExpression() || field.getProp() instanceof DdsColumnDef)) {
+                
                 if (res) {
                     qry.append(',');
-                }
+                }                
+                
                 if (field.isExpression()) {
                     final Sqml expression = field.getExpression();
                     qry.append('(');
@@ -376,7 +640,7 @@ public abstract class SqlBuilder {
                 if (res) {
                     qry.append(',');
                 }
-                if (joinBuilder.appendFieldsStr(bForSelectParent)) {
+                if (joinBuilder.appendFieldsStr()) {
                     res = true;
                 } else {
                     if (res)// deleting unused ','
@@ -452,8 +716,10 @@ public abstract class SqlBuilder {
 
     protected final SqlBuilder getParentJoinBuilder(final IRadRefPropertyDef refProp) {
         if (refProp instanceof RadInnateRefPropDef) {
-            return getJoinBuilder(((RadInnateRefPropDef) refProp).getReference(), false);
-        } else {
+            return getJoinBuilder(((RadInnateRefPropDef) refProp).getReference(), false);        
+        } else if (refProp instanceof RadDetailParentRefPropDef){
+            return getJoinBuilder(((RadDetailParentRefPropDef) refProp).getReference(), false);        
+        }else {
             return getJoinBuilder((RadUserRefPropDef) refProp);
         }
     }
@@ -509,12 +775,21 @@ public abstract class SqlBuilder {
                     }
                 }
             }
+            if (this!=builderForChildColumn && builderForChildColumn.joinBuilders!=null){
+                res = builderForChildColumn.joinBuilders.get(joinHashKey);
+                if (res!=null){
+                    return res;
+                }
+            }
             res = new NativeJoinSqlBuilder(getMainBuilder(), builderForChildColumn, ref, false);
             for (DdsReferenceDef.ColumnsInfoItem refProp : ref.getColumnsInfo()) { // Adding reference columns
                 builderForChildColumn.addProp(refProp.getChildColumnId(), EPropUsageType.FIELD, null);
                 res.addProp(refProp.getParentColumnId(), EPropUsageType.OTHER, null);
             }
-            builderForChildColumn.joinBuilders.put(joinHashKey, res);
+            if (builderForChildColumn.joinBuilders == null){
+                builderForChildColumn.joinBuilders = new HashMap<>();
+            }
+            builderForChildColumn.joinBuilders.put(joinHashKey, res);            
         }
         return res;
     }
@@ -529,12 +804,16 @@ public abstract class SqlBuilder {
         }
         return f;
     }
-
+    
+    protected ISqmlPreprocessorConfig getPreprocessorConfig() {
+        return new ServerPreprocessorConfig(getArte().getDbConfiguration());
+    }
+    
     public final CharSequence translateSqml(final Sqml sqml) {
         final CodePrinter codePrinter = CodePrinter.Factory.newSqlPrinter();
         try {
             sqml.setThreadLocalEnvironment(getSqmlEnvironment());
-            QuerySqmlTranslator.Factory.newInstance(this, QuerySqmlTranslator.EMode.SQL_CONSTRUCTION).translate(sqml, codePrinter, getArte() == null ? null : getArte().getDbConfiguration());
+            QuerySqmlTranslator.Factory.newInstance(this, QuerySqmlTranslator.EMode.SQL_CONSTRUCTION).translate(sqml, codePrinter, getPreprocessorConfig());
         } catch (RuntimeException e) {
             if (e instanceof TagTranslateError) {
                 throw (TagTranslateError) e;
@@ -608,9 +887,13 @@ public abstract class SqlBuilder {
 
     public ISqmlEnvironment getSqmlEnvironment() {
         if (sqmlEnvironment == null) {
-            sqmlEnvironment = new SqmlEnvironment(this);
+            sqmlEnvironment = createSqmlEnvironment();
         }
         return sqmlEnvironment;
+    }
+    
+    protected ISqmlEnvironment createSqmlEnvironment() {
+        return new SqmlEnvironment(this);
     }
 
     private boolean isDbColOrSqlExpressProp(final RadPropDef prop) {

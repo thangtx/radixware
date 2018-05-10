@@ -43,7 +43,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
 
     public int getColumnIndexByProperty(Object obj) {
         if (obj instanceof Id) {
-            AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().findByPropId((Id) obj);
+            AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().findItemById((Id) obj);
             if (ref != null) {
                 return ref.getColumn();
             }
@@ -53,7 +53,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
 
     public int getRowIndexByProperty(Object obj) {
         if (obj instanceof Id) {
-            AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().findByPropId((Id) obj);
+            AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().findItemById((Id) obj);
             if (ref != null) {
                 int check = editorPage.getProperties().getRowCount();
                 return ref.getRow();
@@ -107,7 +107,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
                 if (nextcolumn != null) {
                     for (int n = 0, nextsize = nextcolumn.size() - 1; n <= nextsize; n++) {
                         PropertyRef nextref = nextcolumn.get(n);
-                        AdsEditorPageDef.PagePropertyRef nextpageref = editorPage.getProperties().findByPropId(nextref.getPropertyId());
+                        AdsEditorPageDef.PagePropertyRef nextpageref = editorPage.getProperties().findItemById(nextref.getPropertyId());
                         if (nextpageref != null) {
                             nextpageref.setColumn(i - 1);
                         }
@@ -157,7 +157,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
         List<Id> contentIds = propertyList.getIds();
 
         for (Id idx : contentIds) {
-            AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().findByPropId(idx);
+            AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().findItemById(idx);
             if (ref != null) {
                 int column = ref.getColumn();
                 if (!contentClone.containsKey(column)) {
@@ -211,7 +211,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
     }
 
     private void removeIdItem(Id idx) {
-        AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().findByPropId(idx);
+        AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().findItemById(idx);
         if (ref != null) {
             Map<Integer, PropertyRef> column = content.get(ref.getColumn());
             if (column != null) {
@@ -222,7 +222,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
                 }
                 for (int r = row + 1, size = column.size(); r <= size; r++) {
                     Id rId = column.get(r).getPropertyId();
-                    AdsEditorPageDef.PagePropertyRef rRef = editorPage.getProperties().findByPropId(rId);
+                    AdsEditorPageDef.PagePropertyRef rRef = editorPage.getProperties().findItemById(rId);
                     if (rRef != null) {
                         rRef.setRow(r - 1);
                         PropertyRef removed = column.remove(r);
@@ -264,7 +264,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
         if (start <= max && column.get(start) != null) {
             for (int c = max; c >= start; c--) {
                 if (column.get(c) != null) {
-                    AdsEditorPageDef.PagePropertyRef rref = editorPage.getProperties().findByPropId(column.get(c).getPropertyId());
+                    AdsEditorPageDef.PagePropertyRef rref = editorPage.getProperties().findItemById(column.get(c).getPropertyId());
                     if (rref != null) {
                         PropertyRef removed = column.remove(c);
                         rref.setRow(c + items.length);
@@ -313,7 +313,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
     }
 
     public void moveItem(PropertyRef ref, int targetRow, int targetColumn) {
-        AdsEditorPageDef.PagePropertyRef propRef = editorPage.getProperties().findByPropId(ref.getPropertyId());
+        AdsEditorPageDef.PagePropertyRef propRef = editorPage.getProperties().findItemById(ref.getPropertyId());
         if (propRef != null) {
             int prevRow = propRef.getRow();
             int prevColumn = propRef.getColumn();
@@ -325,7 +325,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
                 for (int r = prevRow + 1, size = column.size(); r <= size; r++) {
                     if (column.get(r) != null) {
                         Id rId = column.get(r).getPropertyId();
-                        AdsEditorPageDef.PagePropertyRef rRef = editorPage.getProperties().findByPropId(rId);
+                        AdsEditorPageDef.PagePropertyRef rRef = editorPage.getProperties().findItemById(rId);
                         if (rRef != null) {
                             rRef.setRow(r - 1);
                             PropertyRef removed = column.remove(r);
@@ -355,7 +355,7 @@ public class PropertiesArrangmentTableModel extends AbstractTableModel {
                         for (int r = targetRow, size = max; size >= r; size--) {
                             if (newColumn.get(size) != null) {
                                 Id rId = newColumn.get(size).getPropertyId();
-                                AdsEditorPageDef.PagePropertyRef rRef = editorPage.getProperties().findByPropId(rId);
+                                AdsEditorPageDef.PagePropertyRef rRef = editorPage.getProperties().findItemById(rId);
                                 if (rRef != null) {
                                     rRef.setRow(size + 1);
                                     PropertyRef moved = newColumn.remove(size);

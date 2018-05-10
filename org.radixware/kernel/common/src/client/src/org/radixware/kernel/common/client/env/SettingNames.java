@@ -22,6 +22,7 @@ public interface SettingNames {
     public static final String APP_STYLE = "app_style";
     public static final String STYLENAME = "stylename";
     public static final String MEM_LEAK_DETECTOR = "MemLeakDetector";
+    public static final String FORMAT_SETTINGS = "format_settings";
     
     public interface Properties {
         public static final String READONLY_PROPERTY = "RDNL_PRP";
@@ -65,7 +66,7 @@ public interface SettingNames {
             public static final String FONT = "FNT";
             public static final String BACKGROUND_COLOR = "B_C";
             public static final String FOREGROUND_COLOR = "F_C";
-            public static final String SHOW_ICONS = "SH_IC";            
+            public static final String SHOW_ICONS = "SH_IC";
         }
 
         public interface Editor {
@@ -88,6 +89,7 @@ public interface SettingNames {
             public static final String TITLES_ALIGNMENT = "TTLS_ALGNM";
             public static final String BODY_ALIGNMENT = "PRPRTS_ALGNM";
             public static final String CHECK_MANDATORY_ON_CLOSE = "CHECK_MANDATORY_ON_CLOSE";
+            public static final String DROP_DOWN_LIST_ITEMS_LIMIT = "DROP_DOWN_LIST_ITEMS_LIMIT";//максимальное количество элементов в выпадающем списке
         }
     }
 
@@ -96,8 +98,7 @@ public interface SettingNames {
         public static final String COMMON_GROUP = "C_S_G";
         public static final String STYLES_GROUP = "S_S_G";
         public static final String COLUMNS_GROUP = "columns";
-//            public static final String LAST_FILTER_ID ="filter";
-//            public static final String FILTER_WAS_APPLIED ="wasApplied";
+        public static final String SELECTION_STATISTIC_EXPORT_DIR = "statistic_export_dir";
 
         public interface Common {
 
@@ -107,6 +108,7 @@ public interface SettingNames {
             public static final String BODY_ALIGNMENT = "SLCTR_BDY_ALGN";
             public static final String FRAME_COLOR = "SLCTR_FRM_COLOR";//цвет рамки фокуса текущей ячейки
             public static final String ROW_FRAME_COLOR = "SLCTR_ROW_FRM_COLOR";//цвет рамки фокуса текущей строки
+            public static final String MULTIPLE_SELECTION_MODE_ENABLED_BY_DEFAULT = "MULTIPLE_SELECTION_ENABLED";//режим множественного выбора включен при открытии
             public static final String SELECTED_ROW_COLOR = "SELECTED_ROW_COLOR";//цвет выбранной строки
             public static final String SLIDER_VALUE = "SLDR_VL";            
             public static final String SAVE_FILTER = "SAVE_FILTER";
@@ -158,5 +160,17 @@ public interface SettingNames {
             public static final String SQML_DB_NAME = "SQML_DB_NAME";
             public static final String SQML_PREPROCESSOR = "SQML_PREPROCESSOR";
         }
+    }
+    
+    public interface FormatSettings{
+        
+        public static final String NUMBER = "NUMBER";
+        public static final String DATE = "DATE";
+        public static final String TIME = "TIME";
+        
+        public interface Number {
+            public static final String GROUP_SEPARATOR  = "GROUP_SEP";
+            public static final String DECIMAL_PART_SEPARATOR = "DECIMAL_SEP";
+        }        
     }
 }

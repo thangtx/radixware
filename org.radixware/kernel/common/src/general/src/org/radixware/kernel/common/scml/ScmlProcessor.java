@@ -8,8 +8,9 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.scml;
+
+import org.radixware.kernel.common.utils.Utils;
 
 /**
  * Parser of scml for tags, tags in comments, and text.
@@ -17,8 +18,7 @@ package org.radixware.kernel.common.scml;
 public abstract class ScmlProcessor {
 
     /**
-     * Get comments analizer.
-     * Called only before parse.
+     * Get comments analizer. Called only before parse.
      */
     protected abstract CommentsAnalizer getCommentsAnalizer();
 
@@ -39,13 +39,15 @@ public abstract class ScmlProcessor {
         for (Scml.Item item : scml.getItems()) {
             if (item instanceof Scml.Text) {
                 String text = ((Scml.Text) item).getText();
-                commentsAnalizer.process(text);
+                if (Utils.isNotNull(commentsAnalizer)) {
+                    commentsAnalizer.process(text);
+                }
                 processText((Scml.Text) item);
             } else {
-                if (!commentsAnalizer.isInComment()) { // ignore tags in comments
-                    processTag((Scml.Tag) item);
-                } else {
+                if (Utils.isNotNull(commentsAnalizer) && commentsAnalizer.isInComment()) { // ignore tags in comments
                     processTagInComment((Scml.Tag) item);
+                } else {
+                    processTag((Scml.Tag) item);
                 }
             }
         }

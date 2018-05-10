@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcBOQ7B2HDVRH7VBF45J5T34OZZY" Name="CfgImportSettingsWrapper" Type="3" Environment="server">
+    <AccessRules Access="4" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcBOQ7B2HDVRH7VBF45J5T34OZZY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcBOQ7B2HDVRH7VBF45J5T34OZZY"/>
+    </Bodies>
+    <MethodGroup Id="cmgTVJ3QWCFPFBXXEAED6I6DR67WM" Name="Root"/>
+    <PropertyGroup Id="cpgWYIVLBU6VRDDLOLE2ZRRLEOFBU" Name="Root"/>
+    <Properties>
+      <Property Id="prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Name="item" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthLP7376EMJZAXLLFJMD4RQFB6HY" Name="CfgImportSettingsWrapper" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="item" Id="mprRJNGTIQXDRE4VKHOG3GLE425VA">
+            <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = item;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBMOT2TX6DZCZ7A57LCUI67RMQE" Name="getStringParam" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" Id="mprHIAHBEKBBJCXVGNVRG3DEDTFDA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings() != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings().getStringParams() != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> map = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings().getStringParams();
+    for (org.radixware.schemas.types.MapStrStr.Entry e : map.EntryList) {
+        if (e.Key.equals(key)) {
+            return e.Value;
+        }
+    }
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthM4UZMD3FDRCJBAPH5MZGSZ6OGM" Name="getXmlParam" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" Id="mprTEAHDNEB6ZBNLKRPYOOE3DCJ2U">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="valClass" Id="mprIP5L4FUBOJCXJBCOE3LV6BLDVI">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings() != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings().getXmlParams() != null) {
+    java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="ItemSettings.XmlParams.XmlParam">
+                <xsc:Presentation>ImpExpXsd:ItemSettings.XmlParams.XmlParam</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> params = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings().getXmlParams().XmlParamList;
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="ItemSettings.XmlParams.XmlParam">
+                <xsc:Presentation>ImpExpXsd:ItemSettings.XmlParams.XmlParam</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> param : params) {
+        if (param.Key.equals(key)) {
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcJIXMCWVVIFFZNOBJ6SXRWWMQ5A">
+                <xsc:Presentation>Utils::XmlObjectProcessor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJIXMCWVVIFFZNOBJ6SXRWWMQ5A mthROWGNJJQS5GNHKCCJALZMSZYSU" Invoke="true">
+                <xsc:Presentation>castToXmlClass</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(valClass.getClassLoader(), param.getValue(), valClass);
+        }
+    }
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYQGB4QNRFBBTVAW5GI3BNHFOSQ" Name="setStringParam" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" Id="mprT3D4S24BLVAV5DX444LGC3D2EY">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprUQPHM7KE3BHCTKKMKZH6DZQPUQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="SettingsDocument">
+                <xsc:Presentation>ImpExpXsd:SettingsDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+} else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings() != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings().getStringParams() != null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> map = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings().getStringParams();
+    for (org.radixware.schemas.types.MapStrStr.Entry e : map.EntryList) {
+        if (e.Key.equals(key)) {
+            e.Value = value;
+            return;
+        }
+    }
+}
+final org.radixware.schemas.types.MapStrStr.Entry param
+        = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ensureSettings().ensureStringParams().addNewEntry();
+param.Key = key;
+param.Value = value;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTXNX5KXLJRA6BHPAPVSXEDW56E" Name="setXmlParam" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="key" Id="mprN474G4WTZZBSDARUD3DFXEPOKQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mpr37TMU67PDRD5TKD5U4LFJE55TY">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="SettingsDocument">
+                <xsc:Presentation>ImpExpXsd:SettingsDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.newInstance();
+} else if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings() != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings().getXmlParams() != null) {
+    java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="ItemSettings.XmlParams.XmlParam">
+                <xsc:Presentation>ImpExpXsd:ItemSettings.XmlParams.XmlParam</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> params = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSettings().getXmlParams().XmlParamList;
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="ItemSettings.XmlParams.XmlParam">
+                <xsc:Presentation>ImpExpXsd:ItemSettings.XmlParams.XmlParam</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> param : params) {
+        if (param.Key.equals(key)) {
+            param.setValue(value);
+            return;
+        }
+    }
+}
+final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="ItemSettings.XmlParams.XmlParam">
+                <xsc:Presentation>ImpExpXsd:ItemSettings.XmlParams.XmlParam</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> param
+        = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBOQ7B2HDVRH7VBF45J5T34OZZY prd6I5PBIFTOVEYXA5SCLWW7Q6T5A" Invoke="true">
+                <xsc:Presentation>item</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colM4MU5QWZUVHADCVXB2GL47BQXI" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ensureSettings().ensureXmlParams().addNewXmlParam();
+param.Key = key;
+param.setValue(value);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicQWYK4YJIA5EKZJ2YT5GLLSA3LQ"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

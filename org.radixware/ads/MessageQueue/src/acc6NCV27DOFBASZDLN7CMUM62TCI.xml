@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="acc6NCV27DOFBASZDLN7CMUM62TCI" Name="QueueHasStoredMessCur" Type="4">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeracc6NCV27DOFBASZDLN7CMUM62TCI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyacc6NCV27DOFBASZDLN7CMUM62TCI"/>
+    </Bodies>
+    <MethodGroup Id="cmgCMGSNNFDA5ATJAJN3VF7TQ52YQ" Name="Root"/>
+    <PropertyGroup Id="cpgNDFLEESQPVEF5DYKM2HOBNZA6E" Name="Root"/>
+    <Properties>
+      <Property Id="prmVJAXPA7FWBH6HPZENIFQCCFIHM" Name="pQueueId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pQueueId" Id="mprVJAXPA7FWBH6HPZENIFQCCFIHM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="acc6NCV27DOFBASZDLN7CMUM62TCI"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select 1 from dual where exists (select 1 from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4" PropId="colYFDVBGNTNBENRBZL4AYTVA6GTQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmVJAXPA7FWBH6HPZENIFQCCFIHM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

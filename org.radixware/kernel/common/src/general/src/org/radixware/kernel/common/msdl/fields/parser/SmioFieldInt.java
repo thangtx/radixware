@@ -42,8 +42,12 @@ public class SmioFieldInt extends SmioFieldSigned {
     }
 
     @Override
-    public boolean getIsBSD() throws SmioException {
-        return getCoder().encoding == EncodingDef.BCD;
+    public boolean getIsBCD() {
+        try {
+            return getCoder().encoding == EncodingDef.BCD;
+        } catch (SmioException ex) {
+            return false;
+        }
     }
 
     @Override
@@ -52,8 +56,12 @@ public class SmioFieldInt extends SmioFieldSigned {
     }
 
     @Override
-    public boolean getIsHex() throws SmioException {
-        return getCoder() != null && (getCoder().encoding == EncodingDef.HEX || getCoder().encoding == EncodingDef.HEX_EBCDIC);
+    public boolean getIsHex() {
+        try {
+            return getCoder() != null && (getCoder().encoding == EncodingDef.HEX || getCoder().encoding == EncodingDef.HEX_EBCDIC);
+        } catch (SmioException ex) {
+            return false;
+        }
     }
 
     @Override
@@ -70,7 +78,7 @@ public class SmioFieldInt extends SmioFieldSigned {
         obj.set(value);
     }
 
-    private int getRadix() throws SmioException {
+    private int getRadix() {
         return getIsHex() ? 16 : 10;
     }
 

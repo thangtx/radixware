@@ -14,14 +14,18 @@ package org.radixware.kernel.common.client.eas.resources;
 import org.radixware.kernel.common.client.eas.resources.rpc.RadixRpcServer;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.exceptions.TerminalResourceException;
 import org.radixware.kernel.common.enums.EFileOpenMode;
 import org.radixware.kernel.common.enums.EFileOpenShareMode;
+import org.radixware.kernel.common.enums.EMimeType;
 
 import org.radixware.schemas.eas.FileOpenRq;
+import org.radixware.schemas.eas.FileTransitRq;
 import org.radixware.schemas.eas.MessageDialogOpenRq;
 import org.radixware.schemas.eas.ProgressDialogStartProcessRq;
 import org.radixware.schemas.eas.ProgressDialogSetRq;
@@ -31,6 +35,7 @@ public final class TerminalResources {
 
     private final Map<String, ITerminalResource> resources = new HashMap<>();
     private final Map<IClientEnvironment,RadixRpcServer> rpcServers = new WeakHashMap<>(16);
+    private final List<IFileTransitResource> fileTransits = new LinkedList<>();
     private final static Object SEMAPHORE = new Object();
     private final static Map<IClientEnvironment,TerminalResources> RESOURCES_BY_ENV = new WeakHashMap<>(16);
 
@@ -92,20 +97,30 @@ public final class TerminalResources {
         throw new TerminalResourceException(TerminalResourceException.ResourceKind.MessageDialog, id);
     }
 
-    public void freeResource(final String id) throws TerminalResourceException {
-        if (resources.containsKey(id)) {
-            resources.get(id).free();
+    public void freeResource(final IClientEnvironment environment, final String id) throws TerminalResourceException {                
+        final ITerminalResource resource = resources.get(id);
+        if (resource!=null){
+            if (resource instanceof IFileTransitResource){
+                final IFileTransitResource fileTransit = (IFileTransitResource)resource;
+                fileTransit.makeTransit(environment);
+                fileTransits.remove(fileTransit);
+            }
+            resource.free();
+            resources.remove(id);            
         }
-        resources.remove(id);
     }
 
     public void freeAllResources(final IClientEnvironment environment) throws TerminalResourceException {
+        for (IFileTransitResource fileTransit: fileTransits){
+            fileTransit.makeTransit(environment);
+        }
+        fileTransits.clear();
         for (Map.Entry<String, ITerminalResource> entry : resources.entrySet()) {
             entry.getValue().free();
         }
         resources.clear();
         rpcServers.remove(environment);
-        environment.getResourceManager().getProgressDialogResource().clear();
+        environment.getResourceManager().getProgressDialogResource().clear();        
     }
 
     public String openFileResource(final IClientEnvironment environment, final FileOpenRq request) throws TerminalResourceException, IOException {
@@ -113,6 +128,16 @@ public final class TerminalResources {
         EFileOpenShareMode share = request.getShare();
         IFileResource resource = environment.getResourceManager().openFileResource(request.getFileName(), mode, share);
         final String id = resource.getId();
+        resources.put(id, resource);
+        return id;
+    }
+    
+    public String startFileTransit(final IClientEnvironment environment, final FileTransitRq request) throws TerminalResourceException, IOException {
+        final EMimeType mimeType = request.isSetMimeType() ? request.getMimeType() : null;
+        final boolean openAfterTransit = request.isSetOpenAfterTransit() ? request.getOpenAfterTransit() : false;
+        final IFileTransitResource resource = environment.getResourceManager().startFileTransit(request.getFileName(), mimeType, openAfterTransit);
+        final String id = resource.getId();
+        fileTransits.add(resource);
         resources.put(id, resource);
         return id;
     }

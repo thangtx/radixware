@@ -13,11 +13,14 @@ package org.radixware.wps;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.connections.ConnectionOptions;
 import org.radixware.kernel.common.client.types.ExplorerRoot;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.connections.ConnectionsDocument.Connections.Connection;
 import org.radixware.wps.dialogs.ChooseRootDialog;
 import org.radixware.wps.dialogs.ConnectionEditor;
@@ -26,7 +29,7 @@ import org.radixware.wps.dialogs.ConnectionsManagerDialog;
 
 public class Connections extends org.radixware.kernel.common.client.eas.connections.Connections {
 
-    private static class ConnectionOptionsImpl extends ConnectionOptions {
+    public static class ConnectionOptionsImpl extends ConnectionOptions {
         
         public ConnectionOptionsImpl(IClientEnvironment environment, Connection connection, boolean isLocal) {
             super(environment, connection, isLocal);
@@ -56,7 +59,7 @@ public class Connections extends org.radixware.kernel.common.client.eas.connecti
 
         @Override
         public boolean edit(List<String> existingConnections) {
-            ConnectionEditor editor = new ConnectionEditor((WpsEnvironment) getEnvironment(), this);
+            ConnectionEditor editor = new ConnectionEditor((WpsEnvironment) getEnvironment(), this, existingConnections);
             return editor.execDialog() == DialogResult.ACCEPTED;
         }
 
@@ -66,10 +69,21 @@ public class Connections extends org.radixware.kernel.common.client.eas.connecti
             connection.id = this.id;
             return connection;
         }
+        
+        @Override
+        public void setExplorerRootId(final Id explorerRootId) {
+            super.setExplorerRootId(explorerRootId);
+        }
+
+        @Override
+        protected SslOptions createSslOptions(Connection.SSLOptions sslOptions) {
+            return new SslOptionsImpl(sslOptions);
+        }
+        
     }
 
-    public Connections(IClientEnvironment environment) {
-        super(environment, FileFinder.findFile(WebServerRunParams.getConnectionsFile()));
+    public Connections(final IClientEnvironment environment) {
+        super(environment, FileFinder.findFile(((WpsEnvironment)environment).getRunParams().getConnectionsFile()) );
     }
 
 //    public void configure() {
@@ -135,5 +149,31 @@ public class Connections extends org.radixware.kernel.common.client.eas.connecti
 
             return def == null ? null : new ConnectionOptionsImpl(getEnvironment(), def, def.getName());
         }
+    }
+    
+    public String getConnectionNameByUserName(String userName) {
+        return user2connection.get(userName);
+    }
+    
+    public List<String> getLinkedUserNames() {
+        List<String> userNamesList = new LinkedList<>();
+        if (user2connection != null) {
+            for (String userName : user2connection.keySet()) {
+                userNamesList.add(userName);
+            }
+        }
+        return userNamesList;
+    }
+    
+    public void setUser2connection(Map<String, String> map) {
+        user2connection = map;
+    }
+    
+    public String getDefaultConnectionName() {
+        return defaultConnectionName;
+    }
+    
+    public void setDefaultConnectionName(String defaultConnectionName) {
+        this.defaultConnectionName = defaultConnectionName;
     }
 }

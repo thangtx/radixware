@@ -97,34 +97,36 @@ import java.sql.SQLException;
           <Src>
             <xsc:Item>
               <xsc:Java>String s = null;
-if(</xsc:Java>
+if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true">
+                <xsc:Presentation>content</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>!=null)
-{  
-   try
-   {
-      s = </xsc:Java>
+              <xsc:Java> != null) {
+    try {
+        s = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true">
+                <xsc:Presentation>content</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.getSubString(1, (int)</xsc:Java>
+              <xsc:Java>.getSubString(1, (int) </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true">
+                <xsc:Presentation>content</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.length());
-   }
-   catch(SQLException e)
-   {
-   }   
-}   
+    } catch (SQLException e) {
+    }
+}
 return s;</xsc:Java>
             </xsc:Item>
           </Src>
@@ -819,12 +821,8 @@ formLog.</xsc:Java>
         </TitleItem>
       </ObjectTitleFormat>
       <Sortings>
-        <Sorting Id="srtNTNRHOR3I7OBDBD2ABIFNQAABA" Name="Id" TitleId="mlsDBVFSS24OXOBDFKUAAMPGXUWTQ">
-          <OrderBy Desc="false" PropId="colCDTKH4LIXPNRDF5KABIFNQAABA"/>
-          <Hint/>
-        </Sorting>
-        <Sorting Id="srtVXWHUWNHJTOBDBD7ABIFNQAABA" Name="Id Desc" TitleId="mlsDFVFSS24OXOBDFKUAAMPGXUWTQ">
-          <OrderBy Desc="true" PropId="colCDTKH4LIXPNRDF5KABIFNQAABA"/>
+        <Sorting Id="srtVXWHUWNHJTOBDBD7ABIFNQAABA" Name="Time" TitleId="mlsDFVFSS24OXOBDFKUAAMPGXUWTQ">
+          <OrderBy Desc="true" PropId="colITXTX6DIXPNRDF5KABIFNQAABA"/>
           <Hint/>
         </Sorting>
       </Sortings>
@@ -855,13 +853,17 @@ formLog.</xsc:Java>
                       <xsc:Java>if(</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA aemPVTIPIRSJPOBDBD5ABIFNQAABA prd6TQICIR5Q3ORDBMWABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA aemPVTIPIRSJPOBDBD5ABIFNQAABA prd6TQICIR5Q3ORDBMWABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>formClassGuid</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>!=null &amp;&amp; </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA aemPVTIPIRSJPOBDBD5ABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA aemPVTIPIRSJPOBDBD5ABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>content</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>!=null)
@@ -871,26 +873,34 @@ formLog.</xsc:Java>
                 </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                        <xsc:Presentation>Types::Id</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> classId = </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                        <xsc:Presentation>Types::Id</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.Factory.loadFrom(</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA aemPVTIPIRSJPOBDBD5ABIFNQAABA prd6TQICIR5Q3ORDBMWABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA aemPVTIPIRSJPOBDBD5ABIFNQAABA prd6TQICIR5Q3ORDBMWABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>formClassGuid</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.getValue());
 		String xmlString = </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA aemPVTIPIRSJPOBDBD5ABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA aemPVTIPIRSJPOBDBD5ABIFNQAABA colLJ6TQSM7ITOBDBDXABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>content</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.getValue();          
@@ -898,14 +908,18 @@ formLog.</xsc:Java>
 		</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="apcDHEPESNJRPORDBM4ABIFNQAABA"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="apcDHEPESNJRPORDBM4ABIFNQAABA">
+                        <xsc:Presentation>Workflow.Dlg::PropList</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> propertyList =
 		   new </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthWE6XP45TRPORDBM4ABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthWE6XP45TRPORDBM4ABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>PropList</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>(Environment,classId, xmlString);
@@ -913,26 +927,34 @@ formLog.</xsc:Java>
 		propertyList.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthP6GHDTPTRXORDBM5ABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="apcDHEPESNJRPORDBM4ABIFNQAABA mthP6GHDTPTRXORDBM5ABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>writeToTable</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>(Environment,</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA ceePVTIPIRSJPOBDBD5ABIFNQAABA wdgV2HJSSXHRLORDBM3ABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA ceePVTIPIRSJPOBDBD5ABIFNQAABA wdgV2HJSSXHRLORDBM3ABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>FormLog:PageContent:View:customEditor:table</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>);
                 </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA ceePVTIPIRSJPOBDBD5ABIFNQAABA wdgV2HJSSXHRLORDBM3ABIFNQAABA" Invoke="true"/>
+                      <xsc:IdReference Path="aec3KY3VBDIXPNRDF5KABIFNQAABA eprPVTIPIRSJPOBDBD5ABIFNQAABA ceePVTIPIRSJPOBDBD5ABIFNQAABA wdgV2HJSSXHRLORDBM3ABIFNQAABA" Invoke="true">
+                        <xsc:Presentation>FormLog:PageContent:View:customEditor:table</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.setEditTriggers(</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QAbstractItemView.EditTrigger"/>
+                      <xsc:TypeDeclaration TypeId="400" extStr="com.trolltech.qt.gui.QAbstractItemView.EditTrigger">
+                        <xsc:Presentation>com.trolltech.qt.gui.QAbstractItemView.EditTrigger</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.NoEditTriggers);
@@ -2902,14 +2924,13 @@ catch(Exception e)
           <SelectorColumns>
             <Column Align="-1" PropId="colOUWRPPJCE3OBDF74ABIFNQAABA" Visibility="2"/>
             <Column Align="-1" PropId="colCDTKH4LIXPNRDF5KABIFNQAABA" Visibility="1"/>
-            <Column Align="-1" PropId="colLJ6TQSM7ITOBDBDXABIFNQAABA" Visibility="2"/>
             <Column Align="-1" PropId="colITXTX6DIXPNRDF5KABIFNQAABA" Visibility="1"/>
-            <Column Align="-1" PropId="colB3SYQATJXPNRDF5KABIFNQAABA" Visibility="2"/>
-            <Column Align="-1" PropId="colSE3FOD3JXPNRDF5KABIFNQAABA" Visibility="0"/>
+            <Column Align="-1" PropId="colB3SYQATJXPNRDF5KABIFNQAABA" Visibility="1"/>
             <Column Align="-1" PropId="prdM6TXCZALHTOBDGAVABIFNQAABA" Visibility="1"/>
             <Column Align="-1" PropId="colUWWYIJ3JXPNRDF5KABIFNQAABA" Visibility="2"/>
             <Column Align="-1" PropId="prdGYBQ7LNAL7OBDBERABIFNQAABA" Visibility="2"/>
             <Column Align="-1" PropId="colWRDDKQDJXPNRDF5KABIFNQAABA" Visibility="2"/>
+            <Column Align="-1" PropId="colSE3FOD3JXPNRDF5KABIFNQAABA" Visibility="0" SizePolicy="0"/>
           </SelectorColumns>
         </SelectorPresentation>
       </SelectorPresentations>

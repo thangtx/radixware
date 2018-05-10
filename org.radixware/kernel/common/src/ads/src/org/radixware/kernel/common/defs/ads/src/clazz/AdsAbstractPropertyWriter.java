@@ -50,7 +50,7 @@ final class AdsAbstractPropertyWriter extends AdsPropertyWriter<AdsPropertyDef> 
         getTypeWriter().writeCode(printer);
         printer.printSpace();
         printer.print(TEXT_GET);
-        writePropertyName(printer);
+        writePropertyName(printer, true);
         printer.println("();");
     }
 
@@ -66,7 +66,7 @@ final class AdsAbstractPropertyWriter extends AdsPropertyWriter<AdsPropertyDef> 
 
         printer.printSpace();
         printer.print(TEXT_SETTER_PREFIX);
-        writePropertyName(printer);
+        writePropertyName(printer, true);
         printer.print('(');
         getTypeWriter().writeCode(printer);
         printer.println(" val);");

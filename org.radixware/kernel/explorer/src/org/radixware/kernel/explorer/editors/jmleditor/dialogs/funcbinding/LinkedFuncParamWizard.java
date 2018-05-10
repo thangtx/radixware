@@ -11,8 +11,10 @@
 package org.radixware.kernel.explorer.editors.jmleditor.dialogs.funcbinding;
 
 import com.trolltech.qt.gui.QWidget;
+import java.util.EnumSet;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.utils.ValueConverter;
+import org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
 import org.radixware.kernel.common.enums.EValType;
@@ -33,6 +35,7 @@ public class LinkedFuncParamWizard extends BaseWizard {
     private final IClientEnvironment environment;
     private final AdsTypeDeclaration type;
     private final WizardFlow flow = new WizardFlow(this);
+    private static final EnumSet<EValType> NOT_ACCEPTABLE_VALUE_TYPES =  EnumSet.of(EValType.USER_CLASS, EValType.JAVA_CLASS);
 
     public AdsTypeDeclaration getTargetParamType() {
         return type;
@@ -68,7 +71,7 @@ public class LinkedFuncParamWizard extends BaseWizard {
             }
             break;
             case VALUE: {
-                if (Utils.convertType(getTargetParamType()) != EValType.USER_CLASS) {
+                if (!NOT_ACCEPTABLE_VALUE_TYPES.contains(Utils.convertType(getTargetParamType()))) {
                     final ParameterBinding.ExternalValue xPropRef = xResult.addNewExternalValue();
                     ValueConverter.objVal2EasPropXmlVal(flow.getValue(), Utils.convertType(getTargetParamType()), xPropRef.addNewValue());
                 }
@@ -84,9 +87,9 @@ public class LinkedFuncParamWizard extends BaseWizard {
         return xResult;
     }
 
-    public LinkedFuncParamWizard(final QWidget parent, final AdsUserFuncDef userFunc, final AdsTypeDeclaration type, final ParametersBindingType.ParameterBinding xBinding, final IClientEnvironment environment) {
+    public LinkedFuncParamWizard(final QWidget parent, final AdsUserFuncDef userFunc, final MethodParameter mthParam, final ParametersBindingType.ParameterBinding xBinding, final IClientEnvironment environment) {
         super(parent, (ExplorerSettings) environment.getConfigStore(), "LinkedFuncParamWizard");
-        this.type = type;
+        this.type = mthParam.getType();
         this.userFunc = userFunc;
         this.environment = environment;
         setPage(WizardFlow.CHOOSE_PARAMETER_KIND, new ChooseValueKindPage(this, xBinding));
@@ -94,6 +97,6 @@ public class LinkedFuncParamWizard extends BaseWizard {
         setPage(WizardFlow.CHOOSE_DB_PROP, new ChoosePropertyPage(this));
         setPage(WizardFlow.CHOOSE_DB_OBJECT, new ChooseDbObjectPage(this));
 
-        setWindowTitle(Application.translate("JmlEditor", "Setup Parameter Binding"));
+        setWindowTitle(Application.translate("JmlEditor", "Setup Parameter Binding") + ": " + type.getName(userFunc) + " " + mthParam.getName());
     }
 }

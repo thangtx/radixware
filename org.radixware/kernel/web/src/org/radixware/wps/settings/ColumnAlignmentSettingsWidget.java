@@ -25,19 +25,18 @@ import org.radixware.wps.rwt.ValueEditor;
 import org.radixware.wps.views.editors.valeditors.ValListEditorController;
 
 
-public class ColumnAlignmentSettingsWidget extends SettingsWidget {
+final class ColumnAlignmentSettingsWidget extends SettingsWidget {
 
-    final private ValListEditorController<String> listStringController;
+    private final ValListEditorController<String> listStringController;
     private ESelectorColumnAlign alignment = ESelectorColumnAlign.DEFAULT;
-    final private EValType valType;
+    private final EValType valType;
 
     public ColumnAlignmentSettingsWidget(final WpsEnvironment env, final UIObject parent, EValType type) {
                 super(env, 
                 parent, 
                 SettingNames.SELECTOR_GROUP, 
                 SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.BODY_ALIGNMENT, 
-                type.getName(), 
-                null/*ESelectorColumnAlign.DEFAULT*/);
+                type.getName());
         final EditMaskList mask = new EditMaskList();
         this.valType = type;
         MessageProvider mp = getEnvironment().getApplication().getMessageProvider();
@@ -74,7 +73,7 @@ public class ColumnAlignmentSettingsWidget extends SettingsWidget {
 
     @Override
     public void readSettings(WpsSettings src) {
-        int value = src.readInteger(getSettingCfgName(), alignment.getValue().intValue());
+        int value = src.readInteger(getSettingCfgName(), defaultValue(valType).getValue().intValue());
         ESelectorColumnAlign v = ESelectorColumnAlign.getForValue((long) value);
         setAlignment(v);
     }

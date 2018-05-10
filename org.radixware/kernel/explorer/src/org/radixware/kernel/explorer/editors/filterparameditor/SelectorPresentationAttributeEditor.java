@@ -19,21 +19,21 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
-import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlSelectorPresentationDef;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 
 
-final class SelectorPresentationAttributeEditor extends AbstractAttributeEditor<AdsSelectorPresentationDef> {
+final class SelectorPresentationAttributeEditor extends AbstractAttributeEditor<ISqmlSelectorPresentationDef> {
 
     private final QLabel lbSelPresLabel;
     private final ValSelPresEditor editor;
 
-    protected SelectorPresentationAttributeEditor(IClientEnvironment environment, final boolean isReadonly, final QWidget parent) {
+    protected SelectorPresentationAttributeEditor(final IClientEnvironment environment, final boolean isReadonly, final QWidget parent) {
         super(environment);
-        lbSelPresLabel = new QLabel(getAttribute().getTitle(), parent);
+        lbSelPresLabel = new QLabel(getAttribute().getTitle(environment), parent);
         lbSelPresLabel.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         lbSelPresLabel.setObjectName("lbSelPresLabel");
         editor = new ValSelPresEditor(environment, parent, isReadonly);
@@ -63,16 +63,16 @@ final class SelectorPresentationAttributeEditor extends AbstractAttributeEditor<
     }
 
     @Override
-    public boolean updateParameter(ISqmlParameter parameter) {
+    public boolean updateParameter(final ISqmlParameter parameter) {
         if (editor.isVisible() && (parameter instanceof ISqmlModifiableParameter)) {
-            final AdsSelectorPresentationDef presentationDef = getAttributeValue();
+            final ISqmlSelectorPresentationDef presentationDef = getAttributeValue();
             if (presentationDef == null) {
                 Application.messageInformation(Application.translate("SqmlEditor", "Selector Presentation Was Not Specified!"),
                         Application.translate("SqmlEditor", "Please choose selector presentation"));
                 editor.setFocus();
                 return false;
             } else {
-                final Id classId = presentationDef.getOwnerClass().getId();
+                final Id classId = presentationDef.getOwnerClassId();
                 ((ISqmlModifiableParameter) parameter).setParentSelectorPresentation(classId, presentationDef.getId());
                 return true;
             }
@@ -82,7 +82,7 @@ final class SelectorPresentationAttributeEditor extends AbstractAttributeEditor<
     }
 
     @Override
-    public void updateEditor(ISqmlParameter parameter) {
+    public void updateEditor(final ISqmlParameter parameter) {
         final EValType valType = parameter.getType();
         if (valType == EValType.PARENT_REF || valType == EValType.ARR_REF) {
             final Id presentationId = parameter.getParentSelectorPresentationId();
@@ -100,7 +100,7 @@ final class SelectorPresentationAttributeEditor extends AbstractAttributeEditor<
     }
 
     @Override
-    public AdsSelectorPresentationDef getAttributeValue() {
+    public ISqmlSelectorPresentationDef getAttributeValue() {
         return editor.getValue();
     }
 
@@ -110,7 +110,7 @@ final class SelectorPresentationAttributeEditor extends AbstractAttributeEditor<
     }
 
     @Override
-    public void onBaseAttributeChanged(AbstractAttributeEditor baseEditor) {
+    public void onBaseAttributeChanged(final AbstractAttributeEditor baseEditor) {
         if (baseEditor.getAttribute() == EFilterParamAttribute.VALUE_TYPE) {
             final ValueTypeAttributeEditor valTypeEditor =
                     (ValueTypeAttributeEditor) baseEditor;

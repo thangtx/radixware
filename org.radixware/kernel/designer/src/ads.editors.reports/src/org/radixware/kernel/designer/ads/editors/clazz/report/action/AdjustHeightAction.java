@@ -26,7 +26,7 @@ public class AdjustHeightAction  extends AbstractAction {
     //private final JCheckBoxMenuItem adjustHeightItem;
 
     public AdjustHeightAction(final AdsReportFormDiagram diagram /*,JCheckBoxMenuItem adjustHeightItem*/) {
-        super("Adjust height",RadixWareIcons.REPORT.ADJUST_HEIGHT.getIcon());
+        super("Adjust Height",RadixWareIcons.REPORT.ADJUST_HEIGHT.getIcon());
         this.diagram = diagram;
         //this.adjustHeightItem=adjustHeightItem;
     }

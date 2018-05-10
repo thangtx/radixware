@@ -19,9 +19,12 @@ package org.radixware.kernel.designer.common.editors;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.ComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -36,7 +39,6 @@ import org.radixware.kernel.common.defs.ads.clazz.members.AdsParentRefPropertyDe
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.EditOptions;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyEditOptions;
-import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.ui.AdsCustomPropEditorDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtCustomPropEditorDef;
@@ -47,11 +49,11 @@ import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.RadixObjectsUtils;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
 import org.radixware.kernel.designer.common.editors.editmask.EditMaskOwner;
 import org.radixware.kernel.designer.common.general.editors.EditorsManager;
 import org.radixware.kernel.designer.common.general.utils.DefinitionsUtils;
-
 
 public class EditOptionsPanel extends javax.swing.JPanel {
 
@@ -175,7 +177,7 @@ public class EditOptionsPanel extends javax.swing.JPanel {
 
         private EditEnvComboBoxModelItem current;
         private final List<EditEnvComboBoxModelItem> alternatives;
-        private final List<ListDataListener> listeners = new LinkedList<>();
+        private final List<ListDataListener> listeners = new CopyOnWriteArrayList<>();
         private volatile boolean isUpdating;
 
         public EditEnvComboBoxModel() {
@@ -545,7 +547,7 @@ public class EditOptionsPanel extends javax.swing.JPanel {
         @Override
         public void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
             IMultilingualStringDef string = getAdsMultilingualStringDef();
-            if (string != null){
+            if (string != null) {
                 string.setValue(language, newStringValue);
             }
         }
@@ -606,7 +608,7 @@ public class EditOptionsPanel extends javax.swing.JPanel {
 
         jchbEditingStoreEditHistory.setEnabled(!isReadOnly);
         jchbEditingNotNull.setEnabled(!isReadOnly);
-        
+
         boolean isArrayType = false;
         if (editOptions != null) {
             AdsTypeDeclaration currType = editOptions.getTypedObject().getType();
@@ -627,7 +629,6 @@ public class EditOptionsPanel extends javax.swing.JPanel {
         //jchbEditingCustomEditOnly.setEnabled(!isReadOnly);
         jchbEditingCustomEditOnly.setEnabled(editOptions != null && !isReadOnly && editOptions.isShowDialogButton());
         jchbEditingCustomDialog.setEnabled(!isReadOnly);
-
 
         jchbEditingMemo.setEnabled(!isReadOnly
                 && (isStringType
@@ -650,8 +651,6 @@ public class EditOptionsPanel extends javax.swing.JPanel {
             localizingPaneList2.setReadonly(isReadOnly);
         }
 
-
-
         jchbEditingCustomEditOnly.setSelected(editOptions.isCustomEditOnly());
 
         jchbEditingCustomDialog.setSelected(editOptions.isShowDialogButton());
@@ -667,28 +666,33 @@ public class EditOptionsPanel extends javax.swing.JPanel {
 
         jbtEditMask.setIcon(
                 editOptions == null || editOptions.getEditMask() == null
-                ? RadixWareIcons.CREATE.NEW_DOCUMENT.getIcon()
-                : RadixWareIcons.EDIT.EDIT.getIcon());
+                        ? RadixWareIcons.CREATE.NEW_DOCUMENT.getIcon()
+                        : RadixWareIcons.EDIT.EDIT.getIcon());
 
         jbtEditMask.setEnabled(!isReadOnly);
 
-
         jchbEditingStoreEditHistory.setSelected(editOptions.isStoreEditHistory());
 
-
+        // explorerDlg
         depParentEPExp.setComboMode(context);
         Collection<Definition> collection = DefinitionsUtils.collectTopAround(context, new CustomDlgVisitorProvider(ERuntimeEnvironmentType.EXPLORER));
-        depParentEPExp.setComboBoxValues(collection, true);
+        List<Definition> explorerCustomDlg = new ArrayList<Definition>(collection);
+        RadixObjectsUtils.sortByName(explorerCustomDlg);
+        depParentEPExp.setComboBoxValues(explorerCustomDlg, true);
+        
+        // webDlg
         depParentEPWeb.setComboMode(context);
         collection = DefinitionsUtils.collectTopAround(context, new CustomDlgVisitorProvider(ERuntimeEnvironmentType.WEB));
-        depParentEPWeb.setComboBoxValues(collection, true);
+        List<Definition> webCustomDlg = new ArrayList<Definition>(collection);
+        RadixObjectsUtils.sortByName(webCustomDlg);
+        depParentEPWeb.setComboBoxValues(webCustomDlg, true);
+        
         if (editOptions != null) {
             depParentEPExp.open((Definition) editOptions.findCustomDialog(ERuntimeEnvironmentType.EXPLORER),
                     editOptions.getCustomDialogId(ERuntimeEnvironmentType.EXPLORER));
             depParentEPWeb.open((Definition) editOptions.findCustomDialog(ERuntimeEnvironmentType.WEB),
                     editOptions.getCustomDialogId(ERuntimeEnvironmentType.WEB));
         }
-
 
         boolean isFilterParameter = context instanceof AdsFilterDef.Parameter;
         boolean isParentRefPropertyDef = context instanceof AdsParentRefPropertyDef;

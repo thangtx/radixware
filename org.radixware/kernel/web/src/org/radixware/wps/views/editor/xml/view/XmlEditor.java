@@ -10,19 +10,15 @@
  */
 package org.radixware.wps.views.editor.xml.view;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.xmlbeans.SchemaTypeSystem;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.editors.xmleditor.IXmlEditor;
 import org.radixware.kernel.common.client.editors.xmleditor.IXmlSchemaProvider;
+import org.radixware.kernel.common.client.editors.xmleditor.StandardXmlSchemaProvider;
 import org.radixware.kernel.common.client.editors.xmleditor.XmlEditorOperation;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.rwt.VerticalBoxContainer;
@@ -30,14 +26,13 @@ import org.radixware.wps.rwt.uploading.FileUploader;
 import org.radixware.wps.rwt.uploading.IUploadedDataReader;
 import org.radixware.kernel.common.client.editors.xmleditor.model.XmlDocument;
 import org.radixware.kernel.common.client.editors.xmleditor.view.XmlEditorController;
-import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.wps.rwt.ListBox;
 import org.radixware.wps.rwt.UIObject;
 
 public class XmlEditor extends VerticalBoxContainer implements IXmlEditor {
 
     private final WpsEnvironment environment;
-    private final XmlEditorController controller;
+    private final XmlEditorController controller;    
 
     public XmlEditor(final WpsEnvironment env, final String xmlSchemaAsStr, final boolean isReadOnly) {
         this(env, xmlSchemaAsStr, null, null, isReadOnly);
@@ -55,20 +50,15 @@ public class XmlEditor extends VerticalBoxContainer implements IXmlEditor {
         environment = env;
         final ListBox errorsList = new ListBox();
         final XmlEditorPresenter presenter;
-        presenter = new XmlEditorPresenter(env, valueEditorFactory, schemaProvider, this, errorsList);
-        controller = new XmlEditorController(env, presenter, null, schemaTypeSystem, isReadOnly, (schemaTypeSystem == null) ? null : new IXmlSchemaProvider() {
-            @Override
-            public String getSchemaForNamespaceUri(String nameSpaceUri) {
-                try {
-                    final URI uri = new URI(nameSpaceUri);
-                    return FileUtils.readTextStream(uri.toURL().openStream(), "UTF-8");
-                } catch (URISyntaxException | IOException ex) {
-                    Logger.getLogger(IXmlSchemaProvider.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                return null;
-            }
-        });
-        //controller = new XmlEditorController(env, presenter, null, schemaTypeSystem, isReadOnly, schemaProvider);
+        final IXmlSchemaProvider actualSchemaProvider;
+        if (schemaProvider==null){
+            actualSchemaProvider = new StandardXmlSchemaProvider(environment);
+        }else{
+            actualSchemaProvider = schemaProvider;
+        }
+        presenter = new XmlEditorPresenter(env, valueEditorFactory, actualSchemaProvider, this, errorsList);
+        controller = 
+            new XmlEditorController(env, presenter, null, schemaTypeSystem, isReadOnly, schemaTypeSystem == null ? null : actualSchemaProvider);
         presenter.openAction.getUploader().addUploadCompleteListener(new FileUploader.UploadCompleteListener() {
             @Override
             public void afterUploadingComplete(String fileName, long fileSize, IUploadedDataReader reader) {
@@ -91,19 +81,15 @@ public class XmlEditor extends VerticalBoxContainer implements IXmlEditor {
             final boolean isReadOnly) {
         environment = env;
         final ListBox errorsList = new ListBox();
-        final XmlEditorPresenter presenter = new XmlEditorPresenter(env, valueEditorFactory, schemaProvider, this, errorsList);
-        controller = new XmlEditorController(env, presenter, null, xmlSchemaAsStr, isReadOnly, (xmlSchemaAsStr == null || xmlSchemaAsStr.isEmpty()) ? null : new IXmlSchemaProvider() {
-            @Override
-            public String getSchemaForNamespaceUri(String nameSpaceUri) {
-                try {
-                    final URI uri = new URI(nameSpaceUri);
-                    return FileUtils.readTextStream(uri.toURL().openStream(), "UTF-8");
-                } catch (URISyntaxException | IOException ex) {
-                    Logger.getLogger(IXmlSchemaProvider.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                return null;
-            }
-        });
+        final IXmlSchemaProvider actualSchemaProvider;
+        if (schemaProvider==null){
+            actualSchemaProvider = new StandardXmlSchemaProvider(environment);
+        }else{
+            actualSchemaProvider = schemaProvider;
+        }        
+        final XmlEditorPresenter presenter = new XmlEditorPresenter(env, valueEditorFactory, actualSchemaProvider, this, errorsList);
+        controller = 
+            new XmlEditorController(env, presenter, null, xmlSchemaAsStr, isReadOnly, (xmlSchemaAsStr == null || xmlSchemaAsStr.isEmpty()) ? null : actualSchemaProvider);
         presenter.openAction.getUploader().addUploadCompleteListener(new FileUploader.UploadCompleteListener() {
             @Override
             public void afterUploadingComplete(String fileName, long fileSize, IUploadedDataReader reader) {

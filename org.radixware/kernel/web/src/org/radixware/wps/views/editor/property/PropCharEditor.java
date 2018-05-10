@@ -26,7 +26,7 @@ import org.radixware.wps.views.editors.valeditors.ValEditorController;
 
 public class PropCharEditor extends PropEditor {
     
-    private static class ValEditorFactoryImpl extends AbstractValEditorFactoryImpl<String>{
+    private static class ValEditorFactoryImpl extends AbstractValEditorFactoryImpl<Character>{
         
         public ValEditorFactoryImpl(final Property property){
             super(property);
@@ -37,7 +37,7 @@ public class PropCharEditor extends PropEditor {
             final ValEditorController controller = new ValCharEditorController(env){
                 
                 @Override
-                protected DisplayController<String> createDisplayController() {
+                protected DisplayController<Character> createDisplayController() {
                     return ValEditorFactoryImpl.this.createDisplayControllerWrapper(super.createDisplayController());
                 }
 
@@ -52,18 +52,5 @@ public class PropCharEditor extends PropEditor {
 
     public PropCharEditor(final PropertyChar property) {
         super(property, new ValEditorFactoryImpl(property));
-    }
-
-    @Override
-    protected Object getCurrentValueInEditor() {
-        final String s = (String) super.getCurrentValueInEditor();
-        return s == null || s.isEmpty() ? null : Character.valueOf(s.charAt(0));
-    }
-
-    @Override
-    protected void updateEditor(final Object currentValue, final Object initialValue, PropEditorOptions options) {
-        final String curValAsStr = currentValue == null ? null : String.valueOf(currentValue);
-        final String initValAsStr = initialValue == null ? null : String.valueOf(initialValue);
-        super.updateEditor(curValAsStr, initValAsStr,  options);
     }
 }

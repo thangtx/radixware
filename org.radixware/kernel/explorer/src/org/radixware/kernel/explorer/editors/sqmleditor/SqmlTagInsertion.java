@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableReferences;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableIndexDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableReference;
@@ -31,7 +32,6 @@ import org.radixware.kernel.explorer.dialogs.SqmlTreeModelProxy;
 import org.radixware.kernel.explorer.editors.xscmleditor.TagInfo;
 
 import org.radixware.kernel.explorer.models.SqmlTreeModel;
-import org.radixware.schemas.xscml.Sqml.Item.ParentCondition.Operator;
 
 
 public class SqmlTagInsertion {
@@ -57,19 +57,22 @@ public class SqmlTagInsertion {
         }
     }
 
-    public void insertParentCondition(final boolean isParentCondition, final List<Object> values, final ISqmlColumnDef prop, final String strOperator, final Operator.Enum operator, final String tableAlias, final QTextCursor tc) {
+    public void insertParentCondition(final boolean isParentCondition, final List<Object> values, final ISqmlColumnDef prop, final ESqlConditionOperator operator, final String tableAlias, final QTextCursor tc) {
         long pos = tc.position();
-        //ISqmlTableDef owner=prop.getOwnerTable();
         if (isParentCondition) {
             Reference ref = null;
-            if ((values != null) && (!values.isEmpty()) && (values.get(0) instanceof Pid)) {
-                final Pid pid = (Pid) values.get(0);
-                try {
-                    ref = new Reference(pid, pid.getDefaultEntityTitle(editor.getEnvironment().getEasSession()));
-                } catch (ServiceClientException ex) {
-                    Logger.getLogger(SqmlTagInsertion.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SqmlTagInsertion.class.getName()).log(Level.SEVERE, null, ex);
+            if ((values != null) && (!values.isEmpty())){
+                final Object value = values.get(0);
+                if (value instanceof Pid){
+                    final Pid pid = (Pid) values.get(0);
+                    try {
+                        ref = new Reference(pid, pid.getDefaultEntityTitle(editor.getEnvironment().getEasSession()));
+                    } catch (ServiceClientException ex) {
+                        Logger.getLogger(SqmlTagInsertion.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InterruptedException ex) {
+                    }
+                }else if (value instanceof Reference){
+                    ref = (Reference)value;
                 }
             }
 
@@ -79,8 +82,10 @@ public class SqmlTagInsertion {
             //List<ISqmlOutgoingReference> path=getPath(prop,curIndex);
             TagInfo tag = tagConverter.createTag(prop, pos, null, tableAlias);
             editor.getTextEditor().insertTag(tag, "");
-            editor.getTextEditor().insertText(operatorToStr(operator, strOperator));
-            if ((values != null) && (operator != Operator.IS_NOT_NULL) && (operator != Operator.IS_NULL)) {
+            editor.getTextEditor().insertText(operatorToStr(operator));
+            if (values != null 
+                && operator != ESqlConditionOperator.IS_NULL 
+                && operator != ESqlConditionOperator.IS_NOT_NULL) {
                 for (int i = 0, size = values.size(); i < size; i++) {
                     pos = tc.position();
                     Pid pid;
@@ -97,28 +102,42 @@ public class SqmlTagInsertion {
                     final Id secondaryKeyId = secondaryKey == null ? null : secondaryKey.getId();
                     tag = tagConverter.createEntityRefValue(pid, pos, isPrimaryKey, secondaryKeyId);
                     editor.getTextEditor().insertTag(tag, "");
-                    tc.insertText(insertSeparator(strOperator, i == (size - 1)));
+                    tc.insertText(insertSeparator(operator, i == (size - 1)));
                 }
             }
         }
     }
 
-    public void insertCondition(final boolean isParentCondition, final List<Object> values, final ISqmlColumnDef prop, final String strOperator, final Operator.Enum operator, final String tableAlias, final QModelIndex curIndex) {
+    public void insertCondition(final List<Object> values, 
+                                             final ISqmlColumnDef prop, 
+                                             final ESqlConditionOperator operator, 
+                                             final String tableAlias, 
+                                             final QModelIndex curIndex) {
         long pos = editor.getTextEditor().textCursor().position();
         final List<ISqmlTableReference> path = getPath(prop, curIndex);
         TagInfo tag = tagConverter.createTag(prop, pos, path, tableAlias);
         editor.getTextEditor().insertTag(tag, "");
-        editor.getTextEditor().insertText(operatorToStr(operator, strOperator));
-        if ((values != null) && (operator != Operator.IS_NOT_NULL) && (operator != Operator.IS_NULL)) {
+        editor.getTextEditor().insertText(operatorToStr(operator));
+        if (values != null 
+            && operator != ESqlConditionOperator.IS_NULL 
+            && operator != ESqlConditionOperator.IS_NOT_NULL) {
             for (int i = 0, size = values.size(); i < size; i++) {
                 //if(!isValEmptyString(prop.getType(),values.get(i))){
                 pos = editor.getTextEditor().textCursor().position();
                 final Object val = isValEmptyString(prop.getType(), values.get(i)) ? null : values.get(i);
                 tag = tagConverter.createTypifiedValue(prop, val, pos);
                 editor.getTextEditor().insertTag(tag, "");
-                editor.getTextEditor().textCursor().insertText(insertSeparator(strOperator, i == (size - 1)));
+                editor.getTextEditor().textCursor().insertText(insertSeparator(operator, i == (size - 1)));
                 //}
             }
+        }
+    }
+    
+    public void insertParamValCountTag(final ISqmlParameter parameter){
+        final long pos = editor.getTextEditor().textCursor().position();
+        final TagInfo tag = tagConverter.createParamValCount(parameter, pos);
+        if (tag != null) {
+            editor.getTextEditor().insertTag(tag, "");
         }
     }
 
@@ -153,39 +172,24 @@ public class SqmlTagInsertion {
         return model.data(sourceIndex, Qt.ItemDataRole.UserRole);
     }
 
-    private String insertSeparator(final String str_operator, final boolean isLast) {
-        if (("in".equals(str_operator)) || ("not in".equals(str_operator))) {
-            if (isLast) {
-                return ") ";
-            }
-            return ", ";
+    private String insertSeparator(final ESqlConditionOperator operator, final boolean isLast) {
+        if (operator==ESqlConditionOperator.IN || operator==ESqlConditionOperator.NOT_IN){
+            return isLast ? ") " : ", ";
+        }else if (operator==ESqlConditionOperator.BETWEEN){
+            return isLast ? "" : "and ";
+        }else{
+            return "";
         }
-        if ("between".equals(str_operator) && (!isLast)) {
-            return "and ";
-        }
-        return "";
     }
 
-    private static String operatorToStr(final Operator.Enum operator, final String str_operator) {
-        if (operator == null && str_operator != null) {
-            if (("in".equals(str_operator)) || ("not in".equals(str_operator))) {
-                return str_operator + " ( ";
-            }
-            return str_operator + " ";
+    private static String operatorToStr(final ESqlConditionOperator operator) {
+        if (operator==null){
+            return "";
+        }else if (operator==ESqlConditionOperator.IN || operator==ESqlConditionOperator.NOT_IN){
+            return operator.getText()+" ( ";
+        }else{
+            return operator.getText()+" ";
         }
-        if (operator == Operator.EQUAL) {
-            return "= ";
-        }
-        if (operator == Operator.NOT_EQUAL) {
-            return "<> ";
-        }
-        if (operator == Operator.IS_NULL) {
-            return "is null ";
-        }
-        if (operator == Operator.IS_NOT_NULL) {
-            return "is not null ";
-        }
-        return "";
     }
     
     public SqmlEditor getEditor() {

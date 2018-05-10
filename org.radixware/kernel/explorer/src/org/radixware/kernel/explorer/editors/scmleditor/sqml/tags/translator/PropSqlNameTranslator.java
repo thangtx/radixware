@@ -17,6 +17,7 @@ import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.xscml.Sqml.Item.PropSqlName.Owner;
 
@@ -147,12 +148,8 @@ public class PropSqlNameTranslator extends  SqmlTagTranslator{
         if (!isValid) {
             return "";
         }
-        if (sTable.indexOf('<') != -1) {
-            sTable = sTable.replaceAll("<", "&#60;");
-        }
-        if (sProp.indexOf('<') != -1) {
-            sProp = sProp.replaceAll("<", "&#60;");
-        }
+        sTable = Html.string2HtmlString(sTable);
+        sProp = Html.string2HtmlString(sProp);
         StringBuilder sb=new StringBuilder("<b>Property:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;");
         sb.append(sProp);
         sb.append("</br>");
@@ -162,9 +159,7 @@ public class PropSqlNameTranslator extends  SqmlTagTranslator{
             sb.append("<br><b>Reference columns:</b></br>");             
            // res += "<br><b>Reference columns:</b></br>";
             for (String refColumnName : refColumnNameList) {
-                if (refColumnName.indexOf('<') != -1) {
-                    refColumnName = refColumnName.replaceAll("<", "&#60;");
-                }
+                refColumnName = Html.string2HtmlString(refColumnName);
                 //res += "<br>&nbsp;&nbsp;&nbsp;&nbsp;" + refColumnName + "</br>";
                 sb.append("<br>&nbsp;&nbsp;&nbsp;&nbsp;");
                 sb.append(refColumnName);

@@ -21,6 +21,12 @@ create or replace type RDX_EVENT_LOG_RECORDS as table of RDX_EVENT_LOG_RECORD;
 grant execute on RDX_EVENT_LOG_RECORDS to &USER&_RUN_ROLE
 /
 
+create or replace type RDX_STR_TABLE as table of varchar2(4000);
+/
+
+grant execute on RDX_STR_TABLE to &USER&_RUN_ROLE
+/
+
 create or replace type TRdxAcsArea as object(
 	boundaries TRdxAcsCoordinates
 );
@@ -53,9 +59,27 @@ grant execute on TRdxAcsCoordinates to &USER&_RUN_ROLE
 
 create or replace package RDX_ACS as
 
-	cRight_unbounded   constant integer := 0;
-	cRight_bounded     constant integer := 1;
-	cRight_prohibited  constant integer := 2;
+	cRight_unbounded       constant integer := 0;
+	cRight_boundedByPart   constant integer := 1;
+	cRight_prohibited      constant integer := 2;
+	cRight_boundedByGroup  constant integer := 3;
+	cRight_boundedByUser   constant integer := 4;
+
+	Type long_str_list IS TABLE OF VARCHAR2(32767);
+	--type int_list_type  is table of integer index BY BINARY_INTEGER;
+	Type int_list_type IS TABLE OF integer;
+
+	function constSuperAdminRoleId return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constSuperAdminRoleId, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constSuperAdminRoleId, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constSuperAdminRoleId, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constSuperAdminRoleId, WNPS);
+
+	function constErrorMessage return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constErrorMessage, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constErrorMessage, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constErrorMessage, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constErrorMessage, WNPS);
 
 	procedure clearInheritRights(
 		pUserGroup in varchar2
@@ -66,39 +90,6 @@ create or replace package RDX_ACS as
 	назначить дублирующие права, ...
 
 	*/
-
-	function userHasRoleForObjectInternal(
-		pUser in varchar2,
-		pRole in varchar2,
-		pArea in TRdxAcsArea
-	) return integer;
-	PRAGMA RESTRICT_REFERENCES (userHasRoleForObjectInternal, WNDS);
-
-	function userHasRoleForObjectInternal(
-		pUser in varchar2,
-		pRole in varchar2,
-		pArea in TRdxAcsArea,
-		checkInheritGroupRights in integer,
-		exceptingID1_ in integer,
-		exceptingID2_ in integer
-	) return integer;
-	PRAGMA RESTRICT_REFERENCES (userHasRoleForObjectInternal, WNDS);
-
-	function groupHasRoleForObjectInternal(
-		pGroup in varchar2,
-		pRole in varchar2,
-		pArea in TRdxAcsArea
-	) return integer;
-	PRAGMA RESTRICT_REFERENCES (groupHasRoleForObjectInternal, WNDS);
-
-	function groupHasRoleForObjectInternal(
-		pGroup in varchar2,
-		pRole in varchar2,
-		pArea in TRdxAcsArea,
-		exceptingID1_ in integer,
-		exceptingID2_ in integer
-	) return integer;
-	PRAGMA RESTRICT_REFERENCES (groupHasRoleForObjectInternal, WNDS);
 
 	function curUserHasRoleInArea(
 		pRole in varchar2,
@@ -184,18 +175,6 @@ create or replace package RDX_ACS as
 	) return varchar2;
 	PRAGMA RESTRICT_REFERENCES (getAllRolesForObject, WNDS);
 
-	-- Имеет ли текущий пользователь права не меньшие чем запись в таблице User2Role с заданным идом
-	function curUserHasRightsU2RId(
-		ID_ in integer
-	) return integer;
-	PRAGMA RESTRICT_REFERENCES (curUserHasRightsU2RId, WNDS);
-
-	-- Имеет ли текущий пользователь права не меньшие чем запись в таблице UserGroup2Role с заданным идом
-	function curUserHasRightsG2RId(
-		ID_ in integer
-	) return integer;
-	PRAGMA RESTRICT_REFERENCES (curUserHasRightsG2RId, WNDS);
-
 	-- Принадлежит ли текущий пользователь заданной группе
 	function curUserIsInGroup(
 		pGroup in varchar2
@@ -229,11 +208,11 @@ create or replace package RDX_ACS as
 	) return TRdxAcsAreaList;
 	PRAGMA RESTRICT_REFERENCES (strToAreaList, WNDS);
 
-	procedure acsUtilsBuild;
-
 	function isGroupExist(
 		name_ in varchar2
 	) return integer;
+
+	procedure acsUtilsBuild;
 
 	function isUserHaveGroupRights(
 		group_ in varchar2,
@@ -323,6 +302,25 @@ create or replace package RDX_ACS as
 		Id_ in integer
 	) return integer;
 	PRAGMA RESTRICT_REFERENCES (isNewUserOrGroup2Role, WNDS);
+
+	procedure fillPartitions(
+		modeIn_ in integer,
+		modeOut_ out integer,
+		partitionIn_ in varchar2,
+		partitionsOut_ in out long_str_list,
+		partitionGroupId_ in integer
+	);
+	PRAGMA RESTRICT_REFERENCES (fillPartitions, WNDS);
+
+	function equalPartition(
+		part1 in varchar2,
+		part2 in varchar2
+	) return integer deterministic;
+	PRAGMA RESTRICT_REFERENCES (equalPartition, WNDS);
+
+	function readPartitions(
+		partitionGroupId in integer
+	) return clob;
 end;
 /
 
@@ -351,14 +349,25 @@ create or replace package RDX_ACS_UTILS as
 		pUser in varchar2
 	);
 
-	procedure compileRightsForGrpBeforeDel(
-		pUserGroup in varchar2
-	);
-
 	procedure moveRightsFromUserToGroup(
 		user_ in varchar2,
 		group_ in varchar2
 	);
+
+	function existsRightsOnUser2Role(
+		user_ in varchar2,
+		id_ in integer
+	) return integer;
+
+	function existsRightsOnGroup2Role(
+		user_ in varchar2,
+		id_ in integer
+	) return integer;
+
+	function isSuperAdmin(
+		user_ in integer
+	) return integer;
+	PRAGMA RESTRICT_REFERENCES (isSuperAdmin, WNDS);
 end;
 /
 
@@ -752,17 +761,57 @@ create or replace package RDX_AUDIT as
 		pEventType in varchar2,
 		pParentTableGuid in varchar2
 	);
-
-	DEFAULTAUDITSCHEME varchar2(50);
 end;
 /
 
 grant execute on RDX_AUDIT to &USER&_RUN_ROLE
 /
 
+create or replace package RDX_AUDIT_Vars as
+
+	DefaultAuditScheme varchar2(50);
+	PRAGMA RESTRICT_REFERENCES (DEFAULT, WNDS);
+end;
+/
+
+grant execute on RDX_AUDIT_Vars to &USER&_RUN_ROLE
+/
+
+create or replace package RDX_Aadc as
+
+	procedure setupFirstMember;
+
+	procedure setupSecondMember;
+
+	procedure afterSequenceDdl(
+		name in varchar2
+	);
+
+	procedure normalizeSequence(
+		name in varchar2,
+		-- null - read from database
+		aadcMemberId in integer := null
+	);
+
+	procedure normalizeAllSequences;
+
+	procedure restoreReplication(
+		prevState in RAW
+	);
+
+	function suspendReplication return RAW;
+
+	procedure setupTriggers;
+end;
+/
+
+grant execute on RDX_Aadc to &USER&_RUN_ROLE
+/
+
 create or replace package RDX_Array as
 
 	Type ARR_STR IS TABLE OF VARCHAR2(32767);
+	Type ARR_CLOB IS TABLE OF CLOB;
 
 	function merge(
 		e1 in varchar2
@@ -777,6 +826,13 @@ create or replace package RDX_Array as
 		e1 in varchar2,
 		e2 in varchar2,
 		e3 in varchar2
+	) return CLOB;
+
+	function merge(
+		e1 in varchar2,
+		e2 in varchar2,
+		e3 in varchar2,
+		e4 in varchar2
 	) return CLOB;
 
 	function merge(
@@ -824,21 +880,18 @@ create or replace package RDX_Array as
 		x in varchar2
 	);
 
-	-- Нумерация осуществляется с единицы
 	procedure insertStr(
 		res in out clob,
 		x in varchar2,
 		index_ in integer
 	);
 
-	-- Нумерация осуществляется с единицы
 	procedure insertNum(
 		res in out clob,
 		x in number,
 		index_ in integer
 	);
 
-	-- Нумерация осуществляется с единицы
 	procedure insertDate(
 		res in out clob,
 		x in timestamp,
@@ -852,28 +905,24 @@ create or replace package RDX_Array as
 		index_ in integer
 	);
 
-	-- Нумерация осуществляется с единицы
 	function getStr(
 		lob in clob,
 		index_ in integer
 	) return varchar2 deterministic;
 	PRAGMA RESTRICT_REFERENCES (getStr, WNDS);
 
-	-- Нумерация осуществляется с единицы
 	function getNum(
 		lob in clob,
 		index_ in integer
 	) return number deterministic;
 	PRAGMA RESTRICT_REFERENCES (getNum, WNDS);
 
-	-- Нумерация осуществляется с единицы
 	function getDate(
 		lob in clob,
 		index_ in integer
 	) return timestamp deterministic;
 	PRAGMA RESTRICT_REFERENCES (getDate, WNDS);
 
-	-- Нумерация осуществляется с единицы
 	function searchStr(
 		lob in clob,
 		what in varchar2,
@@ -881,7 +930,6 @@ create or replace package RDX_Array as
 	) return number deterministic;
 	PRAGMA RESTRICT_REFERENCES (searchStr, WNDS);
 
-	-- Нумерация осуществляется с единицы
 	function searchNum(
 		lob in clob,
 		what in number,
@@ -889,7 +937,6 @@ create or replace package RDX_Array as
 	) return number deterministic;
 	PRAGMA RESTRICT_REFERENCES (searchNum, WNDS);
 
-	-- Нумерация осуществляется с единицы
 	function searchDate(
 		lob in clob,
 		what in timestamp,
@@ -913,21 +960,18 @@ create or replace package RDX_Array as
 	PRAGMA RESTRICT_REFERENCES (getArraySize, WNDS);
 	PRAGMA RESTRICT_REFERENCES (getArraySize, WNPS);
 
-	-- Нумерация осуществляется с единицы
 	procedure setStr(
 		lob in out clob,
 		x in varchar2,
 		Idx in number
 	);
 
-	-- Нумерация осуществляется с единицы
 	procedure setNum(
 		lob in out clob,
 		x in number,
 		Idx in number
 	);
 
-	-- Нумерация осуществляется с единицы
 	procedure setDate(
 		lob in out clob,
 		x in timestamp,
@@ -964,6 +1008,32 @@ create or replace package RDX_Array as
 		asNumber in boolean
 	) return number deterministic;
 	PRAGMA RESTRICT_REFERENCES (search, WNDS);
+
+	function getIntersection(
+		lob1 in clob,
+		lob2 in clob
+	) return clob;
+
+	function getUnion(
+		lob1 in clob,
+		lob2 in clob
+	) return clob;
+
+	function toStrTable(
+		-- Array content to split
+		lob in clob,
+		-- Soft mode for array parsing:
+		-- - 0 - raise exceptions for any errors
+		-- - 1 - ignore extra elements in the array structure
+		softMode in integer := 0,
+		-- Length to crop for array content. Need be in the range 0..4000. 0 means no cropping
+		cropLength in integer := 0
+	) return RDX_STR_TABLE deterministic;
+
+	function fromStrToArrClob(
+		lob in clob
+	) return ARR_CLOB deterministic;
+	PRAGMA RESTRICT_REFERENCES (fromStrToArrClob, WNDS);
 end;
 /
 
@@ -984,7 +1054,32 @@ create or replace package RDX_Arte as
 		pUnitId in integer
 	);
 
-	function getClientLanguage return integer;
+	procedure registerSession(
+		pUserName in varchar2,
+		pStationName in varchar2,
+		pClientLanguage in varchar2,
+		pClientCountry in varchar2,
+		pSessionId in integer,
+		pDefVersion in integer,
+		pSapId in integer,
+		pClientAddress in varchar2,
+		pUnitId in integer,
+		pJobId in integer,
+		pTaskId in integer
+	);
+
+	procedure registerSession(
+		pUserName in varchar2,
+		pStationName in varchar2,
+		pClientLanguage in varchar2,
+		pClientCountry in varchar2,
+		pSessionId in integer,
+		pDefVersion in integer,
+		pAction in varchar2,
+		pClientInfo in varchar2
+	);
+
+	function getClientLanguage return varchar2;
 	PRAGMA RESTRICT_REFERENCES (getClientLanguage, WNDS);
 
 	function getStationName return varchar2;
@@ -1013,6 +1108,50 @@ end;
 grant execute on RDX_Arte to &USER&_RUN_ROLE
 /
 
+create or replace package RDX_Arte_Vars as
+
+	function getUserName return varchar2;
+
+	procedure setUserName(
+		pUserName in varchar2
+	);
+
+	function getStationName return varchar2;
+
+	procedure setStationName(
+		pStationName in varchar2
+	);
+
+	function getClientLanguage return varchar2;
+
+	procedure setClientLanguage(
+		pClientLanguage in varchar2
+	);
+
+	function getClientCountry return varchar2;
+
+	procedure setClientCountry(
+		pClientCountry in varchar2
+	);
+
+	function getDefVersion return number;
+
+	procedure setDefVersion(
+		pDefVersion in number
+	);
+
+	function getSessionId return number;
+
+	procedure setSessionId(
+		pSessionId in number
+	);
+	PRAGMA RESTRICT_REFERENCES (DEFAULT, WNDS);
+end;
+/
+
+grant execute on RDX_Arte_Vars to &USER&_RUN_ROLE
+/
+
 create or replace package RDX_DDS_META as
 
 	function isDbOptionEnabled(
@@ -1038,6 +1177,82 @@ grant execute on RDX_DDS_META to &USER&_RUN_ROLE
 
 create or replace package RDX_Entity as
 
+	function createPid(
+		field in varchar2
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (createPid, RNDS);
+	PRAGMA RESTRICT_REFERENCES (createPid, RNPS);
+	PRAGMA RESTRICT_REFERENCES (createPid, WNDS);
+	PRAGMA RESTRICT_REFERENCES (createPid, WNPS);
+
+	function createPid(
+		field in number
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (createPid, RNDS);
+	PRAGMA RESTRICT_REFERENCES (createPid, RNPS);
+	PRAGMA RESTRICT_REFERENCES (createPid, WNDS);
+	PRAGMA RESTRICT_REFERENCES (createPid, WNPS);
+
+	function createPid(
+		field in timestamp
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (createPid, RNDS);
+	PRAGMA RESTRICT_REFERENCES (createPid, RNPS);
+	PRAGMA RESTRICT_REFERENCES (createPid, WNDS);
+	PRAGMA RESTRICT_REFERENCES (createPid, WNPS);
+
+	function addField2Pid(
+		currentPid in varchar2,
+		field in varchar2
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNDS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNPS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNDS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNPS);
+
+	function addField2Pid(
+		currentPid in varchar2,
+		field in number
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNDS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNPS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNDS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNPS);
+
+	function addField2Pid(
+		currentPid in varchar2,
+		field in timestamp
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNDS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNPS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNDS);
+	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNPS);
+
+	function createQualifiedPid(
+		tableGuid in varchar2,
+		objPid in varchar2
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (createQualifiedPid, RNDS);
+	PRAGMA RESTRICT_REFERENCES (createQualifiedPid, RNPS);
+	PRAGMA RESTRICT_REFERENCES (createQualifiedPid, WNDS);
+	PRAGMA RESTRICT_REFERENCES (createQualifiedPid, WNPS);
+
+	function packPidStr(
+		s in varchar2
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (packPidStr, RNDS);
+	PRAGMA RESTRICT_REFERENCES (packPidStr, RNPS);
+	PRAGMA RESTRICT_REFERENCES (packPidStr, WNDS);
+	PRAGMA RESTRICT_REFERENCES (packPidStr, WNPS);
+
+	function unpackPidStr(
+		s in varchar2
+	) return varchar2 deterministic;
+	PRAGMA RESTRICT_REFERENCES (unpackPidStr, RNDS);
+	PRAGMA RESTRICT_REFERENCES (unpackPidStr, RNPS);
+	PRAGMA RESTRICT_REFERENCES (unpackPidStr, WNDS);
+	PRAGMA RESTRICT_REFERENCES (unpackPidStr, WNPS);
+
 	function isUserPropValDefined(
 		pEntityId in varchar2,
 		pInstancePid in varchar2,
@@ -1058,21 +1273,6 @@ create or replace package RDX_Entity as
 		pEntityID in varchar2,
 		pInstancePID in varchar2
 	);
-
-	type TScheduledOnDelUpOwner is record (
-	   sOwnerEntityId  varchar2(100),
-	   sOwnerPid  varchar2(250)
-	);
-	type TScheduledOnDelUpOwnerQueue is table of TScheduledOnDelUpOwner index by binary_integer;
-	scheduledOnDelUpOwnerQueue TScheduledOnDelUpOwnerQueue;
-
-	function packPidStr(
-		s in varchar2
-	) return varchar2 deterministic;
-	PRAGMA RESTRICT_REFERENCES (packPidStr, RNDS);
-	PRAGMA RESTRICT_REFERENCES (packPidStr, RNPS);
-	PRAGMA RESTRICT_REFERENCES (packPidStr, WNDS);
-	PRAGMA RESTRICT_REFERENCES (packPidStr, WNPS);
 
 	procedure delUserPropVal(
 		pEntityId in varchar2,
@@ -1383,57 +1583,6 @@ create or replace package RDX_Entity as
 	PRAGMA RESTRICT_REFERENCES (isUserPropArrValDefined, WNDS);
 	PRAGMA RESTRICT_REFERENCES (isUserPropArrValDefined, WNPS);
 
-	function createPid(
-		field in varchar2
-	) return varchar2 deterministic;
-	PRAGMA RESTRICT_REFERENCES (createPid, RNDS);
-	PRAGMA RESTRICT_REFERENCES (createPid, RNPS);
-	PRAGMA RESTRICT_REFERENCES (createPid, WNDS);
-	PRAGMA RESTRICT_REFERENCES (createPid, WNPS);
-
-	function createPid(
-		field in number
-	) return varchar2 deterministic;
-	PRAGMA RESTRICT_REFERENCES (createPid, RNDS);
-	PRAGMA RESTRICT_REFERENCES (createPid, RNPS);
-	PRAGMA RESTRICT_REFERENCES (createPid, WNDS);
-	PRAGMA RESTRICT_REFERENCES (createPid, WNPS);
-
-	function createPid(
-		field in timestamp
-	) return varchar2 deterministic;
-	PRAGMA RESTRICT_REFERENCES (createPid, RNDS);
-	PRAGMA RESTRICT_REFERENCES (createPid, RNPS);
-	PRAGMA RESTRICT_REFERENCES (createPid, WNDS);
-	PRAGMA RESTRICT_REFERENCES (createPid, WNPS);
-
-	function addField2Pid(
-		currentPid in varchar2,
-		field in varchar2
-	) return varchar2 deterministic;
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNDS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNPS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNDS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNPS);
-
-	function addField2Pid(
-		currentPid in varchar2,
-		field in number
-	) return varchar2 deterministic;
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNDS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNPS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNDS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNPS);
-
-	function addField2Pid(
-		currentPid in varchar2,
-		field in timestamp
-	) return varchar2 deterministic;
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNDS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, RNPS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNDS);
-	PRAGMA RESTRICT_REFERENCES (addField2Pid, WNPS);
-
 	procedure userPropOnDelValue(
 		pEntityId in varchar2,
 		pValuePid in varchar2
@@ -1442,6 +1591,24 @@ end;
 /
 
 grant execute on RDX_Entity to &USER&_RUN_ROLE
+/
+
+create or replace package RDX_Entity_Vars as
+
+	type TScheduledOnDelUpOwner is record (
+	   sOwnerEntityId  varchar2(100),
+	   sOwnerPid  varchar2(250)
+	);
+	type TScheduledOnDelUpOwnerQueue is table of TScheduledOnDelUpOwner index by binary_integer;
+	scheduledOnDelUpOwnerQueue TScheduledOnDelUpOwnerQueue;
+
+	TYPE StrByInt IS TABLE OF varchar2(100) INDEX BY BINARY_INTEGER;
+	upValTabByValType StrByInt;
+	PRAGMA RESTRICT_REFERENCES (DEFAULT, WNDS);
+end;
+/
+
+grant execute on RDX_Entity_Vars to &USER&_RUN_ROLE
 /
 
 create or replace package RDX_Environment as
@@ -1471,7 +1638,99 @@ end;
 grant execute on RDX_Environment to &USER&_RUN_ROLE
 /
 
+create or replace package RDX_Environment_Vars as
+
+	function getInstanceId return integer;
+
+	procedure setInstanceId(
+		pInstanceId in integer
+	);
+
+	function getSessionOwnerType return varchar2;
+
+	procedure setSessionOwnerType(
+		pSessionOwnerType in varchar2
+	);
+
+	function getSessionOwnerId return integer;
+
+	procedure setSessionOwnerId(
+		pSessionOwnerId in integer
+	);
+
+	function getTargetExecutorId return integer;
+
+	procedure setTargetExecutorId(
+		pTargetExecutorId in integer
+	);
+
+	function getRequestInfo return varchar2;
+
+	procedure setRequestInfo(
+		pRequestInfo in varchar2
+	);
+	PRAGMA RESTRICT_REFERENCES (DEFAULT, WNDS);
+end;
+/
+
+grant execute on RDX_Environment_Vars to &USER&_RUN_ROLE
+/
+
 create or replace package RDX_JS_CalendarSchedule as
+
+	function constClassGuidAbsCalendar return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constClassGuidAbsCalendar, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidAbsCalendar, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidAbsCalendar, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidAbsCalendar, WNPS);
+
+	function constClassGuidDayOfWeek return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfWeek, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfWeek, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfWeek, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfWeek, WNPS);
+
+	function constClassGuidDayOfMonth return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfMonth, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfMonth, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfMonth, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfMonth, WNPS);
+
+	function constClassGuidAbsDate return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constClassGuidAbsDate, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidAbsDate, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidAbsDate, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidAbsDate, WNPS);
+
+	function constClassGuidIncCalendar return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constClassGuidIncCalendar, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidIncCalendar, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidIncCalendar, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidIncCalendar, WNPS);
+
+	function constClassGuidDaily return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDaily, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDaily, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDaily, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDaily, WNPS);
+
+	function constClassGuidDayOfQuarter return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfQuarter, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfQuarter, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfQuarter, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfQuarter, WNPS);
+
+	function constClassGuidDayOfYear return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfYear, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfYear, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfYear, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constClassGuidDayOfYear, WNPS);
+
+	function constKeyFormat return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constKeyFormat, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constKeyFormat, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constKeyFormat, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constKeyFormat, WNPS);
 
 	function isIn(
 		pId in integer,
@@ -1554,6 +1813,18 @@ grant execute on RDX_JS_IntervalSchedule to &USER&_RUN_ROLE
 
 create or replace package RDX_JS_JOB as
 
+	function constTaskExecutorClassName return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constTaskExecutorClassName, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constTaskExecutorClassName, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constTaskExecutorClassName, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constTaskExecutorClassName, WNPS);
+
+	function constTaskExecutorMethodName return varchar2;
+	PRAGMA RESTRICT_REFERENCES (constTaskExecutorMethodName, RNDS);
+	PRAGMA RESTRICT_REFERENCES (constTaskExecutorMethodName, RNPS);
+	PRAGMA RESTRICT_REFERENCES (constTaskExecutorMethodName, WNDS);
+	PRAGMA RESTRICT_REFERENCES (constTaskExecutorMethodName, WNPS);
+
 	procedure shedulePeriodical(
 		pTaskId in integer,
 		pExecTime in date
@@ -1578,7 +1849,11 @@ create or replace package RDX_JS_JOB as
 		sCreatorPid in varchar2 := null,
 		sTitle in varchar2 := null,
 		sScpName in varchar2 := null,
-		iTaskId in integer := null
+		iTaskId in integer := null,
+		pAadcMemberId in integer := null,
+		threadPoolClassGuid in varchar2 := null,
+		threadPoolPid in varchar2 := null,
+		threadKey in integer := null
 	) return integer;
 
 	procedure awake(
@@ -1624,7 +1899,11 @@ create or replace package RDX_JS_JOB as
 		sCreatorPid in varchar2 := null,
 		sTitle in varchar2 := null,
 		sScpName in varchar2 := null,
-		iTaskId in integer := null
+		iTaskId in integer := null,
+		aadcMemberId in integer := null,
+		threadPoolClassGuid in varchar2 := null,
+		threadPoolPid in varchar2 := null,
+		threadKey in integer := null
 	) return integer;
 
 	function adjustToNearestMinute(
@@ -1648,10 +1927,52 @@ create or replace package RDX_JS_JOB as
 		pClassName in varchar2,
 		pMethodName in varchar2
 	) return integer;
+
+	function adjustToNearest10Sec(
+		iTimestamp in timestamp
+	) return timestamp;
 end;
 /
 
 grant execute on RDX_JS_JOB to &USER&_RUN_ROLE
+/
+
+create or replace package RDX_JS_Vars as
+
+	TYPE TCalendarItem IS RECORD (
+	  classGuid varchar2(29), -- RDX_JS_CALENDARITEM.CLASSGUID%Type,
+	  oper char(1), -- RDX_JS_CALENDARITEM.OPER%Type,
+	  offsetDir int, -- RDX_JS_CALENDARITEM.OFFSETDIR%Type,
+	  offset int, -- RDX_JS_CALENDARITEM.OFFSET%Type,
+	  absDate date, -- RDX_JS_CALENDARITEM.ABSDATE%Type,
+	  incCalendarId int, --RDX_JS_CALENDARITEM.INCCALENDARID%Type,
+	  dayOfWeek int);
+
+	TYPE TItemsNestedTable IS TABLE OF TCalendarItem;
+	TYPE TItemsByCalendar IS TABLE OF TItemsNestedTable INDEX BY binary_integer;
+	cachedItems TItemsByCalendar;
+
+	-- cached period of calendar dates
+	TYPE TDateById IS TABLE OF DATE INDEX BY binary_integer;
+	cachedPeriodsBegin TDateById;
+	cachedPeriodsEnd TDateById;
+
+	-- cached calendar dates
+	-- whether such date is included in calendate (date cache)
+	TYPE TDateMap is TABLE of BOOLEAN INDEX BY VARCHAR2(10);         -- key='YYYY-MM-DD'
+	TYPE TDateMapById IS TABLE OF TDateMap INDEX BY binary_integer;
+	cachedDates TDateMapById;
+
+	function getLastUpdateTime return date;
+
+	procedure setLastUpdateTime(
+		pLastUpdateTime in date
+	);
+	PRAGMA RESTRICT_REFERENCES (DEFAULT, WNDS);
+end;
+/
+
+grant execute on RDX_JS_Vars to &USER&_RUN_ROLE
 /
 
 create or replace package RDX_License as
@@ -1747,6 +2068,19 @@ end;
 grant execute on RDX_PC_Utils to &USER&_RUN_ROLE
 /
 
+create or replace package RDX_SM_InstStateHist as
+
+	procedure dailyMaintenance;
+
+	function getStackByDigest(
+		pDigest in varchar2
+	) return clob;
+end;
+/
+
+grant execute on RDX_SM_InstStateHist to &USER&_RUN_ROLE
+/
+
 create or replace package RDX_SM_METRIC as
 
 	procedure dailyMaintenance;
@@ -1800,7 +2134,17 @@ create or replace package RDX_Trace as
 		pIsSensitive in integer := 0
 	);
 
-	-- for internal use
+	procedure put_4word(
+		pSeverity in integer,
+		pCode in varchar2,
+		pWord1 in varchar2,
+		pWord2 in varchar2,
+		pWord3 in varchar2,
+		pWord4 in varchar2,
+		pSource in varchar2,
+		pIsSensitive in integer := 0
+	);
+
 	function put_internal(
 		pCode in varchar2,
 		pWords in clob,
@@ -1829,10 +2173,64 @@ create or replace package RDX_Trace as
 	procedure dropEventPartitionsOlderThan(
 		d in date
 	);
+
+	function translate(
+		pBundleId in varchar2,
+		pStringId in varchar2,
+		pLanguage in varchar2,
+		pWords in clob
+	) return clob;
+
+	function translate(
+		pQualifiedId in varchar2,
+		pLanguage in varchar2,
+		pWords in clob
+	) return clob;
 end;
 /
 
 grant execute on RDX_Trace to &USER&_RUN_ROLE
+/
+
+create or replace package RDX_Utils as
+
+	function getSysTimeZone return varchar2;
+
+	function getSysTimeZoneOffsetDays return number;
+
+	function dateToTsTz(
+		pDate in date
+	) return timestamp with time zone;
+
+	function getUnixEpochMillis(
+		pTimestamp in timestamp with time zone
+	) return integer;
+
+	function getUnixEpochMillis return integer;
+
+	function getUnixEpochMillisDate(
+		pDate in date
+	) return integer;
+
+	function unixEpochMsToTsTzUtc(
+		pMillis in number
+	) return timestamp with time zone;
+
+	function unixEpochMsToDate(
+		pMillis in number
+	) return date;
+
+	function blobToClob(
+		pData in blob
+	) return clob;
+
+	function gunzipToClob(
+		pCompressedData in blob
+	) return clob;
+end;
+/
+
+grant execute on RDX_Utils to &USER&_RUN_ROLE
 /
 
 create or replace package RDX_ValAsStr as
@@ -1863,6 +2261,12 @@ grant execute on RDX_ValAsStr to &USER&_RUN_ROLE
 /
 
 create or replace package RDX_WF as
+
+	function constDebugRole return varchar2;
+
+	function constAdminRole return varchar2;
+
+	function constClerkRole return varchar2;
 
 	function curUserIsProcessAdmin(
 		pProcessId in integer
@@ -2062,16 +2466,19 @@ end;
 grant execute on RDX_WF_Maintenance to &USER&_RUN_ROLE
 /
 
-create sequence SQN_COUNTERID
+create sequence SQN_RDX_AC_PARTITIONGROUPID
+	increment by 1
+	start with 1
+	minvalue 1
 	order
 /
 
-grant select on SQN_COUNTERID to &USER&_RUN_ROLE
+grant select on SQN_RDX_AC_PARTITIONGROUPID to &USER&_RUN_ROLE
 /
 
 create sequence SQN_RDX_AC_USER2ROLEID
 	increment by 1
-	start with 1
+	start with 2
 	minvalue 1
 	order
 /
@@ -2133,11 +2540,18 @@ create sequence SQN_RDX_CM_PACKETID
 grant select on SQN_RDX_CM_PACKETID to &USER&_RUN_ROLE
 /
 
-create sequence SQN_RDX_DM_PACKETID
+create sequence SQN_RDX_CM_REVISIONID
 	order
 /
 
-grant select on SQN_RDX_DM_PACKETID to &USER&_RUN_ROLE
+grant select on SQN_RDX_CM_REVISIONID to &USER&_RUN_ROLE
+/
+
+create sequence SQN_RDX_COUNTERID
+	order
+/
+
+grant select on SQN_RDX_COUNTERID to &USER&_RUN_ROLE
 /
 
 create sequence SQN_RDX_EASSESSIONID
@@ -2155,7 +2569,7 @@ grant select on SQN_RDX_EASSESSIONID to &USER&_RUN_ROLE
 create sequence SQN_RDX_EVENTLOGID
 	start with 1
 	minvalue 1
-	order
+	cache 100
 /
 
 grant select on SQN_RDX_EVENTLOGID to &USER&_RUN_ROLE
@@ -2186,7 +2600,9 @@ grant select on SQN_RDX_JS_CALENDARITEMID to &USER&_RUN_ROLE
 /
 
 create sequence SQN_RDX_JS_EVENTSCHDID
-	minvalue 10
+	increment by 1
+	start with 10
+	minvalue 1
 	order
 /
 
@@ -2194,7 +2610,9 @@ grant select on SQN_RDX_JS_EVENTSCHDID to &USER&_RUN_ROLE
 /
 
 create sequence SQN_RDX_JS_EVENTSCHDITEMID
-	minvalue 10
+	increment by 1
+	start with 10
+	minvalue 1
 	order
 /
 
@@ -2224,7 +2642,9 @@ grant select on SQN_RDX_JS_JOBID to &USER&_RUN_ROLE
 /
 
 create sequence SQN_RDX_JS_SCHDUNITJOBID
-	minvalue 10
+	increment by 1
+	start with 10
+	minvalue 1
 	order
 /
 
@@ -2282,11 +2702,25 @@ create sequence SQN_RDX_PC_MESSAGEID
 grant select on SQN_RDX_PC_MESSAGEID to &USER&_RUN_ROLE
 /
 
+create sequence SQN_RDX_PC_NOTIFICATIONSENDERI
+	order
+/
+
+grant select on SQN_RDX_PC_NOTIFICATIONSENDERI to &USER&_RUN_ROLE
+/
+
 create sequence SQN_RDX_PROFILERLOGID
 	order
 /
 
 grant select on SQN_RDX_PROFILERLOGID to &USER&_RUN_ROLE
+/
+
+create sequence SQN_RDX_QUEUESAFMESSSEQ
+	order
+/
+
+grant select on SQN_RDX_QUEUESAFMESSSEQ to &USER&_RUN_ROLE
 /
 
 create sequence SQN_RDX_REPORTPARAMID
@@ -2412,6 +2846,48 @@ create sequence SQN_RDX_TESTCASEID
 grant select on SQN_RDX_TESTCASEID to &USER&_RUN_ROLE
 /
 
+create sequence SQN_RDX_TST_AUDIT
+	order
+/
+
+grant select on SQN_RDX_TST_AUDIT to &USER&_RUN_ROLE
+/
+
+create sequence SQN_RDX_TST_DMTESTCHILDID
+	order
+/
+
+grant select on SQN_RDX_TST_DMTESTCHILDID to &USER&_RUN_ROLE
+/
+
+create sequence SQN_RDX_TST_DMTESTID
+	order
+/
+
+grant select on SQN_RDX_TST_DMTESTID to &USER&_RUN_ROLE
+/
+
+create sequence SQN_RDX_TST_INHERITANCENODESEQ
+	order
+/
+
+grant select on SQN_RDX_TST_INHERITANCENODESEQ to &USER&_RUN_ROLE
+/
+
+create sequence SQN_RDX_TST_SQNTEDCCHILD
+	order
+/
+
+grant select on SQN_RDX_TST_SQNTEDCCHILD to &USER&_RUN_ROLE
+/
+
+create sequence SQN_RDX_TST_SQNTEDCPARENT
+	order
+/
+
+grant select on SQN_RDX_TST_SQNTEDCPARENT to &USER&_RUN_ROLE
+/
+
 create sequence SQN_RDX_UNITID
 	increment by 1
 	start with 10
@@ -2471,21 +2947,27 @@ create sequence SQN_RDX_WF_PROCESSLINKID
 grant select on SQN_RDX_WF_PROCESSLINKID to &USER&_RUN_ROLE
 /
 
-create table COUNTER(
+create table RDX_AADC_OGGERROR(
 	ID NUMBER(18,0) not null,
-	CLASSGUID VARCHAR2(100 char) null,
-	VALUE_INCREMENT NUMBER(9,0) null,
-	DEFAULTVALUE NUMBER(9,0) default 0 not null,
-	VALUE NUMBER(9,0) default 0 not null,
-	RESETPERIOD NUMBER(9,0) null,
-	LASTUPDATETIME TIMESTAMP(6) null,
-	LASTRESETTIME TIMESTAMP(6) null,
-	UPDEFID VARCHAR2(100 char) not null,
-	UPOWNERENTITYID VARCHAR2(100 char) not null,
-	UPOWNERPID VARCHAR2(200 char) not null)
+	FILESEQNO NUMBER null,
+	FILERBA NUMBER null,
+	TIMESTR VARCHAR2(100 char) null,
+	SCN NUMBER null,
+	OPTYPE VARCHAR2(1000 char) null,
+	OPCODE VARCHAR2(1000 char) null,
+	DBERRNUM NUMBER null,
+	DBERRMSG VARCHAR2(4000 char) null)
 /
 
-grant select, update, insert, delete on COUNTER to &USER&_RUN_ROLE
+grant select, update, insert, delete on RDX_AADC_OGGERROR to &USER&_RUN_ROLE
+/
+
+create table RDX_AADC_SEQUENCEDDL(
+	NAME VARCHAR2(100 char) not null,
+	LASTTIME TIMESTAMP(6) not null)
+/
+
+grant select, update, insert, delete on RDX_AADC_SEQUENCEDDL to &USER&_RUN_ROLE
 /
 
 create table RDX_AC_APPROLE(
@@ -2502,6 +2984,16 @@ create table RDX_AC_APPROLE(
 grant select, update, insert, delete on RDX_AC_APPROLE to &USER&_RUN_ROLE
 /
 
+create table RDX_AC_PARTITIONGROUP(
+	ID NUMBER(9,0) not null,
+	TITLE VARCHAR2(250 char) not null,
+	CLASSGUID VARCHAR2(100 char) not null,
+	PARTITIONS CLOB null)
+/
+
+grant select, update, insert, delete on RDX_AC_PARTITIONGROUP to &USER&_RUN_ROLE
+/
+
 create table RDX_AC_USER(
 	NAME VARCHAR2(250 char) not null,
 	LOCKED NUMBER(1,0) default 0 not null,
@@ -2510,15 +3002,17 @@ create table RDX_AC_USER(
 	ADMINGROUPNAME VARCHAR2(250 char) null,
 	LASTPWDCHANGETIME DATE null,
 	PWDEXPIRATIONPERIOD NUMBER(9,0) default 90 null,
-	PWDHASH VARCHAR2(32 char) null,
+	PWDHASH VARCHAR2(64 char) null,
+	PWDHASHALGO VARCHAR2(16 char) default 'SHA-1' null,
+	TEMPORARYPWDSTARTTIME DATE null,
 	AUTHTYPES VARCHAR2(250 char) null,
 	PWDHASHHISTORY CLOB null,
 	CHECKSTATION NUMBER(1,0) default 0 not null,
 	EMAIL VARCHAR2(100 char) null,
 	MOBILEPHONE VARCHAR2(20 char) null,
-	LASTLOGONTIME DATE default SYSDATE not null,
+	LASTLOGONTIME DATE null,
 	INVALIDLOGONCNT NUMBER(9,0) default 0 not null,
-	INVALIDLOGONTIME DATE not null,
+	INVALIDLOGONTIME DATE null,
 	MUSTCHANGEPWD NUMBER(1,0) default 1 not null,
 	DBTRACEPROFILE VARCHAR2(4000 char) null,
 	TRACEGUIACTIONS NUMBER(1,0) default 0 not null,
@@ -2537,12 +3031,14 @@ create table RDX_AC_USER2ROLE(
 	ROLEID VARCHAR2(100 char) null,
 	MA$$1ZOQHCO35XORDCV2AANE2UAFXA NUMBER(1,0) default 0 not null,
 	PA$$1ZOQHCO35XORDCV2AANE2UAFXA VARCHAR2(250 char) null,
+	PG$$1ZOQHCO35XORDCV2AANE2UAFXA NUMBER(9,0) null,
 	ISNEW NUMBER(1,0) default 0 null,
 	REPLACEDID NUMBER(18,0) null,
 	EDITORNAME VARCHAR2(250 char) null,
 	ACCEPTORNAME VARCHAR2(250 char) null,
 	MA$$4PQ4U65VK5HFVJ32XCUORBKRJM NUMBER(1,0) default 0 not null,
-	PA$$4PQ4U65VK5HFVJ32XCUORBKRJM VARCHAR2(100 char) null)
+	PA$$4PQ4U65VK5HFVJ32XCUORBKRJM VARCHAR2(100 char) null,
+	PG$$4PQ4U65VK5HFVJ32XCUORBKRJM NUMBER(9,0) null)
 /
 
 grant select, update, insert, delete on RDX_AC_USER2ROLE to &USER&_RUN_ROLE
@@ -2575,15 +3071,31 @@ create table RDX_AC_USERGROUP2ROLE(
 	ROLEID VARCHAR2(100 char) null,
 	MA$$1ZOQHCO35XORDCV2AANE2UAFXA NUMBER(1,0) default 0 not null,
 	PA$$1ZOQHCO35XORDCV2AANE2UAFXA VARCHAR2(250 char) null,
+	PG$$1ZOQHCO35XORDCV2AANE2UAFXA NUMBER(9,0) null,
 	ISNEW NUMBER(1,0) default 0 null,
 	REPLACEDID NUMBER(18,0) null,
 	EDITORNAME VARCHAR2(250 char) null,
 	ACCEPTORNAME VARCHAR2(250 char) null,
 	MA$$4PQ4U65VK5HFVJ32XCUORBKRJM NUMBER(1,0) default 0 not null,
-	PA$$4PQ4U65VK5HFVJ32XCUORBKRJM VARCHAR2(100 char) null)
+	PA$$4PQ4U65VK5HFVJ32XCUORBKRJM VARCHAR2(100 char) null,
+	PG$$4PQ4U65VK5HFVJ32XCUORBKRJM NUMBER(9,0) null)
 /
 
 grant select, update, insert, delete on RDX_AC_USERGROUP2ROLE to &USER&_RUN_ROLE
+/
+
+create table RDX_AMQPQUEUE(
+	QUEUEID NUMBER(9,0) not null,
+	DELIVERYMODE NUMBER(1,0) default 1 null,
+	PRIORITY NUMBER(1,0) null,
+	APPID VARCHAR2(200 char) null,
+	REPLYTO VARCHAR2(100 char) null,
+	WRITEUSERID NUMBER(1,0) default 0 not null,
+	VIRTUALHOST VARCHAR2(200 char) null,
+	EXPIRATIONSEC NUMBER(9,0) null)
+/
+
+grant select, update, insert, delete on RDX_AMQPQUEUE to &USER&_RUN_ROLE
 /
 
 create table RDX_ARTEINSTANCE(
@@ -2613,8 +3125,8 @@ grant select, update, insert, delete on RDX_ARTEUNIT to &USER&_RUN_ROLE
 /
 
 create table RDX_AU_AUDITLOG(
-	ID NUMBER(12,0) not null,
 	EVENTTIME TIMESTAMP(6) not null,
+	ID NUMBER(18,0) not null,
 	STOREDURATION NUMBER(1,0) default 1 not null,
 	USERNAME VARCHAR2(250 char) null,
 	STATIONNAME VARCHAR2(100 char) null,
@@ -2691,11 +3203,24 @@ create table RDX_CLASSLOADINGPROFILEITEM(
 grant select, update, insert, delete on RDX_CLASSLOADINGPROFILEITEM to &USER&_RUN_ROLE
 /
 
+create table RDX_CM_CHANGELOG(
+	UPDEFID VARCHAR2(100 char) not null,
+	UPOWNERENTITYID VARCHAR2(100 char) not null,
+	UPOWNERPID VARCHAR2(200 char) not null,
+	COMMENTS VARCHAR2(2000 char) null,
+	LOCALNOTES VARCHAR2(2000 char) null)
+/
+
+grant select, update, insert, delete on RDX_CM_CHANGELOG to &USER&_RUN_ROLE
+/
+
 create table RDX_CM_ITEM(
 	ID NUMBER(9,0) not null,
 	CLASSGUID VARCHAR2(50 char) not null,
 	PACKETID NUMBER(9,0) not null,
 	PARENTID NUMBER(9,0) null,
+	EXTGUID VARCHAR2(100 char) null,
+	SRCAPPVER VARCHAR2(1000 char) null,
 	SRCOBJECTPID VARCHAR2(1000 char) null,
 	SRCOBJECTRID VARCHAR2(1000 char) null,
 	SRCOBJECTTITLE VARCHAR2(1000 char) null,
@@ -2703,6 +3228,7 @@ create table RDX_CM_ITEM(
 	OBJSTATE VARCHAR2(20 char) null,
 	ALLREFSSTATE VARCHAR2(20 char) null,
 	DATA CLOB null,
+	SETTINGS CLOB null,
 	NOTES VARCHAR2(4000 char) null)
 /
 
@@ -2734,18 +3260,55 @@ create table RDX_CM_PACKET(
 	CLASSGUID VARCHAR2(50 char) not null,
 	TITLE VARCHAR2(200 char) null,
 	NOTES VARCHAR2(4000 char) null,
+	LOCALNOTES VARCHAR2(4000 char) null,
 	SRCDBURL VARCHAR2(1000 char) null,
 	SRCPACKETID NUMBER(9,0) null,
 	SRCAPPVER VARCHAR2(1000 char) null,
 	SRCEXPUSER VARCHAR2(250 char) null,
 	SRCEXPTIME DATE null,
+	PKGSTATE VARCHAR2(20 char) null,
 	LASTMODIFYTIME DATE not null,
-	LASTMODIFYUSER VARCHAR2(250 char) not null,
+	LASTMODIFYUSER VARCHAR2(250 char) null,
 	ACCEPTTIME DATE null,
 	ACCEPTUSER VARCHAR2(250 char) null)
 /
 
 grant select, update, insert, delete on RDX_CM_PACKET to &USER&_RUN_ROLE
+/
+
+create table RDX_CM_REVISION(
+	ID NUMBER(9,0) not null,
+	UPDEFID VARCHAR2(100 char) not null,
+	UPOWNERENTITYID VARCHAR2(100 char) not null,
+	UPOWNERPID VARCHAR2(200 char) not null,
+	SEQ NUMBER(9,0) null,
+	TIME DATE not null,
+	DESCRIPTION VARCHAR2(2000 char) not null,
+	KIND VARCHAR2(20 char) default 'MODIFY' not null,
+	AUTHOR VARCHAR2(250 char) null,
+	DOCREF VARCHAR2(200 char) null,
+	APPVER VARCHAR2(1000 char) null,
+	LOCALNOTES VARCHAR2(2000 char) null)
+/
+
+grant select, update, insert, delete on RDX_CM_REVISION to &USER&_RUN_ROLE
+/
+
+create table RDX_COUNTER(
+	ID NUMBER(18,0) not null,
+	CLASSGUID VARCHAR2(100 char) null,
+	VALUE_INCREMENT NUMBER(9,0) null,
+	DEFAULTVALUE NUMBER(9,0) default 0 not null,
+	VALUE NUMBER(9,0) default 0 not null,
+	RESETPERIOD NUMBER(9,0) null,
+	LASTUPDATETIME TIMESTAMP(6) null,
+	LASTRESETTIME TIMESTAMP(6) null,
+	UPDEFID VARCHAR2(100 char) not null,
+	UPOWNERENTITYID VARCHAR2(100 char) not null,
+	UPOWNERPID VARCHAR2(200 char) not null)
+/
+
+grant select, update, insert, delete on RDX_COUNTER to &USER&_RUN_ROLE
 /
 
 create global temporary table RDX_DEF2DOMAIN(
@@ -2756,61 +3319,6 @@ create global temporary table RDX_DEF2DOMAIN(
 /
 
 grant select, update, insert, delete on RDX_DEF2DOMAIN to &USER&_RUN_ROLE
-/
-
-create table RDX_DM_DATA(
-	PACKETID NUMBER(9,0) not null,
-	ENTITYGUID VARCHAR2(50 char) not null,
-	OBJPID VARCHAR2(1000 char) not null,
-	PROPGUID VARCHAR2(50 char) not null,
-	PROPVAL CLOB null)
-/
-
-grant select, update, insert, delete on RDX_DM_DATA to &USER&_RUN_ROLE
-/
-
-create table RDX_DM_OUTLINK(
-	PACKETID NUMBER(9,0) not null,
-	EXTTABLEGUID VARCHAR2(50 char) not null,
-	PARENTPID VARCHAR2(1000 char) not null)
-/
-
-grant select, update, insert, delete on RDX_DM_OUTLINK to &USER&_RUN_ROLE
-/
-
-create table RDX_DM_OUTLINKVERIFY(
-	PACKETID NUMBER(9,0) not null,
-	EXTTABLEGUID VARCHAR2(50 char) not null,
-	PARENTPID VARCHAR2(1000 char) not null,
-	PARENTPROPGUID VARCHAR2(50 char) not null,
-	PARENTPROPVAL VARCHAR2(4000 char) null)
-/
-
-grant select, update, insert, delete on RDX_DM_OUTLINKVERIFY to &USER&_RUN_ROLE
-/
-
-create table RDX_DM_PACKET(
-	ID NUMBER(9,0) not null,
-	TITLE VARCHAR2(200 char) null,
-	NOTES VARCHAR2(4000 char) null,
-	STATE CHAR(1 char) not null,
-	PREPARETIME DATE null,
-	AUTHORNAME VARCHAR2(250 char) null,
-	SRCDBURL VARCHAR2(100 char) null,
-	SRCPACKETID NUMBER(9,0) null,
-	DBSTRUCTUREVER VARCHAR2(200 char) null)
-/
-
-grant select, update, insert, delete on RDX_DM_PACKET to &USER&_RUN_ROLE
-/
-
-create table RDX_DM_SEGMENT(
-	PACKETID NUMBER(9,0) not null,
-	SEGMENTGUID VARCHAR2(50 char) not null,
-	SELECTCONDITION CLOB null)
-/
-
-grant select, update, insert, delete on RDX_DM_SEGMENT to &USER&_RUN_ROLE
 /
 
 create table RDX_EASSELECTORADDONS(
@@ -2895,6 +3403,18 @@ create global temporary table RDX_EVENTCODE2EVENTPARAMS(
 grant select, update, insert, delete on RDX_EVENTCODE2EVENTPARAMS to &USER&_RUN_ROLE
 /
 
+create global temporary table RDX_EVENTCODEMLS(
+	VERSIONNUM NUMBER(18,0) not null,
+	BUNDLEID VARCHAR2(100 char) not null,
+	STRINGID VARCHAR2(100 char) not null,
+	LANGUAGE VARCHAR2(100 char) not null,
+	STRINGVALUE VARCHAR2(4000 char) not null)
+	on commit preserve rows
+/
+
+grant select, update, insert, delete on RDX_EVENTCODEMLS to &USER&_RUN_ROLE
+/
+
 create table RDX_EVENTCONTEXT(
 	RAISETIME TIMESTAMP(6) not null,
 	EVENTID NUMBER(18,0) not null,
@@ -2906,6 +3426,7 @@ create table RDX_EVENTCONTEXT(
 		      PARTITION RDX_EVENTCONTEXT_0 VALUES LESS THAN (to_date('&sysdate:yyyy_MM_dd&','YYYY_MM_DD'))
 		    )
 #ENDIF
+	tablespace RADIX_EVENTLOG
 /
 
 grant select, update, insert, delete on RDX_EVENTCONTEXT to &USER&_RUN_ROLE
@@ -2929,6 +3450,7 @@ create table RDX_EVENTLOG(
 		      PARTITION RDX_EVENTLOG_0 VALUES LESS THAN (to_date('&sysdate:yyyy_MM_dd&','YYYY_MM_DD'))
 		    )
 #ENDIF
+	tablespace RADIX_EVENTLOG
 /
 
 grant select, update, insert, delete on RDX_EVENTLOG to &USER&_RUN_ROLE
@@ -2940,14 +3462,6 @@ create table RDX_EVENTSEVERITY(
 /
 
 grant select, update, insert, delete on RDX_EVENTSEVERITY to &USER&_RUN_ROLE
-/
-
-create table RDX_FALLBACKMQHANDLER(
-	UNITID NUMBER(9,0) not null,
-	MAINUNITID NUMBER(9,0) not null)
-/
-
-grant select, update, insert, delete on RDX_FALLBACKMQHANDLER to &USER&_RUN_ROLE
 /
 
 create table RDX_INSTANCE(
@@ -2993,7 +3507,24 @@ create table RDX_INSTANCE(
 	MAXACTIVEARTEHIGH NUMBER(9,0) null,
 	MAXACTIVEARTEVERYHIGH NUMBER(9,0) null,
 	MAXACTIVEARTECRITICAL NUMBER(9,0) null,
-	CLASSLOADINGPROFILEID NUMBER(9,0) null)
+	CLASSLOADINGPROFILEID NUMBER(9,0) null,
+	AADCMEMBERID NUMBER(1,0) null,
+	AADCDGADDRESS VARCHAR2(100 char) null,
+	AADCMYSCN NUMBER(18,0) null,
+	AADCMYTIME TIMESTAMP(6) null,
+	SELFCHECKTIMEMILLIS NUMBER(18,0) null,
+	AUTORESTARTDELAYSEC NUMBER(9,0) default 0 not null,
+	KERNELVERSION VARCHAR2(200 char) null,
+	APPVERSION VARCHAR2(200 char) null,
+	STARTTIMEMILLIS NUMBER(18,0) null,
+	OSPID NUMBER(18,0) null,
+	REVISION NUMBER(18,0) null,
+	INSTSTATEGATHERPERIODSEC NUMBER(9,0) default -1 null,
+	INSTSTATEFORCEDGATHERPERIODSEC NUMBER(9,0) default -1 null,
+	INSTSTATEHISTORYSTOREDAYS NUMBER(9,0) null,
+	CPUCORECOUNT NUMBER(9,0) null,
+	HOSTNAME VARCHAR2(255 char) null,
+	HOSTIPADDRESSES VARCHAR2(4000 char) null)
 /
 
 grant select, update, insert, delete on RDX_INSTANCE to &USER&_RUN_ROLE
@@ -3018,9 +3549,22 @@ create table RDX_JMSHANDLER(
 grant select, update, insert, delete on RDX_JMSHANDLER to &USER&_RUN_ROLE
 /
 
+create table RDX_JMSQUEUE(
+	QUEUEID NUMBER(9,0) not null,
+	JNDICONNFACTORYNAME VARCHAR2(200 char) null,
+	CONNFACTORYCLASSNAME VARCHAR2(200 char) null,
+	CONNFACTORYOPTIONS VARCHAR2(4000 char) null,
+	SUBSCRIPTIONNAME VARCHAR2(200 char) null,
+	CLIENTID VARCHAR2(200 char) null)
+/
+
+grant select, update, insert, delete on RDX_JMSQUEUE to &USER&_RUN_ROLE
+/
+
 create table RDX_JS_CALENDAR(
 	ID NUMBER(9,0) not null,
 	GUID VARCHAR2(100 char) not null,
+	RID VARCHAR2(100 char) null,
 	TITLE VARCHAR2(200 char) null,
 	NOTES VARCHAR2(4000 char) null,
 	LASTUPDATETIME TIMESTAMP(6) not null,
@@ -3048,6 +3592,7 @@ grant select, update, insert, delete on RDX_JS_CALENDARITEM to &USER&_RUN_ROLE
 
 create table RDX_JS_EVENTSCHD(
 	ID NUMBER(9,0) not null,
+	RID VARCHAR2(100 char) null,
 	GUID VARCHAR2(100 char) not null,
 	TITLE VARCHAR2(200 char) null,
 	NOTES VARCHAR2(4000 char) null,
@@ -3075,6 +3620,7 @@ grant select, update, insert, delete on RDX_JS_EVENTSCHDITEM to &USER&_RUN_ROLE
 
 create table RDX_JS_INTERVALSCHD(
 	ID NUMBER(9,0) not null,
+	RID VARCHAR2(100 char) null,
 	GUID VARCHAR2(100 char) not null,
 	TITLE VARCHAR2(200 char) null,
 	NOTES VARCHAR2(4000 char) null,
@@ -3144,6 +3690,7 @@ grant select, update, insert, delete on RDX_JS_JOBPARAM to &USER&_RUN_ROLE
 
 create table RDX_JS_JOBQUEUE(
 	ID NUMBER(18,0) not null,
+	AADCMEMBERID NUMBER(1,0) null,
 	TASKID NUMBER(9,0) null,
 	DUETIME TIMESTAMP(6) null,
 	CLASSNAME VARCHAR2(1000 char) not null,
@@ -3160,25 +3707,24 @@ create table RDX_JS_JOBQUEUE(
 	PROCESSORTITLE VARCHAR2(500 char) null,
 	UNLOCKCOUNT NUMBER(9,0) default 0 not null,
 	SELFCHECKTIME DATE null,
-	ALLOWRERUN NUMBER(1,0) default 1 not null)
+	ALLOWRERUN NUMBER(1,0) default 1 not null,
+	SELFCHECKTIMEMILLIS NUMBER(18,0) null,
+	THREADPOOLCLASSGUID VARCHAR2(100 char) null,
+	THREADPOOLPID VARCHAR2(250 char) null,
+	THREADKEY NUMBER(9,0) null)
 /
 
 grant select, update, insert, delete on RDX_JS_JOBQUEUE to &USER&_RUN_ROLE
 /
 
-create table RDX_JS_JOBSCHEDULERUNIT(
-	ID NUMBER(9,0) not null,
-	PARENTID NUMBER(9,0) null)
-/
-
-grant select, update, insert, delete on RDX_JS_JOBSCHEDULERUNIT to &USER&_RUN_ROLE
-/
-
 create table RDX_JS_TASK(
 	ID NUMBER(9,0) not null,
+	RID VARCHAR2(100 char) null,
+	AADCMEMBERID NUMBER(1,0) null,
 	CREATETIME DATE default SYSDATE not null,
 	SEQ NUMBER(9,0) default 0 not null,
 	PARENTID NUMBER(9,0) null,
+	DIRECTORYID NUMBER(9,0) null,
 	TITLE VARCHAR2(250 char) null,
 	UNITID NUMBER(9,0) null,
 	SCHEDULEID NUMBER(9,0) null,
@@ -3203,7 +3749,8 @@ create table RDX_JS_TASK(
 	ISACTIVE NUMBER(1,0) default 1 not null,
 	SKIPIFEXECUTING NUMBER(1,0) default 0 not null,
 	EXPECTEDDURATIONSEC NUMBER(9,0) null,
-	LASTSCHEDULINGTIME DATE null)
+	LASTSCHEDULINGTIME DATE null,
+	SELFCHECKTIMEMILLIS NUMBER(18,0) null)
 /
 
 grant select, update, insert, delete on RDX_JS_TASK to &USER&_RUN_ROLE
@@ -3211,7 +3758,9 @@ grant select, update, insert, delete on RDX_JS_TASK to &USER&_RUN_ROLE
 
 create table RDX_KAFKAQUEUE(
 	QUEUEID NUMBER(9,0) not null,
-	SESSIONTIMEOUTSEC NUMBER(9,0) default 30 not null)
+	SESSIONTIMEOUTSEC NUMBER(9,0) default 30 not null,
+	MAXPARTITIONFETCHBYTES NUMBER(9,0) default 1048576 not null,
+	BROKERKERBEROSNAME VARCHAR2(200 char) null)
 /
 
 grant select, update, insert, delete on RDX_KAFKAQUEUE to &USER&_RUN_ROLE
@@ -3222,7 +3771,7 @@ create table RDX_LIBUSERFUNC(
 	LIBNAME VARCHAR2(1000 char) not null,
 	FUNCNAME VARCHAR2(300 char) null,
 	DESCRIPTION VARCHAR2(4000 char) null,
-	PROFILE VARCHAR2(400 char) null)
+	PROFILE VARCHAR2(1000 char) null)
 /
 
 grant select, update, insert, delete on RDX_LIBUSERFUNC to &USER&_RUN_ROLE
@@ -3244,12 +3793,28 @@ create table RDX_MESSAGEQUEUE(
 	QUEUEKIND VARCHAR2(100 char) not null,
 	CLASSGUID VARCHAR2(100 char) not null,
 	TITLE VARCHAR2(200 char) null,
-	BROKERADDRESS VARCHAR2(200 char) not null,
+	BROKERADDRESS VARCHAR2(4000 char) not null,
 	QUEUENAME VARCHAR2(200 char) not null,
 	PARTITIONNAME VARCHAR2(200 char) null,
 	CONSUMERKEY VARCHAR2(200 char) null,
 	LOGIN VARCHAR2(200 char) null,
-	PASSWORD VARCHAR2(200 char) null)
+	PASSWORD VARCHAR2(200 char) null,
+	USESAF NUMBER(1,0) default 0 not null,
+	LASTPARTONLINESWITCHTIME DATE default SYSDATE not null,
+	TIMEOUTSEC NUMBER(9,0) default 30 not null,
+	PARTITIONSOURCE VARCHAR2(200 char) null,
+	PROCORDER VARCHAR2(100 char) null,
+	PREFETCHCOUNT NUMBER(9,0) null,
+	UUIDMESSID NUMBER(1,0) default 0 not null,
+	COPYIDTOCORRID NUMBER(1,0) default 0 not null,
+	SECURITYPROTOCOL NUMBER(9,0) default 0 not null,
+	SERVERCERTALIASES VARCHAR2(4000 char) null,
+	CLIENTKEYALIASES VARCHAR2(4000 char) null,
+	CIPHERSUITES VARCHAR2(4000 char) null,
+	JNDIINITIALCONTEXTFACTORY VARCHAR2(200 char) null,
+	JNDIPROVIDERURL VARCHAR2(200 char) null,
+	JNDIQUEUENAME VARCHAR2(200 char) null,
+	JNDIOPTIONS VARCHAR2(4000 char) null)
 /
 
 grant select, update, insert, delete on RDX_MESSAGEQUEUE to &USER&_RUN_ROLE
@@ -3284,6 +3849,7 @@ grant select, update, insert, delete on RDX_MSDLSCHEME to &USER&_RUN_ROLE
 
 create table RDX_NETCHANNEL(
 	ID NUMBER(9,0) not null,
+	RID VARCHAR2(100 char) null,
 	TITLE VARCHAR2(100 char) null,
 	UNITID NUMBER(9,0) not null,
 	ADDRESS VARCHAR2(200 char) not null,
@@ -3306,7 +3872,12 @@ create table RDX_NETCHANNEL(
 	SECURITYPROTOCOL NUMBER(9,0) default 0 not null,
 	CHECKCLIENTCERT NUMBER(1,0) default 0 not null,
 	SERVERKEYALIASES VARCHAR2(4000 char) null,
-	CLIENTCERTALIASES VARCHAR2(4000 char) null)
+	CLIENTCERTALIASES VARCHAR2(4000 char) null,
+	USEKEEPALIVE NUMBER(1,0) default 1 not null,
+	SYNCMODE NUMBER(1,0) default 0 not null,
+	CURBUSYSESSIONCOUNT NUMBER(9,0) default 0 not null,
+	ISCURBUSYSESSIONCOUNTON NUMBER(1,0) default 0 not null,
+	AADCAFFINITYHANDLER VARCHAR2(200 char) null)
 /
 
 grant select, update, insert, delete on RDX_NETCHANNEL to &USER&_RUN_ROLE
@@ -3409,7 +3980,7 @@ create table RDX_PC_CHANNELUNIT(
 	SMPPMAXLEN NUMBER(9,0) null,
 	EMAILLOGIN VARCHAR2(100 char) null,
 	EMAILPASSWORD VARCHAR2(100 char) null,
-	EMAILSECURECONNECTION VARCHAR2(100 char) null,
+	EMAILSECURECONNECTION VARCHAR2(100 char) default 'None' not null,
 	ADDRESSTEMPLATE VARCHAR2(100 char) null,
 	SUBJECTTEMPLATE VARCHAR2(100 char) null,
 	FILEFORMAT VARCHAR2(9 char) null,
@@ -3421,7 +3992,15 @@ create table RDX_PC_CHANNELUNIT(
 	APNSKEYALIAS VARCHAR2(200 char) null,
 	APNSMAXPARALLELSENDCOUNT NUMBER(9,0) null,
 	APNSSUCCESSFULAFTERMILLIS NUMBER(9,0) null,
-	GCMAPIKEY VARCHAR2(600 char) null)
+	GCMAPIKEY VARCHAR2(600 char) null,
+	ROUTINGKEYREGEXP VARCHAR2(500 char) null,
+	DELIVERYTRACKINGPOLICY VARCHAR2(100 char) default 'None' not null,
+	DELIVERYTRACKINGPERIOD NUMBER(9,0) null,
+	DELIVERYTRACKINGRETRYPERIOD NUMBER(9,0) null,
+	FORWARDDELAYSEC NUMBER(9,0) default 0 not null,
+	WNSCLIENTID VARCHAR2(400 char) null,
+	WNSCLIENTSECRET VARCHAR2(400 char) null,
+	DELIVERYACKSAPID NUMBER(9,0) null)
 /
 
 grant select, update, insert, delete on RDX_PC_CHANNELUNIT to &USER&_RUN_ROLE
@@ -3441,6 +4020,7 @@ grant select, update, insert, delete on RDX_PC_EVENTLIMITACC to &USER&_RUN_ROLE
 
 create table RDX_PC_EVENTSUBSCRIPTION(
 	ID NUMBER(9,0) not null,
+	EXTGUID VARCHAR2(50 char) not null,
 	TITLE VARCHAR2(250 char) null,
 	ISACTIVE NUMBER(1,0) default 1 not null,
 	USERGROUPNAME VARCHAR2(250 char) not null,
@@ -3456,7 +4036,8 @@ create table RDX_PC_EVENTSUBSCRIPTION(
 	LIMITPERIODKIND VARCHAR2(100 char) null,
 	LIMITCNT NUMBER(9,0) null,
 	LIMITMESSSUBJECTTEMPLATE VARCHAR2(100 char) null,
-	LIMITMESSBODYTEMPLATE VARCHAR2(1000 char) null)
+	LIMITMESSBODYTEMPLATE VARCHAR2(1000 char) null,
+	ROUTINGKEY VARCHAR2(100 char) null)
 /
 
 grant select, update, insert, delete on RDX_PC_EVENTSUBSCRIPTION to &USER&_RUN_ROLE
@@ -3470,10 +4051,28 @@ create table RDX_PC_EVENTSUBSCRIPTIONCODE(
 grant select, update, insert, delete on RDX_PC_EVENTSUBSCRIPTIONCODE to &USER&_RUN_ROLE
 /
 
+create table RDX_PC_NOTIFICATIONSENDER(
+	ID NUMBER(9,0) not null,
+	TITLE VARCHAR2(250 char) null,
+	RID VARCHAR2(100 char) null,
+	EXTGUID VARCHAR2(100 char) not null,
+	CHANNELKIND VARCHAR2(100 char) null,
+	ROUTINGKEY VARCHAR2(100 char) null,
+	HISTMODE NUMBER(9,0) not null,
+	STOREATTACHINHIST NUMBER(1,0) not null,
+	SUBJECTTEMPLATE VARCHAR2(4000 char) null,
+	BODYTEMPLATE VARCHAR2(4000 char) null,
+	USERGROUPNAME VARCHAR2(250 char) null)
+/
+
+grant select, update, insert, delete on RDX_PC_NOTIFICATIONSENDER to &USER&_RUN_ROLE
+/
+
 create table RDX_PC_OUTMESSAGE(
 	ID NUMBER(9,0) not null,
 	SUBJECT VARCHAR2(200 char) null,
 	BODY CLOB null,
+	MASKEDBODY CLOB null,
 	SMPPENCODING VARCHAR2(64 char) null,
 	IMPORTANCE NUMBER(9,0) default 1 not null,
 	CREATETIME TIMESTAMP(6) not null,
@@ -3496,7 +4095,22 @@ create table RDX_PC_OUTMESSAGE(
 	FAILEDMESSAGE VARCHAR2(1000 char) null,
 	FAILEDTRYCOUNT NUMBER(9,0) default 0 not null,
 	FAILEDLASTSENDDATE DATE null,
-	FAILEDISUNRECOVERABLE NUMBER(1,0) default 0 not null)
+	FAILEDISUNRECOVERABLE NUMBER(1,0) default 0 not null,
+	ROUTINGKEY VARCHAR2(100 char) null,
+	INITIALDUETIME TIMESTAMP(6) null,
+	STOREATTACHINHIST NUMBER(1,0) default 1 not null,
+	BASEFORWARDTIMEMILLIS NUMBER(18,0) null,
+	LASTFORWARDTIMEMILLIS NUMBER(18,0) null,
+	ISUSSD NUMBER(1,0) null,
+	USSDSERVICEOP NUMBER(9,0) null,
+	DELIVERYCALLBACKCLASSNAME VARCHAR2(1000 char) null,
+	DELIVERYCALLBACKMETHODNAME VARCHAR2(1000 char) null,
+	DELIVERYTIMEOUT NUMBER(9,0) null,
+	STAGENO NUMBER(9,0) null,
+	PREVSTAGEMESSAGEID NUMBER(9,0) null,
+	SENDCALLBACKDATA VARCHAR2(4000 char) null,
+	DELIVERYCALLBACKDATA VARCHAR2(4000 char) null,
+	DELIVERYEXPTIMEMILLIS NUMBER(18,0) null)
 /
 
 grant select, update, insert, delete on RDX_PC_OUTMESSAGE to &USER&_RUN_ROLE
@@ -3513,7 +4127,9 @@ create table RDX_PC_RECVMESSAGE(
 	ADDRESS VARCHAR2(1000 char) not null,
 	DESTENTITYGUID VARCHAR2(100 char) null,
 	DESTPID VARCHAR2(100 char) null,
-	DESTMSGID VARCHAR2(100 char) null)
+	DESTMSGID VARCHAR2(100 char) null,
+	ISUSSD NUMBER(1,0) null,
+	USSDSERVICEOP NUMBER(9,0) null)
 /
 
 grant select, update, insert, delete on RDX_PC_RECVMESSAGE to &USER&_RUN_ROLE
@@ -3523,6 +4139,7 @@ create table RDX_PC_SENTMESSAGE(
 	ID NUMBER(9,0) not null,
 	SUBJECT VARCHAR2(200 char) null,
 	BODY CLOB null,
+	MASKEDBODY CLOB null,
 	SMPPENCODING VARCHAR2(64 char) null,
 	IMPORTANCE NUMBER(9,0) default 1 not null,
 	CREATETIME TIMESTAMP(6) not null,
@@ -3543,7 +4160,26 @@ create table RDX_PC_SENTMESSAGE(
 	SENDERROR VARCHAR2(4000 char) null,
 	SMPPBYTESSENT NUMBER(9,0) null,
 	SMPPCHARSSENT NUMBER(9,0) null,
-	SMPPPARTSSENT NUMBER(9,0) null)
+	SMPPPARTSSENT NUMBER(9,0) null,
+	ROUTINGKEY VARCHAR2(100 char) null,
+	STOREATTACHINHIST NUMBER(1,0) null,
+	DELIVERYSTATUS VARCHAR2(100 char) null,
+	LASTDELIVERYSTATUSCHANGEDATE DATE null,
+	SMPPMESSAGEID VARCHAR2(64 char) null,
+	ISUSSD NUMBER(1,0) null,
+	USSDSERVICEOP NUMBER(9,0) null,
+	SENDCALLBACKREQUIRED NUMBER(1,0) null,
+	DELIVERYCALLBACKREQUIRED NUMBER(1,0) null,
+	DELIVERYEXPTIMEMILLIS NUMBER(18,0) null,
+	DELIVERYCALLBACKCLASSNAME VARCHAR2(1000 char) null,
+	DELIVERYCALLBACKMETHODNAME VARCHAR2(1000 char) null,
+	LASTDELIVERYCALLBACKTIME DATE null,
+	STAGENO NUMBER(9,0) null,
+	PREVSTAGEMESSAGEID NUMBER(9,0) null,
+	SENDCALLBACKDATA VARCHAR2(4000 char) null,
+	DELIVERYCALLBACKDATA VARCHAR2(4000 char) null,
+	ADDRESSFROM VARCHAR2(1000 char) null,
+	INITIALDUETIME TIMESTAMP(6) null)
 /
 
 grant select, update, insert, delete on RDX_PC_SENTMESSAGE to &USER&_RUN_ROLE
@@ -3562,6 +4198,26 @@ create table RDX_PROFILERLOG(
 /
 
 grant select, update, insert, delete on RDX_PROFILERLOG to &USER&_RUN_ROLE
+/
+
+create table RDX_QUEUESAFMESS(
+	ID NUMBER(9,0) not null,
+	STOREDATE DATE default SYSDATE not null,
+	PARTITIONID NUMBER(9,0) not null,
+	QUEUEID NUMBER(9,0) not null,
+	MESS CLOB null)
+/
+
+grant select, update, insert, delete on RDX_QUEUESAFMESS to &USER&_RUN_ROLE
+/
+
+create table RDX_QUEUESAFPARTITION(
+	QUEUEID NUMBER(9,0) not null,
+	ID NUMBER(9,0) not null,
+	SAFMODE NUMBER(1,0) default 0 not null)
+/
+
+grant select, update, insert, delete on RDX_QUEUESAFPARTITION to &USER&_RUN_ROLE
 /
 
 create table RDX_REPORTPARAM(
@@ -3590,7 +4246,9 @@ create table RDX_REPORTPUB(
 	ISFORCUSTOMER NUMBER(1,0) default 0 not null,
 	PARAMBINDING CLOB null,
 	FORMAT VARCHAR2(50 char) null,
-	PRINTONLY NUMBER(1,0) default 0 not null)
+	PRINTONLY NUMBER(1,0) default 0 not null,
+	MAXRESULTSETCACHESIZEKB NUMBER(9,0) null,
+	COLUMNSSETTINGS CLOB null)
 /
 
 grant select, update, insert, delete on RDX_REPORTPUB to &USER&_RUN_ROLE
@@ -3648,7 +4306,8 @@ create table RDX_SAP(
 	SERVICEWSDL CLOB null,
 	SERVICEQNAME VARCHAR2(500 char) null,
 	PORTQNAME VARCHAR2(500 char) null,
-	SERVICELASTUPDATETIME TIMESTAMP(6) default SYSTIMESTAMP not null)
+	SERVICELASTUPDATETIME TIMESTAMP(6) default SYSTIMESTAMP not null,
+	SELFCHECKTIMEMILLIS NUMBER(18,0) null)
 /
 
 grant select, update, insert, delete on RDX_SAP to &USER&_RUN_ROLE
@@ -3777,7 +4436,8 @@ create table RDX_SCP2SAP(
 	SCPNAME VARCHAR2(100 char) not null,
 	SAPPRIORITY NUMBER(2,0) default 50 not null,
 	CONNECTTIMEOUT NUMBER(9,0) default 10 not null,
-	BLOCKINGPERIOD NUMBER(9,0) default 600 not null)
+	BLOCKINGPERIOD NUMBER(9,0) default 600 not null,
+	EXTADDRESS VARCHAR2(4000 char) null)
 /
 
 grant select, update, insert, delete on RDX_SCP2SAP to &USER&_RUN_ROLE
@@ -3804,6 +4464,35 @@ create table RDX_SM_DASHCONFIG(
 /
 
 grant select, update, insert, delete on RDX_SM_DASHCONFIG to &USER&_RUN_ROLE
+/
+
+create table RDX_SM_INSTANCESTATEHISTORY(
+	INSTANCEID NUMBER(9,0) not null,
+	REGTIMEMILLIS NUMBER(18,0) not null,
+	THREADID NUMBER(18,0) not null,
+	THREADKIND VARCHAR2(100 char) null,
+	FORCED NUMBER(1,0) null,
+	NAME VARCHAR2(400 char) null,
+	ANCESTORTHREADID NUMBER(18,0) null,
+	UNITID NUMBER(18,0) null,
+	ARTESEQ NUMBER(18,0) null,
+	ARTESERIAL NUMBER(18,0) null,
+	DBSID VARCHAR2(400 char) null,
+	DBSERIAL VARCHAR2(400 char) null,
+	TRACECONTEXTS VARCHAR2(1000 char) null,
+	CPUDIFFMILLIS NUMBER(18,0) null,
+	DBDIFFMILLIS NUMBER(18,0) null,
+	EXTDIFFMILLIS NUMBER(18,0) null,
+	QUEUEDIFFMILLIS NUMBER(18,0) null,
+	UPTIMESEC NUMBER(9,0) null,
+	STACKDIGEST VARCHAR2(100 char) null,
+	LOCKNAME VARCHAR2(400 char) null,
+	LOCKOWNERNAME VARCHAR2(400 char) null,
+	RQSTARTTIMEMILLIS NUMBER(18,0) null,
+	EXTDATA VARCHAR2(4000 char) null)
+/
+
+grant select, update, insert, delete on RDX_SM_INSTANCESTATEHISTORY to &USER&_RUN_ROLE
 /
 
 create table RDX_SM_METRICCONTROLDATA(
@@ -3910,6 +4599,16 @@ create table RDX_SM_SNMPMANAGER(
 grant select, update, insert, delete on RDX_SM_SNMPMANAGER to &USER&_RUN_ROLE
 /
 
+create table RDX_SM_STACKDATA(
+	DIGEST VARCHAR2(100 char) not null,
+	STACKTOP VARCHAR2(4000 char) not null,
+	COMPRESSEDSTACK BLOB not null,
+	LASTUSAGETIMEMILLIS NUMBER(18,0) not null)
+/
+
+grant select, update, insert, delete on RDX_SM_STACKDATA to &USER&_RUN_ROLE
+/
+
 create table RDX_STATION(
 	NAME VARCHAR2(100 char) not null,
 	NOTES VARCHAR2(1000 char) null,
@@ -3940,13 +4639,17 @@ create table RDX_SYSTEM(
 	PWDMINLEN NUMBER(3,0) default 7 null,
 	PWDMUSTDIFFERFROMNAME NUMBER(1,0) default 0 not null,
 	PWDMUSTCONTAINACHARS NUMBER(1,0) default 1 not null,
+	PWDMUSTBEINMIXEDCASE NUMBER(1,0) default 0 not null,
 	PWDMUSTCONTAINNCHARS NUMBER(1,0) default 1 not null,
+	PWDMUSTCONTAINSCHARS NUMBER(1,0) default 0 not null,
 	PWDEXPIRATIONPERIOD NUMBER(9,0) null,
+	TEMPORARYPWDEXPIRATIONPERIOD NUMBER(9,0) default 72 null,
+	PWDBLACKLIST CLOB null,
 	EVENTSTOREDAYS NUMBER(9,0) default 30 not null,
 	PCMSTOREDAYS NUMBER(9,0) default 30 not null,
 	AUDITSTOREPERIOD1 NUMBER(9,0) default 1 not null,
 	AUDITSTOREPERIOD2 NUMBER(9,0) default 7 not null,
-	AUDITSTOREPERIOD3 NUMBER(9,0) default 31 not null,
+	AUDITSTOREPERIOD3 NUMBER(9,0) default 31 null,
 	AUDITSTOREPERIOD4 NUMBER(9,0) default 100 not null,
 	AUDITSTOREPERIOD5 NUMBER(9,0) default 366 not null,
 	DEFAULTAUDITSCHEMEID VARCHAR2(50 char) null,
@@ -3964,7 +4667,17 @@ create table RDX_SYSTEM(
 	DUALCONTROLFORASSIGNROLE NUMBER(1,0) default 0 not null,
 	DUALCONTROLFORCFGMGMT NUMBER(1,0) default 0 not null,
 	WRITECONTEXTTOFILE NUMBER(1,0) default 1 not null,
-	FAILEDOUTMESSAGESTOREDAYS NUMBER(9,0) default 14 not null)
+	FAILEDOUTMESSAGESTOREDAYS NUMBER(9,0) default 14 not null,
+	GGSTANDBYMODE NUMBER(1,0) default 0 null,
+	AADCMEMBERID NUMBER(1,0) null,
+	AADCTESTEDMEMBERID NUMBER(1,0) null,
+	AADCUNLOCKTABLES VARCHAR2(4000 char) null,
+	AADCCOMMITEDLOCKEXP NUMBER(9,0) default 600 not null,
+	INSTSTATEGATHERPERIODSEC NUMBER(9,0) default 10 null,
+	INSTSTATEFORCEDGATHERPERIODSEC NUMBER(9,0) default 60 null,
+	INSTSTATEHISTORYSTOREDAYS NUMBER(9,0) default 14 not null,
+	MAXRESULTSETCACHESIZEKB NUMBER(9,0) default 102400 not null,
+	AADCAFFINITYTIMEOUTSEC NUMBER(9,0) default 60 not null)
 /
 
 grant select, update, insert, delete on RDX_SYSTEM to &USER&_RUN_ROLE
@@ -3972,36 +4685,286 @@ grant select, update, insert, delete on RDX_SYSTEM to &USER&_RUN_ROLE
 
 create table RDX_TESTCASE(
 	ID NUMBER(9,0) not null,
+	SEQ NUMBER(9,0) default 0 not null,
+	EXTGUID VARCHAR2(100 char) not null,
 	GROUPID NUMBER(9,0) null,
 	CLASSGUID VARCHAR2(100 char) null,
+	NOTIFICATIONEMAIL VARCHAR2(100 char) null,
 	PARENTID NUMBER(9,0) null,
 	NOTES VARCHAR2(2000 char) null,
 	TRACEPROFILE VARCHAR2(1000 char) default 'Debug' not null,
 	ACTOR VARCHAR2(250 char) not null,
+	AUTHORNAME VARCHAR2(250 char) null,
 	STARTTIME TIMESTAMP(6) not null,
 	FINISHTIME TIMESTAMP(6) not null,
+	LASTISEXECDATE DATE null,
+	LASTISSUCCESSDATE DATE null,
+	SEQISFAILCOUNT NUMBER(9,0) default 0 null,
 	RESULT NUMBER(1,0) not null,
 	RESULTCOMMENT CLOB null,
-	RUNONIS NUMBER(1,0) default 1 not null)
+	RUNONIS NUMBER(1,0) default 1 not null,
+	CPUNANOS NUMBER(18,0) null,
+	DBNANOS NUMBER(18,0) null,
+	EXTNANOS NUMBER(18,0) null,
+	QUEUENANOS NUMBER(18,0) null)
 /
 
 grant select, update, insert, delete on RDX_TESTCASE to &USER&_RUN_ROLE
 /
 
+create table RDX_TST_AUDITDETAIL(
+	PKCOLINT NUMBER(9,0) not null,
+	PKCOLCHAR CHAR(1 char) not null,
+	PKCOLNUM NUMBER not null,
+	PKCOLDATE DATE not null,
+	PKCOLTIMESTAMP TIMESTAMP(6) not null,
+	PKCOLSTR VARCHAR2(100 char) not null,
+	TITLE VARCHAR2(100 char) null)
+/
+
+grant select, update, insert, delete on RDX_TST_AUDITDETAIL to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_AUDITMASTER(
+	PKCOLINT NUMBER(9,0) not null,
+	PKCOLCHAR CHAR(1 char) default 'C' not null,
+	PKCOLNUM NUMBER default 123.456 not null,
+	PKCOLDATE DATE default SYSDATE not null,
+	PKCOLTIMESTAMP TIMESTAMP(6) default SYSTIMESTAMP not null,
+	PKCOLSTR VARCHAR2(100 char) default 'Some String' not null,
+	CLASSGUID VARCHAR2(100 char) null,
+	COLINT NUMBER(9,0) null,
+	COLCHAR CHAR(1 char) null,
+	COLNUM NUMBER null,
+	COLDATE DATE null,
+	COLTIMESTAMP TIMESTAMP(6) null,
+	COLSTR VARCHAR2(100 char) null,
+	COLBIN RAW(2000) null,
+	COLBLOB BLOB null,
+	COLCLOB CLOB null,
+	COLARRBOOL CLOB null,
+	COLARRINT VARCHAR2(4000 char) null,
+	COLARRCHAR CLOB null,
+	COLARRSTR CLOB null,
+	COLARRNUM VARCHAR2(4000 char) null,
+	COLARRDATETIME CLOB null,
+	COLARRBIN CLOB null,
+	COLARRPARENTREF CLOB null)
+/
+
+grant select, update, insert, delete on RDX_TST_AUDITMASTER to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_CHILD(
+	AUDITSCHEME VARCHAR2(9 char) null,
+	ID NUMBER(9,0) not null,
+	PARENTID NUMBER(9,0) not null,
+	TITLE VARCHAR2(9 char) not null,
+	CHILDTYPE NUMBER(9,0) null,
+	COLBOOL NUMBER(1,0) null,
+	COLINT NUMBER(9,0) null,
+	COLCHAR CHAR(1 char) null,
+	COLNUM NUMBER(9,3) null,
+	COLDATETIME DATE null,
+	COLSTR VARCHAR2(9 char) null,
+	COLBIN RAW(2000) null,
+	COLCLOB CLOB null,
+	COLCLOBASXML CLOB null,
+	COLBLOB BLOB null,
+	COLARRBOOL CLOB null,
+	COLARRINT CLOB null,
+	COLARRCHAR CLOB null,
+	COLARRNUM CLOB null,
+	COLARRDATETIME CLOB null,
+	COLARRBIN CLOB null,
+	COLARRSTR CLOB null,
+	VALTYPE NUMBER(9,0) null,
+	DEFINITIONIDPREFIX VARCHAR2(64 char) null)
+/
+
+grant select, update, insert, delete on RDX_TST_CHILD to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_DMTEST(
+	ID NUMBER(9,0) not null,
+	KEYINT NUMBER(9,0) null,
+	KEYSTR VARCHAR2(100 char) null,
+	TITLE VARCHAR2(9 char) not null,
+	COLBOOL NUMBER(1,0) null,
+	COLINT NUMBER(9,0) null,
+	COLCHAR CHAR(1 char) null,
+	COLNUM NUMBER(9,3) null,
+	COLDATETIME DATE null,
+	COLSTR VARCHAR2(9 char) null,
+	COLBIN RAW(2000) null,
+	COLCLOB CLOB null,
+	COLBLOB BLOB null,
+	COLARRBOOL CLOB null,
+	COLARRINT CLOB null,
+	COLARRCHAR CLOB null,
+	COLARRNUM CLOB null,
+	COLARRDATETIME CLOB null,
+	COLARRBIN CLOB null,
+	COLARRSTR CLOB null,
+	VALTYPE NUMBER(9,0) null)
+/
+
+grant select, update, insert, delete on RDX_TST_DMTEST to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_DMTESTA(
+	PKINT NUMBER(9,0) not null,
+	PKSTR VARCHAR2(100 char) not null,
+	CLASSGUID VARCHAR2(100 char) null,
+	TITLE VARCHAR2(9 char) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_DMTESTA to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_DMTESTB(
+	PKINT NUMBER(9,0) not null,
+	PKSTR VARCHAR2(100 char) not null,
+	TITLE VARCHAR2(9 char) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_DMTESTB to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_DMTESTCHILD(
+	ID NUMBER(9,0) not null,
+	KEYID NUMBER(9,0) null,
+	TITLE VARCHAR2(9 char) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_DMTESTCHILD to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_IMAGES(
+	ID NUMBER(9,0) not null,
+	DATA BLOB not null,
+	MIMETYPE VARCHAR2(64 char) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_IMAGES to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_INHERITANCENODE(
+	ID NUMBER(9,0) not null,
+	COLCLOB CLOB null,
+	COLBLOB BLOB null,
+	COLINT NUMBER(9,0) null,
+	COLARRPARENTREF CLOB null,
+	PARENTID NUMBER(9,0) null)
+/
+
+grant select, update, insert, delete on RDX_TST_INHERITANCENODE to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_NEWTABLE(
+	NEWCOLUMN NUMBER(9,0) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_NEWTABLE to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_PARENT(
+	AUDITSCHEME VARCHAR2(50 char) null,
+	COLCLOBASXML CLOB null,
+	ID NUMBER(9,0) not null,
+	TITLE VARCHAR2(100 char) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_PARENT to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_TABLEWITHDATEPK(
+	DATEPK DATE not null,
+	INTVALUE NUMBER(9,0) null)
+/
+
+grant select, update, insert, delete on RDX_TST_TABLEWITHDATEPK to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_TEDCCHILD(
+	ID NUMBER(9,0) not null,
+	CLASSGUID VARCHAR2(100 char) not null,
+	PARENTID NUMBER(9,0) null,
+	NOTES VARCHAR2(100 char) null)
+/
+
+grant select, update, insert, delete on RDX_TST_TEDCCHILD to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_TEDCCHILDDETAIL(
+	ID NUMBER(9,0) not null,
+	DETAILPARENTID NUMBER(9,0) null)
+/
+
+grant select, update, insert, delete on RDX_TST_TEDCCHILDDETAIL to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_TEDCPARENT(
+	ID NUMBER(9,0) not null,
+	CLASSGUID VARCHAR2(100 char) not null,
+	NOTES VARCHAR2(100 char) null)
+/
+
+grant select, update, insert, delete on RDX_TST_TEDCPARENT to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_TESTPAIR(
+	KEY NUMBER(9,0) not null,
+	VALUE NUMBER(9,0) not null,
+	CLASSGUID VARCHAR2(100 char) null)
+/
+
+grant select, update, insert, delete on RDX_TST_TESTPAIR to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_USERCHILD(
+	ID NUMBER(9,0) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_USERCHILD to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_USERPARENTCOMPLEX(
+	PK_INT NUMBER(9,0) not null,
+	PK_CHAR CHAR(1 char) not null,
+	PK_DATE TIMESTAMP(6) not null,
+	PK_STR VARCHAR2(100 char) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_USERPARENTCOMPLEX to &USER&_RUN_ROLE
+/
+
+create table RDX_TST_USERPARENTSIMPLE(
+	ID NUMBER(18,0) not null)
+/
+
+grant select, update, insert, delete on RDX_TST_USERPARENTSIMPLE to &USER&_RUN_ROLE
+/
+
 create table RDX_UNIT(
 	ID NUMBER(9,0) not null,
+	RID VARCHAR2(100 char) null,
 	INSTANCEID NUMBER(9,0) not null,
 	TYPE NUMBER(9,0) not null,
 	CLASSGUID VARCHAR2(100 char) not null,
 	TITLE VARCHAR2(200 char) null,
 	USE NUMBER(1,0) default 1 not null,
 	STARTED NUMBER(1,0) default 0 not null,
+	POSTPONED NUMBER(1,0) default 0 not null,
 	GUITRACEPROFILE VARCHAR2(1000 char) default 'Event' not null,
 	FILETRACEPROFILE VARCHAR2(1000 char) default 'Event' not null,
 	DBTRACEPROFILE VARCHAR2(1000 char) default 'Event' not null,
 	SELFCHECKTIME TIMESTAMP(6) null,
 	SYSTEMID NUMBER(9,0) null,
-	SCPNAME VARCHAR2(100 char) null)
+	SCPNAME VARCHAR2(100 char) null,
+	PRIMARYUNITID NUMBER(9,0) null,
+	AADCTESTMODE NUMBER(1,0) default 0 null,
+	SELFCHECKTIMEMILLIS NUMBER(18,0) null)
 /
 
 grant select, update, insert, delete on RDX_UNIT to &USER&_RUN_ROLE
@@ -4205,9 +5168,9 @@ create table RDX_WF_FORM(
 	ID NUMBER(18,0) not null,
 	CLASSGUID VARCHAR2(100 char) not null,
 	PROCESSID NUMBER(18,0) not null,
-	TITLE VARCHAR2(1000 char) null,
-	HEADERTITLE VARCHAR2(1000 char) null,
-	FOOTERTITLE VARCHAR2(1000 char) null,
+	TITLE VARCHAR2(4000 char) null,
+	HEADERTITLE VARCHAR2(4000 char) null,
+	FOOTERTITLE VARCHAR2(4000 char) null,
 	PRIORITY NUMBER(1,0) not null,
 	OPENTIME DATE not null,
 	DUETIME DATE not null,
@@ -4234,7 +5197,9 @@ create table RDX_WF_FORM(
 	WAITID NUMBER(18,0) null,
 	CLERKROLEGUIDS VARCHAR2(4000 char) null,
 	ADMINROLEGUIDS VARCHAR2(4000 char) null,
-	ACCESSAREA VARCHAR2(4000 char) null)
+	ACCESSAREA VARCHAR2(4000 char) null,
+	FORBIDFORPROCESSCREATOR NUMBER(1,0) default 0 not null,
+	FORBIDREDIRECTION NUMBER(1,0) default 0 not null)
 /
 
 grant select, update, insert, delete on RDX_WF_FORM to &USER&_RUN_ROLE
@@ -4316,9 +5281,17 @@ insert into RDX_JS_JOBEXECUTORUNIT (ID, PARALLELCNT, ABOVENORMALDELTA, HIGHDELTA
 	5)
 /
 
-insert into RDX_AC_USER2ROLE (ID, USERNAME, ROLEID) values (
+insert into RDX_AC_USER2ROLE (ID, USERNAME, ISOWN, ROLEID) values (
 	0,
 	'ADMINISTRATOR',
+	1,
+	'rolSUPER_ADMIN_______________')
+/
+
+insert into RDX_AC_USER2ROLE (ID, USERNAME, ISOWN, ROLEID) values (
+	1,
+	'ADMINISTRATOR',
+	0,
 	'rolSUPER_ADMIN_______________')
 /
 
@@ -4407,6 +5380,60 @@ insert into RDX_SCP (NAME, SYSTEMID) values (
 	1)
 /
 
+insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
+	NULL,
+	1,
+	1,
+	'Child 1.1',
+	2,
+	'tbl')
+/
+
+insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
+	NULL,
+	2,
+	2,
+	'Child 2.2',
+	21,
+	'col')
+/
+
+insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
+	NULL,
+	3,
+	2,
+	'Child 2.2',
+	NULL,
+	NULL)
+/
+
+insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
+	NULL,
+	4,
+	3,
+	'Child 3.1',
+	NULL,
+	NULL)
+/
+
+insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
+	NULL,
+	5,
+	3,
+	'Child 3.2',
+	NULL,
+	NULL)
+/
+
+insert into RDX_TST_CHILD (AUDITSCHEME, ID, PARENTID, TITLE, VALTYPE, DEFINITIONIDPREFIX) values (
+	NULL,
+	6,
+	3,
+	'Child 3.3',
+	NULL,
+	NULL)
+/
+
 insert into RDX_SERVICE (SYSTEMID, URI, WSDLURI, TITLE, IMPLEMENTEDINARTE, ACCESSIBILITY) values (
 	1,
 	'http://schemas.radixware.org/eas.wsdl',
@@ -4437,6 +5464,26 @@ insert into RDX_SERVICE (SYSTEMID, URI, WSDLURI, TITLE, IMPLEMENTEDINARTE, ACCES
 insert into RDX_STATION (NAME, SCPNAME) values (
 	'ServerConsole',
 	'Local')
+/
+
+insert into RDX_TST_PARENT (ID, TITLE) values (
+	1,
+	'Parent One')
+/
+
+insert into RDX_TST_PARENT (ID, TITLE) values (
+	2,
+	'Parent Two')
+/
+
+insert into RDX_TST_PARENT (ID, TITLE) values (
+	3,
+	'Parent Three')
+/
+
+insert into RDX_TST_PARENT (ID, TITLE) values (
+	4,
+	'Parent Four')
 /
 
 insert into RDX_JS_EVENTSCHD (ID, GUID, TITLE, LASTUPDATETIME, LASTUPDATEUSER) values (
@@ -4575,9 +5622,6 @@ alter table RDX_SYSTEM add constraint CKC_PROFILELOGSTOREDAYS_RDX_SY check (PROF
 alter table RDX_JS_JOBEXECUTORUNITBOOST add constraint CKC_SPEED_RDX_JS_JOBEXECUTORUN check (SPEED>0)
 /
 
-create unique index IDX_COUNTER_USERPROPERTYOBJECT on COUNTER (UPDEFID asc, UPOWNERENTITYID asc, UPOWNERPID asc)
-/
-
 create index IDX_DWF_PROCESS_OWNERTSF on RDX_WF_PROCESS (OWNERNAME asc, TYPEGUID asc, STATE asc, FINISHTIME asc)
 /
 
@@ -4636,27 +5680,45 @@ create index IDX_RDX_CM_ITEM_PARENT on RDX_CM_ITEM (PARENTID asc, ID asc)
 create index IDX_RDX_CM_ITEM_SRC on RDX_CM_ITEM (PACKETID asc, CLASSGUID asc, SRCOBJECTPID asc)
 /
 
+create unique index IDX_RDX_COUNTER_USERPROPERTYOB on RDX_COUNTER (UPDEFID asc, UPOWNERENTITYID asc, UPOWNERPID asc)
+/
+
 create index IDX_RDX_EVENTCONTEXT_CONTEXT on RDX_EVENTCONTEXT (TYPE asc, ID asc, RAISETIME asc, EVENTID asc)
 #IF DB_TYPE == "ORACLE" and isEnabled("org.radixware\\Partitioning") THEN
  local
 #ENDIF
-
+ tablespace RADIX_EVENTLOG
 /
 
 create index IDX_RDX_EVENTLOG_HASSENSITIVE on RDX_EVENTLOG (ISSENSITIVE asc)
 #IF DB_TYPE == "ORACLE" and isEnabled("org.radixware\\Partitioning") THEN
  local
 #ENDIF
+ tablespace RADIX_EVENTLOG
+/
 
+create index IDX_RDX_JS_CALENDAR_RID on RDX_JS_CALENDAR (RID asc)
 /
 
 create index IDX_RDX_JS_JOBQUEUE_DUE on RDX_JS_JOBQUEUE (EXECUTORID asc, DUETIME asc)
 /
 
+create unique index IDX_RDX_JS_TASK_RID on RDX_JS_TASK (RID asc)
+/
+
+create index IDX_RDX_NETCHANNEL_RID on RDX_NETCHANNEL (UNITID asc, RID asc)
+/
+
 create index IDX_RDX_PC_CHANNELUNIT_ROUTING on RDX_PC_CHANNELUNIT (KIND asc, MESSADDRESSREGEXP asc, ROUTINGPRIORITY asc, ID asc)
 /
 
+create index IDX_RDX_PC_OUTMESSAGE_CREATETI on RDX_PC_OUTMESSAGE (CREATETIME asc)
+/
+
 create index IDX_RDX_PC_OUTMESSAGE_DEST on RDX_PC_OUTMESSAGE (DESTENTITYGUID asc, DESTPID asc, DUETIME asc)
+/
+
+create index IDX_RDX_PC_OUTMESSAGE_EXPIRE on RDX_PC_OUTMESSAGE (CHANNELID asc, EXPIRETIME asc)
 /
 
 create index IDX_RDX_PC_OUTMESSAGE_SEND on RDX_PC_OUTMESSAGE (CHANNELID asc, DUETIME asc)
@@ -4674,16 +5736,31 @@ create index IDX_RDX_PC_RECVMESSAGE_RECVTIM on RDX_PC_RECVMESSAGE (RECVTIME asc)
 create index IDX_RDX_PC_SENTMESSAGE_ADDRESS on RDX_PC_SENTMESSAGE (CHANNELID asc, ADDRESS asc, SENTTIME asc)
 /
 
+create index IDX_RDX_PC_SENTMESSAGE_CB_DLVR on RDX_PC_SENTMESSAGE (DELIVERYCALLBACKREQUIRED asc, DELIVERYEXPTIMEMILLIS asc)
+/
+
+create index IDX_RDX_PC_SENTMESSAGE_CB_SEND on RDX_PC_SENTMESSAGE (SENDCALLBACKREQUIRED asc)
+/
+
+create index IDX_RDX_PC_SENTMESSAGE_DELIVER on RDX_PC_SENTMESSAGE (CHANNELID asc, DELIVERYSTATUS asc)
+/
+
 create index IDX_RDX_PC_SENTMESSAGE_DEST on RDX_PC_SENTMESSAGE (DESTENTITYGUID asc, DESTPID asc, SENTTIME asc)
 /
 
 create index IDX_RDX_PC_SENTMESSAGE_SENTTIM on RDX_PC_SENTMESSAGE (SENTTIME asc)
 /
 
+create index IDX_RDX_PC_SENTMESSAGE_SMPPMES on RDX_PC_SENTMESSAGE (SMPPMESSAGEID asc)
+/
+
 create index IDX_RDX_PROFILERLOG_SECTIONINS on RDX_PROFILERLOG (SECTIONID asc, INSTANCEID asc)
 /
 
 create index IDX_RDX_PROFILERLOG_SESSIONCON on RDX_PROFILERLOG (SECTIONID asc, CONTEXT asc, INSTANCEID asc)
+/
+
+create index IDX_RDX_QUEUESAFMESS_QUEUEPART on RDX_QUEUESAFMESS (QUEUEID asc, PARTITIONID asc, ID asc)
 /
 
 create index IDX_RDX_REPORTPUBLIST_CONTEXT on RDX_REPORTPUBLIST (CLASSGUID asc, PUBCONTEXTCLASSGUID asc, CONTEXTPID asc)
@@ -4695,7 +5772,7 @@ create index IDX_RDX_REPORTPUBTOPIC_LIST on RDX_REPORTPUBTOPIC (LISTID asc)
 create index IDX_RDX_REPORTPUB_LIST on RDX_REPORTPUB (LISTID asc)
 /
 
-create unique index IDX_RDX_SAP_NAMEINSYSTEM on RDX_SAP (SYSTEMID asc, URI asc, NAME asc)
+create index IDX_RDX_SAP_NAMEINSYSTEM on RDX_SAP (SYSTEMID asc, URI asc, NAME asc)
 /
 
 create index IDX_RDX_SAP_SCP2SAP on RDX_SAP (SYSTEMID asc, ID asc)
@@ -4738,6 +5815,9 @@ create index IDX_RDX_SM_METRICTYPE_UNIT on RDX_SM_METRICTYPE (UNITID asc)
 /
 
 create unique index IDX_RDX_SYSTEM_NAME on RDX_SYSTEM (NAME asc)
+/
+
+create index IDX_RDX_UNIT_RID on RDX_UNIT (RID asc)
 /
 
 create index IDX_RDX_UPVALBLOB_OWNER on RDX_UPVALBLOB (OWNERENTITYID asc, OWNERPID asc)
@@ -4806,10 +5886,16 @@ create index IDX_RDX_WF_PROCESS_TYPESTATEFI on RDX_WF_PROCESS (TYPEGUID asc, STA
 create index IDX_RDX_WF_PROCESS_TYPESTATEST on RDX_WF_PROCESS (TYPEGUID asc, STATE asc, STARTTIME asc)
 /
 
-create unique index PK_COUNTER on COUNTER (ID asc)
+create unique index PK_RDX_AADC_OGGERROR on RDX_AADC_OGGERROR (ID asc)
+/
+
+create unique index PK_RDX_AADC_SEQUENCEDDL on RDX_AADC_SEQUENCEDDL (NAME asc, LASTTIME asc)
 /
 
 create unique index PK_RDX_AC_APPROLE on RDX_AC_APPROLE (GUID asc)
+/
+
+create unique index PK_RDX_AC_PARTITIONGROUP on RDX_AC_PARTITIONGROUP (ID asc)
 /
 
 create unique index PK_RDX_AC_USER on RDX_AC_USER (NAME asc)
@@ -4825,6 +5911,9 @@ create unique index PK_RDX_AC_USERGROUP on RDX_AC_USERGROUP (NAME asc)
 /
 
 create unique index PK_RDX_AC_USERGROUP2ROLE on RDX_AC_USERGROUP2ROLE (ID asc)
+/
+
+create unique index PK_RDX_AMQPQUEUE on RDX_AMQPQUEUE (QUEUEID asc)
 /
 
 create unique index PK_RDX_ARTEINSTANCE on RDX_ARTEINSTANCE (INSTANCEID asc, SERIAL asc)
@@ -4855,6 +5944,9 @@ create unique index PK_RDX_CLASSLOADINGPROFILE on RDX_CLASSLOADINGPROFILE (ID as
 create unique index PK_RDX_CLASSLOADINGPROFILEITEM on RDX_CLASSLOADINGPROFILEITEM (ID asc)
 /
 
+create unique index PK_RDX_CM_CHANGELOG on RDX_CM_CHANGELOG (UPDEFID asc, UPOWNERENTITYID asc, UPOWNERPID asc)
+/
+
 create unique index PK_RDX_CM_ITEM on RDX_CM_ITEM (ID asc)
 /
 
@@ -4864,22 +5956,13 @@ create unique index PK_RDX_CM_ITEMREF on RDX_CM_ITEMREF (UPDEFID asc, UPOWNERENT
 create unique index PK_RDX_CM_PACKET on RDX_CM_PACKET (ID asc)
 /
 
+create unique index PK_RDX_CM_REVISION on RDX_CM_REVISION (UPDEFID asc, UPOWNERENTITYID asc, UPOWNERPID asc, ID asc)
+/
+
+create unique index PK_RDX_COUNTER on RDX_COUNTER (ID asc)
+/
+
 create unique index PK_RDX_DEF2DOMAIN on RDX_DEF2DOMAIN (VERSIONNUM asc, DEFID asc, DOMAINID asc)
-/
-
-create unique index PK_RDX_DM_DATA on RDX_DM_DATA (PACKETID asc, ENTITYGUID asc, OBJPID asc, PROPGUID asc)
-/
-
-create unique index PK_RDX_DM_OUTLINK on RDX_DM_OUTLINK (PACKETID asc, EXTTABLEGUID asc, PARENTPID asc)
-/
-
-create unique index PK_RDX_DM_OUTLINKVERIFY on RDX_DM_OUTLINKVERIFY (PACKETID asc, EXTTABLEGUID asc, PARENTPID asc, PARENTPROPGUID asc)
-/
-
-create unique index PK_RDX_DM_PACKET on RDX_DM_PACKET (ID asc)
-/
-
-create unique index PK_RDX_DM_SEGMENT on RDX_DM_SEGMENT (PACKETID asc, SEGMENTGUID asc)
 /
 
 create unique index PK_RDX_EASSELECTORADDONS on RDX_EASSELECTORADDONS (GUID asc)
@@ -4900,30 +5983,33 @@ create unique index PK_RDX_ENUMITEM2DOMAIN on RDX_ENUMITEM2DOMAIN (VERSIONNUM as
 create unique index PK_RDX_EVENTCODE2EVENTPARAMS on RDX_EVENTCODE2EVENTPARAMS (EVENTCODE asc, VERSIONNUM asc)
 /
 
+create unique index PK_RDX_EVENTCODEMLS on RDX_EVENTCODEMLS (VERSIONNUM asc, BUNDLEID asc, STRINGID asc, LANGUAGE asc)
+/
+
 create unique index PK_RDX_EVENTCONTEXT on RDX_EVENTCONTEXT (RAISETIME asc, EVENTID asc, TYPE asc, ID asc)
 #IF DB_TYPE == "ORACLE" and isEnabled("org.radixware\\Partitioning") THEN
  local
 #ENDIF
-
+ tablespace RADIX_EVENTLOG
 /
 
 create unique index PK_RDX_EVENTLOG on RDX_EVENTLOG (RAISETIME asc, ID asc)
 #IF DB_TYPE == "ORACLE" and isEnabled("org.radixware\\Partitioning") THEN
  local
 #ENDIF
-
+ tablespace RADIX_EVENTLOG
 /
 
 create unique index PK_RDX_EVENTSEVERITY on RDX_EVENTSEVERITY (EVENTCODE asc)
-/
-
-create unique index PK_RDX_FALLBACKMQHANDLER on RDX_FALLBACKMQHANDLER (UNITID asc)
 /
 
 create unique index PK_RDX_INSTANCE on RDX_INSTANCE (ID asc)
 /
 
 create unique index PK_RDX_JMSHANDLER on RDX_JMSHANDLER (ID asc)
+/
+
+create unique index PK_RDX_JMSQUEUE on RDX_JMSQUEUE (QUEUEID asc)
 /
 
 create unique index PK_RDX_JS_CALENDAR on RDX_JS_CALENDAR (ID asc)
@@ -4957,9 +6043,6 @@ create unique index PK_RDX_JS_JOBPARAM on RDX_JS_JOBPARAM (JOBID asc, NAME asc)
 /
 
 create unique index PK_RDX_JS_JOBQUEUE on RDX_JS_JOBQUEUE (ID asc)
-/
-
-create unique index PK_RDX_JS_JOBSCHEDULERUNIT on RDX_JS_JOBSCHEDULERUNIT (ID asc)
 /
 
 create unique index PK_RDX_JS_TASK on RDX_JS_TASK (ID asc)
@@ -5013,6 +6096,9 @@ create unique index PK_RDX_PC_EVENTSUBSCRIPTION on RDX_PC_EVENTSUBSCRIPTION (ID 
 create unique index PK_RDX_PC_EVENTSUBSCRIPTIONCOD on RDX_PC_EVENTSUBSCRIPTIONCODE (SUBSCRIPTIONID asc, CODE asc)
 /
 
+create unique index PK_RDX_PC_NOTIFICATIONSENDER on RDX_PC_NOTIFICATIONSENDER (ID asc)
+/
+
 create unique index PK_RDX_PC_OUTMESSAGE on RDX_PC_OUTMESSAGE (ID asc)
 /
 
@@ -5023,6 +6109,12 @@ create unique index PK_RDX_PC_SENTMESSAGE on RDX_PC_SENTMESSAGE (ID asc)
 /
 
 create unique index PK_RDX_PROFILERLOG on RDX_PROFILERLOG (ID asc)
+/
+
+create unique index PK_RDX_QUEUESAFMESS on RDX_QUEUESAFMESS (ID asc)
+/
+
+create unique index PK_RDX_QUEUESAFPARTITION on RDX_QUEUESAFPARTITION (QUEUEID asc, ID asc)
 /
 
 create unique index PK_RDX_REPORTPARAM on RDX_REPORTPARAM (ID asc)
@@ -5079,6 +6171,9 @@ create unique index PK_RDX_SERVICE on RDX_SERVICE (SYSTEMID asc, URI asc)
 create unique index PK_RDX_SM_DASHCONFIG on RDX_SM_DASHCONFIG (GUID asc)
 /
 
+create unique index PK_RDX_SM_INSTANCESTATEHISTORY on RDX_SM_INSTANCESTATEHISTORY (INSTANCEID asc, REGTIMEMILLIS asc, THREADID asc)
+/
+
 create unique index PK_RDX_SM_METRICCONTROLDATA on RDX_SM_METRICCONTROLDATA (STATEID asc)
 /
 
@@ -5097,6 +6192,9 @@ create unique index PK_RDX_SM_SNMPAGENTUNIT on RDX_SM_SNMPAGENTUNIT (ID asc)
 create unique index PK_RDX_SM_SNMPMANAGER on RDX_SM_SNMPMANAGER (ID asc)
 /
 
+create unique index PK_RDX_SM_STACKDATA on RDX_SM_STACKDATA (DIGEST asc)
+/
+
 create unique index PK_RDX_STATION on RDX_STATION (NAME asc)
 /
 
@@ -5104,6 +6202,63 @@ create unique index PK_RDX_SYSTEM on RDX_SYSTEM (ID asc)
 /
 
 create unique index PK_RDX_TESTCASE on RDX_TESTCASE (ID asc)
+/
+
+create unique index PK_RDX_TST_AUDITDETAIL on RDX_TST_AUDITDETAIL (PKCOLINT asc, PKCOLCHAR asc, PKCOLNUM asc, PKCOLDATE asc, PKCOLSTR asc, PKCOLTIMESTAMP asc)
+/
+
+create unique index PK_RDX_TST_AUDITMASTER on RDX_TST_AUDITMASTER (PKCOLINT asc, PKCOLCHAR asc, PKCOLNUM asc, PKCOLDATE asc, PKCOLSTR asc, PKCOLTIMESTAMP asc)
+/
+
+create unique index PK_RDX_TST_CHILD on RDX_TST_CHILD (ID asc)
+/
+
+create unique index PK_RDX_TST_DMTEST on RDX_TST_DMTEST (ID asc)
+/
+
+create unique index PK_RDX_TST_DMTESTA on RDX_TST_DMTESTA (PKINT asc, PKSTR asc)
+/
+
+create unique index PK_RDX_TST_DMTESTB on RDX_TST_DMTESTB (PKINT asc, PKSTR asc)
+/
+
+create unique index PK_RDX_TST_DMTESTCHILD on RDX_TST_DMTESTCHILD (ID asc)
+/
+
+create unique index PK_RDX_TST_IMAGES on RDX_TST_IMAGES (ID asc)
+/
+
+create unique index PK_RDX_TST_INHERITANCENODE on RDX_TST_INHERITANCENODE (ID asc)
+/
+
+create unique index PK_RDX_TST_NEWTABLE on RDX_TST_NEWTABLE (NEWCOLUMN asc)
+/
+
+create unique index PK_RDX_TST_PARENT on RDX_TST_PARENT (ID asc)
+/
+
+create unique index PK_RDX_TST_TABLEWITHDATEPK on RDX_TST_TABLEWITHDATEPK (DATEPK asc)
+/
+
+create unique index PK_RDX_TST_TEDCCHILD on RDX_TST_TEDCCHILD (ID asc)
+/
+
+create unique index PK_RDX_TST_TEDCCHILDDETAIL on RDX_TST_TEDCCHILDDETAIL (ID asc)
+/
+
+create unique index PK_RDX_TST_TEDCPARENT on RDX_TST_TEDCPARENT (ID asc)
+/
+
+create unique index PK_RDX_TST_TESTPAIR on RDX_TST_TESTPAIR (KEY asc, VALUE asc)
+/
+
+create unique index PK_RDX_TST_USERCHILD on RDX_TST_USERCHILD (ID asc)
+/
+
+create unique index PK_RDX_TST_USERPARENTCOMPLEX on RDX_TST_USERPARENTCOMPLEX (PK_INT asc, PK_CHAR asc, PK_DATE asc, PK_STR asc)
+/
+
+create unique index PK_RDX_TST_USERPARENTSIMPLE on RDX_TST_USERPARENTSIMPLE (ID asc)
 /
 
 create unique index PK_RDX_UNIT on RDX_UNIT (ID asc)
@@ -5172,10 +6327,16 @@ create unique index PK_RDX_WF_PROCESSLINK on RDX_WF_PROCESSLINK (ID asc)
 create unique index PK_RDX_WF_PROCESSTYPE on RDX_WF_PROCESSTYPE (GUID asc)
 /
 
-alter table COUNTER add constraint PK_COUNTER primary key (ID) rely
+alter table RDX_AADC_OGGERROR add constraint PK_RDX_AADC_OGGERROR primary key (ID) rely
+/
+
+alter table RDX_AADC_SEQUENCEDDL add constraint PK_RDX_AADC_SEQUENCEDDL primary key (NAME, LASTTIME) rely
 /
 
 alter table RDX_AC_APPROLE add constraint PK_RDX_AC_APPROLE primary key (GUID) rely
+/
+
+alter table RDX_AC_PARTITIONGROUP add constraint PK_RDX_AC_PARTITIONGROUP primary key (ID) rely
 /
 
 alter table RDX_AC_USER add constraint PK_RDX_AC_USER primary key (NAME) rely
@@ -5191,6 +6352,9 @@ alter table RDX_AC_USERGROUP add constraint PK_RDX_AC_USERGROUP primary key (NAM
 /
 
 alter table RDX_AC_USERGROUP2ROLE add constraint PK_RDX_AC_USERGROUP2ROLE primary key (ID) rely
+/
+
+alter table RDX_AMQPQUEUE add constraint PK_RDX_AMQPQUEUE primary key (QUEUEID) rely
 /
 
 alter table RDX_ARTEINSTANCE add constraint PK_RDX_ARTEINSTANCE primary key (INSTANCEID, SERIAL) rely
@@ -5217,6 +6381,9 @@ alter table RDX_CLASSLOADINGPROFILE add constraint PK_RDX_CLASSLOADINGPROFILE pr
 alter table RDX_CLASSLOADINGPROFILEITEM add constraint PK_RDX_CLASSLOADINGPROFILEITEM primary key (ID) rely
 /
 
+alter table RDX_CM_CHANGELOG add constraint PK_RDX_CM_CHANGELOG primary key (UPDEFID, UPOWNERENTITYID, UPOWNERPID) rely
+/
+
 alter table RDX_CM_ITEM add constraint PK_RDX_CM_ITEM primary key (ID) rely
 /
 
@@ -5226,22 +6393,13 @@ alter table RDX_CM_ITEMREF add constraint PK_RDX_CM_ITEMREF primary key (UPDEFID
 alter table RDX_CM_PACKET add constraint PK_RDX_CM_PACKET primary key (ID) rely
 /
 
+alter table RDX_CM_REVISION add constraint PK_RDX_CM_REVISION primary key (UPDEFID, UPOWNERENTITYID, UPOWNERPID, ID) rely
+/
+
+alter table RDX_COUNTER add constraint PK_RDX_COUNTER primary key (ID) rely
+/
+
 alter table RDX_DEF2DOMAIN add constraint PK_RDX_DEF2DOMAIN primary key (VERSIONNUM, DEFID, DOMAINID) rely
-/
-
-alter table RDX_DM_DATA add constraint PK_RDX_DM_DATA primary key (PACKETID, ENTITYGUID, OBJPID, PROPGUID) rely
-/
-
-alter table RDX_DM_OUTLINK add constraint PK_RDX_DM_OUTLINK primary key (PACKETID, EXTTABLEGUID, PARENTPID) rely
-/
-
-alter table RDX_DM_OUTLINKVERIFY add constraint PK_RDX_DM_OUTLINKVERIFY primary key (PACKETID, EXTTABLEGUID, PARENTPID, PARENTPROPGUID) rely
-/
-
-alter table RDX_DM_PACKET add constraint PK_RDX_DM_PACKET primary key (ID) rely
-/
-
-alter table RDX_DM_SEGMENT add constraint PK_RDX_DM_SEGMENT primary key (PACKETID, SEGMENTGUID) rely
 /
 
 alter table RDX_EASSELECTORADDONS add constraint PK_RDX_EASSELECTORADDONS primary key (GUID) rely
@@ -5262,6 +6420,9 @@ alter table RDX_ENUMITEM2DOMAIN add constraint PK_RDX_ENUMITEM2DOMAIN primary ke
 alter table RDX_EVENTCODE2EVENTPARAMS add constraint PK_RDX_EVENTCODE2EVENTPARAMS primary key (EVENTCODE, VERSIONNUM) rely
 /
 
+alter table RDX_EVENTCODEMLS add constraint PK_RDX_EVENTCODEMLS primary key (VERSIONNUM, BUNDLEID, STRINGID, LANGUAGE) rely
+/
+
 alter table RDX_EVENTCONTEXT add constraint PK_RDX_EVENTCONTEXT primary key (RAISETIME, EVENTID, TYPE, ID) rely
 /
 
@@ -5271,13 +6432,13 @@ alter table RDX_EVENTLOG add constraint PK_RDX_EVENTLOG primary key (RAISETIME, 
 alter table RDX_EVENTSEVERITY add constraint PK_RDX_EVENTSEVERITY primary key (EVENTCODE) rely
 /
 
-alter table RDX_FALLBACKMQHANDLER add constraint PK_RDX_FALLBACKMQHANDLER primary key (UNITID) rely
-/
-
 alter table RDX_INSTANCE add constraint PK_RDX_INSTANCE primary key (ID) rely
 /
 
 alter table RDX_JMSHANDLER add constraint PK_RDX_JMSHANDLER primary key (ID) rely
+/
+
+alter table RDX_JMSQUEUE add constraint PK_RDX_JMSQUEUE primary key (QUEUEID) rely
 /
 
 alter table RDX_JS_CALENDAR add constraint PK_RDX_JS_CALENDAR primary key (ID) rely
@@ -5311,9 +6472,6 @@ alter table RDX_JS_JOBPARAM add constraint PK_RDX_JS_JOBPARAM primary key (JOBID
 /
 
 alter table RDX_JS_JOBQUEUE add constraint PK_RDX_JS_JOBQUEUE primary key (ID) rely
-/
-
-alter table RDX_JS_JOBSCHEDULERUNIT add constraint PK_RDX_JS_JOBSCHEDULERUNIT primary key (ID) rely
 /
 
 alter table RDX_JS_TASK add constraint PK_RDX_JS_TASK primary key (ID) rely
@@ -5367,6 +6525,9 @@ alter table RDX_PC_EVENTSUBSCRIPTION add constraint PK_RDX_PC_EVENTSUBSCRIPTION 
 alter table RDX_PC_EVENTSUBSCRIPTIONCODE add constraint PK_RDX_PC_EVENTSUBSCRIPTIONCOD primary key (SUBSCRIPTIONID, CODE) rely
 /
 
+alter table RDX_PC_NOTIFICATIONSENDER add constraint PK_RDX_PC_NOTIFICATIONSENDER primary key (ID) rely
+/
+
 alter table RDX_PC_OUTMESSAGE add constraint PK_RDX_PC_OUTMESSAGE primary key (ID) rely
 /
 
@@ -5377,6 +6538,12 @@ alter table RDX_PC_SENTMESSAGE add constraint PK_RDX_PC_SENTMESSAGE primary key 
 /
 
 alter table RDX_PROFILERLOG add constraint PK_RDX_PROFILERLOG primary key (ID) rely
+/
+
+alter table RDX_QUEUESAFMESS add constraint PK_RDX_QUEUESAFMESS primary key (ID) rely
+/
+
+alter table RDX_QUEUESAFPARTITION add constraint PK_RDX_QUEUESAFPARTITION primary key (QUEUEID, ID) rely
 /
 
 alter table RDX_REPORTPARAM add constraint PK_RDX_REPORTPARAM primary key (ID) rely
@@ -5433,6 +6600,9 @@ alter table RDX_SERVICE add constraint PK_RDX_SERVICE primary key (SYSTEMID, URI
 alter table RDX_SM_DASHCONFIG add constraint PK_RDX_SM_DASHCONFIG primary key (GUID) rely
 /
 
+alter table RDX_SM_INSTANCESTATEHISTORY add constraint PK_RDX_SM_INSTANCESTATEHISTORY primary key (INSTANCEID, REGTIMEMILLIS, THREADID) rely
+/
+
 alter table RDX_SM_METRICCONTROLDATA add constraint PK_RDX_SM_METRICCONTROLDATA primary key (STATEID) rely
 /
 
@@ -5451,6 +6621,9 @@ alter table RDX_SM_SNMPAGENTUNIT add constraint PK_RDX_SM_SNMPAGENTUNIT primary 
 alter table RDX_SM_SNMPMANAGER add constraint PK_RDX_SM_SNMPMANAGER primary key (ID) rely
 /
 
+alter table RDX_SM_STACKDATA add constraint PK_RDX_SM_STACKDATA primary key (DIGEST) rely
+/
+
 alter table RDX_STATION add constraint PK_RDX_STATION primary key (NAME) rely
 /
 
@@ -5458,6 +6631,63 @@ alter table RDX_SYSTEM add constraint PK_RDX_SYSTEM primary key (ID) rely
 /
 
 alter table RDX_TESTCASE add constraint PK_RDX_TESTCASE primary key (ID) rely
+/
+
+alter table RDX_TST_AUDITDETAIL add constraint PK_RDX_TST_AUDITDETAIL primary key (PKCOLINT, PKCOLCHAR, PKCOLNUM, PKCOLDATE, PKCOLSTR, PKCOLTIMESTAMP) rely
+/
+
+alter table RDX_TST_AUDITMASTER add constraint PK_RDX_TST_AUDITMASTER primary key (PKCOLINT, PKCOLCHAR, PKCOLNUM, PKCOLDATE, PKCOLSTR, PKCOLTIMESTAMP) rely
+/
+
+alter table RDX_TST_CHILD add constraint PK_RDX_TST_CHILD primary key (ID) rely
+/
+
+alter table RDX_TST_DMTEST add constraint PK_RDX_TST_DMTEST primary key (ID) rely
+/
+
+alter table RDX_TST_DMTESTA add constraint PK_RDX_TST_DMTESTA primary key (PKINT, PKSTR) rely
+/
+
+alter table RDX_TST_DMTESTB add constraint PK_RDX_TST_DMTESTB primary key (PKINT, PKSTR) rely
+/
+
+alter table RDX_TST_DMTESTCHILD add constraint PK_RDX_TST_DMTESTCHILD primary key (ID) rely
+/
+
+alter table RDX_TST_IMAGES add constraint PK_RDX_TST_IMAGES primary key (ID) rely
+/
+
+alter table RDX_TST_INHERITANCENODE add constraint PK_RDX_TST_INHERITANCENODE primary key (ID) rely
+/
+
+alter table RDX_TST_NEWTABLE add constraint PK_RDX_TST_NEWTABLE primary key (NEWCOLUMN) rely
+/
+
+alter table RDX_TST_PARENT add constraint PK_RDX_TST_PARENT primary key (ID) rely
+/
+
+alter table RDX_TST_TABLEWITHDATEPK add constraint PK_RDX_TST_TABLEWITHDATEPK primary key (DATEPK) rely
+/
+
+alter table RDX_TST_TEDCCHILD add constraint PK_RDX_TST_TEDCCHILD primary key (ID) rely
+/
+
+alter table RDX_TST_TEDCCHILDDETAIL add constraint PK_RDX_TST_TEDCCHILDDETAIL primary key (ID) rely
+/
+
+alter table RDX_TST_TEDCPARENT add constraint PK_RDX_TST_TEDCPARENT primary key (ID) rely
+/
+
+alter table RDX_TST_TESTPAIR add constraint PK_RDX_TST_TESTPAIR primary key (KEY, VALUE) rely
+/
+
+alter table RDX_TST_USERCHILD add constraint PK_RDX_TST_USERCHILD primary key (ID) rely
+/
+
+alter table RDX_TST_USERPARENTCOMPLEX add constraint PK_RDX_TST_USERPARENTCOMPLEX primary key (PK_INT, PK_CHAR, PK_DATE, PK_STR) rely
+/
+
+alter table RDX_TST_USERPARENTSIMPLE add constraint PK_RDX_TST_USERPARENTSIMPLE primary key (ID) rely
 /
 
 alter table RDX_UNIT add constraint PK_RDX_UNIT primary key (ID) rely
@@ -5532,10 +6762,19 @@ alter table RDX_AC_USER2ROLE add constraint UNQ_RDX_AC_USER2ROLE_REPLACEME uniqu
 alter table RDX_AC_USERGROUP2ROLE add constraint UNQ_RDX_AC_USERGROUP2ROLE_REPL unique (REPLACEDID) rely
 /
 
+alter table RDX_JS_CALENDAR add constraint UNQ_RDX_JS_CALENDAR_RID unique (RID) rely
+/
+
+alter table RDX_JS_TASK add constraint UNQ_RDX_JS_TASK_RID unique (RID) rely
+/
+
 alter table RDX_REPORTPUBLIST add constraint UNQ_RDX_REPORTPUBLIST_CONTEXT unique (CLASSGUID, PUBCONTEXTCLASSGUID, CONTEXTPID) rely
 /
 
 alter table RDX_SYSTEM add constraint UNQ_RDX_SYSTEM_NAME unique (NAME) rely
+/
+
+alter table RDX_UNIT add constraint UNQ_RDX_UNIT_RID unique (RID) rely
 /
 
 alter table RDX_WF_PROCESSLINK add constraint UNQ_RDX_WF_PROCESSLINK_PROCESS unique (PROCESSID, ROLE, IDX, ID)
@@ -5576,6 +6815,40 @@ Select Distinct RDX_PROFILERLOG.PERIODENDTIME PERIODENDTIME,RDX_PROFILERLOG.INST
 /
 
 grant select, delete on RDX_PERIODSVIEW to &USER&_RUN_ROLE
+/
+
+create or replace view RDX_SM_INSTANCESTATEVIEW as
+select RDX_SM_INSTANCESTATEHISTORY.INSTANCEID as INSTANCEID,
+       RDX_SM_INSTANCESTATEHISTORY.REGTIMEMILLIS as REGTIMEMILLIS,
+       RDX_SM_INSTANCESTATEHISTORY.THREADID as THREADID,
+       RDX_SM_INSTANCESTATEHISTORY.THREADKIND as THREADKIND,
+       RDX_SM_INSTANCESTATEHISTORY.FORCED as FORCED,
+       RDX_SM_INSTANCESTATEHISTORY.NAME as NAME,
+       RDX_SM_INSTANCESTATEHISTORY.UNITID as UNITID,
+       RDX_SM_INSTANCESTATEHISTORY.ANCESTORTHREADID as ANCESTORTHREADID,
+       RDX_SM_INSTANCESTATEHISTORY.ARTESEQ as ARTESEQ,
+       RDX_SM_INSTANCESTATEHISTORY.ARTESERIAL as ARTESERIAL,
+       RDX_SM_INSTANCESTATEHISTORY.DBSID as DBSID,
+       RDX_SM_INSTANCESTATEHISTORY.DBSERIAL as DBSERIAL,
+       RDX_SM_INSTANCESTATEHISTORY.TRACECONTEXTS as TRACECONTEXTS,
+       RDX_SM_INSTANCESTATEHISTORY.CPUDIFFMILLIS as CPUDIFFMILLIS,
+       RDX_SM_INSTANCESTATEHISTORY.DBDIFFMILLIS as DBDIFFMILLIS,
+       RDX_SM_INSTANCESTATEHISTORY.EXTDIFFMILLIS as EXTDIFFMILLIS,
+       RDX_SM_INSTANCESTATEHISTORY.QUEUEDIFFMILLIS as QUEUEDIFFMILLIS,
+       RDX_SM_INSTANCESTATEHISTORY.UPTIMESEC as UPTIMESEC,
+       RDX_SM_INSTANCESTATEHISTORY.STACKDIGEST as STACKDIGEST,
+       RDX_SM_STACKDATA.STACKTOP as STACKTOP,
+       RDX_SM_STACKDATA.COMPRESSEDSTACK as COMPRESSEDSTACK,
+       RDX_Utils.gunzipToClob(RDX_SM_STACKDATA.COMPRESSEDSTACK) as STACK,
+       RDX_SM_INSTANCESTATEHISTORY.LOCKNAME as LOCKNAME,
+       RDX_SM_INSTANCESTATEHISTORY.LOCKOWNERNAME as LOCKOWNERNAME,
+       RDX_SM_INSTANCESTATEHISTORY.RQSTARTTIMEMILLIS as RQSTARTTIMEMILLIS,
+       RDX_SM_INSTANCESTATEHISTORY.EXTDATA as EXTDATA
+from RDX_SM_INSTANCESTATEHISTORY, RDX_SM_STACKDATA
+where RDX_SM_INSTANCESTATEHISTORY.STACKDIGEST = RDX_SM_STACKDATA.DIGEST(+)
+/
+
+grant select, delete on RDX_SM_INSTANCESTATEVIEW to &USER&_RUN_ROLE
 /
 
 create or replace view RDX_SM_METRICSTATEVIEW as
@@ -5635,11 +6908,6 @@ with read only
 grant select on RDX_WF_CLERKSTATISTICS to &USER&_RUN_ROLE
 /
 
-alter table COUNTER
-	add constraint FK_COUNTER_UPVALREF foreign key (UPDEFID, UPOWNERENTITYID, UPOWNERPID)
-	references RDX_UPVALREF (DEFID, OWNERENTITYID, OWNERPID) on delete cascade
-/
-
 alter table RDX_PC_CHANNELGSMMODEM
 	add constraint FK_DPC_CHANNELGSMMODEM_CHANNEL foreign key (CHANNELUNITID)
 	references RDX_UNIT (ID) on delete cascade
@@ -5678,11 +6946,6 @@ alter table RDX_PC_RECVMESSAGE
 alter table RDX_PC_SENTMESSAGE
 	add constraint FK_DPC_SENTMESSAGE_CHANNELUNIT foreign key (CHANNELID)
 	references RDX_UNIT (ID)
-/
-
-alter table RDX_JS_JOBSCHEDULERUNIT
-	add constraint FK_JOBSCHEDULERUNIT_PARENTUNIT foreign key (PARENTID)
-	references RDX_UNIT (ID) on delete cascade
 /
 
 alter table RDX_AC_USER2ROLE
@@ -5750,6 +7013,11 @@ alter table RDX_AC_USER
 	references RDX_AC_USERGROUP (NAME)
 /
 
+alter table RDX_AMQPQUEUE
+	add constraint FK_RDX_AMQPQUEUE_MESSAGEQUEUE foreign key (QUEUEID)
+	references RDX_MESSAGEQUEUE (ID) on delete cascade
+/
+
 alter table RDX_ARTEINSTANCE
 	add constraint FK_RDX_ARTEINSTANCE_INSTANCE foreign key (INSTANCEID)
 	references RDX_INSTANCE (ID) on delete cascade
@@ -5780,6 +7048,11 @@ alter table RDX_CLASSLOADINGPROFILEITEM
 	references RDX_CLASSLOADINGPROFILE (ID) on delete cascade
 /
 
+alter table RDX_CM_CHANGELOG
+	add constraint FK_RDX_CM_CHANGELOG_UPVALREF foreign key (UPDEFID, UPOWNERENTITYID, UPOWNERPID)
+	references RDX_UPVALREF (DEFID, OWNERENTITYID, OWNERPID) on delete cascade
+/
+
 alter table RDX_CM_ITEMREF
 	add constraint FK_RDX_CM_ITEMREF_ITEM foreign key (INTREF)
 	references RDX_CM_ITEM (ID) rely disable novalidate
@@ -5800,29 +7073,14 @@ alter table RDX_CM_ITEM
 	references RDX_CM_PACKET (ID) on delete cascade
 /
 
-alter table RDX_DM_DATA
-	add constraint FK_RDX_DM_DATA_PACKET foreign key (PACKETID)
-	references RDX_DM_PACKET (ID) on delete cascade
+alter table RDX_CM_REVISION
+	add constraint FK_RDX_CM_REVISION_CHANGELOG foreign key (UPDEFID, UPOWNERENTITYID, UPOWNERPID)
+	references RDX_CM_CHANGELOG (UPDEFID, UPOWNERENTITYID, UPOWNERPID) on delete cascade
 /
 
-alter table RDX_DM_OUTLINK
-	add constraint FK_RDX_DM_OUTLINK_PACKET foreign key (PACKETID)
-	references RDX_DM_PACKET (ID) on delete cascade
-/
-
-alter table RDX_DM_OUTLINKVERIFY
-	add constraint FK_RDX_DM_OUTLNKVERIFY_OUTLNK foreign key (PACKETID, EXTTABLEGUID, PARENTPID)
-	references RDX_DM_OUTLINK (PACKETID, EXTTABLEGUID, PARENTPID) on delete cascade
-/
-
-alter table RDX_DM_PACKET
-	add constraint FK_RDX_DM_PACKET_USER foreign key (AUTHORNAME)
-	references RDX_AC_USER (NAME) rely disable novalidate
-/
-
-alter table RDX_DM_SEGMENT
-	add constraint FK_RDX_DM_SEGMENT_PACKET foreign key (PACKETID)
-	references RDX_DM_PACKET (ID) on delete cascade
+alter table RDX_COUNTER
+	add constraint FK_RDX_COUNTER_UPVALREF foreign key (UPDEFID, UPOWNERENTITYID, UPOWNERPID)
+	references RDX_UPVALREF (DEFID, OWNERENTITYID, OWNERPID) on delete cascade
 /
 
 alter table RDX_EASSELECTORADDONS
@@ -5850,14 +7108,14 @@ alter table RDX_EVENTLOG
 	references RDX_AC_USER (NAME) rely disable novalidate
 /
 
-alter table RDX_FALLBACKMQHANDLER
-	add constraint FK_RDX_FALLBACKMQHANDLER_MUNIT foreign key (MAINUNITID)
-	references RDX_UNIT (ID) on delete cascade
+alter table RDX_AC_USERGROUP2ROLE
+	add constraint FK_RDX_GRP2ROLE_PARTGROUP_DASH foreign key (PG$$4PQ4U65VK5HFVJ32XCUORBKRJM)
+	references RDX_AC_PARTITIONGROUP (ID) on delete cascade
 /
 
-alter table RDX_FALLBACKMQHANDLER
-	add constraint FK_RDX_FALLBACKMQHANDLER_UNIT foreign key (UNITID)
-	references RDX_UNIT (ID) on delete cascade
+alter table RDX_AC_USERGROUP2ROLE
+	add constraint FK_RDX_GRP2ROLE_PARTGROUP_USGR foreign key (PG$$1ZOQHCO35XORDCV2AANE2UAFXA)
+	references RDX_AC_PARTITIONGROUP (ID) on delete cascade
 /
 
 alter table RDX_INSTANCE
@@ -5888,6 +7146,11 @@ alter table RDX_JMSHANDLER
 alter table RDX_JMSHANDLER
 	add constraint FK_RDX_JMSHANDLER_UNIT foreign key (ID)
 	references RDX_UNIT (ID) on delete cascade
+/
+
+alter table RDX_JMSQUEUE
+	add constraint FK_RDX_JMSQUEUE_MESSAGEQUEUE foreign key (QUEUEID)
+	references RDX_MESSAGEQUEUE (ID) on delete cascade
 /
 
 alter table RDX_JS_CALENDAR
@@ -5955,11 +7218,6 @@ alter table RDX_JS_JOBQUEUE
 	references RDX_UNIT (ID) on delete cascade
 /
 
-alter table RDX_JS_JOBSCHEDULERUNIT
-	add constraint FK_RDX_JS_JOBSCHDLRUNIT_UNIT foreign key (ID)
-	references RDX_UNIT (ID) on delete cascade
-/
-
 alter table RDX_JS_TASK
 	add constraint FK_RDX_JS_SCHDUNITJOB_EVSCHD foreign key (SCHEDULEID)
 	references RDX_JS_EVENTSCHD (ID)
@@ -5968,6 +7226,11 @@ alter table RDX_JS_TASK
 alter table RDX_JS_TASK
 	add constraint FK_RDX_JS_SCHDUNITJOB_UNIT foreign key (UNITID)
 	references RDX_UNIT (ID) on delete cascade
+/
+
+alter table RDX_JS_TASK
+	add constraint FK_RDX_JS_TASK_DIR foreign key (DIRECTORYID)
+	references RDX_JS_TASK (ID) on delete cascade
 /
 
 alter table RDX_JS_TASK
@@ -6025,6 +7288,11 @@ alter table RDX_NETPORTHANDLER
 	references RDX_UNIT (ID) on delete cascade
 /
 
+alter table RDX_PC_CHANNELUNIT
+	add constraint FK_RDX_PC_CHANNELUNIT_SAP foreign key (DELIVERYACKSAPID)
+	references RDX_SAP (ID)
+/
+
 alter table RDX_PC_EVENTLIMITACC
 	add constraint FK_RDX_PC_EVENTLIMITACC_EVENTS foreign key (SUBSCRIPTIONID)
 	references RDX_PC_EVENTSUBSCRIPTION (ID) on delete cascade
@@ -6035,9 +7303,24 @@ alter table RDX_PC_EVENTLIMITACC
 	references RDX_AC_USER (NAME) rely disable novalidate
 /
 
+alter table RDX_PC_NOTIFICATIONSENDER
+	add constraint FK_RDX_PC_NOTIFICATIONSENDER_U foreign key (USERGROUPNAME)
+	references RDX_AC_USERGROUP (NAME) on delete set null
+/
+
 alter table RDX_PROFILERLOG
 	add constraint FK_RDX_PROFILERLOG_INSTANCE foreign key (INSTANCEID)
 	references RDX_INSTANCE (ID) on delete cascade
+/
+
+alter table RDX_QUEUESAFPARTITION
+	add constraint FK_RDX_QUEUEPARTITIONDELAY_MQ foreign key (QUEUEID)
+	references RDX_MESSAGEQUEUE (ID) on delete cascade
+/
+
+alter table RDX_QUEUESAFMESS
+	add constraint FK_RDX_QUEUESAFMESS_MESSAGEQUE foreign key (QUEUEID)
+	references RDX_MESSAGEQUEUE (ID) on delete cascade
 /
 
 alter table RDX_REPORTPARAM
@@ -6235,6 +7518,56 @@ alter table RDX_TESTCASE
 	references RDX_TESTCASE (ID) on delete set null
 /
 
+alter table RDX_TESTCASE
+	add constraint FK_RDX_TESTCASE_USER foreign key (AUTHORNAME)
+	references RDX_AC_USER (NAME) on delete cascade
+/
+
+alter table RDX_TST_AUDITDETAIL
+	add constraint FK_RDX_TST_AUDITDETAIL_AUDITMA foreign key (PKCOLINT, PKCOLCHAR, PKCOLNUM, PKCOLDATE, PKCOLSTR, PKCOLTIMESTAMP)
+	references RDX_TST_AUDITMASTER (PKCOLINT, PKCOLCHAR, PKCOLNUM, PKCOLDATE, PKCOLSTR, PKCOLTIMESTAMP) on delete cascade
+/
+
+alter table RDX_TST_CHILD
+	add constraint FK_RDX_TST_CHILD_PARENT foreign key (PARENTID)
+	references RDX_TST_PARENT (ID) on delete cascade
+/
+
+alter table RDX_TST_DMTESTCHILD
+	add constraint FK_RDX_TST_DMTESTCHILD_DMTEST foreign key (KEYID)
+	references RDX_TST_DMTEST (ID) on delete cascade
+/
+
+alter table RDX_TST_DMTEST
+	add constraint FK_RDX_TST_DMTEST_DMTESTA foreign key (KEYINT, KEYSTR)
+	references RDX_TST_DMTESTA (PKINT, PKSTR) on delete cascade
+/
+
+alter table RDX_TST_INHERITANCENODE
+	add constraint FK_RDX_TST_INHERITANCENODE_INH foreign key (PARENTID)
+	references RDX_TST_INHERITANCENODE (ID) on delete cascade
+/
+
+alter table RDX_TST_PARENT
+	add constraint FK_RDX_TST_PARENT_SCHEME foreign key (AUDITSCHEME)
+	references RDX_AU_SCHEME (GUID) on delete cascade
+/
+
+alter table RDX_TST_TEDCCHILDDETAIL
+	add constraint FK_RDX_TST_TEDCCHILDDTL_TEDCLD foreign key (ID)
+	references RDX_TST_TEDCCHILD (ID) on delete cascade
+/
+
+alter table RDX_TST_TEDCCHILDDETAIL
+	add constraint FK_RDX_TST_TEDCCHILDDTL_TED_P foreign key (DETAILPARENTID)
+	references RDX_TST_TEDCPARENT (ID)
+/
+
+alter table RDX_TST_TEDCCHILD
+	add constraint FK_RDX_TST_TEDCCHILD_TEDCPAREN foreign key (PARENTID)
+	references RDX_TST_TEDCPARENT (ID)
+/
+
 alter table RDX_UNIT
 	add constraint FK_RDX_UNIT_INSTANCE foreign key (INSTANCEID)
 	references RDX_INSTANCE (ID)
@@ -6243,6 +7576,11 @@ alter table RDX_UNIT
 alter table RDX_UNIT
 	add constraint FK_RDX_UNIT_SCP foreign key (SCPNAME, SYSTEMID)
 	references RDX_SCP (NAME, SYSTEMID)
+/
+
+alter table RDX_UNIT
+	add constraint FK_RDX_UNIT_UNIT foreign key (PRIMARYUNITID)
+	references RDX_UNIT (ID) on delete cascade
 /
 
 alter table RDX_USER2STATION
@@ -6295,6 +7633,16 @@ alter table RDX_USERREPORT
 	references RDX_USERREPORTMODULE (GUID) on delete cascade
 /
 
+alter table RDX_AC_USER2ROLE
+	add constraint FK_RDX_USR2ROLE_PARTGROUP_DASH foreign key (PG$$4PQ4U65VK5HFVJ32XCUORBKRJM)
+	references RDX_AC_PARTITIONGROUP (ID) on delete cascade
+/
+
+alter table RDX_AC_USER2ROLE
+	add constraint FK_RDX_USR2ROLE_PARTGROUP_USGR foreign key (PG$$1ZOQHCO35XORDCV2AANE2UAFXA)
+	references RDX_AC_PARTITIONGROUP (ID) on delete cascade
+/
+
 alter table RDX_WF_FORMLOG
 	add constraint FK_RDX_WF_FORMLOG_FORM foreign key (FORMID)
 	references RDX_WF_FORM (ID) on delete cascade
@@ -6332,11 +7680,22 @@ alter table RDX_REPORTPUB
 
 create or replace package body RDX_ACS as
 
-	sysSuperAdminRoleId  constant varchar2(30) := 'rolSUPER_ADMIN_______________';
-	error_Message constant varchar2(30) := 'Incorrect input string - ';
-
 	Type TIdRecord IS RECORD (IdValue varchar(50));
 	Type TIdRecordList is table of TIdRecord index by binary_integer;
+
+	type str_list_type  is table of varchar2(50) index BY BINARY_INTEGER;
+
+	function constSuperAdminRoleId return varchar2
+	is
+	begin
+	    return 'rolSUPER_ADMIN_______________';
+	end;
+
+	function constErrorMessage return varchar2
+	is
+	begin
+	    return 'Incorrect input string - ';
+	end;
 
 	function packAccessPartitionValue(
 		val in varchar2
@@ -6524,16 +7883,6 @@ create or replace package body RDX_ACS as
 	    return true;
 	 end;
 
-	function userHasRoleForObjectInternal(
-		pUser in varchar2,
-		pRole in varchar2,
-		pArea in TRdxAcsArea
-	) return integer
-	is
-	begin
-	  return RDX_ACS.userHasRoleForObjectInternal(pUser , pRole , pArea , 1, null, null);
-	end;
-
 	function strToArea(
 		str in varchar2,
 		pos in out integer
@@ -6555,7 +7904,7 @@ create or replace package body RDX_ACS as
 	--
 
 	if SubStr(str, pos, 1)<>'(' then
-	  RAISE_APPLICATION_ERROR (-20100, error_Message);
+	  RAISE_APPLICATION_ERROR (-20100, RDX_ACS.constErrorMessage);
 	end if; 
 	pos:=pos+1;
 	res := TRdxAcsArea(TRdxAcsCoordinates());
@@ -6565,7 +7914,7 @@ create or replace package body RDX_ACS as
 	         exit lbl1;
 	      end if;
 	      if SubStr(str , pos, 1)<>'(' then
-	         RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+	         RAISE_APPLICATION_ERROR (-20100, RDX_ACS.constErrorMessage || str);
 	      end if;
 	      pos:=pos+1;
 	      if SubStr(str , pos, 1)='0' then
@@ -6574,23 +7923,23 @@ create or replace package body RDX_ACS as
 	        if SubStr(str , pos, 1)='1' then
 	           prohibited := 1;
 	        else
-	           RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+	           RAISE_APPLICATION_ERROR (-20100, RDX_ACS.constErrorMessage || str);
 	        end if;
 	      end if;
 	      pos:=pos+1;
 	      if SubStr(str , pos, 1)<>',' then
-	         RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+	         RAISE_APPLICATION_ERROR (-20100, RDX_ACS.constErrorMessage || str);
 	      end if;
 	      pos:=pos+1;
 	      accessPartitionKey := SubStr(str, pos,29); 
 	      pos:=pos+29;
 	      if SubStr(str, pos, 1)<>',' then
-	         RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+	         RAISE_APPLICATION_ERROR (-20100, RDX_ACS.constErrorMessage || str);
 	      end if;
 	      pos := pos+1;
 	      newPos:=InStr(str, ')', pos);
 	      if newPos = 0 then
-	         RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+	         RAISE_APPLICATION_ERROR (-20100, RDX_ACS.constErrorMessage || str);
 	      end if;      
 	      if newPos = pos then
 	         accessPartitionValue := null;
@@ -6628,151 +7977,6 @@ create or replace package body RDX_ACS as
 	return res;
 	end;
 
-	function userHasRoleForObjectInternal(
-		pUser in varchar2,
-		pRole in varchar2,
-		pArea in TRdxAcsArea,
-		checkInheritGroupRights in integer,
-		exceptingID1_ in integer,
-		exceptingID2_ in integer
-	) return integer
-	is
-	    Area TRdxAcsArea;
-	    exceptingID1 integer;
-	    exceptingID2 integer;
-	begin 
-	     exceptingID1 := nvl(exceptingID1_, -1);
-	     exceptingID2 := nvl(exceptingID2_, -1);
-	     
-	   -- if (exceptingID1 is not null)then
-	      begin       
-	      --if (checkInheritGroupRights<>0)then
-	          begin   
-	          for ind in (Select * from RDX_AC_USER2ROLE
-	                     where
-	                      --(checkOnlyOld=0 or (checkOnlyOld<>0 and isNew=0)) and 
-	                      isNew=0 and
-	                      (checkInheritGroupRights<>0 or (checkInheritGroupRights=0 and isOwn <> 0)) and
-	                      exceptingID1<>Id and 
-	                      exceptingID2<>Id and 
-	                      userName = pUser and  
-	                      pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-	             loop
-	                 Area := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(ind);
-	                 if RDX_ACS.containsPointInArea2(Area, pArea) then
-	                    return 1;
-	                 end if;
-	             end loop;
-	          end;
-	          
-	         /* 
-	      else
-	          begin
-	          for ind in (Select * from RDX_AC_USER2ROLE
-	                     where isNew=0 and exceptingID1<>Id and exceptingID2<>Id and isOwn <> 0 and userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-	             loop
-	                 Area := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(ind);
-	                 if RDX_ACS.containsPointInArea2(Area, pArea) then
-	                    return 1;
-	                 end if;
-	             end loop;
-	          end;
-	      end if;
-	      */
-	      end;
-	    /*  
-	    else
-	      begin  
-	      if (checkInheritGroupRights<>0)then
-	          begin   
-	          for ind in (Select * from RDX_AC_USER2ROLE
-	                     where  userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-	             loop
-	                 Area := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(ind);
-	                 if RDX_ACS.containsPointInArea2(Area, pArea) then
-	                    return 1;
-	                 end if;
-	             end loop;
-	          end;
-	      else
-	          begin
-	          for ind in (Select * from RDX_AC_USER2ROLE
-	                     where isNew=0 and isOwn <> 0 and userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-	             loop         
-	                 Area := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(ind);
-	                 if RDX_ACS.containsPointInArea2(Area, pArea) then
-	                    return 1;
-	                 end if;
-	             end loop;
-	          end;
-	      end if;
-	      end;               
-	    end if;
-	    */
-	    return 0;
-	end;
-
-	function groupHasRoleForObjectInternal(
-		pGroup in varchar2,
-		pRole in varchar2,
-		pArea in TRdxAcsArea
-	) return integer
-	is      
-	begin          
-	    return RDX_ACS.groupHasRoleForObjectInternal(pGroup , pRole , pArea ,null, null);
-	end;
-
-	function groupHasRoleForObjectInternal(
-		pGroup in varchar2,
-		pRole in varchar2,
-		pArea in TRdxAcsArea,
-		exceptingID1_ in integer,
-		exceptingID2_ in integer
-	) return integer
-	is      
-	    Area TRdxAcsArea;   
-	    exceptingID1 integer;
-	    exceptingID2 integer;
-	begin 
-	     exceptingID1 := nvl(exceptingID1_, -1);
-	     exceptingID2 := nvl(exceptingID2_, -1);
-
-	    --if (exceptingID1 is not null) then
-	    
-	      begin
-	      for ind in (Select * from RDX_AC_USERGROUP2ROLE
-	                 where 
-	                    --(checkOnlyOld=0 or (checkOnlyOld<>0 and isNew=0)) and 
-	                    isNew=0 and
-	                    exceptingID1<>id and 
-	                    exceptingID2<>id and 
-	                    groupName = pGroup and  
-	                    pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-	         loop
-	             Area := RDX_ACS_UTILS.buildAssignedAccessAreaG2R(ind);
-	             if RDX_ACS.containsPointInArea2(Area, pArea) then
-	                return 1;
-	             end if;
-	         end loop;     
-	      end;
-	    
-	    /*  
-	    else
-	      begin
-	      for ind in (Select * from RDX_AC_USERGROUP2ROLE
-	                   where isNew=0 and  groupName = pGroup and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-	           loop
-	               Area := RDX_ACS_UTILS.buildAssignedAccessAreaG2R(ind);
-	               if RDX_ACS.containsPointInArea2(Area, pArea) then
-	                  return 1;
-	               end if;
-	           end loop;
-	      end;
-	    end if;
-	    */
-	    return 0;
-	end;
-
 	function curUserHasRoleInArea(
 		pRole in varchar2,
 		pPointList in TRdxAcsAreaList
@@ -6794,7 +7998,7 @@ create or replace package body RDX_ACS as
 	begin 
 	    flag := pPointList is null or pPointList.COUNT()=0;  
 	    for ind in (Select * from RDX_AC_USER2ROLE
-	             where isNew=0 and  userName = pUser and  pRole = roleId)
+	             where isNew=0 and isOwn=0 and userName = pUser and  pRole = roleId)
 	     loop
 	       if flag then
 	          return 1;  
@@ -6828,10 +8032,11 @@ create or replace package body RDX_ACS as
 	    Area TRdxAcsArea; 
 	    flag boolean;
 	    dd integer;
+	    cSuperAdminRoleId constant varchar2(30) := RDX_ACS.constSuperAdminRoleId;
 	begin 
 	    flag := pPointList is null or pPointList.COUNT()=0;  
 	    for ind in (Select * from RDX_AC_USER2ROLE
-	             where isNew=0 and  userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
+	             where isNew=0 and isOwn=0 and userName = pUser and  pRole || cSuperAdminRoleId LIKE '%' || roleId || '%')
 	     loop
 	       if flag then
 	          return 1;  
@@ -6871,7 +8076,7 @@ create or replace package body RDX_ACS as
 	           end if;
 	        end loop;
 	    else
-	        return RDX_ACS.curUserHasRoleInArea(sysSuperAdminRoleId, pPointList);
+	        return RDX_ACS.curUserHasRoleInArea(RDX_ACS.constSuperAdminRoleId, pPointList);
 	    end if;
 	    return 0;
 	end;
@@ -6892,7 +8097,7 @@ create or replace package body RDX_ACS as
 	           end if;
 	        end loop;
 	    else
-	        return RDX_ACS.curUserHasRoleInArea(sysSuperAdminRoleId, pPointList);
+	        return RDX_ACS.curUserHasRoleInArea(RDX_ACS.constSuperAdminRoleId, pPointList);
 	    end if;
 	    return 0;
 	end;
@@ -6914,10 +8119,11 @@ create or replace package body RDX_ACS as
 	is     
 	    Area TRdxAcsArea; 
 	    flag boolean;
+	    cSuperAdminRoleId constant varchar2(30) := RDX_ACS.constSuperAdminRoleId;
 	begin 
 	    flag := pPointList is null or pPointList.COUNT()=0;  
 	    for ind in (Select * from RDX_AC_USER2ROLE
-	             where isNew=0 and userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
+	             where isNew=0  and isOwn=0 and userName = pUser and  pRole || cSuperAdminRoleId LIKE '%' || roleId || '%')
 	     loop
 	       if flag then
 	          return 1;  
@@ -6949,7 +8155,7 @@ create or replace package body RDX_ACS as
 	            end if;
 	        end loop;
 	    else
-	        return RDX_ACS.curUserHasRoleInArea(sysSuperAdminRoleId, pPointList);
+	        return RDX_ACS.curUserHasRoleInArea(RDX_ACS.constSuperAdminRoleId, pPointList);
 	    end if;
 	    return 0;
 	end;
@@ -6969,7 +8175,7 @@ create or replace package body RDX_ACS as
 	           end if;
 	        end loop;
 	    else
-	        return RDX_ACS.curUserHasRoleInArea(sysSuperAdminRoleId, pPointList);
+	        return RDX_ACS.curUserHasRoleInArea(RDX_ACS.constSuperAdminRoleId, pPointList);
 	    end if;
 	    return 0;
 	end;
@@ -7045,201 +8251,687 @@ create or replace package body RDX_ACS as
 	    return result_;
 	end;
 
+	procedure writeToClob(
+		clob_ in out clob,
+		val in varchar2
+	)
+	is
+	 x VARCHAR2(32767);
+	begin
+	  x := val  || CHR(13);
+	  DBMS_LOB.writeappend(clob_, length(x), x);    
+	end;
+
+	procedure fillCompileRightsBody(
+		body_ in out clob,
+		prefix_ in varchar2,
+		str_list0 in str_list_type,
+		exists_Package in int_list_type,
+		index_main in varchar2,
+		srcTableName in varchar2,
+		userName_ in varchar2
+	)
+	is
+	  x varchar2(32767);
+	  n     integer;
+	begin
+	    n := str_list0.count();
+
+	    For i in 1 .. n
+	    loop
+	        writeToClob(body_, prefix_ || ' if (' || index_main || '.MA$$' || str_list0(i) || ' = RDX_ACS.cRight_boundedByUser) then');
+	        if (exists_Package(i) = 1) then    
+	            writeToClob(body_, prefix_ || '    partitionsList' || to_char(i) || '.delete();');
+	            writeToClob(body_, prefix_ || '    partitionsList' || to_char(i) || '.extend(1);');
+	            writeToClob(body_, prefix_ || '    partitionsList' || to_char(i) || '(1):=ACS$' || str_list0(i) || '.getUserAssignment(RDX_Arte.getUserName());');
+	            writeToClob(body_, prefix_ || '    mode' || to_char(i) || ':=RDX_ACS.cRight_boundedByPart;');
+	        else    
+	            writeToClob(body_, prefix_ || '    raise_application_error(-20000, ''' || 
+	                               'System rights package ACS$' || str_list0(i) || 
+	                               ' not found, but found RDX_ACS.cRight_boundedByUser bounding mode (Table=' || 
+	                               srcTableName || ', Id = '' || ' || index_main || '.Id || '').'');');
+	        end if; 
+
+	        writeToClob(body_, prefix_ || ' else');
+	        writeToClob(body_, prefix_ || '    RDX_ACS.fillPartitions(' || index_main || '.MA$$' || str_list0(i) || ', ' ||
+	                                                     'mode' || to_char(i)  || ', ' || 
+	                                                     '' || index_main || '.PA$$' || str_list0(i) || ', ' ||
+	                                                     'partitionsList' || to_char(i) || ', ' || 
+	                                                     '' || index_main || '.PG$$' || str_list0(i) || 
+	                                                     ');');
+	        writeToClob(body_, prefix_ || ' end if;');
+	    end loop;
+	    
+	    For i in 1 .. n
+	    loop
+	        x := LPAD(' ', i);
+	        writeToClob(body_, prefix_ || x || 'for i' || to_char(i) || 
+	                 ' in partitionsList' || to_char(i) || '.first() .. partitionsList' || to_char(i) || '.last()');  
+	        writeToClob(body_, prefix_ || x || 'loop'); 
+	    end loop;     
+	    
+	        x := LPAD(' ', n) || '   INSERT INTO RDX_AC_USER2ROLE(userName, isOwn, RoleId, ID';
+	        For i in 1 .. n
+	        loop 
+	            x := x || ', PA$$' || str_list0(i) || ', MA$$' || str_list0(i);
+	        end loop; 
+	        x:= x || ')';
+	        writeToClob(body_, prefix_ || x);
+
+	        x := LPAD(' ', n) || '   VALUES (' || userName_ || ', 0, ' || index_main || '.RoleId, SQN_RDX_AC_USER2ROLEID.NEXTVAL';
+	        For i in 1 .. n
+	        loop 
+	            x := x || ', partitionsList' || to_char(i) || '(i' || to_char(i) || '), mode' || to_char(i);
+	        end loop;     
+	        x:= x || ');';
+	        writeToClob(body_, prefix_ || x);
+	    
+	    For i in 1 .. n
+	    loop
+	        x := LPAD(' ', n - i + 1);
+	        writeToClob(body_, prefix_ || x || 'end loop;'); 
+	    end loop;       
+	    
+	end;
+
+	function existsPackage(
+		postfix_ in varchar2
+	) return integer
+	is
+	 rez integer;
+	begin
+	 SELECT count(*) into rez FROM USER_OBJECTS WHERE OBJECT_TYPE = 'PACKAGE' and OBJECT_NAME = 'ACS$' || upper(postfix_) ;
+	 return rez;  
+	end;
+
+	procedure fillPartitions(
+		modeIn_ in integer,
+		modeOut_ out integer,
+		partitionIn_ in varchar2,
+		partitionsOut_ in out long_str_list,
+		partitionGroupId_ in integer
+	)
+	is
+	    flag boolean;
+	    partitionVals clob;
+	    arr RDX_Array.ARR_STR;
+	    partitionVal VARCHAR2(32767);
+	begin
+	    partitionsOut_.delete();
+	    if (modeIn_ = RDX_ACS.cRight_unbounded) or (modeIn_ = RDX_ACS.cRight_prohibited) then
+	         modeOut_:=modeIn_;
+	         partitionsOut_.Extend(1);
+	         partitionsOut_(1):=null;
+
+	    elsif (modeIn_ = RDX_ACS.cRight_boundedByPart) then
+	         modeOut_:=modeIn_;
+	         partitionsOut_.Extend(1);
+	         partitionsOut_(1):=partitionIn_;
+
+	    elsif (modeIn_ = RDX_ACS.cRight_boundedByGroup) then
+	         flag := partitionGroupId_ is not null;
+	         if flag then
+	            Select PARTITIONS into partitionVals from RDX_AC_PARTITIONGROUP where partitionGroupId_ = id;
+	            flag := (partitionVals is not null) and (dbms_lob.getlength(partitionVals)<>0) and (partitionVals<>'[0]');
+	         end if;
+	         
+	        if flag then        
+	            modeOut_:=RDX_ACS.cRight_boundedByPart;
+	            arr :=  RDX_Array.fromStr(partitionVals);
+	            partitionsOut_.Extend(arr.count());
+	            for i in arr.first() .. arr.last() 
+	            loop
+	                partitionVal:=arr(i);
+	                if (partitionVal is not null) and length(partitionVal)>31 then
+	                  partitionVal:= RDX_Entity.unpackPidStr(substr(partitionVal, 31));
+	                else
+	                  partitionVal:=null;
+	                end if;
+	                partitionsOut_(i) := partitionVal;
+	            end loop;
+	        else
+	            modeOut_:=RDX_ACS.cRight_prohibited;
+	            partitionsOut_.Extend(1);
+	            partitionsOut_(1):=null;
+	        end if;
+	    else
+	        raise_application_error(-20000, 'Detected invalid partition mode: ' || to_char(modeIn_)); 
+	    end if;
+	end;
+
+	procedure fillCompileDefineValues(
+		body_ in out clob,
+		n in integer
+	) deterministic
+	is
+	begin
+	For i in 1 .. n
+	    loop
+	        writeToClob(body_, '  partitionsList' || to_char(i) || ' RDX_ACS.long_str_list;');
+	        writeToClob(body_, '  mode' || to_char(i) || ' integer;');
+	    end loop;
+	end;
+
+	procedure fillCompileInitValues(
+		body_ in out clob,
+		n in integer
+	)
+	is
+	begin
+	    For i in 1 .. n
+	    loop        
+	        writeToClob(body_, '  partitionsList' || to_char(i) || ' := RDX_ACS.long_str_list();');
+	    end loop;
+	end;
+
+	procedure fillLongCycle(
+		body_ in out clob,
+		str_list0 in str_list_type
+	)
+	is
+	    n  integer;
+	    x varchar2(32767);
+	    x2 varchar2(32767);
+	begin
+	n := str_list0.COUNT();
+
+	writeToClob(body_, 'n:=calculatedList1.count;');
+
+	writeToClob(body_, 'if (n=0) then');
+	    writeToClob(body_, '  return 0;');
+	    writeToClob(body_, 'end if;');
+	    
+	    For i in 1 .. n loop
+	        x := LPAD(' ', i);
+	        writeToClob(body_, x || 'for i' || to_char(i) || ' in partitionsList' || to_char(i) || '.first() .. partitionsList' || to_char(i) || '.last()');         
+	        writeToClob(body_, x || 'loop');
+	        writeToClob(body_, x || 'partition' || to_char(i) || ' := partitionsList' || to_char(i) || '(i' || to_char(i) || ');');
+	    end loop;
+	    
+	    x := LPAD(' ', n);
+	        
+	    writeToClob(body_, x || 'ok_ := false;');
+	    writeToClob(body_, x || 'for i in 1..n loop');    
+	      For i in 1 .. n loop
+	      writeToClob(body_, x || '  calcPartition' || to_char(i) || ' := calculatedList' || to_char(i) || '(i);');
+	      writeToClob(body_, x || '  calcMode' || to_char(i) || ' := calculatedMode' || to_char(i) || '(i);');
+	      end loop;
+	      writeToClob(body_, x || '  if(');
+	      
+	      For i in 1 .. n loop
+	      x2 := x || '  ((mode' || to_char(i) || ' = RDX_ACS.cRight_prohibited) or ' ||
+	                     '(calcMode' || to_char(i) || ' = RDX_ACS.cRight_unbounded) or ' ||
+	                            '(mode' || to_char(i) || ' = RDX_ACS.cRight_boundedByPart and ' ||
+	                            'calcMode' || to_char(i) || ' = RDX_ACS.cRight_boundedByPart and ' ||
+	                            'RDX_ACS.equalPartition(partition' || to_char(i) || ', calcPartition' || to_char(i) || ') = 1))';
+	      if (i!=n) then
+	        x2 := x2 || ' and';
+	      else  
+	        x2 := x2 || ') then';
+	      end if;                            
+	       writeToClob(body_, x || x2);      
+	      end loop;
+	    writeToClob(body_, x || ' ok_ := true;');
+	    writeToClob(body_, x || ' exit;');
+	     
+	    writeToClob(body_, x || 'end if;');
+	      
+	    writeToClob(body_, x || 'end loop;');
+	    
+	    writeToClob(body_, x || 'if (not ok_) then');
+	    writeToClob(body_, x || '  return 0;');
+	    writeToClob(body_, x || 'end if;');
+	    
+	    
+	    
+	    
+	    For i in 1 .. n loop
+	        x := LPAD(' ', n - i + 1);
+	        writeToClob(body_, x || 'end loop;');
+	    end loop;
+	end;
+
+	procedure fillRights2Table(
+		table_ in varchar2,
+		func_ in varchar2,
+		body_ in out clob,
+		str_list0 in str_list_type,
+		exists_Package in int_list_type
+	)
+	is
+	    n  integer;
+	    x varchar2(32767);
+	    
+	    cSuperAdminRoleId constant varchar2(32) := '''' || RDX_ACS.constSuperAdminRoleId || '''';
+	begin
+
+	    n := str_list0.COUNT();
+
+	    writeToClob(body_, 'function ' || func_ || '(user_ in varchar2, id_ in integer) return integer');
+	    writeToClob(body_, 'is');
+	    For i in 1 .. n loop
+	       writeToClob(body_, ' partition' || to_char(i) || ' VARCHAR2(32767);');
+	       writeToClob(body_, ' mode' || to_char(i) || ' integer;');
+	       writeToClob(body_, ' calcMode' || to_char(i) || ' integer;');
+	       writeToClob(body_, ' groupId' || to_char(i) || ' integer;');
+	       writeToClob(body_, ' partitionsList' || to_char(i) || ' RDX_ACS.long_str_list;');
+	       writeToClob(body_, ' calculatedList' || to_char(i) || ' RDX_ACS.long_str_list;');
+	       writeToClob(body_, ' calculatedMode' || to_char(i) || ' RDX_ACS.int_list_type;');
+	       writeToClob(body_, ' calcPartition' || to_char(i) || ' VARCHAR2(32767);');
+	              
+	    end loop;
+	    writeToClob(body_, ' roleId_ varchar(50);');
+	    writeToClob(body_, ' i integer;');
+	    writeToClob(body_, ' n integer;');
+	    writeToClob(body_, ' ok_ boolean;');
+	    writeToClob(body_, 'begin');
+	    
+	    x := '  select roleId';
+	    For i in 1 .. n loop
+	      x := x || ', MA$$' || str_list0(i) || ', PA$$' || str_list0(i) || ', PG$$' || str_list0(i);      
+	    end loop;
+	    x := x || ' into roleId_';
+	    For i in 1 .. n loop
+	      x := x || ', mode' || to_char(i) || ', partition' || to_char(i) || ', groupId' || to_char(i);
+	    end loop;    
+	    writeToClob(body_,  x || ' from ' || table_ || ' where id = id_;');
+	        
+	    For i in 1 .. n
+	    loop        
+	        writeToClob(body_, ' partitionsList' || to_char(i) || ' := RDX_ACS.long_str_list();');
+	        writeToClob(body_, ' calculatedList' || to_char(i) || ' := RDX_ACS.long_str_list();');
+	        writeToClob(body_, ' calculatedMode' || to_char(i) || ' := RDX_ACS.int_list_type();');        
+
+	    end loop;
+
+	    For i in 1 .. n
+	    loop    
+	        writeToClob(body_, '  if (mode' || to_char(i) ||  ' = RDX_ACS.cRight_boundedByUser) then');
+	        if (exists_Package(i) = 1) then    
+	            writeToClob(body_, '    partitionsList' || to_char(i) || '.delete();');
+	            writeToClob(body_, '    partitionsList' || to_char(i) || '.extend(1);');
+	            writeToClob(body_, '    partitionsList' || to_char(i) || '(1):=ACS$' || str_list0(i) || '.getUserAssignment(RDX_Arte.getUserName());');
+	            writeToClob(body_, '    mode' || to_char(i) || ':=RDX_ACS.cRight_boundedByPart;');
+	        else    
+	            writeToClob(body_, '    raise_application_error(-20000, ''' || 
+	                               'System rights package ACS$' || str_list0(i) || 
+	                               ' not found, but found RDX_ACS.cRight_boundedByUser bounding mode (Table=' || 
+	                               table_ || ', Id = '' || id_ || '').'');');
+	        end if; 
+
+	        writeToClob(body_, '  else');
+	        writeToClob(body_, '    RDX_ACS.fillPartitions(mode' || to_char(i)  || ', calcMode' || to_char(i) || ', ' ||
+	                                                     'partition' || to_char(i) || ', ' ||
+	                                                     'partitionsList' || to_char(i) || ', ' || 
+	                                                     'groupId' || to_char(i)|| 
+	                                                     ');');
+	        writeToClob(body_, '  end if;');
+	    end loop;
+	    
+	      writeToClob(body_, '  i:=1;');
+	      writeToClob(body_, '  for ind in (Select * from RDX_AC_USER2ROLE where isNew=0 and isOwn = 0 and userName = user_ and ');
+	      writeToClob(body_, '                       (roleId_ = roleId or roleId = ' || cSuperAdminRoleId || ') )');
+	      writeToClob(body_, '  loop');
+	      
+	    For i in 1 .. n      
+	    loop
+	      writeToClob(body_, '    calculatedList' || to_char(i) || '.Extend();');
+	      writeToClob(body_, '    calculatedMode' || to_char(i) || '.Extend();');
+	         
+	      writeToClob(body_, '    calculatedList' || to_char(i) || '(i):=ind.PA$$' || str_list0(i) || ';');
+	      writeToClob(body_, '    calculatedMode' || to_char(i) || '(i):=ind.MA$$' || str_list0(i) || ';');
+	    end loop;      
+	      writeToClob(body_, '    i:=i+1;');
+	      writeToClob(body_, '  end loop;');
+	    
+	    RDX_ACS.fillLongCycle(body_, str_list0);
+	    
+	    writeToClob(body_, '  return 1;');
+	    writeToClob(body_, 'end;');
+
+	end;
+
+	function isGroupExist(
+		name_ in varchar2
+	) return integer
+	is
+	rez INTEGER;
+	begin
+	 rez := 0;
+	 SELECT COUNT(*) INTO rez FROM RDX_AC_USERGROUP WHERE ROWNUM <= 1 AND name_ = NAME;
+	 return rez;
+	end;
+
 	procedure acsUtilsBuild
 	is 
-	    type str_list_type  is table of varchar2(50) index BY BINARY_INTEGER;
-	    str_list str_list_type;
-	    str_list2 str_list_type;
-	 
+
+	    str_list0 str_list_type;
+	    exists_Package int_list_type;
+
 	    cur_index  integer;
 	    n  integer;
 	    i  integer;
 
 	    cursor_name INTEGER;
-	    cursor_name2 INTEGER;
 	    ret	    INTEGER;
 
 	    x varchar2(32767);
+	    x2 varchar2(32767);
 
-	    --head_ clob;
 	    body_ clob;
-
-	    t1 varchar2(32767);
-	    t2 varchar2(32767);
+	    
+	    cSuperAdminRoleId constant varchar2(32) := '''' || RDX_ACS.constSuperAdminRoleId || '''';
 	 
 	begin
 
 	    cur_index := 1;
-	    --dbms_lob.createTemporary(head_, false, dbms_lob.SESSION);
 	    dbms_lob.createTemporary(body_, false, dbms_lob.SESSION);
-
-
-	    for ind in (select * from user_tab_columns where  
+	    
+	    exists_Package := int_list_type();
+	     
+	    for ind in (select DISTINCT table_name, column_name from user_tab_columns where  
 	                  table_name = 'RDX_AC_USER2ROLE' 
 	                and
 	                  length(column_name) = 30 
 	                and 
 	                  column_name like 'PA$$%'
+	                  order by column_name 
 	               )                  
 	    loop
 	        x:=ind.column_name;
-	        x:= SUBSTR(x, 2);
-	        str_list(cur_index):=x;
-
-	        x:=ind.column_name;
-	        x:= 'apf' || SUBSTR(x, 5);
-	        str_list2(cur_index):=x;
-
+	        x:= SUBSTR(x, 5);        
+	        str_list0(cur_index):=x;        
+	        exists_Package.EXTEND();
+	        exists_Package(cur_index):= RDX_ACS.existsPackage(x);
 	        cur_index := cur_index+1;
 	    end loop;
 	 
 
 
 	    -- body_ 
-	    n := str_list.COUNT();
+	    n := str_list0.COUNT();
+	    
+	    writeToClob(body_, 'create or replace package RDX_ACS_UTILS as');
+	    writeToClob(body_, 'function buildAssignedAccessAreaU2R(row_ in RDX_AC_User2Role%ROWTYPE) return TRdxAcsArea;');
+	    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (buildAssignedAccessAreaU2R, WNDS);');
+	    writeToClob(body_, 'function buildAssignedAccessAreaG2R(row_ in RDX_AC_UserGroup2Role%ROWTYPE) return TRdxAcsArea;');    
+	    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (buildAssignedAccessAreaG2R, WNDS);');
+	    writeToClob(body_, 'procedure compileRights;');
+	    writeToClob(body_, 'procedure compileRightsForGroup(pUserGroup in varchar2);');
+	    writeToClob(body_, 'procedure compileRightsForUser(pUser in varchar2);');
+
+	    writeToClob(body_, 'procedure moveRightsFromUserToGroup(user_ in varchar2, group_ in varchar2);');
+	    
+	    x := '';
+	    For i in 1 .. n loop
+	        x := x || ', mode' || to_char(i) || ' integer, partitions' || to_char(i) || ' clob';
+	    end loop;
+	    
+	    writeToClob(body_, 'function existsRightsOnArea(user_ in varchar2, role_ in varchar2 ' || x || ') return integer;');
+	    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (existsRightsOnArea, WNDS);');
+	    
+	    writeToClob(body_, 'function existsRightsOnUser2Role(user_ in varchar2, id_ in integer) return integer;');
+	    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (existsRightsOnUser2Role, WNDS);');
+	    
+	    writeToClob(body_, 'function existsRightsOnGroup2Role(user_ in varchar2, id_ in integer) return integer;');
+	    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (existsRightsOnGroup2Role, WNDS);');
+	    
+	    writeToClob(body_, 'function isSuperAdmin(user_ in varchar2) return integer;');
+	    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (isSuperAdmin, WNDS);');
+	        
+	    For i in 1 .. n loop
+	        writeToClob(body_, 'function gup_' || str_list0(i) || '(user_ in varchar2) return clob;');
+	        --writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (gup_' || str_list0(i) || ', WNDS);');
+	    end loop;
+	    
+	    
+	    writeToClob(body_, 'end;');
+	  
+	  
+	  
+	    cursor_name := DBMS_SQL.OPEN_CURSOR;
+	    DBMS_SQL.PARSE ( cursor_name, body_, DBMS_SQL.NATIVE );
+	    ret := DBMS_SQL.EXECUTE ( cursor_name );
+	    DBMS_SQL.CLOSE_CURSOR ( cursor_name );  
+
+
+	    
+	    dbms_lob.createTemporary(body_, false, dbms_lob.SESSION);
+	  
+
+	    writeToClob(body_, 'CREATE  OR REPLACE package body RDX_ACS_UTILS as');
+	    
+	    
+	    For i in 1 .. n loop
+	    writeToClob(body_, '/*get unbounded partitions*/');
+	        writeToClob(body_, 'function gup_' || str_list0(i) || '(user_ in varchar2) return clob');
+	        writeToClob(body_, 'is');
+	        writeToClob(body_, ' p RDX_Array.ARR_STR;');
+	        writeToClob(body_, ' i integer;');
+	        writeToClob(body_, 'begin');
+	        
+	        x:='';
+	        For j in 1 .. n loop
+	            if (i<>j) then
+	                x:= x || ' and MA$$' || str_list0(j) || '= RDX_ACS.cRight_unbounded';
+	            end if;    
+	        end loop;
+	        
+	        writeToClob(body_, 'p := RDX_Array.ARR_STR();');
+	        writeToClob(body_, 'i := 1;');
+	        
+	        writeToClob(body_, 'for ind in (select PA$$' || str_list0(i) ||
+	                     ' from RDX_AC_USER2ROLE where roleId = ' || cSuperAdminRoleId || ' and isNew = 0 and isOwn = 0 and userName = user_' 
+	                      || ' and MA$$' || str_list0(i) || '= RDX_ACS.cRight_boundedByPart' || x || ')'
+	                     );
+	        writeToClob(body_, ' loop');
+	        writeToClob(body_, '  p.extend();');
+	        writeToClob(body_, '  p(i) := ind.PA$$' || str_list0(i) || ';');
+	        writeToClob(body_, '  i := i+1;');
+	        writeToClob(body_, ' end loop;');
+	        
+	        
+	        writeToClob(body_, ' return RDX_Array.fromArrStr(p);');
+	        writeToClob(body_, 'end;');    
+	    end loop;
+	    
+	    
+	 
+	    writeToClob(body_, 'function isSuperAdmin(user_ in varchar2) return integer');
+	    writeToClob(body_, 'is');
+	    writeToClob(body_, ' count_ integer;');
+	    writeToClob(body_, 'begin');
+	    
+	    x := '';
+	    For i in 1 .. n loop
+	        x := x || ' and MA$$' || str_list0(i) || '= RDX_ACS.cRight_unbounded';
+	    end loop;
+	    writeToClob(body_, ' select count(*) into count_ from RDX_AC_USER2ROLE where roleId = ' || cSuperAdminRoleId || ' and isNew = 0 and isOwn = 0 and userName = user_' || x || ';');
+	    writeToClob(body_, ' if count_ > 0 then');
+	    writeToClob(body_, '   return 1;');
+	    writeToClob(body_, ' end if;');
+	    
+	    writeToClob(body_, ' return 0;');
+	    writeToClob(body_, 'end;');
+
+	   
+	    
+	    RDX_ACS.fillRights2Table('RDX_AC_USER2ROLE', 'existsRightsOnUser2Role', body_, str_list0, exists_Package);
+	    RDX_ACS.fillRights2Table('RDX_AC_USERGROUP2ROLE', 'existsRightsOnGroup2Role', body_, str_list0, exists_Package);
+	    
 
 
 
-	    x:='CREATE OR REPLACE package body RDX_ACS_UTILS as' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-
-	    -- compileRights
-	    t1 := '        INSERT INTO RDX_AC_USER2ROLE ( userName, isOwn, RoleId, ID';
-	    t2 := '               VALUES ( ind2.userName, 0, ind1.RoleId, SQN_RDX_AC_USER2ROLEID.NEXTVAL';
-
-	    For i in 1 .. n
-	    loop 
-	        t1 := t1 || ', P' || str_list(i) || ', M' || str_list(i);
-	        t2 := t2 || ', IND1.P' || str_list(i) || ', IND1.M' || str_list(i);
+	    x := '';
+	    For i in 1 .. n loop
+	        x := x || ', mode' || to_char(i) || ' integer, partitions' || to_char(i) || ' clob';
 	    end loop;
 
+	    
 
-	    x:='procedure compileRights' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='is' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='begin' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='delete from RDX_AC_USER2ROLE u2r where u2r.isOwn = 0;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='for ind1 in (Select * from RDX_AC_USERGROUP2ROLE where isNew<>1)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='   loop' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='      for ind2 in (select * from RDX_AC_USER2USERGROUP where GroupName=ind1.GroupName and state<>1)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='        loop' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-
-	    x:='        ' || t1 || ')' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x); 
-	    x:='        ' || t2 || ');' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x); 
-
-	    x:='        end loop;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='   end loop;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='end;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-
-
-
-	    --compileRightsForGroup
-
-	    t1 := '        INSERT INTO RDX_AC_USER2ROLE ( userName, isOwn, RoleId, ID';
-	    t2 := '               VALUES ( ind1.userName, 0, ind3.RoleId, SQN_RDX_AC_USER2ROLEID.NEXTVAL';
-
-	    For i in 1 .. n
-	    loop 
-	        t1 := t1 || ', P' || str_list(i) || ', M' || str_list(i);
-	        t2 := t2 || ', IND3.P' || str_list(i) || ', IND3.M' || str_list(i);
-	    null;
+	    --existsRightsOnArea
+	    writeToClob(body_, 'function existsRightsOnArea(user_ in varchar2, role_ in varchar2 ' || x || ') return integer');
+	    writeToClob(body_, 'is');
+	    For i in 1 .. n loop
+	       writeToClob(body_, ' partition' || to_char(i) || ' VARCHAR2(32767);');
+	       writeToClob(body_, ' calcPartition' || to_char(i) || ' VARCHAR2(32767);');
+	       writeToClob(body_, ' calcMode' || to_char(i) || ' integer;');
+	       writeToClob(body_, ' partitionsList' || to_char(i) || ' RDX_Array.ARR_STR;');
+	       writeToClob(body_, ' calculatedList' || to_char(i) || ' RDX_Array.ARR_STR;');
+	       writeToClob(body_, ' calculatedMode' || to_char(i) || ' RDX_ACS.int_list_type;');
 	    end loop;
+	    writeToClob(body_, ' i integer;');
+	    writeToClob(body_, ' n integer;');
+	    writeToClob(body_, ' ok_ boolean;');
+	    
+	    writeToClob(body_, 'begin');
+	        
+	    For i in 1 .. n loop
+	        writeToClob(body_, ' if mode' || to_char(i) ||' = RDX_ACS.cRight_prohibited then');
+	        writeToClob(body_, '  partitionsList' || to_char(i) || ':= RDX_Array.fromStr(partitions' || to_char(i) || ');');
+	        writeToClob(body_, ' else');
+	        writeToClob(body_, '  partitionsList' || to_char(i) || ':= RDX_Array.ARR_STR();');
+	        writeToClob(body_, '  partitionsList' || to_char(i) || '.Extend(1);');
+	        writeToClob(body_, '  partitionsList' || to_char(i) || '(1):=null;');       
+	        writeToClob(body_, ' end if;');
+	        writeToClob(body_, ' calculatedList' || to_char(i) || ':= RDX_Array.ARR_STR();');
+	        writeToClob(body_, ' calculatedMode' || to_char(i) || ':= RDX_ACS.int_list_type();');
+	    end loop;
+	    
+	    writeToClob(body_, 'i:=1;');
+	    writeToClob(body_, 'for ind in (Select * from RDX_AC_USER2ROLE where isNew=0 and isOwn = 0 and userName = user_ and ');
+	    writeToClob(body_, '           (role_ = roleId or roleId = ' || cSuperAdminRoleId || ') )');
+	    writeToClob(body_, 'loop');
+	    For i in 1 .. n loop
+	        writeToClob(body_, '   calculatedList' || to_char(i) || '.Extend();');
+	        writeToClob(body_, '   calculatedMode' || to_char(i) || '.Extend();');
+	        
+	        writeToClob(body_, '   calculatedList' || to_char(i) || '(i):=ind.PA$$' || str_list0(i) || ';');
+	        writeToClob(body_, '   calculatedMode' || to_char(i) || '(i):=ind.MA$$' || str_list0(i) || ';');
+	    end loop;
+	    writeToClob(body_, '   i:=i+1;');
+	    writeToClob(body_, 'end loop;');
+	    
+	     
+	    RDX_ACS.fillLongCycle(body_, str_list0);
+	    
+	    
+	    writeToClob(body_, ' return 1;');
+	    writeToClob(body_, 'end;');
+	    
+	    --writeToClob(body_, 'function existsRightsOnUser2Role(user_ in varchar2, id_ in integer) return integer;');
+	    
+	    --compileRights
+	    writeToClob(body_, 'procedure compileRights');    
+	    writeToClob(body_, 'is');
 
-	    x:='procedure compileRightsForGroup(' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='   pUserGroup    in varchar2)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='is' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='begin' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='RDX_ACS.ClearInheritRights(pUserGroup);' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='for ind1 in (select * from RDX_AC_USER2USERGROUP where GroupName=pUserGroup and state<>1)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='loop' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='for ind2 in (select * from RDX_AC_USER2USERGROUP where UserName=ind1.UserName and state<>1)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='  loop' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='   for ind3 in (Select * from RDX_AC_USERGROUP2ROLE where GroupName = ind2.GroupName and isNew<>1)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='     loop' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
+	    RDX_ACS.fillCompileDefineValues(body_, n);
+	    
+	    writeToClob(body_, 'begin');
+	    
+	    RDX_ACS.fillCompileInitValues(body_, n);
+	    
+	    writeToClob(body_, '/*clear all inherit rights*/');--comment    
+	    writeToClob(body_, 'delete from RDX_AC_USER2ROLE u2r where u2r.isOwn=0;');    
+	    
+	    writeToClob(body_, '');
+	    writeToClob(body_, '/*collect rights from RDX_AC_USER2ROLE*/');--comment
+	    writeToClob(body_, 'for ind1 in (Select * from RDX_AC_USER2ROLE where isOwn=1 and isNew<>1)');
+	    writeToClob(body_, 'loop');
+	    RDX_ACS.fillCompileRightsBody(body_, '', str_list0, exists_Package, 'ind1', 'RDX_AC_USER2ROLE', 'ind1.userName');
+	    writeToClob(body_, 'end loop;');
+	        
+	    writeToClob(body_, '');
+	    writeToClob(body_, '/*collect rights from RDX_AC_USERGROUP2ROLE*/');--comment
+	    writeToClob(body_, 'for ind1 in (Select * from RDX_AC_USERGROUP2ROLE where isNew<>1)');
+	    writeToClob(body_, 'loop');
+	    writeToClob(body_, '  for ind2 in (Select * from RDX_AC_USER2USERGROUP where GroupName=ind1.GroupName and state<>1)');
+	    writeToClob(body_, '  loop');
+	    RDX_ACS.fillCompileRightsBody(body_, '  ', str_list0, exists_Package, 'ind1', 'RDX_AC_USERGROUP2ROLE', 'ind2.userName');
+	    writeToClob(body_, '  end loop;');
+	    writeToClob(body_, 'end loop;');
+	  
+	    writeToClob(body_, 'end;');
 
-	    x:='        ' || t1 || ')' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x); 
-	    x:='        ' || t2 || ');' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x); 
 
-	    x:='   end loop;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='  end loop;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='end loop;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='end;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
+	    --compileRightsForGroup     
+	    
+	    writeToClob(body_, 'procedure compileRightsForGroup(pUserGroup in varchar2)');
+	    writeToClob(body_, 'is');
+	    RDX_ACS.fillCompileDefineValues(body_, n);
+	    
+	    writeToClob(body_, 'begin');
+	    
+	    RDX_ACS.fillCompileInitValues(body_, n);
+	    
+	    writeToClob(body_, 'RDX_ACS.ClearInheritRights(pUserGroup);');
+	    
+	    writeToClob(body_, 'for ind1 in (select * from RDX_AC_USER2USERGROUP where GroupName=pUserGroup and state<>1)');
+	    writeToClob(body_, 'loop');
+	    
+
+	    --from this user
+	    writeToClob(body_, '    for ind2 in (Select * from RDX_AC_USER2ROLE where isOwn=1 and isNew<>1 and userName = ind1.userName)');
+	    writeToClob(body_, '    loop');
+	    RDX_ACS.fillCompileRightsBody(body_, '    ', str_list0, exists_Package, 'ind2', 'RDX_AC_USER2ROLE', 'ind1.userName');
+	    writeToClob(body_, '    end loop;');
+	    writeToClob(body_, '');    
+	    
+	    
+	    --writeToClob(body_, '  for ind2 in (select * from RDX_AC_USER2USERGROUP where UserName=ind1.UserName and state<>1)');
+	    --writeToClob(body_, '  loop');
+	                    
+	    --from groups
+	    writeToClob(body_, '    for ind2 in (Select * from RDX_AC_USERGROUP2ROLE where GroupName = ind1.GroupName and isNew<>1)');
+	    writeToClob(body_, '    loop');
+	    RDX_ACS.fillCompileRightsBody(body_, '    ', str_list0, exists_Package, 'ind2', 'RDX_AC_USERGROUP2ROLE', 'ind1.UserName');
+	    writeToClob(body_, '    end loop;');
+	    --writeToClob(body_, '  end loop;');
+	    writeToClob(body_, 'end loop;');
+	    
+	    writeToClob(body_, 'end;');
 
 
 	    --compileRightsForUser 
-	    t1 := '      INSERT INTO RDX_AC_USER2ROLE ( userName, isOwn, RoleId, ID';
-	    t2 := '               VALUES (pUser, 0, ind3.RoleId, SQN_RDX_AC_USER2ROLEID.NEXTVAL';
+	    writeToClob(body_, 'procedure compileRightsForUser(pUser in varchar2)');
+	    writeToClob(body_, 'is');
+	    RDX_ACS.fillCompileDefineValues(body_, n);
+	    
+	    writeToClob(body_, 'begin');
+	    RDX_ACS.fillCompileInitValues(body_, n);
 
-	    For i in 1 .. n
-	    loop 
-	        t1 := t1 || ', P' || str_list(i) || ', M' || str_list(i);
-	        t2 := t2 || ', IND3.P' || str_list(i) || ', IND3.M' || str_list(i);
-	    null;
-	    end loop;
-
-	    x:='procedure compileRightsForUser(' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='   pUser in varchar2)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='is' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='begin' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='delete from RDX_AC_USER2ROLE u2r where u2r.isOwn = 0 and username = pUser and isNew<>1;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='for ind1 in (select * from RDX_AC_USER2USERGROUP where UserName=pUser and state<>1)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='loop' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='    for ind3 in (Select * from RDX_AC_USERGROUP2ROLE where GroupName = ind1.GroupName and isNew<>1)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='    loop' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-
-	    x:='        ' || t1 || ')' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x); 
-	    x:='        ' || t2 || ');' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x); 
-
-	    x:='    end loop;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='end loop;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='end;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-
-
-
+	    writeToClob(body_, 'delete from RDX_AC_USER2ROLE u2r where u2r.isOwn = 0 and username = pUser and isNew<>1;');
+	    
+	    writeToClob(body_, 'for ind1 in (select * from RDX_AC_USER2ROLE where username = pUser and isOwn=1 and isNew<>1)');
+	    writeToClob(body_, 'loop');
+	    RDX_ACS.fillCompileRightsBody(body_, '', str_list0, exists_Package, 'ind1', 'RDX_AC_USER2ROLE', 'pUser');
+	    writeToClob(body_, 'end loop;');
+	                                                                        
+	    writeToClob(body_, 'for ind1 in (select * from RDX_AC_USER2USERGROUP where UserName=pUser and state<>1)');
+	    writeToClob(body_, 'loop');
+	    writeToClob(body_, '  for ind2 in (Select * from RDX_AC_USERGROUP2ROLE where GroupName = ind1.GroupName and isNew<>1)');
+	    writeToClob(body_, '  loop');   
+	    RDX_ACS.fillCompileRightsBody(body_, '  ', str_list0, exists_Package, 'ind2', 'RDX_AC_USERGROUP2ROLE', 'pUser');
+	    writeToClob(body_, '  end loop;');    
+	    writeToClob(body_, 'end loop;');
+	    writeToClob(body_, 'end;');
+	    
+	    
+	    
+	    
 	    -- procedure compileRightsForGrpBeforeDel
+	    
+	    /*
+	    writeToClob(body_, 'procedure compileRightsForGrpBeforeDel(pUserGroup in varchar2)');
+	    writeToClob(body_, 'is');
+	    writeToClob(body_, 'begin');
+	    writeToClob(body_, 'null;');
+	    writeToClob(body_, 'raise_application_error(-20000, ''Not realized yet'');');
+	    writeToClob(body_, 'end;');
+	    */
+	    
+	    
+	    /*
 	    t1 := '      INSERT INTO RDX_AC_USER2ROLE ( userName, isOwn, RoleId, ID';
 	    t2 := '               VALUES (ind1.userName, 0, ind3.RoleId, SQN_RDX_AC_USER2ROLEID.NEXTVAL';
 
@@ -7288,97 +8980,75 @@ create or replace package body RDX_ACS as
 	    DBMS_LOB.writeappend(body_, length(x), x);
 	    x:='end;' || CHR(13);
 	    DBMS_LOB.writeappend(body_, length(x), x);
+	    */
 
 
 	    for i in 1 .. 2 
 	    loop
 	       if i = 1  then
-	          x:='function buildAssignedAccessAreaU2R(row_ in RDX_AC_USER2ROLE%ROWTYPE)return TRdxAcsArea' || CHR(13);
+	          x:='function buildAssignedAccessAreaU2R(row_ in RDX_AC_USER2ROLE%ROWTYPE)return TRdxAcsArea';
 	       else
-	          x:='function buildAssignedAccessAreaG2R(row_ in RDX_AC_USERGROUP2ROLE%ROWTYPE)return TRdxAcsArea' || CHR(13);
+	          x:='function buildAssignedAccessAreaG2R(row_ in RDX_AC_USERGROUP2ROLE%ROWTYPE)return TRdxAcsArea';
 	       end if;
-	       DBMS_LOB.writeappend(body_, length(x), x);
+	       writeToClob(body_, x);
 
-	       x:='Is' || CHR(13);
-	       DBMS_LOB.writeappend(body_, length(x), x);
-	       x:='res TRdxAcsArea;' || CHR(13);
-	       DBMS_LOB.writeappend(body_, length(x), x);
-	       x:='Begin' || CHR(13);
-	       DBMS_LOB.writeappend(body_, length(x), x);
-	       x:='res := TRdxAcsArea(TRdxAcsCoordinates());' || CHR(13);
-	       DBMS_LOB.writeappend(body_, length(x), x);
-
+	       writeToClob(body_, 'is');
+	       writeToClob(body_, 'res TRdxAcsArea;');
+	       writeToClob(body_, 'Begin');
+	       writeToClob(body_, 'res := TRdxAcsArea(TRdxAcsCoordinates());');
+	       
 	       for cur_index in 1 .. n 
 	       loop 
-	            x:='      if row_.M' || str_list(cur_index) || '<>RDX_ACS.cRight_unbounded then' || CHR(13);
-	            DBMS_LOB.writeappend(body_, length(x), x);
-	            x:='        res.boundaries.EXTEND();' || CHR(13);
-	            DBMS_LOB.writeappend(body_, length(x), x);
-	            x:='        if row_.M' || str_list(cur_index) || ' = RDX_ACS.cRight_prohibited  then' || CHR(13);
-	            DBMS_LOB.writeappend(body_, length(x), x);
-	            x:='            res.boundaries(res.boundaries.Count()):=TRdxAcsCoordinate(1, ' || CHR(39) || str_list2(cur_index) || CHR(39) || ', null);' || CHR(13);
-	            DBMS_LOB.writeappend(body_, length(x), x);
-	            x:='        else' || CHR(13);
-	            DBMS_LOB.writeappend(body_, length(x), x);
-	            x:='            res.boundaries(res.boundaries.Count()):=TRdxAcsCoordinate(0, ' || CHR(39) || str_list2(cur_index) || CHR(39) || ', row_.P' || str_list(cur_index) || ');' || CHR(13);
-	            DBMS_LOB.writeappend(body_, length(x), x);
-	            x:='        end if;' || CHR(13);
-	            DBMS_LOB.writeappend(body_, length(x), x);
-	            x:='      end if;' || CHR(13);
-	            DBMS_LOB.writeappend(body_, length(x), x);
+	            writeToClob(body_, '      if row_.MA$$' || str_list0(cur_index) || '<>RDX_ACS.cRight_unbounded then');
+	            writeToClob(body_, '        res.boundaries.EXTEND();');
+	            writeToClob(body_, '        if row_.MA$$' || str_list0(cur_index) || ' = RDX_ACS.cRight_prohibited  then');
+	            writeToClob(body_, '            res.boundaries(res.boundaries.Count()):=TRdxAcsCoordinate(1, ''apf'  || 
+	                               str_list0(cur_index) ||  ''', null);');
+	            writeToClob(body_, '        elsif row_.MA$$' || str_list0(cur_index) || ' = RDX_ACS.cRight_boundedByPart then');
+	            writeToClob(body_, '            res.boundaries(res.boundaries.Count()):=TRdxAcsCoordinate(0, ''apf'  || 
+	                               str_list0(cur_index) ||  ''', row_.PA$$' || str_list0(cur_index) ||');');
+	            writeToClob(body_, '        else');
+	            writeToClob(body_, '            raise_application_error(-20000, ''Invalid argument'');');
+	            writeToClob(body_, '        end if;');
+	            writeToClob(body_, '      end if;');
 	       end loop;
-	       x:=' return res;' || CHR(13);
-	       DBMS_LOB.writeappend(body_, length(x), x);
-
-	       x:='end;' || CHR(13);
-	       DBMS_LOB.writeappend(body_, length(x), x);
-
+	       writeToClob(body_, ' return res;');
+	       writeToClob(body_, ' end;');
 	    end loop;
 	    
 	    
 	    --moveRightsFromUserToGroup
-	    x:='procedure moveRightsFromUserToGroup(' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='	user_ in varchar2,' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='	group_ in varchar2)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='is' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='begin' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:=' INSERT INTO  RDX_AC_USERGROUP  (name) VALUES (group_);' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:=' INSERT INTO  RDX_AC_USER2USERGROUP  (userName, groupName) VALUES (user_, group_);' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:=' for ind in (Select * from  RDX_AC_USER2ROLE where userName = User_ and  isOwn = 1 and isNew<>1)' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='     loop' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
+	    writeToClob(body_, 'procedure moveRightsFromUserToGroup(user_ in varchar2, group_ in varchar2)');
+	    writeToClob(body_, 'is');
+	    writeToClob(body_, 'begin');
+	    writeToClob(body_, ' INSERT INTO RDX_AC_USERGROUP (name) VALUES (group_);');
+	    writeToClob(body_, ' INSERT INTO RDX_AC_USER2USERGROUP (userName, groupName) VALUES (user_, group_);');
+	     
+	    writeToClob(body_, '  for ind in (Select * from  RDX_AC_USER2ROLE where userName = User_ and  isOwn = 1 and isNew<>1)');
+	    writeToClob(body_, '     loop');
 	    
-	    t1:='INSERT INTO RDX_AC_USERGROUP2ROLE (ID, GroupName, roleId';
-	    t2:=') VALUES ( SQN_RDX_AC_USERGROUP2ROLEID.NEXTVAL, group_, IND.roleId';
-	    
+	    x:='';
 	    For i in 1 .. n
 	    loop 
-	        t1 := t1 || ', P' || str_list(i) || ', M' || str_list(i);
-	        t2 := t2 || ', IND.P' || str_list(i) || ', IND.M' || str_list(i);
+	        x := x || ', PA$$' || str_list0(i) || ', MA$$' || str_list0(i) || ', PG$$' || str_list0(i);
 	    end loop;
-	    x:= t1 || t2 || ');' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);    
+	    writeToClob(body_, '      INSERT INTO RDX_AC_USERGROUP2ROLE (ID, GroupName, roleId' || x || ')');
+	        
+	    x:='';
+	    For i in 1 .. n
+	    loop 
+	        x := x || ', IND.PA$$' || str_list0(i) || ', IND.MA$$' || str_list0(i) || ', IND.PG$$' || str_list0(i);
+	    end loop;
+	    writeToClob(body_, '      VALUES ( SQN_RDX_AC_USERGROUP2ROLEID.NEXTVAL, group_, IND.roleId' || x || ');');
+
+	    writeToClob(body_, '      DELETE FROM RDX_AC_USER2ROLE WHERE id=ind.id;');
 	    
-	    x:='      DELETE FROM RDX_AC_USER2ROLE WHERE id=ind.id;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
-	    x:='     end loop;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);    
+	    writeToClob(body_, '     end loop;');
+	    writeToClob(body_, 'end;');
 	    
-	    x:='end;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
 	    ----------------------------
 	    
-
-	    x:='End;' || CHR(13);
-	    DBMS_LOB.writeappend(body_, length(x), x);
+	    writeToClob(body_, 'end;');
 
 	   
 
@@ -7404,7 +9074,7 @@ create or replace package body RDX_ACS as
 	    Area TRdxAcsArea;
 	begin
 	    vRoles := '';
-	    for ind in (select distinct ROLEID from RDX_AC_USER2ROLE where isNew=0 and  username = pUser)
+	    for ind in (select distinct ROLEID from RDX_AC_USER2ROLE where isNew=0  and isOwn=0 and  username = pUser)
 	       loop
 	          if vRoles is NULL then
 	             vRoles := ind.ROLEID;
@@ -7437,7 +9107,7 @@ create or replace package body RDX_ACS as
 	    vRoles := '';
 	    if pPointList is null or pPointList.COUNT=0 then
 	    begin             
-	    for ind in (select distinct ROLEID from RDX_AC_USER2ROLE where isNew=0 and  username = pUser)
+	    for ind in (select distinct ROLEID from RDX_AC_USER2ROLE where isNew=0  and isOwn=0 and  username = pUser)
 	       loop
 	           if (RDX_ACS.contentId(ind.ROLEID, rightsList)=0) then
 
@@ -7455,7 +9125,7 @@ create or replace package body RDX_ACS as
 	    end;
 	    else
 	     begin                 
-	     for ind in (select distinct * from RDX_AC_USER2ROLE where isNew=0 and  userName = pUser )
+	     for ind in (select distinct * from RDX_AC_USER2ROLE where isNew=0 and isOwn=0 and userName = pUser )
 	        loop
 	        Area := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(ind);
 	        for i in pPointList.FIRST..pPointList.LAST
@@ -7482,56 +9152,6 @@ create or replace package body RDX_ACS as
 	    return vRoles; 
 	end;
 
-	-- Имеет ли текущий пользователь права не меньшие чем запись в таблице User2Role с заданным идом
-	function curUserHasRightsU2RId(
-		ID_ in integer
-	) return integer
-	is
-	    Area TRdxAcsArea;
-	    Area2 TRdxAcsArea;
-	begin
-	    for ind in (select * from RDX_AC_USER2ROLE where id = id_)
-	        loop
-	          Area := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(ind);
-	          for ind2 in (select * from RDX_AC_USER2ROLE where 
-	                       isNew=0 and userName = RDX_Arte.getUserName() and               
-	                       (roleid = ind.roleid or roleid = sysSuperAdminRoleId)
-	                      )
-	            loop
-	                Area2 := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(ind2);
-	                if RDX_ACS.containsPointInArea2(Area2, Area) then
-	                    return 1;
-	                end if;
-	            end loop;   
-	        end loop;
-	    return 0;
-	end;
-
-	-- Имеет ли текущий пользователь права не меньшие чем запись в таблице UserGroup2Role с заданным идом
-	function curUserHasRightsG2RId(
-		ID_ in integer
-	) return integer
-	is
-	    Area TRdxAcsArea;
-	    Area2 TRdxAcsArea;
-	begin       
-	    for ind in (select * from RDX_AC_USERGROUP2ROLE where id = id_)
-	        loop
-	          Area :=  RDX_ACS_UTILS.buildAssignedAccessAreaG2R(ind);
-	          for ind2 in (select * from RDX_AC_USER2ROLE where 
-	                       isNew=0 and userName = RDX_Arte.getUserName() and               
-	                       (roleid = ind.roleid or roleid = sysSuperAdminRoleId)
-	                      )
-	            loop
-	                Area2 := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(ind2);
-	                if RDX_ACS.containsPointInArea2(Area2, Area) then
-	                   return 1;
-	                end if;
-	            end loop;   
-	        end loop;
-	    return 0;
-	end;
-
 	function strToArea(
 		str_ in varchar2
 	) return TRdxAcsArea
@@ -7553,7 +9173,7 @@ create or replace package body RDX_ACS as
 	    pos_:=1;
 	    list := TRdxAcsAreaList();
 	    if SubStr(str, pos_, 1)<>'(' then
-	        RAISE_APPLICATION_ERROR (-20100, error_Message || str );
+	        RAISE_APPLICATION_ERROR (-20100, RDX_ACS.constErrorMessage || str );
 	    end if;
 	    pos_:=pos_+1;
 	    <<lbl>>while (SubStr(str, pos_, 1)<>')')
@@ -7576,17 +9196,6 @@ create or replace package body RDX_ACS as
 	return RDX_ACS.userHasRoleForObject(pUser, pRole,  RDX_ACS.strToAreaList(pPointList));
 	end;
 
-	function isGroupExist(
-		name_ in varchar2
-	) return integer
-	is
-	rez INTEGER;
-	begin
-	 rez := 0;
-	 SELECT COUNT(*) INTO rez FROM RDX_AC_USERGROUP WHERE ROWNUM <= 1 AND name_ = NAME;
-	 return rez;
-	end;
-
 	function isCurUserHaveUserRights(
 		user_ in varchar2
 	) return integer
@@ -7603,6 +9212,8 @@ create or replace package body RDX_ACS as
 	userArea TRdxAcsArea;
 	groupArea TRdxAcsArea;
 	flag boolean;
+
+	cSuperAdminRoleId constant varchar2(30) := RDX_ACS.constSuperAdminRoleId;
 	  
 	begin
 	  for g2r_row in (select DISTINCT  * from RDX_AC_USERGROUP2ROLE where isNew=0 and groupname = group_)
@@ -7610,8 +9221,8 @@ create or replace package body RDX_ACS as
 	    flag := false;
 	    groupArea := RDX_ACS_UTILS.buildAssignedAccessAreaG2R(g2r_row);
 	    
-	    <<L>>for u2r_row in (select DISTINCT  * from RDX_AC_USER2ROLE U2R where isNew=0 and username = user_ and
-	                            (g2r_row.roleId = U2R.roleId or U2R.roleId = sysSuperAdminRoleId))
+	    <<L>>for u2r_row in (select DISTINCT  * from RDX_AC_USER2ROLE U2R where isNew=0 and isOwn=0 and username = user_ and
+	                            (g2r_row.roleId = U2R.roleId or U2R.roleId = cSuperAdminRoleId))
 	            loop      
 	              userArea := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(u2r_row);
 	              if RDX_ACS.containsPointInArea2(userArea, groupArea) then
@@ -7635,14 +9246,16 @@ create or replace package body RDX_ACS as
 	userArea TRdxAcsArea;
 	lowerUserArea TRdxAcsArea;
 	flag boolean;
+
+	cSuperAdminRoleId constant varchar2(30) := RDX_ACS.constSuperAdminRoleId;
 	  
 	begin
-	  for u2r_row1 in (select DISTINCT * from RDX_AC_USER2ROLE where isNew=0 and username = user2_)
+	  for u2r_row1 in (select DISTINCT * from RDX_AC_USER2ROLE where isNew=0 and isOwn=0 and username = user2_)
 	    loop                                                     
 	    flag := false;
 	    lowerUserArea := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(u2r_row1);
-	    <<L>>for u2r_row in (select DISTINCT * from RDX_AC_USER2ROLE U2R where isNew=0 and username = user_ and
-	                            (u2r_row1.roleId = U2R.roleId or U2R.roleId = sysSuperAdminRoleId))
+	    <<L>>for u2r_row in (select DISTINCT * from RDX_AC_USER2ROLE U2R where isNew=0 and isOwn=0 and username = user_ and
+	                            (u2r_row1.roleId = U2R.roleId or U2R.roleId = cSuperAdminRoleId))
 	            loop
 	              userArea := RDX_ACS_UTILS.buildAssignedAccessAreaU2R(u2r_row);
 	              if RDX_ACS.containsPointInArea2(userArea, lowerUserArea) then
@@ -7694,10 +9307,10 @@ create or replace package body RDX_ACS as
 	is
 	begin
 	 for ind in (Select * from RDX_AC_USER2ROLE
-	             where isNew=0 and userName = RDX_Arte.getUserName())
+	             where isNew=0 and isOwn=0 and userName = RDX_Arte.getUserName())
 	     loop         
 	         if ind.MA$$1ZOQHCO35XORDCV2AANE2UAFXA = RDX_ACS.cRight_unbounded or
-	            (ind.MA$$1ZOQHCO35XORDCV2AANE2UAFXA = RDX_ACS.cRight_bounded and 
+	            (ind.MA$$1ZOQHCO35XORDCV2AANE2UAFXA = RDX_ACS.cRight_boundedByPart and 
 	             ind.PA$$1ZOQHCO35XORDCV2AANE2UAFXA is not null and
 	             ind.PA$$1ZOQHCO35XORDCV2AANE2UAFXA = pGroup)                
 	          then
@@ -7711,10 +9324,10 @@ create or replace package body RDX_ACS as
 	is
 	begin
 	 for ind in (Select * from RDX_AC_USER2ROLE
-	             where isNew=0 and  userName = RDX_Arte.getUserName())
+	             where isNew=0 and isOwn=0 and userName = RDX_Arte.getUserName())
 	     loop         
 	         if ind.MA$$1ZOQHCO35XORDCV2AANE2UAFXA = RDX_ACS.cRight_unbounded or
-	            (ind.MA$$1ZOQHCO35XORDCV2AANE2UAFXA = RDX_ACS.cRight_bounded and 
+	            (ind.MA$$1ZOQHCO35XORDCV2AANE2UAFXA = RDX_ACS.cRight_boundedByPart and 
 	             ind.PA$$1ZOQHCO35XORDCV2AANE2UAFXA is null)                
 	          then
 	            return 1;
@@ -7871,7 +9484,7 @@ create or replace package body RDX_ACS as
 	                                
 	                --start try add
 	                if ((item.REPLACEDID is null) and (item.ROLEID is not null)) then
-	                    if (RDX_ACS.curUserHasRightsU2RId(item.ID)=0) then -- access denied
+	                    if (RDX_ACS_UTILS.existsRightsOnUser2Role(RDX_Arte.getUserName(), item.ID)=0) then -- access denied
 	                        curIndex := ignoredRolesList.count()+1;
 	                        ignoredRolesList(curIndex).IdValue := item.ID;
 	                    else
@@ -7887,7 +9500,7 @@ create or replace package body RDX_ACS as
 	                
 	                --start try remove                
 	                if ((item.REPLACEDID is not null) and (item.ROLEID is null)) then
-	                    if (RDX_ACS.curUserHasRightsU2RId(item.REPLACEDID)=0) then -- access denied
+	                    if (RDX_ACS_UTILS.existsRightsOnUser2Role(RDX_Arte.getUserName(), item.REPLACEDID)=0) then -- access denied
 	                        curIndex := ignoredRolesList.count()+1;
 	                        ignoredRolesList(curIndex).IdValue := item.REPLACEDID;
 	                    else
@@ -7907,9 +9520,9 @@ create or replace package body RDX_ACS as
 	                --start try replace
 	                if ((item.REPLACEDID is not null) and (item.ROLEID is not null)) then
 	                    if (
-	                         RDX_ACS.curUserHasRightsU2RId(item.REPLACEDID)=0
+	                         RDX_ACS_UTILS.existsRightsOnUser2Role(RDX_Arte.getUserName(), item.REPLACEDID)=0
 	                         or
-	                         RDX_ACS.curUserHasRightsU2RId(item.ID)=0
+	                         RDX_ACS_UTILS.existsRightsOnUser2Role(RDX_Arte.getUserName(), item.ID)=0
 	                       ) 
 	                    then -- access denied
 	                        curIndex := ignoredRolesList.count()+1;
@@ -8106,7 +9719,7 @@ create or replace package body RDX_ACS as
 	                     
 	                --start try add
 	                if ((item.REPLACEDID is null) and (item.ROLEID is not null)) then
-	                    if (RDX_ACS.curUserHasRightsG2RId(item.ID)=0) then -- access denied
+	                    if (RDX_ACS_UTILS.existsRightsOnGroup2Role(RDX_Arte.getUserName(), item.ID)=0) then -- access denied
 	                        curIndex := ignoredRolesList.count()+1;
 	                        ignoredRolesList(curIndex).IdValue := item.ID;
 	                    else
@@ -8122,7 +9735,7 @@ create or replace package body RDX_ACS as
 	                                
 	                --start try remove                
 	                if ((item.REPLACEDID is not null) and (item.ROLEID is null)) then
-	                    if (RDX_ACS.curUserHasRightsG2RId(item.REPLACEDID)=0) then -- access denied
+	                    if (RDX_ACS_UTILS.existsRightsOnGroup2Role(RDX_Arte.getUserName(), item.REPLACEDID)=0) then -- access denied
 	                        curIndex := ignoredRolesList.count()+1;
 	                        ignoredRolesList(curIndex).IdValue := item.REPLACEDID;
 	                    else
@@ -8143,9 +9756,9 @@ create or replace package body RDX_ACS as
 	                --start try replace
 	                if ((item.REPLACEDID is not null) and (item.ROLEID is not null)) then
 	                    if (
-	                         RDX_ACS.curUserHasRightsG2RId(item.REPLACEDID)=0
+	                         RDX_ACS_UTILS.existsRightsOnGroup2Role(RDX_Arte.getUserName(), item.REPLACEDID)=0
 	                         or
-	                         RDX_ACS.curUserHasRightsG2RId(item.ID)=0
+	                         RDX_ACS_UTILS.existsRightsOnGroup2Role(RDX_Arte.getUserName(), item.ID)=0
 	                       ) 
 	                    then -- access denied
 	                        curIndex := ignoredRolesList.count()+1;
@@ -8418,6 +10031,34 @@ create or replace package body RDX_ACS as
 	    return 0;
 	    
 	end;
+
+	function equalPartition(
+		part1 in varchar2,
+		part2 in varchar2
+	) return integer deterministic
+	is
+	begin
+	 if (part1 is null) and (part2 is null) then 
+	  return 1;
+	 end if;
+	 if (part1 is not null) and (part2 is not null) and (part1 = part2) then 
+	  return 1;
+	 end if;
+	 return 0; 
+	end;
+
+	function readPartitions(
+		partitionGroupId in integer
+	) return clob
+	is
+	 rez clob;
+	begin
+	 select PARTITIONS into rez from RDX_AC_PARTITIONGROUP where ID = partitionGroupId;
+	 return rez;
+	exception 
+	 when NO_DATA_FOUND then
+	 return null; 
+	end;
 end;
 /
 
@@ -8461,14 +10102,6 @@ create or replace package body RDX_ACS_UTILS as
 	null;
 	end;
 
-	procedure compileRightsForGrpBeforeDel(
-		pUserGroup in varchar2
-	)
-	is
-	begin
-	null;
-	end;
-
 	procedure moveRightsFromUserToGroup(
 		user_ in varchar2,
 		group_ in varchar2
@@ -8483,6 +10116,32 @@ create or replace package body RDX_ACS_UTILS as
 	          DELETE FROM RDX_AC_USER2ROLE WHERE id=ind.id;
 	          end loop;
 	end;
+
+	function existsRightsOnUser2Role(
+		user_ in varchar2,
+		id_ in integer
+	) return integer
+	is
+	begin
+	 return 0;
+	end;
+
+	function existsRightsOnGroup2Role(
+		user_ in varchar2,
+		id_ in integer
+	) return integer
+	is
+	begin
+	 return 0;
+	end;
+
+	function isSuperAdmin(
+		user_ in integer
+	) return integer
+	is
+	begin
+	 return 0;
+	end;
 end;
 /
 
@@ -8493,11 +10152,12 @@ create or replace package body RDX_ADS_META as
 		pDomainId in varchar2
 	) return integer
 	is
+	    version integer := RDX_Arte.getVersion();
 	begin
 	    if pDefId = pDomainId then
 	        return 1;
 	    end if;
-	    for cur in (select DOMAINID domainId from RDX_DEF2DOMAIN where VERSIONNUM = RDX_Arte.getVersion and DEFID = pDefId) loop
+	    for cur in (select DOMAINID domainId from RDX_DEF2DOMAIN where VERSIONNUM = version and DEFID = pDefId) loop
 	      if RDX_ADS_META.isDefInDomain(cur.domainId, pDomainId) != 0 then  
 	          return 1;
 	      end if;
@@ -8510,11 +10170,12 @@ create or replace package body RDX_ADS_META as
 		pBaseClsId in varchar2
 	) return integer
 	is
+	    version integer := RDX_Arte.getVersion();
 	begin
 	    if pClsId = pBaseClsId then
 	        return 1;
 	    end if;
-	    for cur in (select /*+ INDEX(RDX_CLASSANCESTOR PK_RDX_CLASSANCESTOR) */ ANCESTORID from RDX_CLASSANCESTOR where VERSIONNUM = RDX_Arte.getVersion() and CLASSID = pClsId) loop
+	    for cur in (select /*+ INDEX(RDX_CLASSANCESTOR PK_RDX_CLASSANCESTOR) */ ANCESTORID from RDX_CLASSANCESTOR where VERSIONNUM = version and CLASSID = pClsId) loop
 	      if RDX_ADS_META.isClassExtends(cur.ancestorId, pBaseClsId) != 0 then  
 	          return 1;
 	      end if;
@@ -8546,9 +10207,10 @@ create or replace package body RDX_ADS_META as
 		pDomainId in varchar2
 	) return integer
 	is
+	    version integer := RDX_Arte.getVersion();
 	begin
 	    for cur in (select DOMAINID enumItemDomainId from RDX_ENUMITEM2DOMAIN where 
-	        VERSIONNUM = RDX_Arte.getVersion() and ENUMID = pEnumId and
+	        VERSIONNUM = version and ENUMID = pEnumId and
 	        ENUMITEMVALASSTR = pEnumItemValAsStr) 
 	    loop
 	        if (RDX_ADS_META.isDefInDomain(pDefId => cur.enumItemDomainId, pDomainId => pDomainId) <> 0) then        
@@ -8631,6 +10293,7 @@ create or replace package body RDX_AUDIT as
 	  dayName   varchar2(100);
 	  NOT_EXIST exception;   PRAGMA EXCEPTION_INIT(NOT_EXIST, -2149);
 	  THE_ONLY exception;    PRAGMA EXCEPTION_INIT(THE_ONLY, -14758);
+	  THE_ONLY_2 exception;    PRAGMA EXCEPTION_INIT(THE_ONLY_2, -14083);
 	  THE_ONLY_SUB exception;    PRAGMA EXCEPTION_INIT(THE_ONLY_SUB, -14629);
 	  INVALID_SUB exception;    PRAGMA EXCEPTION_INIT(INVALID_SUB, -14702);
 	begin
@@ -8644,7 +10307,7 @@ create or replace package body RDX_AUDIT as
 	      begin    
 	         EXECUTE IMMEDIATE 'alter table RDX_AU_AUDITLOG drop partition for (to_date(''' || dayName || ''', ''YYYY_MM_DD''))';
 	      exception 
-	        when THE_ONLY or NOT_EXIST then 
+	        when THE_ONLY or THE_ONLY_2 or NOT_EXIST then 
 	          return false;
 	      end;
 	   end;
@@ -9520,6 +11183,128 @@ create or replace package body RDX_AUDIT as
 end;
 /
 
+create or replace package body RDX_Aadc as
+
+	procedure setupFirstMember
+	is
+	    prevTag RAW(10);
+	begin
+	    prevTag := RDX_Aadc.suspendReplication;
+	    update RDX_SYSTEM set AADCMEMBERID = 1 where ID = 1;
+	    RDX_Aadc.normalizeAllSequences;
+	    RDX_Aadc.restoreReplication(prevTag);
+	    RDX_Aadc.setupTriggers;
+	    update RDX_INSTANCE set AADCMEMBERID = 1;
+	    update RDX_JS_JOBQUEUE set AADCMEMBERID = 1;
+	end;
+
+	procedure setupSecondMember
+	is
+	    prevTag RAW(10);
+	begin
+	    prevTag := RDX_Aadc.suspendReplication;
+	    update RDX_SYSTEM set AADCMEMBERID = 2 where ID = 1;
+	    RDX_Aadc.normalizeAllSequences;
+	    RDX_Aadc.restoreReplication(prevTag);
+	    RDX_Aadc.setupTriggers;
+	end;
+
+	procedure afterSequenceDdl(
+		name in varchar2
+	)
+	is
+	begin
+	    insert into RDX_AADC_SEQUENCEDDL(NAME, LASTTIME) values (name, systimestamp);
+	end;
+
+	procedure normalizeSequence(
+		name in varchar2,
+		-- null - read from database
+		aadcMemberId in integer := null
+	)
+	is
+	    memberId integer;
+	    val integer;
+	    minval integer; 
+	    inc integer;
+	    min_cur_ex EXCEPTION;
+	    PRAGMA EXCEPTION_INIT(min_cur_ex, -04007);
+	begin
+	    memberId := aadcMemberId;
+	    if memberId is null then
+	        select AADCMEMBERID into memberId from RDX_SYSTEM where ID = 1;
+	    end if;    
+	    if memberId is null then
+	        return;
+	    end if;    
+	    select min_value, increment_by into minval, inc from sys.user_sequences where sequence_name = upper(name);
+	    if minval = memberId and inc = 2 then
+	        return;
+	    end if;
+	    loop   
+	        begin 
+	            execute immediate 'alter sequence ' || name || ' MINVALUE ' || memberId;
+	            exit;
+	        exception 
+	            when min_cur_ex then   
+	                execute immediate 'select ' || name || '.nextVal from dual' into val;
+	        end;        
+	    end loop;    
+	    loop 
+	        execute immediate 'alter sequence ' || name || ' INCREMENT BY 2';
+	        execute immediate 'select ' || name || '.nextVal from dual' into val;
+	        exit when ((val - 1) mod 2 = memberId - 1);
+	        execute immediate 'alter sequence ' || name || ' INCREMENT BY 1';
+	        execute immediate 'select ' || name || '.nextVal from dual' into val;
+	    end loop;  
+	end;
+
+	procedure normalizeAllSequences
+	is
+	    memberId integer;
+	begin
+	    select AADCMEMBERID into memberId from RDX_SYSTEM where ID = 1;
+	    if memberId is null then
+	        return;
+	    end if;    
+	    for rec in (select sequence_name from user_sequences) loop
+	        RDX_Aadc.normalizeSequence(rec.sequence_name, memberId);
+	    end loop;
+	end;
+
+	function suspendReplication return RAW
+	is
+	    prevTag RAW(10);
+	    SUSPENSION_TAG constant RAW(10) := HEXTORAW('AADC0000');
+	begin
+	    prevTag := DBMS_STREAMS.GET_TAG();
+	    DBMS_STREAMS.SET_TAG(SUSPENSION_TAG);
+	    return prevTag;
+	end;
+
+	procedure restoreReplication(
+		prevState in RAW
+	)
+	is
+	begin
+	    DBMS_STREAMS.SET_TAG(prevState);
+	end;
+
+	procedure setupTriggers
+	is
+	begin
+	    DBMS_DDL.SET_TRIGGER_FIRING_PROPERTY(
+	        trig_owner => sys_context( 'userenv', 'current_schema' ), 
+	        trig_name  => 'TAIR_RDX_AADC_OGGERROR',
+	        fire_once  => false);
+	    DBMS_DDL.SET_TRIGGER_FIRING_PROPERTY(
+	        trig_owner => sys_context( 'userenv', 'current_schema' ), 
+	        trig_name  => 'TBIR_RDX_AADC_OGGERROR',
+	        fire_once  => false);
+	end;
+end;
+/
+
 create or replace package body RDX_Array as
 
 	function createRef(
@@ -9552,10 +11337,13 @@ create or replace package body RDX_Array as
 	       return 0;
 	   end if;   
 	   pos := INSTR(lob, '['); 
-	   if (pos < 2) then
+	   if (pos < 2 or pos > 12) then
 	      return 0;
 	   end if;   
 	   return TO_NUMBER(SUBSTR(lob, 1, pos-1));
+	exception
+	    when VALUE_ERROR then
+	        return 0;
 	end;
 
 	function search(
@@ -9574,7 +11362,9 @@ create or replace package body RDX_Array as
 	 temp varchar2(30);
 	 item VARCHAR2(32767);
 	 tempWhat number; 
+	 idx number;
 	begin
+	 idx := greatest(1, startIdx);
 	 IF asNumber THEN
 	   BEGIN		  
 	     tempWhat :=  Rdx_Valasstr.numFromValAsStr(what);
@@ -9584,14 +11374,14 @@ create or replace package body RDX_Array as
 	 END IF;
 
 	 arrSize := RDX_Array.getArraySize(lob);
-	 if (startIdx>arrSize)then
+	 if (idx>arrSize)then
 	  return 0;
 	 end if;
 	 whatLen := LENGTH(what);
 
 	 pos1 := LENGTH(arrSize) + 1;
 
-	 for  ind_ in 1 ..  startIdx-1  loop
+	 for  ind_ in 1 ..  idx-1  loop
 	    pos2  := INSTR(lob, ']', pos1);
 
 	    temp := SUBSTR(lob, pos1+1, pos2-pos1-1);
@@ -9603,8 +11393,7 @@ create or replace package body RDX_Array as
 	    pos1 := pos2 + len + 1;        
 	 end loop;
 	 
-	 
-	 for  ind_ in startIdx .. arrSize loop
+	 for  ind_ in idx .. arrSize loop
 	    pos2  := INSTR(lob, ']', pos1);
 
 	    temp := SUBSTR(lob, pos1+1, pos2-pos1-1);
@@ -9612,12 +11401,14 @@ create or replace package body RDX_Array as
 	       len := TO_NUMBER(temp);
 	    else
 	       len := 0;
-	    end if;    
-	    item := SUBSTR(lob, pos2+1, len);
-	    IF (what IS NULL AND item IS NULL ) THEN     
-	       return ind_;    
-	    end if;    
-	    IF (what IS not NULL and item IS not NULL ) THEN     
+	    end if;
+	    
+	    if (what is NULL and len = 0) then -- both null
+	        return ind_;
+	    end if;
+	    
+	    if (what is not NULL and len > 0) and ( (asNumber and len <= 200) or (not asNumber and len = whatLen) ) then
+	        item := SUBSTR(lob, pos2+1, len);
 	         if (asNumber) then         
 	            BEGIN            
 	             IF (RDX_ValAsStr.numFromValAsStr(item) = tempWhat) THEN     
@@ -9627,7 +11418,7 @@ create or replace package body RDX_Array as
 	               NULL;
 	             END;
 	          else
-	             IF (whatLen = len AND item = what) THEN     
+	             IF (item = what) THEN     
 	               return ind_;    
 	             end if;          
 	          end if;
@@ -9803,6 +11594,23 @@ create or replace package body RDX_Array as
 	end;
 
 	function merge(
+		e1 in varchar2,
+		e2 in varchar2,
+		e3 in varchar2,
+		e4 in varchar2
+	) return CLOB
+	is
+	  res CLOB; 
+	begin
+	  res:=RDX_Array.prepareClobArr(4);
+	  RDX_Array.appendWithoutHeaderModifying(res,e1);
+	  RDX_Array.appendWithoutHeaderModifying(res,e2);
+	  RDX_Array.appendWithoutHeaderModifying(res,e3);
+	  RDX_Array.appendWithoutHeaderModifying(res,e4);
+	  return res;
+	end;
+
+	function merge(
 		e1 in number
 	) return CLOB
 	is
@@ -9932,7 +11740,7 @@ create or replace package body RDX_Array as
 	)
 	is
 	begin
-	RDX_Array.appendStr(res, RDX_ValAsStr.numToValAsStr(x));
+	    RDX_Array.appendStr(res, RDX_ValAsStr.numToValAsStr(x));
 	end;
 
 	procedure appendDate(
@@ -9941,7 +11749,7 @@ create or replace package body RDX_Array as
 	)
 	is
 	begin
-	RDX_Array.appendStr(res, RDX_ValAsStr.dateTimeToValAsStr(x));
+	    RDX_Array.appendStr(res, RDX_ValAsStr.dateTimeToValAsStr(x));
 	end;
 
 	procedure appendRef(
@@ -9951,10 +11759,9 @@ create or replace package body RDX_Array as
 	)
 	is
 	begin
-	RDX_Array.appendStr(res, RDX_Array.createRef(tableGuid, x));
+	    RDX_Array.appendStr(res, RDX_Array.createRef(tableGuid, x));
 	end;
 
-	-- Нумерация осуществляется с единицы
 	procedure insertStr(
 		res in out clob,
 		x in varchar2,
@@ -10000,7 +11807,6 @@ create or replace package body RDX_Array as
 	end if; 
 	end;
 
-	-- Нумерация осуществляется с единицы
 	procedure insertNum(
 		res in out clob,
 		x in number,
@@ -10011,7 +11817,6 @@ create or replace package body RDX_Array as
 	  RDX_Array.insertStr(res, RDX_ValAsStr.numToValAsStr(x), index_);
 	end;
 
-	-- Нумерация осуществляется с единицы
 	procedure insertDate(
 		res in out clob,
 		x in timestamp,
@@ -10033,7 +11838,6 @@ create or replace package body RDX_Array as
 	  RDX_Array.insertStr(res, RDX_Array.createRef(tableGuid, x), index_);
 	end;
 
-	-- Нумерация осуществляется с единицы
 	function getStr(
 		lob in clob,
 		index_ in integer
@@ -10080,7 +11884,6 @@ create or replace package body RDX_Array as
 	  
 	end;
 
-	-- Нумерация осуществляется с единицы
 	function getNum(
 		lob in clob,
 		index_ in integer
@@ -10090,7 +11893,6 @@ create or replace package body RDX_Array as
 	 return RDX_ValAsStr.numFromValAsStr(RDX_Array.getStr(lob, index_));
 	end;
 
-	-- Нумерация осуществляется с единицы
 	function getDate(
 		lob in clob,
 		index_ in integer
@@ -10100,7 +11902,6 @@ create or replace package body RDX_Array as
 	 return RDX_ValAsStr.dateTimeFromValAsStr(RDX_Array.getStr(lob, index_));
 	end;
 
-	-- Нумерация осуществляется с единицы
 	function searchStr(
 		lob in clob,
 		what in varchar2,
@@ -10111,7 +11912,6 @@ create or replace package body RDX_Array as
 	 return RDX_Array.search(lob, what, startIdx, false);
 	end;
 
-	-- Нумерация осуществляется с единицы
 	function searchNum(
 		lob in clob,
 		what in number,
@@ -10122,7 +11922,6 @@ create or replace package body RDX_Array as
 	 return RDX_Array.search(lob, what, startIdx, true);
 	end;
 
-	-- Нумерация осуществляется с единицы
 	function searchDate(
 		lob in clob,
 		what in timestamp,
@@ -10144,7 +11943,6 @@ create or replace package body RDX_Array as
 	 return RDX_Array.search(lob, RDX_Array.createRef(tableGuid, what), startIdx, false);
 	end;
 
-	-- Нумерация осуществляется с единицы
 	procedure setStr(
 		lob in out clob,
 		x in varchar2,
@@ -10243,7 +12041,6 @@ create or replace package body RDX_Array as
 	 END IF; 
 	END;
 
-	-- Нумерация осуществляется с единицы
 	procedure setNum(
 		lob in out clob,
 		x in number,
@@ -10254,7 +12051,6 @@ create or replace package body RDX_Array as
 	  RDX_Array.setStr(lob, RDX_ValAsStr.numToValAsStr(x), idx);
 	end;
 
-	-- Нумерация осуществляется с единицы
 	procedure setDate(
 		lob in out clob,
 		x in timestamp,
@@ -10433,17 +12229,213 @@ create or replace package body RDX_Array as
 	   DBMS_LOB.TRIM (res, pos1);
 
 	END;
+
+	function getIntersection(
+		lob1 in clob,
+		lob2 in clob
+	) return clob
+	is
+	    res clob;
+	    arr ARR_STR;
+	begin
+	    dbms_lob.createTemporary(res, true);
+	    if lob1 is not null then 
+	        arr := RDX_Array.fromStr(lob1);
+	        for i in arr.first .. arr.last loop
+	            if RDX_Array.search(lob2, arr(i), 1, false) > 0 then
+	                RDX_Array.appendStr(res, arr(i));
+	            end if;
+	        end loop;
+	    end if;
+	    return res;
+	end;
+
+	function getUnion(
+		lob1 in clob,
+		lob2 in clob
+	) return clob
+	is
+	    res clob;
+	    arr ARR_STR;
+	begin
+	    if lob2 is not null then
+	        res := lob2;
+	    else
+	        dbms_lob.createTemporary(res, true);
+	    end if;  
+	    if lob1 is not null then 
+	        arr := RDX_Array.fromStr(lob1);
+	        for i in arr.first .. arr.last loop
+	            if RDX_Array.search(res, arr(i), 1, false) = 0 then
+	                RDX_Array.appendStr(res, arr(i));
+	            end if;
+	        end loop;
+	    end if;
+	    return res;
+	end;
+
+	function toStrTable(
+		-- Array content to split
+		lob in clob,
+		-- Soft mode for array parsing:
+		-- - 0 - raise exceptions for any errors
+		-- - 1 - ignore extra elements in the array structure
+		softMode in integer := 0,
+		-- Length to crop for array content. Need be in the range 0..4000. 0 means no cropping
+		cropLength in integer := 0
+	) return RDX_STR_TABLE deterministic
+	is
+	  pos integer;
+	  b integer;
+	  e integer;
+	  len integer;
+	  croppedLen integer;
+	  i integer;
+	  sz integer;
+	  res RDX_STR_TABLE;
+	begin
+	  res := RDX_STR_TABLE();
+	  
+	  if lob is null then
+	    return res;
+	  elsif softMode not in (0, 1) then
+	    RAISE_APPLICATION_ERROR (-20100, 'illegal softMode parameter value ('||to_char(softMode)||')! Only 0 and 1 are valid');
+	  elsif not cropLength between 0 and 4000 then
+	    RAISE_APPLICATION_ERROR (-20100, 'illegal cropLength parameter value ('||to_char(cropLength)||')! Only 0..4000 is valid');
+	  end if;
+
+	  sz := Rdx_Array.getArraySize(lob);
+	  if (sz <= 0) then 
+	    return res; 
+	  end if;
+
+	  pos := 1;
+	  i := 1;
+	  res.extend(sz);
+
+	  loop
+	    b := instr(lob, '[', pos);
+	    e := instr(lob, ']', pos);
+
+	    if (b = 0) then 
+	        if (i - 1 < sz) then
+	          RAISE_APPLICATION_ERROR (-20100, 'illegal array content! Array contains less elements ('||to_char(i-1)||') than were declared in the array header ('||to_char(sz)||')');
+	        elsif e > 0 then 
+	          RAISE_APPLICATION_ERROR (-20100, 'illegal array content! Unpaired brackets at the '||to_char(i-1)||'-th element of the array content');
+	        else
+	          return res; 
+	        end if;
+	    end if;
+	    
+	    if e = 0 then
+	        RAISE_APPLICATION_ERROR (-20100, 'illegal array content! Unpaired brackets at the '||to_char(i)||'-th element of the array content');
+	    elsif e < b then
+	        RAISE_APPLICATION_ERROR (-20100, 'illegal array content! Unpaired brackets at the '||to_char(i)||'-th element of the array content');
+	    else 
+	      len := to_number(substr(lob, b+1, e-b-1));
+	      
+	      if cropLength = 0 then
+	        if len > 4000 then
+	          RAISE_APPLICATION_ERROR (-20100, 'illegal array content! The '||to_char(i)||'-th element of array is more than 4000 chars');
+	        else
+	          croppedLen := len;
+	        end if;
+	      elsif len < cropLength then
+	        croppedLen := len;
+	      else 
+	        croppedLen := cropLength;
+	      end if;
+	      
+	      pos := 1 + e + len;
+	      
+	      if (i > sz) then 
+	        if softMode = 1 then
+	            return res; 
+	        else
+	            RAISE_APPLICATION_ERROR (-20100, 'illegal array content! Array contains more elements ('||to_char(i)||') than were declared in the array header ('||to_char(sz)||')');
+	        end if;
+	      end if;
+	      res(i) := substr(lob, e+1, croppedLen);
+	      i := i + 1;
+	    end if;
+	  end loop;
+	-- test set:
+	-- select * from table(Rdx_Array.toStrTable('2[3]100[2]AS',0,0)) -- 2 lines: 100, AS
+	-- select * from table(Rdx_Array.toStrTable('3[3]100[2]AS',0,0)) -- exception (less than)
+	-- select * from table(Rdx_Array.toStrTable('1[3]100[2]AS',0,0)) -- exception (more than)
+	-- select * from table(Rdx_Array.toStrTable('3[3]100[2]AS',1,0)) -- exception (less than)
+	-- select * from table(Rdx_Array.toStrTable('1[3]100[2]AS',1,0)) -- 1 line: 100
+
+	-- select * from table(Rdx_Array.toStrTable('2[3]100[2]AS',0,2)) -- 2 lines: 10, AS
+	-- select * from table(Rdx_Array.toStrTable('2[3]100[2]AS',100,0)) -- exception (illegal softmode)
+	-- select * from table(Rdx_Array.toStrTable('2[3]100[2]AS',1,-2)) -- exception (illegal cropLength)
+	-- select * from table(Rdx_Array.toStrTable('2[3]100[2AS',1,0)) -- exception (unpaired '[')
+	-- select * from table(Rdx_Array.toStrTable('2[3]100[2AS',0,0)) -- exception (unpaired '[')
+	-- select * from table(Rdx_Array.toStrTable('2[3]100[2]AS3]',0,0)) -- exception (unpaired ']')
+	end;
+
+	function fromStrToArrClob(
+		lob in clob
+	) return ARR_CLOB deterministic
+	is
+	   arr ARR_CLOB := ARR_CLOB();
+	   item clob;
+	   temp VARCHAR2(30);
+	   
+	   pos1   INTEGER;
+	   pos2   INTEGER;
+	   len    INTEGER;   
+	   ind_   INTEGER; 
+	   size_  INTEGER; 
+	begin
+	   if (lob is null) or (DBMS_LOB.GETLENGTH(lob) < 2) then
+	       return arr;
+	   end if;
+	   
+	   pos1 := INSTR(lob, '[');
+	   
+	   if (pos1<2) then
+	       return arr;
+	   end if;   
+	   
+	   pos2  := INSTR(lob, ']', pos1);
+	   
+	   temp  := SUBSTR(lob, 1, pos1-1);
+	   
+
+	   
+	   size_:= TO_NUMBER(temp);
+	   
+	   arr.Extend(size_);
+	   
+	   FOR ind_ IN 1 .. size_ 
+	    loop        
+	       len := -1;
+	       temp := SUBSTR(lob, pos1+1, pos2-pos1-1);
+	       if (temp is not null and LENGTH(temp) > 0) then
+	           len := TO_NUMBER(temp);
+	       else
+	           len := 0;
+	       end if;
+	       
+	       item := null;
+	       if (len > -1) then
+	           item := SUBSTR(lob, pos2+1, len);
+	       end if;       
+	 
+
+	       pos1 := pos2 + len + 1;
+	       pos2 := INSTR(lob, ']', pos1);
+
+	       arr(ind_) := item;       
+	   end loop;
+	   
+	   return arr;
+	end;
 end;
 /
 
 create or replace package body RDX_Arte as
-
-		userName varchar2(250);
-		stationName varchar2(250);
-		clientLanguage varchar2(3);
-	        clientCountry varchar2(3);
-		defVersion number;
-		sessionId number;
 
 	procedure setSessionIsActive(
 		pSessionId in integer,
@@ -10471,14 +12463,69 @@ create or replace package body RDX_Arte as
 	)
 	is
 	begin
-	   userName:=pUserName;
-	   stationName:=pStationName;
-	   clientLanguage:=pClientLanguage;
-	   clientCountry:=pClientCountry;
-	   sessionId:=pSessionId;
-	   defVersion:=pDefVersion;
+	   RDX_Arte_Vars.setUserName(pUserName);
+	   RDX_Arte_Vars.setStationName(pStationName);
+	   RDX_Arte_Vars.setClientLanguage(pClientLanguage);
+	   RDX_Arte_Vars.setClientCountry(pClientCountry);
+	   RDX_Arte_Vars.setSessionId(pSessionId);
+	   RDX_Arte_Vars.setDefVersion(pDefVersion);
 	   --dbms_application_info.set_client_info('ARTE #'||pArteInstSeq||': SAP-'||pSapId||' CLIENT-'||pClientAddress||' DB-'||dbms_debug_jdwp.current_session_id||'/'||dbms_debug_jdwp.current_session_serial);
 	   RDX_Environment.setRequestInfo(requestInfo => 'U#'|| pUnitId || '-S#' || pSapId || '-' || pClientAddress);
+	   if pSessionId is not null then
+	        RDX_Arte.setSessionIsActive(pSessionId => pSessionId, pIsActive => 1);
+	   end if;
+	end;
+
+	procedure registerSession(
+		pUserName in varchar2,
+		pStationName in varchar2,
+		pClientLanguage in varchar2,
+		pClientCountry in varchar2,
+		pSessionId in integer,
+		pDefVersion in integer,
+		pSapId in integer,
+		pClientAddress in varchar2,
+		pUnitId in integer,
+		pJobId in integer,
+		pTaskId in integer
+	)
+	is
+	begin
+	   RDX_Arte_Vars.setUserName(pUserName);
+	   RDX_Arte_Vars.setStationName(pStationName);
+	   RDX_Arte_Vars.setClientLanguage(pClientLanguage);
+	   RDX_Arte_Vars.setClientCountry(pClientCountry);
+	   RDX_Arte_Vars.setSessionId(pSessionId);
+	   RDX_Arte_Vars.setDefVersion(pDefVersion);
+	   --dbms_application_info.set_client_info('ARTE #'||pArteInstSeq||': SAP-'||pSapId||' CLIENT-'||pClientAddress||' DB-'||dbms_debug_jdwp.current_session_id||'/'||dbms_debug_jdwp.current_session_serial);
+	   RDX_Environment.setRequestInfo( 'U#'|| pUnitId ||  '/J#' || nvl(to_char(pJobId), '-') || '/T#' || nvl(to_char(pTaskId), '-') || '/UN#' || nvl(to_char(pUserName), '-') );
+	   if pSessionId is not null then
+	        RDX_Arte.setSessionIsActive(pSessionId => pSessionId, pIsActive => 1);
+	   end if;
+	end;
+
+	procedure registerSession(
+		pUserName in varchar2,
+		pStationName in varchar2,
+		pClientLanguage in varchar2,
+		pClientCountry in varchar2,
+		pSessionId in integer,
+		pDefVersion in integer,
+		pAction in varchar2,
+		pClientInfo in varchar2
+	)
+	is
+	begin
+	   RDX_Arte_Vars.setUserName(pUserName);
+	   RDX_Arte_Vars.setStationName(pStationName);
+	   RDX_Arte_Vars.setClientLanguage(pClientLanguage);
+	   RDX_Arte_Vars.setClientCountry(pClientCountry);
+	   RDX_Arte_Vars.setSessionId(pSessionId);
+	   RDX_Arte_Vars.setDefVersion(pDefVersion);
+	   
+	   dbms_application_info.set_action(pAction);
+	   dbms_application_info.set_client_info(pClientInfo);
+	   
 	   if pSessionId is not null then
 	        RDX_Arte.setSessionIsActive(pSessionId => pSessionId, pIsActive => 1);
 	   end if;
@@ -10487,34 +12534,34 @@ create or replace package body RDX_Arte as
 	function getUserName return varchar2
 	is
 	begin
-	  return userName;
+	  return RDX_Arte_Vars.getUserName;
 	end;
 
 	function getVersion return integer
 	is
 	begin
-	    if defVersion is null then
+	    if RDX_Arte_Vars.getDefVersion is null then
 	       raise_application_error(-20001,'Definition version is not deployed to database. '||chr(10)||'onStartRequestExecution() method of Arte (java class) should have been called  '||chr(10)||'before the database request executing.');
 	    end if;
-	  return defVersion;
+	  return RDX_Arte_Vars.getDefVersion;
 	end;
 
 	function getStationName return varchar2
 	is
 	begin
-	  return stationName;
+	  return RDX_Arte_Vars.getStationName;
 	end;
 
-	function getClientLanguage return integer
+	function getClientLanguage return varchar2
 	is
 	begin
-	  return clientLanguage;
+	  return RDX_Arte_Vars.getClientLanguage;
 	end;
 
 	function getSessionId return integer
 	is
 	begin
-	  return sessionId;
+	  return RDX_Arte_Vars.getSessionId;
 	end;
 
 	procedure unregisterSession(
@@ -10525,7 +12572,103 @@ create or replace package body RDX_Arte as
 	    if pEasSessionId is not null then
 	        RDX_Arte.setSessionIsActive(pSessionId => pEasSessionId, pIsActive => 0);
 	    end if;
-	    RDX_Environment.setRequestInfo(null);
+	    dbms_application_info.set_action(null);
+	    dbms_application_info.set_client_info(null);
+	end;
+end;
+/
+
+create or replace package body RDX_Arte_Vars as
+
+	userName varchar2(250);
+	stationName varchar2(250);
+	clientLanguage varchar2(3);
+	clientCountry varchar2(3);
+	defVersion number;
+	sessionId number;
+
+	function getUserName return varchar2
+	is
+	begin
+	    return userName;
+	end;
+
+	procedure setUserName(
+		pUserName in varchar2
+	)
+	is
+	begin
+	    userName := pUserName;
+	end;
+
+	function getStationName return varchar2
+	is
+	begin
+	    return stationName;
+	end;
+
+	procedure setStationName(
+		pStationName in varchar2
+	)
+	is
+	begin
+	    stationName := pStationName;
+	end;
+
+	function getClientLanguage return varchar2
+	is
+	begin
+	    return clientLanguage;
+	end;
+
+	procedure setClientLanguage(
+		pClientLanguage in varchar2
+	)
+	is
+	begin
+	    clientLanguage := pClientLanguage;
+	end;
+
+	function getClientCountry return varchar2
+	is
+	begin
+	    return clientCountry;
+	end;
+
+	procedure setClientCountry(
+		pClientCountry in varchar2
+	)
+	is
+	begin
+	    clientCountry := pClientCountry;
+	end;
+
+	function getDefVersion return number
+	is
+	begin
+	    return defVersion;
+	end;
+
+	procedure setDefVersion(
+		pDefVersion in number
+	)
+	is
+	begin
+	    defVersion := pDefVersion;
+	end;
+
+	function getSessionId return number
+	is
+	begin
+	    return sessionId;
+	end;
+
+	procedure setSessionId(
+		pSessionId in number
+	)
+	is
+	begin
+	    sessionId := pSessionId;
 	end;
 end;
 /
@@ -10656,8 +12799,99 @@ end;
 
 create or replace package body RDX_Entity as
 
-	TYPE StrByInt IS TABLE OF varchar2(100) INDEX BY BINARY_INTEGER;
-	upValTabByValType StrByInt;
+	function createPid(
+		field in number
+	) return varchar2 deterministic
+	is
+	begin
+	 return RDX_Entity.createPid(To_Char(field));
+	end;
+
+	function createPid(
+		field in varchar2
+	) return varchar2 deterministic
+	is
+	begin
+	 return RDX_Entity.packPidStr(field);
+	end;
+
+	function createPid(
+		field in timestamp
+	) return varchar2 deterministic
+	is
+	begin
+	 return RDX_Entity.createPid(To_Char(field));
+	end;
+
+	function addField2Pid(
+		currentPid in varchar2,
+		field in varchar2
+	) return varchar2 deterministic
+	is
+	begin
+	 if (currentPid is null) then
+	   return RDX_Entity.packPidStr(field);
+	 else 
+	   return currentPid || '~' || RDX_Entity.packPidStr(field);
+	 end if;  
+	end;
+
+	function addField2Pid(
+		currentPid in varchar2,
+		field in number
+	) return varchar2 deterministic
+	is
+	begin
+	 return RDX_Entity.addField2Pid(currentPid, To_Char(field));
+	end;
+
+	function addField2Pid(
+		currentPid in varchar2,
+		field in timestamp
+	) return varchar2 deterministic
+	is
+	begin
+	 return RDX_Entity.addField2Pid(currentPid, To_Char(field));
+	end;
+
+	function createQualifiedPid(
+		tableGuid in varchar2,
+		objPid in varchar2
+	) return varchar2 deterministic
+	is
+	begin
+	   return  tableGuid || chr(10) || objPid;
+	end;
+
+	function packPidStr(
+		s in varchar2
+	) return varchar2 deterministic
+	is
+	  res varchar2(32767);
+	begin
+	  res := Replace(s,   CHR(92),  CHR(92)|| CHR(92));   -- '\' => '\\'
+	  res := Replace(res, CHR(126), CHR(92)|| CHR(126)); -- '~' => '\~'
+	  res := Replace(res, CHR(13),  CHR(92)|| 'r');      -- '\r' => '\\r'
+	  res := Replace(res, CHR(10),  CHR(92)|| 'n');      -- '\n' => '\\n'
+	  res := Replace(res, CHR(9),   CHR(92)|| 't');      -- '\t' => '\\t'
+	  res := Replace(res, ' ',      CHR(92)|| ' ');     -- ' '  => '\ '
+	  return res;
+	end;
+
+	function unpackPidStr(
+		s in varchar2
+	) return varchar2 deterministic
+	is
+	  res varchar2(32767);
+	begin
+	  res := Replace(s,   CHR(92) || CHR(92),  CHR(92));   -- '\\' => '\'
+	  res := Replace(res, CHR(92) || CHR(126), CHR(126)); -- '\~' => '~'
+	  res := Replace(res, CHR(92) || 'r',  CHR(13));      -- '\\r' => '\r'
+	  res := Replace(res, CHR(92) || 'n',  CHR(10));      -- '\\n' => '\n'
+	  res := Replace(res, CHR(92) || 't',  CHR(9));      -- '\\t' => '\t'
+	  res := Replace(res, CHR(92) || ' ',      ' ');     -- '\ '  => ' '
+	  return res;
+	end;
 
 	function getUserPropInt(
 		pEntityId in varchar2,
@@ -10708,7 +12942,7 @@ create or replace package body RDX_Entity as
 	   res integer;
 	begin
 	     execute immediate 'select (case when exists' || 
-	        '(select * from '|| upValTabByValType(pPropValType) ||'  where DEFID = :1 and OWNERENTITYID = :2 and OWNERPID = :3 )'||
+	        '(select * from '|| RDX_Entity_Vars.upValTabByValType(pPropValType) ||'  where DEFID = :1 and OWNERENTITYID = :2 and OWNERPID = :3 )'||
 	        'then 1 else 0 end) from dual'
 	     into res
 	     using pPropId, pEntityId, pInstancePid;
@@ -10739,15 +12973,15 @@ create or replace package body RDX_Entity as
 	  j number;
 	  mustDie tvc;
 	begin
-	   i := scheduledOnDelUpOwnerQueue.first;
+	   i := RDX_Entity_Vars.scheduledOnDelUpOwnerQueue.first;
 	   while i is not null loop 
-	      if scheduledOnDelUpOwnerQueue(i).sOwnerEntityId = pEntityId then
-	         mustDie(mustDie.count+1) := scheduledOnDelUpOwnerQueue(i).sOwnerPid;                
+	      if RDX_Entity_Vars.scheduledOnDelUpOwnerQueue(i).sOwnerEntityId = pEntityId then
+	         mustDie(mustDie.count+1) := RDX_Entity_Vars.scheduledOnDelUpOwnerQueue(i).sOwnerPid;                
 	         j := i;
-	         i := scheduledOnDelUpOwnerQueue.next(i); 
-	         scheduledOnDelUpOwnerQueue.delete(j);                 
+	         i := RDX_Entity_Vars.scheduledOnDelUpOwnerQueue.next(i); 
+	         RDX_Entity_Vars.scheduledOnDelUpOwnerQueue.delete(j);                 
 	      else
-	         i := scheduledOnDelUpOwnerQueue.next(i);           
+	         i := RDX_Entity_Vars.scheduledOnDelUpOwnerQueue.next(i);           
 	      end if;      
 	   end loop;     
 	   i := mustDie.first;
@@ -10763,23 +12997,8 @@ create or replace package body RDX_Entity as
 	)
 	is   
 	begin
-	   scheduledOnDelUpOwnerQueue(scheduledOnDelUpOwnerQueue.count + 1).sOwnerEntityId :=pEntityId;  
-	   scheduledOnDelUpOwnerQueue(scheduledOnDelUpOwnerQueue.count).sOwnerPid    := pInstancePid;  
-	end;
-
-	function packPidStr(
-		s in varchar2
-	) return varchar2 deterministic
-	is
-	  res varchar2(32767);
-	begin
-	  res := Replace(s,   CHR(92),  CHR(92)|| CHR(92));   -- '\' => '\\'
-	  res := Replace(res, CHR(126), CHR(92)|| CHR(126)); -- '~' => '\~'
-	  res := Replace(res, CHR(13),  CHR(92)|| 'r');      -- '\r' => '\\r'
-	  res := Replace(res, CHR(10),  CHR(92)|| 'n');      -- '\n' => '\\n'
-	  res := Replace(res, CHR(9),   CHR(92)|| 't');      -- '\t' => '\\t'
-	  res := Replace(res, ' ',      CHR(92)|| ' ');     -- ' '  => '\ '
-	  return res;
+	   RDX_Entity_Vars.scheduledOnDelUpOwnerQueue(RDX_Entity_Vars.scheduledOnDelUpOwnerQueue.count + 1).sOwnerEntityId :=pEntityId;  
+	   RDX_Entity_Vars.scheduledOnDelUpOwnerQueue(RDX_Entity_Vars.scheduledOnDelUpOwnerQueue.count).sOwnerPid    := pInstancePid;  
 	end;
 
 	procedure delUserPropVal(
@@ -10803,7 +13022,7 @@ create or replace package body RDX_Entity as
 	   upTabName varchar2(100); 
 	   valWasDefined integer;
 	begin
-	    upTabName := upValTabByValType(pPropValType);
+	    upTabName := RDX_Entity_Vars.upValTabByValType(pPropValType);
 	    if pIsUpdateAuditOn != 0 then
 	        valWasDefined := RDX_Entity.isUserPropValDefined(pEntityId, pInstancePid, pPropId, pPropValType);
 	        if (valWasDefined <> 0) then
@@ -11466,61 +13685,6 @@ create or replace package body RDX_Entity as
 	    return RDX_Entity.isUserPropStrValDefined(pEntityId => pEntityId, pInstancePid => pInstancePid, pPropId => pPropId);
 	end;
 
-	function createPid(
-		field in varchar2
-	) return varchar2 deterministic
-	is
-	begin
-	 return RDX_Entity.packPidStr(field);
-	end;
-
-	function createPid(
-		field in number
-	) return varchar2 deterministic
-	is
-	begin
-	 return RDX_Entity.createPid(To_Char(field));
-	end;
-
-	function createPid(
-		field in timestamp
-	) return varchar2 deterministic
-	is
-	begin
-	 return RDX_Entity.createPid(To_Char(field));
-	end;
-
-	function addField2Pid(
-		currentPid in varchar2,
-		field in varchar2
-	) return varchar2 deterministic
-	is
-	begin
-	 if (currentPid is null) then
-	   return RDX_Entity.packPidStr(field);
-	 else 
-	   return currentPid || '~' || RDX_Entity.packPidStr(field);
-	 end if;  
-	end;
-
-	function addField2Pid(
-		currentPid in varchar2,
-		field in number
-	) return varchar2 deterministic
-	is
-	begin
-	 return RDX_Entity.addField2Pid(currentPid, To_Char(field));
-	end;
-
-	function addField2Pid(
-		currentPid in varchar2,
-		field in timestamp
-	) return varchar2 deterministic
-	is
-	begin
-	 return RDX_Entity.addField2Pid(currentPid, To_Char(field));
-	end;
-
 	procedure userPropOnDelValue(
 		pEntityId in varchar2,
 		pValuePid in varchar2
@@ -11610,6 +13774,10 @@ create or replace package body RDX_Entity as
 	end loop;
 
 	END;
+end;
+/
+
+create or replace package body RDX_Entity_Vars as
 
 	begin
 	   upValTabByValType(12)    := 'RDX_UPVALDATETIME';
@@ -11644,14 +13812,6 @@ end;
 /
 
 create or replace package body RDX_Environment as
-
-	        --filled after creating jdbc connection
-		instanceId integer;
-	        sessionOwnerType varchar2(100);
-	        sessionOwnerId integer;
-	        --other
-	        targetExecutorId integer := -1;
-	        requestInfo varchar2(500);
 
 	function calcProgramName(
 		instanceId in integer
@@ -11690,14 +13850,14 @@ create or replace package body RDX_Environment as
 	    info varchar2(200) := '';
 	begin
 	    
-	    info := RDX_Environment.calcProgramName(instanceId) || '/' || RDX_Environment.calcModuleName(sessionOwnerType, sessionOwnerId);
+	    info := RDX_Environment.calcProgramName(RDX_Environment_Vars.getInstanceId) || '/' || RDX_Environment.calcModuleName(RDX_Environment_Vars.getSessionOwnerType, RDX_Environment_Vars.getSessionOwnerId);
 	    
-	    if requestInfo is not null then
-	        info := info || '/' || requestInfo;
+	    if RDX_Environment_Vars.getRequestInfo is not null then
+	        info := info || '/' || RDX_Environment_Vars.getRequestInfo;
 	    end if;
 	    
 	    dbms_application_info.set_client_info(info);
-	    dbms_application_info.set_action(requestInfo);
+	    dbms_application_info.set_action(RDX_Environment_Vars.getRequestInfo);
 	end;
 
 	procedure init(
@@ -11707,9 +13867,9 @@ create or replace package body RDX_Environment as
 	)
 	is
 	begin
-	    RDX_Environment.instanceId := instanceId;
-	    RDX_Environment.sessionOwnerType := sessionOwnerType;
-	    RDX_Environment.sessionOwnerId := sessionOwnerId;
+	    RDX_Environment_Vars.setInstanceId(instanceId);
+	    RDX_Environment_Vars.setSessionOwnerType(sessionOwnerType);
+	    RDX_Environment_Vars.setSessionOwnerId(sessionOwnerId);
 	    RDX_Environment.updateApplicationClientInfo();
 	    dbms_application_info.set_module(RDX_Environment.calcProgramName(instanceId) || '/' || RDX_Environment.calcModuleName(sessionOwnerType, sessionOwnerId), null);
 	end;
@@ -11719,17 +13879,20 @@ create or replace package body RDX_Environment as
 	)
 	is
 	begin
-	    RDX_Environment.requestInfo := requestInfo;
+	    RDX_Environment_Vars.setRequestInfo(requestInfo);
 	    RDX_Environment.updateApplicationClientInfo();
 	end;
 
 	function getTargetExecutorId return integer
 	is
+	    vInstanceId integer := RDX_Environment_Vars.getInstanceId;
+	    vTargetExecutorId integer := RDX_Environment_Vars.getTargetExecutorId;
 	begin
-	    if targetExecutorId = -1 then
-	        select RDX_INSTANCE.TARGETEXECUTORID into targetExecutorId from RDX_INSTANCE where RDX_INSTANCE.ID = instanceId;
+	    if vTargetExecutorId = -1 then
+	        select RDX_INSTANCE.TARGETEXECUTORID into vTargetExecutorId from RDX_INSTANCE where RDX_INSTANCE.ID = vInstanceId;
+	        RDX_Environment_Vars.setTargetExecutorId(vTargetExecutorId);
 	    end if;
-	    return targetExecutorId;
+	    return vTargetExecutorId;
 	end;
 
 	function getApplicationClientInfo return varchar2
@@ -11743,13 +13906,59 @@ create or replace package body RDX_Environment as
 	function getInstanceId return varchar2
 	is
 	begin
-	    return instanceId;
+	    return RDX_Environment_Vars.getInstanceId;
 	end;
 
 	function getSessionOwnerType return varchar2
 	is
 	begin
-	return sessionOwnerType;
+	    return RDX_Environment_Vars.getSessionOwnerType;
+	end;
+
+	function getSessionOwnerId return integer
+	is
+	begin
+	    return RDX_Environment_Vars.getSessionOwnerId;
+	end;
+end;
+/
+
+create or replace package body RDX_Environment_Vars as
+
+	--filled after creating jdbc connection
+	instanceId integer;
+	sessionOwnerType varchar2(100);
+	sessionOwnerId integer;
+	--other
+	targetExecutorId integer := -1;
+	requestInfo varchar2(500);
+
+	function getInstanceId return integer
+	is
+	begin
+	    return instanceId;
+	end;
+
+	procedure setInstanceId(
+		pInstanceId in integer
+	)
+	is
+	begin
+	    instanceId := pInstanceId;
+	end;
+
+	function getSessionOwnerType return varchar2
+	is
+	begin
+	    return sessionOwnerType;
+	end;
+
+	procedure setSessionOwnerType(
+		pSessionOwnerType in varchar2
+	)
+	is
+	begin
+	    sessionOwnerType := pSessionOwnerType;
 	end;
 
 	function getSessionOwnerId return integer
@@ -11757,55 +13966,103 @@ create or replace package body RDX_Environment as
 	begin
 	    return sessionOwnerId;
 	end;
+
+	procedure setSessionOwnerId(
+		pSessionOwnerId in integer
+	)
+	is
+	begin
+	    sessionOwnerId := pSessionOwnerId;
+	end;
+
+	function getTargetExecutorId return integer
+	is
+	begin
+	    return targetExecutorId;
+	end;
+
+	procedure setTargetExecutorId(
+		pTargetExecutorId in integer
+	)
+	is
+	begin
+	    targetExecutorId := pTargetExecutorId;
+	end;
+
+	function getRequestInfo return varchar2
+	is
+	begin
+	    return requestInfo;
+	end;
+
+	procedure setRequestInfo(
+		pRequestInfo in varchar2
+	)
+	is
+	begin
+	    requestInfo := pRequestInfo;
+	end;
 end;
 /
 
 create or replace package body RDX_JS_CalendarSchedule as
 
 	--constants
-	class_guid_abs_calendar CONSTANT VARCHAR(29) := 'aclVV67ZO4QF5GJ7KY7J2AW6UMQUI';
-	class_guid_day_of_week CONSTANT VARCHAR(29) := 'aclHUCM56OUWZDBXCTBJLJ2S6QQ7E';
-	class_guid_day_of_month CONSTANT VARCHAR(29) := 'aclPJITOKTE6ZDY5OXI7Z53SB222I';
-	class_guid_abs_date CONSTANT VARCHAR(29) := 'aclRFJRGJ5REZDHDDTBB5R34QG4GQ';
-	class_guid_inc_calendar CONSTANT VARCHAR(29) := 'aclDWOG2C7CWVCWBFOEMH62ET56HI';
-	foreread_size CONSTANT INTEGER := 100; --days
+	foreread_size CONSTANT INTEGER := 400; --days
 
-	/*
-	  ЭЛЕМЕНТЫ КАЛЕНДАРЯ
-	*/
-	--элемент со свойствами
-	TYPE TCalendarItem IS RECORD (
-	  classGuid RDX_JS_CALENDARITEM.CLASSGUID%Type,
-	  oper RDX_JS_CALENDARITEM.OPER%Type,
-	  offsetDir RDX_JS_CALENDARITEM.OFFSETDIR%Type,
-	  offset RDX_JS_CALENDARITEM.OFFSET%Type,
-	  absDate RDX_JS_CALENDARITEM.ABSDATE%Type,
-	  incCalendarId RDX_JS_CALENDARITEM.INCCALENDARID%Type,
-	  dayOfWeek int);
+	function constClassGuidAbsCalendar return varchar2
+	is
+	begin
+	    return 'aclVV67ZO4QF5GJ7KY7J2AW6UMQUI';
+	end;
 
-	--nested table элементов календаря
-	TYPE TItemsNestedTable IS TABLE OF TCalendarItem;
-	TYPE TItemsByCalendar IS TABLE OF TItemsNestedTable INDEX BY binary_integer;
-	cachedItems TItemsByCalendar;
+	function constClassGuidDayOfWeek return varchar2
+	is
+	begin
+	    return 'aclHUCM56OUWZDBXCTBJLJ2S6QQ7E';
+	end;
 
-	/*
-	  ЗАКЭШИРОВАННЫЙ ПЕРОИД ДАТ КАЛЕНДАРЯ
-	*/
-	TYPE TDateById IS TABLE OF DATE INDEX BY binary_integer;
-	cachedPeriodsBegin TDateById;
-	cachedPeriodsEnd TDateById;
+	function constClassGuidDayOfMonth return varchar2
+	is
+	begin
+	    return 'aclPJITOKTE6ZDY5OXI7Z53SB222I';
+	end;
 
-	/*
-	  ЗАКЭШИРОВАННЫЕ ДАТЫ КАЛЕНДАРЯ
-	*/
-	--входит или нет такая дата в календарь (кэш дат)
-	TYPE TDateMap is TABLE of BOOLEAN INDEX BY VARCHAR2(10);         -- key='YYYY-MM-DD'
-	key_format CONSTANT varchar2(10) := 'YYYY-MM-DD';
-	TYPE TDateMapById IS TABLE OF TDateMap INDEX BY binary_integer;
-	cachedDates TDateMapById;
+	function constClassGuidAbsDate return varchar2
+	is
+	begin
+	    return 'aclRFJRGJ5REZDHDDTBB5R34QG4GQ';
+	end;
 
-	--время последнего обновления таблицы календарей
-	lastUpdateTime date;
+	function constClassGuidIncCalendar return varchar2
+	is
+	begin
+	    return 'aclDWOG2C7CWVCWBFOEMH62ET56HI';
+	end;
+
+	function constClassGuidDaily return varchar2
+	is
+	begin
+	    return 'aclWCDMIFJ755C37LMG7MTQA4DEZQ';
+	end;
+
+	function constClassGuidDayOfQuarter return varchar2
+	is
+	begin
+	    return 'aclZMU6F5DMMZCHPPRW4E4ISFQZ4U';
+	end;
+
+	function constClassGuidDayOfYear return varchar2
+	is
+	begin
+	    return 'acl3A5HLW7W7ZFE3E6QYCXAC5CYE4';
+	end;
+
+	function constKeyFormat return varchar2
+	is
+	begin
+	    return 'YYYY-MM-DD';
+	end;
 
 	function isInCached(
 		pId in integer,
@@ -11848,7 +14105,7 @@ create or replace package body RDX_JS_CalendarSchedule as
 	) return varchar2 deterministic
 	is
 	begin
-	    return TO_CHAR(pDate, key_format);
+	    return TO_CHAR(pDate, RDX_JS_CalendarSchedule.constKeyFormat);
 	end;
 
 	function keyToDate(
@@ -11856,7 +14113,49 @@ create or replace package body RDX_JS_CalendarSchedule as
 	) return date deterministic
 	is
 	begin
-	    return TO_DATE(pKey, key_format);
+	    return TO_DATE(pKey, RDX_JS_CalendarSchedule.constKeyFormat);
+	end;
+
+	function isDayInQuarter(
+		pFromOffset in integer,
+		pOffset in integer,
+		pDate in date
+	) return integer deterministic
+	is
+	 outDate date;
+	begin
+	  if pFromOffset>0 then
+	    select trunc(pDate,'q')+pOffset-1 into outDate from dual;
+	  else 
+	    select trunc(add_months(pDate, 3),'q') -pOffset into outDate from dual;
+	  end if;
+	  
+	  if outDate = pDate then
+	   return 1;
+	  else 
+	   return 0;
+	  end if; 
+	end;
+
+	function isDayInYear(
+		pFromOffset in integer,
+		pOffset in integer,
+		pDate in date
+	) return integer deterministic
+	is
+	outDate date;
+	begin
+	 if pFromOffset>0 then
+	   select trunc(pDate,'YEAR')+pOffset-1 into outDate from dual;
+	 else 
+	   select trunc(add_months(pDate, 12),'YEAR') -pOffset into outDate from dual;
+	 end if;
+
+	 if outDate = pDate then
+	  return 1;
+	 else 
+	  return 0;
+	 end if; 
 	end;
 
 	procedure doRefreshCache(
@@ -11869,13 +14168,13 @@ create or replace package body RDX_JS_CalendarSchedule as
 	        Where CALENDARID = CalId
 	        order by SEQ;   
 	    sCur varchar2(10);
-	    items TItemsNestedTable := TItemsNestedTable();
-	    curItem TCalendarItem;
+	    items RDX_JS_Vars.TItemsNestedTable := RDX_JS_Vars.TItemsNestedTable();
+	    curItem RDX_JS_Vars.TCalendarItem;
 	    vCalendarClassGuid varchar2(30);
 	begin
 	    select CLASSGUID into vCalendarClassGuid from RDX_JS_CALENDAR where ID = pId;
 	    
-	    IF vCalendarClassGuid != class_guid_abs_calendar THEN
+	    IF vCalendarClassGuid != RDX_JS_CalendarSchedule.constClassGuidAbsCalendar THEN
 	        raise_application_error(-20001, 'Wrong calendar type');
 	    END IF;
 
@@ -11887,7 +14186,7 @@ create or replace package body RDX_JS_CalendarSchedule as
 	        curItem.absDate :=  vCalendarItem.ABSDATE;
 	        curItem.incCalendarId :=  vCalendarItem.INCCALENDARID;
 
-	        IF curItem.classGuid = class_guid_day_of_week THEN
+	        IF curItem.classGuid = RDX_JS_CalendarSchedule.constClassGuidDayOfWeek THEN
 	            IF curItem.OffsetDir < 0 THEN
 	                curItem.dayOfWeek :=  curItem.offset + 8;
 	            ELSE
@@ -11899,7 +14198,7 @@ create or replace package body RDX_JS_CalendarSchedule as
 	        items(items.LAST) := curItem;
 	    END LOOP;
 
-	    cachedItems(pId) := items;
+	    RDX_JS_Vars.cachedItems(pId) := items;
 	end;
 
 	procedure refreshCache(
@@ -11914,16 +14213,16 @@ create or replace package body RDX_JS_CalendarSchedule as
 
 	    SELECT max(LASTUPDATETIME) INTO vLastUp FROM RDX_JS_CALENDAR;
 	    
-	    IF lastUpdateTime is null or vLastUp != lastUpdateTime THEN
-	        cachedItems.DELETE();
-	        cachedPeriodsBegin.DELETE();
-	        cachedItems.DELETE();
-	        cachedPeriodsEnd.DELETE();
-	        cachedDates.DELETE();
-	        lastUpdateTime := vLastUp;
+	    IF RDX_JS_Vars.getLastUpdateTime is null or vLastUp != RDX_JS_Vars.getLastUpdateTime THEN
+	        RDX_JS_Vars.cachedItems.DELETE();
+	        RDX_JS_Vars.cachedPeriodsBegin.DELETE();
+	        RDX_JS_Vars.cachedItems.DELETE();
+	        RDX_JS_Vars.cachedPeriodsEnd.DELETE();
+	        RDX_JS_Vars.cachedDates.DELETE();
+	        RDX_JS_Vars.setLastUpdateTime(vLastUp);
 	    END IF;
 
-	    IF not cachedItems.EXISTS(pId) THEN
+	    IF not RDX_JS_Vars.cachedItems.EXISTS(pId) THEN
 	        RDX_JS_CalendarSchedule.doRefreshCache(pId => pId);
 	    END IF;
 	end;
@@ -11934,18 +14233,20 @@ create or replace package body RDX_JS_CalendarSchedule as
 		pEnd in date
 	)
 	is
-	    vItems CONSTANT TItemsNestedTable := cachedItems(pId);
+	    vItems CONSTANT RDX_JS_Vars.TItemsNestedTable := RDX_JS_Vars.cachedItems(pId);
 	    vCurDate DATE := pBegin;
-	    vDates TDateMap;          
-	    vCurItem TCalendarItem;
+	    vDates RDX_JS_Vars.TDateMap;          
+	    vCurItem RDX_JS_Vars.TCalendarItem;
 	    vCounter INT;
 	    vResult BOOLEAN;
 	    vDayMatches BOOLEAN;
 	    vIsInIncCalendar BOOLEAN;
 	begin
-	    IF cachedDates.EXISTS(pId) THEN
-	        vDates := cachedDates(pId);
+	    IF RDX_JS_Vars.cachedDates.EXISTS(pId) THEN
+	        vDates := RDX_JS_Vars.cachedDates(pId);
 	    END IF;
+	    
+	    
 	    
 	    --dates loop
 	    WHILE vCurDate <= pEnd LOOP
@@ -11956,36 +14257,46 @@ create or replace package body RDX_JS_CalendarSchedule as
 	        vCounter := vItems.FIRST;
 	        WHILE vCounter IS NOT NULL LOOP
 	            vCurItem := vItems(vCounter);
+	            
 	            CASE vCurItem.classGuid
-	                WHEN class_guid_day_of_week THEN
-	                    IF RDX_JS_CalendarSchedule.getDayOfWeek(pDate => vCurDate) = vCurItem.dayOfWeek THEN
-	                        vDayMatches := true;
-	                    END IF;
-
-	                WHEN class_guid_day_of_month THEN
+	                WHEN RDX_JS_CalendarSchedule.constClassGuidDayOfYear THEN
+	                    vDayMatches := RDX_JS_CalendarSchedule.isDayInYear(vCurItem.OffsetDir, vCurItem.Offset, vCurDate)=1;
+	            
+	                WHEN RDX_JS_CalendarSchedule.constClassGuidDayOfQuarter THEN
+	                    vDayMatches := RDX_JS_CalendarSchedule.isDayInQuarter(vCurItem.OffsetDir, vCurItem.Offset, vCurDate)=1;            
+	            
+	                WHEN RDX_JS_CalendarSchedule.constClassGuidDayOfWeek THEN
+	                    vDayMatches := RDX_JS_CalendarSchedule.getDayOfWeek(pDate => vCurDate) = vCurItem.dayOfWeek;
+	                WHEN RDX_JS_CalendarSchedule.constClassGuidDayOfMonth THEN
 	                    IF vCurItem.OffsetDir > 0 THEN
 	                        vDayMatches := RDX_JS_CalendarSchedule.getDayOfMonth(pDate => vCurDate) = vCurItem.Offset;
 	                    ELSE
 	                        vDayMatches := vCurItem.Offset = (RDX_JS_CalendarSchedule.getDaysInMonth(pDate => vCurDate) - RDX_JS_CalendarSchedule.getDayOfMonth(pDate => vCurDate) + 1);
 	                    END IF;
 
-	                WHEN class_guid_abs_date THEN
+	                WHEN RDX_JS_CalendarSchedule.constClassGuidAbsDate THEN
 	                    vDayMatches := vCurDate = vCurItem.AbsDate;
+	                   
+	                WHEN RDX_JS_CalendarSchedule.constClassGuidDaily THEN
+	                    vDayMatches := true;
 
-	                WHEN class_guid_inc_calendar THEN
+	                WHEN RDX_JS_CalendarSchedule.constClassGuidIncCalendar THEN
 	                    vIsInIncCalendar := RDX_JS_CalendarSchedule.isInCached(pId => vCurItem.incCalendarId, pDate => vCurDate);
 	                    IF vIsInIncCalendar is not null THEN
-	                         vResult := (vCurItem.oper = '+' and vIsInIncCalendar = true) or (vCurItem.oper = '-' and vIsInIncCalendar = false); 
+	                         vResult := (vCurItem.oper = '+' and vIsInIncCalendar = true) or 
+	                         (vCurItem.oper = '-' and 
+	                         vIsInIncCalendar = true -- change in RADIX-12059 from 'false' to 'true'
+	                         ); 
 	                    END IF;
 	            END CASE;
 
-	            if vCurItem.classGuid != class_guid_inc_calendar and vDayMatches THEN
+	            if vCurItem.classGuid != RDX_JS_CalendarSchedule.constClassGuidIncCalendar and vDayMatches THEN
 	                vResult := vCurItem.Oper = '+';
 	            END IF;
-
+	            
 	            vCounter := vItems.NEXT(vCounter);
 	        END LOOP; --items loop
-
+	        
 	        IF vResult IS NOT NULL THEN
 	            vDates(RDX_JS_CalendarSchedule.dateToKey(pDate => vCurDate)) := vResult;
 	        END IF;
@@ -11994,7 +14305,7 @@ create or replace package body RDX_JS_CalendarSchedule as
 
 	    END LOOP; --dates loop
 
-	    cachedDates(pId) := vDates;
+	    RDX_JS_Vars.cachedDates(pId) := vDates;
 	end;
 
 	procedure extendCachedPeriod(
@@ -12011,17 +14322,17 @@ create or replace package body RDX_JS_CalendarSchedule as
 	    vNeedExtension boolean := false;
 	begin
 	    RDX_JS_CalendarSchedule.refreshCache(pId => pId);
-
-	    if not cachedPeriodsBegin.EXISTS(pId) THEN
+	    
+	    if not RDX_JS_Vars.cachedPeriodsBegin.EXISTS(pId) THEN
 	        vNeedExtension := true;
 	    else
-	        vBegin := cachedPeriodsBegin(pId);
-	        vEnd := cachedPeriodsEnd(pId);
+	        vBegin := RDX_JS_Vars.cachedPeriodsBegin(pId);
+	        vEnd := RDX_JS_Vars.cachedPeriodsEnd(pId);
 	        if (ABS(vBegin - pDate) < foreread_size) or (ABS(vEnd - pDate) < foreread_size) THEN
 	            vNeedExtension := true;
 	        end if; 
 	    end if;
-
+	    
 	    if vNeedExtension THEN
 	        vNewBegin := pDate - foreread_size;
 	        if (vBegin is null) or (vNewBegin < vBegin) THEN
@@ -12044,8 +14355,8 @@ create or replace package body RDX_JS_CalendarSchedule as
 	            RDX_JS_CalendarSchedule.extendSubPeriod(pId => pId, pBegin => vDate, pEnd => vNewEnd);
 	            vEnd := vNewEnd;
 	        end if;
-	        cachedPeriodsBegin(pId) := vBegin;
-	        cachedPeriodsEnd(pId) := vEnd;
+	        RDX_JS_Vars.cachedPeriodsBegin(pId) := vBegin;
+	        RDX_JS_Vars.cachedPeriodsEnd(pId) := vEnd;
 	    end if;
 	end;
 
@@ -12058,12 +14369,12 @@ create or replace package body RDX_JS_CalendarSchedule as
 	    IF pDate IS NULL THEN
 	        return NULL;
 	    END IF;
-
+	    
 	    RDX_JS_CalendarSchedule.extendCachedPeriod(pId => pId, pDate => pDate);
 
-	    IF cachedDates.EXISTS(pId)
-	            and cachedDates(pId).EXISTS(RDX_JS_CalendarSchedule.dateToKey(pDate => pDate)) THEN
-	        return cachedDates(pId)(RDX_JS_CalendarSchedule.dateToKey(pDate => pDate));
+	    IF RDX_JS_Vars.cachedDates.EXISTS(pId)
+	            and RDX_JS_Vars.cachedDates(pId).EXISTS(RDX_JS_CalendarSchedule.dateToKey(pDate => pDate)) THEN
+	        return RDX_JS_Vars.cachedDates(pId)(RDX_JS_CalendarSchedule.dateToKey(pDate => pDate));
 	    ELSE
 	        return null;
 	    END IF;
@@ -12096,13 +14407,13 @@ create or replace package body RDX_JS_CalendarSchedule as
 	    
 	    RDX_JS_CalendarSchedule.extendCachedPeriod(pId => pId, pDate => vDate);
 
-	    IF cachedDates.EXISTS(pId) THEN
+	    IF RDX_JS_Vars.cachedDates.EXISTS(pId) THEN
 	        vIndex := RDX_JS_CalendarSchedule.dateToKey(pDate => vDate);
 	        FOR i in 1..1000 LOOP
-	            vIndex := cachedDates(pId).NEXT(vIndex);      
+	            vIndex := RDX_JS_Vars.cachedDates(pId).NEXT(vIndex);      
 	            IF vIndex is null THEN 
 	                return null;
-	            ELSIF cachedDates(pId)(vIndex) = true THEN
+	            ELSIF RDX_JS_Vars.cachedDates(pId)(vIndex) = true THEN
 	                return RDX_JS_CalendarSchedule.keyToDate(pKey => vIndex);
 	            END IF;
 	            vDate := RDX_JS_CalendarSchedule.keyToDate(pKey => vIndex);
@@ -12136,7 +14447,7 @@ create or replace package body RDX_JS_CalendarSchedule as
 
 	    RDX_JS_CalendarSchedule.extendCachedPeriod(pId => pId, pDate => vCurDate);
 
-	    IF cachedDates.EXISTS(pId) THEN
+	    IF RDX_JS_Vars.cachedDates.EXISTS(pId) THEN
 	        FOR i in 1..1000 LOOP
 	            vCurDate := vCurDate + 1;
 	            IF RDX_JS_CalendarSchedule.isInCached(pId => pId, pDate => vCurDate) is null or 
@@ -12173,13 +14484,13 @@ create or replace package body RDX_JS_CalendarSchedule as
 
 	    RDX_JS_CalendarSchedule.extendCachedPeriod(pId => pId, pDate => vDate);
 
-	    IF cachedDates.EXISTS(pId) THEN
+	    IF RDX_JS_Vars.cachedDates.EXISTS(pId) THEN
 	        vIndex := RDX_JS_CalendarSchedule.dateToKey(pDate => vDate); 
 	        FOR i in 1..1000 LOOP
-	            vIndex := cachedDates(pId).PRIOR(vIndex);      
+	            vIndex := RDX_JS_Vars.cachedDates(pId).PRIOR(vIndex);      
 	            IF vIndex is null THEN 
 	                return null;
-	            ELSIF cachedDates(pId)(vIndex) = true THEN
+	            ELSIF RDX_JS_Vars.cachedDates(pId)(vIndex) = true THEN
 	                return RDX_JS_CalendarSchedule.keyToDate(pKey => vIndex);
 	            END IF;
 	            vDate := RDX_JS_CalendarSchedule.keyToDate(pKey => vIndex);
@@ -12213,7 +14524,7 @@ create or replace package body RDX_JS_CalendarSchedule as
 
 	    RDX_JS_CalendarSchedule.extendCachedPeriod(pId => pId, pDate => vCurDate);
 
-	    IF cachedDates.EXISTS(pId) THEN
+	    IF RDX_JS_Vars.cachedDates.EXISTS(pId) THEN
 	        FOR i in 1..1000 LOOP
 	            vCurDate := vCurDate - 1;
 	            
@@ -12241,18 +14552,50 @@ end;
 
 create or replace package body RDX_JS_EventSchedule as
 
-	CURSOR cEventScheduleItems (SchId RDX_JS_EVENTSCHDITEM.SCHEDULEID%TYPE)  is
-	                          Select CALENDARID calendarId, ENDTIME endTime, EVENTTIME eventTime, PERIOD period,
-	                          REPEATABLE repeatable, STARTTIME startTime, TIMEZONEREGION timeZoneRegion
-	                          From RDX_JS_EVENTSCHDITEM
-	                          Where SCHEDULEID=SchId;
-
 	function getDaySeconds(
 		pTimestamp in timestamp
 	) return integer
 	is
 	begin
 	    return extract(Hour from pTimestamp)*3600 + extract(Minute from pTimestamp)*60 + extract(Second from pTimestamp);
+	end;
+
+	function getDaySecondsTz(
+		pTimestamp in timestamp with time zone
+	) return integer
+	is
+	    res integer;
+	    diff interval day to second;
+	begin
+	    diff := pTimestamp - from_tz(trunc(pTimestamp), extract(TIMEZONE_REGION from pTimestamp));
+	    return round(extract(hour from diff) * 3600 + extract(minute from diff) * 60 + extract(second from diff));
+	end;
+
+	function toTimestampWithTzSafe(
+		pTimestamp in timestamp,
+		pTzRegion in varchar2 := null
+	) return timestamp with time zone
+	is
+	    res1 timestamp with time zone := null;
+	    res2 timestamp with time zone := null;
+	    FIELD_NOT_FOUND_IN_DATETIME EXCEPTION; PRAGMA EXCEPTION_INIT(FIELD_NOT_FOUND_IN_DATETIME, -01878);
+	begin
+	    begin
+	        res1 := from_tz(pTimestamp, nvl(pTzRegion, sessiontimezone));
+	    exception when FIELD_NOT_FOUND_IN_DATETIME then
+	        null;
+	    end;
+	    res2 := from_tz(trunc(pTimestamp), nvl(pTzRegion, sessiontimezone)) + NumToDSInterval(RDX_JS_EventSchedule.getDaySeconds(pTimestamp), 'second');
+	    if 
+	        res1 is null or 
+	        (res1 is not null 
+	        and res2 is not null 
+	        and to_char(res1, 'HH24:MI') = to_char(res2, 'HH24:MI'))
+	    then
+	        return res2;
+	    else 
+	        return res1;
+	    end if;
 	end;
 
 	function prevTime(
@@ -12267,8 +14610,9 @@ create or replace package body RDX_JS_EventSchedule as
 	    if pNow <= pStartTime THEN
 	        return null;
 	    end if;
-	    if pNow > pEndTime THEN
-	        return (TRUNC((pEndTime-pStartTime)/pPeriod))*pPeriod + pStartTime;
+	    
+	    if pNow >= pEndTime THEN
+	        return (TRUNC((pEndTime-1-pStartTime)/pPeriod))*pPeriod + pStartTime;
 	    end if;
 
 	    res := (TRUNC((pNow-pStartTime)/pPeriod))*pPeriod + pStartTime;
@@ -12315,6 +14659,7 @@ create or replace package body RDX_JS_EventSchedule as
 	    tmpDaySeconds integer;
 	    
 	    tmpFrom timestamp;
+	    tmpFromWithTz timestamp with time zone;
 	    tmpToday date;
 	    tmpTomorrow date;
 	    tmpFromDaySeconds integer; 
@@ -12323,6 +14668,12 @@ create or replace package body RDX_JS_EventSchedule as
 	    todayDefault date;
 	    tomorrowDefault date;
 	    fromDaySecondsDefault integer;
+	    
+	    CURSOR cEventScheduleItems (SchId RDX_JS_EVENTSCHDITEM.SCHEDULEID%TYPE)  is
+	                                Select CALENDARID calendarId, ENDTIME endTime, EVENTTIME eventTime, PERIOD period,
+	                                REPEATABLE repeatable, STARTTIME startTime, TIMEZONEREGION timeZoneRegion
+	                                From RDX_JS_EVENTSCHDITEM
+	                                Where SCHEDULEID=SchId;
 	begin
 	    if pDateTime IS NULL THEN
 	        return NULL;
@@ -12332,22 +14683,19 @@ create or replace package body RDX_JS_EventSchedule as
 	    tomorrowDefault := todayDefault + interval '1' day;
 	    fromDaySecondsDefault := RDX_JS_EventSchedule.getDaySeconds(pDateTime);
 	    
-	    
-
 	    for schedItem in cEventScheduleItems(pId) LOOP
 	        
 	        if schedItem.timeZoneRegion is not null then
-	            select from_tz(pDateTime, sessiontimezone) at time zone (schedItem.timeZoneRegion) into tmpFrom from dual;            
-	            tmpToday := Trunc(tmpFrom);
+	            tmpFromWithTz := RDX_JS_EventSchedule.toTimestampWithTzSafe(pDateTime) at time zone (schedItem.timeZoneRegion);            
+	            tmpToday := Trunc(tmpFromWithTz);
 	            tmpTomorrow := tmpToday + interval '1' day;
-	            tmpFromDaySeconds := RDX_JS_EventSchedule.getDaySeconds(tmpFrom);
+	            tmpFromDaySeconds := RDX_JS_EventSchedule.getDaySecondsTz(tmpFromWithTz);
 	        else
 	            tmpFrom := pDateTime;
 	            tmpToday := todayDefault;
 	            tmpTomorrow := tomorrowDefault;
 	            tmpFromDaySeconds := fromDaySecondsDefault;
 	        end if;
-	    
 	    
 	        if schedItem.REPEATABLE > 0 THEN
 	            tmpDaySeconds := RDX_JS_EventSchedule.nextTime(schedItem.STARTTIME * 60, schedItem.ENDTIME * 60, schedItem.PERIOD, tmpFromDaySeconds);
@@ -12358,7 +14706,7 @@ create or replace package body RDX_JS_EventSchedule as
 	        inToday := tmpDaySeconds is NOT NULL and tmpDaySeconds > tmpFromDaySeconds
 	                and 
 	            (schedItem.CALENDARID IS NULL or RDX_JS_CalendarSchedule.isIn(pId => schedItem.CALENDARID, pDate => tmpToday) > 0);
-
+	            
 	        IF inToday THEN
 	            tmpDate := tmpToday;
 	        ELSE       
@@ -12376,7 +14724,7 @@ create or replace package body RDX_JS_EventSchedule as
 	            tmpTimestamp := cast(tmpDate as timestamp) + NumToDSInterval(tmpDaySeconds, 'second');
 	 
 	            if schedItem.timeZoneRegion is not null then
-	                select (from_tz(tmpTimestamp, schedItem.timeZoneRegion)) at time zone sessiontimezone into tmpTimestamp from dual;                     
+	                tmpTimestamp := RDX_JS_EventSchedule.toTimestampWithTzSafe(tmpTimestamp, schedItem.timeZoneRegion) at time zone sessiontimezone;
 	            end if;
 	            
 	            if minTimestamp is null or minTimestamp > tmpTimestamp then
@@ -12399,6 +14747,7 @@ create or replace package body RDX_JS_EventSchedule as
 	    tmpDaySeconds integer;
 
 	    tmpFrom timestamp;
+	    tmpFromWithTz timestamp with time zone;
 	    tmpToday date;
 	    tmpYesterday date;
 	    tmpFromDaySeconds integer; 
@@ -12407,6 +14756,12 @@ create or replace package body RDX_JS_EventSchedule as
 	    todayDefault date;
 	    yesterdayDefault date;
 	    fromDaySecondsDefault integer;
+	    
+	    CURSOR cEventScheduleItems (SchId RDX_JS_EVENTSCHDITEM.SCHEDULEID%TYPE)  is
+	                                Select CALENDARID calendarId, ENDTIME endTime, EVENTTIME eventTime, PERIOD period,
+	                                REPEATABLE repeatable, STARTTIME startTime, TIMEZONEREGION timeZoneRegion
+	                                From RDX_JS_EVENTSCHDITEM
+	                                Where SCHEDULEID=SchId;
 	begin
 	    if pDateTime IS NULL THEN
 	        return NULL;
@@ -12419,10 +14774,10 @@ create or replace package body RDX_JS_EventSchedule as
 	    for schedItem in cEventScheduleItems(pId) LOOP
 	    
 	        if schedItem.timeZoneRegion is not null then
-	            select from_tz(pDateTime, sessiontimezone) at time zone (schedItem.timeZoneRegion) into tmpFrom from dual;            
-	            tmpToday := Trunc(tmpFrom);
+	            tmpFromWithTz := RDX_JS_EventSchedule.toTimestampWithTzSafe(pDateTime) at time zone (schedItem.timeZoneRegion);            
+	            tmpToday := Trunc(tmpFromWithTz);
 	            tmpYesterday := tmpToday - interval '1' day;
-	            tmpFromDaySeconds := RDX_JS_EventSchedule.getDaySeconds(tmpFrom);
+	            tmpFromDaySeconds := RDX_JS_EventSchedule.getDaySecondsTz(tmpFromWithTz);
 	        else
 	            tmpFrom := pDateTime;
 	            tmpToday := todayDefault;
@@ -12438,7 +14793,7 @@ create or replace package body RDX_JS_EventSchedule as
 
 	        inToday := tmpDaySeconds is NOT NULL and tmpDaySeconds < tmpFromDaySeconds
 	                and (schedItem.CALENDARID IS NULL or RDX_JS_CalendarSchedule.isIn(schedItem.calendarId, tmpToday) > 0);
-
+	                
 	        IF inToday THEN
 	            tmpDate := tmpToday;
 	        ELSE       
@@ -12456,7 +14811,7 @@ create or replace package body RDX_JS_EventSchedule as
 	            tmpTimestamp := cast(tmpDate as timestamp) + NumToDSInterval(tmpDaySeconds, 'second');
 	 
 	            if schedItem.timeZoneRegion is not null then
-	                select (from_tz(tmpTimestamp, schedItem.timeZoneRegion)) at time zone sessiontimezone into tmpTimestamp from dual;                     
+	                tmpTimestamp := RDX_JS_EventSchedule.toTimestampWithTzSafe(tmpTimestamp, schedItem.timeZoneRegion) at time zone sessiontimezone;                     
 	            end if;
 	            
 	            if maxTimestamp is null or maxTimestamp < tmpTimestamp then
@@ -12472,11 +14827,6 @@ end;
 
 create or replace package body RDX_JS_IntervalSchedule as
 
-	CURSOR cIntervalSchedule (SchId RDX_JS_INTERVALSCHDITEM.SCHEDULEID%TYPE)  is
-	                          Select CALENDARID, ENDTIME, STARTTIME
-	                          From RDX_JS_INTERVALSCHDITEM
-	                          Where SCHEDULEID=SchId;
-
 	function isIn(
 		pId in integer,
 		pDateTime in date
@@ -12484,6 +14834,11 @@ create or replace package body RDX_JS_IntervalSchedule as
 	is
 	    ts timestamp;
 	    minutes int;
+	    
+	    CURSOR cIntervalSchedule (SchId RDX_JS_INTERVALSCHDITEM.SCHEDULEID%TYPE)  is
+	                            Select CALENDARID, ENDTIME, STARTTIME
+	                            From RDX_JS_INTERVALSCHDITEM
+	                            Where SCHEDULEID=SchId;
 	begin
 	    if pDateTime IS NULL THEN
 	        return 0;                       
@@ -12518,6 +14873,11 @@ create or replace package body RDX_JS_IntervalSchedule as
 	    tDate Date;
 	    minDate Date;
 	    minMinutes integer;
+	    
+	    CURSOR cIntervalSchedule (SchId RDX_JS_INTERVALSCHDITEM.SCHEDULEID%TYPE)  is
+	                          Select CALENDARID, ENDTIME, STARTTIME
+	                          From RDX_JS_INTERVALSCHDITEM
+	                          Where SCHEDULEID=SchId;
 	begin
 	    if pDateTime IS NULL THEN
 	        return NULL;
@@ -12568,6 +14928,11 @@ create or replace package body RDX_JS_IntervalSchedule as
 	    tDate Date;
 	    minDate Date;
 	    minMinutes integer;
+	    
+	    CURSOR cIntervalSchedule (SchId RDX_JS_INTERVALSCHDITEM.SCHEDULEID%TYPE)  is
+	                          Select CALENDARID, ENDTIME, STARTTIME
+	                          From RDX_JS_INTERVALSCHDITEM
+	                          Where SCHEDULEID=SchId;
 	begin
 	    if pDateTime IS NULL THEN
 	        return NULL;
@@ -12617,6 +14982,11 @@ create or replace package body RDX_JS_IntervalSchedule as
 	    tDate Date;
 	    maxDate Date;                                 
 	    maxMinutes integer;
+	    
+	    CURSOR cIntervalSchedule (SchId RDX_JS_INTERVALSCHDITEM.SCHEDULEID%TYPE)  is
+	                          Select CALENDARID, ENDTIME, STARTTIME
+	                          From RDX_JS_INTERVALSCHDITEM
+	                          Where SCHEDULEID=SchId;
 	begin
 	    if pDateTime IS NULL THEN
 	        return NULL;
@@ -12666,6 +15036,11 @@ create or replace package body RDX_JS_IntervalSchedule as
 	    tDate Date;
 	    maxDate Date;                                             
 	    maxMinutes integer;
+	    
+	    CURSOR cIntervalSchedule (SchId RDX_JS_INTERVALSCHDITEM.SCHEDULEID%TYPE)  is
+	                          Select CALENDARID, ENDTIME, STARTTIME
+	                          From RDX_JS_INTERVALSCHDITEM
+	                          Where SCHEDULEID=SchId;
 	begin
 	    if pDateTime IS NULL THEN
 	        return NULL;
@@ -12706,8 +15081,17 @@ end;
 
 create or replace package body RDX_JS_JOB as
 
-	TASK_EXECUTOR_CLASS_NAME constant varchar2(200) := 'org.radixware.ads.mdlOWL3XYSM2ZDNHOW7W7XKT54GRE.server.adc2YO4JA7JKJGGBLTARIEQHUSHGI';
-	TASK_EXECUTOR_METHOD_NAME constant varchar2(200) := 'mthA4SZ4ODO4NFL3A5KMYIJ54MTZA';
+	function constTaskExecutorClassName return varchar2
+	is
+	begin
+	    return 'org.radixware.ads.mdlOWL3XYSM2ZDNHOW7W7XKT54GRE.server.adc2YO4JA7JKJGGBLTARIEQHUSHGI';
+	end;
+
+	function constTaskExecutorMethodName return varchar2
+	is
+	begin
+	    return 'mthA4SZ4ODO4NFL3A5KMYIJ54MTZA';
+	end;
 
 	function calcPriority(
 		iBasePriority in integer,
@@ -12776,11 +15160,15 @@ create or replace package body RDX_JS_JOB as
 		sCreatorPid in varchar2 := null,
 		sTitle in varchar2 := null,
 		sScpName in varchar2 := null,
-		iTaskId in integer := null
+		iTaskId in integer := null,
+		aadcMemberId in integer := null,
+		threadPoolClassGuid in varchar2 := null,
+		threadPoolPid in varchar2 := null,
+		threadKey in integer := null
 	) return integer
 	is
 	begin  
-	  return RDX_JS_JOB.schedule(iAllowRerun => pAllowRerun, tJobTime => systimestamp+numtodsinterval(iDelayMillis/1000, 'SECOND'), sJobClass => sJobClass, sJobMethod => sJobMethod, iJobPriority => iJobPriority, iJobBoosting => iJobBoosting, sExecRequesterId => sExecRequesterId, sCreatorEntityGuid => sCreatorEntityGuid, sCreatorPid => sCreatorPid, sTitle => sTitle, sScpName => sScpName, iTaskId => iTaskId);
+	  return RDX_JS_JOB.schedule(iAllowRerun => pAllowRerun, tJobTime => systimestamp+numtodsinterval(iDelayMillis/1000, 'SECOND'), sJobClass => sJobClass, sJobMethod => sJobMethod, iJobPriority => iJobPriority, iJobBoosting => iJobBoosting, sExecRequesterId => sExecRequesterId, sCreatorEntityGuid => sCreatorEntityGuid, sCreatorPid => sCreatorPid, sTitle => sTitle, sScpName => sScpName, iTaskId => iTaskId, pAadcMemberId => aadcMemberId, threadPoolClassGuid => threadPoolClassGuid, threadPoolPid => threadPoolPid, threadKey => threadKey);
 	end;
 
 	function schedule(
@@ -12795,17 +15183,26 @@ create or replace package body RDX_JS_JOB as
 		sCreatorPid in varchar2 := null,
 		sTitle in varchar2 := null,
 		sScpName in varchar2 := null,
-		iTaskId in integer := null
+		iTaskId in integer := null,
+		pAadcMemberId in integer := null,
+		threadPoolClassGuid in varchar2 := null,
+		threadPoolPid in varchar2 := null,
+		threadKey in integer := null
 	) return integer
 	is
 	   iJobNewID number(18);
-	   
+	   vAadcMemberId integer;
 	begin
 	   select SQN_RDX_JS_JOBID.NextVal into iJobNewID from dual;
-	               
-	   insert into RDX_JS_JOBQUEUE(ID,CREATORENTITYGUID, CREATORPID, DUETIME, CLASSNAME, METHODNAME, PRIORITY, CURPRIORITY, PRIORITYBOOSTINGSPEED, EXECREQUESTERID, TITLE, SCPNAME, TASKID, EXECUTORID, ALLOWRERUN)
-	   values (iJobNewID, sCreatorEntityGuid, sCreatorPid,tJobTime, sJobClass, sJobMethod, nvl(iJobPriority,5), nvl(iJobPriority,5), iJobBoosting, sExecRequesterId, sTitle, sScpName, iTaskId, RDX_Environment.getTargetExecutorId(), iAllowRerun);
-	   
+	   if pAadcMemberId is null then
+	      select AADCMEMBERID into vAadcMemberId from RDX_SYSTEM where ID = 1;
+	   else
+	      vAadcMemberId := pAadcMemberId;
+	   end if;               
+	   insert into RDX_JS_JOBQUEUE(ID,CREATORENTITYGUID, CREATORPID, DUETIME, CLASSNAME, METHODNAME, PRIORITY, CURPRIORITY, PRIORITYBOOSTINGSPEED, EXECREQUESTERID, TITLE, 
+	        SCPNAME, TASKID, EXECUTORID, ALLOWRERUN, AADCMEMBERID, THREADPOOLCLASSGUID, THREADPOOLPID, THREADKEY)
+	   values (iJobNewID, sCreatorEntityGuid, sCreatorPid,tJobTime, sJobClass, sJobMethod, nvl(iJobPriority,5), nvl(iJobPriority,5), iJobBoosting, sExecRequesterId, sTitle, 
+	        sScpName, iTaskId, RDX_Environment.getTargetExecutorId(), iAllowRerun, vAadcMemberId, threadPoolClassGuid, threadPoolPid, threadKey);
 	  return iJobNewID;
 	end;
 
@@ -12986,14 +15383,16 @@ create or replace package body RDX_JS_JOB as
 	  taskTitle varchar2(500);
 	  curStatus varchar2(100);
 	  actualExecTime date;
+	  vAadcMemberId integer;
 	begin
 	  select           
 	    t.PRIORITY, t.PRIORITYBOOSTINGSPEED, t.STATUS, t.TITLE,
 	    (select t1.SCPNAME from RDX_JS_TASK t1 
 	        where t1.SCPNAME is not null
 	        start with t1.ID = t.ID
-	        connect by prior t1.PARENTID = t1.ID and prior t1.SCPNAME is null) 
-	    into priority, priorityBoostingSpeed, curStatus, taskTitle, scpName
+	        connect by prior t1.PARENTID = t1.ID and prior t1.SCPNAME is null),
+	    t.AADCMEMBERID 
+	    into priority, priorityBoostingSpeed, curStatus, taskTitle, scpName, vAadcMemberId
 	  from RDX_JS_TASK t where t.ID = taskId for update of t.STATUS;
 	  
 	  if curStatus = 'Scheduled' or curStatus = 'Executing' or curStatus = 'Cancelling' then
@@ -13004,7 +15403,7 @@ create or replace package body RDX_JS_JOB as
 	  
 	  jobTitle := 'Initial job for task #' || to_char(taskId) || ' ''' || taskTitle || ''' created by ' || initiatorName;
 	  
-	  vJobId := RDX_JS_JOB.schedule(iAllowRerun => 0, tJobTime => actualExecTime, sJobClass => TASK_EXECUTOR_CLASS_NAME, sJobMethod => TASK_EXECUTOR_METHOD_NAME, iJobPriority => priority, iJobBoosting => priorityBoostingSpeed, sExecRequesterId => 'ScheduledTask-'|| taskId, sCreatorEntityGuid => 'tblWZB7K4HLJPOBDCIUAALOMT5GDM', sCreatorPid => taskId, sTitle => jobTitle, sScpName => scpName, iTaskId => taskId);
+	  vJobId := RDX_JS_JOB.schedule(iAllowRerun => 0, tJobTime => actualExecTime, sJobClass => RDX_JS_JOB.constTaskExecutorClassName, sJobMethod => RDX_JS_JOB.constTaskExecutorMethodName, iJobPriority => priority, iJobBoosting => priorityBoostingSpeed, sExecRequesterId => 'ScheduledTask-'|| taskId, sCreatorEntityGuid => 'tblWZB7K4HLJPOBDCIUAALOMT5GDM', sCreatorPid => taskId, sTitle => jobTitle, sScpName => scpName, iTaskId => taskId, pAadcMemberId => vAadcMemberId);
 	    
 	  insert into RDX_JS_JOBPARAM
 	  columns (JOBID, NAME, SEQ, VALTYPE, VAL)
@@ -13038,10 +15437,40 @@ create or replace package body RDX_JS_JOB as
 	is
 	begin
 	    
-	    if pClassName = TASK_EXECUTOR_CLASS_NAME and pMethodName = TASK_EXECUTOR_METHOD_NAME then
+	    if pClassName = RDX_JS_JOB.constTaskExecutorClassName and pMethodName = RDX_JS_JOB.constTaskExecutorMethodName then
 	        return 1;
 	    end if;
 	    return 0;
+	end;
+
+	function adjustToNearest10Sec(
+		iTimestamp in timestamp
+	) return timestamp
+	is
+	    tempTimestamp timestamp;
+	begin
+	    tempTimestamp := iTimestamp + interval '5' second;
+	    return tempTimestamp - NUMTODSINTERVAL(mod(extract (second from tempTimestamp), 10), 'SECOND');
+	end;
+end;
+/
+
+create or replace package body RDX_JS_Vars as
+
+	lastUpdateTime date;
+
+	function getLastUpdateTime return date
+	is
+	begin
+	    return lastUpdateTime;
+	end;
+
+	procedure setLastUpdateTime(
+		pLastUpdateTime in date
+	)
+	is
+	begin
+	    lastUpdateTime := pLastUpdateTime;
 	end;
 end;
 /
@@ -13053,6 +15482,7 @@ create or replace package body RDX_License as
 	   lastSent date;
 	begin
 	    select max(RDX_LICENSEREPORTLOG.CREATEDATE) into lastSent from RDX_LICENSEREPORTLOG where RDX_LICENSEREPORTLOG.SENT > 0;    
+	    /*
 	    if lastSent is null then
 	        RDX_Trace.put(2,'No license reports were sent to product vendor','App.License',0);
 	    else 
@@ -13060,6 +15490,7 @@ create or replace package body RDX_License as
 	            RDX_Trace.put(2,'Last sent license report expired', 'App.License',0);
 	        end if;
 	    end if;
+	    */
 	end;
 end;
 /
@@ -13161,6 +15592,9 @@ create or replace package body RDX_Maintenance as
 	   RDX_WF_Maintenance.daily;
 	   RDX_PC_Maintenance.daily;
 	   
+	   RDX_SM_InstStateHist.dailyMaintenance();
+	   RDX_Trace.put(0,  'Instance state history cleared', 'Arte.Db');
+	   
 	   RDX_Trace.put(1,  'Radix System maintenance finished', 'Arte.Db');
 	end;
 
@@ -13208,27 +15642,118 @@ create or replace package body RDX_PC_Maintenance as
 
 	procedure daily
 	is
+	  type TIntTab is table of integer;
+	  
 	  storeDays integer;
 	  storeFailedDays integer;
+	  godForsakenOutDays integer;
+	  
+	  failedMessageIds TIntTab;
+	  fromIdx integer;
+	  toIdx integer;
+	  
+	  procedure expireDeliveryStatuses(pChannelId in integer, pPolicy in varchar2, pPeriod in integer)
+	  is
+	    vPeriod integer := case pPolicy when 'None' then 7 * 86400 else pPeriod end;
+	    vBoundDate date := SYSDATE - vPeriod / 86400.0;
+	  begin
+	    loop
+	        update RDX_PC_SENTMESSAGE set DELIVERYSTATUS = 'Unknown'
+	        where CHANNELID = pChannelId and DELIVERYSTATUS = 'Tracking'
+	          and SENTTIME < vBoundDate and ROWNUM <= 10000;
+	        commit;
+	        exit when SQL%RowCount < 10000;
+	    end loop;
+	  end;
+	  
 	begin
 	  Select PCMSTOREDAYS into storeDays from RDX_SYSTEM where ID=1;
 	  Select RDX_SYSTEM.FAILEDOUTMESSAGESTOREDAYS into storeFailedDays from RDX_SYSTEM where ID=1;
-	  Delete from RDX_PC_SENTMESSAGE where DUETIME+storeDays < SYSDATE;
-	  Delete from RDX_PC_RECVMESSAGE where RECVTIME+storeDays < SYSDATE;
-	  Insert into RDX_PC_SENTMESSAGE (RDX_PC_SENTMESSAGE.ADDRESS, RDX_PC_SENTMESSAGE.BODY, RDX_PC_SENTMESSAGE.CALLBACKCLASSNAME, RDX_PC_SENTMESSAGE.CALLBACKMETHODNAME, RDX_PC_SENTMESSAGE.CHANNELID,
-	          RDX_PC_SENTMESSAGE.CHANNELKIND, RDX_PC_SENTMESSAGE.CREATETIME, RDX_PC_SENTMESSAGE.DESTENTITYGUID, RDX_PC_SENTMESSAGE.DESTPID, RDX_PC_SENTMESSAGE.DUETIME, RDX_PC_SENTMESSAGE.EXPIRETIME,
-	          RDX_PC_SENTMESSAGE.HISTMODE, RDX_PC_SENTMESSAGE.ID, RDX_PC_SENTMESSAGE.IMPORTANCE, 
-	          RDX_PC_SENTMESSAGE.SENDERROR, 
-	          RDX_PC_SENTMESSAGE.SENTTIME, RDX_PC_SENTMESSAGE.SMPPBYTESSENT, RDX_PC_SENTMESSAGE.SMPPCHARSSENT, RDX_PC_SENTMESSAGE.SMPPENCODING, RDX_PC_SENTMESSAGE.SMPPPARTSSENT, RDX_PC_SENTMESSAGE.SOURCEENTITYGUID,
-	          RDX_PC_SENTMESSAGE.SOURCEMSGID, RDX_PC_SENTMESSAGE.SOURCEPID, RDX_PC_SENTMESSAGE.SUBJECT
-	        ) 
-	  select RDX_PC_OUTMESSAGE.ADDRESS, RDX_PC_OUTMESSAGE.BODY, RDX_PC_OUTMESSAGE.CALLBACKCLASSNAME, RDX_PC_OUTMESSAGE.CALLBACKMETHODNAME, RDX_PC_OUTMESSAGE.CHANNELID,
-	          RDX_PC_OUTMESSAGE.CHANNELKIND, RDX_PC_OUTMESSAGE.CREATETIME, RDX_PC_OUTMESSAGE.DESTENTITYGUID, RDX_PC_OUTMESSAGE.DESTPID, RDX_PC_OUTMESSAGE.DUETIME, RDX_PC_OUTMESSAGE.EXPIRETIME,
-	          RDX_PC_OUTMESSAGE.HISTMODE, RDX_PC_OUTMESSAGE.ID, RDX_PC_OUTMESSAGE.IMPORTANCE, 
-	          'Permanent transmission failure for this message was detected and keep time for failed messages was exhausted. Last send error was '||RDX_PC_OUTMESSAGE.FAILEDMESSAGE||', retry count was ' || to_char(RDX_PC_OUTMESSAGE.FAILEDTRYCOUNT,'999999'),
-	          SYSDATE, 0, 0, RDX_PC_OUTMESSAGE.SMPPENCODING, 0, RDX_PC_OUTMESSAGE.SOURCEENTITYGUID,
-	          RDX_PC_OUTMESSAGE.SOURCEMSGID, RDX_PC_OUTMESSAGE.SOURCEPID, RDX_PC_OUTMESSAGE.SUBJECT
-	  from RDX_PC_OUTMESSAGE where RDX_PC_OUTMESSAGE.FAILEDLASTSENDDATE+storeFailedDays < SYSDATE;
+	  godForsakenOutDays := greatest(storeDays + 7, storeFailedDays + 7, 90);
+	  
+	  loop
+	    Delete from RDX_PC_SENTMESSAGE where SENTTIME + storeDays < SYSDATE and ROWNUM <= 10000;
+	    commit;
+	    exit when SQL%RowCount < 10000;
+	  end loop;
+	  
+	  loop
+	    Delete from RDX_PC_RECVMESSAGE where RECVTIME + storeDays < SYSDATE and ROWNUM <= 10000;
+	    commit;
+	    exit when SQL%RowCount < 10000;
+	  end loop;
+	  
+	  loop
+	    select ID bulk collect into failedMessageIds from RDX_PC_OUTMESSAGE
+	    where FAILEDLASTSENDDATE + storeFailedDays < SYSDATE and ROWNUM <= 1000000;
+	    
+	    fromIdx := 1;
+	    while (fromIdx <= failedMessageIds.count) loop
+	        toIdx := least(fromIdx + 9999, failedMessageIds.count);
+	        
+	        forall i in fromIdx .. toIdx
+	            Insert into RDX_PC_SENTMESSAGE (RDX_PC_SENTMESSAGE.ADDRESS, RDX_PC_SENTMESSAGE.BODY, RDX_PC_SENTMESSAGE.CALLBACKCLASSNAME, RDX_PC_SENTMESSAGE.CALLBACKMETHODNAME, RDX_PC_SENTMESSAGE.CHANNELID,
+	                    RDX_PC_SENTMESSAGE.CHANNELKIND, RDX_PC_SENTMESSAGE.CREATETIME, RDX_PC_SENTMESSAGE.DESTENTITYGUID, RDX_PC_SENTMESSAGE.DESTPID, RDX_PC_SENTMESSAGE.DUETIME, RDX_PC_SENTMESSAGE.EXPIRETIME,
+	                    RDX_PC_SENTMESSAGE.HISTMODE, RDX_PC_SENTMESSAGE.ID, RDX_PC_SENTMESSAGE.IMPORTANCE, 
+	                    RDX_PC_SENTMESSAGE.SENDERROR, 
+	                    RDX_PC_SENTMESSAGE.SENTTIME, RDX_PC_SENTMESSAGE.SMPPBYTESSENT, RDX_PC_SENTMESSAGE.SMPPCHARSSENT, RDX_PC_SENTMESSAGE.SMPPENCODING, RDX_PC_SENTMESSAGE.SMPPPARTSSENT, RDX_PC_SENTMESSAGE.SOURCEENTITYGUID,
+	                    RDX_PC_SENTMESSAGE.SOURCEMSGID, RDX_PC_SENTMESSAGE.SOURCEPID, RDX_PC_SENTMESSAGE.SUBJECT
+	                  ) 
+	            select RDX_PC_OUTMESSAGE.ADDRESS, RDX_PC_OUTMESSAGE.BODY, RDX_PC_OUTMESSAGE.CALLBACKCLASSNAME, RDX_PC_OUTMESSAGE.CALLBACKMETHODNAME, RDX_PC_OUTMESSAGE.CHANNELID,
+	                    RDX_PC_OUTMESSAGE.CHANNELKIND, RDX_PC_OUTMESSAGE.CREATETIME, RDX_PC_OUTMESSAGE.DESTENTITYGUID, RDX_PC_OUTMESSAGE.DESTPID, RDX_PC_OUTMESSAGE.DUETIME, RDX_PC_OUTMESSAGE.EXPIRETIME,
+	                    RDX_PC_OUTMESSAGE.HISTMODE, RDX_PC_OUTMESSAGE.ID, RDX_PC_OUTMESSAGE.IMPORTANCE, 
+	                    'Permanent transmission failure for this message was detected and keep time for failed messages was exhausted. Last send error was '||RDX_PC_OUTMESSAGE.FAILEDMESSAGE||', retry count was ' || to_char(RDX_PC_OUTMESSAGE.FAILEDTRYCOUNT,'999999'),
+	                    SYSDATE, 0, 0, RDX_PC_OUTMESSAGE.SMPPENCODING, 0, RDX_PC_OUTMESSAGE.SOURCEENTITYGUID,
+	                    RDX_PC_OUTMESSAGE.SOURCEMSGID, RDX_PC_OUTMESSAGE.SOURCEPID, RDX_PC_OUTMESSAGE.SUBJECT
+	            from RDX_PC_OUTMESSAGE where RDX_PC_OUTMESSAGE.ID = failedMessageIds(i);
+	        
+	        forall i in fromIdx .. toIdx
+	            delete from RDX_PC_OUTMESSAGE where ID = failedMessageIds(i);
+	            
+	        commit;
+	    
+	        fromIdx := fromIdx + 10000;
+	    end loop;
+	  
+	    exit when failedMessageIds.count < 1000000;
+	  end loop;
+	  
+	  delete from RDX_PC_OUTMESSAGE o where exists (select 1 from RDX_PC_SENTMESSAGE s where o.ID = s.ID);
+	  commit;
+	  
+	  for c in (select * from RDX_PC_CHANNELUNIT) loop
+	    expireDeliveryStatuses(c.ID, c.DELIVERYTRACKINGPOLICY, c.DELIVERYTRACKINGPERIOD);
+	  end loop;
+	  
+	  
+	  loop
+	    delete from RDX_PC_OUTMESSAGE
+	    where CREATETIME + godForsakenOutDays < SYSDATE
+	      and (DUETIME is null or DUETIME + godForsakenOutDays < SYSDATE)
+	      and (EXPIRETIME is null or EXPIRETIME + godForsakenOutDays < SYSDATE)
+	      and ROWNUM <= 10000;
+	    commit;
+	    exit when SQL%RowCount < 10000;
+	  end loop;
+	  
+	  
+	  loop
+	    delete /*+ index(RDX_PC_SENTMESSAGE, IDX_RDX_PC_SENTMESSAGE_CB_SEND) */ from RDX_PC_SENTMESSAGE
+	    where SENDCALLBACKREQUIRED = 3
+	      and ROWNUM <= 10000;
+	    commit;
+	    exit when SQL%RowCount < 10000;
+	  end loop;
+	  
+	  loop
+	    delete /*+ index(RDX_PC_SENTMESSAGE, IDX_RDX_PC_SENTMESSAGE_CB_DLVR) */ from RDX_PC_SENTMESSAGE
+	    where DELIVERYCALLBACKREQUIRED = 4
+	      and ROWNUM <= 10000;
+	    commit;
+	    exit when SQL%RowCount < 10000;
+	  end loop;
+	  
+	  
 	end;
 end;
 /
@@ -13272,7 +15797,7 @@ create or replace package body RDX_PC_Utils as
 	    actualAddress varchar2(1000);
 	    addressXml XmlType;
 	begin
-	    if kind in ('Gcm', 'Apns') then
+	    if kind in ('Gcm', 'Apns', 'Wns') then
 	        select xmltype(address) into addressXml from dual;
 	        select extractValue(addressXml, '/pc:PushNotificationAddress/pc:AppName', 'xmlns:pc="http://schemas.radixware.org/personalcommunications.xsd"') into actualAddress from dual;
 	    else
@@ -13280,6 +15805,52 @@ create or replace package body RDX_PC_Utils as
 	    end if;
 	    return actualAddress;
 	    exception when others then return null;
+	end;
+end;
+/
+
+create or replace package body RDX_SM_InstStateHist as
+
+	procedure dailyMaintenance
+	is
+	    cMillisPerHour constant integer := 60 * 60 * 1000;
+	    cMillisPerDay constant integer := 24 * cMillisPerHour;
+	    vNowMillis integer := RDX_Utils.getUnixEpochMillis();
+	    vMaxStoreDays integer;
+	    vMaxStoreMillis integer;
+	begin
+	    for c in (select RDX_INSTANCE.ID as instId, nvl(RDX_INSTANCE.INSTSTATEHISTORYSTOREDAYS, RDX_SYSTEM.INSTSTATEHISTORYSTOREDAYS) as storeDays
+	              from RDX_INSTANCE, RDX_SYSTEM where RDX_INSTANCE.SYSTEMID = RDX_SYSTEM.ID) loop
+	        loop
+	            delete /*+ index(RDX_SM_INSTANCESTATEHISTORY, PK_RDX_SM_INSTANCESTATEHISTORY) */ from RDX_SM_INSTANCESTATEHISTORY where INSTANCEID = c.instId and REGTIMEMILLIS < vNowMillis - c.storeDays * cMillisPerDay and RowNum < 10000;
+	            exit when SQL%NotFound;
+	            commit;
+	        end loop;    
+	    end loop;
+	    
+	    select max(nvl(RDX_INSTANCE.INSTSTATEHISTORYSTOREDAYS, RDX_SYSTEM.INSTSTATEHISTORYSTOREDAYS)) into vMaxStoreDays 
+	    from RDX_INSTANCE, RDX_SYSTEM where RDX_INSTANCE.SYSTEMID = RDX_SYSTEM.ID;
+	    vMaxStoreMillis := vMaxStoreDays * cMillisPerDay + cMillisPerHour;
+	    
+	    loop
+	        delete from RDX_SM_STACKDATA where LASTUSAGETIMEMILLIS < vNowMillis - vMaxStoreMillis and RowNum < 10000;
+	        exit when SQL%NotFound;
+	        commit;
+	    end loop;
+	end;
+
+	function getStackByDigest(
+		pDigest in varchar2
+	) return clob
+	is
+	    vCompressedStack blob;
+	    vClob clob;
+	begin
+	    select COMPRESSEDSTACK into vCompressedStack from RDX_SM_STACKDATA where DIGEST = pDigest;
+	    return RDX_Utils.gunzipToClob(vCompressedStack);
+	exception
+	    when NO_DATA_FOUND then
+	        return '<stack not found>';
 	end;
 end;
 /
@@ -13314,7 +15885,6 @@ end;
 
 create or replace package body RDX_Trace as
 
-	-- for internal use
 	function put_internal(
 		pCode in varchar2,
 		pWords in clob,
@@ -13378,6 +15948,10 @@ create or replace package body RDX_Trace as
 	   end loop;   
 	   commit;
 	   return vId;
+	exception
+	   when OTHERS then
+	      rollback;
+	      return NULL;
 	end;
 
 	procedure put(
@@ -13443,6 +16017,22 @@ create or replace package body RDX_Trace as
 	  vId integer;
 	begin
 	  vId := RDX_Trace.put_internal(pCode, RDX_Array.merge(e1 => pWord1, e2 => pWord2, e3 => pWord3), pSource, pSeverity, null, null, null, null, null, pIsSensitive); 
+	end;
+
+	procedure put_4word(
+		pSeverity in integer,
+		pCode in varchar2,
+		pWord1 in varchar2,
+		pWord2 in varchar2,
+		pWord3 in varchar2,
+		pWord4 in varchar2,
+		pSource in varchar2,
+		pIsSensitive in integer := 0
+	)
+	is
+	  vId integer;
+	begin
+	  vId := RDX_Trace.put_internal(pCode, RDX_Array.merge(e1 => pWord1, e2 => pWord2, e3 => pWord3, e4 => pWord4), pSource, pSeverity, null, null, null, null, null, pIsSensitive); 
 	end;
 
 	procedure deleteDebug
@@ -13533,11 +16123,15 @@ create or replace package body RDX_Trace as
 	     exit when SQL%NOTFOUND;
 	     commit;
 	  end loop;
+	  execute immediate 'alter table RDX_EVENTCONTEXT shrink space cascade';
+	  
 	  loop  
 	     delete from RDX_EVENTLOG where RDX_EVENTLOG.RAISETIME < d and ROWNUM < 10000;
 	     exit when SQL%NOTFOUND;
 	     commit;
 	  end loop;
+	  execute immediate 'alter table RDX_EVENTLOG shrink space cascade';
+
 	  #ENDIF
 	end;
 
@@ -13555,6 +16149,206 @@ create or replace package body RDX_Trace as
 	    vId := rdx_trace.put_internal(rec.code, rec.words, rec.component, rec.severity, rec.contextTypes, rec.contextIds, rec.time, rec.userName, rec.stationName, rec.isSensitive);
 	  end loop;
 	  return vId;
+	end;
+
+	function translate(
+		pBundleId in varchar2,
+		pStringId in varchar2,
+		pLanguage in varchar2,
+		pWords in clob
+	) return clob
+	is
+	    version integer := RDX_Arte.getVersion();
+	    wordsArrStr RDX_Array.ARR_STR := null;
+	    wordsArrClob RDX_Array.ARR_CLOB := null;
+	    template varchar2(32767);
+	    result clob := null;
+	    word clob := null;
+	    i integer := 1;
+	    j integer;
+	    wi integer;
+	begin
+	    begin
+	        wordsArrStr := RDX_Array.fromStr(pWords);
+	    exception
+	        when OTHERS then
+	            wordsArrClob := RDX_Array.fromStrToArrClob(pWords);
+	    end;
+	            
+	    if pBundleId is NULL or pStringId is NULL then
+	        if wordsArrStr is not NULL and wordsArrStr.count > 0 then
+	            return wordsArrStr(1);
+	        elsif wordsArrClob is not NULL and wordsArrClob.count > 0 then
+	            return wordsArrClob(1);    
+	        end if;
+	        return null;
+	    else
+	        select STRINGVALUE into template from RDX_EVENTCODEMLS
+	        where VERSIONNUM = version and BUNDLEID = pBundleId and STRINGID = pStringId and LANGUAGE = pLanguage;
+	        
+	        while i <= length(template) loop
+	            j := instr(template, '%', i);
+	            if j = 0 then
+	                j := length(template) + 1;
+	            end if;
+	            result := result || substr(template, i, j - i);
+
+	            if j < length(template) and substr(template, j + 1, 1) in ('1', '2', '3', '4', '5', '6', '7', '8', '9') then
+	                wi := to_number(substr(template, j + 1, 1));
+	                if wordsArrStr is not null and wordsArrStr.count >= wi then
+	                    word := wordsArrStr(wi);
+	                elsif wordsArrClob is not null and wordsArrClob.count >= wi then
+	                    word := wordsArrClob(wi);
+	                else
+	                    word := 'null';
+	                end if;
+	                result := result || word;
+	                i := j + 2;
+	            elsif j <= length(template) then
+	                result := result || '%';
+	                i := j + 1;
+	            else
+	                i := j + 1;
+	            end if;
+	        end loop;
+	    end if;
+	    return result;
+	exception
+	    when NO_DATA_FOUND then
+	        return '??? (code=' || pBundleId || '-' || pStringId || ', args = ' || pWords || ')';
+	end;
+
+	function translate(
+		pQualifiedId in varchar2,
+		pLanguage in varchar2,
+		pWords in clob
+	) return clob
+	is
+	    delimPos integer := instr(pQualifiedId, '-');
+	    bundleId varchar2(100) := substr(pQualifiedId, 1, delimPos - 1);
+	    stringId varchar2(100) := substr(pQualifiedId, delimPos + 1);
+	    result clob := RDX_Trace.translate(bundleId, stringId, pLanguage, pWords);
+	begin
+	    return result;
+	end;
+end;
+/
+
+create or replace package body RDX_Utils as
+
+	function getSysTimeZone return varchar2
+	is
+	    vTimeZoneStr varchar2(10);
+	begin
+	    select extract(TIMEZONE_HOUR from systimestamp) || ':' || extract(TIMEZONE_MINUTE from systimestamp) into vTimeZoneStr from dual;
+	    return vTimeZoneStr;
+	end;
+
+	function getSysTimeZoneOffsetDays return number
+	is
+	    hoursOffset number;
+	    minutesOffset number;
+	begin
+	    select extract(TIMEZONE_HOUR from systimestamp), extract(TIMEZONE_MINUTE from systimestamp) into hoursOffset, minutesOffset from dual;
+	    return (60 * hoursOffset + minutesOffset) / 1440.0;
+	end;
+
+	function dateToTsTz(
+		pDate in date
+	) return timestamp with time zone
+	is
+	begin
+	    return from_tz(cast(pDate AS TIMESTAMP), RDX_Utils.getSysTimeZone());
+	end;
+
+	function getUnixEpochMillis(
+		pTimestamp in timestamp with time zone
+	) return integer
+	is
+	    res integer;
+	begin
+	    select (extract(day from(sys_extract_utc(pTimestamp) - to_timestamp('1970-01-01', 'YYYY-MM-DD'))) * 86400000 
+	            + to_number(to_char(sys_extract_utc(pTimestamp), 'SSSSSFF3'))) into res from dual;
+	    return res;
+	end;
+
+	function getUnixEpochMillis return integer
+	is
+	begin
+	    return RDX_Utils.getUnixEpochMillis(systimestamp);
+	end;
+
+	function getUnixEpochMillisDate(
+		pDate in date
+	) return integer
+	is
+	begin
+	    return RDX_Utils.getUnixEpochMillis( RDX_Utils.dateToTsTz(pDate) );
+	end;
+
+	function unixEpochMsToTsTzUtc(
+		pMillis in number
+	) return timestamp with time zone
+	is
+	    res timestamp with time zone;
+	begin
+	    select 
+	        to_timestamp_tz('1970-01-01 UTC', 'yyyy-mm-dd tzr')+ numtodsinterval(pMillis/1000,'second')  
+	    into res
+	    from dual;    
+	    return res;
+	end;
+
+	function unixEpochMsToDate(
+		pMillis in number
+	) return date
+	is
+	    res date;
+	begin
+	    select cast(RDX_Utils.unixEpochMsToTsTzUtc(pMillis) as date) + RDX_Utils.getSysTimeZoneOffsetDays() into res from dual;
+	    return res;
+	end;
+
+	function blobToClob(
+		pData in blob
+	) return clob
+	is
+	    res clob;
+	    destOffset integer := 1;
+	    srcOffset  integer := 1;
+	    utf8 constant integer := 873;
+	    langCtx integer := dbms_lob.default_lang_ctx;
+	    warn integer;
+	begin
+	    if pData is NULL then
+	        return NULL;
+	    end if;
+	    dbms_lob.createTemporary(res, true, dbms_lob.call);
+	    dbms_lob.convertToClob(
+	            dest_lob => res,
+	            src_blob => pData,
+	            amount => dbms_lob.lobmaxsize,
+	            dest_offset => destOffset,
+	            src_offset => srcOffset,
+	            blob_csid    => utf8,
+	            lang_context => langCtx,
+	            warning => warn);
+	    return res;
+	end;
+
+	function gunzipToClob(
+		pCompressedData in blob
+	) return clob
+	is
+	    decompressedBlob blob;
+	    decompressedClob clob;
+	begin
+	    if pCompressedData is null then
+	        return NULL;
+	    end if;
+	    decompressedBlob := utl_compress.lz_uncompress(pCompressedData);
+	    decompressedClob := RDX_Utils.blobToClob(decompressedBlob);
+	    return decompressedClob;
 	end;
 end;
 /
@@ -13618,9 +16412,23 @@ end;
 
 create or replace package body RDX_WF as
 
-	DEBUG_ROLE CONSTANT VARCHAR2(50) := 'rol7MTXJKWQORCJFD7EEZHGZ7TOJM';
-	ADMIN_ROLE CONSTANT VARCHAR2(50) := 'rolHM6FIFA4JFCJFIYPB3P2KC435U';
-	CLERK_ROLE CONSTANT VARCHAR2(50) := 'rolOYMAGGZIXNF6TMGZASCZET6VOI';
+	function constDebugRole return varchar2
+	is
+	begin
+	    return 'rol7MTXJKWQORCJFD7EEZHGZ7TOJM';
+	end;
+
+	function constAdminRole return varchar2
+	is
+	begin
+	    return 'rolHM6FIFA4JFCJFIYPB3P2KC435U';
+	end;
+
+	function constClerkRole return varchar2
+	is
+	begin
+	    return 'rolOYMAGGZIXNF6TMGZASCZET6VOI';
+	end;
 
 
 
@@ -13637,7 +16445,7 @@ create or replace package body RDX_WF as
 	        from RDX_WF_PROCESS
 	        where RDX_WF_PROCESS.ID = pProcessId;
 
-	    if RDX_ACS.curUserHasRoleInArea(ADMIN_ROLE, accessArea) = 0 and RDX_ACS.curUserHasRoleInArea(DEBUG_ROLE, accessArea) = 0 then
+	    if RDX_ACS.curUserHasRoleInArea( RDX_WF.constAdminRole, accessArea) = 0 and RDX_ACS.curUserHasRoleInArea(RDX_WF.constDebugRole, accessArea) = 0 then
 	        return 0;
 	    end if;
 	/*    
@@ -13678,7 +16486,7 @@ create or replace package body RDX_WF as
 	        from RDX_WF_FORM, RDX_WF_PROCESS
 	        where RDX_WF_FORM.ID = pFormId and RDX_WF_PROCESS.ID = RDX_WF_FORM.PROCESSID;
 
-	    if RDX_ACS.curUserHasRoleInArea(ADMIN_ROLE, accessArea) = 0 and RDX_ACS.curUserHasRoleInArea(DEBUG_ROLE, accessArea) = 0then
+	    if RDX_ACS.curUserHasRoleInArea(RDX_WF.constAdminRole, accessArea) = 0 and RDX_ACS.curUserHasRoleInArea(RDX_WF.constDebugRole, accessArea) = 0then
 	        return 0;
 	    end if;
 	/*    
@@ -13728,7 +16536,7 @@ create or replace package body RDX_WF as
 	        from RDX_WF_FORM, RDX_WF_PROCESS
 	        where RDX_WF_FORM.ID = pFormId and RDX_WF_PROCESS.ID = RDX_WF_FORM.PROCESSID;
 
-	    if RDX_ACS.userHasRoleInArea(pUser, CLERK_ROLE, accessArea) = 0 then
+	    if RDX_ACS.userHasRoleInArea(pUser, RDX_WF.constClerkRole, accessArea) = 0 then
 	        return 0;
 	    end if;
 	/*    
@@ -14285,7 +17093,8 @@ create or replace trigger TADR_RDX_PC_OUTMESSAGE
 after delete on RDX_PC_OUTMESSAGE
 for each row
 Begin
-  if :old.HISTMODE = 0 then
+  if :old.FAILEDMESSAGE is NULL -- otherwise resend is possible
+        and (:old.HISTMODE = 0 or :old.STOREATTACHINHIST = 0) then
     Delete from RDX_PC_ATTACHMENT where RDX_PC_ATTACHMENT.MESSID=:old.ID;
   end if;
 End;
@@ -14310,8 +17119,68 @@ End;
 create or replace trigger TAIDU_RDX_SYSTEM
 after delete or insert or update on RDX_SYSTEM
 begin
-    RDX_AUDIT.DEFAULTAUDITSCHEME := NULL;
+    RDX_AUDIT_Vars.DEFAULTAUDITSCHEME := NULL;
 end;
+/
+
+create or replace trigger TAIR_RDX_AADC_OGGERROR
+after insert on RDX_AADC_OGGERROR
+for each row
+declare
+    prevTag RAW(10);
+begin
+    prevTag := DBMS_STREAMS.GET_TAG();
+    BEGIN
+        DBMS_STREAMS.SET_TAG(null);
+        RDX_Trace.put_4word(3, 'mlbaec6FJM26WOYRD2VPIPOQNVLY6K6Y-mls65KIIJOGAVFBNCM5QZQO524YHI',
+            to_char(:new.FILERBA), to_char(:new.FILESEQNO), to_char(:new.SCN),
+            to_char(:new.DBERRNUM) || ' - ' || :new.DBERRMSG,
+            'Server'
+            );
+    EXCEPTION
+        WHEN OTHERS THEN 
+            DBMS_STREAMS.SET_TAG(prevTag);
+            RAISE;
+    END;        
+    DBMS_STREAMS.SET_TAG(prevTag);
+end;
+/
+begin
+    DBMS_DDL.SET_TRIGGER_FIRING_PROPERTY(
+        trig_owner => sys_context( 'userenv', 'current_schema' ), 
+        trig_name  => 'TAIR_' || 'RDX_AADC_OGGERROR',
+        fire_once  => false);
+end;
+
+
+/
+
+create or replace trigger TAIR_RDX_AADC_SEQUENCEDDL
+after insert on RDX_AADC_SEQUENCEDDL
+for each row
+DECLARE
+    pragma AUTONOMOUS_TRANSACTION;
+    oggState RAW(100);
+BEGIN
+    oggState := RDX_Aadc.suspendReplication;
+    RDX_Aadc.normalizeSequence(:new.NAME);
+    RDX_Aadc.restoreReplication(oggState);
+    commit;
+EXCEPTION
+    WHEN OTHERS THEN 
+        RDX_Aadc.restoreReplication(oggState);
+        RAISE;
+END;
+/
+
+begin
+    DBMS_DDL.SET_TRIGGER_FIRING_PROPERTY(
+        trig_owner => sys_context( 'userenv', 'current_schema' ), 
+        trig_name  => 'TAIR_' || 'RDX_AADC_SEQUENCEDDL',
+        fire_once  => false);
+end;
+
+
 /
 
 create or replace trigger TAIUR_RDX_SM_METRICSTATE
@@ -14360,10 +17229,18 @@ begin
    end;
     
    if auditSchemaId IS NOT NULL then 
-       RDX_AUDIT.DEFAULTAUDITSCHEME := auditSchemaId;
+       RDX_AUDIT_Vars.DEFAULTAUDITSCHEME := auditSchemaId;
    else
-       RDX_AUDIT.DEFAULTAUDITSCHEME := '-1';
+       RDX_AUDIT_Vars.DEFAULTAUDITSCHEME := '-1';
    end if;
+end;
+/
+
+create or replace trigger TBIR_RDX_AADC_OGGERROR
+before insert on RDX_AADC_OGGERROR
+for each row
+begin
+  SELECT SQN_RDX_EVENTLOGID.NEXTVAL INTO :new.id FROM dual;
 end;
 /
 
@@ -14380,14 +17257,23 @@ before update of PWDHASH on RDX_AC_USER
 for each row
 begin
     :new.LASTPWDCHANGETIME := sysdate;
-    :new.MUSTCHANGEPWD := 0; 
+    if not UPDATING ('MUSTCHANGEPWD') then
+        :new.MUSTCHANGEPWD := 0;
+    end if;
 end;
 /
 
 create or replace trigger UPF_44TUT3JSR5BPTNBRF3PO2HF6OU
-after delete on COUNTER
+after delete on RDX_COUNTER
 begin
    RDX_ENTITY.flushUserPropOnDelOwner('tbl44TUT3JSR5BPTNBRF3PO2HF6OU');
+end;
+/
+
+create or replace trigger UPF_J6SOXKD3ZHOBDCMTAALOMT5GDM
+after delete on RDX_USERFUNC
+begin
+   RDX_ENTITY.flushUserPropOnDelOwner('tblJ6SOXKD3ZHOBDCMTAALOMT5GDM');
 end;
 /
 
@@ -14403,6 +17289,14 @@ after delete on RDX_SM_METRICTYPE
 for each row
 begin
    RDX_ENTITY.UserPropOnDelOwner('tbl2H6SULJHXJGFVIS6UVHRWQS4AM', :old.ID);
+end;
+/
+
+create or replace trigger UPO_4UBCGVD5ZZF6ZIJN4J3YISPFZA
+after delete on RDX_TST_AUDITMASTER
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', :old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF'));
 end;
 /
 
@@ -14422,11 +17316,43 @@ begin
 end;
 /
 
+create or replace trigger UPO_73I26X3GUNGMPDAF3YPGJE272Y
+after delete on RDX_TST_TEDCCHILD
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tbl73I26X3GUNGMPDAF3YPGJE272Y', :old.ID);
+end;
+/
+
 create or replace trigger UPO_7HTJAWJXVLOBDCLSAALOMT5GDM
 after delete on RDX_PC_EVENTSUBSCRIPTION
 for each row
 begin
    RDX_ENTITY.UserPropOnDelOwner('tbl7HTJAWJXVLOBDCLSAALOMT5GDM', :old.ID);
+end;
+/
+
+create or replace trigger UPO_B6QEDVV5BNEWZHKZRTVR67TKOY
+after delete on RDX_TST_CHILD
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblB6QEDVV5BNEWZHKZRTVR67TKOY', :old.ID);
+end;
+/
+
+create or replace trigger UPO_CJ53NERF4VBJDEDGNHBFXRNNC4
+after delete on RDX_TST_DMTESTA
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblCJ53NERF4VBJDEDGNHBFXRNNC4', :old.PKINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKSTR));
+end;
+/
+
+create or replace trigger UPO_FW5F7B7PS5DVXPQS2XAUUSITJQ
+after delete on RDX_TST_USERCHILD
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblFW5F7B7PS5DVXPQS2XAUUSITJQ', :old.ID);
 end;
 /
 
@@ -14462,6 +17388,38 @@ begin
 end;
 /
 
+create or replace trigger UPO_J5AGLYGB6RGKNJ36XBBX5AZ4ZA
+after delete on RDX_TST_PARENT
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA', :old.ID);
+end;
+/
+
+create or replace trigger UPO_KPUY4CMANZH3XDOZZB7FXKHWEY
+after delete on RDX_TST_DMTEST
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblKPUY4CMANZH3XDOZZB7FXKHWEY', :old.ID);
+end;
+/
+
+create or replace trigger UPO_M2NL42YXRRA5ZH27LCKIW5CQNI
+after delete on RDX_USERREPORTVERSION
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblM2NL42YXRRA5ZH27LCKIW5CQNI', RDX_ENTITY.PackPIDStr(:old.REPORTGUID)||'~'||:old.VERSION);
+end;
+/
+
+create or replace trigger UPO_M7J46MP6F3PBDIJEABQAQH3XQ4
+after delete on RDX_AC_APPROLE
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblM7J46MP6F3PBDIJEABQAQH3XQ4', RDX_ENTITY.PackPIDStr(:old.GUID));
+end;
+/
+
 create or replace trigger UPO_PNJV5QTXIBGJPBHK64RO3LH73A
 after delete on RDX_SB_PIPELINENODE
 for each row
@@ -14483,6 +17441,14 @@ after delete on RDX_WF_PROCESS
 for each row
 begin
    RDX_ENTITY.UserPropOnDelOwner('tblRDXQVFY6PLNRDANMABIFNQAABA', :old.ID);
+end;
+/
+
+create or replace trigger UPO_RHH7SYO5I5EFRGYIBOSVUXKD7U
+after delete on RDX_USERREPORT
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblRHH7SYO5I5EFRGYIBOSVUXKD7U', RDX_ENTITY.PackPIDStr(:old.GUID));
 end;
 /
 
@@ -14510,6 +17476,14 @@ begin
 end;
 /
 
+create or replace trigger UPO_VKKXVT2NARDUNGRKAOMYB6VWXI
+after delete on RDX_PC_NOTIFICATIONSENDER
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblVKKXVT2NARDUNGRKAOMYB6VWXI', :old.ID);
+end;
+/
+
 create or replace trigger UPO_VP66JC4HXLNRDF5JABIFNQAABA
 after delete on RDX_WF_FORM
 for each row
@@ -14526,11 +17500,35 @@ begin
 end;
 /
 
+create or replace trigger UPO_WMN3P5J5ONCFPLJVGBFAKZXZXU
+after delete on RDX_CM_PACKET
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblWMN3P5J5ONCFPLJVGBFAKZXZXU', :old.ID);
+end;
+/
+
 create or replace trigger UPO_WZB7K4HLJPOBDCIUAALOMT5GDM
 after delete on RDX_JS_TASK
 for each row
 begin
    RDX_ENTITY.UserPropOnDelOwner('tblWZB7K4HLJPOBDCIUAALOMT5GDM', :old.ID);
+end;
+/
+
+create or replace trigger UPO_X6WI554KVVCZPGNLK7CSZLOMTY
+after delete on RDX_SB_PIPELINE
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblX6WI554KVVCZPGNLK7CSZLOMTY', :old.ID);
+end;
+/
+
+create or replace trigger UPO_XD3B6CBJ4BFIDJ2LUNLMJ4CXOE
+after delete on RDX_TST_TEDCPARENT
+for each row
+begin
+   RDX_ENTITY.UserPropOnDelOwner('tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE', :old.ID);
 end;
 /
 
@@ -14551,10 +17549,18 @@ end;
 /
 
 create or replace trigger UPS_44TUT3JSR5BPTNBRF3PO2HF6OU
-after delete on COUNTER
+after delete on RDX_COUNTER
 for each row
 begin
    RDX_ENTITY.ScheduleUserPropOnDelOwner('tbl44TUT3JSR5BPTNBRF3PO2HF6OU', :old.ID);
+end;
+/
+
+create or replace trigger UPS_J6SOXKD3ZHOBDCMTAALOMT5GDM
+after delete on RDX_USERFUNC
+for each row
+begin
+   RDX_ENTITY.ScheduleUserPropOnDelOwner('tblJ6SOXKD3ZHOBDCMTAALOMT5GDM', RDX_ENTITY.PackPIDStr(:old.UPDEFID)||'~'||RDX_ENTITY.PackPIDStr(:old.UPOWNERENTITYID)||'~'||RDX_ENTITY.PackPIDStr(:old.UPOWNERPID));
 end;
 /
 
@@ -14566,11 +17572,47 @@ begin
 end;
 /
 
+create or replace trigger UPV_73I26X3GUNGMPDAF3YPGJE272Y
+after delete on RDX_TST_TEDCCHILD
+for each row
+begin
+    RDX_ENTITY.userPropOnDelValue('tbl73I26X3GUNGMPDAF3YPGJE272Y', :old.ID);
+end;
+
+/
+
+create or replace trigger UPV_IOIXD5DJVVD53KTA2RNHOYYJGY
+after delete on RDX_TST_USERPARENTSIMPLE
+for each row
+begin
+    RDX_ENTITY.userPropOnDelValue('tblIOIXD5DJVVD53KTA2RNHOYYJGY', :old.ID);
+end;
+
+/
+
+create or replace trigger UPV_OIKKJ54YSNFLTMVHR4R6DKTYBQ
+after delete on RDX_TST_USERPARENTCOMPLEX
+for each row
+begin
+    RDX_ENTITY.userPropOnDelValue('tblOIKKJ54YSNFLTMVHR4R6DKTYBQ', :old.PK_INT||'~'||RDX_ENTITY.PackPIDStr(:old.PK_CHAR)||'~'||to_char(:old.PK_DATE,'yyyy-mm-dd hh24:mi:ss.FF6')||'~'||RDX_ENTITY.PackPIDStr(:old.PK_STR));
+end;
+
+/
+
 create or replace trigger UPV_QZ2AJHN3PFDWXC5BT6I66OS5PQ
 after delete on RDX_MESSAGEQUEUE
 for each row
 begin
     RDX_ENTITY.userPropOnDelValue('tblQZ2AJHN3PFDWXC5BT6I66OS5PQ', :old.ID);
+end;
+
+/
+
+create or replace trigger UPV_XD3B6CBJ4BFIDJ2LUNLMJ4CXOE
+after delete on RDX_TST_TEDCPARENT
+for each row
+begin
+    RDX_ENTITY.userPropOnDelValue('tblXD3B6CBJ4BFIDJ2LUNLMJ4CXOE', :old.ID);
 end;
 
 /
@@ -14582,7 +17624,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14614,7 +17656,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14646,6 +17688,56 @@ begin
 end;
 /
 
+create or replace trigger atd4UBCGVD5ZZF6ZIJN4J3YISPFZA
+after delete on RDX_TST_AUDITMASTER
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+      if vSchemeId IS NULL then 
+           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      end if;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+   if vSaveData=1 then
+            RDX_AUDIT.addValueInt(vChangeData,'old.colIY54HRUWQRC5LI4AMLNJDHNCAU',:old.COLINT);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colSW4DJGZ5LRCLFJCYZLQZGDNAME',:old.COLCHAR);
+            RDX_AUDIT.addValueNum(vChangeData,'old.col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:old.COLNUM);
+            RDX_AUDIT.addValueDate(vChangeData,'old.colJ7FU6BTM75HQTCIAKYQDRXDY5U',:old.COLDATE);
+            RDX_AUDIT.addValueDate(vChangeData,'old.col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:old.COLTIMESTAMP);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colV5EPQ4QOLREEZOV2UUHUWZHYEE',:old.COLSTR);
+            RDX_AUDIT.addValueRaw(vChangeData,'old.colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:old.COLBIN);
+            RDX_AUDIT.addValueBlob(vChangeData,'old.colFDVZCLAYD5HZRN2JGORFYFA3NE',:old.COLBLOB);
+            RDX_AUDIT.addValueClob(vChangeData,'old.colL76ZGR3OPVHQFHYKDPWUIZQA34',:old.COLCLOB);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colI7RDFSIDUZE4PPBNSJFU4RCEIM',:old.COLARRINT);
+            RDX_AUDIT.addValueClob(vChangeData,'old.colGAR4IF3GRVAFLA4DTQXPQGCSME',:old.COLARRCHAR);
+            RDX_AUDIT.addValueClob(vChangeData,'old.colY5PXD2VKE5FBTFGVSCPTLGE46U',:old.COLARRSTR);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colE3SYXVPOCVEIFEEYBEIFXY66XQ',:old.COLARRNUM);
+            RDX_AUDIT.addValueClob(vChangeData,'old.colYZYQHXB75VHEVG2BTGNGPNJZEA',:old.COLARRDATETIME);
+            RDX_AUDIT.addValueClob(vChangeData,'old.col54URWAVOAVE4ZFLUZI7QEQYCDM',:old.COLARRBIN);
+            RDX_AUDIT.addValueClob(vChangeData,'old.colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:old.COLARRPARENTREF);
+   end if;
+
+   vClassGuid := :old.CLASSGUID;
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'D',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', 'D','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
+end;
+/
+
 create or replace trigger atd52CHFNO3EGWDBRCRAAIT4AGD7E
 after delete on RDX_INSTANCE
 for each row
@@ -14653,7 +17745,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14685,7 +17777,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14717,7 +17809,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14732,6 +17824,9 @@ begin
    vPID:=:old.ID;
    if vSaveData=1 then
             RDX_AUDIT.addValueStr(vChangeData,'old.colB2VQZVZFVLOBDCLSAALOMT5GDM',:old.KIND);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colQYYL4LVVA5CFVMK63MXXWHGJV4',:old.DELIVERYTRACKINGPOLICY);
+            RDX_AUDIT.addValueInt(vChangeData,'old.colDHUCZH4SC5A6VKLQWEXJLA7AJM',:old.DELIVERYTRACKINGPERIOD);
+            RDX_AUDIT.addValueInt(vChangeData,'old.colOSQWZLFLI5G3RCM5C7JFSQX6M4',:old.DELIVERYTRACKINGRETRYPERIOD);
    end if;
 
    vClassGuid := 'aec5WO5N3BEVLOBDCLSAALOMT5GDM';
@@ -14752,7 +17847,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14784,7 +17879,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14831,7 +17926,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14863,7 +17958,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14888,6 +17983,44 @@ begin
 end;
 /
 
+create or replace trigger atdB6QEDVV5BNEWZHKZRTVR67TKOY
+after delete on RDX_TST_CHILD
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+      if vSchemeId IS NULL then 
+           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      end if;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addValueInt(vChangeData,'old.col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:old.CHILDTYPE);
+            RDX_AUDIT.addValueInt(vChangeData,'old.colZDX2SYK7TJAFTJENP6ATORQOTI',:old.COLBOOL);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colVTKWXW5C7RHLVACWBAAOZ3XJGY',:old.COLCHAR);
+            RDX_AUDIT.addValueDate(vChangeData,'old.col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:old.COLDATETIME);
+   end if;
+
+   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'D',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblB6QEDVV5BNEWZHKZRTVR67TKOY', 'D','tblB6QEDVV5BNEWZHKZRTVR67TKOY');
+end;
+/
+
 create or replace trigger atdC2OWQGDVVHWDBROXAAIT4AGD7E
 after delete on RDX_SERVICE
 for each row
@@ -14895,7 +18028,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14927,7 +18060,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14959,7 +18092,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -14991,7 +18124,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15023,7 +18156,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15061,7 +18194,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15093,7 +18226,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15129,7 +18262,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15157,6 +18290,38 @@ begin
 end;
 /
 
+create or replace trigger atdJ5AGLYGB6RGKNJ36XBBX5AZ4ZA
+after delete on RDX_TST_PARENT
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+      if vSchemeId IS NULL then 
+           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      end if;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.ID;
+
+   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'D',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA', 'D','tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA');
+end;
+/
+
 create or replace trigger atdJ6SOXKD3ZHOBDCMTAALOMT5GDM
 after delete on RDX_USERFUNC
 for each row
@@ -15164,7 +18329,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15199,7 +18364,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15234,7 +18399,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15269,7 +18434,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15297,38 +18462,6 @@ begin
 end;
 /
 
-create or replace trigger atdOVPOORJSBFAGZERW5IXTRFTWOY
-after delete on RDX_PC_EVENTLIMITACC
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
-      if vSchemeId IS NULL then 
-           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      end if;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblOVPOORJSBFAGZERW5IXTRFTWOY'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.SUBSCRIPTIONID||'~'||RDX_ENTITY.PackPIDStr(:old.USERNAME)||'~'||RDX_ENTITY.PackPIDStr(:old.EVENTCODE)||'~'||RDX_ENTITY.PackPIDStr(:old.CHANNELKIND);
-
-   vClassGuid := 'aecOVPOORJSBFAGZERW5IXTRFTWOY';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblOVPOORJSBFAGZERW5IXTRFTWOY',vClassGuid,vPID,'D',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblOVPOORJSBFAGZERW5IXTRFTWOY', 'D','tblOVPOORJSBFAGZERW5IXTRFTWOY');
-end;
-/
-
 create or replace trigger atdPCE24TUPIHNRDJIEACQMTAIZT4
 after delete on RDX_JS_JOBEXECUTORUNITBOOST
 for each row
@@ -15336,7 +18469,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15368,7 +18501,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15393,6 +18526,43 @@ begin
 end;
 /
 
+create or replace trigger atdQZ2AJHN3PFDWXC5BT6I66OS5PQ
+after delete on RDX_MESSAGEQUEUE
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+      if vSchemeId IS NULL then 
+           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      end if;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblQZ2AJHN3PFDWXC5BT6I66OS5PQ'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addValueStr(vChangeData,'old.colL6K3EEEXRBG4BEGHD54YVL5VVE',:old.SERVERCERTALIASES);
+            RDX_AUDIT.addValueStr(vChangeData,'old.col24OZ2N37RNEQPPFU36C2MKSK2A',:old.CLIENTKEYALIASES);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colU44WLH4LFZFR5M4IQMPS5TIT7I',:old.CIPHERSUITES);
+   end if;
+
+   vClassGuid := :old.CLASSGUID;
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblQZ2AJHN3PFDWXC5BT6I66OS5PQ',vClassGuid,vPID,'D',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblQZ2AJHN3PFDWXC5BT6I66OS5PQ', 'D','tblQZ2AJHN3PFDWXC5BT6I66OS5PQ');
+end;
+/
+
 create or replace trigger atdR7FXMYDVVHWDBROXAAIT4AGD7E
 after delete on RDX_SAP
 for each row
@@ -15400,7 +18570,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15432,6 +18602,41 @@ begin
 end;
 /
 
+create or replace trigger atdS4NVQKVQI5HLTG33G43UK5QMXU
+after delete on RDX_TST_AUDITDETAIL
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+      if vSchemeId IS NULL then 
+           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      end if;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+   if vSaveData=1 then
+            RDX_AUDIT.addValueStr(vChangeData,'old.colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:old.TITLE);
+   end if;
+
+   vClassGuid := 'aecS4NVQKVQI5HLTG33G43UK5QMXU';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'D',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblS4NVQKVQI5HLTG33G43UK5QMXU', 'D','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
+end;
+/
+
 create or replace trigger atdSY4KIOLTGLNRDHRZABQAQH3XQ4
 after delete on RDX_AC_USER
 for each row
@@ -15439,7 +18644,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15471,7 +18676,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15499,6 +18704,47 @@ begin
 end;
 /
 
+create or replace trigger atdVKKXVT2NARDUNGRKAOMYB6VWXI
+after delete on RDX_PC_NOTIFICATIONSENDER
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
+      if vSchemeId IS NULL then 
+           select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      end if;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblVKKXVT2NARDUNGRKAOMYB6VWXI'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addValueStr(vChangeData,'old.colPH5JTQND3VDZTJJ7Q46PRKF7JE',:old.CHANNELKIND);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colTGS3PTFC5RGSLAFMQFUSXEJUOI',:old.ROUTINGKEY);
+            RDX_AUDIT.addValueInt(vChangeData,'old.colEI7GIMO4KFAPRAU4HAVU6BQ3PI',:old.HISTMODE);
+            RDX_AUDIT.addValueInt(vChangeData,'old.colHDP4Q3IHNRGLZFFT6IRB3M3G24',:old.STOREATTACHINHIST);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colYRJIL7ZCM5AK5LDULILF6B2FDA',:old.SUBJECTTEMPLATE);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colLB4DFGLQ7RD6TK65SWSARQVKGA',:old.BODYTEMPLATE);
+            RDX_AUDIT.addValueStr(vChangeData,'old.colXECQRSZBN5F27GJKI242EGT7NA',:old.USERGROUPNAME);
+   end if;
+
+   vClassGuid := 'aecVKKXVT2NARDUNGRKAOMYB6VWXI';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblVKKXVT2NARDUNGRKAOMYB6VWXI',vClassGuid,vPID,'D',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblVKKXVT2NARDUNGRKAOMYB6VWXI', 'D','tblVKKXVT2NARDUNGRKAOMYB6VWXI');
+end;
+/
+
 create or replace trigger atdWZB7K4HLJPOBDCIUAALOMT5GDM
 after delete on RDX_JS_TASK
 for each row
@@ -15506,7 +18752,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15540,7 +18786,7 @@ begin
    begin
       select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
       from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID=RDX_AUDIT.DEFAULTAUDITSCHEME
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID=RDX_AUDIT_VARS.DEFAULTAUDITSCHEME
          and RDX_AU_SCHEMEITEM.TABLEID = 'tblX5TD7JDVVHWDBROXAAIT4AGD7E'
          and RDX_AU_SCHEMEITEM.EVENTTYPE = 'D';
    exception
@@ -15566,7 +18812,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15603,7 +18849,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15635,7 +18881,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15667,7 +18913,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15699,7 +18945,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15731,7 +18977,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15766,7 +19012,7 @@ disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
 begin
    begin
-      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
       if vSchemeId IS NULL then 
            select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
       end if;
@@ -15872,6 +19118,53 @@ begin
 end;
 /
 
+create or replace trigger ati4UBCGVD5ZZF6ZIJN4J3YISPFZA
+after insert on RDX_TST_AUDITMASTER
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:new.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLCHAR)||'~'||Replace(:new.PKCOLNUM, ',', '.')||'~'||to_char(:new.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLSTR)||'~'||to_char(:new.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+   if vSaveData=1 then
+            RDX_AUDIT.addValueInt(vChangeData,'new.colIY54HRUWQRC5LI4AMLNJDHNCAU',:new.COLINT);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colSW4DJGZ5LRCLFJCYZLQZGDNAME',:new.COLCHAR);
+            RDX_AUDIT.addValueNum(vChangeData,'new.col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:new.COLNUM);
+            RDX_AUDIT.addValueDate(vChangeData,'new.colJ7FU6BTM75HQTCIAKYQDRXDY5U',:new.COLDATE);
+            RDX_AUDIT.addValueDate(vChangeData,'new.col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:new.COLTIMESTAMP);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colV5EPQ4QOLREEZOV2UUHUWZHYEE',:new.COLSTR);
+            RDX_AUDIT.addValueRaw(vChangeData,'new.colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:new.COLBIN);
+            RDX_AUDIT.addValueBlob(vChangeData,'new.colFDVZCLAYD5HZRN2JGORFYFA3NE',:new.COLBLOB);
+            RDX_AUDIT.addValueClob(vChangeData,'new.colL76ZGR3OPVHQFHYKDPWUIZQA34',:new.COLCLOB);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colI7RDFSIDUZE4PPBNSJFU4RCEIM',:new.COLARRINT);
+            RDX_AUDIT.addValueClob(vChangeData,'new.colGAR4IF3GRVAFLA4DTQXPQGCSME',:new.COLARRCHAR);
+            RDX_AUDIT.addValueClob(vChangeData,'new.colY5PXD2VKE5FBTFGVSCPTLGE46U',:new.COLARRSTR);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colE3SYXVPOCVEIFEEYBEIFXY66XQ',:new.COLARRNUM);
+            RDX_AUDIT.addValueClob(vChangeData,'new.colYZYQHXB75VHEVG2BTGNGPNJZEA',:new.COLARRDATETIME);
+            RDX_AUDIT.addValueClob(vChangeData,'new.col54URWAVOAVE4ZFLUZI7QEQYCDM',:new.COLARRBIN);
+            RDX_AUDIT.addValueClob(vChangeData,'new.colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:new.COLARRPARENTREF);
+   end if;
+
+   vClassGuid := :new.CLASSGUID;
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'I',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', 'I','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
+end;
+/
+
 create or replace trigger ati52CHFNO3EGWDBRCRAAIT4AGD7E
 after insert on RDX_INSTANCE
 for each row
@@ -15898,8 +19191,6 @@ begin
             RDX_AUDIT.addValueInt(vChangeData,'new.colGPBWOB42OZCATJ6INHY24PAYLI',:new.MAXTRACEFILECNT);
             RDX_AUDIT.addValueStr(vChangeData,'new.colO6KNHKT4RHWDBRCXAAIT4AGD7E',:new.STARTOSCOMMAND);
             RDX_AUDIT.addValueStr(vChangeData,'new.colROO4LOT4RHWDBRCXAAIT4AGD7E',:new.STOPOSCOMMAND);
-            RDX_AUDIT.addValueInt(vChangeData,'new.colA333YBDFB5EMVI6N4N6IUKFG3M',:new.SAPID);
-            RDX_AUDIT.addValueInt(vChangeData,'new.colNPEGS5CTHRHRDF7ZU3IPI7GELU',:new.SYSTEMID);
             RDX_AUDIT.addValueStr(vChangeData,'new.colYSPDMMOVEBGPZIMQX2RBMXCBQE',:new.SCPNAME);
             RDX_AUDIT.addValueInt(vChangeData,'new.col3YSQY2R375FKFKYACAY762WGD4',:new.KEYSTORETYPE);
             RDX_AUDIT.addValueStr(vChangeData,'new.colDAQ557DC6BAZRI6VNI3WDLB5HQ',:new.KEYSTOREPATH);
@@ -15939,6 +19230,7 @@ begin
    vPID:=:new.ID;
    if vSaveData=1 then
             RDX_AUDIT.addValueInt(vChangeData,'new.colEVX5YH2SS5VDBN2IAAUMFADAIA',:new.USE);
+            RDX_AUDIT.addValueInt(vChangeData,'new.colTYUCIQQYTZCDVDV7MJQVDW2M5A',:new.AADCTESTMODE);
    end if;
 
    vClassGuid := :new.CLASSGUID;
@@ -15998,6 +19290,10 @@ begin
             RDX_AUDIT.addValueStr(vChangeData,'new.col6CT2K2RSVLOBDCLSAALOMT5GDM',:new.SUBJECTTEMPLATE);
             RDX_AUDIT.addValueStr(vChangeData,'new.colTQE4J6T4NJEWHIDFMFRCFVLYIU',:new.FILEFORMAT);
             RDX_AUDIT.addValueInt(vChangeData,'new.colV4JLFAINZBDR3MMLVE36PDT4FA',:new.SENDTIMEOUT);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colQYYL4LVVA5CFVMK63MXXWHGJV4',:new.DELIVERYTRACKINGPOLICY);
+            RDX_AUDIT.addValueInt(vChangeData,'new.colDHUCZH4SC5A6VKLQWEXJLA7AJM',:new.DELIVERYTRACKINGPERIOD);
+            RDX_AUDIT.addValueInt(vChangeData,'new.colOSQWZLFLI5G3RCM5C7JFSQX6M4',:new.DELIVERYTRACKINGRETRYPERIOD);
+            RDX_AUDIT.addValueInt(vChangeData,'new.col4TEUNP3GBJBMJFVSUIHACL4PZE',:new.FORWARDDELAYSEC);
    end if;
 
    begin
@@ -16154,6 +19450,41 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblARTOV5KBI3OBDCIOAALOMT5GDM', 'I','tblARTOV5KBI3OBDCIOAALOMT5GDM');
+end;
+/
+
+create or replace trigger atiB6QEDVV5BNEWZHKZRTVR67TKOY
+after insert on RDX_TST_CHILD
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:new.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addValueInt(vChangeData,'new.col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:new.CHILDTYPE);
+            RDX_AUDIT.addValueInt(vChangeData,'new.colZDX2SYK7TJAFTJENP6ATORQOTI',:new.COLBOOL);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colVTKWXW5C7RHLVACWBAAOZ3XJGY',:new.COLCHAR);
+            RDX_AUDIT.addValueDate(vChangeData,'new.col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:new.COLDATETIME);
+   end if;
+
+   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'I',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblB6QEDVV5BNEWZHKZRTVR67TKOY', 'I','tblB6QEDVV5BNEWZHKZRTVR67TKOY');
 end;
 /
 
@@ -16428,6 +19759,35 @@ begin
 end;
 /
 
+create or replace trigger atiJ5AGLYGB6RGKNJ36XBBX5AZ4ZA
+after insert on RDX_TST_PARENT
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:new.ID;
+
+   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'I',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA', 'I','tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA');
+end;
+/
+
 create or replace trigger atiJ6SOXKD3ZHOBDCMTAALOMT5GDM
 after insert on RDX_USERFUNC
 for each row
@@ -16552,35 +19912,6 @@ begin
 end;
 /
 
-create or replace trigger atiOVPOORJSBFAGZERW5IXTRFTWOY
-after insert on RDX_PC_EVENTLIMITACC
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblOVPOORJSBFAGZERW5IXTRFTWOY'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:new.SUBSCRIPTIONID||'~'||RDX_ENTITY.PackPIDStr(:new.USERNAME)||'~'||RDX_ENTITY.PackPIDStr(:new.EVENTCODE)||'~'||RDX_ENTITY.PackPIDStr(:new.CHANNELKIND);
-
-   vClassGuid := 'aecOVPOORJSBFAGZERW5IXTRFTWOY';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblOVPOORJSBFAGZERW5IXTRFTWOY',vClassGuid,vPID,'I',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblOVPOORJSBFAGZERW5IXTRFTWOY', 'I','tblOVPOORJSBFAGZERW5IXTRFTWOY');
-end;
-/
-
 create or replace trigger atiPCE24TUPIHNRDJIEACQMTAIZT4
 after insert on RDX_JS_JOBEXECUTORUNITBOOST
 for each row
@@ -16646,6 +19977,38 @@ begin
 end;
 /
 
+create or replace trigger atiQZ2AJHN3PFDWXC5BT6I66OS5PQ
+after insert on RDX_MESSAGEQUEUE
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblQZ2AJHN3PFDWXC5BT6I66OS5PQ'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:new.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addValueInt(vChangeData,'new.colTTNAG76GNNHGFLD7J2IHJSMUSA',:new.SECURITYPROTOCOL);
+   end if;
+
+   vClassGuid := :new.CLASSGUID;
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblQZ2AJHN3PFDWXC5BT6I66OS5PQ',vClassGuid,vPID,'I',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblQZ2AJHN3PFDWXC5BT6I66OS5PQ', 'I','tblQZ2AJHN3PFDWXC5BT6I66OS5PQ');
+end;
+/
+
 create or replace trigger atiR7FXMYDVVHWDBROXAAIT4AGD7E
 after insert on RDX_SAP
 for each row
@@ -16681,6 +20044,43 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblR7FXMYDVVHWDBROXAAIT4AGD7E', 'I','tblR7FXMYDVVHWDBROXAAIT4AGD7E');
+end;
+/
+
+create or replace trigger atiS4NVQKVQI5HLTG33G43UK5QMXU
+after insert on RDX_TST_AUDITDETAIL
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:new.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLCHAR)||'~'||Replace(:new.PKCOLNUM, ',', '.')||'~'||to_char(:new.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:new.PKCOLSTR)||'~'||to_char(:new.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+   if vSaveData=1 then
+            RDX_AUDIT.addValueStr(vChangeData,'new.colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:new.TITLE);
+   end if;
+
+   begin
+       select CLASSGUID into vClassGuid from RDX_TST_AUDITMASTER M
+       where M.PKCOLINT=:new.PKCOLINT and M.PKCOLCHAR=:new.PKCOLCHAR and M.PKCOLNUM=:new.PKCOLNUM and M.PKCOLDATE=:new.PKCOLDATE and M.PKCOLSTR=:new.PKCOLSTR and M.PKCOLTIMESTAMP=:new.PKCOLTIMESTAMP;
+   exception
+      when no_data_found then null;
+   end;
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'I',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblS4NVQKVQI5HLTG33G43UK5QMXU', 'I','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
 end;
 /
 
@@ -16758,6 +20158,44 @@ begin
 end;
 /
 
+create or replace trigger atiVKKXVT2NARDUNGRKAOMYB6VWXI
+after insert on RDX_PC_NOTIFICATIONSENDER
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblVKKXVT2NARDUNGRKAOMYB6VWXI'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:new.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addValueStr(vChangeData,'new.colPH5JTQND3VDZTJJ7Q46PRKF7JE',:new.CHANNELKIND);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colTGS3PTFC5RGSLAFMQFUSXEJUOI',:new.ROUTINGKEY);
+            RDX_AUDIT.addValueInt(vChangeData,'new.colEI7GIMO4KFAPRAU4HAVU6BQ3PI',:new.HISTMODE);
+            RDX_AUDIT.addValueInt(vChangeData,'new.colHDP4Q3IHNRGLZFFT6IRB3M3G24',:new.STOREATTACHINHIST);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colYRJIL7ZCM5AK5LDULILF6B2FDA',:new.SUBJECTTEMPLATE);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colLB4DFGLQ7RD6TK65SWSARQVKGA',:new.BODYTEMPLATE);
+            RDX_AUDIT.addValueStr(vChangeData,'new.colXECQRSZBN5F27GJKI242EGT7NA',:new.USERGROUPNAME);
+   end if;
+
+   vClassGuid := 'aecVKKXVT2NARDUNGRKAOMYB6VWXI';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblVKKXVT2NARDUNGRKAOMYB6VWXI',vClassGuid,vPID,'I',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblVKKXVT2NARDUNGRKAOMYB6VWXI', 'I','tblVKKXVT2NARDUNGRKAOMYB6VWXI');
+end;
+/
+
 create or replace trigger atiWZB7K4HLJPOBDCIUAALOMT5GDM
 after insert on RDX_JS_TASK
 for each row
@@ -16776,6 +20214,7 @@ begin
    end;
    vPID:=:new.ID;
    if vSaveData=1 then
+            RDX_AUDIT.addValueInt(vChangeData,'new.col4W7CE76W7VATBNLH5FLEE3FAVA',:new.AADCMEMBERID);
             RDX_AUDIT.addValueInt(vChangeData,'new.colNAPRJRHLJPOBDCIUAALOMT5GDM',:new.SCHEDULEID);
             RDX_AUDIT.addValueStr(vChangeData,'new.colFDCRWKPMJPOBDCIUAALOMT5GDM',:new.CLASSGUID);
             RDX_AUDIT.addValueInt(vChangeData,'new.col7JDCGRXMJPOBDCIUAALOMT5GDM',:new.PRIORITY);
@@ -16804,7 +20243,7 @@ begin
    begin
       select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
       from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID=RDX_AUDIT.DEFAULTAUDITSCHEME
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID=RDX_AUDIT_VARS.DEFAULTAUDITSCHEME
          and RDX_AU_SCHEMEITEM.TABLEID = 'tblX5TD7JDVVHWDBROXAAIT4AGD7E'
          and RDX_AU_SCHEMEITEM.EVENTTYPE = 'I';
    exception
@@ -16821,9 +20260,6 @@ begin
             RDX_AUDIT.addValueInt(vChangeData,'new.colM6ABGYQYNVGYRC6NTJ76DIBZ4I',:new.EASSESSIONACTIVITYMINS);
             RDX_AUDIT.addValueInt(vChangeData,'new.colLPOXOGA2J3NRDJIRACQMTAIZT4',:new.EASSESSIONINACTIVITYMINS);
             RDX_AUDIT.addValueStr(vChangeData,'new.colM6KLR5HJ3JDI7DTS5S52SRQEFU',:new.EASKRBPRINCNAME);
-            RDX_AUDIT.addValueInt(vChangeData,'new.colMYUJ6LOEMVDTHCVJ6BTLZ2PTHI',:new.ASKUSERPWDAFTERINACTIVITY);
-            RDX_AUDIT.addValueInt(vChangeData,'new.colUMLKGQCFD6VDBNKJAAUMFADAIA',:new.EVENTSTOREDAYS);
-            RDX_AUDIT.addValueInt(vChangeData,'new.colIH2FRGR6EKWDRWGPAAUUN6FMUG',:new.PCMSTOREDAYS);
             RDX_AUDIT.addValueInt(vChangeData,'new.colRJ6YTFHGWPNBDPLGABQJO5ADDQ',:new.AUDITSTOREPERIOD1);
             RDX_AUDIT.addValueInt(vChangeData,'new.col3J6FBUPGWPNBDPLGABQJO5ADDQ',:new.AUDITSTOREPERIOD2);
             RDX_AUDIT.addValueInt(vChangeData,'new.col3N6FBUPGWPNBDPLGABQJO5ADDQ',:new.AUDITSTOREPERIOD3);
@@ -17155,8 +20591,55 @@ begin
 end;
 /
 
+create or replace trigger atu4UBCGVD5ZZF6ZIJN4J3YISPFZA
+after update of COLARRNUM, COLBIN, COLCHAR, COLDATE, COLINT, COLNUM, COLSTR, COLTIMESTAMP on RDX_TST_AUDITMASTER
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+   if vSaveData=1 then
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colIY54HRUWQRC5LI4AMLNJDHNCAU',:old.COLINT,:new.COLINT);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colSW4DJGZ5LRCLFJCYZLQZGDNAME',:old.COLCHAR,:new.COLCHAR);
+            RDX_AUDIT.addChangedValueNum(vChangeData,'col6WWL3SC5TZBMZGHZSPPPJVV2BQ',:old.COLNUM,:new.COLNUM);
+            RDX_AUDIT.addChangedValueDateTime(vChangeData,'colJ7FU6BTM75HQTCIAKYQDRXDY5U',:old.COLDATE,:new.COLDATE);
+            RDX_AUDIT.addChangedValueDateTime(vChangeData,'col4TWPKWPOL5EB3GHUIUL6UFRHWQ',:old.COLTIMESTAMP,:new.COLTIMESTAMP);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colV5EPQ4QOLREEZOV2UUHUWZHYEE',:old.COLSTR,:new.COLSTR);
+            RDX_AUDIT.addChangedValueRaw(vChangeData,'colTGVNWDGLGNBI3N5BYXZLI5RXQQ',:old.COLBIN,:new.COLBIN);
+            RDX_AUDIT.addChangedValueBlob(vChangeData,'colFDVZCLAYD5HZRN2JGORFYFA3NE',:old.COLBLOB,:new.COLBLOB);
+            RDX_AUDIT.addChangedValueClob(vChangeData,'colL76ZGR3OPVHQFHYKDPWUIZQA34',:old.COLCLOB,:new.COLCLOB);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colI7RDFSIDUZE4PPBNSJFU4RCEIM',:old.COLARRINT,:new.COLARRINT);
+            RDX_AUDIT.addChangedValueClob(vChangeData,'colGAR4IF3GRVAFLA4DTQXPQGCSME',:old.COLARRCHAR,:new.COLARRCHAR);
+            RDX_AUDIT.addChangedValueClob(vChangeData,'colY5PXD2VKE5FBTFGVSCPTLGE46U',:old.COLARRSTR,:new.COLARRSTR);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colE3SYXVPOCVEIFEEYBEIFXY66XQ',:old.COLARRNUM,:new.COLARRNUM);
+            RDX_AUDIT.addChangedValueClob(vChangeData,'colYZYQHXB75VHEVG2BTGNGPNJZEA',:old.COLARRDATETIME,:new.COLARRDATETIME);
+            RDX_AUDIT.addChangedValueClob(vChangeData,'col54URWAVOAVE4ZFLUZI7QEQYCDM',:old.COLARRBIN,:new.COLARRBIN);
+            RDX_AUDIT.addChangedValueClob(vChangeData,'colD6G6MRNNKVGJFGSYHPF3DFQ66Y',:old.COLARRPARENTREF,:new.COLARRPARENTREF);
+   end if;
+
+   vClassGuid := :old.CLASSGUID;
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'U',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA', 'U','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
+end;
+/
+
 create or replace trigger atu52CHFNO3EGWDBRCRAAIT4AGD7E
-after update of ARTEINSTLIVETIME, DBTRACEPROFILE, FILETRACEPROFILE, GUITRACEPROFILE, HIGHARTEINSTCOUNT, KEYSTOREPATH, KEYSTORETYPE, KEYTABPATH, LOWARTEINSTCOUNT, MAXTRACEFILECNT, MAXTRACEFILESIZEKB, SCPNAME, STARTOSCOMMAND, STOPOSCOMMAND, TRACEFILESDIR on RDX_INSTANCE
+after update of AADCDGADDRESS, AADCMEMBERID, ARTEINSTLIVETIME, AUTOACTUALIZEVER, AUTORESTARTDELAYSEC, CLASSLOADINGPROFILEID, DBTRACEPROFILE, FILETRACEPROFILE, GUITRACEPROFILE, HIGHARTEINSTCOUNT, HTTPPROXY, HTTPSPROXY, INSTSTATEFORCEDGATHERPERIODSEC, INSTSTATEGATHERPERIODSEC, INSTSTATEHISTORYSTOREDAYS, KEYSTOREPATH, KEYSTORETYPE, KEYTABPATH, LOWARTEINSTCOUNT, MAXACTIVEARTEABOVENORMAL, MAXACTIVEARTECRITICAL, MAXACTIVEARTEHIGH, MAXACTIVEARTENORMAL, MAXACTIVEARTEVERYHIGH, MAXTRACEFILECNT, MAXTRACEFILESIZEKB, MEMORYCHECKPERIODSEC, ORAIMPLSTMTCACHESIZE, ROTATETRACEFILESDAILY, SCPNAME, STARTOSCOMMAND, STOPOSCOMMAND, TRACEFILESDIR, USEACTIVEARTELIMITS, USEORAIMPLSTMTCACHE on RDX_INSTANCE
 for each row
 disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -17179,15 +20662,35 @@ begin
             RDX_AUDIT.addChangedValueStr(vChangeData,'colXGRPSYS6JVGHRMXMH2FEUSJMQU',:old.TRACEFILESDIR,:new.TRACEFILESDIR);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colKTN2GUM43VD5TH34XEED3NBSWM',:old.MAXTRACEFILESIZEKB,:new.MAXTRACEFILESIZEKB);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colGPBWOB42OZCATJ6INHY24PAYLI',:old.MAXTRACEFILECNT,:new.MAXTRACEFILECNT);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colCHSEV5KJGVACBL2YSMNARJCWKI',:old.ROTATETRACEFILESDAILY,:new.ROTATETRACEFILESDAILY);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colO6KNHKT4RHWDBRCXAAIT4AGD7E',:old.STARTOSCOMMAND,:new.STARTOSCOMMAND);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colROO4LOT4RHWDBRCXAAIT4AGD7E',:old.STOPOSCOMMAND,:new.STOPOSCOMMAND);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colYSPDMMOVEBGPZIMQX2RBMXCBQE',:old.SCPNAME,:new.SCPNAME);
             RDX_AUDIT.addChangedValueInt(vChangeData,'col3YSQY2R375FKFKYACAY762WGD4',:old.KEYSTORETYPE,:new.KEYSTORETYPE);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colDAQ557DC6BAZRI6VNI3WDLB5HQ',:old.KEYSTOREPATH,:new.KEYSTOREPATH);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colTLHWR7V5OJE53K6G4EJDPJY2XY',:old.KEYTABPATH,:new.KEYTABPATH);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colZDM5FZM6CNAAVLLCHIQB4F6WL4',:old.AUTOACTUALIZEVER,:new.AUTOACTUALIZEVER);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colETPNDLR7SVE4JEEF664PVZPKN4',:old.MEMORYCHECKPERIODSEC,:new.MEMORYCHECKPERIODSEC);
             RDX_AUDIT.addChangedValueInt(vChangeData,'col4Z2JD6POZNCZJLGNTEGIJHZEQQ',:old.LOWARTEINSTCOUNT,:new.LOWARTEINSTCOUNT);
             RDX_AUDIT.addChangedValueInt(vChangeData,'col27DHEMV4S5FAVBSPLT6B6R4E6M',:old.HIGHARTEINSTCOUNT,:new.HIGHARTEINSTCOUNT);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colPVFIBHTN5NA35FF6RJCZIM6SAY',:old.ARTEINSTLIVETIME,:new.ARTEINSTLIVETIME);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colC5B6RPEAWRBJVMM2OVLX3MSGKY',:old.HTTPPROXY,:new.HTTPPROXY);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colMQKXC2RA7BFJTI5YEECPN2JU2I',:old.HTTPSPROXY,:new.HTTPSPROXY);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colD3UDCXDDAJDR7B3YEBXV3TBNAU',:old.USEORAIMPLSTMTCACHE,:new.USEORAIMPLSTMTCACHE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colQW66DBXQ2BFOTAKTX7LRPNLTZY',:old.ORAIMPLSTMTCACHESIZE,:new.ORAIMPLSTMTCACHESIZE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col2ABN5MPEFBGRNERT3MSWLBFILE',:old.USEACTIVEARTELIMITS,:new.USEACTIVEARTELIMITS);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col4FNLYMXZMRF7VNKWXW4LAG2VMY',:old.MAXACTIVEARTENORMAL,:new.MAXACTIVEARTENORMAL);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colLXK2TPSGGJDEZK6YZB5HJJC5RI',:old.MAXACTIVEARTEABOVENORMAL,:new.MAXACTIVEARTEABOVENORMAL);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colFWLWDVK6E5FZHA3FOQEMLGSEI4',:old.MAXACTIVEARTEHIGH,:new.MAXACTIVEARTEHIGH);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colOTSOCR6D45FQ5FFHIDN4SYAR7E',:old.MAXACTIVEARTEVERYHIGH,:new.MAXACTIVEARTEVERYHIGH);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col63MN22Q6GRFUVDV2J6UD2I4VOU',:old.MAXACTIVEARTECRITICAL,:new.MAXACTIVEARTECRITICAL);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colMJMKGEQX2FG53KHYXUTIJMMKYE',:old.CLASSLOADINGPROFILEID,:new.CLASSLOADINGPROFILEID);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colP5PSVWUEQBHPTA6CXUPA2UVOWI',:old.AADCMEMBERID,:new.AADCMEMBERID);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colOF6APP4I7FHV7BCQLHO75CZR74',:old.AADCDGADDRESS,:new.AADCDGADDRESS);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colM65QF5VLNZD6FPDDMADFENBBUU',:old.AUTORESTARTDELAYSEC,:new.AUTORESTARTDELAYSEC);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col2X4UBSDEPBBG5LYPLRDF6YSOIU',:old.INSTSTATEGATHERPERIODSEC,:new.INSTSTATEGATHERPERIODSEC);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colHIKMV3NWRZCDXHXWRERFBXVFT4',:old.INSTSTATEFORCEDGATHERPERIODSEC,:new.INSTSTATEFORCEDGATHERPERIODSEC);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colGHZ3KYMJURDDBHJ3IJXSUY35LA',:old.INSTSTATEHISTORYSTOREDAYS,:new.INSTSTATEHISTORYSTOREDAYS);
    end if;
 
    vClassGuid := 'aec52CHFNO3EGWDBRCRAAIT4AGD7E';
@@ -17202,7 +20705,7 @@ end;
 /
 
 create or replace trigger atu5HP4XTP3EGWDBRCRAAIT4AGD7E
-after update of USE on RDX_UNIT
+after update of AADCTESTMODE, USE on RDX_UNIT
 for each row
 disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -17220,6 +20723,7 @@ begin
    vPID:=:old.ID;
    if vSaveData=1 then
             RDX_AUDIT.addChangedValueInt(vChangeData,'colEVX5YH2SS5VDBN2IAAUMFADAIA',:old.USE,:new.USE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colTYUCIQQYTZCDVDV7MJQVDW2M5A',:old.AADCTESTMODE,:new.AADCTESTMODE);
    end if;
 
    vClassGuid := :old.CLASSGUID;
@@ -17234,7 +20738,7 @@ end;
 /
 
 create or replace trigger atu5WO5N3BEVLOBDCLSAALOMT5GDM
-after update of ADDRESSTEMPLATE, EMAILLOGIN, EMAILPASSWORD, ENCODING, FILEFORMAT, KIND, MESSADDRESSREGEXP, POP3ADDRESS, RECVADDRESS, RECVPERIOD, ROUTINGPRIORITY, SENDADDRESS, SENDPERIOD, SENDTIMEOUT, SMPPDESTINATIONNPI, SMPPDESTINATIONTON, SMPPINTERFACE, SMPPMAXLEN, SMPPPASSWORD, SMPPSESSIONNPI, SMPPSESSIONTON, SMPPSESSIONTYPE, SMPPSOURCEADDRESS, SMPPSOURCEADDRESSNPI, SMPPSOURCEADDRESSTON, SMPPSYSTEMID, SMPPSYSTEMTYPE, SUBJECTTEMPLATE on RDX_PC_CHANNELUNIT
+after update of ADDRESSTEMPLATE, DELIVERYTRACKINGPERIOD, DELIVERYTRACKINGPOLICY, DELIVERYTRACKINGRETRYPERIOD, EMAILLOGIN, EMAILPASSWORD, ENCODING, FILEFORMAT, FORWARDDELAYSEC, KIND, MESSADDRESSREGEXP, POP3ADDRESS, RECVADDRESS, RECVPERIOD, ROUTINGPRIORITY, SENDADDRESS, SENDPERIOD, SENDTIMEOUT, SMPPDESTINATIONNPI, SMPPDESTINATIONTON, SMPPINTERFACE, SMPPMAXLEN, SMPPPASSWORD, SMPPSESSIONNPI, SMPPSESSIONTON, SMPPSESSIONTYPE, SMPPSOURCEADDRESS, SMPPSOURCEADDRESSNPI, SMPPSOURCEADDRESSTON, SMPPSYSTEMID, SMPPSYSTEMTYPE, SUBJECTTEMPLATE on RDX_PC_CHANNELUNIT
 for each row
 disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -17279,6 +20783,10 @@ begin
             RDX_AUDIT.addChangedValueStr(vChangeData,'col6CT2K2RSVLOBDCLSAALOMT5GDM',:old.SUBJECTTEMPLATE,:new.SUBJECTTEMPLATE);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colTQE4J6T4NJEWHIDFMFRCFVLYIU',:old.FILEFORMAT,:new.FILEFORMAT);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colV4JLFAINZBDR3MMLVE36PDT4FA',:old.SENDTIMEOUT,:new.SENDTIMEOUT);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colQYYL4LVVA5CFVMK63MXXWHGJV4',:old.DELIVERYTRACKINGPOLICY,:new.DELIVERYTRACKINGPOLICY);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colDHUCZH4SC5A6VKLQWEXJLA7AJM',:old.DELIVERYTRACKINGPERIOD,:new.DELIVERYTRACKINGPERIOD);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colOSQWZLFLI5G3RCM5C7JFSQX6M4',:old.DELIVERYTRACKINGRETRYPERIOD,:new.DELIVERYTRACKINGRETRYPERIOD);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col4TEUNP3GBJBMJFVSUIHACL4PZE',:old.FORWARDDELAYSEC,:new.FORWARDDELAYSEC);
    end if;
 
    begin
@@ -17406,6 +20914,41 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblARTOV5KBI3OBDCIOAALOMT5GDM', 'U','tblARTOV5KBI3OBDCIOAALOMT5GDM');
+end;
+/
+
+create or replace trigger atuB6QEDVV5BNEWZHKZRTVR67TKOY
+after update of CHILDTYPE, COLBOOL, COLCHAR, COLDATETIME on RDX_TST_CHILD
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblB6QEDVV5BNEWZHKZRTVR67TKOY'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col6OTOT3XC7BHKVIE3Y6WRX4O2OY',:old.CHILDTYPE,:new.CHILDTYPE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colZDX2SYK7TJAFTJENP6ATORQOTI',:old.COLBOOL,:new.COLBOOL);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colVTKWXW5C7RHLVACWBAAOZ3XJGY',:old.COLCHAR,:new.COLCHAR);
+            RDX_AUDIT.addChangedValueDateTime(vChangeData,'col7CYI2GEMAJA5LNUWSJ27NVIUZ4',:old.COLDATETIME,:new.COLDATETIME);
+   end if;
+
+   vClassGuid := 'aecB6QEDVV5BNEWZHKZRTVR67TKOY';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblB6QEDVV5BNEWZHKZRTVR67TKOY',vClassGuid,vPID,'U',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblB6QEDVV5BNEWZHKZRTVR67TKOY', 'U','tblB6QEDVV5BNEWZHKZRTVR67TKOY');
 end;
 /
 
@@ -17627,6 +21170,35 @@ begin
 end;
 /
 
+create or replace trigger atuJ5AGLYGB6RGKNJ36XBBX5AZ4ZA
+after update on RDX_TST_PARENT
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.ID;
+
+   vClassGuid := 'aecJ5AGLYGB6RGKNJ36XBBX5AZ4ZA';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA',vClassGuid,vPID,'U',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA', 'U','tblJ5AGLYGB6RGKNJ36XBBX5AZ4ZA');
+end;
+/
+
 create or replace trigger atuJ6SOXKD3ZHOBDCMTAALOMT5GDM
 after update of LASTUPDATETIME on RDX_USERFUNC
 for each row
@@ -17760,35 +21332,6 @@ begin
 end;
 /
 
-create or replace trigger atuOVPOORJSBFAGZERW5IXTRFTWOY
-after update on RDX_PC_EVENTLIMITACC
-for each row
-disable
-declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
-begin
-   begin
-      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
-      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
-      from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
-         and RDX_AU_SCHEMEITEM.TABLEID = 'tblOVPOORJSBFAGZERW5IXTRFTWOY'
-         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
-   exception
-      when no_data_found then return;
-   end;
-   vPID:=:old.SUBSCRIPTIONID||'~'||RDX_ENTITY.PackPIDStr(:old.USERNAME)||'~'||RDX_ENTITY.PackPIDStr(:old.EVENTCODE)||'~'||RDX_ENTITY.PackPIDStr(:old.CHANNELKIND);
-
-   vClassGuid := 'aecOVPOORJSBFAGZERW5IXTRFTWOY';
-   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
-   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblOVPOORJSBFAGZERW5IXTRFTWOY',vClassGuid,vPID,'U',vChangeData);
-end;
-/
-
-begin
-   RDX_AUDIT.updateTableAuditStateEventType('tblOVPOORJSBFAGZERW5IXTRFTWOY', 'U','tblOVPOORJSBFAGZERW5IXTRFTWOY');
-end;
-/
-
 create or replace trigger atuPCE24TUPIHNRDJIEACQMTAIZT4
 after update of DELAY, MAXINCREMENT on RDX_JS_JOBEXECUTORUNITBOOST
 for each row
@@ -17854,6 +21397,41 @@ begin
 end;
 /
 
+create or replace trigger atuQZ2AJHN3PFDWXC5BT6I66OS5PQ
+after update of CIPHERSUITES, CLIENTKEYALIASES, SECURITYPROTOCOL, SERVERCERTALIASES on RDX_MESSAGEQUEUE
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblQZ2AJHN3PFDWXC5BT6I66OS5PQ'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colTTNAG76GNNHGFLD7J2IHJSMUSA',:old.SECURITYPROTOCOL,:new.SECURITYPROTOCOL);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colL6K3EEEXRBG4BEGHD54YVL5VVE',:old.SERVERCERTALIASES,:new.SERVERCERTALIASES);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'col24OZ2N37RNEQPPFU36C2MKSK2A',:old.CLIENTKEYALIASES,:new.CLIENTKEYALIASES);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colU44WLH4LFZFR5M4IQMPS5TIT7I',:old.CIPHERSUITES,:new.CIPHERSUITES);
+   end if;
+
+   vClassGuid := :old.CLASSGUID;
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblQZ2AJHN3PFDWXC5BT6I66OS5PQ',vClassGuid,vPID,'U',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblQZ2AJHN3PFDWXC5BT6I66OS5PQ', 'U','tblQZ2AJHN3PFDWXC5BT6I66OS5PQ');
+end;
+/
+
 create or replace trigger atuR7FXMYDVVHWDBROXAAIT4AGD7E
 after update of ACCESSIBILITY, ADDRESS, CHECKCLIENTCERT, CIPHERSUITES, CLIENTCERTALIASES, CLIENTKEYALIASES, EASKRBAUTH, SECURITYPROTOCOL, SERVERCERTALIASES, SERVERKEYALIASES on RDX_SAP
 for each row
@@ -17892,6 +21470,43 @@ end;
 
 begin
    RDX_AUDIT.updateTableAuditStateEventType('tblR7FXMYDVVHWDBROXAAIT4AGD7E', 'U','tblR7FXMYDVVHWDBROXAAIT4AGD7E');
+end;
+/
+
+create or replace trigger atuS4NVQKVQI5HLTG33G43UK5QMXU
+after update of TITLE on RDX_TST_AUDITDETAIL
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.PKCOLINT||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLCHAR)||'~'||Replace(:old.PKCOLNUM, ',', '.')||'~'||to_char(:old.PKCOLDATE,'yyyy-mm-dd hh24:mi:ss')||'~'||RDX_ENTITY.PackPIDStr(:old.PKCOLSTR)||'~'||to_char(:old.PKCOLTIMESTAMP,'yyyy-mm-dd hh24:mi:ss.FF6');
+   if vSaveData=1 then
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colB7LCJXCMXVFF7PZ7UH3YBVJXOQ',:old.TITLE,:new.TITLE);
+   end if;
+
+   begin
+       select CLASSGUID into vClassGuid from RDX_TST_AUDITMASTER M
+       where M.PKCOLINT=:old.PKCOLINT and M.PKCOLCHAR=:old.PKCOLCHAR and M.PKCOLNUM=:old.PKCOLNUM and M.PKCOLDATE=:old.PKCOLDATE and M.PKCOLSTR=:old.PKCOLSTR and M.PKCOLTIMESTAMP=:old.PKCOLTIMESTAMP;
+   exception
+      when no_data_found then null;
+   end;
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA',vClassGuid,vPID,'U',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblS4NVQKVQI5HLTG33G43UK5QMXU', 'U','tbl4UBCGVD5ZZF6ZIJN4J3YISPFZA');
 end;
 /
 
@@ -17972,8 +21587,46 @@ begin
 end;
 /
 
+create or replace trigger atuVKKXVT2NARDUNGRKAOMYB6VWXI
+after update on RDX_PC_NOTIFICATIONSENDER
+for each row
+disable
+declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
+begin
+   begin
+      select DEFAULTAUDITSCHEMEID into vSchemeId from RDX_SYSTEM where ID=1;
+      select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
+      from RDX_AU_SCHEMEITEM
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID = vSchemeId
+         and RDX_AU_SCHEMEITEM.TABLEID = 'tblVKKXVT2NARDUNGRKAOMYB6VWXI'
+         and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
+   exception
+      when no_data_found then return;
+   end;
+   vPID:=:old.ID;
+   if vSaveData=1 then
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colPH5JTQND3VDZTJJ7Q46PRKF7JE',:old.CHANNELKIND,:new.CHANNELKIND);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colTGS3PTFC5RGSLAFMQFUSXEJUOI',:old.ROUTINGKEY,:new.ROUTINGKEY);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colEI7GIMO4KFAPRAU4HAVU6BQ3PI',:old.HISTMODE,:new.HISTMODE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colHDP4Q3IHNRGLZFFT6IRB3M3G24',:old.STOREATTACHINHIST,:new.STOREATTACHINHIST);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colYRJIL7ZCM5AK5LDULILF6B2FDA',:old.SUBJECTTEMPLATE,:new.SUBJECTTEMPLATE);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colLB4DFGLQ7RD6TK65SWSARQVKGA',:old.BODYTEMPLATE,:new.BODYTEMPLATE);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'colXECQRSZBN5F27GJKI242EGT7NA',:old.USERGROUPNAME,:new.USERGROUPNAME);
+   end if;
+
+   vClassGuid := 'aecVKKXVT2NARDUNGRKAOMYB6VWXI';
+   insert into RDX_AU_AUDITLOG (ID,EVENTTIME,STOREDURATION,USERNAME,STATIONNAME,TABLEID,CLASSID,PID,EVENTTYPE,EVENTDATA)
+   values(SQN_RDX_AU_AUDITLOGID.NextVal,SYSTIMESTAMP,vStoreDuration,RDX_Arte.getUserName,RDX_Arte.getStationName,'tblVKKXVT2NARDUNGRKAOMYB6VWXI',vClassGuid,vPID,'U',vChangeData);
+end;
+/
+
+begin
+   RDX_AUDIT.updateTableAuditStateEventType('tblVKKXVT2NARDUNGRKAOMYB6VWXI', 'U','tblVKKXVT2NARDUNGRKAOMYB6VWXI');
+end;
+/
+
 create or replace trigger atuWZB7K4HLJPOBDCIUAALOMT5GDM
-after update of CLASSGUID, EXPIREDPOLICY, ISACTIVE, PRIORITY, PRIORITYBOOSTINGSPEED, SCHEDULEID on RDX_JS_TASK
+after update of AADCMEMBERID, CLASSGUID, EXPIREDPOLICY, ISACTIVE, PRIORITY, PRIORITYBOOSTINGSPEED, SCHEDULEID on RDX_JS_TASK
 for each row
 disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -17990,6 +21643,7 @@ begin
    end;
    vPID:=:old.ID;
    if vSaveData=1 then
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col4W7CE76W7VATBNLH5FLEE3FAVA',:old.AADCMEMBERID,:new.AADCMEMBERID);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colNAPRJRHLJPOBDCIUAALOMT5GDM',:old.SCHEDULEID,:new.SCHEDULEID);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colFDCRWKPMJPOBDCIUAALOMT5GDM',:old.CLASSGUID,:new.CLASSGUID);
             RDX_AUDIT.addChangedValueInt(vChangeData,'col7JDCGRXMJPOBDCIUAALOMT5GDM',:old.PRIORITY,:new.PRIORITY);
@@ -18010,7 +21664,7 @@ end;
 /
 
 create or replace trigger atuX5TD7JDVVHWDBROXAAIT4AGD7E
-after update of ARTECOUNTRY, ARTEDBTRACEPROFILE, ARTEFILETRACEPROFILE, ARTEGUITRACEPROFILE, ARTELANGUAGE, ASKUSERPWDAFTERINACTIVITY, AUDITSTOREPERIOD1, AUDITSTOREPERIOD2, AUDITSTOREPERIOD3, AUDITSTOREPERIOD4, AUDITSTOREPERIOD5, BLOCKUSERINVALIDLOGONCNT, BLOCKUSERINVALIDLOGONMINS, DEFAULTAUDITSCHEMEID, EASKRBPRINCNAME, EASSESSIONACTIVITYMINS, EASSESSIONINACTIVITYMINS, ENABLESENSITIVETRACE, EVENTSTOREDAYS, NAME, PCMSTOREDAYS, PROFILELOGSTOREDAYS, PWDMINLEN, PWDMUSTCONTAINACHARS, PWDMUSTCONTAINNCHARS, PWDMUSTDIFFERFROMNAME, UNIQUEPWDSEQLEN on RDX_SYSTEM
+after update of AADCCOMMITEDLOCKEXP, AADCMEMBERID, AADCTESTEDMEMBERID, AADCUNLOCKTABLES, ARTECOUNTRY, ARTEDBTRACEPROFILE, ARTEFILETRACEPROFILE, ARTEGUITRACEPROFILE, ARTELANGUAGE, ASKUSERPWDAFTERINACTIVITY, AUDITSTOREPERIOD1, AUDITSTOREPERIOD2, AUDITSTOREPERIOD3, AUDITSTOREPERIOD4, AUDITSTOREPERIOD5, BLOCKUSERINVALIDLOGONCNT, BLOCKUSERINVALIDLOGONMINS, CERTATTRFORUSERLOGIN, DEFAULTAUDITSCHEMEID, DUALCONTROLFORASSIGNROLE, DUALCONTROLFORCFGMGMT, EASKRBPRINCNAME, EASSESSIONACTIVITYMINS, EASSESSIONINACTIVITYMINS, ENABLESENSITIVETRACE, EVENTSTOREDAYS, EXTSYSTEMCODE, FAILEDOUTMESSAGESTOREDAYS, INSTSTATEFORCEDGATHERPERIODSEC, INSTSTATEGATHERPERIODSEC, INSTSTATEHISTORYSTOREDAYS, LIMITEASSESSIONSPERUSR, METRICHISTORYSTOREDAYS, NAME, ORAIMPLSTMTCACHESIZE, PCMSTOREDAYS, PROFILELOGSTOREDAYS, PWDEXPIRATIONPERIOD, PWDMINLEN, PWDMUSTBEINMIXEDCASE, PWDMUSTCONTAINACHARS, PWDMUSTCONTAINNCHARS, PWDMUSTCONTAINSCHARS, PWDMUSTDIFFERFROMNAME, TEMPORARYPWDEXPIRATIONPERIOD, UNIQUEPWDSEQLEN, USEORAIMPLSTMTCACHE, WRITECONTEXTTOFILE on RDX_SYSTEM
 for each row
 disable
 declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -18018,7 +21672,7 @@ begin
    begin
       select RDX_AU_SCHEMEITEM.STOREDURATION, RDX_AU_SCHEMEITEM.SAVEDATA into vStoreDuration, vSaveData
       from RDX_AU_SCHEMEITEM
-      where RDX_AU_SCHEMEITEM.SCHEMEGUID=RDX_AUDIT.DEFAULTAUDITSCHEME
+      where RDX_AU_SCHEMEITEM.SCHEMEGUID=RDX_AUDIT_VARS.DEFAULTAUDITSCHEME
          and RDX_AU_SCHEMEITEM.TABLEID = 'tblX5TD7JDVVHWDBROXAAIT4AGD7E'
          and RDX_AU_SCHEMEITEM.EVENTTYPE = 'U';
    exception
@@ -18026,6 +21680,8 @@ begin
    end;
    vPID:=:old.ID;
    if vSaveData=1 then
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colFRZFQPKGI5EM7DCHTHZ4PSKVCA',:old.EXTSYSTEMCODE,:new.EXTSYSTEMCODE);
+            RDX_AUDIT.addChangedValueStr(vChangeData,'col7WZAHHSUZVCAVPPUZDJX5WWCA4',:old.CERTATTRFORUSERLOGIN,:new.CERTATTRFORUSERLOGIN);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colTCOQ4HOZRHWDBRCXAAIT4AGD7E',:old.NAME,:new.NAME);
             RDX_AUDIT.addChangedValueStr(vChangeData,'col546FXWYZJ3NRDJIRACQMTAIZT4',:old.ARTELANGUAGE,:new.ARTELANGUAGE);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colWGL2VHS7RNBIRA3NYYV3KGAIPI',:old.ARTECOUNTRY,:new.ARTECOUNTRY);
@@ -18035,12 +21691,17 @@ begin
             RDX_AUDIT.addChangedValueInt(vChangeData,'colM6ABGYQYNVGYRC6NTJ76DIBZ4I',:old.EASSESSIONACTIVITYMINS,:new.EASSESSIONACTIVITYMINS);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colLPOXOGA2J3NRDJIRACQMTAIZT4',:old.EASSESSIONINACTIVITYMINS,:new.EASSESSIONINACTIVITYMINS);
             RDX_AUDIT.addChangedValueStr(vChangeData,'colM6KLR5HJ3JDI7DTS5S52SRQEFU',:old.EASKRBPRINCNAME,:new.EASKRBPRINCNAME);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colMBAPYLBLXFEOPBVK2IYG2HSVC4',:old.LIMITEASSESSIONSPERUSR,:new.LIMITEASSESSIONSPERUSR);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colMYUJ6LOEMVDTHCVJ6BTLZ2PTHI',:old.ASKUSERPWDAFTERINACTIVITY,:new.ASKUSERPWDAFTERINACTIVITY);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colCK5BEU6WO5H4VKRDA46ALDEZ3M',:old.UNIQUEPWDSEQLEN,:new.UNIQUEPWDSEQLEN);
             RDX_AUDIT.addChangedValueInt(vChangeData,'col2J4RCA57UBFPFNVYLNMEXJI5CU',:old.PWDMINLEN,:new.PWDMINLEN);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colSLXTNR7MBRF23O655OVBOAL5LA',:old.PWDMUSTDIFFERFROMNAME,:new.PWDMUSTDIFFERFROMNAME);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colTY6XN5X66FD2FIC7ZQVWKRV7YQ',:old.PWDMUSTCONTAINACHARS,:new.PWDMUSTCONTAINACHARS);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colEFLQTDCHFZCTFNM77TYMJH35JY',:old.PWDMUSTBEINMIXEDCASE,:new.PWDMUSTBEINMIXEDCASE);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colOJXZPIRBDZG6HCJZ4F2JDH7UFI',:old.PWDMUSTCONTAINNCHARS,:new.PWDMUSTCONTAINNCHARS);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colPSC5YLHYXJD3ZICERRHVMMWRZI',:old.PWDMUSTCONTAINSCHARS,:new.PWDMUSTCONTAINSCHARS);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colIVNUPJC565CXRNA3SBZKHI2LG4',:old.PWDEXPIRATIONPERIOD,:new.PWDEXPIRATIONPERIOD);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col6EXIXL45PZEBZOF2MKFF7RJWSA',:old.TEMPORARYPWDEXPIRATIONPERIOD,:new.TEMPORARYPWDEXPIRATIONPERIOD);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colUMLKGQCFD6VDBNKJAAUMFADAIA',:old.EVENTSTOREDAYS,:new.EVENTSTOREDAYS);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colIH2FRGR6EKWDRWGPAAUUN6FMUG',:old.PCMSTOREDAYS,:new.PCMSTOREDAYS);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colRJ6YTFHGWPNBDPLGABQJO5ADDQ',:old.AUDITSTOREPERIOD1,:new.AUDITSTOREPERIOD1);
@@ -18053,6 +21714,19 @@ begin
             RDX_AUDIT.addChangedValueInt(vChangeData,'colQTEXFSBLXJES3AOB6SXXKNGQQE',:old.BLOCKUSERINVALIDLOGONMINS,:new.BLOCKUSERINVALIDLOGONMINS);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colLRLGIOF3DVB2XEFQXLCJLPUYTU',:old.ENABLESENSITIVETRACE,:new.ENABLESENSITIVETRACE);
             RDX_AUDIT.addChangedValueInt(vChangeData,'colKDV6X7RAL5DCBO2HENGADFNFTY',:old.PROFILELOGSTOREDAYS,:new.PROFILELOGSTOREDAYS);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colE2XLLDK4RVAMFAL7O6XQGRTVNY',:old.METRICHISTORYSTOREDAYS,:new.METRICHISTORYSTOREDAYS);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colKQKCWI72DVAO7OFVSNBZ7XN2WQ',:old.USEORAIMPLSTMTCACHE,:new.USEORAIMPLSTMTCACHE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colJN25VAA7SVD5FKDTO47ERVQIDQ',:old.ORAIMPLSTMTCACHESIZE,:new.ORAIMPLSTMTCACHESIZE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colJ7OWNFGW3RCUVIE7PJUK3OO5GI',:old.DUALCONTROLFORASSIGNROLE,:new.DUALCONTROLFORASSIGNROLE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col5QRDG2EULRGM3IGS4RAPZWD2RQ',:old.DUALCONTROLFORCFGMGMT,:new.DUALCONTROLFORCFGMGMT);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col42FD7ZUMLNA77LXG67VMOVRC5I',:old.WRITECONTEXTTOFILE,:new.WRITECONTEXTTOFILE);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'col66PAXUAEFBGMZPUYOHGU32ZD2Q',:old.FAILEDOUTMESSAGESTOREDAYS,:new.FAILEDOUTMESSAGESTOREDAYS);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colM2PT6HH34FHXRHWAOZLL6HQATU',:old.AADCMEMBERID,:new.AADCMEMBERID);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colUWT5OQ6VLRDUXIBQ6CZ5S7O53Q',:old.AADCTESTEDMEMBERID,:new.AADCTESTEDMEMBERID);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colGS3V2W2ZNNEXJA3CYQJ5O4AFSA',:old.AADCCOMMITEDLOCKEXP,:new.AADCCOMMITEDLOCKEXP);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colLKDHAIE6KZH7BKNDT4ALVM2HCI',:old.INSTSTATEGATHERPERIODSEC,:new.INSTSTATEGATHERPERIODSEC);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colIG74GFS3QNA5PFW3P27DVCWSPQ',:old.INSTSTATEFORCEDGATHERPERIODSEC,:new.INSTSTATEFORCEDGATHERPERIODSEC);
+            RDX_AUDIT.addChangedValueInt(vChangeData,'colA4GEOKW25BFTZIBY5PJ5W3KTCI',:old.INSTSTATEHISTORYSTOREDAYS,:new.INSTSTATEHISTORYSTOREDAYS);
    end if;
 
    vClassGuid := 'aecX5TD7JDVVHWDBROXAAIT4AGD7E';
@@ -18281,7 +21955,18 @@ begin
 end;
 /
 
+grant execute on RDX_ACS_UTILS to &USER&_RUN_ROLE
+/
+
 audit alter on RDX_EVENTLOG
 /
 audit update, delete on  RDX_EVENTLOG
 /
+
+#IF DB_TYPE == "ORACLE" AND !isEnabled("org.radixware\\Partitioning") THEN
+alter table RDX_EVENTLOG enable row movement
+/
+
+alter table RDX_EVENTCONTEXT enable row movement
+/
+#ENDIF

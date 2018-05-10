@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.trace;
 
+import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.enums.EEventSeverity;
 
@@ -27,7 +28,7 @@ class StarterLogger implements org.apache.commons.logging.Log{
 
     @Override
     public boolean isDebugEnabled() {
-        return isSeveretyEnabled(EEventSeverity.DEBUG);
+        return isSeveretyEnabled(EEventSeverity.DEBUG) && RunParams.isDetailed3rdPartyLoggingEnabled();
     }
 
     @Override
@@ -47,7 +48,7 @@ class StarterLogger implements org.apache.commons.logging.Log{
 
     @Override
     public boolean isTraceEnabled() {
-        return isSeveretyEnabled(EEventSeverity.DEBUG);
+        return isSeveretyEnabled(EEventSeverity.DEBUG) && RunParams.isDetailed3rdPartyLoggingEnabled();
     }
 
     @Override

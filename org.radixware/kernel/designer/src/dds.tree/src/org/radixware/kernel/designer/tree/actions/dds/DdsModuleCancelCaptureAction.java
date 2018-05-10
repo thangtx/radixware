@@ -20,6 +20,7 @@ import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
 import org.openide.util.actions.CookieAction;
+import org.openide.windows.InputOutput;
 import org.radixware.kernel.common.defs.RadixObject.EEditState;
 import org.radixware.kernel.common.defs.dds.DdsModelDef;
 import org.radixware.kernel.common.defs.dds.DdsModelManager;
@@ -29,6 +30,8 @@ import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.SVN;
 import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
 import org.radixware.kernel.common.svn.client.ISvnFSClient;
+import org.radixware.kernel.common.svn.client.SvnPath;
+import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.general.nodes.NodesManager;
 import org.radixware.kernel.designer.common.general.utils.RadixMutex;
@@ -39,9 +42,16 @@ public class DdsModuleCancelCaptureAction extends CookieAction {
     public static class Cookie implements Node.Cookie, Runnable {
 
         private DdsModule module;
+        private final boolean quiet;
 
         public Cookie(DdsModule module) {
             this.module = module;
+            this.quiet = false;
+        }
+        
+        public Cookie(DdsModule module, boolean quiet) {
+            this.module = module;
+            this.quiet = quiet;
         }
 
         @Override
@@ -65,7 +75,7 @@ public class DdsModuleCancelCaptureAction extends CookieAction {
                     if (modifiedModel.getEditState() != EEditState.NONE) {
                         message += "\nALL UNSAVED CHANGES WILL BE LOST!";
                     }
-                    if (DialogUtils.messageConfirmation(message)) {
+                    if (quiet || DialogUtils.messageConfirmation(message)) {
                         progressHandle.progress("Cancel capture");
 
                         if (!cancelCaptureImpl()) {
@@ -92,7 +102,14 @@ public class DdsModuleCancelCaptureAction extends CookieAction {
 
             final ISvnFSClient client = SvnBridge.getClientAdapter(module.getDirectory());
             final SVNRepositoryAdapter repository = DdsModuleCaptureAction.Cookie.getRepository(client, module);
+            
+            boolean isNewModule = SVN.isUnversionedSvnStatus(client, module.getDirectory());
 
+            if (isNewModule){
+                module.delete();
+                return false;
+            }
+            
             if (repository == null) {
                 return false;
             }
@@ -107,7 +124,9 @@ public class DdsModuleCancelCaptureAction extends CookieAction {
 //                    }
                     return false;
                 }
-                final String path = org.radixware.kernel.common.svn.client.SvnPath.getRelativePath(repository.getLocation(),
+                String repoPath = repository.getLocalPath();
+                String repositoryPath = SvnPath.append(repository.getRepositoryRoot(), repoPath);
+                final String path = SvnPath.getRelativePath(repositoryPath,
                         org.radixware.kernel.common.svn.client.SvnPath.append(moduleUrl, DdsModelManager.MODIFIED_MODEL_XML_FILE_NAME));
 
                 final boolean fileExists = SVN.isFileExists(repository, path);
@@ -132,8 +151,18 @@ public class DdsModuleCancelCaptureAction extends CookieAction {
                 }
 
                 SVN.revert(client, new File(module.getDirectory(), DdsModelManager.MODIFIED_MODEL_XML_FILE_NAME));
+                final File sqmlDefsFile = new File(module.getDirectory(), FileUtils.SQML_DEFINITIONS_XML_FILE_NAME);
+                try {
+                    if (sqmlDefsFile.isFile()) {
+                        SVN.revert(client, sqmlDefsFile);
+                    }
+                } catch (ISvnFSClient.SvnFsClientException ex) {
+                    Logger.getLogger(DdsModuleCaptureAction.class.getName()).log(Level.INFO, 
+                            "Could not revert " + FileUtils.SQML_DEFINITIONS_XML_FILE_NAME, ex);
+                }
                 // SVN.getDirLatestRevision(repository)
-                editor.deleteEntry(path, -1);
+                String entryPath = SvnPath.append(repoPath, path);
+                editor.deleteEntry(entryPath, -1);
                 editor.commit();
 
                 SVN.update(client, module.getDirectory());

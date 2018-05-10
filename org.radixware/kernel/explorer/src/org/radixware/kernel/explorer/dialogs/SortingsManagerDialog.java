@@ -24,6 +24,7 @@ import org.radixware.kernel.common.client.dialogs.ISortingsManagerDialog;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.DefManager;
 import org.radixware.kernel.common.client.meta.RadClassPresentationDef;
+import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.meta.RadSortingDef;
 import org.radixware.kernel.common.client.models.groupsettings.IGroupSetting;
 import org.radixware.kernel.common.client.models.groupsettings.Sortings;
@@ -40,7 +41,7 @@ public class SortingsManagerDialog extends ExplorerDialog implements ISortingsMa
         public static final int COL_TITLE = 0;
         public static final int COL_ORDER = 1;
         private final String ascSign, descSign;
-        private final DefManager defManager;
+        private final IClientEnvironment environment;
                 
         public SortingColumnsTable(final IClientEnvironment environment, final QWidget parent) {
             super(parent);
@@ -59,7 +60,7 @@ public class SortingsManagerDialog extends ExplorerDialog implements ISortingsMa
             
             ascSign = environment.getMessageProvider().translate("SelectorAddons", "Ascending");
             descSign = environment.getMessageProvider().translate("SelectorAddons", "Descending");            
-            defManager = environment.getDefManager();
+            this.environment = environment;
         }
         
         public void setSorting(final RadSortingDef sorting){
@@ -67,7 +68,7 @@ public class SortingsManagerDialog extends ExplorerDialog implements ISortingsMa
                 removeRow(row);
             if (sorting!=null){
                 final RadClassPresentationDef classDef =  
-                            defManager.getClassPresentationDef(sorting.getOwnerClassId());
+                            environment.getDefManager().getClassPresentationDef(sorting.getOwnerClassId());
                 for (RadSortingDef.SortingItem sortingItem: sorting.getSortingColumns()){
                     add(sortingItem, classDef);
                 }
@@ -79,8 +80,9 @@ public class SortingsManagerDialog extends ExplorerDialog implements ISortingsMa
             if (classPresentation.isPropertyDefExistsById(sortingItem.propId)){
                 setRowCount(row + 1);
                 //column 0
-                QTableWidgetItem item = new QTableWidgetItem();            
-                item.setText(classPresentation.getPropertyDefById(sortingItem.propId).getTitle());            
+                QTableWidgetItem item = new QTableWidgetItem();
+                final RadPropertyDef propertyDef = classPresentation.getPropertyDefById(sortingItem.propId);
+                item.setText(propertyDef.getTitle(environment));
                 item.setFlags(new Qt.ItemFlags(Qt.ItemFlag.ItemIsEnabled));
                 setItem(row, COL_TITLE, item);
                 //column 1

@@ -32,6 +32,7 @@ import org.radixware.kernel.common.svn.client.ISvnFSClient;
 import org.radixware.kernel.common.svn.client.ISvnFSClient.SvnFsClientException;
 import org.radixware.kernel.common.svn.client.ISvnLogHandler;
 import org.radixware.kernel.common.svn.client.SvnAuthType;
+import org.radixware.kernel.common.svn.client.SvnCredentials;
 import org.radixware.kernel.common.svn.client.SvnEntry;
 import org.radixware.kernel.common.svn.client.SvnLogEntry;
 
@@ -76,30 +77,35 @@ public class SVN {
     public static void clearPasswordCache(String url, String user, SvnAuthType auth) {
         String key = url + ":" + user + ":" + auth.toString();
         passwordsCache.remove(key);
+        SvnCredentials.tryRemoveCachedPassword(url);
     }
 
     public static boolean passwordIsSet(String url, String user, SvnAuthType auth) {
         String key = url + ":" + user + ":" + auth.toString();
-        return passwordsCache.containsKey(key);
+        if (passwordsCache.containsKey(key)){
+            return true;
+        }
+        return SvnCredentials.searchCachedPassword(url);
     }
 //
 
     public static boolean isFileExists(SVNRepositoryAdapter repository, String path, long revision) {
         try {
-            SvnEntry info = repository.info(path, revision);
-            if (info != null) {
-                return SvnEntry.Kind.FILE == info.getKind();
+            final SvnEntry.Kind kind = repository.checkPath(path, revision);
+            if (kind != null) {
+                return SvnEntry.Kind.FILE == kind;
             }
         } catch (RadixSvnException ex) {
         }
         return false;
     }
-
+    
     public static boolean isFileExists(SVNRepositoryAdapter repository, String path) {
         try {
-            SvnEntry info = repository.info(path, repository.getLatestRevision());
-            if (info != null) {
-                return SvnEntry.Kind.FILE == info.getKind();
+            final SvnEntry.Kind kind = repository.checkPath(path, repository.getLatestRevision());
+            if (kind != null) {
+                final boolean rez = SvnEntry.Kind.FILE == kind;                
+                return rez;
             }
         } catch (RadixSvnException ex) {
         }
@@ -161,6 +167,11 @@ public class SVN {
     public static boolean isNormalSvnStatus(ISvnFSClient repository, File file) {
         ISvnFSClient.SvnStatusKind type = getSvnStatus(repository, file);
         return type != null && type.isNormal();
+    }
+
+    public static boolean isUnversionedSvnStatus(ISvnFSClient repository, File file) {
+        ISvnFSClient.SvnStatusKind type = getSvnStatus(repository, file);
+        return type != null && type.isUnversioned();
     }
 
     public static boolean isСonflictedSvnStatus(ISvnFSClient repository, File file) {

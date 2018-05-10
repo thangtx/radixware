@@ -51,6 +51,9 @@ public class XBeansIfaceProp {
     private boolean hasSeveralPropNullCheck;
     private boolean hasSeveralPropSizeAccess;
     private boolean hasSeveralPropListAssignment;
+    private boolean hasSingletonSetterDateTimeWithTimezone;
+    private boolean hasSingletonGetterDateTimeWithTimezone;
+    private boolean hasSeveralPropListGetterDateTimeWithTimezone;
     private XBeansInterface iface;
 
     public XBeansIfaceProp(XBeansInterface iface, String name, boolean isDeprecated, boolean isAttr, String type, String xtype) {
@@ -561,6 +564,30 @@ public class XBeansIfaceProp {
 
     public void setHasSeveralPropListAssignment(boolean hasSeveralPropListAssignment) {
         this.hasSeveralPropListAssignment = hasSeveralPropListAssignment;
+    }
+
+    public boolean hasSingletonGetterDateTimeWithTimezone() {
+        return hasSingletonGetterDateTimeWithTimezone;
+    }
+
+    public void setHasSingletonGetterDateTimeWithTimezone(boolean hasSingletonDateTimeWithTimezoneGetter) {
+        this.hasSingletonGetterDateTimeWithTimezone = hasSingletonDateTimeWithTimezoneGetter;
+    }
+
+    public boolean hasSingletonSetterDateTimeWithTimezone() {
+        return hasSingletonSetterDateTimeWithTimezone;
+    }
+
+    public void setHasSingletonSetterDateTimeWithTimezone(boolean hasSingletonDateTimeWithTimezoneSetter) {
+        this.hasSingletonSetterDateTimeWithTimezone = hasSingletonDateTimeWithTimezoneSetter;
+    }
+    
+    public boolean hasSeveralPropListGetterDateTimeWithTimezone() {
+        return this.hasSeveralPropListGetterDateTimeWithTimezone;
+    }
+    
+    public void setHasSeveralPropListGetterDateTimeWithTimezone(boolean hasSeveralPropListGetterDateTimeWithTimezone) {
+        this.hasSeveralPropListGetterDateTimeWithTimezone = hasSeveralPropListGetterDateTimeWithTimezone;
     }
 
     public boolean isAttr() {

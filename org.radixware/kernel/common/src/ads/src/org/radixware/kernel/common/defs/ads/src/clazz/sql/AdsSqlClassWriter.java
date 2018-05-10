@@ -202,6 +202,6 @@ public class AdsSqlClassWriter<T extends AdsSqlClassDef> extends AdsClassWriter<
     }
 
     public static AdsSqlClassSqlProcessor.QueryInfo[] getQueryVariants(AdsSqlClassDef clazz, int maxCount) {
-        return AdsSqlClassSqlProcessor.getVariants(clazz.getSource(), maxCount).toArray(new AdsSqlClassSqlProcessor.QueryInfo[0]);
+        return AdsSqlClassSqlProcessor.getVariants(clazz.getSqml(), maxCount).toArray(new AdsSqlClassSqlProcessor.QueryInfo[0]);
     }
 }

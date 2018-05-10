@@ -41,6 +41,10 @@ import org.radixware.kernel.server.arte.JobQueue;
 import org.radixware.kernel.server.exceptions.AlgorithmDefinitionError;
 
 public abstract class Algorithm {
+    
+    public enum EAlgoMethodAdded {
+        SUBMIT_VARIANTS
+    }
 
     static final public Id ALGORITHM_ID = Id.Factory.loadFrom("pdcAlgorithm_________________");
     static final public Id DWF_PROCESS_ENTITY_ID = Id.Factory.loadFrom("tblRDXQVFY6PLNRDANMABIFNQAABA");
@@ -214,7 +218,7 @@ public abstract class Algorithm {
         }
         AlgorithmExecutor executor = new AlgorithmExecutor(arte, process, (Timestamp) process.getProp(DWF_PROCESS_PROP_SIMULATED_TIME_ID));
         String spid = arte.setSavepoint(); // FIXME не используется !
-        Object traceTargetHandler = arte.getTrace().addTargetLog((String) process.getProp(DWF_PROCESS_PROP_TRACE_PROF_ID));
+        Object traceTargetHandler = arte.getTrace().addTargetLog((String) process.getProp(DWF_PROCESS_PROP_TRACE_PROF_ID), "Process[" + processId + "]");
         arte.getTrace().enterContext(EEventContextType.WF_PROCESS, processId);
         arte.setClientLanguage(EIsoLanguage.getForValue((String) process.getProp(DWF_PROCESS_PROP_LANGUAGE_ID)));
         executor.trace(EEventSeverity.DEBUG, "WF process #" + processId + " resumed at " + (strobId != null ? "strobId " + strobId : "waitId " + waitId));
@@ -273,7 +277,7 @@ public abstract class Algorithm {
         String spid = arte.setSavepoint();
         Object traceTargetHandler = null;
         if (executor.process != null) {
-            traceTargetHandler = arte.getTrace().addTargetLog((String) executor.process.getProp(DWF_PROCESS_PROP_TRACE_PROF_ID));
+            traceTargetHandler = arte.getTrace().addTargetLog((String) executor.process.getProp(DWF_PROCESS_PROP_TRACE_PROF_ID), "Process[" + executor.process.getProp(DWF_PROCESS_PROP_ID_ID) + "]");
             arte.getTrace().enterContext(EEventContextType.WF_PROCESS, (Long) executor.process.getProp(DWF_PROCESS_PROP_ID_ID));
             arte.setClientLanguage(EIsoLanguage.getForValue((String) executor.process.getProp(DWF_PROCESS_PROP_LANGUAGE_ID)));
         }
@@ -410,6 +414,14 @@ public abstract class Algorithm {
     public Id getProcessClassId() {
         return DWF_PROCESS_CLASS_ID;
     }
+    
+    public boolean isMethodBackCompatible(EAlgoMethodAdded method) {
+        return false;
+    }
+    
+    public String getSubmitVariants(Id blockId) {
+        return null;
+    }
 
 // Aбстрактные методы, реализуются в конкретных алгоритмах
     public abstract Set<Id> getBlockIds();
@@ -417,7 +429,7 @@ public abstract class Algorithm {
     public abstract void registerInExecutor(AlgorithmExecutor exec, String path);
 
     public abstract int getBlockType(Id block);
-
+    
     public abstract Id getNextBlock(Id block, int output);
 
     public abstract int getNextBlockInput(Id block, int output);
@@ -675,6 +687,16 @@ final class TaacXXX extends Algorithm {
             }
         }
         throw new AlgorithmDefinitionError("Invalid algorithm, unknown block #" + block);
+    }
+    
+    @Override
+    public String getSubmitVariants(Id blockId) {
+        if (blockId.equals(ndeXXX1)) {
+            return "OUT1;OUT2;OUT3";
+        } else if (blockId.equals(ndeXXX2)) {
+            return "OUT1;OUT2";
+        }
+        throw new AlgorithmDefinitionError("Invalid algorithm, unknown block #" + blockId);
     }
 
     //связи между блоками

@@ -16,10 +16,14 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.trace.ClientTracer;
 
 
-public final class ExplorerTracer extends ClientTracer<ExplorerTraceItem>{        
+public final class ExplorerTracer extends ClientTracer<ExplorerTraceItem>{
     
     public ExplorerTracer(final IClientEnvironment environment){
         super(environment);
+    }
+    
+    public ExplorerTracer(final IClientEnvironment environment, final boolean resumeTraceFile){
+        super(environment, resumeTraceFile);
     }
 
     @Override

@@ -73,7 +73,11 @@ class ImagePanel extends ModuleImagesEditor implements PropertyChangeListener, E
     public void propertyChange(PropertyChangeEvent evt) {
         if (PropertyEnv.PROP_STATE.equals(evt.getPropertyName()) && evt.getNewValue() == PropertyEnv.STATE_VALID) {
             AdsUIProperty.ImageProperty prop = getProperty();
-            prop.setImageId(getSelectedImageId());
+            Id id = getSelectedImageId();
+            if (id == null){
+                return;
+            }
+            prop.setImageId(id);
             try {
                 ((UIPropertySupport)editor.getSource()).setValue(prop);
             } catch (Exception ex) {

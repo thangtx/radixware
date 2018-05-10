@@ -11,43 +11,35 @@
 package org.radixware.kernel.common.design.msdleditor.field.panel;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.apache.xmlbeans.XmlCursor;
 import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.enums.EUnit;
+import org.radixware.kernel.common.design.msdleditor.field.panel.simple.IUnitValueStructure;
 import org.radixware.kernel.common.msdl.EFieldType;
 
 import org.radixware.kernel.common.msdl.EFieldsFormat;
 import org.radixware.kernel.common.msdl.IFieldTemplateTextFieldRetriever;
 import org.radixware.kernel.common.msdl.MsdlField;
+import org.radixware.kernel.common.msdl.MsdlStructureField;
 import org.radixware.kernel.common.msdl.MsdlStructureFields;
 import org.radixware.kernel.common.msdl.RootMsdlScheme;
-import org.radixware.kernel.common.msdl.enums.EEncoding;
 import org.radixware.kernel.common.msdl.fields.StructureFieldModel;
 import org.radixware.kernel.common.msdl.fields.parser.structure.SmioFieldStructure;
-import org.radixware.schemas.msdl.AnyField;
 import org.radixware.schemas.msdl.Field;
 import org.radixware.schemas.msdl.SimpleField;
-import org.radixware.schemas.msdl.Structure;
 import org.radixware.kernel.common.msdl.fields.parser.SmioField;
 
 public class FieldHeaderPanel extends AbstractEditItem implements ActionListener {
 
-    private AnyField field;
     private Field f;
     private MsdlField msdlField;
     boolean extIdIsHex;
@@ -78,14 +70,9 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
         return msdlField.getFieldModel().getField();
     }
 
-    private AnyField getAnyField() {
-        return msdlField.getField();
-    }
-
     public void open(MsdlField msdlField, JPanel functions, IFieldTemplateTextFieldRetriever templateRetriever) {
         super.open(msdlField);
         f = msdlField.getFieldModel().getField();
-        field = msdlField.getField();
         opened = false;
         this.msdlField = msdlField;
         RootMsdlScheme rootMsdlScheme = msdlField.getRootMsdlScheme();
@@ -97,8 +84,12 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
         }
         additionalSettingsPanel.invalidate();
         opened = false;
+        
+        if (this.msdlField instanceof MsdlStructureField) {
+            tagHexPanel.open(new FieldHeaderStructure((MsdlStructureField) this.msdlField));
+        }
+        
         this.jComboBoxFieldType.getModel().setSelectedItem(msdlField.getType());
-        hexPanel1.addActionListener(this);
         DocumentListener dl = new DocumentListener() {
 
             @Override
@@ -117,6 +108,24 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
             }
         };
         jTextAreaComment.getDocument().addDocumentListener(dl);
+        DocumentListener dl1 = new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                devCommentChanged();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                devCommentChanged();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                devCommentChanged();
+            }
+        };
+        jTextAreaDevComment.getDocument().addDocumentListener(dl1);
         DocumentListener nl = new DocumentListener() {
 
             @Override
@@ -138,7 +147,7 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
 
         //append template searcher panel if appropriate
         if (canBeTemplateInstance(this.msdlField)) {
-            if (this.templateFieldRetriever == null) {
+            if (this.templateFieldRetriever == null && templateRetriever != null) {
                 this.templateFieldRetriever = templateRetriever;
                 addTemplatePanel();
             }
@@ -170,9 +179,18 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
             jCheckBoxNullable.getModel().setSelected(simpleField.isSetIsNilable() && simpleField.getIsNilable());
         }
         if (f.isSetComment()) {
-            jTextAreaComment.setText(f.getComment().newCursor().getTextValue());
+            XmlCursor tmpCursor = f.getComment().newCursor();
+            jTextAreaComment.setText(tmpCursor.getTextValue());
+            tmpCursor.dispose();
         } else {
             jTextAreaComment.setText("");
+        }
+        if (f.isSetDevComment()) {
+            XmlCursor tmpCursor = f.getDevComment().newCursor();
+            jTextAreaDevComment.setText(tmpCursor.getTextValue());
+            tmpCursor.dispose();
+        } else {
+            jTextAreaDevComment.setText("");
         }
 
         if (canBeUnion()) {
@@ -199,6 +217,7 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
         super.setReadOnly(isReadOnly);
         testFieldButton.setEnabled(true);
         jTextAreaComment.setEnabled(!isReadOnly());
+        jTextAreaDevComment.setEnabled(!isReadOnly());
     }
 
     public void updateExtId() {
@@ -207,12 +226,11 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
                 && msdlField.getContainer() instanceof MsdlStructureFields
                 && (((StructureFieldModel) parentMsdlField.getFieldModel()).getStructureType() == EFieldsFormat.FIELD_NAMING
                 || ((StructureFieldModel) parentMsdlField.getFieldModel()).getStructureType() == EFieldsFormat.BERTLV)) {
-            Structure.Field f = (Structure.Field) getAnyField();
-            hexPanel1.setValue(f.getExtId(), EEncoding.getInstanceForHexViewType(f.getExtIdViewType()));
-            hexPanel1.setVisible(true);
+            tagHexPanel.fillWidgets();
+            tagHexPanel.setVisible(true);
             jLabelExtId.setVisible(true);
         } else {
-            hexPanel1.setVisible(false);
+            tagHexPanel.setVisible(false);
             jLabelExtId.setVisible(false);
         }
     }
@@ -232,17 +250,20 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaComment = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextAreaDevComment = new javax.swing.JTextArea();
+        jLabel4 = new javax.swing.JLabel();
         jComboBoxFieldType = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jCheckBoxRequired = new javax.swing.JCheckBox();
         jCheckBoxNullable = new javax.swing.JCheckBox();
-        hexPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.HexPanel();
         jLabelExtId = new javax.swing.JLabel();
         additionalSettingsPanel = new javax.swing.JPanel();
         testFieldButton = new javax.swing.JButton();
         jCheckBoxArray = new javax.swing.JCheckBox();
         jCheckBoxUnion = new javax.swing.JCheckBox();
         jCheckBoxAbstract = new javax.swing.JCheckBox();
+        tagHexPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/field/panel/Bundle"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("FieldHeaderPanel.border.title"))); // NOI18N
@@ -306,6 +327,35 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(jLabel2, gridBagConstraints);
 
+        jTextAreaDevComment.setColumns(20);
+        jTextAreaDevComment.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jTextAreaDevComment.setRows(3);
+        jTextAreaDevComment.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                jTextAreaDevCommentCaretUpdate(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTextAreaDevComment);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.43;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        add(jScrollPane2, gridBagConstraints);
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText(bundle.getString("FieldHeaderPanel.jLabel4.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        add(jLabel4, gridBagConstraints);
+
         jComboBoxFieldType.setMaximumRowCount(9);
         jComboBoxFieldType.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -358,19 +408,12 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         add(jCheckBoxNullable, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.43;
-        add(hexPanel1, gridBagConstraints);
 
         jLabelExtId.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabelExtId.setText(bundle.getString("FieldHeaderPanel.jLabelExtId.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(jLabelExtId, gridBagConstraints);
 
@@ -379,7 +422,7 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 6;
-        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.gridheight = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.43;
@@ -436,6 +479,13 @@ public class FieldHeaderPanel extends AbstractEditItem implements ActionListener
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         add(jCheckBoxAbstract, gridBagConstraints);
+
+        tagHexPanel.addActionListener(this);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(tagHexPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 private void jComboBoxFieldTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFieldTypeActionPerformed
@@ -523,6 +573,10 @@ private void jTextAreaCommentCaretUpdate(javax.swing.event.CaretEvent evt) {//GE
         msdlField.getModel().setModified();
     }//GEN-LAST:event_jCheckBoxAbstractActionPerformed
 
+    private void jTextAreaDevCommentCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_jTextAreaDevCommentCaretUpdate
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextAreaDevCommentCaretUpdate
+
     private void commentChanged() {
         if (!opened) {
             return;
@@ -545,10 +599,32 @@ private void jTextAreaCommentCaretUpdate(javax.swing.event.CaretEvent evt) {//GE
         }
         msdlField.getModel().setModified();
     }
+    
+    private void devCommentChanged() {
+        if (!opened) {
+            return;
+        }
+        if (f.isSetDevComment()) {
+            if (jTextAreaDevComment.getText().equals("")) {
+                f.unsetDevComment();
+            } else {
+                XmlCursor c = f.getDevComment().newCursor();
+                if (!jTextAreaDevComment.getText().equals(c.getTextValue())) {
+                    c.setTextValue(jTextAreaDevComment.getText());
+                }
+                c.dispose();
+            }
+        } else {
+            if (!jTextAreaDevComment.getText().equals("")) {
+                f.addNewDevComment();
+                f.getDevComment().newCursor().setTextValue(jTextAreaDevComment.getText());
+            }
+        }
+        msdlField.getModel().setModified();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel additionalSettingsPanel;
-    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.HexPanel hexPanel1;
     private javax.swing.JCheckBox jCheckBoxAbstract;
     private javax.swing.JCheckBox jCheckBoxArray;
     private javax.swing.JCheckBox jCheckBoxNullable;
@@ -558,10 +634,14 @@ private void jTextAreaCommentCaretUpdate(javax.swing.event.CaretEvent evt) {//GE
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabelExtId;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextAreaComment;
+    private javax.swing.JTextArea jTextAreaDevComment;
     private javax.swing.JTextField jTextFieldName;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel tagHexPanel;
     private javax.swing.JButton testFieldButton;
     // End of variables declaration//GEN-END:variables
 
@@ -570,9 +650,10 @@ private void jTextAreaCommentCaretUpdate(javax.swing.event.CaretEvent evt) {//GE
         if (!opened) {
             return;
         }
-        ((Structure.Field) field).setExtId(hexPanel1.getValue());
-        ((Structure.Field) field).setExtIdViewType(hexPanel1.getViewEncoding().getValue());
-        msdlField.setModified();
+        if (msdlField instanceof MsdlStructureField) {
+            tagHexPanel.fillDefinition();
+            msdlField.setModified();
+        }
     }
 
     //WARNING: Public Morozov
@@ -660,5 +741,50 @@ private void jTextAreaCommentCaretUpdate(javax.swing.event.CaretEvent evt) {//GE
 
     private void addFunctionsPanel() {
         additionalSettingsPanel.add(functionsPanel,BorderLayout.PAGE_START);
+    }
+    
+    private class FieldHeaderStructure implements IUnitValueStructure {
+        
+        private final MsdlStructureField field;
+        
+        public FieldHeaderStructure(MsdlStructureField field) {
+            this.field = field;
+        }
+
+        @Override
+        public String getPadChar() {
+            return field.getExtIdChar();
+        }
+
+        @Override
+        public String getExtPadChar() {
+            return null;
+        }
+
+        @Override
+        public void setPadChar(String chars) {
+            field.setExtIdChar(chars);
+        }
+
+        @Override
+        public byte[] getPadBin() {
+            return field.getExtId();
+        }
+
+        @Override
+        public byte[] getExtPadBin() {
+            return null;
+        }
+
+        @Override
+        public void setPadBin(byte[] bytes) {
+            field.setExtId(bytes);
+        }
+
+        @Override
+        public EUnit getViewedUnit() {
+            return EUnit.getInstance(field.getModel().getOwnerStructureModel().getExtIdUnit());
+        }
+        
     }
 }

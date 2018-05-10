@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
-  <AdsClassDefinition Id="adcC2F6O6BY3BHYFMZTTWKOSNQCPU" Name="ImageAcquaringDevice" Type="3" Environment="explorer">
+  <AdsClassDefinition Id="adcC2F6O6BY3BHYFMZTTWKOSNQCPU" Name="ImageAcquiringDevice" Type="3" Environment="explorer">
     <AccessRules IsAbstract="true">
-      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.iad.ImageAcquaringDevice"/>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.iad.ImageAcquiringDevice"/>
     </AccessRules>
     <Headers>
       <Src Name="HeaderadcC2F6O6BY3BHYFMZTTWKOSNQCPU"/>
@@ -16,20 +16,20 @@
     <Methods>
       <Method Id="mth4GPJGWYQ6VDPTMAQPS5HQT4DIY" Name="enumDevices" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true">
-          <Transparence Extendable="false" PublishedName="enumDevices(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;)Ljava.util.Collection&lt;Lorg.radixware.kernel.explorer.iad.ImageAcquaringDevice;>;"/>
+          <Transparence Extendable="false" PublishedName="enumDevices(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquiringDeviceType;)Ljava.util.Collection&lt;Lorg.radixware.kernel.explorer.iad.ImageAcquiringDevice;>;"/>
         </AccessRules>
         <Parameters>
           <Parameter Name="environment" Id="mprPRM3UVBG25HN7PERLOKW6QBAGE">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
           </Parameter>
           <Parameter Name="deviceType" Id="mpr4PAZ77UG4BGT7BBVQNU5PW672I">
-            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquiringDeviceType"/>
           </Parameter>
         </Parameters>
         <ReturnType TypeId="400" extStr="java.util.Collection">
           <xsc:GenericArguments>
             <xsc:Argument Alias="?">
-              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.ImageAcquaringDevice"/>
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.ImageAcquiringDevice"/>
             </xsc:Argument>
           </xsc:GenericArguments>
         </ReturnType>
@@ -59,14 +59,14 @@
       </Method>
       <Method Id="mthLIEHZ2WDRFFVHAW2PLUK7AOGPA" Name="getImage" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true">
-          <Transparence Extendable="false" PublishedName="getImage(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;Lcom.trolltech.qt.gui.QWidget;Z)Lcom.trolltech.qt.gui.QImage;"/>
+          <Transparence Extendable="false" PublishedName="getImage(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquiringDeviceType;Lcom.trolltech.qt.gui.QWidget;Z)Lcom.trolltech.qt.gui.QImage;"/>
         </AccessRules>
         <Parameters>
           <Parameter Name="environment" Id="mprEBLOZVO5KRBSZGQJ5XXE2WFHYA">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
           </Parameter>
           <Parameter Name="deviceType" Id="mpr2R76M7YU35GFZANU4SCUZZ3QMM">
-            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquiringDeviceType"/>
           </Parameter>
           <Parameter Name="parentWidget" Id="mprQFGCMOWDIFDANGCT742MYZWTAM">
             <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
@@ -84,14 +84,14 @@
       </Method>
       <Method Id="mth5A4BGKX53BCKDPLVARDMM2IAWU" Name="selectDevice" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true">
-          <Transparence Extendable="false" PublishedName="selectDevice(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;Lcom.trolltech.qt.gui.QWidget;Z)Lorg.radixware.kernel.explorer.iad.ImageAcquaringDevice;"/>
+          <Transparence Extendable="false" PublishedName="selectDevice(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquiringDeviceType;Lcom.trolltech.qt.gui.QWidget;Z)Lorg.radixware.kernel.explorer.iad.ImageAcquiringDevice;"/>
         </AccessRules>
         <Parameters>
           <Parameter Name="environment" Id="mprAUG726SKOZBI3NQ5QA6LV6TFZE">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
           </Parameter>
           <Parameter Name="deviceType" Id="mprBFN263OVN5AVJF75DSZ4QY237Q">
-            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquiringDeviceType"/>
           </Parameter>
           <Parameter Name="parentWidget" Id="mpr4R2EJ5MPO5AE5NSMGMECLGF4XU">
             <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
@@ -100,7 +100,7 @@
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.iad.ImageAcquaringDevice"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.explorer.iad.ImageAcquiringDevice"/>
       </Method>
       <Method Id="mthRD3PUUG25VGZBIJR7S5SIVKZK4" Name="getImage" Nature="0" IsOverride="false">
         <AccessRules IsAbstract="true">
@@ -160,14 +160,14 @@
       </Method>
       <Method Id="mthO5V6SFXG6RCKVLAL3QLHUFMUGI" Name="loadImageToFile" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true">
-          <Transparence Extendable="false" PublishedName="loadImageToFile(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;Ljava.lang.String;Lcom.trolltech.qt.gui.QWidget;Z)Ljava.io.File;"/>
+          <Transparence Extendable="false" PublishedName="loadImageToFile(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.explorer.iad.EImageAcquiringDeviceType;Ljava.lang.String;Lcom.trolltech.qt.gui.QWidget;Z)Ljava.io.File;"/>
         </AccessRules>
         <Parameters>
           <Parameter Name="environment" Id="mpr5EIYHUPN4ZAJTN3SNR6QMGBXU4">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
           </Parameter>
           <Parameter Name="type" Id="mprDHS4V2XH7RGPZPAE25HHIPYMRQ">
-            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquiringDeviceType"/>
           </Parameter>
           <Parameter Name="filePath" Id="mprLMXXAMMNMNDWRBY5C2EPQWPMEA">
             <Type TypeId="21"/>
@@ -183,11 +183,11 @@
       </Method>
       <Method Id="mthYPMNZP6DPNFELJIK7YEB223CJU" Name="isSupportedPlatform" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true">
-          <Transparence Extendable="false" PublishedName="isSupportedPlatform(Lorg.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;)Z"/>
+          <Transparence Extendable="false" PublishedName="isSupportedPlatform(Lorg.radixware.kernel.explorer.iad.EImageAcquiringDeviceType;)Z"/>
         </AccessRules>
         <Parameters>
           <Parameter Name="type" Id="mpr2QLLD2PSGJCVBLH3HLODDZX4VY">
-            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType"/>
+            <Type TypeId="400" extStr="org.radixware.kernel.explorer.iad.EImageAcquiringDeviceType"/>
           </Parameter>
         </Parameters>
         <ReturnType TypeId="401" extStr="boolean"/>

@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.src.localization;
 
 import java.util.Collections;
@@ -21,7 +20,6 @@ import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsEventCodeDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
-import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.src.AbstractDefinitionWriter;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
@@ -32,6 +30,7 @@ import org.radixware.kernel.common.enums.ELocalizedStringKind;
 import org.radixware.kernel.common.meta.RadMlStringBundleDef;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 
 /**
  * public RadMlStringBundleDef(Id id, String name, Map<Id, MultilingualString>
@@ -44,6 +43,24 @@ public class AdsLocalizingBundleWriter extends AbstractDefinitionWriter<AdsLocal
 
     private static final char[] MLB_CLASS_NAME = RadMlStringBundleDef.class.getName().toCharArray();
     private static final char[] MLS_CLASS_NAME = RadMlStringBundleDef.MultilingualString.class.getName().replace("$", ".").toCharArray();
+    private static final Comparator LANGUAGE_COMPORATOR = new Comparator<IMultilingualStringDef.StringStorage>() {
+
+        @Override
+        public int compare(IMultilingualStringDef.StringStorage o1, IMultilingualStringDef.StringStorage o2) {
+            if (o1 == null && o2 == null) {
+                return 0;
+            } else if (o1 != null && o2 != null) {
+                EIsoLanguage lang1 = o1.getLanguage();
+                if (lang1 == null) {
+                    return o2.getLanguage() == null ? 0 : -1;
+                }
+                return lang1.compareTo(o2.getLanguage());
+            } else {
+                return o1 == null ? -1 : 1;
+            }
+        }
+
+    };
 
     public AdsLocalizingBundleWriter(final JavaSourceSupport support, final AdsLocalizingBundleDef target, final UsagePurpose usagePurpose) {
         super(support, target, usagePurpose);
@@ -63,7 +80,7 @@ public class AdsLocalizingBundleWriter extends AbstractDefinitionWriter<AdsLocal
         if (layer == null) {
             return false;
         }
-        final Set<EIsoLanguage> langs = layer.getLanguages() == null ? Collections.<EIsoLanguage>emptySet() : EnumSet.copyOf(layer.getLanguages());
+        final Set<EIsoLanguage> langs = layer.getLanguages() == null || layer.getLanguages().isEmpty() ? Collections.<EIsoLanguage>emptySet() : EnumSet.copyOf(layer.getLanguages());
 
         WriterUtils.writePackageDeclaration(printer, def, usagePurpose);
         WriterUtils.writeMetaShareabilityAnnotation(printer, def);
@@ -71,8 +88,7 @@ public class AdsLocalizingBundleWriter extends AbstractDefinitionWriter<AdsLocal
 
         printer.print("public final class ");
         //writeUsage(printer);
-        printer.print(def.getRuntimeId());
-        printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+        printer.print(JavaSourceSupport.getMetaName(def, def.getRuntimeId(), printer instanceof IHumanReadablePrinter));
         printer.println('{');
         printer.enterBlock();
         printer.println("@SuppressWarnings(\"unused\")");
@@ -81,15 +97,12 @@ public class AdsLocalizingBundleWriter extends AbstractDefinitionWriter<AdsLocal
         printer.print(" $$$items$$$ = new ");
         writeItemMapDeclaration(printer);
         printer.println("();");
+
+        final CodePrinter postPrinter = CodePrinter.Factory.newJavaPrinter(printer);
+
         printer.println("static{");
         printer.enterBlock();
-        printer.println("@SuppressWarnings(\"unused\")");
-        writeStringsMapDeclaration(printer);
-        printer.print("$$$strings$$$ = new ");
-        writeStringsMapDeclaration(printer);
-        printer.println("();");
 
-        final EnumSet<EIsoLanguage> unchecked = EnumSet.noneOf(EIsoLanguage.class);
         final List<IMultilingualStringDef> strings = def.getUsedStrings(EScope.LOCAL_AND_OVERWRITE);
         Collections.sort(strings, new Comparator<IMultilingualStringDef>() {
             @Override
@@ -97,69 +110,24 @@ public class AdsLocalizingBundleWriter extends AbstractDefinitionWriter<AdsLocal
                 return o1.getId().toString().compareTo(o2.getId().toString());
             }
         });
-        for (IMultilingualStringDef string : strings) {
-
-            printer.println("$$$strings$$$.clear();");
-
-            final List<IMultilingualStringDef.StringStorage> vals = string.getValues(EScope.LOCAL_AND_OVERWRITE);
-
-            unchecked.clear();
-            for (IMultilingualStringDef.StringStorage e : vals) {
-                if (!langs.contains(e.getLanguage())) {
-                    continue;
-                }
-                printer.print("$$$strings$$$.put(");
-                WriterUtils.writeEnumFieldInvocation(printer, e.getLanguage());
-                printer.printComma();
-                printer.printStringLiteral(e.getValue());
-                printer.println(");");
-                if (!e.isChecked()) {
-                    unchecked.add(e.getLanguage());
-                }
-            }
-
-            printer.print("$$$items$$$.put(");
-            WriterUtils.writeIdUsage(printer, string.getId());
-            printer.printComma();
-            printer.print("new ");
-            printer.print(MLS_CLASS_NAME);
-            printer.print("($$$strings$$$");
-            printer.printComma();
-
-            if (string instanceof AdsEventCodeDef) {
-                WriterUtils.writeEnumFieldInvocation(printer, ELocalizedStringKind.EVENT_CODE);
-                printer.printComma();
-                final AdsEventCodeDef ec = (AdsEventCodeDef) string;
-                WriterUtils.writeEnumFieldInvocation(printer, ec.getEventSeverity());
-                printer.printComma();
-                printer.printStringLiteral(ec.getEventSource());
-            } else {
-                WriterUtils.writeEnumFieldInvocation(printer, ELocalizedStringKind.SIMPLE);
-                printer.printComma();
-                printer.print("null,null");
-            }
-            printer.printComma();
-            if (unchecked.isEmpty()) {
-                WriterUtils.writeNull(printer);
-            } else {
-                WriterUtils.writeEnumSet(printer, unchecked, EIsoLanguage.class);
-            }
-            printer.printComma();
-            printer.printStringLiteral(string.getModule().getDirectory().getAbsolutePath());
-            printer.print("));");
-
+        int[] count = new int[1];
+        writeLoadStringMethods(langs, strings, postPrinter, count);
+        for (int i = 1; i <= count[0]; i++) {
+            writeLoadStringMethod(printer, i);
+            printer.println(';');
         }
         printer.leaveBlock();
-        printer.println();
         printer.println("}");
+        printer.println();
+
+        printer.print(postPrinter.getContents());
         printer.print("public static final ");
         printer.print(MLB_CLASS_NAME);
         printer.print(" rdxMeta = new ");
         printer.print(MLB_CLASS_NAME);
         printer.print("(");
         //writeUsage(printer);
-        printer.print(def.getRuntimeId());
-        printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+        printer.print(JavaSourceSupport.getMetaName(def, def.getRuntimeId(), printer instanceof IHumanReadablePrinter));
 
         printer.print(".class,");
         WriterUtils.writeIdUsage(printer, def.getId());
@@ -169,6 +137,105 @@ public class AdsLocalizingBundleWriter extends AbstractDefinitionWriter<AdsLocal
         printer.leaveBlock();
         printer.println('}');
         return true;
+    }
+
+    private boolean writeLoadStringMethods(final Set<EIsoLanguage> langs, List<IMultilingualStringDef> strings, final CodePrinter printer, int[] methodCount) {
+        final CodePrinter methodPrinter = CodePrinter.Factory.newJavaPrinter(printer);
+        final EnumSet<EIsoLanguage> unchecked = EnumSet.noneOf(EIsoLanguage.class);
+        int count = 1;
+        writeLoadStringMethodStart(methodPrinter, count);
+        int methodStrings = 0;
+        for (IMultilingualStringDef string : strings) {
+            final CodePrinter stingPrinter = CodePrinter.Factory.newJavaPrinter(printer);
+            stingPrinter.println("$$$strings$$$.clear();");
+
+            final List<IMultilingualStringDef.StringStorage> vals = string.getValues(EScope.LOCAL_AND_OVERWRITE);
+            Collections.sort(vals, LANGUAGE_COMPORATOR);
+            unchecked.clear();
+            for (IMultilingualStringDef.StringStorage e : vals) {
+                if (!langs.contains(e.getLanguage())) {
+                    continue;
+                }
+                stingPrinter.print("$$$strings$$$.put(");
+                WriterUtils.writeEnumFieldInvocation(stingPrinter, e.getLanguage());
+                stingPrinter.printComma();
+                stingPrinter.printStringLiteral(e.getValue());
+                stingPrinter.println(");");
+                if (!e.isChecked()) {
+                    unchecked.add(e.getLanguage());
+                }
+            }
+
+            stingPrinter.print("$$$items$$$.put(");
+            WriterUtils.writeIdUsage(stingPrinter, string.getId());
+            stingPrinter.printComma();
+            stingPrinter.print("new ");
+            stingPrinter.print(MLS_CLASS_NAME);
+            stingPrinter.print("($$$strings$$$");
+            stingPrinter.printComma();
+
+            if (string instanceof AdsEventCodeDef) {
+                WriterUtils.writeEnumFieldInvocation(stingPrinter, ELocalizedStringKind.EVENT_CODE);
+                stingPrinter.printComma();
+                final AdsEventCodeDef ec = (AdsEventCodeDef) string;
+                WriterUtils.writeEnumFieldInvocation(stingPrinter, ec.getEventSeverity());
+                stingPrinter.printComma();
+                stingPrinter.printStringLiteral(ec.getEventSource());
+            } else {
+                WriterUtils.writeEnumFieldInvocation(stingPrinter, ELocalizedStringKind.SIMPLE);
+                stingPrinter.printComma();
+                stingPrinter.print("null,null");
+            }
+            stingPrinter.printComma();
+            if (unchecked.isEmpty()) {
+                WriterUtils.writeNull(stingPrinter);
+            } else {
+                WriterUtils.writeEnumSet(stingPrinter, unchecked, EIsoLanguage.class);
+            }
+            stingPrinter.printComma();
+            WriterUtils.writeNull(stingPrinter);
+            stingPrinter.print("));");
+            stingPrinter.println();
+
+            if (methodStrings > 100) {
+                methodPrinter.leaveBlock();
+                methodPrinter.println("}");
+                methodPrinter.println();
+                printer.print(methodPrinter.getContents());
+                methodPrinter.clear();
+                count++;
+                writeLoadStringMethodStart(methodPrinter, count);
+                methodStrings = 0;
+            }
+
+            methodPrinter.print(stingPrinter.getContents());
+            methodStrings++;
+        }
+        methodPrinter.leaveBlock();
+        methodPrinter.println("}");
+        methodPrinter.println();
+        methodCount[0] = count;
+        printer.print(methodPrinter.getContents());
+        return true;
+    }
+
+    private void writeLoadStringMethodStart(final CodePrinter methodPrinter, int count) {
+        methodPrinter.println("@SuppressWarnings(\"unused\")");
+        methodPrinter.print("private static void ");
+        writeLoadStringMethod(methodPrinter, count);
+        methodPrinter.println("{");
+        methodPrinter.enterBlock();
+
+        writeStringsMapDeclaration(methodPrinter);
+        methodPrinter.print("$$$strings$$$ = new ");
+        writeStringsMapDeclaration(methodPrinter);
+        methodPrinter.println("();");
+    }
+
+    private void writeLoadStringMethod(final CodePrinter printer, int count) {
+        printer.print("loadStrings");
+        printer.print(count);
+        printer.print("()");
     }
 
     private void writeItemMapDeclaration(final CodePrinter printer) {

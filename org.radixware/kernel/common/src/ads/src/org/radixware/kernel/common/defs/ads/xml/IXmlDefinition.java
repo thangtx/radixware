@@ -45,7 +45,7 @@ public interface IXmlDefinition extends IJavaSource, IAdsTypeSource, IPureXmlDef
 
     Collection<String> getSchemaTypeList();
 
-    String getJavaPackageName();
+    String getJavaPackageName(boolean isHumanReadable);
 
     boolean isReadOnly();
 

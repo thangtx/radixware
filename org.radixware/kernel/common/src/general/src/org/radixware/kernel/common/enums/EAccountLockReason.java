@@ -23,8 +23,9 @@ import org.radixware.kernel.common.types.Id;
 public enum EAccountLockReason implements IKernelIntEnum {
 
     INACTIVE("Inactive", 0),
-    CREDENTIALS("Invalid Credentials", 1),
-    BY_ADMIN("Administractor Action", 2);
+    CREDENTIALS("Invalid Credentials", 1),    
+    BY_ADMIN("Administractor Action", 2),
+    TMP_PWD_EXPIRED("Temporary Password Expired",3);
     private final String name;
     private final long value;
 

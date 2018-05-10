@@ -13,12 +13,13 @@ package org.radixware.wps.rwt;
 import java.awt.Dimension;
 import org.radixware.kernel.common.html.Html;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.client.widgets.IMainStatusBar;
 import org.radixware.kernel.common.html.IHtmlContext;
-import org.radixware.kernel.common.utils.FileUtils;
+import org.radixware.schemas.eas.CreateSessionRs;
+import org.radixware.wps.HttpResponseContent;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.dialogs.IDialogDisplayer;
 import org.radixware.wps.icons.WpsIcon;
@@ -26,6 +27,9 @@ import org.radixware.wps.icons.images.TemporaryIcon;
 import org.radixware.wps.rwt.uploading.UploadHandler;
 
 public abstract class RootPanel extends AbstractContainer implements IHtmlContext {
+
+    private final static String DEFAULT_BANNER_HEIGHT="100px";
+    private final static String DEFAULT_BANNER_FRAME_STYLE="border: none; width: 100%;";
 
     private Set<String> postedScripts = null;
     private Set<String> postedCss = null;
@@ -70,53 +74,13 @@ public abstract class RootPanel extends AbstractContainer implements IHtmlContex
     public String getQueryId() {
         return html.getId() + "-" + uuid;
     }
-    private final List<StatusBarListener> sbListeners = new LinkedList<>();
-
-    public interface StatusBarListener {
-
-        public void statusBarOpened(MainStatusBar statusBar);
-
-        public void statusBarClosed(MainStatusBar statusBar);
-    }
-
-    public void addStatusBarListener(StatusBarListener l) {
-        synchronized (sbListeners) {
-            if (!sbListeners.contains(l)) {
-                sbListeners.add(l);
-                setupStatusBarListener(l);
-            }
-        }
-    }
-
-    protected void setupStatusBarListener(StatusBarListener listener) {
-    }
-
-    public void removeStatusBarListener(StatusBarListener l) {
-        synchronized (sbListeners) {
-
-            sbListeners.remove(l);
-
-        }
-    }
-
-    protected void fireStatusBarClosed(MainStatusBar c) {
-        final List<StatusBarListener> ls = new ArrayList<>(sbListeners);
-        for (StatusBarListener l : ls) {
-            l.statusBarClosed(c);
-        }
-    }
-
-    protected void fireStatusBarOpened(MainStatusBar c) {
-        final List<StatusBarListener> ls = new ArrayList<>(sbListeners);
-        for (StatusBarListener l : ls) {
-            l.statusBarOpened(c);
-        }
-    }
-
-    public void saveChanges(String rqId, OutputStream out) throws IOException {
+    
+    public void saveChanges(final HttpResponseContent response) throws IOException {
         activeTimerCount(processTimerEvent(true));
         StringBuilder builder = new StringBuilder();
-        builder.append("<updates id=\"").append(rqId).append("\" root=\"").append(html.getId()).append("\">\n");
+        builder.append("<updates ");
+        response.writeResponseXmlAttrs(builder, true);
+        builder.append(" root=\"").append(html.getId()).append("\">\n");
         if (timerStateChaged) {
             if (activeTimerCount > 0) {
                 builder.append("<object-timer command=\"start\"/>");
@@ -181,11 +145,12 @@ public abstract class RootPanel extends AbstractContainer implements IHtmlContex
             System.out.println(builder);
         }
         try {
-            FileUtils.writeString(out, builder.toString(), FileUtils.XML_ENCODING);
+            response.writeString(builder.toString());
         } catch (IOException ex) {
             throw ex;
         }
     }
+    
     private UIObject explicitChild;
 
     public void blockRedraw(UIObject explicit) {
@@ -313,7 +278,21 @@ public abstract class RootPanel extends AbstractContainer implements IHtmlContex
 
     public abstract IMainView getExplorerView();
 
-    public abstract void closeExplorerView();
+    public abstract void closeExplorerView();    
+    
+    public abstract  IMainStatusBar getMainStatusBar();
+    
+    public void onConnected(final CreateSessionRs response){
+        
+    }
+    
+    public void cleanup(final boolean forced){
+        
+    }
+    
+    public void updateTranslations(){
+        
+    }
 
     @Override
     public UIObject findObjectByHtmlId(String id) {
@@ -327,7 +306,7 @@ public abstract class RootPanel extends AbstractContainer implements IHtmlContex
     @Override
     public void processAction(String actionName, String actionParam) {
         if ("update-version".equals(actionName)) {
-            ((WpsEnvironment) getEnvironment()).updateToCurrentVersion();
+            ((WpsEnvironment) getEnvironment()).switchToVersion(-1);
         } else {
             super.processAction(actionName, actionParam);
         }

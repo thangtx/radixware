@@ -23,7 +23,7 @@ import org.radixware.kernel.common.sqml.translate.ISqmlPreprocessorConfig;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.ScmlDocument;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.ScmlEditor;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.ScmlEditorKit;
-import org.radixware.kernel.designer.dds.script.defs.DdsScriptGeneratorUtils;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 
 public class SqmlEditorKit extends ScmlEditorKit {
 

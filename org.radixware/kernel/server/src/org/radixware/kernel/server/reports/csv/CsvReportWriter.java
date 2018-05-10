@@ -23,7 +23,7 @@ public class CsvReportWriter {
         private OutputStream outputStream;
         private char delimiter = ';';
         private boolean first = true;
-        private final String encoding;
+        private String encoding;
         private final Report report;
 
         public Writer(Report report,OutputStream outputStream, String encoding) {
@@ -133,6 +133,20 @@ public class CsvReportWriter {
         public void setDelimiter(char delimiter) {
             this.delimiter = delimiter;
         }
+
+        public String getEncoding() {
+            return encoding;
+        }
+
+        public void setEncoding(String encoding) {
+            this.encoding = encoding;
+        }
+
+        public char getDelimiter() {
+            return delimiter;
+        }
+        
+        
     }
 
     public static class Exception extends RuntimeException {

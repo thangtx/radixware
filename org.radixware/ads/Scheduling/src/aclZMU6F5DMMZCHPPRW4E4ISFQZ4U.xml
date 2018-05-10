@@ -26,7 +26,7 @@
         <Presentation InheritanceMask="13">
           <Editing NotNull="true" IsDuplicatesEnabled="true">
             <EditMask>
-              <edit:Int MaxValue="31" MinLength="0" MinValue="1" NumberBase="10" PadChar="0" StepSize="1"/>
+              <edit:Int MaxValue="92" MinLength="0" MinValue="1" NumberBase="10" PadChar="0" StepSize="1"/>
             </EditMask>
           </Editing>
         </Presentation>
@@ -36,22 +36,28 @@
       <Method Id="mth3RZGBJY3Y5BRVG3OSU2XUDFG6E" Name="isExcluded" Nature="0" IsOverride="true">
         <AccessRules Access="4" IsPublished="false"/>
         <Parameters>
-          <Parameter Name="date" Id="mprFZ4ENTOOMBDFFCT6YXKF4HYNYA">
+          <Parameter Name="date" Id="mpr3P7YGUSBJFDKNA6FEWQTGVUO7A">
             <Type TypeId="12"/>
           </Parameter>
-          <Parameter Name="dayOfWeek" Id="mprZEJY3GNUGBBYXDSOHYUS2UKX3U">
+          <Parameter Name="dayOfWeek" Id="mprXTI7YE4TSZAQFJVQEWUNLZBF6U">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
-          <Parameter Name="daysInMonth" Id="mprZRPNFIQVNFHOZIRVDEPOUOT7RU">
+          <Parameter Name="daysInMonth" Id="mprWMBKBAAS6ZGHLKXYSDTQCCDS6E">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
-          <Parameter Name="dayOfMonth" Id="mprNGXDK2V7LFFIVAGXMIKMKOMP6I">
+          <Parameter Name="dayOfMonth" Id="mpr3AKB6HWMSFHTREOJEQZ2JDVUIE">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
-          <Parameter Name="daysInQuarter" Id="mprTNU2IYFXAJBFHCSCNP66ZGMSU4">
+          <Parameter Name="daysInQuarter" Id="mprAJHVZHPJLFCG3H2JAFFHCR567A">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
-          <Parameter Name="dayOfQuarter" Id="mprHTZAB6F57ZFW5DI426WNKWARK4">
+          <Parameter Name="dayOfQuarter" Id="mprK64EEZ4U6FHULFX4SPGAAWFHOM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInYear" Id="mprQLDIGNZNGBFVTESRB5K2DPDSIM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfYear" Id="mprBDT3U66ZFJERTEJI76F3GYEPAI">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
         </Parameters>
@@ -62,19 +68,25 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclZMU6F5DMMZCHPPRW4E4ISFQZ4U mthRPSLT4YSU5EHHNVNXPERN7IA3Q" Invoke="true"/>
+              <xsc:IdReference Path="aclZMU6F5DMMZCHPPRW4E4ISFQZ4U mthRPSLT4YSU5EHHNVNXPERN7IA3Q" Invoke="true">
+                <xsc:Presentation>dayMatches</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(daysInQuarter, dayOfQuarter) &amp;&amp; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>oper</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true"/>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true">
+                <xsc:Presentation>CalendarOper:Plus</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -99,20 +111,26 @@
               <xsc:Java>if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true">
+                <xsc:Presentation>offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsDVW367ITGZA5RFDEOKSNUSKAFI aciNESOBQSS5BCZRFUR7I57ZTHY5M" Invoke="true"/>
+              <xsc:IdReference Path="acsDVW367ITGZA5RFDEOKSNUSKAFI aciNESOBQSS5BCZRFUR7I57ZTHY5M" Invoke="true">
+                <xsc:Presentation>Common::OffsetDir:FromStart</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)
 	return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue() == dayOfQuarter;
@@ -120,7 +138,9 @@ else
 	return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue() == (daysInQuarter - dayOfQuarter + 1);
@@ -132,22 +152,28 @@ else
       <Method Id="mthNRY5VTMUCVHDRMNW7MJIA7UQX4" Name="isIncluded" Nature="0" IsOverride="true">
         <AccessRules Access="4" IsPublished="false"/>
         <Parameters>
-          <Parameter Name="date" Id="mprN2VKY4WPUVA7RLAXCD3ZXSURFQ">
+          <Parameter Name="date" Id="mpr3KBRRG7EZ5AFDN5TRQFBJSQH64">
             <Type TypeId="12"/>
           </Parameter>
-          <Parameter Name="dayOfWeek" Id="mpr2DSORSU34RBGRBNYLDJVC43UPY">
+          <Parameter Name="dayOfWeek" Id="mprZGF5KYSJRZGIFNBFBW3ASLLQVE">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
-          <Parameter Name="daysInMonth" Id="mprHVE2WKLKOBC47BZ4IES2XLV3BM">
+          <Parameter Name="daysInMonth" Id="mprVHRKRNEMKVAGLKCM7TGVMLQSAQ">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
-          <Parameter Name="dayOfMonth" Id="mpr6B7ARJVGKJERLPEBANZ5JPCK5Y">
+          <Parameter Name="dayOfMonth" Id="mprNZURNIJVCRALJH5ZCRZXANX4FA">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
-          <Parameter Name="daysInQuarter" Id="mprVT2Y2DPE3FDEXKVCAB5AZSOMAY">
+          <Parameter Name="daysInQuarter" Id="mprRTXUCQYH6RHKVIPHYHIH3XYJPM">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
-          <Parameter Name="dayOfQuarter" Id="mprKRIGHWZVRRAA3BT37CYK4IILNI">
+          <Parameter Name="dayOfQuarter" Id="mprVI3BUCLNXRFL7FPGTDBOVOOPYI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="daysInYear" Id="mprPMQOWCYFBJGM7KAWO3L6OCJ74E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="dayOfYear" Id="mpr537VDRRLANGUBIRQM4YAD4I5O4">
             <Type TypeId="401" extStr="int"/>
           </Parameter>
         </Parameters>
@@ -158,19 +184,25 @@ else
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclZMU6F5DMMZCHPPRW4E4ISFQZ4U mthRPSLT4YSU5EHHNVNXPERN7IA3Q" Invoke="true"/>
+              <xsc:IdReference Path="aclZMU6F5DMMZCHPPRW4E4ISFQZ4U mthRPSLT4YSU5EHHNVNXPERN7IA3Q" Invoke="true">
+                <xsc:Presentation>dayMatches</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(daysInQuarter, dayOfQuarter) &amp;&amp; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>oper</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true"/>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true">
+                <xsc:Presentation>CalendarOper:Plus</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -187,14 +219,18 @@ else
               <xsc:Java>super.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclZMU6F5DMMZCHPPRW4E4ISFQZ4U mthOYESDQBEI7OBDCIPAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aclZMU6F5DMMZCHPPRW4E4ISFQZ4U mthOYESDQBEI7OBDCIPAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>check</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mth66JBT4643VCQFMKDWTCYHZWLOQ" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mth66JBT4643VCQFMKDWTCYHZWLOQ" Invoke="true">
+                <xsc:Presentation>checkDayOfQuarter</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();</xsc:Java>
@@ -211,26 +247,34 @@ else
               <xsc:Java>return (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null &amp;&amp; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true">
+                <xsc:Presentation>offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null)
 	? </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> + " " + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true">
+                <xsc:Presentation>offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getTitle().toLowerCase()

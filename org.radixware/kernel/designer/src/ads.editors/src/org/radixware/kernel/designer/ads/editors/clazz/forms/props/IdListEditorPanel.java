@@ -247,11 +247,7 @@ public class IdListEditorPanel extends javax.swing.JPanel implements PropertyCha
             prop.setIds(ids);
 
             editor.setValue(prop);
-            try {
-                ((UIPropertySupport) editor.getSource()).setValue(prop);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Logger.getLogger(IdListEditorPanel.class.getName()).log(Level.WARNING, null, ex);
-            }
+            ((UIPropertySupport) editor.getSource()).setValue(prop);
         }
     }
 

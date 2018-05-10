@@ -63,9 +63,9 @@ class WpsAdsVersion extends AdsVersion {
                     || changedGroups.contains(GroupType.KERNEL_COMMON.toString());
         }
     }
-
-    public WpsAdsVersion(IClientApplication env) {
-        super(env);
+    
+    public WpsAdsVersion(final IClientApplication env, final long targetVersion){
+        super(env, targetVersion);
     }
 
     @Override
@@ -77,8 +77,8 @@ class WpsAdsVersion extends AdsVersion {
     }
 
     @Override
-    public void setNewVersion(final long version) {
-        super.setNewVersion(version);
+    public void setTargetVersion(final long version) {
+        super.setTargetVersion(version);
         if (isKernelWasChanged()) {
             synchronized (SEMAPHORE) {
                 if (!IS_KERNEL_CHANGED) {
@@ -110,10 +110,14 @@ class WpsAdsVersion extends AdsVersion {
         return isActualizing;
     }
 
-    public static long actualize(final boolean allowKernelChanges) throws RadixLoaderException {
+    public static long actualize(final boolean allowKernelChanges, final long versionNumber) throws RadixLoaderException {
         final ActualizeController acontroller = new ActualizeController(allowKernelChanges);
         RadixLoader.getInstance().setActualizeController(acontroller);
-        RadixLoader.getInstance().actualize();
+        if (versionNumber>-1){
+            RadixLoader.getInstance().actualize(versionNumber, null, null, null, null);
+        }else{
+            RadixLoader.getInstance().actualize();
+        }
         if (acontroller.kernelWasChanged()) {
             synchronized (SEMAPHORE) {
                 IS_KERNEL_CHANGED = true;
@@ -133,7 +137,7 @@ class WpsAdsVersion extends AdsVersion {
                 return FIXED_LATEST_VERSION;
             }
         }
-        return actualize(false);
+        return actualize(false, -1);
     }
 
     @Override

@@ -1,0 +1,7 @@
+alter table RDX_MESSAGEQUEUE drop column BROKERKERBEROSNAME
+/
+
+alter table RDX_KAFKAQUEUE
+	add BROKERKERBEROSNAME VARCHAR2(200 char) null
+/
+

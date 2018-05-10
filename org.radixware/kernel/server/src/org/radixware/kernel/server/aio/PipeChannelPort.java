@@ -69,7 +69,7 @@ public class PipeChannelPort extends ChannelPort implements EventHandler {
     }
 
     @Override
-    SelectableChannel getSelectableInChannel() {
+    public SelectableChannel getSelectableInChannel() {
         return pipe;
     }
 }

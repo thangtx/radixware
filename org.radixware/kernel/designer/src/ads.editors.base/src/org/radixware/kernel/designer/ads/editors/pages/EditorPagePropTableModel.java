@@ -15,9 +15,11 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPageDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.IPagePropertyGroup;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -71,8 +73,11 @@ class EditorPagePropTableModel implements TableModel {
             if (propRef == null) {
                 return "";
             }
-            AdsDefinition def = propRef.findProperty();
+            AdsDefinition def = propRef.findItem();
             if (def != null) {
+                if (def instanceof IPagePropertyGroup){
+                   return  "<html><i>" + def.getName() +"</i></html>";
+                }
                 return def.getName();
             } else {
                 return "#" + propRef.getId().toString();
@@ -80,7 +85,7 @@ class EditorPagePropTableModel implements TableModel {
         }
 
         public boolean isValid() {
-            return propRef == null || propRef.findProperty() != null;
+            return propRef == null || propRef.findItem() != null;
         }
 
         public Id getPropertyId() {
@@ -102,6 +107,10 @@ class EditorPagePropTableModel implements TableModel {
         public void setGlutToRight(boolean glut) {
             propRef.setGlueToRight(glut);
         }
+        
+        public AdsEditorPageDef.PagePropertyRef getPropertyRef(){
+            return propRef;
+        }
     }
 
     static class Table {
@@ -109,9 +118,8 @@ class EditorPagePropTableModel implements TableModel {
         private List<List<PageItem>> items = new LinkedList<List<PageItem>>();
         private int rowCount;
 
-        public void open(AdsEditorPageDef editorPage) {
+        public void open(List<AdsEditorPageDef.PagePropertyRef> properties) {
             items.clear();
-            List<AdsEditorPageDef.PagePropertyRef> properties = editorPage.getProperties().list();
             List<PageItem> last = null;
 
             List<AdsEditorPageDef.PagePropertyRef> lasts = new LinkedList<AdsEditorPageDef.PagePropertyRef>();
@@ -750,10 +758,12 @@ class EditorPagePropTableModel implements TableModel {
     }
     private AdsEditorPageDef editorPage;
     private Table table = new Table();
-
-    public void open(AdsEditorPageDef editorPage) {
+    private ICurrentGroupListener currentGroupListener;
+    
+    public void open(AdsEditorPageDef editorPage, IPagePropertyGroup group) {
         this.editorPage = editorPage;
-        table.open(editorPage);
+        table.open(group.list());
+        fireModelChange();
     }
 
     @Override
@@ -782,12 +792,18 @@ class EditorPagePropTableModel implements TableModel {
     }
 
     public void setGlutToLeft(PageItem item, boolean set) {
+        if (isReadOnly()) {
+            return;
+        }
         item.setGlutToLeft(set);
         table.save();
         fireModelChange();
     }
 
     public void setGlutToRight(PageItem item, boolean set) {
+        if (isReadOnly()) {
+            return;
+        }
         item.setGlutToRight(set);
         table.save();
         fireModelChange();
@@ -824,11 +840,17 @@ class EditorPagePropTableModel implements TableModel {
     }
 
     public void addColumn() {
+        if (isReadOnly()) {
+            return;
+        }
         table.addColumn();
         fireModelChange();
     }
 
     public void removeColumn(int index) {
+        if (isReadOnly()) {
+            return;
+        }
         table.removeColumn(index);
         fireModelChange();
     }
@@ -841,21 +863,24 @@ class EditorPagePropTableModel implements TableModel {
     }
 
     public void moveItem(PageItem propertyRef, int row, int column) {
-
+        if (isReadOnly()) {
+            return;
+        }
         table.move(propertyRef, row, column);
         fireModelChange();
     }
 
     public PageItem addItem(int row, int col, Object[] objects) {
-        if (editorPage == null) {
+        if (isReadOnly()) {
             return null;
         }
         PageItem lastAdded = null;
         for (Object obj : objects) {
             if (obj instanceof Id) {
                 Id id = (Id) obj;
-                AdsEditorPageDef.PagePropertyRef ref = editorPage.getProperties().addPropId(id);
-                if (ref != null && ref.findProperty() != null) {
+                IPagePropertyGroup group = getCurrentGroup();
+                AdsEditorPageDef.PagePropertyRef ref = group.addPropId(id);
+                if (ref != null && ref.findItem() != null) {
                     table.add(lastAdded = new PageItem(ref), row, col);
                     row++;
                 }
@@ -866,18 +891,52 @@ class EditorPagePropTableModel implements TableModel {
     }
 
     public void setColumnSpan(PageItem item, int value) {
+        if (isReadOnly()) {
+            return;
+        }
         table.setSpan(item, value);
         fireModelChange();
     }
 
     public void removeItem(Id id) {
-        if (editorPage == null) {
+        if (isReadOnly()) {
             return;
         }
-        editorPage.getProperties().removeByPropId(id);
+        IPagePropertyGroup group = getCurrentGroup();
+        group.removeByPropId(id);
         table.remove(id);
 
         fireModelChange();
 
+    }
+    
+    public void removeItem(AdsEditorPageDef.PagePropertyRef ref) {
+        if (isReadOnly()) {
+            return;
+        }
+        
+        if (currentGroupListener != null){
+            if (ref.getGroupDef() != null){
+                currentGroupListener.removeChildPropertyGroup(ref.getGroupDef());
+            }
+        }
+
+        fireModelChange();
+
+    }
+    
+    public void setCurrentGroupListener(ICurrentGroupListener currentGroupListener) {
+        this.currentGroupListener = currentGroupListener;
+    }
+
+    public IPagePropertyGroup getCurrentGroup() {
+        if (currentGroupListener != null){
+            return currentGroupListener.getCurrentPagePropertyGroup();
+        }
+        return editorPage.getProperties();
+    }
+    
+    public boolean isReadOnly(){
+        return editorPage == null || editorPage.isReadOnly();
     }
 }

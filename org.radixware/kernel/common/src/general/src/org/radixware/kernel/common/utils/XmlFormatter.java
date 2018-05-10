@@ -10,15 +10,15 @@
  */
 package org.radixware.kernel.common.utils;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.XmlOptionCharEscapeMap;
 import org.apache.xmlbeans.XmlOptions;
 
 /**
@@ -39,9 +39,10 @@ public class XmlFormatter extends OutputStreamWriter {
     private boolean first = true;
     private boolean inElement = false;
     private boolean escapeSpaces;
+    private boolean startNewLine = true;
 
     public XmlFormatter(OutputStream out, boolean escapeSpaces) {
-        super(out, Charset.forName(FileUtils.XML_ENCODING));
+        super(new BufferedOutputStream(out), Charset.forName(FileUtils.XML_ENCODING));
         this.escapeSpaces = escapeSpaces;
     }
 
@@ -78,14 +79,17 @@ public class XmlFormatter extends OutputStreamWriter {
             }
             boolean opening = (c != '!' && c != '?' && c != '/');
             if (!wasSpecData && (!opened || opening) && !first) {
-                if (cc != '\n') {
+                if (startNewLine) {
+                    //if (cc != '\n') { //commented, because (cc != '\n') any way at this place.
                     super.write('\n');
-                }
-                for (int j = 0; j < level; j++) {
-                    super.write(' '); // do not print "  " - infinite recursion
-                    super.write(' ');
+                    //}
+                    for (int j = 0; j < level; j++) {
+                        super.write(' '); // do not print "  " - infinite recursion
+                        super.write(' ');
+                    }
                 }
             }
+            startNewLine = true;
             opened = opening;
             if (opened) {
                 level++;
@@ -105,7 +109,7 @@ public class XmlFormatter extends OutputStreamWriter {
             inElement = false;
         }
 
-        if (c == '"' && !specData) {
+        if (c == '"' && inElement && !specData && cc != '\\') {
             inText = !inText;
         }
 
@@ -137,6 +141,9 @@ public class XmlFormatter extends OutputStreamWriter {
                 super.write(c);
             }
         } else {
+            if (c == '\n' && !inElement && !inText && !specData) {
+                startNewLine = false;
+            }
             super.write(c);
         }
         ccc = cc;
@@ -257,15 +264,13 @@ public class XmlFormatter extends OutputStreamWriter {
 
     public static void save(XmlObject xmlObject, OutputStream outputStream, boolean escapeSpaces) throws IOException {
         final XmlFormatter formatter = new XmlFormatter(outputStream, escapeSpaces);
-        try {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(formatter)) {
             XmlOptions options = new XmlOptions();
             options.setSaveNamespacesFirst();
             options.setSaveAggressiveNamespaces();
             options.setUseDefaultNamespace();
             formatter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); // XmlObject.save(Writer) not printed XML Header, RADIX-1923
-            xmlObject.save(formatter, options);
-        } finally {
-            formatter.close();
+            xmlObject.save(bufferedWriter, options);
         }
     }
 

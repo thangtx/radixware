@@ -16,6 +16,7 @@ import org.radixware.kernel.common.defs.ads.AdsDomainDef;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.meta.RadDomainDef;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -36,8 +37,7 @@ public class AdsDomainWriter extends AbstractDefinitionWriter<AdsDomainDef> {
                 printer.println();
                 
                 printer.print("public final class ");
-                printer.print(def.getId());
-                printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+                printer.print(JavaSourceSupport.getMetaName(def, printer instanceof IHumanReadablePrinter));
                 printer.println("{");
                 printer.enterBlock();
                 printer.print("public static final ");

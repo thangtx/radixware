@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.editors.sqmleditor.sqmltags;
 
+import com.trolltech.qt.gui.QDialog;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
@@ -19,6 +20,7 @@ import org.radixware.kernel.common.client.meta.sqml.ISqmlTableReference;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.exceptions.DefinitionError;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.TableOrProperty_Dialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
@@ -61,7 +63,7 @@ public class SqmlTag_TableSqlName extends SqmlTag {
     }
 
     private void setNotValid(final Id tableId) {
-        valid = false;
+        setValid(false);
         final String mess = Application.translate("SqmlEditor", "table #%s not found");
         environment.getTracer().put(EEventSeverity.WARNING, String.format(mess, tableId), tableId.toString());
         setDisplayedInfo("", "???" + tableId + "???");
@@ -103,8 +105,15 @@ public class SqmlTag_TableSqlName extends SqmlTag {
         if (tableSqlName != null) {
             presentationClassDef = environment.getSqmlDefinitions().findTableById(tableSqlName.getTableId());
         }
-        final TableOrProperty_Dialog dialog = new TableOrProperty_Dialog(editText, presentationClassDef, null, tableAlias, tableAlias, false, showMode);
-        if (dialog.exec() == 1) {
+        final TableOrProperty_Dialog dialog = new TableOrProperty_Dialog(editText.getEnvironment(), 
+                                                                                                             presentationClassDef, 
+                                                                                                             null,
+                                                                                                             tableAlias,
+                                                                                                             false,
+                                                                                                             showMode,
+                                                                                                             editText.isReadOnly(),
+                                                                                                             editText);
+        if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
             presentationClassDef = dialog.getPresentClassDef();
             tableAlias = dialog.getAlias();
             setNameAndTitle(presentationClassDef);
@@ -128,17 +137,7 @@ public class SqmlTag_TableSqlName extends SqmlTag {
     }
 
     private String createTitle(final String s) {
-        if (!valid) {
-            return "";
-        }
-        String res=s;
-        if (s.indexOf('<') != -1) {
-            res = s.replaceAll("<", " ");//&#60;
-        }
-        if (s.indexOf('>') != -1) {
-            res = s.replaceAll(">", " ");//&#62;
-        }
-        return "<b>Table:  </b>" + res;
+        return isValid() ? "<b>Table:  </b>" + Html.string2HtmlString(s) : "";
     }
 
     @Override

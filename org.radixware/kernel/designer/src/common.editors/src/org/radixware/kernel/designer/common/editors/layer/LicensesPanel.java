@@ -8,11 +8,11 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.editors.layer;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,9 +21,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -32,12 +32,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -51,14 +54,22 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.Lookups;
+import org.radixware.kernel.common.defs.HierarchyWalker;
+import org.radixware.kernel.common.defs.IVisitor;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
 import org.radixware.kernel.common.jml.JmlTagCheckLicense;
 import org.radixware.kernel.common.jml.JmlTagReadLicense;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.Layer.License;
 import org.radixware.kernel.common.repository.LayerUtils;
+import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.common.scml.Scml;
+import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.Pair;
 import org.radixware.kernel.designer.common.dialogs.RadixWareDesignerIcon;
+import org.radixware.kernel.designer.common.dialogs.radixdoc.RadixdocSelectModulesPanel;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.finder.FindInSources;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.finder.IFindInSourcesCfg;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.finder.IFinder;
@@ -71,7 +82,6 @@ import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 import org.radixware.kernel.designer.common.editors.DefaultTagTextFactory;
 import org.radixware.kernel.designer.common.general.editors.EditorsManager;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
-
 
 public class LicensesPanel extends JPanel {
 
@@ -97,6 +107,7 @@ public class LicensesPanel extends JPanel {
         tree.setCellRenderer(new DefaultTreeCellRenderer() {
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
                 if (value instanceof DefaultMutableTreeNode && ((DefaultMutableTreeNode) value).getUserObject() instanceof License) {
                     final License license = (License) ((DefaultMutableTreeNode) value).getUserObject();
                     final StringBuilder sb = new StringBuilder();
@@ -111,9 +122,12 @@ public class LicensesPanel extends JPanel {
                         }
                         sb.append("]");
                     }
-                    value = "<html>" + StringEscapeUtils.escapeHtml(license.getOwnName()) + "<b>" + StringEscapeUtils.escapeHtml(sb.toString()) + "</b></html>";
+                    String newVal = "<html>" + StringEscapeUtils.escapeHtml(license.getOwnName()) + "<b>" + StringEscapeUtils.escapeHtml(sb.toString()) + "</b></html>";
+                    setText(newVal);
+
+                    setIcon(RadixWareIcons.LICENSES.LICENSE.getIcon());
                 }
-                return super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+                return this;
             }
         });
         final JButton removeButton = new JButton("Remove", RadixWareDesignerIcon.DELETE.DELETE.getIcon());
@@ -133,7 +147,6 @@ public class LicensesPanel extends JPanel {
         removeButton.addActionListener(removeActionListener);
         removeButton.setHorizontalAlignment(SwingConstants.LEFT);
 
-
         final JButton addButton = new JButton("Add", RadixWareDesignerIcon.CREATE.ADD.getIcon());
         addButton.setToolTipText("Add Nested License");
         final ActionListener addNestedActionListener = new ActionListener() {
@@ -145,7 +158,7 @@ public class LicensesPanel extends JPanel {
                     if (newLicenseName != null && !newLicenseName.isEmpty()) {
                         final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selPath.getLastPathComponent();
                         final License parentLicense = (License) parentNode.getUserObject();
-                        ((DefaultTreeModel) tree.getModel()).insertNodeInto(new DefaultMutableTreeNode(new License(newLicenseName, parentLicense.getFullName(), null, null, parentLicense.getLayer())), parentNode, parentNode.getChildCount());
+                        ((DefaultTreeModel) tree.getModel()).insertNodeInto(new DefaultMutableTreeNode(new License(newLicenseName, parentLicense.getFullName(), null, null, null, parentLicense.getLayer())), parentNode, parentNode.getChildCount());
                         tree.expandPath(selPath);
                     }
 
@@ -172,7 +185,6 @@ public class LicensesPanel extends JPanel {
         };
         editButton.addActionListener(showDepActionListener);
         editButton.setHorizontalAlignment(SwingConstants.LEFT);
-
 
         final JButton findUsagesButton = new JButton("Find Usages", RadixWareDesignerIcon.TREE.DEPENDENCIES.getIcon());
         findUsagesButton.setToolTipText("Find Usages of the License");
@@ -310,7 +322,6 @@ public class LicensesPanel extends JPanel {
             }
         });
 
-
     }
 
     private Layer getLayerForNode(final DefaultMutableTreeNode node) {
@@ -368,12 +379,16 @@ public class LicensesPanel extends JPanel {
         }
     }
 
-    private License getLicense(DefaultMutableTreeNode node) {
+    License getLicense(DefaultMutableTreeNode node) {
         final List<License> childLicenses = new ArrayList<>();
         for (int i = 0; i < node.getChildCount(); i++) {
             childLicenses.add(getLicense((DefaultMutableTreeNode) node.getChildAt(i)));
         }
-        return new License(((License) node.getUserObject()).getOwnName(), ((License) node.getUserObject()).getParentFullName(), childLicenses, ((License) node.getUserObject()).getDependencies(), ((License) node.getUserObject()).getLayer());
+        return new License(((License) node.getUserObject()).getOwnName(), ((License) node.getUserObject()).getParentFullName(), childLicenses, ((License) node.getUserObject()).getDependencies(), ((License) node.getUserObject()).getRequiredModules(), ((License) node.getUserObject()).getLayer());
+    }
+
+    JTree getLicenseTree() {
+        return tree;
     }
 
     private TreeModel buildLicenseTreeModel(final List<License> licenses) {
@@ -397,130 +412,10 @@ public class LicensesPanel extends JPanel {
     }
 
     private License runDependenciesEditor(final License license, final boolean readOnly, final LicensesPanel parent) {
-        final JPanel contentPanel = new JPanel(new MigLayout());
-        contentPanel.setLayout(new MigLayout("fill", "[][grow]", "[shrink][shrink][grow]"));
-
-        contentPanel.add(new JLabel("License:"));
-
-        final JTextField tfLicense = new JTextField(license.getFullName());
-        tfLicense.setEditable(false);
-        tfLicense.setMaximumSize(new Dimension(Integer.MAX_VALUE, tfLicense.getPreferredSize().height));
-        tfLicense.setMinimumSize(new Dimension(280, tfLicense.getPreferredSize().height));
-        contentPanel.add(tfLicense, "growx, wrap");
-
-        final JPanel depPanel = new JPanel(new BorderLayout());
-
-        final JToolBar depToolbar = new JToolBar();
-        depToolbar.setFloatable(false);
-        depPanel.add(depToolbar, BorderLayout.NORTH);
-
-        final JList depList = new JList();
-        depList.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        depList.setModel(new DefaultListModel());
-
-        if (license.getDependencies() != null) {
-            for (String depFullName : license.getDependencies()) {
-                ((DefaultListModel) depList.getModel()).addElement(depFullName);
-            }
-        }
-
-        depPanel.add(depList, BorderLayout.CENTER);
-        contentPanel.add(new JLabel("Dependencies"), "span, wrap");
-        contentPanel.add(depPanel, "span, grow");
-
-
-        final JButton addDepButton = new JButton(RadixWareDesignerIcon.CREATE.ADD.getIcon());
-        addDepButton.setToolTipText("Add Dependency");
-        addDepButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final List<Layer> baseLayers = new ArrayList<>();
-                LayerUtils.collectBaseLayers(license.getLayer(), baseLayers);
-                final List<License> rootLicenses = new ArrayList<>();
-                final Map<String, License> fullNameToLicense;
-                if (parent != null) {
-                    final License layerLicenseFromParentEditor = parent.getLicense((DefaultMutableTreeNode) parent.tree.getModel().getChild(parent.tree.getModel().getRoot(), 0));
-                    rootLicenses.add(layerLicenseFromParentEditor);
-                    fullNameToLicense = layerLicenseFromParentEditor.collectFullNameToLicenseMap();
-                } else {
-                    rootLicenses.add(license.getLayer().getLicenses());
-                    fullNameToLicense = license.getLayer().getLicenses().collectFullNameToLicenseMap();
-                }
-                for (Layer baseLayer : baseLayers) {
-                    rootLicenses.add(baseLayer.getLicenses());
-                }
-                final License dep = selectLicense(rootLicenses, true, true, new IAcceptor<License>() {
-                    @Override
-                    public boolean accept(License candidate) {
-                        if (candidate == null) {
-                            return false;
-                        }
-                        if (license.getFullName().startsWith(candidate.getFullName())) {
-                            return false;
-                        }
-
-                        if (((DefaultListModel) depList.getModel()).contains(candidate.getFullName())) {
-                            return false;
-                        }
-                        if (isDepends(candidate, license)) {
-                            return false;
-                        }
-                        return true;
-                    }
-
-                    private boolean isDepends(final License who, final License onWhat) {
-                        if (who.getFullName().equals(onWhat.getFullName())) {
-                            return true;
-                        }
-                        if (who.getDependencies() != null) {
-                            for (String depFullName : who.getDependencies()) {
-                                final License depLicense = fullNameToLicense.get(depFullName);
-                                if (depLicense != null && isDepends(depLicense, onWhat)) {
-                                    return true;
-                                }
-                            }
-                        }
-                        return false;
-                    }
-                });
-                if (dep != null) {
-                    ((DefaultListModel) depList.getModel()).addElement(dep.getFullName());
-                }
-            }
-        });
-        addDepButton.setEnabled(!readOnly);
-        depToolbar.add(addDepButton);
-
-        final JButton removeButton = new JButton(RadixWareDesignerIcon.DELETE.DELETE.getIcon());
-        removeButton.setToolTipText("Remove Dependency");
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (DialogUtils.messageConfirmation("Remove selected item(s)?")) {
-                    int[] selectedIndices = depList.getSelectedIndices();
-                    for (int i = selectedIndices.length - 1; i >= 0; i--) {
-                        ((DefaultListModel) depList.getModel()).remove(i);
-                    }
-                }
-            }
-        });
-        depToolbar.add(removeButton);
-
-        removeButton.setEnabled(false);
-        depList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                removeButton.setEnabled(!readOnly && depList.getSelectedIndices().length > 0);
-            }
-        });
-
-        final ModalDisplayer md = new ModalDisplayer(contentPanel, "Edit License");
+        DependenciesPanel depPanel = new DependenciesPanel(license, readOnly, parent);
+        final ModalDisplayer md = new ModalDisplayer(depPanel, "Edit License");
         if (md.showModal()) {
-            final List<String> dependencies = new ArrayList<>();
-            for (int i = 0; i < depList.getModel().getSize(); i++) {
-                dependencies.add(depList.getModel().getElementAt(i).toString());
-            }
-            return new License(license.getOwnName(), license.getParentFullName(), license.getChildren(), dependencies, license.getLayer());
+            return new License(license.getOwnName(), license.getParentFullName(), license.getChildren(), depPanel.getDependencies(), depPanel.getRequiredModules(), license.getLayer());
         }
         return null;
     }
@@ -536,7 +431,7 @@ public class LicensesPanel extends JPanel {
         return selectLicense(licenseRoots, readOnly, false, null);
     }
 
-    private static License selectLicense(final List<License> licenseRoots, boolean readOnly, boolean selectOnly, final IAcceptor<License> selectableAcceptor) {
+    static License selectLicense(final List<License> licenseRoots, boolean readOnly, boolean selectOnly, final IAcceptor<License> selectableAcceptor) {
         final JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new MigLayout("fill", "[grow]", "[grow]"));
         final ModalDisplayer md = new ModalDisplayer(contentPanel, "Select License");
@@ -566,8 +461,6 @@ public class LicensesPanel extends JPanel {
             return null;
         }
     }
-
-
 
     private static class LicenseUsagesFinder implements IFinder {
 

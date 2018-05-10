@@ -72,7 +72,7 @@ public class ValNumEditor extends AbstractNumberEditor<BigDecimal> {
        
     private void updateInputValidator() {
         final EditMaskNum editMask = (EditMaskNum) getEditMask();
-        final NumberFormat numberFormat = editMask.getNumberFormat(getEnvironment().getLocale());
+        final NumberFormat numberFormat = editMask.getNumberFormat(getEnvironment());
         final BigDecimal minValue = editMask.getMinValue(), maxValue = editMask.getMaxValue();
         final long scale = editMask.getScale();
         final int precision = editMask.getPrecision();
@@ -121,17 +121,17 @@ public class ValNumEditor extends AbstractNumberEditor<BigDecimal> {
     protected Character getCharacter(final ESymbol symbol) {
         switch (symbol){
             case TRIAD_DELIMETER:
-                return ((EditMaskNum)getEditMask()).getTriadDelimeter(getEnvironment().getLocale());
+                return ((EditMaskNum)getEditMask()).getTriadDelimeter(getEnvironment());
             case DECIMAL_DELIMETER:
-                return ((EditMaskNum)getEditMask()).getDecimalDelimeter(getEnvironment().getLocale());
+                return ((EditMaskNum)getEditMask()).getDecimalDelimeter(getEnvironment());
             case PLUS:
                 return Character.valueOf('+');
             case MINUS:{
                 final EditMaskNum editMaskNum = (EditMaskNum)getEditMask();
                 final char minusCharacter;
-                if (editMaskNum.getNumberFormat(getEnvironment().getLocale()) instanceof DecimalFormat){
+                if (editMaskNum.getNumberFormat(getEnvironment()) instanceof DecimalFormat){
                     minusCharacter = 
-                        ((DecimalFormat)editMaskNum.getNumberFormat(getEnvironment().getLocale())).getDecimalFormatSymbols().getMinusSign();                    
+                        ((DecimalFormat)editMaskNum.getNumberFormat(getEnvironment())).getDecimalFormatSymbols().getMinusSign();                    
                 }else{
                     minusCharacter = '-';
                 }                

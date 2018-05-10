@@ -1,0 +1,38 @@
+
+class dartest {
+
+    class TestEnum {
+
+	int index;
+	int value;
+    }
+
+    public TestEnum getProperty() {
+	return null;
+    }
+
+    public void setProperty(TestEnum x) {
+    }
+
+    public static final class Access_Property {
+
+	public Object get(Object owner) {
+	    return ((dartest) owner).getProperty();
+	}
+
+	public void set(Object owner, Object x) {
+	    ((dartest) owner).setProperty(x == null ? null : ((x instanceof TestEnum) ? (TestEnum) x : null));
+	}
+    }
+}
+
+class Test {
+
+    public static dartest f() {
+	return null;
+    }
+
+    public static void main(String[] argv) {
+	int i = f().Property.index;
+    }
+}

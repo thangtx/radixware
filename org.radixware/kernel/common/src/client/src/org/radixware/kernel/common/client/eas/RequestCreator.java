@@ -11,16 +11,15 @@
 
 package org.radixware.kernel.common.client.eas;
 
-import java.math.BigDecimal;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.env.DefManager;
+import org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException;
 import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.meta.RadPresentationDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
@@ -33,20 +32,13 @@ import org.radixware.kernel.common.client.models.FormModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.IContext;
 import org.radixware.kernel.common.client.models.Model;
-import org.radixware.kernel.common.client.models.items.properties.PropertyDateTime;
-import org.radixware.kernel.common.client.models.items.properties.PropertyInt;
-import org.radixware.kernel.common.client.models.items.properties.PropertyNum;
-import org.radixware.kernel.common.client.models.items.properties.PropertyRef;
 import org.radixware.kernel.common.client.types.Pid;
-import org.radixware.kernel.common.client.types.Reference;
-import org.radixware.kernel.common.client.utils.ValueConverter;
-import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.*;
 import org.radixware.kernel.common.exceptions.AppError;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.RadixError;
+import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.*;
-import org.radixware.kernel.common.utils.XmlUtils;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoaderException;
 
@@ -66,7 +58,9 @@ public final class RequestCreator {
             final EIsoCountry country,
             final ERuntimeEnvironmentType environmentType,
             final Id desiredExplorerRootId,
-            final Long parentSessionId) {
+            final Long replacedSessionId,
+            final Long parentSessionId,
+            final boolean isWebDriverEnabled) {
         final CreateSessionRq request = CreateSessionRq.Factory.newInstance();
         request.setAuthType(authType);
         if (authType == EAuthType.PASSWORD) {
@@ -100,8 +94,16 @@ public final class RequestCreator {
         }
         platform.setTopLayerUri(RadixLoader.getInstance().getTopLayerUrisAsString());
         platform.setRepositoryUri(RadixLoader.getInstance().getRepositoryUri());
+        platform.setAppVersion(RadixLoader.getInstance().getCurrentRevisionMeta().getAppLayerVersionsString());
+        platform.setKernelVersion(RadixLoader.getInstance().getCurrentRevisionMeta().getKernelLayerVersionsString());
         if (parentSessionId!=null){
             request.setParentSessionId(parentSessionId);
+        }
+        if (replacedSessionId!=null){
+            request.setReplacedSessionId(replacedSessionId);
+        }
+        if (isWebDriverEnabled){
+            request.setWebDriverEnabled(true);
         }
         return request;
     }    
@@ -115,7 +117,37 @@ public final class RequestCreator {
         writeGroup(group, null, selectRequest);
 
         selectRequest.setStartIndex(startIndex);
-        selectRequest.setCount(rowCount);
+        selectRequest.setCount(rowCount);        
+        final int loadedEntitiesCount = group.getEntitiesCount();        
+        ObjectReference lastObjectRef;
+        if (loadedEntitiesCount>0){            
+            try{
+                final EntityModel lastObject = group.getEntity(loadedEntitiesCount - 1);
+                lastObjectRef = ObjectReference.Factory.newInstance();
+                lastObjectRef.setPID(lastObject.getPid().toString());
+                lastObjectRef.setClassId(lastObject.getClassId());
+            }catch(BrokenEntityObjectException brokenObject){
+                lastObjectRef = ObjectReference.Factory.newInstance();
+                if (brokenObject.getPid()!=null){
+                    lastObjectRef.setPID(brokenObject.getPid().toString());
+                }
+                final StringBuilder brokenObjectMsgBuilder = new StringBuilder();
+                if (brokenObject.getCauseExceptionClassName()!=null){
+                    brokenObjectMsgBuilder.append(brokenObject.getCauseExceptionClassName());
+                    brokenObjectMsgBuilder.append(' ');
+                }
+                if (brokenObject.getCauseExceptionMessage()!=null){
+                    brokenObjectMsgBuilder.append(brokenObject.getCauseExceptionMessage());
+                }
+                lastObjectRef.setBrokenRef(brokenObjectMsgBuilder.toString());
+                lastObjectRef.setTableId(group.getSelectorPresentationDef().getTableId());
+            }catch(InterruptedException | ServiceClientException ex){
+                lastObjectRef = null;
+            }
+            if (lastObjectRef!=null){
+                selectRequest.setPreviousObjectReference(lastObjectRef);
+            }
+        }
         if (withSelectorAddons) {
             selectRequest.setWithSelectorAddons(true);
         }
@@ -182,7 +214,18 @@ public final class RequestCreator {
         request.setObjects(objects);
         return request;
     }    
-
+    
+    public static CalcSelectionStatisticRq getCalcSelectionStatistic(final GroupModel group, final List<org.radixware.kernel.common.client.types.AggregateFunctionCall> aggregateFunctions){
+        final CalcSelectionStatisticRq request = CalcSelectionStatisticRq.Factory.newInstance();
+        writeGroup(group, null, request);
+        final List<org.radixware.kernel.common.types.AggregateFunctionCall>  functions = new LinkedList<>();
+        for (org.radixware.kernel.common.client.types.AggregateFunctionCall function: aggregateFunctions){
+            functions.add(function);
+        }
+        AggregateFunctionCall.writeToXml(functions, request.addNewAggregateFunctions());
+        return request;
+    }
+    
     public static DeleteRq deleteMultipleObjects(final GroupModel group, final EntityObjectsSelection selection, final boolean cascade) {
         final DeleteRq request = DeleteRq.Factory.newInstance();
         writeGroup(group, selection, request);
@@ -290,6 +333,7 @@ public final class RequestCreator {
     private static void writeGroup(final GroupModel group, final EntityObjectsSelection selection, final Request request) {
 
         final FilterModel currentFilter = group.getCurrentFilter();
+        final GroupModel.ClassFilter currentClassFilter = group.getClassFilter();
         final org.radixware.schemas.xscml.Sqml condition = group.getCondition();
         final RadSortingDef currentSorting = group.getCurrentSorting();
 
@@ -304,22 +348,12 @@ public final class RequestCreator {
             if (currentFilter != null) {
                 filter = selectRequest.addNewFilter();
             }
-            if (currentSorting != null) {
-                final org.radixware.schemas.eas.Sorting sorting = selectRequest.addNewSorting();
-                if (currentSorting.isUserDefined()) {
-                    final org.radixware.schemas.eas.Sorting.AdditionalSortingColumns columns = sorting.addNewAdditionalSortingColumns();
-                    org.radixware.schemas.eas.Sorting.AdditionalSortingColumns.Item column;
-                    for (RadSortingDef.SortingItem sortingItem : currentSorting.getSortingColumns()) {
-                        column = columns.addNewItem();
-                        column.setId(sortingItem.propId);
-                        if (sortingItem.sortDesc) {
-                            column.setOrder(EOrder.DESC);
-                        }
-                    }
-                } else {
-                    sorting.setId(currentSorting.getId());
-                }
+            if (currentClassFilter != null){
+                currentClassFilter.writeToXml(selectRequest.addNewClassFilters().addNewItem());                
             }
+            if (currentSorting != null) {
+                writeSorting(currentSorting, selectRequest.addNewSorting());
+            }            
             selectRequest.setContext(((IContext.Group) group.getContext()).toXml());
             selectRequest.addNewPresentation().setId(presentation.getId());
 
@@ -337,6 +371,12 @@ public final class RequestCreator {
             if (currentFilter != null) {
                 filter = groupRequest.addNewFilter();
             }
+            if (currentClassFilter !=null ){
+                currentClassFilter.writeToXml(groupRequest.addNewClassFilters().addNewItem());
+            }
+            if (currentSorting != null){
+                writeSorting(currentSorting, groupRequest.addNewSorting());
+            }
             groupRequest.setContext(((IContext.Group) group.getContext()).toXml());
             groupRequest.addNewPresentation().setId(group.getSelectorPresentationDef().getId());
             if (classId != null) {
@@ -348,6 +388,25 @@ public final class RequestCreator {
             if (selection!=null){
                 selection.writeToXml(groupRequest.addNewSelectedObjects());
             }
+        } else if (request instanceof GroupRequest) {
+            final GroupRequest groupRequest = ((GroupRequest)request);
+            if (condition != null) {
+                groupRequest.setCondition(condition);
+            }
+            if (currentFilter != null) {
+                filter = groupRequest.addNewFilter();
+            }
+            if (currentClassFilter != null){
+                currentClassFilter.writeToXml(groupRequest.addNewClassFilters().addNewItem());                
+            }            
+            groupRequest.setContext(((IContext.Group) group.getContext()).toXml());
+            groupRequest.addNewPresentation().setId(group.getSelectorPresentationDef().getId());
+            if (classId != null) {
+                groupRequest.addNewClass1().setId(classId);
+            }
+            if (!group.getActiveProperties().isEmpty()) {
+                group.writePropertiesToXml(groupRequest.addNewGroupProperties());
+            }            
         } else if (request == null) {
             throw new NullPointerException();
         } else {
@@ -366,70 +425,25 @@ public final class RequestCreator {
                     filter.setLastUpdateTime(currentFilter.getFilterDef().getLastUpdateTime());
                 }
             }
-
-            final Collection<org.radixware.kernel.common.client.models.items.properties.Property> properties = currentFilter.getActiveProperties();
-            if (properties != null && !properties.isEmpty()) {
-                final org.radixware.schemas.eas.Filter.Parameters parameters = filter.addNewParameters();
-                for (org.radixware.kernel.common.client.models.items.properties.Property property : properties) {
-                    if (!property.isLocal()){
-                        writeFilterParemeter(parameters.addNewItem(), property);
-                    }
-                }
+            if (!currentFilter.getActiveProperties().isEmpty()){
+                currentFilter.writeParametersToXml(filter.addNewParameters());
             }
         }
     }
-
-    private static void writeGroupProperties(final org.radixware.schemas.eas.PropertyList propertyList, final Collection<org.radixware.kernel.common.client.models.items.properties.Property> properties) {
-        for (org.radixware.kernel.common.client.models.items.properties.Property property : properties) {
-            if (!property.isLocal()){
-                property.writeValue2Xml(propertyList.addNewItem());
-            }
-        }
-    }
-
-    private static void writeFilterParemeter(final org.radixware.schemas.eas.Filter.Parameters.Item parameter,
-            final org.radixware.kernel.common.client.models.items.properties.Property property) {
-        parameter.setId(property.getId());
-        final java.lang.Object value = property.getValueObject();
-        if (property instanceof PropertyInt) {
-            if (value instanceof IKernelIntEnum) {
-                parameter.setInt(((IKernelIntEnum) value).getValue());
-            } else if (value instanceof Long) {
-                parameter.setInt(((Long) value).longValue());
-            } else {
-                parameter.setNilInt();
-            }
-        } else if (property instanceof PropertyNum) {
-            if (value != null) {
-                parameter.setNum((BigDecimal) value);
-            } else {
-                parameter.setNilNum();
-            }
-        } else if (property instanceof PropertyDateTime) {
-            parameter.setDateTime((Timestamp) value);//TWRBS-4011
-        } else if (property instanceof PropertyRef) {
-            if (value != null) {
-                final Pid pid = ((Reference) value).getPid();
-                if (pid != null) {
-                    final org.radixware.schemas.eas.Filter.Parameters.Item.PID xPid;
-                    xPid = parameter.addNewPID();
-                    xPid.setEntityId(pid.getTableId());
-                    xPid.setStringValue(XmlUtils.getSafeXmlString(pid.toString()));
+    
+    private static void writeSorting(final RadSortingDef sorting, final org.radixware.schemas.eas.Sorting xml){
+        if (sorting.isUserDefined()) {
+            final org.radixware.schemas.eas.Sorting.AdditionalSortingColumns columns = xml.addNewAdditionalSortingColumns();
+            org.radixware.schemas.eas.Sorting.AdditionalSortingColumns.Item column;
+            for (RadSortingDef.SortingItem sortingItem : sorting.getSortingColumns()) {
+                column = columns.addNewItem();
+                column.setId(sortingItem.propId);
+                if (sortingItem.sortDesc) {
+                    column.setOrder(EOrder.DESC);
                 }
-            } else {
-                parameter.setNilPID();
             }
-        } else if (value instanceof IKernelStrEnum) {
-            parameter.setStr(((IKernelStrEnum) value).getValue());
-        } else if (value instanceof IKernelCharEnum) {
-            parameter.setStr(((IKernelCharEnum) value).getValue().toString());
-        } else if (value == null) {
-            parameter.setNilStr();
         } else {
-            final EValType paramType = property.getDefinition().getType();
-            final String valAsStr = 
-                ValAsStr.toStr(value, ValueConverter.serverValType2ClientValType(paramType));
-            parameter.setStr(XmlUtils.getSafeXmlString(valAsStr));
-        }
+            xml.setId(sorting.getId());
+        }        
     }
 }

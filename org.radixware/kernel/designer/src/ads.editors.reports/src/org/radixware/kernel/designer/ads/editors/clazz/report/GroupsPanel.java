@@ -101,21 +101,26 @@ class GroupsPanel extends javax.swing.JPanel {
     private void setupInitialValues() {
         updating = true;
         levelSpinner.setValue(Long.valueOf(form.getGroups().size()));
-        showCheckBox.setSelected(form.isColumnsHeaderForEachGroupDisplayed());
-        chRepeatHeaders.setSelected(form.isRepeatGroupHeadersOnNewPage());
+        
         for (AdsReportGroup group : form.getGroups()) {
             addGroup(group, -1);
         }
         SpinnerNumberModel model = (SpinnerNumberModel) edMultiFileLevel.getModel();
         model.setMaximum(form.getGroups().size());
+        updateSelectedState();
+        updateEnableState();
+        updating = false;
+    }
+    
+    private void updateSelectedState(){
+        showCheckBox.setSelected(form.isColumnsHeaderForEachGroupDisplayed());
+        chRepeatHeaders.setSelected(form.isRepeatGroupHeadersOnNewPage());
         if (form.getMultifileGroupLevel() >= 0 && !form.getGroups().isEmpty()) {
             edMultiFileLevel.setValue(form.getMultifileGroupLevel() + 1);
         } else {
             edMultiFileLevel.setValue(0);
         }
         chMultiFile.setSelected(form.getMultifileGroupLevel() >= 0);
-        updateEnableState();
-        updating = false;
     }
 
     private void updateEnableState() {
@@ -283,6 +288,18 @@ class GroupsPanel extends javax.swing.JPanel {
         }
         SpinnerNumberModel model = (SpinnerNumberModel) edMultiFileLevel.getModel();
         model.setMaximum(form.getGroups().size());
+        
+        boolean isGroupEmpty = form.getGroups().isEmpty();
+        if (isGroupEmpty) {
+            if (chRepeatHeaders.isSelected()) {
+                chRepeatHeaders.doClick();
+            }
+            if (chMultiFile.isSelected()) {
+                chMultiFile.doClick();
+            }
+        }
+        
+        updateSelectedState();
         updateEnableState();
     }//GEN-LAST:event_levelSpinnerStateChanged
 

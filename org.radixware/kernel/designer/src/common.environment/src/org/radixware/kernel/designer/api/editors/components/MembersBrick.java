@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.api.editors.components;
 
 import java.awt.GridBagConstraints;
@@ -28,7 +27,6 @@ import org.radixware.kernel.designer.api.IApiEditor;
 import org.radixware.kernel.designer.api.editors.Brick;
 import org.radixware.kernel.designer.api.editors.OpenMode;
 
-
 public class MembersBrick<T extends RadixObject> extends Brick<T> {
 
     protected static final String MEMBERS = "members";
@@ -39,10 +37,19 @@ public class MembersBrick<T extends RadixObject> extends Brick<T> {
 
     @Override
     protected void beforeBuild(OpenMode mode, final ApiFilter filter) {
-        getSource().visitChildren(new IVisitor() {
+        beforeBuild(getSource(), mode, filter);
+    }
+    
+    protected void beforeBuild(final RadixObject provider, OpenMode mode, final ApiFilter filter) {
+        
+        if (provider == null) {
+            return;
+        }
+        
+        provider.visitChildren(new IVisitor() {
             @Override
             public void accept(RadixObject radixObject) {
-                if (radixObject instanceof Definitions) {
+                if (radixObject instanceof Definitions && ((Definitions) radixObject).showApiBrowser() ) {
 
                     final Definitions defs = (Definitions) radixObject;
                     String name = defs.getName();
@@ -59,7 +66,7 @@ public class MembersBrick<T extends RadixObject> extends Brick<T> {
         }, new VisitorProvider() {
             @Override
             public boolean isTarget(RadixObject radixObject) {
-                return radixObject.getOwnerDefinition() == getSource();
+                return radixObject.getOwnerDefinition() == provider;
             }
         });
     }

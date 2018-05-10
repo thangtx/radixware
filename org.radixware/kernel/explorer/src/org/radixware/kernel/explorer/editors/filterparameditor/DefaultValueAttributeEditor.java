@@ -39,7 +39,7 @@ final class DefaultValueAttributeEditor extends AbstractAttributeEditor<ValAsStr
     protected DefaultValueAttributeEditor(IClientEnvironment environment, final boolean isReadonly, final QWidget parent) {
         super(environment);
         setObjectName("attrEditor_" + getAttribute().name());
-        label = new QLabel(getAttribute().getTitle(), parent);
+        label = new QLabel(getAttribute().getTitle(environment), parent);
         label.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         label.setObjectName("label");
         editor = new MultiValEditor(environment, parent);

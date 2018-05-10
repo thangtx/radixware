@@ -34,6 +34,7 @@ import org.radixware.kernel.common.defs.ads.clazz.presentation.EditorPages;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentableProperty;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyUsageSupport;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
 
@@ -251,6 +252,7 @@ public class AdsEditorPresentationChecker extends PresentationChecker<AdsEditorP
                     error(presentation, problemHandler, "Property #" + restriction.getPropertyId() + " referenced from property presentation attributes not found");
                 } else {
                     AdsUtils.checkAccessibility(presentation, property, false, problemHandler);
+                    ReleaseUtils.checkExprationRelease(presentation, property, problemHandler);
                     CheckUtils.checkExportedApiDatails(presentation, property, problemHandler);
                     checkPresentableProperty(presentation, property, problemHandler);
                 }

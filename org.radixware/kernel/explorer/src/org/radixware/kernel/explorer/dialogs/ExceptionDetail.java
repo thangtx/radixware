@@ -13,9 +13,6 @@ package org.radixware.kernel.explorer.dialogs;
 
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QSize;
-import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QDialogButtonBox;
 import com.trolltech.qt.gui.QPalette;
@@ -40,10 +37,7 @@ class ExceptionDetail extends QDialog {
         @Override
         public QSize sizeHint() {
             final QSize textSize = document().documentLayout().documentSize().toSize();
-            final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();
-            final int height = Math.min(textSize.height(), screenSize.height() * 3 / 4);
-            final int width = Math.min(textSize.width(), screenSize.width() * 3 / 4);
-            return new QSize(width, height);
+            return WidgetUtils.shrinkWindowSize(textSize.width(), textSize.height());
         }
     };
 

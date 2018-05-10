@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.explorer.editors.jmleditor.completer;
 
 import com.trolltech.qt.core.QEvent;
@@ -32,18 +31,23 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.Callable;
+import org.radixware.kernel.common.compiler.IWorkspaceProvider;
+import org.radixware.kernel.common.compiler.core.completion.JmlCompletionEngine;
+import org.radixware.kernel.common.compiler.lookup.AdsWorkspace;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.common.jml.JmlTagInvocation;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.scml.Scml;
+import org.radixware.kernel.common.scml.ScmlCompletionProvider;
 import org.radixware.kernel.common.scml.ScmlCompletionProvider.CompletionItem;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.explorer.editors.jmleditor.JmlProcessor;
 import org.radixware.kernel.explorer.editors.jmleditor.jmltags.JmlTag;
 import org.radixware.kernel.explorer.editors.xscmleditor.TagInfo;
@@ -51,41 +55,77 @@ import org.radixware.kernel.explorer.editors.xscmleditor.TagProcessor;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
 import org.radixware.kernel.explorer.env.Application;
 
-
 public class CompleterProcessor extends QObject {
-
+        
+    private final boolean useWorkspaceCache = SystemPropUtils.getBooleanSystemProp("rdx.userfunc.use.workspace.cache", true);
+    private final org.radixware.kernel.common.compiler.Compiler.WorkspaceCache wsCache = 
+            new org.radixware.kernel.common.compiler.Compiler.WorkspaceCache(JmlCompletionEngine.getReporter());
     private QCompleter completer = null;
     private XscmlEditor editor;
     private TagProcessor tagConverter;
     
+    private final PreloadCompletionHelper preloadHelper;
+    private Callable<?> deferredCompletionTask;
+            
     private boolean wasOpen = false;
     private boolean isCompleterRunning = false;
     private int startPosForCompletion = -1;
     private String completionPrefix = "";
     //private final ItemDelegate delegate = new ItemDelegate();
     //private boolean isPoint = false;
-    private final CompleterWaiter waiter = new CompleterWaiter();   
-    private int prefixPos = 0;    
+    private final CompleterWaiter waiter;
+    private int prefixPos = 0;
     private int prevRow = 0;
     protected Map<String, HtmlCompletionItem> completionList;
     protected Scml.Item prevComplItem = null;
-    protected int completerWidth = 500; 
+    protected int completerWidth = 500;
     protected CompletionListModel wordList;
     private int completerWidthDelta;
     QFontMetrics fontMetrics;
     QFontMetrics boldMetrics;
     private int complItemIconSize;
-    
+
     public final static int MAX_COMPLETER_SIZE = 800;
     public final static int INITIAL_COMPLETER_ITEM_SIZE = 100;
-    public final static String NO_SUGGEST = Application.translate("JmlEditor", "No suggestions");
-    public final static String PLEASE_WAIT = Application.translate("JmlEditor", "Please wait...");
+    public final String NO_SUGGEST = Application.translate("JmlEditor", "No suggestions");
+    public final String PLEASE_WAIT = Application.translate("JmlEditor", "Please wait...");
+    public final String LOADING_BRANCH = Application.translate("JmlEditor", "Loading branch...");
 
     public CompleterProcessor(final XscmlEditor editor, final TagProcessor tagConverter) {
         this.editor = editor;
         this.tagConverter = tagConverter;
+        this.waiter = new CompleterWaiter(editor.getEnvironment().getTracer());
         if (tagConverter instanceof JmlProcessor) {
             setCompleter();
+        }
+        preloadHelper = new PreloadCompletionHelper(this, editor.getEnvironment());
+    }
+    
+    ScmlCompletionProvider.CompletionRequestor createRequestorWrapper(ScmlCompletionProvider.CompletionRequestor rq) {
+        return useWorkspaceCache ? new CachedWorkspaceRequestor(rq, wsCache) : rq;
+    }
+    
+    private boolean isCompletionReady() {
+        return preloadHelper.isCompletionReady();
+    }
+
+    public void startPreloadCompletion() {
+        preloadHelper.startPreloadCompletion();
+    }
+    
+    void beginPreloadCompletion() {
+        final PreloadCompletionTask task = new PreloadCompletionTask(this,
+                (AdsUserFuncDef) tagConverter.getSource().getOwnerForQualifedName(),
+                editor.getEnvironment());
+        waiter.submitTask(task);
+    }
+        
+    void afterPreloadCompletion() {
+        if (deferredCompletionTask != null) {
+            if (wasOpen) {
+                waiter.submitTask(deferredCompletionTask);
+            }
+            deferredCompletionTask = null;
         }
     }
 
@@ -104,10 +144,13 @@ public class CompleterProcessor extends QObject {
             cancelWaiter();
         }
     }
-    
+
     public void cancelWaiter() {
         if (waiter != null) {
-            waiter.cancel();
+            //We should cancel task only when preload is done            
+            if (isCompletionReady()) {
+                waiter.cancel();
+            }
             isCompleterRunning = false;
         }
     }
@@ -127,32 +170,47 @@ public class CompleterProcessor extends QObject {
         completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion);
         completer.setCaseSensitivity(CaseSensitivity.CaseInsensitive);
         completer.activatedIndex.connect(this, "insertCompletionIndex(QModelIndex)");
-        
+
         final QFont font = completer.popup().font();
         fontMetrics = new QFontMetrics(font);
         font.setBold(true);
         boldMetrics = new QFontMetrics(font);
         font.setBold(false);
-        
+
         complItemIconSize = fontMetrics.height() + ItemDelegate.SPACE_HEIGHT;
-    }    
+    }
 
     public void exposeCompleter() {
+        exposeCompleterImpl(null);
+    }
+    
+    public void exposeQuickCompleter(final TagInfo tag) {
+        exposeCompleterImpl(tag);
+    }
+    
+    private void exposeCompleterImpl(final TagInfo tag) {
         if (tagConverter instanceof JmlProcessor && !isCompleterRunning) {
+            editor.beforeExposeCompleter.emit();
             isCompleterRunning = true;
             popupPleaseWait();
-            Jml jml = ((JmlProcessor) tagConverter).toXml(editor.toPlainText(), editor.textCursor());
-            setStartForComplerion();
-            int info[] = itemIndexAndOffset(startPosForCompletion + 1, jml, ((JmlProcessor) tagConverter));
-            QFont font = new QFont();
-            CompleterGetter task = new CompleterGetter(this, jml, info,/* startPosForCompletion, */ font.resolve(completer.popup().font()));
 
-            try {
+            final QFont font = new QFont();
+            final Callable<Map<String, HtmlCompletionItem>> task;
+            if (tag != null) {
+                final JmlTag jmlTag = (JmlTag) tag;
+                prevComplItem = jmlTag.getTag();
+                task = new QuickCompleterGetter(this, jmlTag.getTag(), font.resolve(completer.popup().font()));
+            } else {
+                Jml jml = ((JmlProcessor) tagConverter).toXml(editor.toPlainText(), editor.textCursor());
+                setStartForComplerion();
+                int info[] = itemIndexAndOffset(startPosForCompletion + 1, jml, ((JmlProcessor) tagConverter));
+                task = new CompleterGetter(this, jml, info, font.resolve(completer.popup().font()), editor.getEnvironment().getTracer());
+            }
+            
+            if (isCompletionReady()) {
                 waiter.submitTask(task);
-            } catch (ExecutionException ex) {
-                Logger.getLogger(CompleterProcessor.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(XscmlEditor.class.getName()).log(Level.SEVERE, null, ex);
+            } else {
+                deferredCompletionTask = task;
             }
         }
     }
@@ -162,42 +220,28 @@ public class CompleterProcessor extends QObject {
         //completer.setQuickCompleter(false);
         wasOpen = false;
     }
-
+    
     private void popupPleaseWait() {
         final LinkedHashMap<String, HtmlCompletionItem> cl = new LinkedHashMap<>();
-        final SuggestCompletionItem item = new SuggestCompletionItem(null, PLEASE_WAIT);
+        final String waitMessage = isCompletionReady() ? PLEASE_WAIT : LOADING_BRANCH;
         
-        final HtmlCompletionItem complItem = new HtmlCompletionItem(item, fontMetrics, boldMetrics,false, true);
-        
-        cl.put(PLEASE_WAIT, complItem);
+        final SuggestCompletionItem item = new SuggestCompletionItem(null, waitMessage);
+        final HtmlCompletionItem complItem = new HtmlCompletionItem(item, fontMetrics, boldMetrics, false, true);
+
+        cl.put(waitMessage, complItem);
         setCompletionListModel(cl);
         //completer.popup().setItemDelegate(delegate);
         //completer.popup().setAlternatingRowColors(true);
         //completer.popup().setIconSize(new QSize(ItemDelegate.HEIGHT,ItemDelegate.HEIGHT));
         wasOpen = true;
-        completer.setCompletionPrefix(PLEASE_WAIT);
-        
+        if (completer.model() instanceof CompletionListModel) {
+            ((CompletionListModel) completer.model()).setCompletionPrefix(null);
+        }
+        completer.setCompletionPrefix(waitMessage.replace(".", ""));
+
         completerWidthDelta = 15;
         int width = complItem.getLenght() + completerWidthDelta;
         setCompleterParam(width);
-    }
-
-    public void exposeQuickCompleter(final TagInfo tag) {
-        if (tagConverter instanceof JmlProcessor && !isCompleterRunning) {
-            isCompleterRunning = true;
-            final JmlTag jmlTag = (JmlTag) tag;
-            popupPleaseWait();
-
-            final QFont font = new QFont();
-            final QuickCompleterGetter quickTask = new QuickCompleterGetter(this, jmlTag.getTag(), font.resolve(completer.popup().font()));
-            try {
-                prevComplItem = jmlTag.getTag();
-                waiter.submitTask(quickTask);
-            } catch (InterruptedException ex) {
-            } catch (ExecutionException ex) {
-                Logger.getLogger(XscmlEditor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
 
     protected void setStartForComplerion() {
@@ -210,11 +254,11 @@ public class CompleterProcessor extends QObject {
         }
         final boolean isPoint = curPos > 0 ? isPoint(text.charAt(curPos - 1)) : false;
         completionPrefix = text.substring(curPos, pos);
-        while (completionPrefix.length()>0 && (completionPrefix.charAt(0)==' ' || completionPrefix.charAt(0)=='\n')){
+        while (completionPrefix.length() > 0 && (completionPrefix.charAt(0) == ' ' || completionPrefix.charAt(0) == '\n')) {
             completionPrefix = completionPrefix.substring(1);
             curPos++;
         }
-        
+
         prefixPos = curPos;
         if (isPoint) {
             startPosForCompletion = curPos;
@@ -244,7 +288,7 @@ public class CompleterProcessor extends QObject {
     }
 
     protected void setCompletionListModel(final Map<String, HtmlCompletionItem> completionList) {
-        if(wordList == null) {
+        if (wordList == null) {
             wordList = new CompletionListModel();
             completer.setModel(wordList);
         }
@@ -262,26 +306,30 @@ public class CompleterProcessor extends QObject {
 
     protected void showCompleter() {
         wasOpen = true;
+        if (completer.model() instanceof CompletionListModel) {
+            ((CompletionListModel) completer.model()).setCompletionPrefix(completionPrefix);
+        }
         completer.setCompletionPrefix(completionPrefix);
         if (completer.popup().model().rowCount() > 0) {
-            wordList.removeItem(NO_SUGGEST);
-            wordList.removeItem(PLEASE_WAIT);
             setCompleterParam(completerWidth);
         } else {
-            showNoSuggestionFound(NO_SUGGEST);
+            showNoSuggestionFound();
         }
     }
 
-    private void showNoSuggestionFound(final String text) {
-        SuggestCompletionItem item = new SuggestCompletionItem(null, text);
-        
+    private void showNoSuggestionFound() {
+        SuggestCompletionItem item = new SuggestCompletionItem(null, NO_SUGGEST);
+
         HtmlCompletionItem htmlItem = new HtmlCompletionItem(item, fontMetrics, boldMetrics, false, true);
-        if (!wordList.containsItem(text)) {
-            wordList.addItem(text, htmlItem);
-            completionList.put(text, htmlItem);
+        if (!wordList.containsItem(NO_SUGGEST)) {
+            wordList.addItem(NO_SUGGEST, htmlItem);
+            completionList.put(NO_SUGGEST, htmlItem);
         }
-        completer.setCompletionPrefix(text);
-        
+        if (completer.model() instanceof CompletionListModel) {
+            ((CompletionListModel) completer.model()).setCompletionPrefix(null);
+        }
+        completer.setCompletionPrefix(NO_SUGGEST);
+
         completerWidthDelta = 15;
         int width = htmlItem.getLenght() + completerWidthDelta;
         //int width= HtmlItemCreator.getColumnWidth(text, completer.popup().font())+15;
@@ -309,19 +357,22 @@ public class CompleterProcessor extends QObject {
                 return;
             }
 
-            while (completionPrefix.length()>0 && ((completionPrefix.charAt(0)==' ') || (completionPrefix.charAt(0)=='\n'))) {
+            while (completionPrefix.length() > 0 && ((completionPrefix.charAt(0) == ' ') || (completionPrefix.charAt(0) == '\n'))) {
                 completionPrefix = completionPrefix.substring(1);
+            }
+            if (completer.model() instanceof CompletionListModel) {
+                ((CompletionListModel) completer.model()).setCompletionPrefix(completionPrefix);
             }
             completer.setCompletionPrefix(completionPrefix);
             if (completer.popup().model().rowCount() > 0) {
                 wordList.removeItem(NO_SUGGEST);
                 setCompleterParam(completerWidth);
             } else {
-                showNoSuggestionFound(NO_SUGGEST);
+                showNoSuggestionFound();
             }
         }
     }
-    
+
     private void setCompleterParam(int width) {
         final QRect completerRect = editor.cursorRect();
         completerRect.setWidth(width);
@@ -382,7 +433,7 @@ public class CompleterProcessor extends QObject {
                 removePreviousTag(tc, obj, prevComplItem);
 
                 final Scml.Item[] items = obj.getNewItems();
-                int[] insertPos = new int[] {-1};
+                int[] insertPos = new int[]{-1};
                 for (int i = 0; i < items.length; i++) {
                     tagConverter.getSource().getItems().add(items[i]);
                     if (items[i] instanceof Scml.Text) {
@@ -434,17 +485,17 @@ public class CompleterProcessor extends QObject {
     private void deletePrefix(final QTextCursor tc, final int start) {
         if (start >= 0) {
             tc.movePosition(MoveOperation.Left, MoveMode.KeepAnchor, start + (tc.position() - startPosForCompletion));
-            if(tc.hasSelection()){
-                final List<TagInfo> deletedTags=editor.getTagConverter().getTagListInSelection(tc.selectionStart()+1, tc.selectionEnd()+1,true);
-                for(TagInfo tag:deletedTags){
+            if (tc.hasSelection()) {
+                final List<TagInfo> deletedTags = editor.getTagConverter().getTagListInSelection(tc.selectionStart() + 1, tc.selectionEnd() + 1, true);
+                for (TagInfo tag : deletedTags) {
                     tagConverter.deleteTag(tag);
-                }            
+                }
                 tc.removeSelectedText();
             }
-            final int n = tc.position() - 5;            
+            final int n = tc.position() - 5;
             if (n >= 0) {
                 final String s = editor.toPlainText().substring(n, tc.position());
-                if("idof[".equals(s)){
+                if ("idof[".equals(s)) {
                     tc.movePosition(MoveOperation.Left, MoveMode.KeepAnchor, "idof[".length());
                     tc.removeSelectedText();
                 }
@@ -477,9 +528,9 @@ public class CompleterProcessor extends QObject {
         }
         return new int[]{idx, pos - begin};
     }
-    
+
     private void doExposeCompleter(Map<String, HtmlCompletionItem> cl, Scml.Item prevComplItem, int itemWidth) {
-        if(!isCompleterRunning) {
+        if (!isCompleterRunning) {
             return;
         }
         this.prevComplItem = prevComplItem;
@@ -497,7 +548,7 @@ public class CompleterProcessor extends QObject {
     }
 
     private void doExposeQuickCompleter(Map<String, HtmlCompletionItem> cl, int itemWidth) {
-        if(!isCompleterRunning) {
+        if (!isCompleterRunning) {
             return;
         }
         try {
@@ -514,7 +565,7 @@ public class CompleterProcessor extends QObject {
             isCompleterRunning = false;
         }
     }
-
+    
     static class ExposeCompleterEvent extends QEvent {
 
         public final Scml.Item prevComplItem;
@@ -540,7 +591,7 @@ public class CompleterProcessor extends QObject {
             this.itemWidth = itemWidth;
         }
     }
-
+        
     @Override
     protected void customEvent(QEvent event) {
         if (event instanceof ExposeCompleterEvent) {
@@ -552,5 +603,37 @@ public class CompleterProcessor extends QObject {
         } else {
             super.customEvent(event);
         }
+    }
+    
+    public void cleanup() {
+        preloadHelper.cleanup();
+        waiter.close();
+    }
+    
+    private static final class CachedWorkspaceRequestor implements IWorkspaceProvider, ScmlCompletionProvider.CompletionRequestor {
+
+        private final ScmlCompletionProvider.CompletionRequestor delegate;
+        private final org.radixware.kernel.common.compiler.Compiler.WorkspaceCache wsCache;
+        
+        public CachedWorkspaceRequestor(ScmlCompletionProvider.CompletionRequestor delegate, org.radixware.kernel.common.compiler.Compiler.WorkspaceCache wsCache) {
+            this.delegate = delegate;
+            this.wsCache = wsCache;
+        }
+
+        @Override
+        public void accept(CompletionItem item) {
+            delegate.accept(item);
+        }
+
+        @Override
+        public boolean isAll() {
+            return delegate.isAll();
+        }
+
+        @Override
+        public AdsWorkspace getWorkspace(Layer l, ERuntimeEnvironmentType env) {
+            return wsCache.get(l, env);
+        }
+        
     }
 }

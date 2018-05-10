@@ -11,15 +11,23 @@
 
 package org.radixware.kernel.designer.tree.actions.dds;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.modules.subversion.Subversion;
@@ -32,10 +40,13 @@ import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.check.RadixProblemRegistry;
 import org.radixware.kernel.common.defs.HierarchyWalker;
+import org.radixware.kernel.common.defs.dds.DdsDefinition;
 import org.radixware.kernel.common.defs.dds.DdsModelDef;
 import org.radixware.kernel.common.defs.dds.DdsModule;
+import org.radixware.kernel.common.dialogs.db.DdsScriptUtils;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
+import org.radixware.kernel.common.repository.dds.DdsAadcTransform;
 import org.radixware.kernel.common.repository.dds.DdsScript;
 import org.radixware.kernel.common.repository.dds.DdsScripts;
 import org.radixware.kernel.common.repository.dds.DdsSegment;
@@ -43,7 +54,9 @@ import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.designer.subversion.util.RadixSvnUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.dds.editors.SqlModalEditor;
+import org.radixware.kernel.designer.dds.editors.scripts.transform.DdsAadcTransformEditor;
 import org.radixware.kernel.designer.dds.script.ScriptGenerator;
+import org.radixware.kernel.designer.dds.script.ScriptGeneratorImpl;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
 
 
@@ -139,9 +152,10 @@ class DdsSegmentCommiter {
 //    }
     private static class SegmentModificationInfo {
 
-        private String alterScript;
+        private String alterScript, compatibilityLog;
         private boolean backwardCompatible = false;
         private DdsScript ddsScript;
+        private DdsAadcTransform transform;
 
         public String getAlterScript() {
             return alterScript;
@@ -166,6 +180,31 @@ class DdsSegmentCommiter {
         public void setDdsScript(DdsScript ddsScript) {
             this.ddsScript = ddsScript;
         }
+
+        public DdsAadcTransform getTransform() {
+            return transform;
+        }
+
+        public void setTransform(DdsAadcTransform transform) {
+            this.transform = transform;
+        }
+        
+        public boolean hasCompatibilityLog() {
+            return compatibilityLog != null && !compatibilityLog.isEmpty();
+        }
+        
+        public String getCompatibilityLog() {
+            return compatibilityLog;
+        }
+        
+        public void setCompatibilityLog(final String compatibilityLog) {
+            this.compatibilityLog = compatibilityLog;
+        }
+
+        @Override
+        public String toString() {
+            return "SegmentModificationInfo{" + "alterScript=" + alterScript + ", compatibilityLog=" + compatibilityLog + ", backwardCompatible=" + backwardCompatible + '}';
+        }
     }
 
     /**
@@ -180,13 +219,25 @@ class DdsSegmentCommiter {
             if (hasOwnModifiedModules(segment)) {
                 IOColorLines.println(io, "Generate upgrade SQL script for '" + segment.getQualifiedName() + "'", Color.GRAY);
 
-                final ScriptGenerator scriptGenerator = ScriptGenerator.Factory.newAlterInstance(segment);
+                final ScriptGenerator scriptGenerator = ScriptGeneratorImpl.Factory.newAlterInstance(segment);
                 final CodePrinter cp = CodePrinter.Factory.newSqlPrinter();
+                final Collection<DdsDefinition> fixedDefinitions = new ArrayList<>();
+                final Collection<DdsDefinition> modifiedDefinitions = new ArrayList<>();
+                final String compatibilityLog;
+
+                try(final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    scriptGenerator.generateCompatibilityLog(baos);
+                    compatibilityLog = baos.toString();
+                }
+                
                 scriptGenerator.generateModificationScript(cp);
                 final String alterScript = cp.toString();
+                
                 if (alterScript != null && !alterScript.isEmpty()) {
                     final SegmentModificationInfo info = new SegmentModificationInfo();
+                    
                     info.setAlterScript(alterScript);
+                    info.setCompatibilityLog(compatibilityLog);
                     segment2ModificationInfo.put(segment, info);
                 }
             }
@@ -201,13 +252,26 @@ class DdsSegmentCommiter {
         private final DdsSegment segment;
         private final JRadioButton chCompatibleBox = new JRadioButton();
         private final JRadioButton chIncompatibleBox = new JRadioButton();
+        private final JButton compatibilityShow = new JButton();
+        final JPanel additionalPanel = new JPanel();
+        private final DdsAadcTransformEditor editor;
+        private DdsAadcTransform transform;
 
-        public SqlModalEditorCfg(DdsSegment segment, SegmentModificationInfo modificationInfo) {
+        public SqlModalEditorCfg(final DdsSegment segment, final SegmentModificationInfo modificationInfo) {
             this.segment = segment;
             this.modificationInfo = modificationInfo;
             //this.chCompatibleBox.setSelected(modificationInfo.isBackwardCompatible());
             this.chCompatibleBox.setText("Compatible");
             this.chIncompatibleBox.setText("Incompatible");
+            this.compatibilityShow.setText("Show compatibility log");
+            
+            if (modificationInfo.hasCompatibilityLog()) {
+//                this.chCompatibleBox.setEnabled(false);   // RADIX-12999
+                this.chIncompatibleBox.setSelected(true);
+            }
+            else {
+                this.compatibilityShow.setEnabled(false);
+            }
             this.chCompatibleBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -221,15 +285,46 @@ class DdsSegmentCommiter {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (chIncompatibleBox.isSelected()) {
-                        chCompatibleBox.setSelected(false);
+                        if (!DdsScriptUtils.showCompatibleWarning()){
+                            chIncompatibleBox.setSelected(false);
+                        } else {
+                            chCompatibleBox.setSelected(false);
+                        }
                     }
                 }
             });
+            this.compatibilityShow.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    final JTextArea area = new JTextArea(modificationInfo.getCompatibilityLog());
+                    final JScrollPane pane = new JScrollPane(area);
+                    
+                    area.setEditable(false);
+                    area.setRows(20);
+                    pane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+                    JOptionPane.showMessageDialog(null,pane);
+                }
+            });
+            
+            final JPanel panel = new JPanel();
+            panel.setBorder(new TitledBorder("Backward compatibility"));
+            panel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
+            panel.add(chCompatibleBox);
+            panel.add(chIncompatibleBox);
+            panel.add(compatibilityShow);
+            additionalPanel.setLayout(new BorderLayout(20, 5));
+            additionalPanel.add(panel, BorderLayout.NORTH);
+            editor = new DdsAadcTransformEditor();
+            editor.setBorder(BorderFactory.createTitledBorder("AADC Transformations"));
+            transform = new DdsAadcTransform();
+            editor.open(segment.getLayer(), transform, true);
+            additionalPanel.add(editor, BorderLayout.CENTER);
         }
 
         @Override
         public boolean canCloseEditor() {
-            return chCompatibleBox.isSelected() || chIncompatibleBox.isSelected();
+            editor.check();
+            return (chCompatibleBox.isSelected() || chIncompatibleBox.isSelected()) && editor.isOk();
         }
 
         @Override
@@ -250,21 +345,23 @@ class DdsSegmentCommiter {
             } else if (chIncompatibleBox.isSelected()) {
                 this.modificationInfo.setBackwardCompatible(false);
             }
+            this.modificationInfo.setTransform(transform);
         }
 
         @Override
         public JPanel getAdditionalPanel() {
-            final JPanel panel = new JPanel();
-            panel.setBorder(new TitledBorder("Backward compatibility"));
-            panel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
-            panel.add(chCompatibleBox);
-            panel.add(chIncompatibleBox);
-            return panel;
+            return additionalPanel;
         }
 
         @Override
         public void showClosingProblems() {
-            DialogUtils.messageError("One of script compatibility options must be choosen");
+            String message;
+            if (!chCompatibleBox.isSelected() && !chIncompatibleBox.isSelected()) {
+                message = "One of script compatibility options must be choosen";
+            } else {
+                message = editor.getMessage();
+            }
+            DialogUtils.messageError(message);
         }
     }
 
@@ -301,7 +398,7 @@ class DdsSegmentCommiter {
         for (DdsSegment segment : segments) {
             if (hasOwnModifiedModules(segment)) {
                 IOColorLines.println(io, "Generate installation SQL script for '" + segment.getQualifiedName() + "'", Color.GRAY);
-                final ScriptGenerator scriptGenerator = ScriptGenerator.Factory.newCreationInstance(segment);
+                final ScriptGenerator scriptGenerator = ScriptGeneratorImpl.Factory.newCreationInstance(segment);
                 final CodePrinter cp = CodePrinter.Factory.newSqlPrinter();
                 scriptGenerator.generateModificationScript(cp);
                 final String installScript = cp.toString();
@@ -323,7 +420,7 @@ class DdsSegmentCommiter {
                 io.getOut().println("Update " + scripts.getFile().getAbsolutePath());
                 final DdsScript updateScript = modificationInfo.getDdsScript();
                 final boolean isBackwardCompatible = modificationInfo.isBackwardCompatible();
-                scripts.getUpdatesInfo().registerNew(updateScript, isBackwardCompatible, null);
+                scripts.getUpdatesInfo().registerNew(updateScript, isBackwardCompatible, modificationInfo.getTransform(), null);
                 scripts.save();
             }
         }

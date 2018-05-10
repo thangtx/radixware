@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhBR4FWDDRQFD4FI6BHGD5LNUGZI" Name="CfgExportFrom.TestCaseSingle" Type="19" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderafhBR4FWDDRQFD4FI6BHGD5LNUGZI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyafhBR4FWDDRQFD4FI6BHGD5LNUGZI"/>
+    </Bodies>
+    <MethodGroup Id="cmgAQPJ66FOSZCVVEYWK6H22H4CZI" Name="Root"/>
+    <PropertyGroup Id="cpgDB3DMYSL4VEULHBGOAG2KTEBRU" Name="Root"/>
+    <Properties>
+      <Property Id="prdE3YZAQCMTNG3RDR5AQFG2UAKJA" Name="expMode_exportChilds" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>1</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls37WFJAWD75AJZA36NDOPMYKNKQ" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdP3662XMZAZC4JETF6Q7DC7OMA4" Name="canExportChilds" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthBYHKXLVLX5DKDMRNN57QOYLWVM" Name="extractExportData" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="cfgObject" Id="mprG44RF6YIVJBRFFDT2D2UE7LZNM">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+          <Parameter Name="data" Id="mprIREDSOYM6NBRTJU3M46W4TNFAU">
+            <Type TypeId="411" Path="adcE2YCRKQL7JE7HBMJ7SVQTSLQRA"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                <xsc:Presentation>TestCase</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) cfgObject).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA mthL37P4BEB7BG5DJXDQC2PLDBAPQ" Invoke="true">
+                <xsc:Presentation>exportThis</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(data, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhBR4FWDDRQFD4FI6BHGD5LNUGZI prdE3YZAQCMTNG3RDR5AQFG2UAKJA" Invoke="true">
+                <xsc:Presentation>expMode_exportChilds</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue(), true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGQ2UW3DSLNCAXHZKKOTJMYCC6E" Name="storeExportOptions" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="item" Id="mpr7T6MVLITNZBXFCMES2E7W64MNI">
+            <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclUTJPYKSDXNDYFJNNXKD5P7YHUQ">
+                <xsc:Presentation>CfgItem.TestCaseSingle</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclUTJPYKSDXNDYFJNNXKD5P7YHUQ pru3EN4JF3EE5EN7B23T644ENSYHA" Invoke="true">
+                <xsc:Presentation>expMode_exportChildren</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhBR4FWDDRQFD4FI6BHGD5LNUGZI prdE3YZAQCMTNG3RDR5AQFG2UAKJA" Invoke="true">
+                <xsc:Presentation>expMode_exportChildren</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="16">
+        <Model Id="afmBR4FWDDRQFD4FI6BHGD5LNUGZI" Name="CfgExportFrom.TestCaseSingle:Model" Type="18">
+          <AccessRules/>
+          <Headers>
+            <Src Name="HeaderafmBR4FWDDRQFD4FI6BHGD5LNUGZI"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyafmBR4FWDDRQFD4FI6BHGD5LNUGZI"/>
+          </Bodies>
+          <MethodGroup Id="cmgVVKVVSQ4JNFU3OQF76NN6IE74A" Name="Root"/>
+          <PropertyGroup Id="cpgTZQVZRKVMZEQLDWNRUM4EJIDUI" Name="Root"/>
+          <Properties>
+            <Property Id="prdE3YZAQCMTNG3RDR5AQFG2UAKJA" Name="expMode_exportChilds" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Type TypeId="1"/>
+              <EmbeddedClass Id="aetV2NEH5TC2RHQNAWJMZD43UWYDE" Name="EmbeddedClass" Type="3">
+                <AccessRules IsPublished="false"/>
+                <Headers>
+                  <Src Name="HeaderaetV2NEH5TC2RHQNAWJMZD43UWYDE"/>
+                </Headers>
+                <Bodies>
+                  <Src Name="BodyaetV2NEH5TC2RHQNAWJMZD43UWYDE"/>
+                </Bodies>
+                <MethodGroup Id="cmgHD6T3YLVJBDI7DTPD22THZWVCQ" Name="Root"/>
+                <PropertyGroup Id="cpgWLHTXH5CGJG3JAN3SOBTYC4ICM" Name="Root"/>
+                <Properties/>
+                <Methods>
+                  <Method Id="mthQNIP5JWJYBFZHLPIGNB2E5KLFM" Name="isVisible" Nature="0" IsOverride="true" isDescriptionInherited="true">
+                    <AccessRules/>
+                    <ReturnType TypeId="401" extStr="boolean"/>
+                    <Sources>
+                      <Src>
+                        <xsc:Item>
+                          <xsc:Java>return super.</xsc:Java>
+                        </xsc:Item>
+                        <xsc:Item>
+                          <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthQNIP5JWJYBFZHLPIGNB2E5KLFM" Invoke="true">
+                            <xsc:Presentation>isVisible</xsc:Presentation>
+                          </xsc:IdReference>
+                        </xsc:Item>
+                        <xsc:Item>
+                          <xsc:Java>() &amp;&amp; </xsc:Java>
+                        </xsc:Item>
+                        <xsc:Item>
+                          <xsc:IdReference Path="afhBR4FWDDRQFD4FI6BHGD5LNUGZI prdP3662XMZAZC4JETF6Q7DC7OMA4" Invoke="true">
+                            <xsc:Presentation>canExportChilds</xsc:Presentation>
+                          </xsc:IdReference>
+                        </xsc:Item>
+                        <xsc:Item>
+                          <xsc:Java>.Value.booleanValue();</xsc:Java>
+                        </xsc:Item>
+                      </Src>
+                    </Sources>
+                  </Method>
+                </Methods>
+              </EmbeddedClass>
+              <DependentItems/>
+            </Property>
+          </Properties>
+          <Methods>
+            <Method Id="mthQJLQGY6YVNGKTJDKPGGI2WNZGU" Name="beforeOpenView" Nature="0" IsOverride="true" isDescriptionInherited="true">
+              <AccessRules Access="1"/>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>super.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthQJLQGY6YVNGKTJDKPGGI2WNZGU" Invoke="true">
+                      <xsc:Presentation>beforeOpenView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                      <xsc:Presentation>TestCase</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> ownerTest = (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                      <xsc:Presentation>TestCase</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthONG6LTLG6NCB7PCYVV4QCGCQHQ" Invoke="true">
+                      <xsc:Presentation>findOwnerByClass</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="aecHW4OSVMS27NRDISQAAAAAAAAAA">
+                      <xsc:Presentation>TestCase</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.class);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBR4FWDDRQFD4FI6BHGD5LNUGZI prdP3662XMZAZC4JETF6Q7DC7OMA4" Invoke="true">
+                      <xsc:Presentation>canExportChilds</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = ownerTest != null &amp;&amp; ownerTest.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="aecHW4OSVMS27NRDISQAAAAAAAAAA prdQO2OHKBQTNB2LK2NR3TUUWDQWQ" Invoke="true">
+                      <xsc:Presentation>thereIsChilds</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.booleanValue();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+          </Methods>
+        </Model>
+        <EditorPages>
+          <Page Id="epgDN73CDHRENDEVG4L4YOM44A664" Name="General" Type="1" ClientEnvironment="explorer">
+            <AccessRules IsPublished="false"/>
+            <Properties>
+              <Property Id="prdH5MTLP7ERZBHVBJ55N7AERJZEM" Row="0" Column="0"/>
+              <Property Id="prdA6IUDE5WWJENDLUWY2D2K5NGHA" Row="1" Column="0"/>
+              <Property Id="prdGIRD7QI6DNGFHP6IZTCDDGEAA4" Row="1" Column="1" GlutToLeft="true"/>
+              <Property Id="prdLEQ7NQRA4BGRBBKLFXNXMK5WXU" Row="0" Column="1" GlutToLeft="true"/>
+              <Property Id="prdE3YZAQCMTNG3RDR5AQFG2UAKJA" Row="2" Column="0"/>
+            </Properties>
+          </Page>
+          <PageOrder>
+            <Item PageId="epgDN73CDHRENDEVG4L4YOM44A664" Level="1"/>
+          </PageOrder>
+        </EditorPages>
+      </Form>
+    </Presentations>
+    <Extends TypeId="411" Path="afhYDJYUPWFIZHFNGSWQKRNNSINCE"/>
+  </AdsClassDefinition>
+</AdsDefinition>

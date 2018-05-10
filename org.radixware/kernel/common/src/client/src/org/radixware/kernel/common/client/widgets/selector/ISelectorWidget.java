@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.widgets.selector;
 
+import java.util.Collection;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.widgets.actions.IMenu;
@@ -63,6 +64,19 @@ public interface ISelectorWidget extends IModelWidget {
      * @param pid - идентификатор сущности, которая после перечитывания должна стать текущей.
      */
     public void rereadAndSetCurrent(Pid pid) throws InterruptedException, ServiceClientException;
+    
+    /**
+     * Уведомляет виджет, о необходимости перечитать данные в селекторе с восстановлением заданной позиции.
+     * <p>Для получения актуальных данных из модели группы
+     * реализующий класс должен вызывать метод {@link org.radixware.kernel.explorer.models.GroupModel#reread()}.
+     * <p>Вызывается при после создании новых объектов сущностей
+     * (тогда pids - идентификаторы созданных сущностей).
+     * В стандартной реализации если параметр равен null, то перечитываются все данные с восстановлением
+     * текущей сущности, иначе перечитываются данные только текущей группы с позиционированием на
+     * одном из объектов, идентификатор которого был передан в параметре.
+     * @param pids - набор идентификаторов объектов, один из которых должен стать текущим после перечитывания.
+     */
+    public void rereadAndSetCurrent(Collection<Pid> pids) throws InterruptedException, ServiceClientException;
 
     /**
      * Уведомляет виджет, о необходимости перечитать данные в селекторе без восстановления текущей позиции.

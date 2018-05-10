@@ -15,15 +15,21 @@ import java.sql.Timestamp;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.RadClassPresentationDef;
+import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.meta.filters.RadFilterParamDef;
 import org.radixware.kernel.common.client.meta.RadParentRefPropertyDef;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
+import org.radixware.kernel.common.client.models.EntityModel;
+import org.radixware.kernel.common.client.models.IContext;
+import org.radixware.kernel.common.client.models.Model;
+import org.radixware.kernel.common.client.models.RawEntityModelData;
 import org.radixware.kernel.common.client.types.ArrRef;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.types.ResolvableReference;
 import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.common.types.ArrDateTime;
 import org.radixware.kernel.common.types.ArrNum;
@@ -48,13 +54,13 @@ public class PropertyValue {
         public InheritableValue(final IClientEnvironment environment, 
                                 final org.radixware.schemas.eas.Property.InheritableValue.Path inheritancePath, 
                                 final org.radixware.schemas.eas.Property finalProperty) {
-            final org.radixware.schemas.eas.Property.InheritableValue.Path.Item.ReferenceValue firstRefererence = 
+            final org.radixware.schemas.eas.ObjectReference firstRefererence = 
                     inheritancePath.getItemList().get(0).getReferenceValue();
             ownerClassDef = 
                 environment.getDefManager().getClassPresentationDef(firstRefererence.getClassId());
             ownerEntityPid = new Pid(ownerClassDef.getTableId(), firstRefererence.getPID());
             ownerEntityTitle = firstRefererence.getTitle();       
-            final org.radixware.schemas.eas.Property.InheritableValue.Path.Item.ReferenceValue lastRefererence = 
+            final org.radixware.schemas.eas.ObjectReference lastRefererence = 
                     inheritancePath.getItemList().get(inheritancePath.getItemList().size()-1).getReferenceValue();
             final RadClassPresentationDef finalOwnerClassDef = 
                 environment.getDefManager().getClassPresentationDef(lastRefererence.getClassId());
@@ -65,7 +71,7 @@ public class PropertyValue {
             } else {
                 valTableId = null;
             }
-            inheritedValue = ValueConverter.easPropXmlVal2ObjVal(finalProperty, ownerPropertyDef.getType(), valTableId);                
+            inheritedValue = ValueConverter.easPropXmlVal2ObjVal(finalProperty, ownerPropertyDef.getType(), valTableId, environment.getDefManager());
         }
 
         public Object getInheritedValue() {
@@ -161,7 +167,7 @@ public class PropertyValue {
         inheritableValue = property.getInheritableValue();
     }
 
-    public PropertyValue(final IClientEnvironment environment, final org.radixware.schemas.eas.Property property, final RadPropertyDef definition, final Id ownerEntityId) {
+    public PropertyValue(final org.radixware.schemas.eas.Property property, final RadPropertyDef definition, final Id ownerTableId, final Model owner) {
         def = definition;
         final Id tableId;
         if (definition instanceof RadParentRefPropertyDef) {
@@ -169,9 +175,36 @@ public class PropertyValue {
         } else if ((definition instanceof RadFilterParamDef) && definition.getType() == EValType.PARENT_REF) {
             tableId = ((RadFilterParamDef) definition).getReferencedTableId();
         } else {
-            tableId = ownerEntityId;
+            tableId = ownerTableId;
         }
-        value = ValueConverter.easPropXmlVal2ObjVal(property, definition.getType(), tableId);
+        final IClientEnvironment environment = owner.getEnvironment();
+        if (property.isSetObj() && owner instanceof EntityModel && definition.getType()==EValType.OBJECT){
+            final org.radixware.schemas.eas.PresentableObject xmlObj = property.getObj();
+            final Id editorPresentationId = xmlObj.getPresentation().getId();
+            RadEditorPresentationDef presentation;
+            try{
+                presentation = environment.getDefManager().getEditorPresentationDef(editorPresentationId);
+            }catch(DefinitionError error){
+                environment.getTracer().debug(error);
+                presentation = null;                
+            }
+            if (presentation==null){
+                value = ValueConverter.easPropXmlVal2ObjVal(property, definition.getType(), tableId, environment.getDefManager());
+            }else{
+                final EntityModel ownerEntityModel = (EntityModel)owner;
+                final IContext.Abstract context;
+                if (ownerEntityModel.isNew()){
+                    context = new IContext.ObjectPropCreating(ownerEntityModel, definition.getId());
+                }else{
+                    context = new IContext.ReferencedEntityEditing((PropertyReference)owner.getProperty(definition.getId()));
+                }
+                final EntityModel objValue = presentation.createModel(context);
+                objValue.activate(new RawEntityModelData(xmlObj));
+                value = objValue;
+            }
+        }else{
+            value = ValueConverter.easPropXmlVal2ObjVal(property, definition.getType(), tableId, environment.getDefManager());
+        }
         own = property.isSetIsOwnVal() ? property.getIsOwnVal() : true;
         defined = property.isSetIsDefined() ? property.getIsDefined() : true;
         readonly = property.isSetReadOnly() ? property.getReadOnly() : false;
@@ -179,10 +212,10 @@ public class PropertyValue {
         if (property.getInheritableValue() != null) {
             final org.radixware.schemas.eas.Property.InheritableValue.Path path = property.getInheritableValue().getPath();
             if (path != null && path.getItemList() != null && !path.getItemList().isEmpty()) {
-                final org.radixware.schemas.eas.Property.InheritableValue.Path.Item.ReferenceValue firstRefValue = 
+                final org.radixware.schemas.eas.ObjectReference firstRefValue = 
                         path.getItemList().get(0).getReferenceValue();
                 if (firstRefValue != null && firstRefValue.getPID() != null && !firstRefValue.getPID().isEmpty() && firstRefValue.getClassId() != null) {
-                    final org.radixware.schemas.eas.Property.InheritableValue.Path.Item.ReferenceValue lastRefValue = 
+                    final org.radixware.schemas.eas.ObjectReference lastRefValue = 
                         path.getItemList().get(path.getItemList().size()-1).getReferenceValue();
                     if (lastRefValue!=null && lastRefValue.getClassId()!=null){
                         inheritableValue = 
@@ -261,6 +294,8 @@ public class PropertyValue {
                     return new ResolvableReference((ResolvableReference) from);
                 } else if (from instanceof Reference) {
                     return new Reference((Reference) from);
+                } else if (from instanceof EntityModel){
+                    return from;
                 } else {
                     throw new IllegalArgumentException("Reference value expected for type " + valType.getName() + ", but " + from.getClass().getName() + " found");
                 }
@@ -333,6 +368,8 @@ public class PropertyValue {
             return ((IKernelEnum) val).getValue();
         } else if (val instanceof XmlObject) {
             return ((XmlObject) val).xmlText();
+        } else if (val instanceof EntityModel){
+            return new Reference((EntityModel)val);
         }
         return val;
     }

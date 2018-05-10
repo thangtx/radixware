@@ -29,6 +29,8 @@ import org.radixware.kernel.common.defs.ads.explorerItems.AdsParagraphExplorerIt
 import org.radixware.kernel.common.defs.ads.type.AdsClassType.EntityGroupModelType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.ui.AdsCustomDialogDef;
+import org.radixware.kernel.common.enums.EDocGroup;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
@@ -139,6 +141,15 @@ final class ClassInfo extends org.radixware.kernel.common.defs.Definition {
         return clazz.getOwnerDefinition();
     }
 
+    @Override
+    public EDocGroup getDocGroup() {
+        return clazz.getDocGroup();
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return clazz.getDocEnvironment();
+    }
 }
 final class ModelSelector extends DefinitionSelector<TypeWizard.Settings> {
 

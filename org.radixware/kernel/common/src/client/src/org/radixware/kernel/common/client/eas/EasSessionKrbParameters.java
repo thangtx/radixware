@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.eas;
 
 import java.security.cert.X509Certificate;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.enums.EAuthType;
 import org.radixware.kernel.common.kerberos.KerberosCredentials;
@@ -22,16 +23,27 @@ final class EasSessionKrbParameters extends EasSessionCertParameters{
     private final IKerberosCredentialsProvider credsProvider;
     private final ISpnegoGssTokenProvider spnegoAuthDelegate;
     
-    public EasSessionKrbParameters(final String userName, 
+    private EasSessionKrbParameters(final String userName, 
                                    final String stationName, 
                                    final IKerberosCredentialsProvider krbCredentialsProvider,
                                    final ISpnegoGssTokenProvider authDelegate,
-                                   final X509Certificate[] userCertificates){
-        super(userName, stationName, userCertificates);
+                                   final X509Certificate[] userCertificates,
+                                   final PasswordHash.Algorithm hashAlgo,
+                                   final boolean isWebDriverEnabled){
+        super(userName, stationName, userCertificates, hashAlgo, isWebDriverEnabled);
         credsProvider = krbCredentialsProvider;
         spnegoAuthDelegate = authDelegate;
     }
     
+    public EasSessionKrbParameters(final String userName, 
+                                   final String stationName, 
+                                   final IKerberosCredentialsProvider krbCredentialsProvider,
+                                   final ISpnegoGssTokenProvider authDelegate,
+                                   final X509Certificate[] userCertificates,
+                                   final boolean isWebDriverEnabled){
+        this(userName,stationName,krbCredentialsProvider,authDelegate,userCertificates,null, isWebDriverEnabled);
+    }    
+            
     public KrbTokenCalculator createTokenCalculator(final IClientEnvironment environment) throws InterruptedException{
         final KerberosCredentials krbCreds = credsProvider.createCredentials(environment);
         return new KrbTokenCalculator(krbCreds, spnegoAuthDelegate, environment);        
@@ -43,11 +55,13 @@ final class EasSessionKrbParameters extends EasSessionCertParameters{
     }    
     
     @Override
-    public EasSessionKrbParameters createCopy(final String newUserName) {
+    public EasSessionKrbParameters createCopy(final String newUserName, final PasswordHash.Algorithm newHashAlgorithm) {
         return new EasSessionKrbParameters(newUserName==null ? getUserName() : newUserName, 
                                            getStationName(), 
                                            credsProvider,
                                            spnegoAuthDelegate,
-                                           getUserCertificates());
+                                           getUserCertificates(),
+                                           newHashAlgorithm==null ? getPwdHashAlgorithm() : newHashAlgorithm,
+                                           isWebDriverEnabled());
     }
 }

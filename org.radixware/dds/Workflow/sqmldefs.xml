@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdlCGRQUMEIIHNRDJIEACQMTAIZT4" QualifiedName="Radix::Workflow">
+  <PackageDef Id="pkgC6APNKAYTTOBDCNHAAMPGXSZKU" Name="RDX_WF_Maintenance">
+    <Function Id="dfnJSRXHNIYTTOBDCNHAAMPGXSZKU" Name="daily" ResultDbType=""/>
+  </PackageDef>
+  <PackageDef Id="pkgEX4IXO2HXPNRDF5KABIFNQAABA" Name="RDX_WF">
+    <Function Id="dfnMXCPLENAGVESLAS5WIPHYNKUWY" Name="constDebugRole" ResultDbType="varchar2"/>
+    <Function Id="dfnZTJX25YSFJCIXN2BJLP7WDXAUQ" Name="constAdminRole" ResultDbType="varchar2"/>
+    <Function Id="dfnGOFOXLG2L5EF5JJP4BFMXAFYXE" Name="constClerkRole" ResultDbType="varchar2"/>
+    <Function Id="dfnKLXWL6LOCZDCTL7VN7CCBAPPN4" Name="curUserIsProcessAdmin" ResultDbType="integer">
+      <Parameter Id="dfpLQPIY7YKIFABBPGN74EB2J3QUI" Name="pProcessId" DbName="pProcessId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnHHJLQ3YHYJDNFE73M6DKBZ6OLA" Name="curUserIsFormAdmin" ResultDbType="integer">
+      <Parameter Id="dfp3RMANQKRGNCHNKMVXA74L27FVA" Name="pFormId" DbName="pFormId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnWEDK4ZXUKNB2FN6RZAY7CIKWDA" Name="curUserIsFormClerk" ResultDbType="integer">
+      <Parameter Id="dfpLJPFWMQZEJHRVK5BRWJOGY4SQY" Name="pFormId" DbName="pFormId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnTSQ26A6QCVATVBIGC4QBS2DJTA" Name="userIsFormClerk" ResultDbType="integer">
+      <Parameter Id="dfpCLO3TCI5VJAIPNR4ZBBKY2OLQA" Name="pUser" DbName="pUser" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfp44VQMFAXGVHFJLLCJQF62DUPU4" Name="pFormId" DbName="pFormId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfn2UL35Q2HXPNRDF5KABIFNQAABA" Name="getFormAccessibility" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpM6O2VOCIXPNRDF5KABIFNQAABA" Name="iFormId" DbName="iFormId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnFVBO2N2MXPNRDF5KABIFNQAABA" Name="getProcessAccessibility" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpC4GY46SMXPNRDF5KABIFNQAABA" Name="iProcessId" DbName="iProcessId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnYTS4VVXKK5CIBI764AC34N2GM4" Name="getSuitableClerk" ResultDbType="varchar2">
+      <Parameter Id="dfpWFVPXX3PDRCP5JHM637J46OAUE" Name="pFormId" DbName="pFormId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnJCLAOIPL6ZEQ3IHPPTPKSUUYFQ" Name="getActiveSuitableClerk" ResultDbType="varchar2">
+      <Parameter Id="dfpIC7XY4JONBHDPJIMPDWFJ2GVZA" Name="pFormId" DbName="pFormId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnOPB5NEKVXPNRDF5KABIFNQAABA" Name="getFormState" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpDETQ7G2VXPNRDF5KABIFNQAABA" Name="iFormId" DbName="iFormId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnGN6I73IXCFFOLN7ICGLTGMOOWA" Name="getFormState" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpWKDE2QPCDVDY3IJQ5F5KYDMZUA" Name="closeTime" DbName="closeTime" DbType="date" ValType="12" Direction="0"/>
+      <Parameter Id="dfpCWI3KW2BNFCKRM5POYTMKPAGU4" Name="dueTime" DbName="dueTime" DbType="date" ValType="12" Direction="0"/>
+      <Parameter Id="dfpWIGNAJLLURGAXFWE2NP624B43M" Name="overdueTime" DbName="overdueTime" DbType="date" ValType="12" Direction="0"/>
+      <Parameter Id="dfpCCTUBD7WWRENFG3WRTUHBJZBK4" Name="expirationTime" DbName="expirationTime" DbType="date" ValType="12" Direction="0"/>
+      <Parameter Id="dfpJRYAITTUVJH3BH6VYXT76CZJMI" Name="currentTime" DbName="currentTime" DbType="date" ValType="12" Direction="0"/>
+    </Function>
+    <Function Id="dfnUQ67M6IRXTNRDF5LABIFNQAABA" Name="getOwnProcessCount" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpOAOHDBQRXTNRDF5LABIFNQAABA" Name="sUserName" DbName="sUserName" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfn2QCWYKYAXTNRDF5LABIFNQAABA" Name="getStateFormCount" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpURAC5DQAXTNRDF5LABIFNQAABA" Name="sUserName" DbName="sUserName" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpUPPKD3IBXTNRDF5LABIFNQAABA" Name="iFormState" DbName="iFormState" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnKOEXQNPPGTOBDGAOABIFNQAABA" Name="getAreaCount" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfp2QZVQQ4RQZGNTJ7VJLRYGBNVQA" Name="areaList" DbName="areaList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnNZRFLYHQGTOBDGAOABIFNQAABA" Name="getAreaPointCount" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpN7R34NZ3URESRBSETGBXVTLGRQ" Name="areaList" DbName="areaList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+      <Parameter Id="dfpHAZORWO4QRHXRIDQ6OC6PK6S7E" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfn352G7L7RGTOBDGAOABIFNQAABA" Name="getAreaPoint" ResultDbType="" IsWNDS="true">
+      <Parameter Id="dfpTCK5BHDT2ZHVJBSOAZLDTICT6Y" Name="areaList" DbName="areaList" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+      <Parameter Id="dfpIPBYO3OMCJFPBHZFLSUWJUV75E" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfp253R44MRTVEABA57F7AX47PP4Q" Name="pointNumber" DbName="pointNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpWETXWO5PDFCCLCD4QBPIDT6GVM" Name="familyId" DbName="familyId" DbType="varchar2" ValType="21" Direction="1"/>
+      <Parameter Id="dfpQVADSFCXENCZ7IHZ46WXEGBJBI" Name="keyVal" DbName="keyVal" DbType="varchar2" ValType="21" Direction="1"/>
+    </Function>
+    <Function Id="dfn4MWCJKXSGTOBDGAOABIFNQAABA" Name="setAreaPoint" ResultDbType="">
+      <Parameter Id="dfpDYEFXBZXW5C3VDO3L4XJYMFKSY" Name="areaList" DbName="areaList" DbType="TRdxAcsAreaList" ValType="50" Direction="2"/>
+      <Parameter Id="dfpUU73R74W6VAIJBC5DWDMZUACEE" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpSVZHH6MK35CBTMR4GESQWPDRFA" Name="pointNumber" DbName="pointNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpGF3ZKK2CJVDIXPI5FETSOG4U2M" Name="familyId" DbName="familyId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpACTUEBTMF5HQVFARD2RGTHXJOM" Name="keyVal" DbName="keyVal" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnAYJHXAXLGTOBDGAOABIFNQAABA" Name="getFormArea" ResultDbType="" IsWNDS="true">
+      <Parameter Id="dfp46S6NCKXMFC6BFW4LSKWPWBCEE" Name="formId" DbName="formId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpAQIY5VPMFJG4XK55QDMTPFFALE" Name="area" DbName="area" DbType="TRdxAcsAreaList" ValType="50" Direction="1"/>
+    </Function>
+    <Function Id="dfnCN6WFE7TGTOBDGAOABIFNQAABA" Name="setFormArea" ResultDbType="">
+      <Parameter Id="dfp3IIIHWV4XFD7RNC7EJNQVDSYOQ" Name="formId" DbName="formId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpUSFVSHSBWVBALPJEZHCSPUR7JM" Name="area" DbName="area" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfn4AZNJHRPGXOBDGAOABIFNQAABA" Name="clearFormArea" ResultDbType="">
+      <Parameter Id="dfp6DT5TNJPGXOBDGAOABIFNQAABA" Name="formId" DbName="formId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnSSDUZ6SGGTOBDGANABIFNQAABA" Name="getFormAreaCount" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpLJL26CKHGTOBDGANABIFNQAABA" Name="formId" DbName="formId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnHI3NRPKHGTOBDGANABIFNQAABA" Name="getFormAreaPointCount" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpRCQB3XSHGTOBDGANABIFNQAABA" Name="formId" DbName="formId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpRGQB3XSHGTOBDGANABIFNQAABA" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnEE7G3R2IGTOBDGANABIFNQAABA" Name="getFormAreaPoint" ResultDbType="" IsWNDS="true">
+      <Parameter Id="dfpHQ2UIACJGTOBDGANABIFNQAABA" Name="formId" DbName="formId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpHU2UIACJGTOBDGANABIFNQAABA" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpHY2UIACJGTOBDGANABIFNQAABA" Name="pointNumber" DbName="pointNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpH42UIACJGTOBDGANABIFNQAABA" Name="familyId" DbName="familyId" DbType="varchar2" ValType="21" Direction="1"/>
+      <Parameter Id="dfpIA2UIACJGTOBDGANABIFNQAABA" Name="keyVal" DbName="keyVal" DbType="varchar2" ValType="21" Direction="1"/>
+    </Function>
+    <Function Id="dfnHYEU2MEYGPOBDGAMABIFNQAABA" Name="setFormAreaPoint" ResultDbType="TDRCAreaList">
+      <Parameter Id="dfpDY7PXCMYGPOBDGAMABIFNQAABA" Name="formId" DbName="formId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpT3HVLU4YGPOBDGAMABIFNQAABA" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpSA5DBYTBGTOBDGANABIFNQAABA" Name="pointNumber" DbName="pointNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpT7HVLU4YGPOBDGAMABIFNQAABA" Name="familyId" DbName="familyId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpUDHVLU4YGPOBDGAMABIFNQAABA" Name="keyVal" DbName="keyVal" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnIOVWWUPVGTOBDGAOABIFNQAABA" Name="getProcessArea" ResultDbType="" IsWNDS="true">
+      <Parameter Id="dfpUMIDJ2IARNEIBGKGX3YMB2KUOI" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpTKL2FEDHUJETLPFNL3VYZS4W3Y" Name="area" DbName="area" DbType="TRdxAcsAreaList" ValType="50" Direction="1"/>
+    </Function>
+    <Function Id="dfnH6S4NGPVGTOBDGAOABIFNQAABA" Name="setProcessArea" ResultDbType="">
+      <Parameter Id="dfp3WMXDPN3EBDF5GRLKUD22VHFAI" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpJWHCIJ55W5BRRC6QXPC6IX5M2Y" Name="area" DbName="area" DbType="TRdxAcsAreaList" ValType="50" Direction="0"/>
+    </Function>
+    <Function Id="dfnV3UQZTJPGXOBDGAOABIFNQAABA" Name="clearProcessArea" ResultDbType="">
+      <Parameter Id="dfpPY3XRVJPGXOBDGAOABIFNQAABA" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnNJGUAXSHGTOBDGANABIFNQAABA" Name="getProcessAreaCount" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpUJYAW5CHGTOBDGANABIFNQAABA" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnBZL2YQSIGTOBDGANABIFNQAABA" Name="getProcessAreaPointCount" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpMCDVOUKIGTOBDGANABIFNQAABA" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpMGDVOUKIGTOBDGANABIFNQAABA" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnWWWIPPSJGTOBDGANABIFNQAABA" Name="getProcessAreaPoint" ResultDbType="" IsWNDS="true">
+      <Parameter Id="dfpLOZJPX2JGTOBDGANABIFNQAABA" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpLSZJPX2JGTOBDGANABIFNQAABA" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpLWZJPX2JGTOBDGANABIFNQAABA" Name="pointNumber" DbName="pointNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpL2ZJPX2JGTOBDGANABIFNQAABA" Name="familyId" DbName="familyId" DbType="varchar2" ValType="21" Direction="1"/>
+      <Parameter Id="dfpL6ZJPX2JGTOBDGANABIFNQAABA" Name="keyVal" DbName="keyVal" DbType="varchar2" ValType="21" Direction="1"/>
+    </Function>
+    <Function Id="dfnA2YY2CU5GPOBDGAMABIFNQAABA" Name="setProcessAreaPoint" ResultDbType="">
+      <Parameter Id="dfpV3USYKE5GPOBDGAMABIFNQAABA" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpH2N5GT45GPOBDGAMABIFNQAABA" Name="areaNumber" DbName="areaNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpZTYOEEHXGTOBDGAOABIFNQAABA" Name="pointNumber" DbName="pointNumber" DbType="integer" ValType="2" Direction="0"/>
+      <Parameter Id="dfpH6N5GT45GPOBDGAMABIFNQAABA" Name="familyId" DbName="familyId" DbType="varchar2" ValType="21" Direction="0"/>
+      <Parameter Id="dfpICN5GT45GPOBDGAMABIFNQAABA" Name="keyVal" DbName="keyVal" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+    <Function Id="dfnKJZSOM3ISNDWHISTKDDZCZKINQ" Name="getCurrentTime" ResultDbType="date" IsWNDS="true">
+      <Parameter Id="dfpSUDLBFLFH5BR5LHLIGIGD6Z4P4" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+    <Function Id="dfnVLHAHCBS6ZDKNADOJJN7WNV3OY" Name="getProcessState" ResultDbType="integer" IsWNDS="true">
+      <Parameter Id="dfpHPC4HL37RJHYHLIFIXID6WN5SU" Name="processId" DbName="processId" DbType="integer" ValType="2" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <TableDef Id="tbl2XXEGTLFCDORDBJNABIFNQAABA" Name="ProcessLink">
+    <Indexes>
+      <Index Id="idx2XXEGTLFCDORDBJNABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colASLT4ANWJBEPBMXQIGTZIQMSSM"/>
+      <Index Id="idxWD4J7PBK7ZC3HHNK7V4KYM4M2I" Name="Process" IndexColumns="colSWL5OX3FCDORDBJNABIFNQAABA colLHKNYZY5EFCK7F224V45G24FZE colNS7IZMORBBHCZKA365MDZCEK4M colASLT4ANWJBEPBMXQIGTZIQMSSM"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refCVOJXITFCDORDBJNABIFNQAABA" Name="ProcessLink=>Process (processId=>id)" ReferencedTableId="tblRDXQVFY6PLNRDANMABIFNQAABA" ChildColumnNames="processId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colASLT4ANWJBEPBMXQIGTZIQMSSM" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colSWL5OX3FCDORDBJNABIFNQAABA" Name="processId" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colLHKNYZY5EFCK7F224V45G24FZE" Name="role" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colNS7IZMORBBHCZKA365MDZCEK4M" Name="idx" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colCUC3E7LFCDORDBJNABIFNQAABA" Name="entityGuid" ValType="21" Length="50" Precision="0"/>
+      <Column Id="col2W7HJCLFCDORDBJNABIFNQAABA" Name="objectPid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col2URINFLFCDORDBJNABIFNQAABA" Name="title" ValType="21" Length="300" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl3KY3VBDIXPNRDF5KABIFNQAABA" Name="FormLog">
+    <Indexes>
+      <Index Id="idx3KY3VBDIXPNRDF5KABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colZFOGJETIXPNRDF5KABIFNQAABA colCDTKH4LIXPNRDF5KABIFNQAABA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref24GMBXTJXPNRDF5KABIFNQAABA" Name="FormLog=>User (clerkName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="clerkName"/>
+      <Reference Id="refTTOY4CDKXPNRDF5KABIFNQAABA" Name="FormLog=>User (destClerkName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="destClerkName"/>
+      <Reference Id="refZZEBFBLJXPNRDF5KABIFNQAABA" Name="FormLog=>Form (formId=>id)" ReferencedTableId="tblVP66JC4HXLNRDF5JABIFNQAABA" ChildColumnNames="formId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colZFOGJETIXPNRDF5KABIFNQAABA" Name="formId" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colCDTKH4LIXPNRDF5KABIFNQAABA" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colITXTX6DIXPNRDF5KABIFNQAABA" Name="time" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colB3SYQATJXPNRDF5KABIFNQAABA" Name="clerkName" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colSE3FOD3JXPNRDF5KABIFNQAABA" Name="commandGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colUWWYIJ3JXPNRDF5KABIFNQAABA" Name="comments" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colWRDDKQDJXPNRDF5KABIFNQAABA" Name="destClerkName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colLJ6TQSM7ITOBDBDXABIFNQAABA" Name="content" ValType="27" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblGWCVXTQSXTNRDF5LABIFNQAABA" Name="ClerkStatistics">
+    <Indexes>
+      <Index Id="idxGWCVXTQSXTNRDF5LABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colMARMUAATXTNRDF5LABIFNQAABA"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colMARMUAATXTNRDF5LABIFNQAABA" Name="name" ValType="21" Length="250" Precision="0" NotNull="true"/>
+      <Column Id="colUCUQVVITXTNRDF5LABIFNQAABA" Name="personName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colWBG7F2QTXTNRDF5LABIFNQAABA" Name="ownProcessCount" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colCSJ575YTXTNRDF5LABIFNQAABA" Name="dueFormCount" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col2VFZMAIUXTNRDF5LABIFNQAABA" Name="overdueFormCount" ValType="2" Length="9" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblRDXQVFY6PLNRDANMABIFNQAABA" Name="Process">
+    <Indexes>
+      <Index Id="idxRDXQVFY6PLNRDANMABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colYBCGVMA6PLNRDANMABIFNQAABA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref5CVV7PTXI5B3DDPSSSLQJRTOKI" Name="Process=>ProcessType (typeGuid=>guid)" ReferencedTableId="tblXI6CAOIGDBAGJEE6JQEGJME43Q" ChildColumnNames="typeGuid"/>
+      <Reference Id="refDXYAZ74YXLNRDF5JABIFNQAABA" Name="Process=>User (creatorName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="creatorName"/>
+      <Reference Id="refRFY7GGEZXLNRDF5JABIFNQAABA" Name="Process=>User (ownerName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="ownerName"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colYBCGVMA6PLNRDANMABIFNQAABA" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colKXH5QGFO5LOBDBIOABIFNQAABA" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colHDZJU3I7PLNRDANMABIFNQAABA" Name="algoClassGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colMCUP6FRT5FBYXDBZUYABU5RFII" Name="typeGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colKKF6BJQ7PLNRDANMABIFNQAABA" Name="creatorName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colXLGX3QEDXLNRDF5JABIFNQAABA" Name="ownerName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colFPULBNGVQLOBDBFRAALOYD3UKE" Name="language" ValType="21" Length="2" Precision="0" NotNull="true"/>
+      <Column Id="colSYRTXEA7PLNRDANMABIFNQAABA" Name="title" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colQTG3VSI7PLNRDANMABIFNQAABA" Name="state" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colLWQUAF7ILNCXXOZR6CZTKPSRKA" Name="stateDesc" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colPIZGX2I7PLNRDANMABIFNQAABA" Name="startTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colDKM24AZAPLNRDANMABIFNQAABA" Name="finishTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colICQDIGZAPLNRDANMABIFNQAABA" Name="exceptionText" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colKD4KAOZAPLNRDANMABIFNQAABA" Name="context" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colYRAZOVBAPLNRDANMABIFNQAABA" Name="traceProfile" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colUTVP7ABAPLNRDANMABIFNQAABA" Name="simulatedTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colKNEIRTHMJ5FBFBRZT4UIUUOPKY" Name="purgeTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colCFEL65EEXLNRDF5JABIFNQAABA" Name="accessArea" ValType="21" Length="4000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblVP66JC4HXLNRDF5JABIFNQAABA" Name="Form">
+    <Indexes>
+      <Index Id="idxVP66JC4HXLNRDF5JABIFNQAABA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colJGHFDGEHXLNRDF5JABIFNQAABA"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refFPSJXPFDXLNRDF5JABIFNQAABA" Name="Form=>User (clerkName=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="clerkName"/>
+      <Reference Id="refMLFKH3URXLNRDF5JABIFNQAABA" Name="Form=>Process (processId=>id)" ReferencedTableId="tblRDXQVFY6PLNRDANMABIFNQAABA" ChildColumnNames="processId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colJGHFDGEHXLNRDF5JABIFNQAABA" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colSM57J2EHXLNRDF5JABIFNQAABA" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colFOZ357EHXLNRDF5JABIFNQAABA" Name="processId" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="col34WUQDUIXLNRDF5JABIFNQAABA" Name="title" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colPUVYKRSRX7OBDBG7ABIFNQAABA" Name="headerTitle" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colVNBSW6CRX7OBDBG7ABIFNQAABA" Name="footerTitle" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colFPUVAH4IXLNRDF5JABIFNQAABA" Name="priority" ValType="2" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colFFO5OHMJXLNRDF5JABIFNQAABA" Name="openTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colD2WOGKUJXLNRDF5JABIFNQAABA" Name="dueTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col4MQBMOEJXLNRDF5JABIFNQAABA" Name="overdueTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="col7DJHQP4JXLNRDF5JABIFNQAABA" Name="expirationTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colO5JOWR4JXLNRDF5JABIFNQAABA" Name="closeTime" ValType="12" Length="0" Precision="0"/>
+      <Column Id="colX2IBCL4KXLNRDF5JABIFNQAABA" Name="state" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colAFQOE5UKXLNRDF5JABIFNQAABA" Name="assigned" ValType="1" Length="1" Precision="1"/>
+      <Column Id="colPMMP7BUKXLNRDF5JABIFNQAABA" Name="clerkName" ValType="21" Length="250" Precision="0"/>
+      <Column Id="colEHLVNESRX7OBDBG7ABIFNQAABA" Name="submitVariants" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colUZPAT5LEUJDKBIWBKC6GBA3RCA" Name="submitVariantsTitle" ValType="221" Length="4000" Precision="0"/>
+      <Column Id="colM52BWLMWZJDIDOZ6BMFB3JUZOU" Name="submitVariantsVisible" ValType="201" Length="1000" Precision="0"/>
+      <Column Id="colEM7CCTU6LRDDTP35YMRAT6IIMQ" Name="submitVariantsNeedConfirm" ValType="201" Length="1000" Precision="0"/>
+      <Column Id="colRURA3POSGBEBNMQFDOAMM4LXXA" Name="submitVariantsNeedUpdate" ValType="201" Length="1000" Precision="0"/>
+      <Column Id="col4LCFVKUMXLNRDF5JABIFNQAABA" Name="submitVariant" ValType="21" Length="50" Precision="0"/>
+      <Column Id="col5CMSW6MNXLNRDF5JABIFNQAABA" Name="objClassGuid" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colNO2XWSMOXLNRDF5JABIFNQAABA" Name="selectorPresentationId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colR35RDQV7BHOBDF7KABIFNQAABA" Name="restrictions" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colKZYFXOOU6PNRDF6UABIFNQAABA" Name="selectCondition" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colEO72AVMOXLNRDF5JABIFNQAABA" Name="editorPresentationIds" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="col7CXV3KY5BRGM5BTO3QF2HAZHAI" Name="adminPresentationId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col76QBKXUOXLNRDF5JABIFNQAABA" Name="creationPresentationId" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colKNQKUZ4PXLNRDF5JABIFNQAABA" Name="selectedPid" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="col7VRMLD46ITOBDBDXABIFNQAABA" Name="reportGuid" ValType="21" Length="50" Precision="0"/>
+      <Column Id="col5IUWY4UPXLNRDF5JABIFNQAABA" Name="contentSaving" ValType="1" Length="1" Precision="1" NotNull="true"/>
+      <Column Id="col56S2R4UPXLNRDF5JABIFNQAABA" Name="waitId" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colUSDVE5UQXLNRDF5JABIFNQAABA" Name="clerkRoleGuids" ValType="221" Length="4000" Precision="0"/>
+      <Column Id="col7VCUPAEQXLNRDF5JABIFNQAABA" Name="adminRoleGuids" ValType="221" Length="4000" Precision="0"/>
+      <Column Id="colDG7VJCMQXLNRDF5JABIFNQAABA" Name="accessArea" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colOIPTT7ZYYRAWHJ7PPXNVS3GW5M" Name="forbidForProcessCreator" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colRLTHTDATCFEZPELZRCNXILBD34" Name="forbidRedirection" ValType="1" Length="1" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblXI6CAOIGDBAGJEE6JQEGJME43Q" Name="ProcessType">
+    <Indexes>
+      <Index Id="idxLYUNH44HBNBLLJ33EFSOLHOJ7U" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colAEAAPJXBX5BIXHBNJOYP3FBIR4"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colAEAAPJXBX5BIXHBNJOYP3FBIR4" Name="guid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="colGG5VO4FGVBAMFB7SU4TOCRK7JE" Name="title" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colDIZMB2WMQFGFNKGNDPBZKRCHIM" Name="classGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colE62KHOUF45E6JDWSYCA7TICXAI" Name="algoClassGuid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colCGY7I2E76ZF7LNL4OVRXERFG7I" Name="traceProfile" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="col6SKMJNSZZNFVDNGCP26PG6QPEM" Name="clerkRoleGuids" ValType="221" Length="4000" Precision="0"/>
+      <Column Id="col6KIGNQEL7NEWFDQMOEIO4POSTQ" Name="adminRoleGuids" ValType="221" Length="4000" Precision="0"/>
+      <Column Id="colNWJ6DLDISBBWZKPVZUMMGLM5LI" Name="processStoreDays" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colXPT3ITROQNCC5OQ67AAKUEY2IQ" Name="notes" ValType="21" Length="4000" Precision="0"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

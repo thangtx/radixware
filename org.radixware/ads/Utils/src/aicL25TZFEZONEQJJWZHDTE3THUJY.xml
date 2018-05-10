@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="aicL25TZFEZONEQJJWZHDTE3THUJY" Name="UDSDefCustomLoader" Type="5" Environment="server">
     <AccessRules IsPublished="false" IsAbstract="true">
       <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.builder.api.userext.UDSDefCustomLoader"/>
@@ -66,6 +66,18 @@
           </Parameter>
         </Parameters>
         <ReturnType TypeId="400" extStr="java.io.InputStream"/>
+      </Method>
+      <Method Id="mthPLG5HQV3UFBBHKGJLEHN72JUCM" Name="getUdsLanguages" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getUdsLanguages()Ljava.util.List&lt;Lorg.radixware.kernel.common.enums.EIsoLanguage;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.enums.EIsoLanguage"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
       </Method>
     </Methods>
   </AdsClassDefinition>

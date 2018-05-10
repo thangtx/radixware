@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcE6MUUTHWVRGVPC3SPMUW5GQOQY" Name="TestSuiteData" Type="3" Environment="server">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.test.TestSuiteData"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcGQOA46KZEVBNZAN55O2WFKCFCY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcODBD4EXJLNC25E4YP4GYWAXNF4"/>
+    </Bodies>
+    <MethodGroup Id="cmgRTY6UWXS4FEDZNLAIAXEI2YTJM" Name="Root"/>
+    <PropertyGroup Id="cpg4Y7PFNAMGZAOFPY2TDSEEAALFM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthE7BWL4CY4VAHJBYUNN3V7OWVBY" Name="writeToFile" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="writeToFile(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprUCPOO73Q6JBU5LEODPZROCQ3RU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth6X7AIEDNYRED7J64ODOQZLYX2I" Name="TestSuiteData" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth67VBFF5AMJCI7AEYWJHPZQPYGQ" Name="regTest" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="regTest(Lorg.radixware.kernel.server.test.TestData;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprEF3XRIKIWRBBBJRVZPKKUXYVDM">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.test.TestData"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7W4QOSG6HNGAVCKQ3XJ74WZQXY" Name="writeToStream" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="writeToStream(Ljava.io.OutputStream;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mpr2XPLHCK7BJBMFPC3K3UUK3DNN4">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth4HHTSZWAHFC6LIGJ6LA7MQHWYE" Name="iterator" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="iterator()Ljava.util.Iterator&lt;Lorg.radixware.kernel.server.test.TestData;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Iterator">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.test.TestData"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcVBBNWH37XZFGXJBEVMJKGWYQKQ" Name="OrderedMaintenance" DescriptionId="mlsL5ZW467V6JBVBJP55QU5UWWRSQ" TitleId="mls65IDDOCOEZCSNLO5XRXT2Z76MM" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcVBBNWH37XZFGXJBEVMJKGWYQKQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcVBBNWH37XZFGXJBEVMJKGWYQKQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgUTDKZWPIYVBOHIIN3VVMJNMHAQ" Name="Root">
+      <Group Id="cmgKCAOFH4VCFB6BIQCTCRTLUR5KU" Name="internalMethods" Members="mthU2CTDXUDKFAPXMEAAQFDPJ2DII"/>
+      <Group Id="cmgLW6F6PIFGFDTPJ46WK4DKOHLCQ" Name="ISystemMaintenance implementation" Members="mthUIEHSX4VK5EF3JO67AY2UREKL4 mthLGN6I5RFKRDGZC5PXJLHJAKYAI mthJSDRUEILNFFTRN3ZKYS6EHWF3M mthJUUOGKYXGNB27OCZUYNSWWIRPY"/>
+    </MethodGroup>
+    <PropertyGroup Id="cpgWEVQAMRPSZAHPLQUAEIRXOOFB4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthU2CTDXUDKFAPXMEAAQFDPJ2DII" Name="collectExecutors" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="daily" DescriptionId="mlsG3UHGAI72ZE7ZILPVUJ3PAQHDE" Id="mprI2Z24AMSOVHU5GD2TPHBOBHRQ4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Iterable">
+          <xsc:GenericArguments>
+            <xsc:Argument DerivationRule="extends" Alias="?">
+              <xsc:Type TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final class InterfaceKeeper {
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>    instance;
+    final int                   priority;
+    int                         layerIndex;
+    
+    InterfaceKeeper(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> instance, int layerIndex) {
+        this.instance = instance;
+        this.priority = instance.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE mthJSDRUEILNFFTRN3ZKYS6EHWF3M" Invoke="true">
+                <xsc:Presentation>getPriority</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        this.layerIndex = layerIndex;
+    }
+};
+
+final java.util.Comparator&lt;InterfaceKeeper> ORDERING_COMPARATOR = new java.util.Comparator&lt;InterfaceKeeper>(){
+    @Override
+    public int compare(final InterfaceKeeper first, final InterfaceKeeper second) {
+        if (first.layerIndex == second.layerIndex) {
+            return first.priority - second.priority;
+        }
+        else {
+            return first.layerIndex - second.layerIndex;
+        }
+    }
+};
+
+final java.util.List&lt;java.lang.String> layers = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                <xsc:Presentation>getDefManager</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getReleaseCache().getRelease().getRevisionMeta().getAllLayerUrisSortedFromBotton();
+final java.util.List&lt;InterfaceKeeper> resultList = new java.util.ArrayList&lt;>();
+
+//int count = 0;
+try{for(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : java.util.ServiceLoader.load(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class,this.getClass().getClassLoader())) {
+//        count++;
+//        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Debug</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,"Load "+item.getClass(),</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciHCNUIO6QGRAM5FRWH3Q63GGW2I" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:Server</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        if (!(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVBBNWH37XZFGXJBEVMJKGWYQKQ">
+                <xsc:Presentation>OrderedMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class.isAssignableFrom(item.getClass()))) {    // Protect recursive including
+            final String layerUri = item.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE mthJUUOGKYXGNB27OCZUYNSWWIRPY" Invoke="true">
+                <xsc:Presentation>getLayerUri</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+            int layerNumber = layers.size();
+
+            for (int index = 0; index &lt; layerNumber; index++) {
+                if (layerUri.equals(layers.get(index))) {
+                    layerNumber = index;
+                    break;
+                }
+            }
+            resultList.add(new InterfaceKeeper(item,layerNumber));
+        }
+    }
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+                <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exc) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,"Error loading service ["+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.class+"]:"+exc.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthAIARN4PFVBD6HJZSJNZIXYNYAY" Invoke="true">
+                <xsc:Presentation>getMessage</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciHCNUIO6QGRAM5FRWH3Q63GGW2I" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:Server</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthXVQVCB5YSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>put</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Arte::EventSeverity:Debug</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,"Load "+count+" items",</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciHCNUIO6QGRAM5FRWH3Q63GGW2I" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:Server</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+
+final InterfaceKeeper[] result = resultList.toArray(new InterfaceKeeper[resultList.size()]);
+
+java.util.Arrays.sort(result,ORDERING_COMPARATOR);
+return new java.lang.Iterable&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>() {
+    @Override
+    public java.util.Iterator&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> iterator() {
+        return new java.util.Iterator&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>(){
+            int     index = 0;
+            @Override public boolean hasNext() {return index &lt; result.length;}
+            @Override public </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> next() {return result[index++].instance;}
+            @Override public void remove(){}
+        };
+    }
+};
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthUIEHSX4VK5EF3JO67AY2UREKL4" Name="continually" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVBBNWH37XZFGXJBEVMJKGWYQKQ mthU2CTDXUDKFAPXMEAAQFDPJ2DII" Invoke="true">
+                <xsc:Presentation>collectExecutors</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(false)) {
+    item.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE mthUIEHSX4VK5EF3JO67AY2UREKL4" Invoke="true">
+                <xsc:Presentation>continually</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLGN6I5RFKRDGZC5PXJLHJAKYAI" Name="daily" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE">
+                <xsc:Presentation>ISystemMaintenance</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> item : this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVBBNWH37XZFGXJBEVMJKGWYQKQ mthU2CTDXUDKFAPXMEAAQFDPJ2DII" Invoke="true">
+                <xsc:Presentation>collectExecutors</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true)) {
+    item.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE mthLGN6I5RFKRDGZC5PXJLHJAKYAI" Invoke="true">
+                <xsc:Presentation>daily</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJSDRUEILNFFTRN3ZKYS6EHWF3M" Name="getPriority" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return 0;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJUUOGKYXGNB27OCZUYNSWWIRPY" Name="getLayerUri" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return "radixware.org";</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicJIUPFWUCL5HULM5PWDDYCP6IKE"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

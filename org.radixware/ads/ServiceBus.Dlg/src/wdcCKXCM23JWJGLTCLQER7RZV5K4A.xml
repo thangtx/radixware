@@ -918,11 +918,14 @@ scene.update();</xsc:Java>
               <xsc:Item>
                 <xsc:Java>final XPathEdge edge = new XPathEdge(srcXPath, dstXPath);
 graph.scene().addItem(edge);
+graph.scene().update();
 edge.adjust();
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A sigAJ4APQ3OMBH6VFFWPR2WO4PXY4" Invoke="true"/>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A sigAJ4APQ3OMBH6VFFWPR2WO4PXY4" Invoke="true">
+                  <xsc:Presentation>modified</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.emit();</xsc:Java>
@@ -944,7 +947,26 @@ edge.adjust();
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgI7UU5UGC4RFF7AU4BDFL3YF5JI" Invoke="true"/>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgI7UU5UGC4RFF7AU4BDFL3YF5JI" Invoke="true">
+                  <xsc:Presentation>XPathTable:widget:splitter:frame</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                  <xsc:Presentation>setVisible</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(true);
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcCKXCM23JWJGLTCLQER7RZV5K4A wdgI7UU5UGC4RFF7AU4BDFL3YF5JI" Invoke="true">
+                  <xsc:Presentation>XPathTable:widget:splitter:frame</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.layout().addWidget(graph);</xsc:Java>

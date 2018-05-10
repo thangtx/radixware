@@ -132,7 +132,7 @@ public abstract class ModelPropertyException extends ModelException {
                 final String title = property.getTitle();                
                 if (title==null || title.isEmpty()){
                     final RadPropertyDef propDef = property.getDefinition();
-                    return propDef.hasTitle() ? propDef.getTitle() : propDef.getName();
+                    return propDef.hasTitle() ? propDef.getTitle(model.getEnvironment()) : propDef.getName();
                 }else{
                     return title;
                 }
@@ -147,13 +147,13 @@ public abstract class ModelPropertyException extends ModelException {
     protected static String getPropertyTitle(final Model model, final RadPropertyDef prop){
         final String title = getPropertyTitle(model, prop.getId());
         if (title==null || title.isEmpty()){
-            return prop.hasTitle() ? prop.getTitle() : prop.getName();
+            return prop.hasTitle() ? prop.getTitle(model.getEnvironment()) : prop.getName();
         }else{
             return title;
         }
     }
 
-    protected String getPropertyTitle() {
+    public String getPropertyTitle() {
         final RadPropertyDef propertyDef;
         if (propertyOwner != null) {
             try {
@@ -168,7 +168,7 @@ public abstract class ModelPropertyException extends ModelException {
         if (propertyDef == null) {
             return "#" + propertyId.toString();
         } else if (propertyDef.hasTitle()) {
-            return propertyDef.getTitle();
+            return propertyDef.getTitle(environment);
         } else {
             return propertyDef.getName();
         }
@@ -196,6 +196,14 @@ public abstract class ModelPropertyException extends ModelException {
 
     public final Id getPropertyId() {
         return propertyId;
+    }
+    
+    public final Id getPropertyOwnerDefinitionId(){
+        return propertyOwnerId;
+    }
+    
+    public final boolean isSourceModel(final Model model){
+        return model.getDefinition().isPropertyDefExistsById(propertyId);
     }
 
     public final boolean isOwnProperty() {

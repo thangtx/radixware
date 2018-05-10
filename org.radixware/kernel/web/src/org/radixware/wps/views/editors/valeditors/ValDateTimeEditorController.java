@@ -32,12 +32,30 @@ import org.radixware.wps.rwt.ToolButton;
 
 public class ValDateTimeEditorController extends InputBoxController<Timestamp, EditMaskDateTime> {
 
+    private final ToolButton setCurrentDateButton = new ToolButton();
     private final ToolButton editButton = new ToolButton();
     private String dialogTitle;
-
-    public ValDateTimeEditorController(IClientEnvironment env) {
-        super(env);
+    
+    private static class Icons extends ClientIcon.CommonOperations {
+        
+        private Icons(final String fileName) {
+            super(fileName, true);
+        }
+        
+        public static final ClientIcon CURRENT_TIME = new Icons("classpath:images/current_time.svg");
+    }
+    
+    public ValDateTimeEditorController(final IClientEnvironment env, final LabelFactory factory) {
+        super(env,factory);
         setEditMask(new EditMaskDateTime());
+        setCurrentDateButton.setIcon(getEnvironment().getApplication().getImageManager().getIcon(Icons.CURRENT_TIME));
+        setCurrentDateButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(IButton source) {
+                    setCurrentDate();
+            }
+        });
+        addButton(setCurrentDateButton);
         editButton.setToolTip(env.getMessageProvider().translate("ValDateTimeEditor", "Edit"));
         final Icon dateTimeIcon =
                 env.getApplication().getImageManager().getIcon(ClientIcon.ValueTypes.DATE_TIME);
@@ -48,11 +66,16 @@ public class ValDateTimeEditorController extends InputBoxController<Timestamp, E
                     edit();
             }
         });
-        addButton(editButton);
+        editButton.setObjectName("tbEdit");
+        addButton(editButton);        
+    }
+
+    public ValDateTimeEditorController(final IClientEnvironment env) {
+        this(env, null);
     }
 
     private void updateEditButton() {
-        editButton.setVisible(!isReadOnly() && getEditMask().dateFieldPresent(getEnvironment().getLocale()));
+        editButton.setVisible(!isReadOnly() && getEditMask().dateFieldPresent(getEnvironment()));
         editButton.setEnabled(this.isEnabled());
     }
 
@@ -60,12 +83,14 @@ public class ValDateTimeEditorController extends InputBoxController<Timestamp, E
     protected void afterChangeReadOnly() {
         super.afterChangeReadOnly();
         updateEditButton();
+        updateSetCurrentDateButton();
     }
 
     @Override
     public void setEditMask(EditMaskDateTime editMask) {
         super.setEditMask(editMask);
         updateEditButton();
+        updateSetCurrentDateButton();
     }
 
     @Override
@@ -75,7 +100,7 @@ public class ValDateTimeEditorController extends InputBoxController<Timestamp, E
             public Timestamp getValue(final String text) throws InvalidStringValueException {
                 final EditMaskDateTime maskDateTime = getEditMask();
                 try {
-                    return maskDateTime.getValueForInputText(text, getEnvironment().getLocale());
+                    return maskDateTime.getValueForInputText(text, getEnvironment());
                 } catch (WrongFormatException ex) {
                     final MessageProvider mp =
                             ValDateTimeEditorController.this.getEnvironment().getMessageProvider();
@@ -86,7 +111,7 @@ public class ValDateTimeEditorController extends InputBoxController<Timestamp, E
                         reason = ex.getMessage();
                     }
                     if (reason==null || reason.isEmpty()){
-                        throw new InvalidStringValueException(mp, InvalidValueReason.WRONG_FORMAT);//NOPMD
+                        throw new InvalidStringValueException(mp, InvalidValueReason.Factory.createForWrongFormatValue(getEnvironment()));//NOPMD
                     }else{
                         throw new InvalidStringValueException(mp, InvalidValueReason.Factory.createForInvalidValue(reason));//NOPMD
                     }
@@ -97,7 +122,7 @@ public class ValDateTimeEditorController extends InputBoxController<Timestamp, E
 
     @Override
     protected String calcFocusedText(final Timestamp value, final EditMaskDateTime editMask) {
-        return editMask.getInputTextForValue(value, getEnvironment().getLocale());
+        return editMask.getInputTextForValue(value, getEnvironment());
     }
 
     public void edit() {
@@ -110,12 +135,25 @@ public class ValDateTimeEditorController extends InputBoxController<Timestamp, E
             setValue(dateTimeDialog.getCurrentDateTime());
         }
     }
-
-    public void setDialogTitle(final String newTitle) {
-        dialogTitle = newTitle;
+    
+    private void setCurrentDate() {
+        final Timestamp currentTime = getEnvironment().getCurrentServerTime();
+        setValue(currentTime);
     }
-
-    public String getDialogTitle() {
-        return dialogTitle;
+    
+    private void updateSetCurrentDateButton() {
+        setCurrentDateButton.setVisible(!isReadOnly());
+        setCurrentDateButton.setEnabled(this.isEnabled());
+        String toolTipStr;
+        IClientEnvironment env = getEnvironment();
+        EditMaskDateTime editMaskDateTime = getEditMask();
+        if (editMaskDateTime.dateFieldPresent(env) && editMaskDateTime.timeFieldPresent(env)) {
+            toolTipStr = env.getMessageProvider().translate("ValDateTimeEditor", "Set Current Date/Time");
+        } else if (editMaskDateTime.dateFieldPresent(env)) {
+            toolTipStr = env.getMessageProvider().translate("ValDateTimeEditor", "Set Current Date");
+        } else {
+            toolTipStr = env.getMessageProvider().translate("ValDateTimeEditor", "Set Current Time");
+        }
+        setCurrentDateButton.setToolTip(toolTipStr);
     }
 }

@@ -28,6 +28,7 @@ public final class EntityObjectsSelection {
     private final GroupModel groupModel;
     private ESelectionMode mode = ESelectionMode.NO_SELECTION;    
     private List<Pid> selection;
+    private SelectionNode hierarchicalSelectionNode;
     
     EntityObjectsSelection(final GroupModel groupModel){
         this.groupModel = groupModel;
@@ -57,8 +58,10 @@ public final class EntityObjectsSelection {
             }
             if (groupModel.notifyBeforeChangeSelection(newSelection)){
                 writeFrom(newSelection);
+                if (hierarchicalSelectionNode!=null){
+                    hierarchicalSelectionNode.afterSelectAllObjects(groupModel, this);
+                }
                 groupModel.notifyAfterChangeSelection();
-            }else{
             }
         }
     };
@@ -90,6 +93,9 @@ public final class EntityObjectsSelection {
             newSelection.selectObject(objectPid);
             if (groupModel.notifyBeforeChangeSelection(newSelection)){
                 writeFrom(newSelection);
+                if (hierarchicalSelectionNode!=null){
+                    hierarchicalSelectionNode.afterSelectObject(groupModel, this);
+                }
                 groupModel.notifyAfterChangeSelection();            
             }
         }
@@ -98,11 +104,15 @@ public final class EntityObjectsSelection {
     public void unselectAllObjectsInGroup(){
         if (groupModel==null){
             selection = null;
+            mode = ESelectionMode.NO_SELECTION;
         }else{
             final EntityObjectsSelection newSelection = copy();
             newSelection.unselectAllObjectsInGroup();
             if (groupModel.notifyBeforeChangeSelection(newSelection)){
                 writeFrom(newSelection);
+                if (hierarchicalSelectionNode!=null){
+                    hierarchicalSelectionNode.afterUnselectAllObjects(groupModel, this);
+                }
                 groupModel.notifyAfterChangeSelection();                        
             }
         }
@@ -128,6 +138,9 @@ public final class EntityObjectsSelection {
                 newSelection.unselectObject(objectPid);
                 if (groupModel.notifyBeforeChangeSelection(newSelection)){
                     writeFrom(newSelection);
+                    if (hierarchicalSelectionNode!=null){
+                        hierarchicalSelectionNode.afterUnselectObject(groupModel, this);
+                    }
                     groupModel.notifyAfterChangeSelection();                
                 }
             }
@@ -143,7 +156,7 @@ public final class EntityObjectsSelection {
     }
     
     public ESelectionMode getSelectionMode(){
-        return mode;
+        return isRecursivelySelected() ? ESelectionMode.EXCLUSION :  mode;
     };    
     
     public Collection<Pid> getSelectedObjects(){
@@ -163,14 +176,21 @@ public final class EntityObjectsSelection {
     };    
     
     public boolean isObjectSelected(final Pid objectPid){
+        if (isRecursivelySelected()){
+            return true;
+        }
+        return isExplicitlyObjectSelected(objectPid);
+    };
+    
+    boolean isExplicitlyObjectSelected(final Pid objectPid){
         if (mode==ESelectionMode.EXCLUSION){
             return selection==null || !selection.contains(objectPid);
         }else if (mode==ESelectionMode.INCLUSION){
             return selection!=null && selection.contains(objectPid);
         }else{            
             return false;
-        }
-    };
+        }        
+    }
     
     public boolean isObjectSelected(final EntityModel object){
         return isObjectSelected(object.getPid());
@@ -181,6 +201,13 @@ public final class EntityObjectsSelection {
     }
     
     public boolean isEmpty(){
+        if (isRecursivelySelected()){
+            return false;
+        }
+        return isExplicitlyEmpty();        
+    };
+    
+    boolean isExplicitlyEmpty(){
         if (mode==ESelectionMode.EXCLUSION && selection!=null && allRowsWasLoaded()){
             final GroupModelReader reader = new GroupModelReader(groupModel);
             for (EntityModel entity: reader){
@@ -189,9 +216,9 @@ public final class EntityObjectsSelection {
                 }
             }
             return true;
-        }
-        return mode==ESelectionMode.NO_SELECTION || (mode==ESelectionMode.INCLUSION && (selection==null || selection.isEmpty()));
-    };
+        }        
+        return mode==ESelectionMode.NO_SELECTION || (mode==ESelectionMode.INCLUSION && (selection==null || selection.isEmpty()));        
+    }
     
     public boolean isAllObjectsSelected(){
         if (mode==ESelectionMode.EXCLUSION && (selection==null || selection.isEmpty())){
@@ -200,8 +227,15 @@ public final class EntityObjectsSelection {
             //if groupModel contains broken entity object then not all objects was selected
             return selection.size()==groupModel.getEntitiesCount();
         }else{
-            return false;
+            return isRecursivelySelected();
         }
+    }
+    
+    private boolean isRecursivelySelected(){
+        return selection==null 
+                   && hierarchicalSelectionNode!=null 
+                   && !hierarchicalSelectionNode.isExplicitSelection()
+                   && hierarchicalSelectionNode.isRecursivelySelected();
     }
     
     public boolean isSingleObjectSelected(){
@@ -273,12 +307,17 @@ public final class EntityObjectsSelection {
         return normalize(groupModel);
     }
     
-    private void writeFrom(final EntityObjectsSelection copy){
-        mode = copy.mode;
-        if (copy.selection==null){
+    void writeFrom(final EntityObjectsSelection copy){
+        if (copy.selection==null && copy.isRecursivelySelected()){
+            mode = ESelectionMode.EXCLUSION;
             selection = null;
         }else{
-            selection = new LinkedList<>(copy.selection);
+            mode = copy.mode;
+            if (copy.selection==null){
+                selection = null;
+            }else{
+                selection = new LinkedList<>(copy.selection);
+            }
         }
     }
     
@@ -289,6 +328,9 @@ public final class EntityObjectsSelection {
             final EntityObjectsSelection newSelection = new EntityObjectsSelection((GroupModel)null);
             if (groupModel.notifyBeforeChangeSelection(newSelection)){
                 writeFrom(newSelection);
+                if (hierarchicalSelectionNode!=null){
+                    hierarchicalSelectionNode.afterUnselectAllObjects(groupModel, this);
+                }
                 groupModel.notifyAfterChangeSelection();
             }
         }
@@ -309,5 +351,9 @@ public final class EntityObjectsSelection {
                 }
             }
         }
+    }
+    
+    void setHierarchicalSelectionNode(final SelectionNode node){
+        hierarchicalSelectionNode = node;
     }
 }

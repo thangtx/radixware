@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="agcJ4WZRLJ23BGMBKQ2JBSOBEGBP4" Name="CfgItemGroup" DescriptionId="mls4ZBQ6FAYSBEHROUTQYMB6TADVE" Type="11">
+    <AccessRules/>
+    <Headers>
+      <Src Name="Headeragc46SF3YAW7ND5PFL3RZYWGHAVRY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyagc46SF3YAW7ND5PFL3RZYWGHAVRY"/>
+    </Bodies>
+    <MethodGroup Id="cmgAQFBNFZE7VDBPPANCHGD5ZAPOM" Name="Root"/>
+    <PropertyGroup Id="cpgEP7YFYHDNVFAHNNW2A6H36GBGM" Name="Root">
+      <Group Id="cpgZGEDJQMTMFCWBI67W3UTO43N2E" Name="ForTestCases" Members="pgpXQE2DLBEPNCATJZGJOIWVMIL2U"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="pgpY3JT7QYNN5ATNNCBXPNCPTDFB4" Name="packetIdParam" Nature="12" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="pgpXQE2DLBEPNCATJZGJOIWVMIL2U" Name="parentClassGuid" Nature="12" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthcmd7HBTLW6RONBADCQ4GAGIQJCELA" Name="onCommand_SkipAll" Nature="1" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="input" Id="mprMFORBUC3JZFSFKNCDDTPSYYGRQ">
+            <Type TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="sscL77ZFM4R55ECPJWTE7VYDJTQ24">
+                <xsc:Presentation>ChangeItemsSkipStateStmt</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="sscL77ZFM4R55ECPJWTE7VYDJTQ24 mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>execute</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(input.Int, null, true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthcmdZ3WHQI7ZFZFZRLJAR5Z53GLUUU" Name="onCommand_UnskipAll" Nature="1" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="input" Id="mprL7TABGYJ3BCQRB4EQLD5C33JYY">
+            <Type TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="sscL77ZFM4R55ECPJWTE7VYDJTQ24">
+                <xsc:Presentation>ChangeItemsSkipStateStmt</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="sscL77ZFM4R55ECPJWTE7VYDJTQ24 mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>execute</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(input.Int, null, false);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+    <Presentations>
+      <Commands>
+        <Command Id="cmd7HBTLW6RONBADCQ4GAGIQJCELA" Name="SkipAll" TitleId="mlsJ6LT56KNDVBHLLTP2WXR4KEJGY" Nature="2" IconId="imgTVR6JPMJY5GGDOUHEYWH3RRHYM" IsVisible="true" IsConfirmationRequired="true" Accessibility="3" Scope="2">
+          <AccessRules IsPublished="false"/>
+          <InType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+        </Command>
+        <Command Id="cmdZ3WHQI7ZFZFZRLJAR5Z53GLUUU" Name="UnskipAll" TitleId="mls526SW42D5VEPPEAIY6HPFW7NCA" Nature="2" IconId="imgCDXJNVBUBNBFND7NZN6XWA33K4" IsVisible="true" IsConfirmationRequired="true" Accessibility="3" Scope="2">
+          <AccessRules IsPublished="false"/>
+          <InType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
+        </Command>
+      </Commands>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntityGroup_______________">
+      <xsc:GenericArguments>
+        <xsc:Argument Alias="?">
+          <xsc:Type TypeId="32" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+        </xsc:Argument>
+      </xsc:GenericArguments>
+    </Extends>
+  </AdsClassDefinition>
+</AdsDefinition>

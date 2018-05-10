@@ -70,6 +70,7 @@ public class AdsReportDbImageCellEditor extends javax.swing.JPanel {
         updating = true;
         imageDataPropertyDefinitionLinkEditPanel.open(cell.findDataProperty(), cell.getDataPropertyId());
         imageMimeTypePropertyDefinitionLinkEditPanel.open(cell.findMimeTypeProperty(), cell.getMimeTypePropertyId());
+        resizeImageCheckBox.setSelected(!cell.isResizeImage());
         updateEnableState();
         updating = false;
     }
@@ -78,6 +79,7 @@ public class AdsReportDbImageCellEditor extends javax.swing.JPanel {
         final boolean enabled = !cell.isReadOnly();
         imageDataPropertyDefinitionLinkEditPanel.setEnabled(enabled);
         imageMimeTypePropertyDefinitionLinkEditPanel.setEnabled(enabled);
+        resizeImageCheckBox.setEnabled(enabled);
     }
 
 
@@ -94,10 +96,20 @@ public class AdsReportDbImageCellEditor extends javax.swing.JPanel {
         imageDataPropertyDefinitionLinkEditPanel = new org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel();
         jLabel2 = new javax.swing.JLabel();
         imageMimeTypePropertyDefinitionLinkEditPanel = new org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel();
+        resizeImageCheckBox = new javax.swing.JCheckBox();
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(AdsReportDbImageCellEditor.class, "AdsReportDbImageCellEditor.jLabel1.text")); // NOI18N
 
         jLabel2.setText(org.openide.util.NbBundle.getMessage(AdsReportDbImageCellEditor.class, "AdsReportDbImageCellEditor.jLabel2.text")); // NOI18N
+
+        resizeImageCheckBox.setText(org.openide.util.NbBundle.getMessage(AdsReportDbImageCellEditor.class, "AdsReportDbImageCellEditor.resizeImageCheckBox.text")); // NOI18N
+        resizeImageCheckBox.setBorder(null);
+        resizeImageCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        resizeImageCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resizeImageCheckBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -106,12 +118,15 @@ public class AdsReportDbImageCellEditor extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(imageDataPropertyDefinitionLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
-                    .addComponent(imageMimeTypePropertyDefinitionLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE))
+                    .addComponent(resizeImageCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(imageDataPropertyDefinitionLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                            .addComponent(imageMimeTypePropertyDefinitionLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -125,9 +140,15 @@ public class AdsReportDbImageCellEditor extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(imageMimeTypePropertyDefinitionLinkEditPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(232, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resizeImageCheckBox)
+                .addContainerGap(206, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void resizeImageCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resizeImageCheckBoxActionPerformed
+        cell.setIsResizeImage(!resizeImageCheckBox.isSelected());
+    }//GEN-LAST:event_resizeImageCheckBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -135,6 +156,7 @@ public class AdsReportDbImageCellEditor extends javax.swing.JPanel {
     private org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel imageMimeTypePropertyDefinitionLinkEditPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JCheckBox resizeImageCheckBox;
     // End of variables declaration//GEN-END:variables
 
 }

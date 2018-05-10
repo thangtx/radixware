@@ -12,16 +12,66 @@
 package org.radixware.kernel.explorer.widgets;
 
 import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QMouseEvent;
+import com.trolltech.qt.gui.QWidget;
 
 
 public final class FilteredMouseEvent extends QEvent{
     
     private final QEvent.Type eventType;
+    private final QPoint pos;
+    private final QPoint globalPos;
+    private final Qt.MouseButton button;
+    private final Qt.MouseButtons buttons;
+    private final Qt.KeyboardModifiers modifiers;
     
-    public FilteredMouseEvent(final QEvent.Type type){
-        super(QEvent.Type.User);
-        eventType = type;
+    public FilteredMouseEvent(final QMouseEvent event){        
+        super(QEvent.Type.User);        
+        eventType = event.type();
+        pos = event.pos();
+        globalPos = event.globalPos();
+        button = event.button();
+        buttons = new Qt.MouseButtons(event.buttons().value());
+        modifiers = new Qt.KeyboardModifiers(event.modifiers().value());
     }    
+    
+    public FilteredMouseEvent(final FilteredMouseEvent copy){
+        super(QEvent.Type.User);        
+        eventType = copy.eventType;
+        pos = copy.pos;
+        globalPos = copy.globalPos;
+        button = copy.button;
+        buttons = new Qt.MouseButtons(copy.buttons.value());
+        modifiers = new Qt.KeyboardModifiers(copy.modifiers.value());
+    }
+    
+    public FilteredMouseEvent(final FilteredMouseEvent copy, final QWidget delegate){
+        super(QEvent.Type.User);        
+        eventType = copy.eventType;
+        pos = delegate.mapFromGlobal(copy.globalPos);
+        globalPos = copy.globalPos;
+        button = copy.button;
+        buttons = new Qt.MouseButtons(copy.buttons.value());
+        modifiers = new Qt.KeyboardModifiers(copy.modifiers.value());
+    }    
+    
+    public QMouseEvent createFilteredEvent(){
+        return new QMouseEvent(eventType, pos, button, buttons, modifiers);
+    }
+    
+    public Qt.MouseButton getButton(){
+        return button;
+    }
+    
+    public QPoint getPos(){
+        return pos;
+    }
+    
+    public QPoint getGlobalPos(){
+        return globalPos;
+    }
     
     public QEvent.Type getFilteredEventType(){
         return eventType;                

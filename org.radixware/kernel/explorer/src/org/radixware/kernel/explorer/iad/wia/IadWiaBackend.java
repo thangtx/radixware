@@ -22,8 +22,8 @@ import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.explorer.iad.AbstractIadBackend;
-import org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;
-import org.radixware.kernel.explorer.iad.ImageAcquaringDevice;
+import org.radixware.kernel.explorer.iad.EImageAcquiringDeviceType;
+import org.radixware.kernel.explorer.iad.ImageAcquiringDevice;
 import org.radixware.kernel.utils.wia.ComException;
 import org.radixware.kernel.utils.wia.EHResult;
 import org.radixware.kernel.utils.wia.WiaDeviceManager;
@@ -61,7 +61,7 @@ public class IadWiaBackend extends AbstractIadBackend{
     }    
     
     @Override
-    protected Collection<ImageAcquaringDevice> enumDevicesImpl(IClientEnvironment environment, EImageAcquaringDeviceType type) {
+    protected Collection<ImageAcquiringDevice> enumDevicesImpl(IClientEnvironment environment, EImageAcquiringDeviceType type) {
         final ComLibrary localLib;        
         if (!ComLibrary.wasInitialized()){
             try{
@@ -74,7 +74,7 @@ public class IadWiaBackend extends AbstractIadBackend{
             localLib = null;
         }
         try{
-            final Collection<ImageAcquaringDevice> result = new LinkedList<>();
+            final Collection<ImageAcquiringDevice> result = new LinkedList<>();
             try(WiaDeviceManager devManager=WiaDeviceManager.newInstance()){
                 try (WiaDevices devices = devManager.loadDevices()){
                     for (WiaPropertyStorage propertyStorage: devices){

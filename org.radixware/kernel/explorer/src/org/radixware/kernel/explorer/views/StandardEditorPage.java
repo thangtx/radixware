@@ -41,6 +41,7 @@ import org.radixware.kernel.explorer.widgets.ChildPagesWidget;
 import org.radixware.kernel.explorer.widgets.EmbeddedView;
 import org.radixware.kernel.explorer.widgets.IExplorerModelWidget;
 import org.radixware.kernel.explorer.widgets.PropertiesGrid;
+import org.radixware.kernel.explorer.widgets.PropertiesGridDisassembler;
 import org.radixware.kernel.explorer.widgets.TabSet;
 
 public final class StandardEditorPage extends EditorPageView {
@@ -62,17 +63,22 @@ public final class StandardEditorPage extends EditorPageView {
         if (page instanceof RadStandardEditorPageDef) {
             final RadStandardEditorPageDef pageDef = (RadStandardEditorPageDef)page;
             if (pageDef.hasProperties()){
-                generalPageWidget = new PropertiesGrid(this, environment);
-                ((QWidget) generalPageWidget).setObjectName("propertiesGrid");
+                final PropertiesGrid propertiesGrid = new PropertiesGrid(this, environment);
+                generalPageWidget = propertiesGrid;
+                propertiesGrid.setObjectName("propertiesGrid");
+                propertiesGrid.setAutoHide(true);
                 if (pageDef.hasSubPages()){
                     childPagesWidget = 
-                        new ChildPagesWidget(environment, this, parentView, editorPage.getChildPages(), page.getId().toString());                    
+                        new ChildPagesWidget(environment, this, parentView, editorPage.getChildPages(), page.getId().toString());
                 }else{
                     childPagesWidget = null;
                 }
             }else if (pageDef.hasSubPages()){
-                generalPageWidget = new TabSet(environment, parentView, editorPage.getChildPages(), page.getId().toString());
-                ((QWidget) generalPageWidget).setParent(this);
+                final TabSet tabSet = 
+                    new TabSet(environment, parentView, editorPage.getChildPages(), page.getId().toString());
+                generalPageWidget = tabSet;
+                tabSet.setParent(this);
+                tabSet.setAutoHide(true);
                 childPagesWidget = null;
             }else{
                 generalPageWidget = null;
@@ -155,8 +161,10 @@ public final class StandardEditorPage extends EditorPageView {
                     }
                 }
             }
-            generalPageWidget.asQWidget().setVisible(true);
-            generalPageWidget.asQWidget().setFocus();
+            if (!generalPageWidget.asQWidget().isHidden()){
+                generalPageWidget.asQWidget().setVisible(true);
+                //generalPageWidget.asQWidget().setFocus(); it is not corrent when changing selector row
+            }
         }        
         opened.emit(this);
     }
@@ -260,17 +268,22 @@ public final class StandardEditorPage extends EditorPageView {
 
     @Override
     protected void closeEvent(final QCloseEvent event) {
-//        setFocusProxy(null);
-        if (generalPageWidget.asQWidget() != null) {
-//            layout().removeWidget(widget.asQWidget());
-//            widget.asQWidget().setParent(null);
-            generalPageWidget.asQWidget().close();
+        if (generalPageWidget!=null && generalPageWidget.asQWidget() != null) {
+            if (generalPageWidget instanceof PropertiesGrid){
+                PropertiesGridDisassembler.getInstance().disassemble((PropertiesGrid)generalPageWidget);
+            }else{
+                generalPageWidget.asQWidget().close();
+            }
         }
         
         if (childPagesWidget!=null){
             childPagesWidget.close();
         }
-//        widget = null;
         super.closeEvent(event);
+    }
+    
+    @Override
+    protected void closeEmbeddedViews(){    
+        
     }
 }

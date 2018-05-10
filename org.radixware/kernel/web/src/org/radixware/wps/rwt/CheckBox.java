@@ -11,6 +11,7 @@
 
 package org.radixware.wps.rwt;
 
+import java.awt.Color;
 import org.radixware.kernel.common.html.Html;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -137,4 +138,12 @@ public class CheckBox extends ButtonBase {
             checkBox.addClass("ui-state-disabled");
         }
     }
+
+    @Override
+    public void setForeground(final Color c) {
+        super.setForeground(c);
+        checkBox.setCss("color", c == null ? null : color2Str(c));
+    }
+    
+    
 }

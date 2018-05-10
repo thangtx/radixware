@@ -34,7 +34,7 @@ import org.radixware.schemas.product.BranchDocument;
 public class Branch extends RadixObject implements IDirectoryRadixObject {
 
     public static final int FORMAT_VERSION = 2;
-
+    
     /**
      * Layers list for branch
      */
@@ -150,6 +150,43 @@ public class Branch extends RadixObject implements IDirectoryRadixObject {
             super(Branch.this);
         }
         private boolean loading = false;
+        private boolean addAdditionalLayer = false;
+        
+        private final ThreadLocal<List<Layer>> additionalLayers = new ThreadLocal<List<Layer>>() {
+
+            @Override
+            protected List<Layer> initialValue() {
+                return new ArrayList();
+            }
+        };
+        
+        public void addAdditionalLayer(Layer l) {
+            if (l == null) {
+                throw new RadixObjectError("Attemp to add null into RadixObjects", this);
+            }
+            additionalLayers.get().add(l);
+            synchronized (this) {
+                addAdditionalLayer = true;
+                try {
+                    afterAdd(l);
+                } finally {
+                    addAdditionalLayer = false;
+                }
+            }
+        }
+        
+        public boolean removeAdditionalLayer(Layer l) {
+            if (l == null) {
+                throw new RadixObjectError("Attemp to remove null from RadixObjects", this);
+            }
+
+            final boolean removed = additionalLayers.get().remove(l);
+            if (removed) {
+                afterRemove(l);
+            }
+
+            return removed;
+        }
 
         @Override
         protected void onAdd(Layer layer) {
@@ -162,7 +199,9 @@ public class Branch extends RadixObject implements IDirectoryRadixObject {
                     throw new RadixObjectError("Unable to save layer.", layer, cause);
                 }
             }
-            layersChanged();
+            if (!addAdditionalLayer) {
+                layersChanged();
+            }
         }
 
         /**
@@ -348,6 +387,100 @@ public class Branch extends RadixObject implements IDirectoryRadixObject {
                 l.layersChanged();
             }
         }
+        
+        @Override
+        public int size() {
+            return super.size() + additionalLayers.get().size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return size() < 1;
+        }
+
+        @Override
+        public Layer get(int index) {
+            if (index < super.size()) {
+                return super.get(index);
+            }
+            return additionalLayers.get().get(index - super.size());
+        }
+
+        @Override
+        public List<Layer> list() {
+            List<Layer> result = new ArrayList<>();
+            for (Layer l : this) {
+                result.add(l);
+            }
+            return result;
+        }
+
+        @Override
+        public List<Layer> list(IFilter<Layer> filter) {
+            if (filter == null) {
+                throw new NullPointerException();
+            }
+            List<Layer> result = new ArrayList<>();
+            for (Layer l : this) {
+                if (filter.isTarget(l)) {
+                    result.add(l);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public boolean contains(Layer object) {
+            return super.contains(object) || additionalLayers.get().contains(object);
+        }
+
+        @Override
+        public void visitChildren(IVisitor visitor, VisitorProvider provider) {
+            for (Layer def : this) {
+                def.visit(visitor, provider);
+            }
+        }
+        
+        @Override
+        public Iterator<Layer> iterator() {
+            return new CompositeIterator();
+        }
+        
+        private class CompositeIterator implements Iterator<Layer> {
+
+            private final Iterator<Layer> baseIter;
+            private final Iterator<Layer> addIter;
+            private boolean endOfBaseList = false;
+
+            public CompositeIterator() {
+                this.baseIter = Layers.super.iterator();
+                this.addIter = additionalLayers.get().iterator();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return baseIter.hasNext() || addIter.hasNext();
+            }
+
+            @Override
+            public Layer next() {
+                try {
+                    return baseIter.next();
+                } catch (NoSuchElementException ex) {
+                    endOfBaseList = true;
+                    return addIter.next();
+                }
+            }
+
+            @Override
+            public void remove() {
+                if (!endOfBaseList) {
+                    baseIter.remove();
+                } else {
+                    addIter.remove();
+                }
+            }
+        }      
     }
 //
 //    public class ReleaseMessageLayerGroup {
@@ -603,7 +736,7 @@ public class Branch extends RadixObject implements IDirectoryRadixObject {
     public void setFormatVersion(int formatVersion) {
         this.formatVersion = formatVersion;
     }
-
+    
     public Layers getLayers() {
         synchronized (this) {
             if (layers.isEmpty()) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,31 +11,58 @@
  */
 package org.radixware.kernel.server.units.mq;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.lang.StringUtils;
 import org.radixware.kernel.common.enums.EMqKind;
+import org.radixware.kernel.common.enums.EMqProcOrder;
+import org.radixware.kernel.common.enums.EPortSecurityProtocol;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.units.mq.interfaces.IMqUnitDbQueries;
-import org.radixware.kernel.server.units.persocomm.interfaces.IDatabaseConnectionAccess;
-import org.radixware.kernel.server.units.persocomm.tools.BasicDbQuery;
+import org.radixware.kernel.server.jdbc.IDatabaseConnectionAccess;
+import org.radixware.kernel.server.jdbc.ExtendedDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
 import org.radixware.kernel.server.utils.OptionsGroup;
 
-public class MqDbQueries extends BasicDbQuery implements IMqUnitDbQueries {
+public class MqDbQueries extends ExtendedDbQueries implements IMqUnitDbQueries {
 
     private static final int SQL_OPTIONS_READ_OPTIONS = 1;
     private static final int SQL_OPTIONS_READ_MASTER = 2;
 
     private static final Stmt[] SQL_LIST = {
-        new Stmt(SQL_OPTIONS_READ_OPTIONS, "select p.unitId, p.id as processorId, p.title as processorTitle, p.parallelThreads, p.queueId, p.aasCallTimeoutSec, nvl(u.scpName, (select i.scpName from rdx_instance i where i.id = u.instanceId)) as scpName, q.queueKind, q.title as queueTitle, q.brokerAddress, q.queueName, q.partitionName, q.login, q.password, q.consumerKey, kafkaq.sessionTimeoutSec as kafkaSessionTimeoutSec from RDX_MESSAGEQUEUE q left join RDX_KAFKAQUEUE kafkaq on q.id = kafkaq.queueId, RDX_MESSAGEQUEUEPROCESSOR p, RDX_UNIT u where q.id = p.queueId and p.unitId = u.id and p.unitId = ?"),
-        new Stmt(SQL_OPTIONS_READ_MASTER, "select mainUnitId from RDX_FALLBACKMQHANDLER where unitId = ?")
+        new Stmt(SQL_OPTIONS_READ_OPTIONS, "select p.unitId, p.id as processorId, "
+                + "p.title as processorTitle, p.parallelThreads, p.queueId, p.aasCallTimeoutSec, "
+                + "nvl(u.scpName, (select i.scpName from rdx_instance i where i.id = u.instanceId)) as scpName, "
+                + "q.queueKind, q.title as queueTitle, q.brokerAddress, q.queueName, q.partitionName, "
+                + "q.login, q.password, q.consumerKey, q.procOrder, q.partitionSource, q.prefetchCount, "
+                + "q.securityProtocol, q.serverCertAliases, q.clientKeyAliases, q.cipherSuites, "
+                + "q.jndiInitialContextFactory, q.jndiProviderUrl, q.jndiQueueName, q.jndiOptions, "
+                + "kafkaq.sessionTimeoutSec as kafkaSessionTimeoutSec, "
+                + "kafkaq.brokerKerberosName as kafkaBrokerKerberosName, kafkaq.maxPartitionFetchBytes, "
+                + "amqpq.virtualHost, "
+                + "jmsq.jndiConnFactoryName as jmsJndiConnFactoryName, jmsq.connFactoryClassName as jmsConnFactoryClassName, "
+                + "jmsq.connFactoryOptions as jmsConnFactoryOptions, jmsq.subscriptionName as jmsSubscriptionName, "
+                + "jmsq.clientId as jmsClientId "
+                + "from RDX_MESSAGEQUEUE q left join RDX_KAFKAQUEUE kafkaq on q.id = kafkaq.queueId "
+                + "left join RDX_AMQPQUEUE amqpq on q.id=amqpq.queueId "
+                + "left join RDX_JMSQUEUE jmsq on q.id = jmsq.queueId, "
+                + "RDX_MESSAGEQUEUEPROCESSOR p, RDX_UNIT u where q.id = p.queueId and p.unitId = u.id and p.unitId = ?", Types.BIGINT),
+        new Stmt(SQL_OPTIONS_READ_MASTER, "select mainUnitId from RDX_FALLBACKMQHANDLER where unitId = ?", Types.BIGINT)
     };
 
     static {
         Arrays.sort(SQL_LIST);
+    }
+
+    public MqDbQueries(Connection conn) {
+        super(conn, SQL_LIST);
     }
 
     public MqDbQueries(IDatabaseConnectionAccess access) {
@@ -64,8 +91,7 @@ public class MqDbQueries extends BasicDbQuery implements IMqUnitDbQueries {
                     return item.mainUnitId;
                 }
                 return moduleId;
-            }
-            else {
+            } else {
                 return moduleId;
             }
         } catch (Exception exc) {
@@ -74,6 +100,7 @@ public class MqDbQueries extends BasicDbQuery implements IMqUnitDbQueries {
     }
 
     public static class MqUnitOptions {
+
         public long unitId;
         public String scpName;
         public long sapId;
@@ -91,6 +118,29 @@ public class MqDbQueries extends BasicDbQuery implements IMqUnitDbQueries {
         public String password;
         public int aasCallTimeoutSec;
         public long kafkaSessionTimeoutSec;
+        public String kafkaBrokerKerberosName;
+        public long maxPartitionFetchBytes = 1 << 20;
+        public String partitionSource;
+        public EMqProcOrder procOrder;
+        public int prefetchCount;
+        public String virtualHost;
+        // TLS
+        public EPortSecurityProtocol securityProtocol;
+        public List<String> serverCertAliases;
+        public List<String> clientKeyAliases;
+        public List<String> cipherSuites;
+        // JNDI
+        public String jndiInitialContextFactory;
+        public String jndiProviderUrl;
+        public String jndiQueueName;
+        public Map<String, String> jndiOptions;
+        // JMS
+        public String jmsJndiConnFactoryName;
+        public String jmsConnFactoryClassName;
+        public Map<String, String> jmsConnFactoryOptions;
+        public String jmsSubscriptionName;
+        public String jmsClientId;
+        //
 
         public OptionsGroup toOptionsGroup() {
             OptionsGroup og = new OptionsGroup();
@@ -102,11 +152,50 @@ public class MqDbQueries extends BasicDbQuery implements IMqUnitDbQueries {
             if (consumerKey != null) {
                 og.add("Consumer key", consumerKey);
             }
+            if (procOrder != null) {
+                og.add("Processing order", procOrder);
+            }
+            if (partitionSource != null) {
+                og.add("Partition source", partitionSource);
+            }
             if (login != null) {
                 og.add("Login", login);
             }
             if (queueKind == EMqKind.KAFKA) {
                 og.add("Kafka session timeout (sec)", kafkaSessionTimeoutSec);
+                og.add("Kafka maximum partition fetch bytes", maxPartitionFetchBytes);
+                if (kafkaBrokerKerberosName != null) {
+                    og.add("Kerberos pricipal name of the Kafka broker", kafkaBrokerKerberosName);
+                    final String jaasFilePropName = "java.security.auth.login.config";
+                    og.add("JAAS config file ('" + jaasFilePropName + "' system property value)", System.getProperty(jaasFilePropName));
+                    final String krbFilePropName = "java.security.krb5.conf";
+                    og.add("Kerberos config file ('" + krbFilePropName + "' system property value)", System.getProperty(krbFilePropName));
+                }
+                if (securityProtocol.isTls()) {
+                    og.add("Security protocol", securityProtocol.getName());
+                    og.add("TLS server certificates",  serverCertAliases == null ? "any" : StringUtils.join(serverCertAliases, ";"));
+                    og.add("TLS client keys", clientKeyAliases == null ? "any" : StringUtils.join(clientKeyAliases, ";"));
+                    og.add("TLS cipher suites", cipherSuites == null ? "strong only" : (cipherSuites.isEmpty() ? "any" : StringUtils.join(cipherSuites, ";")));
+                }
+            }
+            if (queueKind == EMqKind.AMQP) {
+                og.add("Virtual host", virtualHost);
+            }
+            if (queueKind == EMqKind.JMS) {
+                og.add("JMS JNDI initial context factory", jndiInitialContextFactory);
+                og.add("JMS JNDI provider URL", jndiProviderUrl);
+                og.add("JMS JNDI connection factory lookup name", jmsJndiConnFactoryName);
+                og.add("JMS JNDI topic lookup name", jndiQueueName);
+                if (jndiOptions != null) {
+                    og.add("JMS custom JNDI options", StringUtils.join(jndiOptions.entrySet(), ";"));
+                }
+                
+                og.add("JMS connection factory class name", jmsConnFactoryClassName);
+                if (jmsConnFactoryOptions != null) {
+                    og.add("JMS custom connection factory options", StringUtils.join(jmsConnFactoryOptions.entrySet(), ";"));
+                }
+                og.add("JMS subscription name", jmsSubscriptionName);
+                og.add("JMS client ID", jmsClientId);
             }
             og.add("Parallel processing threads", parallelThreads);
             og.add("AAS call timeout", aasCallTimeoutSec);
@@ -191,16 +280,15 @@ public class MqDbQueries extends BasicDbQuery implements IMqUnitDbQueries {
             }
             return true;
         }
-        
-        
 
         @Override
         public String toString() {
             return toOptionsGroup().toString();
         }
     }
-    
+
     public static class ModuleId {
+
         public long mainUnitId;
     }
 }

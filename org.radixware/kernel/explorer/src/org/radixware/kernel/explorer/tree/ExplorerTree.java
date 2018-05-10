@@ -43,21 +43,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Stack;
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.util.Collections;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
-import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.explorerItems.RadExplorerItemDef;
-import org.radixware.kernel.common.client.models.CleanModelController;
 import org.radixware.kernel.common.client.models.EntityModel;
-import org.radixware.kernel.common.client.models.GroupModel;
-import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.tree.ExplorerTreeController;
 import org.radixware.kernel.common.client.tree.IExplorerTree;
 import org.radixware.kernel.common.client.tree.IExplorerTreePresenter;
@@ -65,9 +61,7 @@ import org.radixware.kernel.common.client.tree.IViewManager;
 import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.explorer.env.Application;
-import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
 
 import org.radixware.kernel.common.client.tree.nodes.ChoosenEntityNode;
@@ -75,16 +69,18 @@ import org.radixware.kernel.common.client.tree.nodes.ExplorerItemNode;
 import org.radixware.kernel.common.client.tree.nodes.ExplorerTreeNode;
 import org.radixware.kernel.common.client.tree.nodes.RootParagraphNode;
 import org.radixware.kernel.common.client.types.ExplorerRoot;
-import org.radixware.kernel.common.client.types.Pid;
+import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.views.IProgressHandle;
-import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.kernel.explorer.text.ExplorerFont;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 import org.radixware.kernel.explorer.utils.ItemDelegatePainter;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.views.BlockableWidget;
 import org.radixware.kernel.explorer.widgets.ExplorerAction;
 import org.radixware.kernel.explorer.widgets.FilteredMouseEvent;
+import org.radixware.schemas.clientstate.ExplorerTreeState;
 
 
 public class ExplorerTree extends QTreeView implements IExplorerTree {
@@ -100,7 +96,48 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         @Override
         public IExplorerTree getView() {
             return tree;
-        }        
+        }
+
+        @Override
+        public void setFocus() {
+            tree.setFocus();
+        }
+
+        @Override
+        public void removeNode(IExplorerTreeNode node) {
+            tree.treeModel().removeNode(node);
+        }
+
+        @Override
+        public boolean isNodeExists(IExplorerTreeNode node) {
+            return tree.treeModel().findIndexByNode(node)!=null;
+        }
+
+        @Override
+        public void setCurrent(final IExplorerTreeNode node) {
+            final QModelIndex index = tree.treeModel().findIndexByNode(node);
+            if (index!=null){
+                tree.setCurrentIndex(index);
+            }
+        }
+
+        @Override
+        public void resizeToContents() {
+            tree.resizeColumnToContents(0);
+        }
+
+        @Override
+        public void scrollTo(final IExplorerTreeNode node) {
+            final QModelIndex index = tree.treeModel().findIndexByNode(node);
+            if (index!=null){
+                tree.scrollTo(index, ScrollHint.PositionAtCenter);
+            }
+        }
+
+        @Override
+        public Action createAction(final Icon icon, final String title) {
+            return new ExplorerAction(ExplorerIcon.getQIcon(icon), title, tree);
+        }                
     }
 
     //Need for incrase distance between tree items to improve look of icons
@@ -131,14 +168,22 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
             final QAbstractItemModel model = index.model();
             final String text = (String)model.data(index, Qt.ItemDataRole.DisplayRole);
             final QFont font = (QFont)model.data(index, Qt.ItemDataRole.FontRole);
-            final QFontMetrics fontMetrics = new QFontMetrics(font);            
+            final ExplorerFont explorerFont = ExplorerFont.Factory.getFont(font);
+            final QFontMetrics fontMetrics = explorerFont.getQFontMetrics();
             option.setFont(font);
             option.setFontMetrics(fontMetrics);
             
-            //option.setFontMetrics(font.getQFontMetrics());
-            final Integer textAlignment = (Integer)model.data(index, Qt.ItemDataRole.TextAlignmentRole);
+            final Qt.Alignment textAlignment;
+            final Object rawTextAlignment = model.data(index, Qt.ItemDataRole.TextAlignmentRole);
+            if (rawTextAlignment instanceof Integer){
+                textAlignment = new Qt.Alignment((Integer)rawTextAlignment);
+            }else if (rawTextAlignment instanceof Qt.Alignment){
+                textAlignment = (Qt.Alignment)rawTextAlignment;
+            }else{
+                textAlignment = null;
+            }            
             if (textAlignment!=null){
-                option.setDisplayAlignment(new Qt.Alignment(textAlignment.intValue()));
+                option.setDisplayAlignment(textAlignment);
             }
             final QColor textColor = (QColor)model.data(index, Qt.ItemDataRole.ForegroundRole);
             if (textColor!=null){
@@ -203,151 +248,8 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         public long getIndexUnderMouseCursor(){
             return indexUnderMouseCursor;
         }
-    }
-
-    private final static class Icons extends ClientIcon {
-
-        private Icons(final String fileName) {
-            super(fileName, true);
-        }
-        public final static Icons REMOVE_FROM_TREE = new Icons("classpath:images/remove_from_tree.svg");
-        public final static Icons REMOVE_ALL_FROM_TREE = new Icons("classpath:images/remove_all_from_tree.svg");
-        public final static Icons OPEN_PARENT = new Icons("classpath:images/go_to_parent.svg");
-        public final static Icons GO_TO_CURRENT = new Icons("classpath:images/go_to_current.svg");
-    }
+    }        
     
-    private final static class SilentlyCleanEntityModelController extends CleanModelController{
-        
-        private final Pid silentPid;
-        
-        public SilentlyCleanEntityModelController(final Pid pid){
-            this.silentPid = pid;
-        }
-
-        @Override
-        public boolean needToCheckMandatoryProperties(final Model model) {
-            if (model instanceof EntityModel && Objects.equals(silentPid, ((EntityModel)model).getPid())){
-                return false;
-            }
-            return true;
-        }                        
-    }
-
-    public final class Actions implements IExplorerTree.Actions{
-
-        public final ExplorerAction remove;
-        public final ExplorerAction removeAll;
-        public final ExplorerAction goToOwner;
-        public final ExplorerAction goToCurrent;
-
-        @SuppressWarnings("LeakingThisInConstructor")
-        public Actions() {
-            super();
-            remove = new ExplorerAction(ExplorerIcon.getQIcon(Icons.REMOVE_FROM_TREE),
-                    getEnvironment().getMessageProvider().translate("ExplorerTree", "Close in Tree"), ExplorerTree.this);
-            remove.setToolTip(getEnvironment().getMessageProvider().translate("ExplorerTree", "Close Object in Tree"));
-            remove.triggered.connect(this, "removeAction()");
-            remove.setDisabled(true);
-            removeAll = new ExplorerAction(ExplorerIcon.getQIcon(Icons.REMOVE_ALL_FROM_TREE),
-                    getEnvironment().getMessageProvider().translate("ExplorerTree", "Close All in Tree"), ExplorerTree.this);
-            removeAll.setToolTip(getEnvironment().getMessageProvider().translate("ExplorerTree", "Close All Objects in Tree"));
-            removeAll.triggered.connect(this, "removeAllAction()");
-            removeAll.setDisabled(true);
-            
-            goToOwner = new ExplorerAction(ExplorerIcon.getQIcon(Icons.OPEN_PARENT), getEnvironment().getMessageProvider().translate("ExplorerTree", "Go To Parent Branch"), ExplorerTree.this);
-            goToOwner.setToolTip(getEnvironment().getMessageProvider().translate("ExplorerTree", "Go To Parent Branch"));
-            goToOwner.triggered.connect(this, "goToOwnerAction()");
-            goToOwner.setDisabled(true);
-            
-            goToCurrent = new ExplorerAction(ExplorerIcon.getQIcon(Icons.GO_TO_CURRENT), getEnvironment().getMessageProvider().translate("ExplorerTree", "Go To Current Item"), ExplorerTree.this);
-            goToCurrent.setToolTip(getEnvironment().getMessageProvider().translate("ExplorerTree", "Go To Current Item"));
-            goToCurrent.triggered.connect(this, "goToCurrentAction()");
-            goToCurrent.setDisabled(true);
-        }
-
-        @SuppressWarnings("unused")
-        private void removeAction() {
-            removeCurrentNode();
-        }
-        
-        @SuppressWarnings("unused")
-        private void goToCurrentAction(){
-            goToNode(currentNode());
-        }
-
-        @SuppressWarnings("unused")
-        private void removeAllAction() {
-            lock();
-            try {
-                if (canLeaveNode(false,null)) {
-                    treeModel().getRootNode().getView().removeChoosenEntities();
-                }
-                if (currentNode() != treeModel().getRootNode()) {
-                    enterNode(treeModel().findIndexByNode(treeModel().getRootNode()), closeCurrent);
-                }
-            } finally {
-                unlock();
-            }
-            removeAll.setDisabled(true);
-        }
-
-        @SuppressWarnings("unused")
-        private void goToOwnerAction() {
-            if (currentNode() != null && currentNode().getParentNode() != null) {
-                setCurrent(currentNode().getParentNode());
-            }
-        }
-        
-        
-
-        protected void disconnectAll() {
-            remove.disconnect();
-            removeAll.disconnect();
-            goToOwner.disconnect();
-            goToCurrent.disconnect();
-        }
-
-        protected void disableAll() {
-            remove.setDisabled(true);
-            removeAll.setDisabled(true);
-            goToOwner.setDisabled(true);
-            goToCurrent.setDisabled(true);
-        }
-        
-        private boolean isChoosenEntityExists(final List<IExplorerTreeNode> nodes) {
-            for (IExplorerTreeNode node : nodes) {
-                if (node.isValid() && node.getView().isChoosenObject()) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public ExplorerAction getRemoveCurrentNodeAction() {
-            return remove;
-        }
-
-        @Override
-        public ExplorerAction getRemoveChildChoosenObjectsAction() {
-            return removeAll;
-        }
-
-        @Override
-        public ExplorerAction getGoToParentNodeAction() {
-            return goToOwner;
-        }    
-
-        @Override
-        public Action getGoToCurrentNodeAction() {
-            return goToCurrent;
-        }                
-    }
-        
-    
-    private final Actions actions;
-    private final List<IExplorerTreeNode> nodesToRemove = new ArrayList<>();
-    private final List<QModelIndex> expandedItems = new ArrayList<>();
     private final ExplorerTreeSettings treeSettings;
     private IViewManager viewManager;
     private final Collection<Id> accessibleExplorerItems = new ArrayList<>();
@@ -356,7 +258,7 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
     private boolean hasModel;
     private boolean scheduledClick, scheduledDblClick;
     private final IClientEnvironment environment;
-    private final ExplorerTreeController controller = new ExplorerTreeController(new Presenter(this));
+    private final ExplorerTreeController controller;
     private final ExplorerTreeItemDelegate itemDelegate = new ExplorerTreeItemDelegate(this);
     private BlockableWidget blockableParent;
     private IExplorerTreeNode nodeUnderMouseCursor;
@@ -371,10 +273,10 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
     
     public ExplorerTree(final IClientEnvironment environment, final QWidget parent) {
         super(parent);
-        eventBlocker.setProcessableEventTypes(EnumSet.of(QEvent.Type.User));
         this.environment = environment;
-        this.actions = new Actions();
-        treeSettings = new ExplorerTreeSettings(new ExplorerSettings(environment, environment.getConfigStore()), this);        
+        controller = new ExplorerTreeController(new Presenter(this));
+        eventBlocker.setProcessableEventTypes(EnumSet.of(QEvent.Type.User));        
+        treeSettings = new ExplorerTreeSettings(environment.getConfigStore(), this);        
         header().setVisible(false);
         setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, true);
         setMouseTracking(true);
@@ -438,17 +340,16 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
             throw new IllegalArgumentException("Model of explorer tree  expected");
         }
         blockableParent = findBlockableParent();
-        setupColorSettings();
-
+        setupColorSettings();        
         setIconSize(getIconSize());
         setItemDelegate(itemDelegate);
         super.setModel(model);
         hasModel = true;
-        final QModelIndex index = treeModel().index(0, 0);//init parent index
+        controller.open();        
         treeModel().getRootNode().getChildNodes();//init child nodes
         lock();
         try {
-            enterNode(index, closeCurrent);
+            controller.enterNode(treeModel().getRootNode(), closeCurrent);            
         } finally {
             unlock();
         }
@@ -474,9 +375,10 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         }
         
     }
-
+    
     public void setViewManager(final IViewManager viewManager) {
         this.viewManager = viewManager;
+        controller.setViewManager(viewManager);
         if (hasModel) {
             final IExplorerTreeNode current = currentNode();
             if (current != null && viewManager != null) {
@@ -493,13 +395,15 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
     @SuppressWarnings("unused")
     private void onExpanded(final QModelIndex index) {
         resizeColumnToContents(0);
-        expandedItems.add(index);
+        final IExplorerTreeNode node = treeModel().findNodeByIndex(index);
+        controller.afterNodeExpanded(node);
     }
 
     @SuppressWarnings("unused")
     private void onCollapsed(final QModelIndex index) {
         resizeColumnToContents(0);
-        expandedItems.remove(index);
+        final IExplorerTreeNode node = treeModel().findNodeByIndex(index);
+        controller.afterNodeCollapsed(node);
     }
 
     private QSize getIconSize() {
@@ -525,9 +429,9 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         settings.beginGroup(SettingNames.EXPLORER_TREE_GROUP);
         settings.beginGroup(SettingNames.ExplorerTree.COMMON_GROUP);
         try {
-            color = settings.readQColor(SettingNames.ExplorerTree.Common.TREE_BACKGROUND);  //.value(SettingNames.ExplorerTree.Common.TREE_BACKGROUND, DefaultSettings.defaultTreeBackgroundColor);
-            fontcolor = settings.readQColor(SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_FONT_COLOR);
-            backgroundcolor = settings.readQColor(SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_BACKGROUND);
+            color = settings.readQColor(SettingNames.ExplorerTree.Common.TREE_BACKGROUND, QColor.white);
+            fontcolor = settings.readQColor(SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_FONT_COLOR, QColor.white);
+            backgroundcolor = settings.readQColor(SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_BACKGROUND, QColor.blue);
         } finally {
             settings.endGroup();
             settings.endGroup();
@@ -559,15 +463,12 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         if (!hasModel) {
             return true;
         }        
-        if (canLeaveNode(forced,null) || forced) {
+        if (controller.canLeaveNode(forced,null) || forced) {
             storeExplorerRootId();
             treeSettings.store();
-            nodesToRemove.clear();
-            expandedItems.clear();
+            controller.close();
             hasModel = false;
             super.setModel(null);
-            actions.disableAll();
-            actions.disconnectAll();
             Application.getInstance().getActions().settingsChanged.disconnect(this);
             return true;
         }
@@ -617,7 +518,7 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
     public boolean isNodeVisible(final IExplorerTreeNode node) {
         final IExplorerTreeNode parentNode = node.getParentNode();
         if (parentNode == null) {
-            return isRowHidden(0, null);
+            return !isRowHidden(0, null);
         }
         final QModelIndex index = treeModel().findIndexByNode(parentNode);
         if (index != null) {
@@ -703,43 +604,10 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         }
     }
 
-    private boolean canRemoveNow(final QModelIndex indexToRemove) {
-        for (QModelIndex index = currentIndex(); index != null; index = index.parent()) {
-            if (index.equals(indexToRemove)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     @Override
     public void removeNode(final IExplorerTreeNode node) {
-        final QModelIndex index = treeModel().findIndexByNode(node);
-        if (index != null) {
-            if (!canRemoveNow(index)) {
-                if (enteringNode) {//Removing current node inside of "enteringNode" method
-                    //just mark for remove here
-                    nodesToRemove.add(node);
-                    return;
-                }
-                lock();
-                try {
-                    if (canLeaveNode(false,null)) {
-                        nodesToRemove.add(node);
-                        enterNode(index, closeCurrent);
-                    } else {
-                        return;
-                    }
-                } finally {
-                    unlock();
-                }
-                setFocus();
-            } else {
-                expandedItems.remove(index);
-                treeModel().removeNode(node);
-            }
-            controller.refreshActions();
-        }
+        controller.removeNode(node);
     }
 
     @Override
@@ -770,30 +638,12 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
 
     @Override
     public boolean setCurrent(final IExplorerTreeNode node) {
-        if (node == null) {
-            return false;
-        }
-        final QModelIndex index = treeModel().findIndexByNode(node);
-        if (index == null) {
-            return false;
-        }
-        lock();
-        try {
-            if (canLeaveNode(false,node)) {
-                enterNode(index, closeCurrent);
-            } else {
-                return false;
-            }
-        } finally {
-            unlock();
-        }
-        setFocus();
-        return true;
+        return controller.setCurrent(node);
     }
 
     @Override
     public IExplorerTreeNode getCurrent() {
-        return treeModel().findNodeByIndex(currentIndex());
+        return hasModel ? treeModel().findNodeByIndex(currentIndex()) : null;
     }
 
     @Override
@@ -873,155 +723,6 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         final QModelIndex index = currentIndex();
         return index != null ? treeModel().findNodeByIndex(index) : null;
     }
-
-    private boolean canLeaveNode(final boolean forced, final IExplorerTreeNode nextNode) {
-        final IExplorerTreeNode currentNode;
-        if (viewManager != null && Utils.equals(currentNode(), viewManager.getCurrentNode())) {
-            currentNode = viewManager.getCurrentNode();
-        } else {
-            currentNode = null;
-        }
-
-        if (currentNode != null && currentNode.isValid()) {
-            final Model model = currentNode.getView().getModel();
-            if (model != null && !forced) {
-                if (sameNodes(currentNode,nextNode)){
-                    final Pid pid = ((EntityModel)nextNode.getView().getModel()).getPid();
-                    return model.canSafelyClean(new SilentlyCleanEntityModelController(pid));
-                }else{
-                    return model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE);
-                }                
-            }
-        }
-        return true;
-    }
-    
-    private static boolean sameNodes(final IExplorerTreeNode currentNode, final IExplorerTreeNode nextNode){
-        if (currentNode==null || nextNode==null || !currentNode.isValid() || !nextNode.isValid()){
-            return false;
-        }
-        final Model currentModel = currentNode.getView()==null ? null : currentNode.getView().getModel();
-        final Model nextModel = nextNode.getView()==null ? null : nextNode.getView().getModel();
-        if (currentModel instanceof GroupModel && currentModel.getView()!=null && nextModel instanceof EntityModel){
-            final EntityModel currentEntityModel = ((ISelector)currentModel.getView()).getCurrentEntity();
-            return currentEntityModel!=null && Objects.equals(currentEntityModel.getPid(), ((EntityModel)nextModel).getPid());
-        }
-        return false;
-    }
-    
-    private boolean enteringNode;
-
-    private void enterNode(final QModelIndex index, final boolean closeCurrent) {
-        IExplorerTreeNode targetNode = treeModel().findNodeByIndex(index);
-        if (targetNode != null) {
-            if (enteringNode) {
-                throw new IllegalStateException("Recursive call is not supported");
-            }
-            enteringNode = true;
-            try {
-                targetNode = getActualTargetNode(targetNode);
-                {//clean removed nodes
-                    QModelIndex indexToRemove;
-                    for (IExplorerTreeNode node : nodesToRemove) {
-                        indexToRemove = treeModel().findIndexByNode(node);
-                        if (indexToRemove != null) {
-                            expandedItems.remove(indexToRemove);
-                            treeModel().removeNode(node);
-                        }
-                    }
-                    nodesToRemove.clear();
-                }
-
-                final QModelIndex actualIndex = treeModel().findIndexByNode(targetNode);
-
-                setCurrentIndex(actualIndex);
-                if (environment.getStatusBar()!=null){
-                    environment.getStatusBar().setCurrentExplorerTreeNode(targetNode);
-                }
-
-                /*         We can safely apply updates here (if any) but it takes too long time to do it automatically
-
-                if (Environment.getDefManager().isOldVersionModeEnabled() &&
-                !Environment.getDefManager().isKernelChanged()
-                ){
-                final Collection<Id> changedDefinitions = Environment.getDefManager().checkForUpdates();
-                try{
-                Environment.getTreeManager().updateVersion(changedDefinitions);
-                return;
-                }
-                catch(CantUpdateVersionException ex){
-                //continue open in old version
-                }
-                }
-                 */
-                        
-                if (viewManager != null) {
-                    viewManager.openView(targetNode, closeCurrent);
-                    if (!hasModel){//RADIX-9674 
-                        return;
-                    }
-                }
-                if (!nodesToRemove.isEmpty() && nodeWasRemoved(targetNode)) {
-                    enteringNode = false;
-                    enterNode(actualIndex.parent(), closeCurrent);
-                } else {
-                    controller.refreshActions();                    
-                }
-            } finally {
-                enteringNode = false;
-            }
-        }
-    }
-
-    private boolean nodeWasRemoved(final IExplorerTreeNode nodeForCheck) {
-        for (IExplorerTreeNode node = nodeForCheck; node != null; node = node.getParentNode()) {
-            if (nodesToRemove.contains(node)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private IExplorerTreeNode getActualTargetNode(final IExplorerTreeNode candidate) {
-        if (nodesToRemove.isEmpty() || !nodeWasRemoved(candidate)) {
-            return candidate;
-        }
-
-        final IExplorerTreeNode parent = candidate.getParentNode();
-        IExplorerTreeNode result = null,
-                child;
-        final List<IExplorerTreeNode> childs = parent.getChildNodes();
-        final int itemCount = childs.size();
-
-        //search for not removed sibiling node below candidate
-        for (int i = childs.indexOf(candidate) + 1; i < itemCount && result == null; i++) {
-            child = childs.get(i);
-            if (!nodeWasRemoved(child)) {
-                result = child;
-            }
-        }
-
-        if (result == null) //search for not removed sibiling node above candidate
-        {
-            for (int i = childs.indexOf(candidate) - 1; i >= 0 && result == null; i--) {
-                child = childs.get(i);
-                if (!nodeWasRemoved(child)) {
-                    result = child;
-                }
-            }
-        }
-
-        if (result == null) {
-            //if appropriate sibiling node was not found than return parent node
-            for (IExplorerTreeNode node = parent; result == null && node != null; node = node.getParentNode()) {
-                if (!nodeWasRemoved(node)) {
-                    result = node;
-                }
-            }
-        }
-
-        return result;
-    }
     
     public final void goToNode(final IExplorerTreeNode node){
         if (node!=null){
@@ -1035,8 +736,7 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
 
     public void removeCurrentNode() {
         controller.removeCurrentNode();
-        resizeColumnToContents(0);
-    }        
+    }
 
     @Override
     protected void mousePressEvent(final QMouseEvent event) {
@@ -1055,14 +755,15 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         QModelIndex curIndex = currentIndex();
         final boolean someButton = event.buttons().isSet(MouseButton.RightButton) || event.buttons().isSet(MouseButton.LeftButton);
         if (index != null) {
+            final IExplorerTreeNode node = treeModel().findNodeByIndex(index);
             event.accept();
             lock();
             try {
-                if (!index.equals(curIndex) && someButton && !canLeaveNode(false,treeModel().findNodeByIndex(index))) {
+                if (!index.equals(curIndex) && someButton && !controller.canLeaveNode(false,node)) {
                     return;
                 }
                 if (!index.equals(curIndex)) {
-                    enterNode(index, closeCurrent);                    
+                    controller.enterNode(node, closeCurrent);                    
                 }
             } catch (Throwable ex) {
                 if (viewManager != null) {
@@ -1166,8 +867,9 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         if (index != null && index != currentIndex()) {
             lock();
             try {
-                if (canLeaveNode(false,treeModel().findNodeByIndex(index))) {
-                    enterNode(index, closeCurrent);
+                final IExplorerTreeNode node = treeModel().findNodeByIndex(index);
+                if (controller.canLeaveNode(false, node)) {
+                    controller.enterNode(node, closeCurrent);
                 } else {
                     return null;
                 }
@@ -1190,12 +892,9 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
         if (hasModel) {
             //closeModel was not called
             treeSettings.store();
-            actions.disableAll();
-            actions.disconnectAll();
             Application.getInstance().getActions().settingsChanged.disconnect(this);
-            nodesToRemove.clear();
-            expandedItems.clear();
-            hasModel = false;
+            controller.close();
+            hasModel = false;            
             super.setModel(null);
         }
         nodeUnderMouseCursor = null;
@@ -1208,28 +907,37 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
             if (progress != null) {
                 progress.setText(getEnvironment().getMessageProvider().translate("ExplorerTree", "Updating list of accessible explorer items"));
             }
-            accessibleExplorerItems.clear();
-            try {                
-                accessibleExplorerItems.addAll(explorerRoot.getVisibleExplorerItems());
-            } catch (Exception exception) {
+            List<Id> currentAccessibleExplorerItems = Collections.emptyList();
+            try{
+                currentAccessibleExplorerItems = explorerRoot.getVisibleExplorerItems();
+                accessibleExplorerItems.clear();
+                accessibleExplorerItems.addAll(currentAccessibleExplorerItems);                
+            }catch (Exception exception) {
                 final String errMessage = getEnvironment().getMessageProvider().translate("ExplorerError", "Can't get a list of accessible explorer items: %s\n%s");
                 final String errReason = ClientException.getExceptionReason(environment.getMessageProvider(), exception);
                 final String errStack = ClientException.exceptionStackToString(exception);
-                environment.getTracer().error(String.format(errMessage, errReason, errStack));
-                accessibleExplorerItems.add(treeModel().getRootNode().getOwnerDefinitionId());
+                environment.getTracer().error(String.format(errMessage, errReason, errStack));                
             }
         }
         if (progress != null) {
             progress.setText(getEnvironment().getMessageProvider().translate("ExplorerTree", "Preparing for Update"));
         }
+                
         final List<Stack<Integer>> nodesToExpand = new ArrayList<>();
-        for (QModelIndex index : expandedItems) {
-            nodesToExpand.add(indexToPath(index));
+        {
+            final Collection<IExplorerTreeNode> nodes = controller.getExpandedNodes();
+            QModelIndex index;
+            for (IExplorerTreeNode expandedNode: nodes) {
+                index = treeModel().findIndexByNode(expandedNode);
+                if (index!=null){
+                    nodesToExpand.add(indexToPath(index));
+                }
+            }
+            controller.clearExpandedNodes();
         }
-        expandedItems.clear();
 
         final Stack<Integer> currentNode = indexToPath(currentIndex());
-
+        controller.clearHistory();
         setVisible(false);
         try {
             treeModel().reinit(progress);
@@ -1260,7 +968,10 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
                 progress.setValue(0);
                 progress.setMaximumValue(0);
             }
-            enterNode(currentIndex, true);
+            final IExplorerTreeNode node = treeModel().findNodeByIndex(currentIndex);
+            if (node!=null){
+                controller.enterNode(node, true);
+            }
         }
     }
 
@@ -1307,7 +1018,20 @@ public class ExplorerTree extends QTreeView implements IExplorerTree {
     }
 
     @Override
-    public Actions getActions() {
-        return actions;
+    public IExplorerTree.Actions getActions() {
+        return controller.getActions();
     }        
+
+    @Override
+    public ExplorerTreeState writeStateToXml() {
+        final ExplorerTreeState state = controller.writeStateToXml();
+        state.setRootExplorerItemIds(Collections.singletonList(treeModel().getRootNode().getExplorerItemId()));
+        return state;
+    }
+
+    @Override
+    public void restoreStateFromXml(final ExplorerTreeState state) {        
+        controller.restoreState(state);
+        
+    }      
 }

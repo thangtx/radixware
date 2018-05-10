@@ -53,6 +53,7 @@ import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 import org.radixware.kernel.common.defs.dds.DdsIndexDef.ColumnsInfo;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.defs.dds.DdsViewDef;
 import org.radixware.kernel.common.enums.EOrder;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.resources.RadixWareIcons;
@@ -665,24 +666,34 @@ public class ColumnsTable extends JTable {
                 public void run() {
                     DdsColumnDef column = model.getColumnModelAt(idx).column;
                     DdsTableDef ownerTable = column.getOwnerModel().getTables().findById(column.getOwnerTable().getId());
-                    final DdsColumnDef original = ownerTable.getColumns().getLocal().findById(column.getId());
-                    if (original != null) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                final FindUsagesCfg cfg = FindUsagesCfgPanel.askCfg(original);
-                                if (cfg != null) {
-                                    RequestProcessor.getDefault().post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            FindUsages.search(cfg);
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
+                    DdsColumnDef originalColumn = null;
+                    if (ownerTable != null){
+                        originalColumn = ownerTable.getColumns().getLocal().findById(column.getId());
+                    } else {
+                        DdsViewDef ownerView = column.getOwnerModel().getViews().findById(column.getOwnerTable().getId());
+                        if (ownerView != null){
+                            originalColumn = ownerView.getColumns().getLocal().findById(column.getId());
+                        }
                     }
+                    
+                    if (originalColumn != null) {
+                        final DdsColumnDef original = originalColumn;
+                        SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final FindUsagesCfg cfg = FindUsagesCfgPanel.askCfg(original);
+                                    if (cfg != null) {
+                                        RequestProcessor.getDefault().post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                FindUsages.search(cfg);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                    }
+                        
                 }
             });
 

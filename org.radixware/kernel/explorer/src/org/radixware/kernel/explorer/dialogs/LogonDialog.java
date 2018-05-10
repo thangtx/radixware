@@ -14,10 +14,12 @@ package org.radixware.kernel.explorer.dialogs;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QEventFilter;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QTimer;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QLayout.SizeConstraint;
 import com.trolltech.qt.gui.QMessageBox;
+import com.trolltech.qt.gui.QShowEvent;
 import com.trolltech.qt.gui.QWidget;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +29,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
-import org.radixware.kernel.common.auth.AuthUtils;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.client.eas.AbstractSslContextFactory;
@@ -195,14 +197,17 @@ public class LogonDialog extends ExplorerDialog {
             return false;
         }
     };
-    private boolean readyToLogin;
     
+    private boolean readyToLogin;
+    private boolean autoLogin;
     private String resultUserName;
-    private char[] resultPassword;
     private ConnectionOptions resultConnectionOptions;
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public LogonDialog(final IClientEnvironment environment, final QWidget parent, final Connections connections, final ISecretStore pwdStore) {
+    public LogonDialog(final IClientEnvironment environment, 
+                                 final QWidget parent, 
+                                 final Connections connections, 
+                                 final ISecretStore pwdStore) {
         super(environment, parent, false);
         setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, true);
         this.connections = connections;
@@ -215,6 +220,8 @@ public class LogonDialog extends ExplorerDialog {
         final String lastConnections = getEnvironment().getConfigStore().readString(SettingNames.SYSTEM + "/" + LAST_CONNECTIONS_KEY, null);
         connectionNamesByOrder = (lastConnections != null ? ArrStr.fromValAsStr(lastConnections) : new ArrStr());
         fillConnections();
+        uiCreator.cbConnection.setCurrentIndex(0);
+        onIndexChanged();
         uiCreator.cbConnection.currentIndexChanged.connect(this, "onIndexChanged()");
         readParams();
     }
@@ -267,28 +274,37 @@ public class LogonDialog extends ExplorerDialog {
             uiCreator.cbConnection.addItem(Application.translate("LogonDialog", "<No connections>"), null);
         }
     }
-
-    private void readParams() {
+    
+    public void setConnectionName(final String connectionName){
         int currentIndex = 0;
-        final String connectionName = RunParams.getConnectionName();
         if (connectionName != null) {
             ConnectionOptions connection;
             for (int i = 0; i < uiCreator.cbConnection.count(); i++) {
                 connection = (ConnectionOptions) uiCreator.cbConnection.itemData(i);
                 if (connection != null && connection.getName().equals(connectionName)) {
                     currentIndex = i;
+                    uiCreator.cbConnection.setCurrentIndex(currentIndex);
                     readyToLogin = true;
                     break;
                 }
             }
+        }        
+    }
+    
+    public void setUserName(final String userName){
+        if (userName!=null){
+            final ConnectionOptions connection = getCurrentConnection();
+            if (connection==null || connection.getKerberosOptions()==null || !SystemTools.isWindows){
+                uiCreator.leUserName.setText(userName);
+            }            
         }
-        uiCreator.cbConnection.setCurrentIndex(currentIndex);
-        onIndexChanged();
+    }
+    
+    public void setAutoLogin(final boolean autoLogin){
+        this.autoLogin = autoLogin;
+    }
 
-        if (RunParams.getUserName() != null) {
-            uiCreator.leUserName.setText(RunParams.getUserName());
-        }
-
+    private void readParams() {
         if (RunParams.getPassword() != null) {
             uiCreator.lePassword.setText(RunParams.getPassword());
         }
@@ -307,9 +323,6 @@ public class LogonDialog extends ExplorerDialog {
     }
 
     public void clear() {
-        if (resultPassword!=null){
-            Arrays.fill(resultPassword, '\0');
-        }
         resultConnectionOptions = null;
     }
     
@@ -328,8 +341,12 @@ public class LogonDialog extends ExplorerDialog {
 
     public IEasClient createEasClient(final ConnectionOptions connection) throws IllegalUsageError, KeystoreControllerException, CertificateUtilsException {
         if (connection.getSslOptions() == null) {
-            return new EasClient(getEnvironment(), connection.getInitialServerAddresses(),
-                    connection.getStationName(), connection.getAuthType());
+            return new EasClient(getEnvironment(), 
+                                            connection.getInitialServerAddresses(),
+                                            connection.getStationName(), 
+                                            connection.getAuthType(), 
+                                            connection.getAddressTranslationFilePath(),
+                                            connection.isSapDiscoveryEnabled());
         } else {
             final AbstractSslContextFactory sslContextFactory;
             if (connection.getAuthType()==EAuthType.KERBEROS){
@@ -352,21 +369,18 @@ public class LogonDialog extends ExplorerDialog {
                     }
                 };
             }
-            final char[] pwd = connection.getAuthType()==EAuthType.KERBEROS ? new char[]{} : resultPassword;
             final IEasClient easClient = new EasClient(getEnvironment(), 
                                                        connection.getInitialServerAddresses(),
                                                        connection.getStationName(), 
                                                        connection.getAuthType(),
+                                                       connection.getAddressTranslationFilePath(),
+                                                       connection.isSapDiscoveryEnabled(),
                                                        sslContextFactory,
-                                                       pwd);
-            if (pwd!=null){
-                Arrays.fill(pwd, ' ');
-            }
+                                                       connection.getSslOptions().useSSLAuth() ? pwdStore : null);
             return easClient;
         }
     }
 
-    @SuppressWarnings("unused")
     private void onIndexChanged() {
         final ConnectionOptions connection = getCurrentConnection();
         if (connection != null) {
@@ -461,6 +475,9 @@ public class LogonDialog extends ExplorerDialog {
         if (connections.size() == 0) {
             connectionsDialog.createConnection();
         } else {
+            if (uiCreator.cbConnection.currentIndex() >= 0 && uiCreator.cbConnection.itemData(uiCreator.cbConnection.currentIndex()) instanceof ConnectionOptions) {
+                connectionsDialog.setCurrentConnection((ConnectionOptions) uiCreator.cbConnection.itemData(uiCreator.cbConnection.currentIndex()));
+            }
             connectionsDialog.exec();
         }
         fillConnections();
@@ -477,7 +494,17 @@ public class LogonDialog extends ExplorerDialog {
         getButton(EDialogButtonType.OK).setEnabled(!uiCreator.lePassword.text().isEmpty() && getCurrentConnection() != null);
     }
 
-    @SuppressWarnings("unused")
+    @Override
+    protected void showEvent(QShowEvent arg__1) {
+        super.showEvent(arg__1);
+        if (Boolean.getBoolean("_rdx.explorer.autologin") && getButton(EDialogButtonType.OK).isEnabled()) {
+           QTimer timer = new QTimer(this);
+           timer.setSingleShot(true);
+           timer.timeout.connect(this, "onAccepted()");
+           timer.start(1);
+        }
+    }
+    
     private void onAccepted() {
         userName2Password();
         if (!RunParams.isDevelopmentMode() && uiCreator.lePassword.text().isEmpty() && uiCreator.lePassword.isEnabled()) {
@@ -535,12 +562,20 @@ public class LogonDialog extends ExplorerDialog {
                     }                    
                 }else{//Password auth
                     final char[] pwd = getPassword();
-                    final byte[] pwdHash = AuthUtils.calcPwdHash(getCurrentUserName(), pwd);
+                    final PasswordHash pwdHash = PasswordHash.Factory.newInstance(getCurrentUserName(), pwd);
                     Arrays.fill(pwd, ' ');
-                    final byte[] encryptedPwdHash = new TokenProcessor().encrypt(pwdHash);
-                    Arrays.fill(pwdHash, (byte)0);
-                    pwdStore.setSecret(encryptedPwdHash);
-                    Arrays.fill(encryptedPwdHash, (byte)0);
+                    try{
+                        final byte[] pwdHashData = pwdHash.export();
+                        try{
+                            final byte[] encryptedPwdHash = new TokenProcessor().encrypt(pwdHashData);                            
+                            pwdStore.setSecret(encryptedPwdHash);
+                            Arrays.fill(encryptedPwdHash, (byte)0);
+                        }finally{
+                            Arrays.fill(pwdHashData, (byte)0);
+                        }
+                    }finally{
+                        pwdHash.erase();
+                    }
                 }
                 connection.setConnectedUserName(getCurrentUserName());
             }
@@ -585,30 +620,13 @@ public class LogonDialog extends ExplorerDialog {
 
     @Override
     public int exec() {
-        if (readyToLogin) {
-            if (uiCreator.lePassword.text().isEmpty() && uiCreator.lePassword.isEnabled()) {
-                if (!RunParams.needToRestoreConnection()) {
-                    return super.exec();
-                }
-                RunParams.removeRestoringConnectionParam();
-                final EnterPasswordDialog enterPwdDialog = new EnterPasswordDialog(getEnvironment(), this);
-
-                final String enterPasswordMessage;
-                if (getCurrentConnection().getSslOptions() != null && getCurrentConnection().getSslOptions().useSSLAuth()) {
-                    enterPasswordMessage =
-                            Application.translate("ExplorerDialog", "Please enter RSA key access password");
-                } else {
-                    enterPasswordMessage =
-                            Application.translate("ExplorerDialog", "Please enter password for '%s' user account");
-                }
-                enterPwdDialog.setMessage(String.format(enterPasswordMessage, getCurrentUserName()));
-                if (enterPwdDialog.exec() == QDialog.DialogCode.Accepted.value()) {
-                    uiCreator.lePassword.setText(enterPwdDialog.getPassword());
-                } else {
-                    return QDialog.DialogCode.Rejected.value();
-                }
-            }
-            onAccepted();
+        final ConnectionOptions connection = getCurrentConnection();
+        if (connection!=null && readyToLogin && autoLogin
+            && (!pwdStore.isEmpty() || canUseCachedKrbTicked(connection))) {
+            getEnvironment().getTracer().getProfile().setDefaultSeverity(connection.getEventSeverity());
+            resultUserName = getCurrentUserName();
+            connection.setConnectedUserName(resultUserName);
+            resultConnectionOptions = connection;
             return QDialog.DialogCode.Accepted.value();
         }
         return super.exec();
@@ -618,11 +636,10 @@ public class LogonDialog extends ExplorerDialog {
     public void done(final int result) {
         if (result==QDialog.DialogCode.Accepted.value()){
             resultUserName = getCurrentUserName();
-            resultPassword = getPassword();            
             resultConnectionOptions = getCurrentConnection();
         }
         super.done(result);
-    }        
+    }
 
     private boolean canUseCachedKrbTicked(final ConnectionOptions connection) {
         final String userName = getCurrentUserName();

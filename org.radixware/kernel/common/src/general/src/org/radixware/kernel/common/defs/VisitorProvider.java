@@ -40,5 +40,9 @@ public abstract class VisitorProvider implements IFilter<RadixObject> {
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
+    
+    public boolean isClassContainer(Class c) {
+        return true;
+    }
 
 }

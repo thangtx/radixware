@@ -40,7 +40,7 @@ public class AdsCompilationUnitScope extends CompilationUnitScope {
         super(unit, ws.getLookupEnvironment());
         this.context = unit.contextAdsDefinition;
         this.ws = ws;
-        final char[][] basePackage = JavaSourceSupport.getPackageNameComponents((Definition) unit.contextAdsDefinition, unit.getUsagePurpose());
+        final char[][] basePackage = JavaSourceSupport.getPackageNameComponents((Definition) unit.contextAdsDefinition, false, unit.getUsagePurpose());
         if (unit.contextAdsDefinition instanceof AbstractXmlDefinition) {
             String prefix = String.valueOf(CharOperations.merge(basePackage, '.'));
             if (unit.extPath.startsWith(prefix + ".impl.")) {

@@ -262,4 +262,36 @@ public abstract class AbstractFileDirResource implements IFileDirResource{
             delete(dirPath);
         }
     }
+
+    /**
+     * Получение пути к домашней директории пользователя.
+     * @return путь к домашней директории пользователя
+     */    
+    @Override
+    public final String getUserHomeDirPath() {
+        return System.getProperty("user.home");
+    }
+
+    /**
+     * Получение пути к каталогу Downloads.
+     * Для desktop клиента, который запущен в О.С. Windows метод вернет значение ключа реестра
+     * HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\{374DE290-123F-4565-9164-39C4925E467B}.
+     * В остальных случаях метод вернет результат конкатенации путь к директории Downloads внутри домашней директории пользователя.
+     * @return путь к директории Downloads
+     */     
+    @Override
+    public String getUserDownloadsDirPath() {
+        return Paths.get(getUserHomeDirPath(), "Downloads").toAbsolutePath().toString();
+    }
+
+    @Override    
+    /**
+     * Проверяет, что существует директория, путь к которой указан в параметре <code>dirPath<code>.
+     * Если указанный путь является путем к файлу, а не к директории, то метод вернет <code>false<code>.
+     * @param dirPath путь к директории
+     * @return <code>true</code> если указанная директория существует, <code>false<code> в противном случае
+     */    
+    public final boolean isExists(final String dirPath) {
+        return new File(dirPath).isDirectory();
+    }        
 }

@@ -33,6 +33,7 @@ import org.radixware.kernel.explorer.env.ExplorerSettings;
 
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.explorer.env.ImageManager;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
 public class ExplorerTreeModel extends QAbstractItemModel {
@@ -49,6 +50,9 @@ public class ExplorerTreeModel extends QAbstractItemModel {
     }        
 
     public QModelIndex findIndexByNode(final IExplorerTreeNode node) {
+        if (node==root){
+            return index(0,0,null);
+        }
         return node != null ? indexes.get(node.getIndexInExplorerTree()) : null;
     }
 
@@ -67,14 +71,7 @@ public class ExplorerTreeModel extends QAbstractItemModel {
                 return node.getTitle();
             }        
             if (!node.isValid()) {
-                switch (role) {
-                    case Qt.ItemDataRole.FontRole:
-                        return QApplication.font();
-                    case Qt.ItemDataRole.TextAlignmentRole:
-                        return new Qt.Alignment(Qt.AlignmentFlag.AlignLeft);
-                    default:
-                        return null;
-                }
+                return getDataForInvalidNode(node, role);
             }
             final ExplorerSettings settings = (ExplorerSettings)root.getExplorerTree().getEnvironment().getConfigStore();
             final ExplorerItemView view = node.getView();
@@ -100,15 +97,19 @@ public class ExplorerTreeModel extends QAbstractItemModel {
                     }
                     case Qt.ItemDataRole.BackgroundRole: {
                         final QColor color = settings.readQColor(SettingNames.ExplorerTree.Common.BACKGROUND_COLOR);
-                        return color != null ? color : null;
+                        return color == null ? QColor.white : color;
                     }
                     case Qt.ItemDataRole.ForegroundRole: {
                         final QColor color = settings.readQColor(SettingNames.ExplorerTree.Common.FOREGROUND_COLOR);
-                        return color != null ? color : null;
+                        return color == null ? QColor.black : color;
                     }
                     case Qt.ItemDataRole.FontRole: {
                         final QFont font = settings.readQFont(SettingNames.ExplorerTree.Common.FONT);
-                        return font != null ? font : QApplication.font();
+                        return font == null ? QApplication.font() : font;
+                    }
+                    case WidgetUtils.MODEL_ITEM_CELL_NAME_DATA_ROLE:
+                    case WidgetUtils.MODEL_ITEM_ROW_NAME_DATA_ROLE:{
+                        return node.getName();
                     }
                     default:
                         return null;
@@ -122,17 +123,27 @@ public class ExplorerTreeModel extends QAbstractItemModel {
         catch(Throwable ex){
             final String title = environment.getMessageProvider().translate("ExplorerException", "Can't get data for explorer tree node");
             environment.getTracer().error(title, ex);
-            
-            switch (role) {
-                case Qt.ItemDataRole.FontRole:
-                    return QApplication.font();
-                case Qt.ItemDataRole.TextAlignmentRole:
-                    return new Qt.Alignment(Qt.AlignmentFlag.AlignLeft);
-                case Qt.ItemDataRole.DisplayRole:
-                    return "????";
-                default:
-                    return null;
-            }            
+            return getDataForInvalidNode(node, role);
+        }
+    }
+    
+    private static Object getDataForInvalidNode(final ExplorerTreeNode node, final int role){
+        switch (role) {
+            case Qt.ItemDataRole.FontRole:
+                return QApplication.font();
+            case Qt.ItemDataRole.TextAlignmentRole:
+                return new Qt.Alignment(Qt.AlignmentFlag.AlignLeft);
+            case Qt.ItemDataRole.DisplayRole:
+                return "????";
+            case Qt.ItemDataRole.BackgroundRole:
+                return QColor.white;
+            case Qt.ItemDataRole.ForegroundRole:
+                return QColor.red;                    
+            case WidgetUtils.MODEL_ITEM_CELL_NAME_DATA_ROLE:
+            case WidgetUtils.MODEL_ITEM_ROW_NAME_DATA_ROLE:
+                return node.getName();
+            default:
+                return null;
         }
     }
 

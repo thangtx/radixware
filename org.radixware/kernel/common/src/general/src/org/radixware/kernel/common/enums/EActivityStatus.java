@@ -20,7 +20,8 @@ import org.radixware.kernel.common.types.Id;
 public enum EActivityStatus implements IKernelStrEnum {
     RUNNING("Running", "Running"),
     INACTIVE("Inactive", "Inactive"),
-    STOPPED("Stopped", "Stopped");
+    STOPPED("Stopped", "Stopped"),
+    POSTPONED("Postponed", "Postponed");
     
     private final String name;
     private final String value;

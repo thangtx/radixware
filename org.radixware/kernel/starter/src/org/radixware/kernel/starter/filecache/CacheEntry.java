@@ -18,15 +18,24 @@ public abstract class CacheEntry implements Comparable<CacheEntry> {
 
     static final long IDLE_TIMEOUT = 10 * 60 * 1000; // 10 min in millesecs
     private volatile long expireTime;
+    private volatile long expireTimeout;// 0: IDLE_TIMEOUT, <0: infinity timeout
 
     public abstract void close() throws IOException;
+    
+    public void setExpireTimeout(final long timeout){
+        expireTimeout = timeout;
+    }
 
-    public void touch(final long currentTime) {
-        expireTime = currentTime + IDLE_TIMEOUT;
+    public void touch(final long currentTime) {        
+        if (expireTimeout==0){
+            expireTime = currentTime + IDLE_TIMEOUT;
+        }else if (expireTimeout>0){
+            expireTime = currentTime + expireTimeout;
+        }
     }
 
     public boolean isExpired(final long currentTime) {
-        return expireTime <= currentTime;
+        return expireTimeout>=0 && expireTime <= currentTime;
     }
 
     public abstract byte[] getData(String name) throws IOException;

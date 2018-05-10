@@ -181,6 +181,33 @@
     <Package Id="pkgQUZKSG2MOXOBDFKUAAMPGXUWTQ" Name="RDX_Entity" PurityLevelMask="0">
       <Header>
         <Item>
+          <Prototype Id="dprLYET3DPNLVBYZJHEEWT2MVGXUA" FunctionId="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprUSNBSMVMRJD3VGTVCZEMIBPUYQ" FunctionId="dfnNJ734SER7JGTHGBY4HZQZJ3OLI"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprIYBG6GCJ6BH33CREJUCO34BJCE" FunctionId="dfnA4ZM7VSLVNENBGSSU6JSSMJMN4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprE7IBJHFMPBCX3BWMTO6V3Z4EDU" FunctionId="dfnPWGMHTGIQVCJ5EPEKARATWVXE4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprRNZAJYKS6VE3RFNBS6AAXFSGYQ" FunctionId="dfnG3ULF2EUTRCKTFRLOZRPJIORLI"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprP47TNRECTFEINBOMEYSAHNE2AU" FunctionId="dfn3OLT3HZHTFFGTNQSTU57JGZQRU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprBKNRAC677BB5TNKV7Z5T7P55WI" FunctionId="dfnIKXEUBQW3JCQFEKCN6X2KA6FDA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprOMVVRQZPNPNRDJJNACQMTAIZT4" FunctionId="dfnOMVVRQZPNPNRDJJNACQMTAIZT4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprZIA32UHCVZE2JI4SCHYJY4DANM" FunctionId="dfnJBWTT7YFOJFKTOW4W6L6IUHSAE"/>
+        </Item>
+        <Item>
           <Prototype Id="dprPHS6NGSMOXOBDFKUAAMPGXUWTQ" FunctionId="dfnPHS6NGSMOXOBDFKUAAMPGXUWTQ"/>
         </Item>
         <Item>
@@ -191,24 +218,6 @@
         </Item>
         <Item>
           <Prototype Id="dprF5YSB7NEANAPRNGZHNEDPGOI4Q" FunctionId="dfnF5YSB7NEANAPRNGZHNEDPGOI4Q"/>
-        </Item>
-        <Item>
-          <CustomText Id="dtxTU3GY5HPRFADTMHKAFBPILJOCU" Name="scheduledOnDelUpOwnerQueue">
-            <Text>
-              <xsc:Item>
-                <xsc:Sql>type TScheduledOnDelUpOwner is record (
-   sOwnerEntityId  varchar2(100),
-   sOwnerPid  varchar2(250)
-);
-type TScheduledOnDelUpOwnerQueue is table of TScheduledOnDelUpOwner index by binary_integer;
-scheduledOnDelUpOwnerQueue TScheduledOnDelUpOwnerQueue;
-</xsc:Sql>
-              </xsc:Item>
-            </Text>
-          </CustomText>
-        </Item>
-        <Item>
-          <Prototype Id="dprOMVVRQZPNPNRDJJNACQMTAIZT4" FunctionId="dfnOMVVRQZPNPNRDJJNACQMTAIZT4"/>
         </Item>
         <Item>
           <Prototype Id="dprQ2KDTCHAWFDOBA526NRTWWY2KA" FunctionId="dfnYRYIGT5LZJFJZIJS774H3A2IZM"/>
@@ -310,37 +319,222 @@ scheduledOnDelUpOwnerQueue TScheduledOnDelUpOwnerQueue;
           <Prototype Id="dpr6Y2KYLAF3VCPNCIFBU3ENSZKSU" FunctionId="dfnZ3MVAHXICRDINE54WWVK5JUQGI"/>
         </Item>
         <Item>
-          <Prototype Id="dprLYET3DPNLVBYZJHEEWT2MVGXUA" FunctionId="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ"/>
-        </Item>
-        <Item>
-          <Prototype Id="dprUSNBSMVMRJD3VGTVCZEMIBPUYQ" FunctionId="dfnNJ734SER7JGTHGBY4HZQZJ3OLI"/>
-        </Item>
-        <Item>
-          <Prototype Id="dprIYBG6GCJ6BH33CREJUCO34BJCE" FunctionId="dfnA4ZM7VSLVNENBGSSU6JSSMJMN4"/>
-        </Item>
-        <Item>
-          <Prototype Id="dprE7IBJHFMPBCX3BWMTO6V3Z4EDU" FunctionId="dfnPWGMHTGIQVCJ5EPEKARATWVXE4"/>
-        </Item>
-        <Item>
-          <Prototype Id="dprRNZAJYKS6VE3RFNBS6AAXFSGYQ" FunctionId="dfnG3ULF2EUTRCKTFRLOZRPJIORLI"/>
-        </Item>
-        <Item>
-          <Prototype Id="dprP47TNRECTFEINBOMEYSAHNE2AU" FunctionId="dfn3OLT3HZHTFFGTNQSTU57JGZQRU"/>
-        </Item>
-        <Item>
           <Prototype Id="dprLGWGPZJBBVGWDF3GAE6VSDT54A" FunctionId="dfn2DILFDWE4NE6VHRGNLRBKWUWGI"/>
         </Item>
       </Header>
       <Body>
         <Item>
-          <CustomText Id="dtxAAUVV2QMZRHK7AH3CPFHYGF6VI" Name="vals">
-            <Text>
+          <Function Id="dfnNJ734SER7JGTHGBY4HZQZJ3OLI" Name="createPid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>TYPE StrByInt IS TABLE OF varchar2(100) INDEX BY BINARY_INTEGER;
-upValTabByValType StrByInt;</xsc:Sql>
+                <xsc:Sql>is
+begin
+ return </xsc:Sql>
               </xsc:Item>
-            </Text>
-          </CustomText>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ">
+                  <xsc:Sql>RDX_Entity.createPid</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(To_Char(field));
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpMOLCSGNWHRGHJK4TIKTRVD3ZV4" Name="field" DbType="number" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ" Name="createPid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnOMVVRQZPNPNRDJJNACQMTAIZT4">
+                  <xsc:Sql>RDX_Entity.packPidStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(field);
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpQQQFLQSESBDZDPJDI7QKY7WCM4" Name="field" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnA4ZM7VSLVNENBGSSU6JSSMJMN4" Name="createPid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ">
+                  <xsc:Sql>RDX_Entity.createPid</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(To_Char(field));
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpFAKKSXYTRJCSVID3Z7Q6DQWAE4" Name="field" DbType="timestamp" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnPWGMHTGIQVCJ5EPEKARATWVXE4" Name="addField2Pid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ if (currentPid is null) then
+   return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnOMVVRQZPNPNRDJJNACQMTAIZT4">
+                  <xsc:Sql>RDX_Entity.packPidStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(field);
+ else 
+   return currentPid || '~' || </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnOMVVRQZPNPNRDJJNACQMTAIZT4">
+                  <xsc:Sql>RDX_Entity.packPidStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(field);
+ end if;  
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpHV2M4UYJVREYBPPUWVICF4AVPE" Name="currentPid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpLMJPGI36GVAONOAIXV6KCSSSNE" Name="field" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnG3ULF2EUTRCKTFRLOZRPJIORLI" Name="addField2Pid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnPWGMHTGIQVCJ5EPEKARATWVXE4">
+                  <xsc:Sql>RDX_Entity.addField2Pid</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(currentPid, To_Char(field));
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp65ZWHFGC4RBUVDW7UQ43CAA4ZI" Name="currentPid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpW3XRLGASJNHA7O5QTUX3SL2BU4" Name="field" DbType="number" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn3OLT3HZHTFFGTNQSTU57JGZQRU" Name="addField2Pid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnPWGMHTGIQVCJ5EPEKARATWVXE4">
+                  <xsc:Sql>RDX_Entity.addField2Pid</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(currentPid, To_Char(field));
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpH7QAAWHOSVAEDFLABOH3GNBIE4" Name="currentPid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpD7FFUPS2WJEVTHBAW2RQ5MXRUM" Name="field" DbType="timestamp" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnIKXEUBQW3JCQFEKCN6X2KA6FDA" Name="createQualifiedPid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+   return  tableGuid || chr(10) || objPid;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpUINYG4HIMVEWPAQKEHKJHIPVLU" Name="tableGuid" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpRTF2YHW7JNB4XK6DXCNX4QHC2M" Name="objPid" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnOMVVRQZPNPNRDJJNACQMTAIZT4" Name="packPidStr" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  res varchar2(32767);
+begin
+  res := Replace(s,   CHR(92),  CHR(92)|| CHR(92));   -- '\' => '\\'
+  res := Replace(res, CHR(126), CHR(92)|| CHR(126)); -- '~' => '\~'
+  res := Replace(res, CHR(13),  CHR(92)|| 'r');      -- '\r' => '\\r'
+  res := Replace(res, CHR(10),  CHR(92)|| 'n');      -- '\n' => '\\n'
+  res := Replace(res, CHR(9),   CHR(92)|| 't');      -- '\t' => '\\t'
+  res := Replace(res, ' ',      CHR(92)|| ' ');     -- ' '  => '\ '
+  return res;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpODE256SC5RGFJDRQFPQFK3QERM" Name="s" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnJBWTT7YFOJFKTOW4W6L6IUHSAE" Name="unpackPidStr" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  res varchar2(32767);
+begin
+  res := Replace(s,   CHR(92) || CHR(92),  CHR(92));   -- '\\' => '\'
+  res := Replace(res, CHR(92) || CHR(126), CHR(126)); -- '\~' => '~'
+  res := Replace(res, CHR(92) || 'r',  CHR(13));      -- '\\r' => '\r'
+  res := Replace(res, CHR(92) || 'n',  CHR(10));      -- '\\n' => '\n'
+  res := Replace(res, CHR(92) || 't',  CHR(9));      -- '\\t' => '\t'
+  res := Replace(res, CHR(92) || ' ',      ' ');     -- '\ '  => ' '
+  return res;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpI3WNF753DRFHFPX4IINHWQ6ML4" Name="s" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
         </Item>
         <Item>
           <Function Id="dfnCSHZUPSMOXOBDFKUAAMPGXUWTQ" Name="getUserPropInt" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="13" ResultValType="2">
@@ -551,7 +745,15 @@ end;</xsc:Sql>
    res integer;
 begin
      execute immediate 'select (case when exists' || 
-        '(select * from '|| upValTabByValType(pPropValType) ||'  where DEFID = :1 and OWNERENTITYID = :2 and OWNERPID = :3 )'||
+        '(select * from '|| </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.upValTabByValType(pPropValType) ||'  where DEFID = :1 and OWNERENTITYID = :2 and OWNERPID = :3 )'||
         'then 1 else 0 end) from dual'
      into res
      using pPropId, pEntityId, pInstancePid;
@@ -767,15 +969,63 @@ end;</xsc:Sql>
   j number;
   mustDie tvc;
 begin
-   i := scheduledOnDelUpOwnerQueue.first;
+   i := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue.first;
    while i is not null loop 
-      if scheduledOnDelUpOwnerQueue(i).sOwnerEntityId = pEntityId then
-         mustDie(mustDie.count+1) := scheduledOnDelUpOwnerQueue(i).sOwnerPid;                
+      if </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue(i).sOwnerEntityId = pEntityId then
+         mustDie(mustDie.count+1) := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue(i).sOwnerPid;                
          j := i;
-         i := scheduledOnDelUpOwnerQueue.next(i); 
-         scheduledOnDelUpOwnerQueue.delete(j);                 
+         i := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue.next(i); 
+         </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue.delete(j);                 
       else
-         i := scheduledOnDelUpOwnerQueue.next(i);           
+         i := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue.next(i);           
       end if;      
    end loop;     
    i := mustDie.first;
@@ -813,36 +1063,46 @@ end;</xsc:Sql>
               <xsc:Item>
                 <xsc:Sql>is   
 begin
-   scheduledOnDelUpOwnerQueue(scheduledOnDelUpOwnerQueue.count + 1).sOwnerEntityId :=pEntityId;  
-   scheduledOnDelUpOwnerQueue(scheduledOnDelUpOwnerQueue.count).sOwnerPid    := pInstancePid;  
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue.count + 1).sOwnerEntityId :=pEntityId;  
+   </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.scheduledOnDelUpOwnerQueue.count).sOwnerPid    := pInstancePid;  
 end;</xsc:Sql>
               </xsc:Item>
             </Body>
             <Params>
               <Param Id="dfpAHQR4FEJPBBZLCIPGWSSI5YVPQ" Name="pEntityID" DbType="varchar2" Direction="0" ValType="21"/>
               <Param Id="dfpRVP3IAZTMFCWRAPQYECMQCFBWM" Name="pInstancePID" DbType="varchar2" Direction="0" ValType="21"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfnOMVVRQZPNPNRDJJNACQMTAIZT4" Name="packPidStr" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-  res varchar2(32767);
-begin
-  res := Replace(s,   CHR(92),  CHR(92)|| CHR(92));   -- '\' => '\\'
-  res := Replace(res, CHR(126), CHR(92)|| CHR(126)); -- '~' => '\~'
-  res := Replace(res, CHR(13),  CHR(92)|| 'r');      -- '\r' => '\\r'
-  res := Replace(res, CHR(10),  CHR(92)|| 'n');      -- '\n' => '\\n'
-  res := Replace(res, CHR(9),   CHR(92)|| 't');      -- '\t' => '\\t'
-  res := Replace(res, ' ',      CHR(92)|| ' ');     -- ' '  => '\ '
-  return res;
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpODE256SC5RGFJDRQFPQFK3QERM" Name="s" DbType="varchar2" Direction="0" ValType="21"/>
             </Params>
           </Function>
         </Item>
@@ -886,7 +1146,15 @@ end;</xsc:Sql>
    upTabName varchar2(100); 
    valWasDefined integer;
 begin
-    upTabName := upValTabByValType(pPropValType);
+    upTabName := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI">
+                  <xsc:Sql>RDX_Entity_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.upValTabByValType(pPropValType);
     if pIsUpdateAuditOn != 0 then
         valWasDefined := </xsc:Sql>
               </xsc:Item>
@@ -4223,159 +4491,6 @@ end;</xsc:Sql>
           </Function>
         </Item>
         <Item>
-          <Function Id="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ" Name="createPid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-begin
- return </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnOMVVRQZPNPNRDJJNACQMTAIZT4">
-                  <xsc:Sql>RDX_Entity.packPidStr</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(field);
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpQQQFLQSESBDZDPJDI7QKY7WCM4" Name="field" DbType="varchar2" Direction="0" ValType="21"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfnNJ734SER7JGTHGBY4HZQZJ3OLI" Name="createPid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-begin
- return </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ">
-                  <xsc:Sql>RDX_Entity.createPid</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(To_Char(field));
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpMOLCSGNWHRGHJK4TIKTRVD3ZV4" Name="field" DbType="number" Direction="0" ValType="2"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfnA4ZM7VSLVNENBGSSU6JSSMJMN4" Name="createPid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-begin
- return </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnNGUHGPDT75GRRDLYYDKOTMPVQQ">
-                  <xsc:Sql>RDX_Entity.createPid</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(To_Char(field));
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpFAKKSXYTRJCSVID3Z7Q6DQWAE4" Name="field" DbType="timestamp" Direction="0" ValType="12"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfnPWGMHTGIQVCJ5EPEKARATWVXE4" Name="addField2Pid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-begin
- if (currentPid is null) then
-   return </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnOMVVRQZPNPNRDJJNACQMTAIZT4">
-                  <xsc:Sql>RDX_Entity.packPidStr</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(field);
- else 
-   return currentPid || '~' || </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnOMVVRQZPNPNRDJJNACQMTAIZT4">
-                  <xsc:Sql>RDX_Entity.packPidStr</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(field);
- end if;  
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpHV2M4UYJVREYBPPUWVICF4AVPE" Name="currentPid" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpLMJPGI36GVAONOAIXV6KCSSSNE" Name="field" DbType="varchar2" Direction="0" ValType="21"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfnG3ULF2EUTRCKTFRLOZRPJIORLI" Name="addField2Pid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-begin
- return </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnPWGMHTGIQVCJ5EPEKARATWVXE4">
-                  <xsc:Sql>RDX_Entity.addField2Pid</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(currentPid, To_Char(field));
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfp65ZWHFGC4RBUVDW7UQ43CAA4ZI" Name="currentPid" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpW3XRLGASJNHA7O5QTUX3SL2BU4" Name="field" DbType="number" Direction="0" ValType="2"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfn3OLT3HZHTFFGTNQSTU57JGZQRU" Name="addField2Pid" ResultDbType="varchar2" Deterministic="true" CacheResult="false" PurityLevelMask="15" ResultValType="21">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-begin
- return </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnPWGMHTGIQVCJ5EPEKARATWVXE4">
-                  <xsc:Sql>RDX_Entity.addField2Pid</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(currentPid, To_Char(field));
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpH7QAAWHOSVAEDFLABOH3GNBIE4" Name="currentPid" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpD7FFUPS2WJEVTHBAW2RQ5MXRUM" Name="field" DbType="timestamp" Direction="0" ValType="12"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
           <Function Id="dfn2DILFDWE4NE6VHRGNLRBKWUWGI" Name="userPropOnDelValue" Deterministic="false" CacheResult="false" PurityLevelMask="0">
             <Body>
               <xsc:Item>
@@ -4520,8 +4635,40 @@ END;</xsc:Sql>
             </Params>
           </Function>
         </Item>
+      </Body>
+    </Package>
+    <Package Id="pkgQIRNZBDXLVCHJO5FSPA4SZWOJI" Name="RDX_Entity_Vars" PurityLevelMask="1">
+      <Header>
         <Item>
-          <CustomText Id="dtxMFP6W7VFMBHZ5GNGG477HZ4ZGQ" Name="cinit (must be last in the body )">
+          <CustomText Id="dtxGLC3N5AWZFF5XINGRSFIJKR4OE" Name="scheduledOnDelUpOwnerQueue">
+            <Text>
+              <xsc:Item>
+                <xsc:Sql>type TScheduledOnDelUpOwner is record (
+   sOwnerEntityId  varchar2(100),
+   sOwnerPid  varchar2(250)
+);
+type TScheduledOnDelUpOwnerQueue is table of TScheduledOnDelUpOwner index by binary_integer;
+scheduledOnDelUpOwnerQueue TScheduledOnDelUpOwnerQueue;
+</xsc:Sql>
+              </xsc:Item>
+            </Text>
+          </CustomText>
+        </Item>
+        <Item>
+          <CustomText Id="dtxCRR4TCWYWBHAZL5HVN7XPMNHRA" Name="vals">
+            <Text>
+              <xsc:Item>
+                <xsc:Sql>TYPE StrByInt IS TABLE OF varchar2(100) INDEX BY BINARY_INTEGER;
+upValTabByValType StrByInt;
+</xsc:Sql>
+              </xsc:Item>
+            </Text>
+          </CustomText>
+        </Item>
+      </Header>
+      <Body>
+        <Item>
+          <CustomText Id="dtxUAWAKSK7JNHHBI3VANSTOKK2WQ" Name="cinit (must be last in the body)">
             <Text>
               <xsc:Item>
                 <xsc:Sql>begin

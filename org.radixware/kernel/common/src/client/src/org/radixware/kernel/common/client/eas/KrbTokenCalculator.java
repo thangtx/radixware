@@ -19,6 +19,7 @@ import org.ietf.jgss.GSSContext;
 import org.ietf.jgss.GSSException;
 import org.ietf.jgss.MessageProp;
 import org.radixware.kernel.common.auth.AuthUtils;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.errors.CredentialsWasNotDefinedError;
 import org.radixware.kernel.common.client.errors.KerberosError;
@@ -195,28 +196,36 @@ class KrbTokenCalculator implements ITokenCalculator {
     }
 
     @Override
-    public byte[] createEncryptedHashForNewPassword(final String userName, final char[] newPassword) {
-        final byte[] pwdHash = AuthUtils.calcPwdHash(userName, newPassword);
+    public byte[] createEncryptedHashForNewPassword(final PasswordHash newPwdHash) {
         try {
-            return context.wrap(pwdHash, 0, pwdHash.length, new MessageProp(true));
+            final byte[] hashData = newPwdHash.export();
+            try{
+                return context.wrap(hashData, 0, hashData.length, new MessageProp(true));
+            }finally{
+                Arrays.fill(hashData, (byte)0);
+            }
         } catch (GSSException exception) {
             throw new KerberosError(exception, krbCreds);
-        }finally{
-            Arrays.fill(pwdHash, (byte)0);
         }            
     }
-
-    @Override
-    public void dispose() {
+    
+    public void dispose(final boolean disposeDelegatedCredentials){
         try {
             context.dispose();
         } catch (GSSException ex) {
             Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
         }
-        krbCreds.dispose();
+        if (!krbCreds.isCredentialsDelegated() || disposeDelegatedCredentials){
+            krbCreds.dispose();
+        }
         if (authDelegate!=null){
             authDelegate.completeAuthentication();
         }        
+    }
+
+    @Override
+    public void dispose() {
+        dispose(true);
     }
 
     @Override

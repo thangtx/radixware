@@ -24,12 +24,16 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.List;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
@@ -37,12 +41,18 @@ import javax.swing.text.BadLocationException;
 
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.actions.CopyAction;
+import org.openide.actions.CutAction;
+import org.openide.actions.PasteAction;
 import org.openide.util.NbBundle;
+import org.openide.util.actions.SystemAction;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.designer.ads.localization.RowString;
 import org.radixware.kernel.common.resources.RadixWareIcons;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils;
 import org.radixware.kernel.designer.common.dialogs.spellchecker.Spellchecker;
+import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 
 
 public class LangPanel extends javax.swing.JPanel {
@@ -50,13 +60,22 @@ public class LangPanel extends javax.swing.JPanel {
     private RowString rowString;
     private final TranslateArea panel;
     private final EIsoLanguage lang;
+    private final ItemListener listener = new ItemListener() {
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            setAgreedTooltip();
+            panel.translationWasEdited(lang);
+            rowString.setAgreed(lang, isAgreed.isSelected());
+        }
+    };
     //private LangPanel lp=null;
     //private Style iconStyle;
     private final TranslateTextPaneUi translTextPanelUi;
     private final int defaultHeight = 60;
     private int lineCount = 1;
     private final String TRANSLATION_NOT_REQUIRED_TOLTIP = NbBundle.getMessage(LangPanel.class, "TRANSLATION_NOT_REQUIRED_TOOLTIP");
-
+    private final JPopupMenu popupMenu = new JPopupMenu();
     /**
      * Creates new form LangPanel
      */
@@ -74,7 +93,7 @@ public class LangPanel extends javax.swing.JPanel {
             public void mouseMoved(final MouseEvent event) {
                 if ((rowString != null) && (canChangeStatus())) {
                     if (event.getX() <= 16) {
-                        if (rowString.needsCheck(LangPanel.this.lang)) {
+                        if (rowString.isNeedsCheck(LangPanel.this.lang)) {
                             lbLang.setIcon(RadixWareIcons.MLSTRING_EDITOR.TRANSLATION_NOT_CHECKED_BORDERED.getIcon(16, 16));
                         } else {
                             lbLang.setIcon(RadixWareIcons.MLSTRING_EDITOR.TRANSLATE_BORDERED.getIcon(16, 16));
@@ -151,16 +170,55 @@ public class LangPanel extends javax.swing.JPanel {
         });
         
         Spellchecker.register(edTranslation, lang, context);
-
+        
+        isAgreed.setVisible(false);
+        isAgreed.setIcon(RadixWareIcons.MLSTRING_EDITOR.TRANSLATION_NOT_CHECKED.getIcon());
+        isAgreed.setSelectedIcon(RadixWareIcons.DIALOG.OK.getIcon());
+        isAgreed.setDisabledIcon(RadixWareIcons.MLSTRING_EDITOR.TRANSLATION_NOT_CHECKED_DISABLED.getIcon());
+        isAgreed.setDisabledSelectedIcon(RadixWareIcons.MLSTRING_EDITOR.TRANSLAT_DISABLED.getIcon());
+        isAgreed.setRolloverIcon(RadixWareIcons.MLSTRING_EDITOR.TRANSLATION_NOT_CHECKED_BORDERED.getIcon());
+        isAgreed.setRolloverSelectedIcon(RadixWareIcons.MLSTRING_EDITOR.TRANSLATE_BORDERED.getIcon());
+        
+        isAgreed.addItemListener(listener);
+        
+                
+        CutAction cutAction = SystemAction.get(CutAction.class);
+        JMenuItem menuItem = DialogUtils.createMenuItem(cutAction);
+        popupMenu.add(menuItem);
+        CopyAction copyAction = SystemAction.get(CopyAction.class);
+        menuItem = DialogUtils.createMenuItem(copyAction);
+        popupMenu.add(menuItem);
+        PasteAction pasteAction = SystemAction.get(PasteAction.class);
+        menuItem =  DialogUtils.createMenuItem(pasteAction);
+        popupMenu.add(menuItem);
+        edTranslation.setComponentPopupMenu(popupMenu);
     }
     
-    public void ctrlEnterWasPressed() {
-        if (changeTranslation(false)) {
-            panel.translationWasEdited(lang);
+    public void setAgreedTooltip() {
+        if (isAgreed.isSelected()) {
+            isAgreed.setToolTipText(org.openide.util.NbBundle.getMessage(LangPanel.class, "LangPanel.isAgreed.toolTipTex_Agree"));
+        } else {
+            isAgreed.setToolTipText(org.openide.util.NbBundle.getMessage(LangPanel.class, "LangPanel.isAgreed.toolTipTex_NotAgree"));
         }
-        //setTranslation(false);
-        LangPanel.this.panel.goToNextTranslation(LangPanel.this);
-        //LangPanel.this.panel.setCursorOnNextTranslation(LangPanel.this);
+    }
+    
+    public boolean checkString(boolean goNext){
+        boolean result = true;
+        final boolean oldState = rowString.isNeedsCheck(lang);
+        if (oldState == true){
+            result = changeTranslation(false);
+            if (result) {
+                panel.translationWasEdited(lang);
+            }
+        }
+        if (result && goNext){
+            panel.fireChange(MultilingualEditorUtils.GO_TO_NEXT);
+        }
+        return result;
+    }
+    
+    public void setAgreedVisible(boolean visible){
+        isAgreed.setVisible(visible);
     }
 
     public void updateSize() {
@@ -208,7 +266,7 @@ public class LangPanel extends javax.swing.JPanel {
     
 
     private boolean changeStatus() {
-        final boolean newState = !rowString.needsCheck(lang);
+        final boolean newState = !rowString.isNeedsCheck(lang);
         if ((!newState) && (!checkOnValidValue())) {
             return false;
         } else {
@@ -246,14 +304,15 @@ public class LangPanel extends javax.swing.JPanel {
         translTextPanelUi.setCanUndo(false);
         Highlight.hightlightTranslation(edTranslation);
         translTextPanelUi.setCanUndo(true);
-        final boolean oldState = rowString.needsCheck(lang);
-        if (((!str.equals("")) && (rowString.getValue(lang) == null)) || ((rowString.getValue(lang) != null) && (!str.equals(rowString.getValue(lang))))) {
+        final boolean oldState = rowString.isNeedsCheck(lang);
+        if (((!str.equals("")) && (rowString.getValue(lang) == null)) || 
+                ((rowString.getValue(lang) != null) && (!str.equals(rowString.getValue(lang))))) {
             rowString.setValue(lang, str);
             res = true;
         }
 
-        if ((oldState != needsCheck) && (setStatus(needsCheck))) {
-            res = true;
+        if (oldState != needsCheck) {
+            if (setStatus(needsCheck)) res = true;
         }
         return res;
     }
@@ -273,6 +332,10 @@ public class LangPanel extends javax.swing.JPanel {
         } else {
             panel.addPhraseToPrompt(rowString);
         }
+        isAgreed.setEnabled(!needsCheck);
+        isAgreed.setSelected(rowString.isAgreed(lang));
+        setAgreedTooltip();
+        
         setIcon(rowString);
 
         panel.updateStatus(rowString);
@@ -280,7 +343,7 @@ public class LangPanel extends javax.swing.JPanel {
     }
 
     public boolean getStatus() {
-        return rowString.needsCheck(lang);
+        return rowString == null || rowString.isNeedsCheck(lang);
     }
 
     public void setTranslation(final String s) {
@@ -292,11 +355,15 @@ public class LangPanel extends javax.swing.JPanel {
     public void setRowString(final RowString rowString, final boolean readOnly) {
         this.rowString = rowString;
         setDefaultSize();
+        isAgreed.removeItemListener(listener);
         edTranslation.setText(rowString.getValue(lang));
         if (rowString.isNeedTranslate(lang)) {
             //doc.setCharacterAttributes(0, s.length(), soutceTextArea.getStyle(StyleContext.DEFAULT_STYLE), true);
             translTextPanelUi.addImages(rowString.getValue(lang));
             setReadOnly(readOnly);
+            isAgreed.setEnabled(!readOnly && rowString.getCanChangeStatus(lang, sourceLangs) && !rowString.isNeedsCheck(lang));
+            isAgreed.setSelected(rowString.isAgreed(lang));
+            setAgreedTooltip();
         } else {
             edTranslation.setToolTipText(TRANSLATION_NOT_REQUIRED_TOLTIP);
             //edTranslation.setText(TRANSLATION_NOT_REQUIRED);
@@ -310,6 +377,7 @@ public class LangPanel extends javax.swing.JPanel {
         translTextPanelUi.setCanUndo(false);
         Highlight.hightlightTranslation(edTranslation);
         translTextPanelUi.setCanUndo(true);
+        isAgreed.addItemListener(listener);
     }
 
     public RowString getRowString() {
@@ -335,10 +403,17 @@ public class LangPanel extends javax.swing.JPanel {
         edTranslation.setEditable(!readOnly);
         if (readOnly) {
             edTranslation.setForeground(Color.gray);
+            edTranslation.setComponentPopupMenu(null);
         } else {
             edTranslation.setForeground(Color.black);
+            edTranslation.setComponentPopupMenu(popupMenu);
         }
         lbLang.setEnabled(!readOnly);
+        isAgreed.setEnabled(!readOnly);
+    }
+    
+    public boolean isReadOnly(){
+        return !edTranslation.isEditable();
     }
 
     public void clearPanel() {
@@ -357,6 +432,13 @@ public class LangPanel extends javax.swing.JPanel {
     public void save() {
         panel.save();
     }
+
+    @Override
+    public boolean isFocusOwner() {
+        return super.isFocusOwner() || edTranslation.isFocusOwner();
+    }
+    
+    
 
     /* private void hightlightTranslation(){
      Highlight h=new  Highlight();
@@ -384,6 +466,7 @@ public class LangPanel extends javax.swing.JPanel {
         lbLang = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         edTranslation = new javax.swing.JTextPane();
+        isAgreed = new javax.swing.JCheckBox();
 
         setBackground(java.awt.Color.white);
         setPreferredSize(new java.awt.Dimension(200, 40));
@@ -393,12 +476,14 @@ public class LangPanel extends javax.swing.JPanel {
         lbLang.setText(bundle.getString("LangPanel.lbLang.text")); // NOI18N
 
         jScrollPane1.setMinimumSize(new java.awt.Dimension(24, 22));
-
-        edTranslation.setBackground(java.awt.Color.white);
-        edTranslation.setAutoscrolls(false);
-        edTranslation.setMinimumSize(new java.awt.Dimension(6, 20));
-        edTranslation.setPreferredSize(new java.awt.Dimension(6, 20));
         jScrollPane1.setViewportView(edTranslation);
+
+        isAgreed.setBackground(new java.awt.Color(255, 255, 255));
+        isAgreed.setFont(new java.awt.Font("DejaVu Sans", 1, 13));
+        isAgreed.setFocusPainted(false);
+        isAgreed.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        isAgreed.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        isAgreed.setLabel(org.openide.util.NbBundle.getMessage(LangPanel.class, "LangPanel.isAgreed.label")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -406,19 +491,23 @@ public class LangPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(lbLang)
-                .addGap(127, 127, 127))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addComponent(isAgreed))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(lbLang)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbLang)
+                    .addComponent(isAgreed))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane edTranslation;
+    private javax.swing.JCheckBox isAgreed;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbLang;
     // End of variables declaration//GEN-END:variables

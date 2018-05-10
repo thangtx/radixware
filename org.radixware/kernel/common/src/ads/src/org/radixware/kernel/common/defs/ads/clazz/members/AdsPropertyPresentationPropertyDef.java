@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.*;
@@ -187,12 +188,15 @@ public class AdsPropertyPresentationPropertyDef extends AdsClientSidePropertyDef
     @Override
     public void afterOverwrite() {
         super.afterOverwrite();
-        synchronized (embeddedClassLock) {
+        rwLock.writeLock().lock();
+        try {        
             // workaround
             if (embeddedClass != null) {
                 embeddedClass.afterOverwrite();
                 embeddedClass = null;
             }
+        } finally {
+            rwLock.writeLock().unlock();
         }
 
         dependents.dependents.clear();
@@ -212,13 +216,16 @@ public class AdsPropertyPresentationPropertyDef extends AdsClientSidePropertyDef
     public void appendTo(PropertyDefinition xDef, ESaveMode saveMode) {
         super.appendTo(xDef, saveMode);
 
-        synchronized (embeddedClassLock) {
+        rwLock.readLock().lock();
+        try {
             if (embeddedClass != null && embeddedClass.isUsed()) {
                 ClassDefinition xClass = xDef.addNewEmbeddedClass();
                 embeddedClass.appendTo(xClass, saveMode);
             }
 
             dependents.appentTo(xDef.addNewDependentItems());
+        } finally {
+            rwLock.readLock().unlock();
         }
         if (embeddedProperty != null) {
             embeddedProperty.appendExtractionTo(xDef.addNewEmbeddedProperty(), saveMode);
@@ -240,8 +247,9 @@ public class AdsPropertyPresentationPropertyDef extends AdsClientSidePropertyDef
             return getLocalEmbeddedClass(false) != null;
         }
     };
-    private PropertyPresentationEmbeddedClass embeddedClass;
+    private volatile PropertyPresentationEmbeddedClass embeddedClass;
     private AdsDynamicPropertyDef embeddedProperty;
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     @Override
     public SearchResult<AdsClassDef> findEmbeddedClass(EScope scope) {
@@ -262,20 +270,32 @@ public class AdsPropertyPresentationPropertyDef extends AdsClientSidePropertyDef
 
     @Override
     public AdsEmbeddedClassDef getLocalEmbeddedClass(boolean create) {
-        synchronized (embeddedClassLock) {
-            if (embeddedClass == null && create) {
+        if (create) {
+            rwLock.writeLock().lock();
+            try {
+                if (embeddedClass == null) {
 
-                final AdsClassDef overEmbedded = findEmbeddedClass(EScope.LOCAL_AND_OVERWRITE).get();
+                    final AdsClassDef overEmbedded = findEmbeddedClass(EScope.LOCAL_AND_OVERWRITE).get();
 
-                if (overEmbedded != null) {
-                    embeddedClass = PropertyPresentationEmbeddedClass.Factory.newInstance(this, overEmbedded.getId());
-                    embeddedClass.setOverwrite(true);
-                } else {
-                    embeddedClass = PropertyPresentationEmbeddedClass.Factory.newInstance(this);
+                    if (overEmbedded != null) {
+                        embeddedClass = PropertyPresentationEmbeddedClass.Factory.newInstance(this, overEmbedded.getId());
+                        embeddedClass.setOverwrite(true);
+                    } else {
+                        embeddedClass = PropertyPresentationEmbeddedClass.Factory.newInstance(this);
+                    }
+                    setEditState(EEditState.MODIFIED);
                 }
-                setEditState(EEditState.MODIFIED);
+                return embeddedClass;
+            } finally {
+                rwLock.writeLock().unlock();
             }
-            return embeddedClass;
+        } else {
+            rwLock.readLock().lock();
+            try {
+                return embeddedClass;
+            } finally {
+                rwLock.readLock().unlock();
+            }
         }
     }
 
@@ -373,10 +393,13 @@ public class AdsPropertyPresentationPropertyDef extends AdsClientSidePropertyDef
     @Override
     public void visitChildren(IVisitor visitor, VisitorProvider provider) {
         super.visitChildren(visitor, provider);
-        synchronized (embeddedClassLock) {
+        rwLock.readLock().lock();
+        try {
             if (embeddedClass != null) {
                 embeddedClass.visit(visitor, provider);
             }
+        } finally {
+            rwLock.readLock().unlock();
         }
         if (embeddedProperty != null) {
             embeddedProperty.visit(visitor, provider);

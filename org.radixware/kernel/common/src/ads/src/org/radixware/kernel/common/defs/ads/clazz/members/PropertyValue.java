@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.clazz.members;
 
 import java.util.List;
@@ -20,6 +19,7 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsValAsStr;
 import org.radixware.kernel.common.defs.ads.AdsValAsStr.EValueType;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentableProperty;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyPresentation;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
@@ -27,11 +27,11 @@ import org.radixware.kernel.common.defs.ads.type.AdsEnumType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.value.ValAsStr;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.RadixObjectError;
 import org.radixware.kernel.common.utils.events.IRadixEventListener;
 import org.radixware.kernel.common.utils.events.RadixEvent;
 import org.radixware.schemas.adsdef.AbstractPropertyDefinition;
-
 
 public abstract class PropertyValue extends Value {
 
@@ -171,6 +171,21 @@ public abstract class PropertyValue extends Value {
                 if ((prop instanceof AdsParameterPropertyDef) && (prop.getOwnerClass() instanceof AdsReportClassDef)) {
                     ((AdsReportClassDef) prop.getOwnerClass()).updateMethodsParams();
                 }
+                // change init property if create in report (RADIX-14064)
+                if (prop instanceof IAdsPresentableProperty) {
+                    ServerPresentationSupport support = ((IAdsPresentableProperty) prop).getPresentationSupport();
+                    if (support != null) {
+                        PropertyPresentation presintation = support.getPresentation();
+                        if (presintation != null) {
+                            if ((prop.getOwnerClass() instanceof AdsReportClassDef)) {
+                                if (type.getTypeId() == EValType.ARR_REF) {
+                                    presintation.getEditOptions().setDuplicatesEnabled(false);
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -312,7 +327,7 @@ public abstract class PropertyValue extends Value {
         if (resolve.isEmpty()) {
             return;
         }
-        
+
         final AdsType type = resolve.get();
         if (type instanceof AdsEnumType) {
             final AdsEnumDef sourceEnum = ((AdsEnumType) type).getSource();

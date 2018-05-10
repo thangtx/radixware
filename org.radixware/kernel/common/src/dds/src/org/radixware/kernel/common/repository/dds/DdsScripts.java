@@ -139,11 +139,18 @@ public class DdsScripts extends RadixObject implements IDirectoryRadixObject {
             }
             return null;
         }
+        
+        public DdsUpdateInfo registerNew(DdsScript updateScript, boolean isBackwardCompatible, DdsUpdateInfo reverseFor) { //TODO: убрать
+            return registerNew(updateScript, isBackwardCompatible, null, reverseFor);
+        }
 
-        public DdsUpdateInfo registerNew(DdsScript updateScript, boolean isBackwardCompatible, DdsUpdateInfo reverseFor) {
+        public DdsUpdateInfo registerNew(DdsScript updateScript, boolean isBackwardCompatible, DdsAadcTransform transform, DdsUpdateInfo reverseFor) {
             assert updateScript != null;
 
             final DdsUpdateInfo updateInfo = new DdsUpdateInfo();
+            if (transform != null) {
+                updateInfo.getDdsAadcTransform().loadFrom(transform);
+            }
             add(updateInfo);
 
             final File updateFile = updateScript.getFile();

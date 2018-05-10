@@ -21,7 +21,11 @@ import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFont;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Stack;
 import java.util.StringTokenizer;
 import org.radixware.kernel.common.client.enums.ETextAlignment;
 import org.radixware.kernel.common.client.env.SettingNames;
@@ -35,6 +39,7 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.explorer.text.ExplorerFont;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 
@@ -42,8 +47,10 @@ import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 class QSettingsWrapper implements IExplorerSettings {
 
     private final QSettings settings;
+    private final Stack<String> groups = new Stack<>();
     final MessageProvider msgProvider;
     final ClientTracer tracer;
+    private String configProfile;
 
     public QSettingsWrapper(final QSettings settings, final MessageProvider msgProvider, final ClientTracer tracer) {
         this.settings = settings;
@@ -56,6 +63,17 @@ class QSettingsWrapper implements IExplorerSettings {
         settings.beginGroup(source.settings.group());
         msgProvider = source.msgProvider;
         tracer = source.tracer;
+    }
+    
+    public QSettingsWrapper copyFile(final File copyTo) throws IOException{
+        final String fileName = settings.status()==QSettings.Status.NoError ? settings.fileName() : null;
+        if (fileName!=null && !fileName.isEmpty()){            
+            final File settingsFile = new File(fileName);
+            if (settingsFile.isFile() && settingsFile.canRead()){
+                FileUtils.copyFile(settingsFile, copyTo);
+            }
+        }
+        return new QSettingsWrapper(new QSettings(copyTo.getAbsolutePath(), settings.format(), settings.parent()), msgProvider, tracer);
     }
 
     protected final QSettings getQSettings() {
@@ -84,12 +102,12 @@ class QSettingsWrapper implements IExplorerSettings {
 
     @Override
     public void writeId(String key, Id id) {
-        settings.setValue(key, id.toString());
+        settings.setValue(key, id==null ? null : id.toString());
     }
 
     @Override
     public void writePid(String key, Pid pid) {
-        settings.setValue(key, pid.toStr());
+        settings.setValue(key, pid==null ? null : pid.toStr());
     }
 
     @Override
@@ -99,34 +117,32 @@ class QSettingsWrapper implements IExplorerSettings {
 
     @Override
     public void writeQFont(final String key, final QFont font) {
-        settings.setValue(key, font.toString());
+        settings.setValue(key, font==null ? null : font.toString());
     }
 
     @Override
     public void writeQPoint(final String key, final QPoint point) {
-        settings.setValue(key, point.x() + ":" + point.y());
+        settings.setValue(key, point==null ? null : point.x() + ":" + point.y());
     }
 
     @Override
     public void writeQAlignmentFlag(final String key, final Qt.AlignmentFlag alignmentFlag) {
-        settings.setValue(key, alignmentFlag.name());
+        settings.setValue(key, alignmentFlag==null ? null : alignmentFlag.name());
     }
 
     @Override
     public void writeQSize(final String key, final QSize size) {
-        settings.setValue(key, size.width() + ":" + size.height());
+        settings.setValue(key, size==null ? null : size.width() + ":" + size.height());
     }
 
     @Override
     public void writeQColor(final String key, final QColor color) {
-        settings.setValue(key, color.name());
+        settings.setValue(key, color==null ? null : color.name());
     }
 
     @Override
     public void writeQByteArray(final String key, final QByteArray array) {
-        if (array != null) {
-            settings.setValue(key, array);
-        }
+        settings.setValue(key, array);
     }
 
     @Override
@@ -302,13 +318,13 @@ class QSettingsWrapper implements IExplorerSettings {
     @Override
     public Id readId(String key) {
         final String value = readString(key);
-        return value == null ? null : Id.Factory.loadFrom(value);
+        return value == null || value.isEmpty() ? null : Id.Factory.loadFrom(value);
     }
 
     @Override
     public Pid readPid(String key) {
         final String value = readString(key);
-        if (value != null) {
+        if (value != null && !value.isEmpty()) {
             final StringTokenizer tokenizer = new StringTokenizer(value, "\n");
             final String tableId = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : "";
             if (tableId == null || tableId.isEmpty()) {
@@ -328,11 +344,13 @@ class QSettingsWrapper implements IExplorerSettings {
         if (settings.contains(key)) {
             try {
                 final String fontAsStr = (String) settings.value(key);
-                final QFont font = new QFont();
-                if (font.fromString(fontAsStr)) {
-                    return font;
-                } else {
-                    traceWarning(QFont.class, key);
+                if (fontAsStr!=null && !fontAsStr.isEmpty()){                    
+                    final QFont font = ExplorerSettings.getQFont(fontAsStr);
+                    if (font==null) {
+                        traceWarning(QFont.class, key);                        
+                    } else {
+                        return font;                        
+                    }
                 }
             } catch (Exception e) {
                 traceWarning(QFont.class, key, e);
@@ -346,14 +364,16 @@ class QSettingsWrapper implements IExplorerSettings {
         if (settings.contains(key)) {
             try {
                 final String pointAsStr = (String) settings.value(key);
-                int delimiterIndex = pointAsStr.indexOf(":");
-                if (delimiterIndex == -1) {
-                    traceWarning(QPoint.class, key);
-                    return null;	//config corrupted
+                if (pointAsStr!=null && !pointAsStr.isEmpty()){
+                    int delimiterIndex = pointAsStr.indexOf(":");
+                    if (delimiterIndex == -1) {
+                        traceWarning(QPoint.class, key);
+                        return null;	//config corrupted
+                    }
+                    final int x = Integer.parseInt(pointAsStr.substring(0, delimiterIndex));
+                    final int y = Integer.parseInt(pointAsStr.substring(delimiterIndex + 1));
+                    return new QPoint(x, y);
                 }
-                final int x = Integer.parseInt(pointAsStr.substring(0, delimiterIndex));
-                final int y = Integer.parseInt(pointAsStr.substring(delimiterIndex + 1));
-                return new QPoint(x, y);
             } catch (Exception e) {
                 traceWarning(QPoint.class, key, e);	//config corrupted
             }
@@ -366,7 +386,7 @@ class QSettingsWrapper implements IExplorerSettings {
         if (settings.contains(key)) {
             try {
                 final String alignmentFlagAsStr = (String) settings.value(key);
-                return AlignmentFlag.valueOf(alignmentFlagAsStr);
+                return alignmentFlagAsStr==null || alignmentFlagAsStr.isEmpty() ? null : AlignmentFlag.valueOf(alignmentFlagAsStr);
             } catch (Exception e) {
                 traceWarning(AlignmentFlag.class, key, e);	//config corrupted
             }
@@ -379,18 +399,20 @@ class QSettingsWrapper implements IExplorerSettings {
         if (settings.contains(key)) {
             try {
                 final String sizeAsStr = (String) settings.value(key);
-                int delimiterIndex = sizeAsStr.indexOf(":");
-                if (delimiterIndex == -1) {
-                    traceWarning(QSize.class, key);
-                    return null;	//config corrupted
-                }
-                final int width = Integer.parseInt(sizeAsStr.substring(0, delimiterIndex));
-                final int height = Integer.parseInt(sizeAsStr.substring(delimiterIndex + 1));
-                final QSize size = new QSize(width, height);
-                if (size.isValid()) {
-                    return size;
-                } else {
-                    traceWarning(QSize.class, key);
+                if (sizeAsStr!=null && !sizeAsStr.isEmpty()){
+                    int delimiterIndex = sizeAsStr.indexOf(":");
+                    if (delimiterIndex == -1) {
+                        traceWarning(QSize.class, key);
+                        return null;	//config corrupted
+                    }
+                    final int width = Integer.parseInt(sizeAsStr.substring(0, delimiterIndex));
+                    final int height = Integer.parseInt(sizeAsStr.substring(delimiterIndex + 1));
+                    final QSize size = new QSize(width, height);
+                    if (size.isValid()) {
+                        return size;
+                    } else {
+                        traceWarning(QSize.class, key);
+                    }
                 }
             } catch (Exception e) {
                 traceWarning(QSize.class, key, e);	//config corrupted
@@ -404,12 +426,13 @@ class QSettingsWrapper implements IExplorerSettings {
         if (settings.contains(key)) {
             try {
                 final String colorAsStr = (String) settings.value(key);
-                final QColor color = new QColor();
-                color.setNamedColor(colorAsStr);
-                if (color.isValid()) {
-                    return color;
-                } else {
-                    traceWarning(QColor.class, key);	//config corrupted
+                if (colorAsStr!=null && !colorAsStr.isEmpty()){
+                    final QColor color = ExplorerSettings.getQColor(colorAsStr);                    
+                    if (color==null) {
+                        traceWarning(QColor.class, key);	//config corrupted
+                    } else {
+                        return color;
+                    }
                 }
             } catch (Exception e) {
                 traceWarning(QColor.class, key, e);	//config corrupted
@@ -460,16 +483,45 @@ class QSettingsWrapper implements IExplorerSettings {
     }
 
     @Override
-    public void beginGroup(String group) {
+    public void beginGroup(final String group) {
         settings.beginGroup(group);
     }
 
     @Override
-    public void setConfigProfile(String profile) {
-        endAllGroups();
+    public void pushGroup() {
+        final String group = group();
+        if (group.equals(configProfile)){
+            groups.push("");
+        }else if (group.startsWith(configProfile+"/")){
+            groups.push(group.substring(configProfile.length()+1));
+        }else{
+            groups.push(group());
+        }
+    }
+
+    @Override
+    public String popGroup() {
+        final String group = groups.pop();
+        if (!group.isEmpty() && !group.equals(group())){
+            beginGroup(group);
+        }
+        return group;
+    }
+
+    @Override
+    public void setConfigProfile(final String profile) {
+        while (settings.group() != null && !settings.group().isEmpty()){
+            settings.endGroup();
+        }
+        configProfile = profile;
         settings.beginGroup(profile);
     }
 
+    @Override
+    public String getConfigProfile() {
+        return configProfile;
+    }
+        
     @Override
     public int beginReadArray(String array) {
         return settings.beginReadArray(array);
@@ -512,13 +564,17 @@ class QSettingsWrapper implements IExplorerSettings {
 
     @Override
     public void endGroup() {
-        settings.endGroup();
+        if (configProfile==null || configProfile.isEmpty() || !Objects.equals(settings.group(), configProfile)){
+            settings.endGroup();
+        }
     }
 
     @Override
     public void endAllGroups() {
-        while (settings.group() != null && !settings.group().isEmpty()) {
+        String group = settings.group();
+        while (group != null && !group.isEmpty() && !Objects.equals(group, configProfile)) {
             settings.endGroup();
+            group = settings.group();
         }
     }
 

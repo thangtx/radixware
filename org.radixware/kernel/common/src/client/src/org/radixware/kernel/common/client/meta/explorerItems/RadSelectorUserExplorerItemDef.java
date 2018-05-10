@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.meta.explorerItems;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.xmlbeans.XmlException;
@@ -45,7 +46,13 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
                                                           explorerItem.getSourceId(),
                                                           explorerItemAsXmlStr);
             }else{
-                final RadContextFilter filter = RadContextFilter.Factory.loadFromXml(explorerItem.getFilter());
+                final List<RadContextFilter> filters = new LinkedList<>();
+                final List<ContextFilter> xmlFilters = explorerItem.getFilterList();
+                if (xmlFilters!=null && !xmlFilters.isEmpty()){
+                    for (ContextFilter xmlFilter: xmlFilters){
+                        filters.add(RadContextFilter.Factory.loadFromXml(xmlFilter));
+                    }
+                }
                 final RadSelectorPresentationDef presentationDef = sourceExplorerItem.getModelDefinition();                
                 final RadSortingDef sortingDef;
                 final Sorting sorting = explorerItem.getSorting();
@@ -70,7 +77,7 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
                                                           explorerItem.getTitle(), 
                                                           explorerItem.getSourceId(),
                                                           sourceExplorerItem, 
-                                                          filter,
+                                                          filters,
                                                           sortingDef, 
                                                           explorerItemAsXmlStr);
            }        
@@ -78,7 +85,7 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
         
         public static RadSelectorUserExplorerItemDef newInstance(final String title,
                                                                  final RadSelectorExplorerItemDef sourceItem,
-                                                                 final RadContextFilter filter,
+                                                                 final List<RadContextFilter> filters,
                                                                  final RadSortingDef initialSorting){
             RadSelectorExplorerItemDef targetExplorerItem = sourceItem;
             if (targetExplorerItem instanceof RadSelectorUserExplorerItemDef){
@@ -92,18 +99,18 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
                                                       title,
                                                       sourceItem.getId(),
                                                       targetExplorerItem,
-                                                      filter,
+                                                      filters,
                                                       initialSorting,
-                                                      null);                    
+                                                      null);
             item.linkWithSourceExplorerItem(sourceItem);
             return item;
-        }        
+        }
     }
     
     private final RadSelectorExplorerItemDef targetItem;
     private final Id sourceItemId;
     private final String title;
-    private final RadContextFilter contextFilter;
+    private final List<RadContextFilter> contextFilters;
     private final RadSortingDef sorting;
     private RadSelectorExplorerItemDef sourceExplorerItem;
     private String asXml;
@@ -112,7 +119,7 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
                                            final String title,
                                            final Id sourceItemId,
                                            final RadSelectorExplorerItemDef sourceItem,
-                                           final RadContextFilter filter,
+                                           final List<RadContextFilter> filters,
                                            final RadSortingDef initialSorting,
                                            final String asXmlString
                                            ) {
@@ -129,7 +136,12 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
         this.targetItem = sourceItem;
         this.sourceItemId = sourceItemId;
         this.title = title;
-        this.contextFilter = filter;
+        if (filters==null){
+            contextFilters = Collections.emptyList();
+        }else{
+            contextFilters = new LinkedList<>();
+            contextFilters.addAll(filters);
+        }
         this.sorting = initialSorting;
         asXml = asXmlString;
     }
@@ -151,7 +163,7 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
         this.targetItem = null;
         this.sourceItemId = sourceItemId;
         this.title = title;
-        this.contextFilter = null;
+        this.contextFilters = Collections.emptyList();
         this.sorting = null;
         this.asXml = asXml;
     }        
@@ -188,7 +200,7 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
 
     @Override
     public boolean isValid() {        
-        return targetItem!=null && targetItem.isValid() && contextFilter!=null;
+        return targetItem!=null && targetItem.isValid() && !contextFilters.isEmpty();
     }
 
     @Override
@@ -207,8 +219,8 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
     }
 
     @Override
-    public RadContextFilter getContextFilter(){
-        return contextFilter;
+    public List<RadContextFilter> getContextFilters(){
+        return Collections.unmodifiableList(contextFilters);
     }
 
     @Override
@@ -224,8 +236,8 @@ public final class RadSelectorUserExplorerItemDef extends RadSelectorExplorerIte
             userei.setId(getId());
             userei.setSourceId(getSourceExplorerItemId());
             userei.setTitle(title);
-            if (contextFilter!=null){
-                contextFilter.writeToXml(userei.addNewFilter());
+            for (RadContextFilter filter: contextFilters){
+                filter.writeToXml(userei.addNewFilter());
             }
             if (sorting!=null){
                 final Sorting xmlSorting = userei.addNewSorting();

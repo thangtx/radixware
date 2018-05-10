@@ -37,6 +37,16 @@ public interface ILocalizedDescribable {
         void setDescriptionInherited(boolean inherit);
         
         Id getDescriptionId();
+        
+        Definition getDescriptionLocation();
+        
+        void setDescriptionId(Id id);
+        
+        Definition getDescriptionLocation(boolean inherited);
+        
+        Id getDescriptionId(boolean inherited);
+        
+        boolean setDescription(EIsoLanguage language, String description);
     }
     
     public interface ILocalizedCalculatedDef {

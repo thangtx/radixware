@@ -15,10 +15,7 @@ import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
-import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QDialog;
-import com.trolltech.qt.gui.QFontMetrics;
 import com.trolltech.qt.gui.QLayout;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -28,11 +25,12 @@ import org.radixware.kernel.common.client.views.IDialogWithStandardButtons;
 import org.radixware.kernel.common.client.widgets.IPushButton;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.utils.LeakedWidgetsDetector;
 
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.ExplorerDialogButtonBox;
 
-public abstract class ExplorerDialog extends QtDialog implements IDialogWithStandardButtons {
+public class ExplorerDialog extends QtDialog implements IDialogWithStandardButtons {
     
     private class DialogLayout extends QVBoxLayout{
         
@@ -142,7 +140,12 @@ public abstract class ExplorerDialog extends QtDialog implements IDialogWithStan
         if (width() < minimumSizeHint().width()) {
             resize(new QSize(minimumSizeHint().width(), height()));
         }
-        return super.exec();
+        LeakedWidgetsDetector.getInstance().beforeExecDialog(environment, this);
+        try{
+            return super.exec();
+        }finally{
+            LeakedWidgetsDetector.getInstance().afterExecDialog(environment);
+        }
     }
 
     @Override
@@ -179,17 +182,15 @@ public abstract class ExplorerDialog extends QtDialog implements IDialogWithStan
     }
 
     @Override
-    public QSize minimumSizeHint() {
-        final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();
-        final int hardLimit = Math.min(screenSize.width() - 480, 1000);
-        final QFontMetrics fm = fontMetrics();
-        final int windowTitleWidth = Math.min(fm.width(windowTitle()) + 200, hardLimit);
+    public QSize minimumSizeHint() {        
+        final int windowTitleWidth = WidgetUtils.calcWindowHeaderWidth(this);
         final QSize superSizeHint = super.minimumSizeHint();
         if (superSizeHint == null || !superSizeHint.isValid() || superSizeHint.width() < windowTitleWidth) {
             final int height = superSizeHint == null ? 0 : superSizeHint.height();
-            return new QSize(windowTitleWidth, height);
+            return WidgetUtils.shrinkWindowSize(windowTitleWidth, height);                    
+        }else{
+            return WidgetUtils.shrinkWindowSize(superSizeHint.width(), superSizeHint.height());
         }
-        return superSizeHint;
     }
 
     //Implementation of IDialog
@@ -309,5 +310,9 @@ public abstract class ExplorerDialog extends QtDialog implements IDialogWithStan
             size.setWidth(layout().sizeHint().width());
         }
         return size;    
+    }    
+    
+    public final void setDisposeAfterClose(final boolean dispose){
+        setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, dispose);
     }    
 }

@@ -81,7 +81,7 @@ public class AdsFieldPropertyDef extends AdsServerSidePropertyDef {
         if (ownerClass instanceof AdsSqlClassDef) {
             final CommentsAnalizer commentsAnalizer = CommentsAnalizer.Factory.newSqlCommentsAnalizer();
             final AdsSqlClassDef sqlClass = (AdsSqlClassDef) ownerClass;
-            for (Scml.Item item : sqlClass.getSource().getItems()) {
+            for (Scml.Item item : sqlClass.getSqml().getItems()) {
                 if (item instanceof Scml.Text) {
                     final Scml.Text textItem = (Scml.Text) item;
                     commentsAnalizer.process(textItem.getText());

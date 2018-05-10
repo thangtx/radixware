@@ -36,11 +36,18 @@ public interface IReaderController {
      * @return 
      */
     List<EntityModel> merge(List<EntityModel> currentModels, List<EntityModel> newModels, EntityModel currentModel);
+    
+    /**
+     * Возвращает признак того, что после слияния сущностей в выборке еще остались непрочитанные данные.
+     * Вызывается после вызова метода merge
+     * @return 
+     */
+    boolean hasMoreAfterMerge();
+    
     /**
      * возвращает новую позицию скроллинга
      * @return 
      */
     ScrollPosition scrollPosition();
-    
-    
+        
 }

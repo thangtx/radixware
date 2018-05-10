@@ -42,7 +42,7 @@
         </AccessRules>
       </Method>
       <Method Id="mth5FD6MSWW7BBDPG4XTR6FB5TGDA" Name="columnCount" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="columnCount(Lcom.trolltech.qt.core.QModelIndex;)I"/>
         </AccessRules>
         <Parameters>
@@ -74,7 +74,7 @@
         <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
       </Method>
       <Method Id="mthXH4CG2ZEVBC7DMLRSISJZ6LJVY" Name="data" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="data(Lcom.trolltech.qt.core.QModelIndex;I)Ljava.lang.Object;"/>
         </AccessRules>
         <Parameters>
@@ -128,7 +128,7 @@
         </ThrownExceptions>
       </Method>
       <Method Id="mthYDR3RXJWIRCI5D7NXD65BDVC2Q" Name="flags" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="flags(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.Qt.ItemFlags;"/>
         </AccessRules>
         <Parameters>
@@ -139,7 +139,7 @@
         <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.ItemFlags"/>
       </Method>
       <Method Id="mthZRFLR6GO3FCGVB66GXOKSTG5JQ" Name="getBackground" Nature="0" IsOverride="false">
-        <AccessRules Access="1">
+        <AccessRules Access="1" IsFinal="true">
           <Transparence Extendable="false" PublishedName="getBackground(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.gui.QColor;"/>
         </AccessRules>
         <Parameters>
@@ -150,7 +150,7 @@
         <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QColor"/>
       </Method>
       <Method Id="mthZGHCE36P5NGLHDUJX24PLSN2JE" Name="getChildGroup" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="getChildGroup(Lcom.trolltech.qt.core.QModelIndex;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
         </AccessRules>
         <Parameters>
@@ -161,7 +161,7 @@
         <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
       </Method>
       <Method Id="mthCFOXQC6X3RHD3MCETZCIWE4EC4" Name="getDecoration" Nature="0" IsOverride="false">
-        <AccessRules Access="1">
+        <AccessRules Access="1" IsFinal="true">
           <Transparence Extendable="false" PublishedName="getDecoration(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.gui.QIcon;"/>
         </AccessRules>
         <Parameters>
@@ -183,7 +183,7 @@
         <ReturnType TypeId="21"/>
       </Method>
       <Method Id="mth2PAG2D4T7JFB3PVCGTKNAH7DGA" Name="getEntity" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="getEntity(Lcom.trolltech.qt.core.QModelIndex;)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
         </AccessRules>
         <Parameters>
@@ -194,7 +194,7 @@
         <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
       </Method>
       <Method Id="mthQDOYARNPNRDFRDUWTPIONQGQJI" Name="getFont" Nature="0" IsOverride="false">
-        <AccessRules Access="1">
+        <AccessRules Access="1" IsFinal="true">
           <Transparence Extendable="false" PublishedName="getFont(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.gui.QFont;"/>
         </AccessRules>
         <Parameters>
@@ -205,7 +205,7 @@
         <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QFont"/>
       </Method>
       <Method Id="mth2OALG72NEVD5BAKCH53GQXXZ2E" Name="getForeground" Nature="0" IsOverride="false">
-        <AccessRules Access="1">
+        <AccessRules Access="1" IsFinal="true">
           <Transparence Extendable="false" PublishedName="getForeground(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.gui.QColor;"/>
         </AccessRules>
         <Parameters>
@@ -267,15 +267,15 @@
         </ReturnType>
       </Method>
       <Method Id="mthN35FUKQ5VZAMBP3JXVSBAZJQWI" Name="getTextAlignment" Nature="0" IsOverride="false">
-        <AccessRules Access="1">
-          <Transparence Extendable="false" PublishedName="getTextAlignment(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.Qt.AlignmentFlag;"/>
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getTextAlignment(Lcom.trolltech.qt.core.QModelIndex;)I"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="index" Id="mpr6G4Y4YXPYVDQ5J2ZM2W6HLP5LM">
+          <Parameter Name="index" Id="mprEVCYYCKJ6FEI5EE5Q2RZOKMGI4">
             <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.AlignmentFlag"/>
+        <ReturnType TypeId="401" extStr="int"/>
       </Method>
       <Method Id="mthZ4ODIBIQHVH7VKXGC3X3DCWSSA" Name="hasChildren" Nature="0" IsOverride="false">
         <AccessRules Access="1">
@@ -289,7 +289,7 @@
         <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
       <Method Id="mthW6XHQ7SOWFCQHFPCQYJ5TDHCWA" Name="headerData" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="headerData(ILcom.trolltech.qt.core.Qt.Orientation;I)Ljava.lang.Object;"/>
         </AccessRules>
         <Parameters>
@@ -306,7 +306,7 @@
         <ReturnType TypeId="400" extStr="java.lang.Object"/>
       </Method>
       <Method Id="mthEQCTAUDZAVDPNFGF6CVMRB2KKY" Name="index" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="index(IILcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.QModelIndex;"/>
         </AccessRules>
         <Parameters>
@@ -337,7 +337,7 @@
         <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
       </Method>
       <Method Id="mthBZMG2V5OEJHAXLQL2AGQBZBYWY" Name="parent" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="parent(Lcom.trolltech.qt.core.QModelIndex;)Lcom.trolltech.qt.core.QModelIndex;"/>
         </AccessRules>
         <Parameters>
@@ -518,7 +518,7 @@
         <ReturnType TypeId="21"/>
       </Method>
       <Method Id="mthQXFVENIA7NBH7F55RZW3DVINBI" Name="getToolTip" Nature="0" IsOverride="false">
-        <AccessRules Access="1">
+        <AccessRules Access="1" IsFinal="true">
           <Transparence Extendable="false" PublishedName="getToolTip(Lcom.trolltech.qt.core.QModelIndex;)Ljava.lang.String;"/>
         </AccessRules>
         <Parameters>
@@ -527,6 +527,225 @@
           </Parameter>
         </Parameters>
         <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthDFMCNHYKYBEUDNJWCF5CBZDEPY" Name="getNestingLevelOfEntityModel" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getNestingLevelOfEntityModel(Lorg.radixware.kernel.common.client.models.EntityModel;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mpr2G255BZDJJFETICU7YN3Y5R46M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthYNNITX342FAORFZXQ27VNXSIZY" Name="getNestingLevelOfGroupModel" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getNestingLevelOfGroupModel(Lorg.radixware.kernel.common.client.models.GroupModel;)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="groupModel" Id="mprO6CQ2IPGS5A3JFXYIF2IUKC2ZI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthOQFUCADLKFF4RODBVOMVWNKQUE" Name="calcChildGroupRestrictions" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="calcChildGroupRestrictions(Lorg.radixware.kernel.common.client.models.EntityModel;Lorg.radixware.kernel.common.client.models.GroupModel;)Lorg.radixware.kernel.common.client.types.Restrictions;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parent" Id="mprXMWE57WMCZBFXIJAKOG552EL6Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="child" Id="mprCBINLVPVFFDWFIPUYOXBLOP7JI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.Restrictions"/>
+      </Method>
+      <Method Id="mthM2TCQ7QDVBA6FOJ263L4UACZ2I" Name="getHeaderFont" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getHeaderFont(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;Z)Lcom.trolltech.qt.gui.QFont;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mpr7M44MMGZORCIVNDVJUIAKBPQ7U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+          <Parameter Name="isCurrentColumn" Id="mpr74WDEDEWPFA4RGWKDCDFOFZXT4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QFont"/>
+      </Method>
+      <Method Id="mthPVWHGZWQA5GOPHO6FI3Y33UZLA" Name="getHeaderIcon" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getHeaderIcon(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;)Lcom.trolltech.qt.gui.QIcon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprIY7KBYD42RFSXHCCQA47N2ASIM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+      </Method>
+      <Method Id="mthT47V7HGD4FGRRKRSOHA27CIQRI" Name="getHeaderTextAlignment" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getHeaderTextAlignment(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;)Lcom.trolltech.qt.core.Qt.AlignmentFlag;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprESQXG4M4LNA2TLWD56LE4QNPN4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.AlignmentFlag"/>
+      </Method>
+      <Method Id="mthDDAMC3F375AOVH2JLSXKJOLXHU" Name="getHeaderTitle" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getHeaderTitle(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprAHC3MLRCK5ANZJGMD3RV2QZJSU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthCNBBZTCGN5EYJB3JOUEARGQKEA" Name="getHeightHint" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getHeightHint(Lorg.radixware.kernel.common.client.models.items.properties.Property;Z)I"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprC5HJNC2KTFHLTIMMFM5EHWMQZU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+          <Parameter Name="hasIcon" Id="mprN3ZXPSWH5ZBKPOYAUNW3UGXT4I">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthYSV3GEZZMVEC5MAWM2FVF3G56U" Name="getIconForEntityModel" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getIconForEntityModel(Lorg.radixware.kernel.common.client.models.EntityModel;)Lcom.trolltech.qt.gui.QIcon;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mprOOWLHZG36BC4PPDK5KJUYFVXA4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QIcon"/>
+      </Method>
+      <Method Id="mthUZIMUBPWSVHFTLRDSG5WFDDP44" Name="getItemFlagsForProperty" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getItemFlagsForProperty(Lorg.radixware.kernel.common.client.models.items.properties.Property;)Lcom.trolltech.qt.core.Qt.ItemFlags;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprHRJORPQLQ5EWXPFDNBGTS2ZQUE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.ItemFlags"/>
+      </Method>
+      <Method Id="mth4GV3CNA6TZHRVAP62LLYLQ6VWM" Name="getOwnerGroupModel" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getOwnerGroupModel(Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.client.models.GroupModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mprA72PUM2C7ZC3JLHREUQYHL4BU4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+      </Method>
+      <Method Id="mthZZ5H4WCJBFEVNPYRA6HVFY6OJ4" Name="getSizeHint" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getSizeHint(Lorg.radixware.kernel.common.client.models.items.properties.Property;ZIZ)Lcom.trolltech.qt.core.QSize;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mpr37MPCZNHVBEBPA2YYQHB4ETAD4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+          <Parameter Name="approximately" Id="mprYZ3ZNDMAPJEMVBJRKKJWX25UBQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="widthMargin" Id="mprS5PT7DHDLVE5ZHYQ2SCCQ5LPTQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="hasIcon" Id="mpr5W2L2D4KZFFH5JRHMYBXZQE2TM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.QSize"/>
+      </Method>
+      <Method Id="mthNKLCPR7XJNHTXN2LBDVR7O5LUA" Name="getTextAlignment" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getTextAlignment(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;Lorg.radixware.kernel.common.client.models.EntityModel;)Lcom.trolltech.qt.core.Qt.AlignmentFlag;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprBN36JYU44ZCFVIDIO7FJXHV4FY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+          <Parameter Name="entityModel" Id="mprSIFJKEHT2JFNRAKNOAWYFUC42M">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.AlignmentFlag"/>
+      </Method>
+      <Method Id="mthU7GIBW73AJHDDKTKP6UOG6XWDY" Name="getTextToDisplay" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getTextToDisplay(Lorg.radixware.kernel.common.client.models.items.properties.Property;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="property" Id="mprKHFXRX7YPRBM7IPKQ3TBNN7G74">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth62GS7HXBYNHEPIVV7PR26YUUAQ" Name="prepareChildGroupFilter" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="prepareChildGroupFilter(Lorg.radixware.kernel.common.client.models.GroupModel;Lorg.radixware.kernel.common.client.models.GroupModel;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentGroupModel" Id="mprDMSFPK5INFGITMMJGHWNMK5DC4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+          <Parameter Name="childGroupModel" Id="mprPQBNW5NAQVE4TM3FWICJIMMASQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthV2PWUPEYNJA7FGHKBBZUIB3TJM" Name="replaceEntityModel" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="replaceEntityModel(Lorg.radixware.kernel.common.client.models.GroupModel;Lorg.radixware.kernel.common.client.models.EntityModel;I)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="ownerGroupModel" Id="mprZERVYB5RR5ARBMTZPJDFXXBUEU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+          </Parameter>
+          <Parameter Name="originalEntityModel" Id="mprNHQTVC2KUVD53IWSCO3PI2PCUU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+          <Parameter Name="nestingLevel" Id="mprBG45MF42JNC2NF35IAPPMCNT7A">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+      </Method>
+      <Method Id="mthMAJQEZWVSFBRXPLQXOUQPYP6SY" Name="getTextAlignmentFlags" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getTextAlignmentFlags(Lorg.radixware.kernel.common.client.models.items.SelectorColumnModelItem;Lorg.radixware.kernel.common.client.models.EntityModel;)Lcom.trolltech.qt.core.Qt.Alignment;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="column" Id="mprYUPV2HJWEVE4ZBW2GDSIXQVNQU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.SelectorColumnModelItem"/>
+          </Parameter>
+          <Parameter Name="entityModel" Id="mprOKFBNDSLFREBXPKAXYS26UZWUM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="com.trolltech.qt.core.Qt.Alignment"/>
       </Method>
     </Methods>
   </AdsClassDefinition>

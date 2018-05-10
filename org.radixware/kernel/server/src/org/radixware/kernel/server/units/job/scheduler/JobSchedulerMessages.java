@@ -24,6 +24,7 @@ final class JobSchedulerMessages {
     public static final String WARN_SCHEDULE_IS_CALLED_TO_EARLY;
     public static final String WARN_TASK_IS_RUNNING_FOR_TOO_LONG;
     public static final String WARN_TASK_HAS_BEEN_ACTUALIZED;
+    public static final String ERR_UNABLE_TO_CALC_SCHED_TIME;
 
     static {
         final ResourceBundle bundle = ResourceBundle.getBundle("org.radixware.kernel.server.units.job.scheduler.mess.messages");
@@ -35,9 +36,11 @@ final class JobSchedulerMessages {
         WARN_SCHEDULE_IS_CALLED_TO_EARLY = bundle.getString("WARN_SCHEDULE_IS_CALLED_TO_EARLY");
         WARN_TASK_IS_RUNNING_FOR_TOO_LONG = bundle.getString("WARN_TASK_IS_RUNNING_FOR_TOO_LONG");
         WARN_TASK_HAS_BEEN_ACTUALIZED = bundle.getString("WARN_TASK_HAS_BEEN_ACTUALIZED");
+        ERR_UNABLE_TO_CALC_SCHED_TIME = bundle.getString("ERR_UNABLE_TO_CALC_SCHED_TIME");
     }
     static final String MLS_ID_SCHD_JOB_SCHEDULED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsX67TPBPUWBBPVKM5QZAJGXABKU"; //MLS "Periodical job #%1 scheduled to be executed at %2", Event, JobScheduler
     public static final String MLS_ID_TASK_IS_ALREADY_SCHEDULED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls54RCXSTOBRELRBT3FXOVEMUEVU";//Task #%1 '%2' was not scheduled because it is already scheduled or executing, Warning, id, title
     public static final String MLS_ID_TASK_IS_RUNNING_FOR_TO_LONG = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsDSHLC2BIINDDRIDCXUHUK2EW7E";//Task '%1' has not been completed in expected amount of time (%2 s)", Warning, JobScheduler
     public static final String MLS_ID_TASK_HAS_BEEN_ACTUALIZED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsRQJLSSN57FALZNLF6H4YFLGWFY";//Task %1 had outdated status and was actualized", Warning, JobScheduler
+    public static final String MLS_ID_UNABLE_TO_CALC_SCHED_TIME = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls3OZMKLR3FBGATF4577Z2DFXKOI";//Unable to calculate next scheduled time for task %1: %2", Error, JobScheduelr
 }
